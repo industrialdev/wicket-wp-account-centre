@@ -1,0 +1,204 @@
+button.wicket_acc_btn {
+
+	margin-left: 3px;
+
+}
+/* The Popup (background) */
+.wicket_acc_pp_opt {
+	
+	display: none;  /*Hidden by default */
+
+	position: relative; /* Stay in place */
+
+	z-index: 1; /* Sit on top */
+
+	/*padding-top: 100px;  Location of the box */
+
+	overflow: auto; /* Enable scroll if needed */
+
+	background-color: rgb(0,0,0); /* Fallback color */
+
+	background-color: rgba(0,0,0,0.1); /* Black w/ opacity */
+
+	width: 60%;
+
+	margin-left: 20%;
+
+
+}
+
+.wicket_acc_pp_opt_close {
+	
+	display: none;  /*Hidden by default */
+
+	position: relative; /* Stay in place */
+
+	z-index: 1; /* Sit on top */
+
+	/*padding-top: 100px;  Location of the box */
+
+	overflow: auto; /* Enable scroll if needed */
+
+	background-color: rgb(0,0,0); /* Fallback color */
+
+	background-color: rgba(0,0,0,0.1); /* Black w/ opacity */
+
+	width: 60%;
+
+	margin-left: 20%;
+
+	margin-top: -20%;
+
+}
+
+
+
+.wicket_acc_profile_Pic{
+	position: relative;
+}
+
+.wicket_acc_upload_button{
+	position: absolute;
+	padding: 2px;
+	bottom: 1px;
+	left: 1px;
+}
+.wicket_acc_remove_button{
+	position: absolute;
+	background-color: transparent;
+	color: #6d6d6d;
+	top: -5px;
+	left: 1px;
+	opacity: 70%;
+}
+.wicket_acc_remove_button:hover{
+	opacity: 100%;
+}
+.wicket_acc_remove_button:hover,.wicket_acc_upload_button:hover {
+  transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+  color: #999;
+}
+.wicket_acc_upload_image{
+	display: none;
+}
+.wicket_acc_pp_opt_remove {
+	display: none;  /*Hidden by default */
+	position: relative; /* Stay in place */
+	z-index: 1; /* Sit on top */
+	/*padding-top: 100px;  Location of the box */
+	left: 0;
+	top: 0;
+	overflow: auto; /* Enable scroll if needed */
+	/*background-color: rgb(0,0,0);  Fallback color */
+	/*background-color: rgba(0,0,0,0.4);  Black w/ opacity */
+	width: 60%;
+	margin-left: 33%;
+	margin-top: -47px;
+}
+
+
+/* Popup Content */
+
+form.woocommerce-EditAccountForm input.wicket_acc_pp_opt_content, a.wicket_acc_pp_opt_content {
+	/*background-color: #fefefe;*/
+	/*padding: 20px; */
+	border: 1px solid #888;
+	/*width: 95%;*/
+	margin-left: 20%;
+}
+
+/* The Close Button */
+
+.wicket_acc_pp_opt_close .close {
+	color: #aaaaaa;
+	font-size: 28px;
+	font-weight: bold;
+	/*position: absolute;*/
+	margin-left: 95.5%;
+}
+
+.wicket_acc_pp_opt_close .close:hover,
+
+.wicket_acc_pp_opt_close .close:focus {
+	color: #000;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.wicket_acc_file_upload {
+	display: none;
+}
+
+li ul{
+	margin-left: 0.8em !important;
+}
+
+.woocommerce-MyAccount-navigation ul li.group_endpoint ul{
+	display: none;
+}
+
+.myaccount-nav ul li a::before{
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	display: inline-block;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: normal;
+	line-height: 1;
+	font-family: 'FontAwesome';
+	/*font-family: 'Font Awesome 5 free';*/
+	font-weight: 400;
+	line-height: inherit;
+	vertical-align: baseline;
+	line-height: 1.618;
+	margin-right: 0.1407911001em;
+	width: 1.41575em;
+	text-align: left;
+	float: left;
+	opacity: 0.75;
+}
+
+.myaccount-nav ul li.nav-item--dashboard a::before{
+	content: "\f0e4";
+}
+
+.myaccount-nav ul li.nav-item--orders a::before{
+	content: "\f291";
+}
+
+.myaccount-nav ul li.nav-item--downloads a::before{
+	content: "\f1c6";
+}
+
+.myaccount-nav ul li.nav-item--edit-address a::before{
+	content: "\f015";
+}
+
+.myaccount-nav ul li.nav-item--edit-account a::before{
+	content: "\f007";
+}
+
+.myaccount-nav ul li.nav-item--customer-logout a::before{
+	content: "\f08b";
+}
+
+.myaccount-nav ul li a.group_endpoint_a::after{
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	display: inline-block;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: normal;
+	line-height: 1;
+	font-family: 'FontAwesome';
+	/*font-family: 'Font Awesome 5 free';*/
+	font-weight: 400;
+	line-height: inherit;
+	vertical-align: baseline;
+	line-height: 1.618;
+	margin-left: 0.3407911001em;
+	width: 1.41575em;
+	text-align: right;
+	float: right;
+	content: "\f0d7";
+}

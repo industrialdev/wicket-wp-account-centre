@@ -1,0 +1,131 @@
+.myaccount-nav {
+	margin-right: initial !important;
+	width: 100%;
+	display: block;
+}
+
+.is-active{
+	border-bottom: 3px solid rgba(0, 0, 0, 0.05) !important;
+	font-weight: bold;
+}
+
+.myaccount-nav ul{
+	margin:0;
+	padding: 0;
+	list-style: none;
+}
+
+.myaccount-nav ul li{
+	display:inline-block;
+	margin:10px;
+}
+
+
+.myaccount-nav ul li.nav-selected a:first-of-type{
+	text-decoration: none !important;
+	font-size: 14px;
+	line-height: 24px;
+	border: 1px solid #e0e0e0;
+	border-bottom: none;
+	display: block;
+	padding: .5em 1em;
+	font-style: normal;
+	font-weight: 400;
+	text-align: center;
+	text-transform: capitalize;
+	box-shadow: none;
+	position: relative;
+}
+
+.myaccount-nav ul li:not(.nav-selected) a{
+	text-decoration: none !important;
+	font-size: 14px;
+	line-height: 24px;
+	border: 1px solid #e0e0e0;
+	border-bottom: none;
+	display: block;
+	padding: .5em 1em;
+	font-style: normal;
+	font-weight: 400;
+	text-align: center;
+	text-transform: capitalize;
+	box-shadow: none;
+	position: relative;
+}
+
+.wicket_acc_sub_list{
+	display: none;
+	margin: 10px 0px !important;
+	padding: 0;
+	position: absolute;
+	z-index: 999999;
+	background: whitesmoke;
+	padding: 10px;
+}
+
+.wicket_acc_sub_list li{
+	display: block !important;
+	margin: 5px 0px !important;
+	border-bottom: 1px solid #e0e0e0;
+}
+
+.wicket_acc_sub_list li a{
+	text-decoration: none !important;
+	font-size: 14px;
+	line-height: 24px;
+	border: 1px solid #e0e0e0;
+	border-bottom: none;
+	display: block;
+	padding: .5em 1em;
+	font-style: normal;
+	font-weight: 400;
+	text-align: left;
+	text-transform: uppercase;
+	box-shadow: none;
+	position: relative;
+}
+
+.nav-selected{
+	background: whitesmoke;
+	font-weight: bold;
+}
+
+.woocommerce-MyAccount-content {
+	width: 100% !important;
+	padding: 10px 15px !important;
+	margin: 15px 0px !important
+}
+
+.woocommerce{
+	display: block !important;
+	width:100%;
+}
+
+.my-account .large-3,
+.my-account .dashboard-links{
+	display: none;
+}
+
+.my-account .large-9,
+#content-area #left-area{
+	width: 100% !important;
+	max-width: 100% !important;
+	-ms-flex-preferred-size: 100% !important;
+	flex-basis: 100% !important;
+	padding: 0px !important;
+}
+
+#main-content .container:before {
+	content: "";
+	position: absolute;
+	top: 0;
+	height: 100%;
+	width: 0px;
+	background-color: transparent;
+	display: none;
+}
+@media all and (max-width: 768px){
+	.myaccount-nav ul li{
+		margin: 10px 5px;
+	}
+}

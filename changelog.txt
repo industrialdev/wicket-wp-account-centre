@@ -1,0 +1,44 @@
+*** Wicket Account Centre (previously My Account Page Editor) Change log ***
+
+
+2023-09-02 - version 1.x.x
+* Forked - Forked plugin for Wicket Account Centre.
+
+2023-09-01 - version 1.3.2
+* Fix - Fixed file upload security issue.
+
+2023-08-28 - version 1.3.1
+* Fix - Fixed layout issues on frontend.
+
+2023-08-24 - version 1.3.0
+* Update - Security update.
+
+2023-08-17 - version 1.2.1
+* Fix - Fix typos.
+
+2023-08-16 - version 1.2.0
+* Update - Compatible with WooCommerce High-Performance Order Storage (HPOS).
+* Update - Compatibility updated for latest versions of WooCommerce and WordPress.
+
+2022-10-24 - version 1.1.4
+* Fix - Fixed "Failed Security Check" message issue.
+
+2022-09-21 - version 1.1.3
+* Fix - Fixed nonce issues.
+* Fix - Fixed JS issue in admin panel.
+
+2022-09-21 - version 1.1.2
+* Update - Compatibility updated for latest versions of WooCommerce and WordPress.
+
+2020-11-24 - version 1.1.1
+* Fix - Backend icons preview issue fixed for windows.
+* Add - Added shortcode compatibility in text editor.
+
+2020-11-23 - version 1.1.0
+* Add - Sorting options for default and new endpoints.
+* Fix - Compatibility fixes with top themes.
+* Add - Add custom background and text colors for endpoint tabs.
+* Update - Option to use the theme default my account layout or replace with an attractive yet simple plugin's my account design.
+
+2020-07-27 - version 1.0.0
+* Other - Initial release of the plugin.

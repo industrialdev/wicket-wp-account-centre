@@ -1,0 +1,86 @@
+.new-endpoint-form {
+	padding: 1em;
+}
+
+table.addify-table-option {
+	width: 100%;
+	border-collapse: collapse;
+}
+tr.addify-option-field th {
+	width: 30%;
+}
+tr.addify-option-field td {
+	padding: 12.5px;
+}
+.addify-option-field th .option-head h3 {
+	text-align: left;
+	margin-left: 25px;
+}
+.addify-option-field th span.description p {
+	font-style: normal;
+	text-align: left;
+	font-weight: 100;
+}
+.addify-option-field td .addify-input-field {
+
+}
+tr.addify-option-field {
+	border-bottom: 1px solid #E7E7E7;
+}
+
+.user_role_fld td {
+    line-height: 1.8em;
+}
+.user_role_fld input[type="checkbox"]:not(:first-of-type) {
+    margin-left: 10px;
+}
+.wicket_acc_group_child_filed .select2-container {
+    min-width: 300px;
+}
+
+.wicket_acc_button_secondary {
+	width: auto !important;
+}
+
+.width-60{
+	width: 60% !important;
+}
+
+nav.woocommerce-MyAccount-navigation ul li{
+	padding: 15px;
+	background: #e5e5e5;
+	font-size: medium;
+	border: 1px solid #b9b9b9;
+}
+
+nav.woocommerce-MyAccount-navigation ul li a{
+	padding: 15px 0px;
+}
+
+nav.woocommerce-MyAccount-navigation .group-endpoint-title{
+	display: inline-block;
+	margin-bottom: 15px;
+}
+
+@media only screen and (min-width: 450px) {
+	nav.woocommerce-MyAccount-navigation{
+		width: 100%;
+		max-width: 60%;
+		text-align: left;
+		padding: 20px 15%;
+	}
+}
+
+@media only screen and (max-width: 400px) {
+	nav.woocommerce-MyAccount-navigation{
+		width: 100%;
+		max-width: 80%;
+		text-align: left;
+		padding: 10px 5%;
+	}
+}
+
+select#wicket_acc_icon_fld, select#wicket_acc_icon_fld option {
+	font-family: FontAwesome;
+}
+
