@@ -247,7 +247,7 @@ if ( ! class_exists( 'Wicket_Acc_Front' ) ) {
 
 			$user_data = get_user_meta( $curr_user->ID );
 
-			$curr_user_role = $curr_user->roles[0];
+			$curr_user_role = $curr_user->roles;
 
 			// Remove the logout menu item.
 			$logout = $items['customer-logout'];
@@ -284,7 +284,7 @@ if ( ! class_exists( 'Wicket_Acc_Front' ) ) {
 
 						if ( is_array( $wicket_acc_user_role ) || empty( $wicket_acc_user_role ) ) {
 
-							if ( in_array( $curr_user_role, $wicket_acc_user_role, true ) || empty( $wicket_acc_user_role ) || is_admin() ) {
+							if ( in_array( $curr_user_role, (array)$wicket_acc_user_role, true ) || empty( $wicket_acc_user_role ) || is_admin() ) {
 
 								$items[ $wicket_slug ] = wp_kses_post( $wicket_acc_menu_title );
 
