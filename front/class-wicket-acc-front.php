@@ -61,21 +61,6 @@ if ( ! class_exists( 'Wicket_Acc_Front' ) ) {
 			// Enqueue Front CSS.
 			wp_enqueue_style( 'wicket_acc_front', plugins_url( '../assets/css/wicket_acc_front.css', __FILE__ ), false, '1.0' );
 
-			$wicket_acc_ep_as = get_option( 'wicket_acc_set_ep_as_fld' );
-
-			if ( 'left-sidebar' === $wicket_acc_ep_as ) {
-
-				wp_enqueue_style( 'wicket_acc_front_left', plugins_url( '../assets/css/wicket_acc_left.css', __FILE__ ), false, '1.0' );
-
-			} elseif ( 'right-sidebar' === $wicket_acc_ep_as ) {
-
-				wp_enqueue_style( 'wicket_acc_front_right', plugins_url( '../assets/css/wicket_acc_right.css', __FILE__ ), false, '1.0' );
-
-			} elseif ( 'tab' === $wicket_acc_ep_as ) {
-
-				wp_enqueue_style( 'wicket_acc_front_tab', plugins_url( '../assets/css/wicket_acc_tab.css', __FILE__ ), false, '1.0' );
-			}
-
 		}
 
 		/**
@@ -700,6 +685,10 @@ if ( ! class_exists( 'Wicket_Acc_Front' ) ) {
 
 				if ( 'dashboard.php' === basename( $template ) ) {
 					$template = trailingslashit( plugin_dir_path( __FILE__ ) ) . '/templates/dashboard.php';
+				}
+
+				if ( 'my-account.php' === basename( $template ) ) {
+					$template = trailingslashit( plugin_dir_path( __FILE__ ) ) . '/templates/my-account.php';
 				}
 
 				return $template;

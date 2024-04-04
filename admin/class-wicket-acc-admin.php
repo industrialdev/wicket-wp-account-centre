@@ -85,7 +85,7 @@ if ( ! class_exists( 'Wicket_Acc_Admin' ) ) {
 
 			add_meta_box(
 				'wicket_acc_metabox', // id.
-				esc_html__( 'Endpoint Settings', 'wicket-acc' ), // title which will be shown at top of metabox.
+				esc_html__( 'Account Centre Settings', 'wicket-acc' ), // title which will be shown at top of metabox.
 				array( $this, 'wicket_acc_metabox_cb' ), // callback function name.
 				'wicket_acc', // The screen or screens on which to show the box (such as a post type, 'link', or 'comment').
 				'normal', // The context within the screen where the boxes should display.
@@ -539,16 +539,16 @@ if ( ! class_exists( 'Wicket_Acc_Admin' ) ) {
 
 				<div id="icon-tools" class="icon32"></div>
 
-				<h2> <?php echo esc_html__( 'Endpoints Settings', 'wicket-acc' ); ?></h2>
+				<h2> <?php echo esc_html__( 'Account Centre Settings', 'wicket-acc' ); ?></h2>
 
 				<?php settings_errors(); ?>
 
 				<h2 class="nav-tab-wrapper">
 
-					<a href="?post_type=wicket_acc&page=customize-my-account-page-layout&tab=endpoints_settings" class="nav-tab  <?php echo esc_attr( $active_tab ) === 'endpoints_settings' ? ' nav-tab-active' : ''; ?>" > <?php esc_html_e( 'Endpoints Settings', 'wicket-acc' ); ?> </a>
+					<a href="?post_type=wicket_acc&page=customize-my-account-page-layout&tab=endpoints_settings" class="nav-tab  <?php echo esc_attr( $active_tab ) === 'endpoints_settings' ? ' nav-tab-active' : ''; ?>" > <?php esc_html_e( 'Account Centre Settings', 'wicket-acc' ); ?> </a>
 
 					<a href="?post_type=wicket_acc&page=customize-my-account-page-layout&tab=profile_img_settings" class="nav-tab  <?php echo esc_attr( $active_tab ) === 'profile_img_settings' ? ' nav-tab-active' : ''; ?>" > <?php esc_html_e( 'Profile Picture', 'wicket-acc' ); ?> </a>
-					<a href="?post_type=wicket_acc&page=customize-my-account-page-layout&tab=custom_sorting" class="nav-tab  <?php echo esc_attr( $active_tab ) === 'custom_sorting' ? ' nav-tab-active' : ''; ?>" > <?php esc_html_e( 'Endpoints Sorting', 'wicket-acc' ); ?> </a>
+					<a href="?post_type=wicket_acc&page=customize-my-account-page-layout&tab=custom_sorting" class="nav-tab  <?php echo esc_attr( $active_tab ) === 'custom_sorting' ? ' nav-tab-active' : ''; ?>" > <?php esc_html_e( 'Menu Sorting', 'wicket-acc' ); ?> </a>
 
 				</h2>
 

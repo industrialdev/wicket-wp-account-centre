@@ -126,19 +126,19 @@ if ( ! class_exists( 'Wicket_Acc_Main' ) ) {
 			$labels = array(
 
 				'name'               => esc_html__( 'Account Centre', 'wicket-acc' ),
-				'singular_name'      => esc_html__( 'Endpoint', 'wicket-acc' ),
-				'add_new_item'       => esc_html__( 'Add New Endpoint', 'wicket-acc' ),
-				'add_new'            => esc_html__( 'Add New Endpoint', 'wicket-acc' ),
-				'edit_item'          => esc_html__( 'Edit Endpoint', 'wicket-acc' ),
-				'view_item'          => esc_html__( 'View Endpoint', 'wicket-acc' ),
-				'update_item'        => esc_html__( 'Update Endpoint', 'wicket-acc' ),
-				'search_items'       => esc_html__( 'Search Endpoint', 'wicket-acc' ),
+				'singular_name'      => esc_html__( 'Page', 'wicket-acc' ),
+				'add_new_item'       => esc_html__( 'Add New Page', 'wicket-acc' ),
+				'add_new'            => esc_html__( 'Add New Page', 'wicket-acc' ),
+				'edit_item'          => esc_html__( 'Edit Page', 'wicket-acc' ),
+				'view_item'          => esc_html__( 'View Page', 'wicket-acc' ),
+				'update_item'        => esc_html__( 'Update Page', 'wicket-acc' ),
+				'search_items'       => esc_html__( 'Search Page', 'wicket-acc' ),
 				'not_found'          => esc_html__( 'Not Found', 'wicket-acc' ),
 				'not_found_in_trash' => esc_html__( 'Not found in Trash', 'wicket-acc' ),
 				'menu_name'          => esc_html__( 'Account Centre', 'wicket-acc' ),
 				'parent_item_colon'  => '',
-				'all_items'          => esc_html__( 'All Endpoints', 'wicket-acc' ),
-				'attributes'         => __( 'Endpoint Sorting Order' ),
+				'all_items'          => esc_html__( 'All Pages', 'wicket-acc' ),
+				'attributes'         => __( 'Pages Sorting Order' ),
 			);
 
 			// Set other options for custom post type

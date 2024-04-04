@@ -87,13 +87,11 @@ function wicket_acc_set_ep_as_fld_callback( $args ) {
 	$value = empty( $value ) ? 'theme' : $value;
 	?>
 	<input type="radio" name="wicket_acc_set_ep_as_fld" id="" value="left-sidebar" <?php echo checked( 'left-sidebar', esc_attr( $value ) ); ?> /> 
-	<?php echo esc_html__( 'Left Sidebar (Replaces menu with plugin custom style)', 'wicket-acc' ); ?>
+	<?php echo esc_html__( 'Left Sidebar', 'wicket-acc' ); ?>
 	<br/>
 	<input type="radio" name="wicket_acc_set_ep_as_fld" id="" value="right-sidebar" <?php echo checked( 'right-sidebar', esc_attr( $value ) ); ?> />
-	<?php echo esc_html__( 'Right Sidebar (Replaces menu with plugin custom style)', 'wicket-acc' ); ?>
+	<?php echo esc_html__( 'Right Sidebar', 'wicket-acc' ); ?>
 	<br/>
-	<input type="radio" name="wicket_acc_set_ep_as_fld" id="" value="tab" <?php echo checked( 'tab', esc_attr( $value ) ); ?> />
-	<?php echo esc_html__( 'Tabs  (Replaces menu with plugin custom style)', 'wicket-acc' ); ?>
 	<p class="description afreg_additional_fields_section_title"> <?php echo wp_kses_post( $args[0] ); ?> </p>
 <?php
 
