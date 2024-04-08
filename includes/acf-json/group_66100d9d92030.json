@@ -4,8 +4,48 @@
     "fields": [
         {
             "key": "field_66100d9eca323",
-            "label": "Profile Picture",
-            "name": "profile_picture",
+            "label": "Edit Profile Button (Show\/Hide)",
+            "name": "edit_profile_button",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 0,
+            "ui": 0,
+            "ui_on_text": "",
+            "ui_off_text": ""
+        },
+        {
+            "key": "field_6613e7dd4c413",
+            "label": "Member since (Show\/Hide)",
+            "name": "member_since",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 0,
+            "ui": 0,
+            "ui_on_text": "",
+            "ui_off_text": ""
+        },
+        {
+            "key": "field_6613e7dc4c412",
+            "label": "Renewal date (Show\/Hide)",
+            "name": "renewal_date",
             "aria-label": "",
             "type": "true_false",
             "instructions": "",
@@ -41,5 +81,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1712579169
+    "modified": 1712580643
 }

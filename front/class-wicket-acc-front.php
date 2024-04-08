@@ -60,6 +60,7 @@ if ( ! class_exists( 'Wicket_Acc_Front' ) ) {
 			wp_enqueue_script( 'wicket_acc_front', plugins_url( '../assets/js/wicket_acc_front.js', __FILE__ ), array( 'jquery' ), '1.0', true );
 			// Enqueue Front CSS.
 			wp_enqueue_style( 'wicket_acc_front', plugins_url( '../assets/css/wicket_acc_front.css', __FILE__ ), false, '1.0' );
+			wp_enqueue_style( 'wicket_acc_grid', plugins_url( '../assets/css/wicket_acc_grid.css', __FILE__ ), false, '1.0' );
 
 		}
 

@@ -2,7 +2,7 @@
 	"name": "wicket-ac/ac-welcome",
 	"title": "AC Welcome Block",
 	"description": "A Wicket block for Welcome Block",
-	"style": "block-wicket-welcome",
+	"style": "file:./block-styles.css",
 	"category": "wicket-account-center",
 	"icon": "",
 	"apiVersion": 2,

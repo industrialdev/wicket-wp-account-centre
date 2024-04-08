@@ -1,0 +1,12 @@
+.wicket-acc-flex {
+	display: flex;
+	flex-flow: row wrap;
+}
+
+.wicket-align-item-center {
+	align-items: center;
+}
+
+.wicket-align-item-start {
+	align-items: start;
+}

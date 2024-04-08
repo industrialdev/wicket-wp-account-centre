@@ -1,0 +1,70 @@
+.wicket-welcome-block {
+  padding: 2rem 0.5rem;
+}
+
+.wicket-welcome-avatar {
+  display: none;
+}
+
+.wicket-welcome-avatar img {
+  display: inline-block;
+  border-radius: 100%;
+  width: 100%;
+  max-width: 135px !important;
+  border: 3px solid white;
+}
+
+.wicket-welcome-label {
+  font-weight: bold;
+}
+
+.wicket-welcome-content-container,
+.wicket-welcome-content {
+  width: 100%;
+}
+
+.wicket-welcome-member-since,
+.wicket-welcome-renewal {
+  font-size: 14px;
+}
+
+.wicket-welcome-member-active {
+  position: relative;
+  padding-left: 20px;
+  font-size: 14px;
+}
+
+.wicket-welcome-member-active::after {
+  display: block;
+  content: "";
+  background-color: #198754;
+  border-radius: 100%;
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.wicket-welcome-content {
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .wicket-welcome-content {
+    margin-bottom: 0;
+    width: calc(100% - 180px);
+  }
+}
+
+@media (min-width: 640px) {
+  .wicket-welcome-avatar {
+    display: block;
+    text-align: center;
+    width: 200px;
+  }  
+  .wicket-welcome-content-container {
+    width: calc(100% - 200px);
+  }
+}

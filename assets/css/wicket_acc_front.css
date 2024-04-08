@@ -27,12 +27,14 @@
 	}
 }
 
-
 button.wicket_acc_btn {
-
 	margin-left: 3px;
-
 }
+
+.icon-r {
+	margin-right: 8px;
+}
+
 /* The Popup (background) */
 .wicket_acc_pp_opt {
 	
