@@ -72,6 +72,9 @@ if ( ! class_exists( 'Wicket_Acc_Main' ) ) {
 				include_once WICKET_ACC_PLUGIN_DIR . 'front/class-wicket-acc-front.php';
 			}
 
+			// include acf blocks
+			include_once WICKET_ACC_PLUGIN_DIR . 'includes/wicket-acc-blocks.php';
+
 			//HOPS compatibility
 			add_action('before_woocommerce_init', array($this, 'wicket_acc_HPOS_Compatibility'));
 		}
