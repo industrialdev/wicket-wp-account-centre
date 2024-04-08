@@ -37,8 +37,15 @@ function init( $block = [] ) {
 							if($active_memberships){
 								foreach($active_memberships as $membership){
 									echo '<div class="mt-4 wicket-welcome-memberships">';
-									echo '<p class="mb-2 wicket-welcome-member-type"><strong>' . __('Membership Type:', 'wicket') . '</strong> ' . $membership['name'] . '</p>';
-									echo '<p class="mb-4 wicket-welcome-member-active">' . __('Active Member', 'wicket') . '</p>';
+
+									echo '<div class="mb-4">';
+										echo '<p class="mb-1 wicket-welcome-member-type"><strong>' . __('Membership Type:', 'wicket') . '</strong> ' . $membership['name'] . '</p>';
+										if($membership['type'] == 'organization'){
+											$org_info = wicket_get_active_memberships_relationship();
+											echo '<p class="mb-2 wicket-welcome-member-org"><strong>' . $org_info['relationship'] . ' &ndash; ' . $org_info['name'] . '</strong></p>';
+										}
+										echo '<p class="mt-2 mb-1 wicket-welcome-member-active">' . __('Active Member', 'wicket') . '</p>';
+									echo '</div>';
 									if($member_since){
 										echo '<p class="mb-1 wicket-welcome-member-since">' . __('Member Since:', 'wicket') . ' ' . date('F j, Y', strtotime($membership['starts_at'])) . '</p>';
 									}
