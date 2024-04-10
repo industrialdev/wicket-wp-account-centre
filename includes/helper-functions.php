@@ -67,3 +67,19 @@ function wicket_get_active_memberships_relationship() {
   
   return $org_info;
 }
+
+function is_renewal_period($memberships, $renewal_period){
+  $memberships_to_renew = [];
+	$today = date('Y-m-d');
+
+  if($memberships){
+    foreach($memberships as $membership) {
+      $renewal_window = strtotime('-'.$renewal_period.' days', strtotime($membership['ends_at']));
+      if(strtotime($today) >= $renewal_window) {
+        $memberships_to_renew = $membership;
+      }
+    }
+  }
+
+  return $memberships_to_renew;
+}

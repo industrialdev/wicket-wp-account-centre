@@ -1,0 +1,17 @@
+.wp-block-wicket-ac-ac-callout {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border-radius: 10px;
+}
+
+.wp-block-wicket-ac-ac-callout p {
+  margin-bottom: 1.5rem;
+}
+
+.wp-block-wicket-ac-ac-callout div[data-type="core/button"] {
+  display: inline-block;
+}
+
+.wp-block-wicket-ac-ac-callout .wp-block-button__link {
+  margin-bottom: 0;
+}
