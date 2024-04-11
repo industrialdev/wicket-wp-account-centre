@@ -58,6 +58,46 @@
             "step": "",
             "prepend": "",
             "append": ""
+        },
+        {
+            "key": "field_66183e96ea017",
+            "label": "Select Profile Mandatory Fields",
+            "name": "select_profile_mandatory_fields",
+            "aria-label": "",
+            "type": "checkbox",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_661697296fca1",
+                        "operator": "==",
+                        "value": "profile"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "given_name": "First Name",
+                "family_name": "Last Name",
+                "gender": "Gender",
+                "birth_date": "Birth Date",
+                "addresses": "Addresses"
+            },
+            "default_value": [
+                "given_name",
+                "family_name"
+            ],
+            "return_format": "value",
+            "allow_custom": 0,
+            "layout": "vertical",
+            "toggle": 0,
+            "save_custom": 0,
+            "custom_choice_button_text": "Add new choice"
         }
     ],
     "location": [
@@ -78,5 +118,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1712760275
+    "modified": 1712876140
 }

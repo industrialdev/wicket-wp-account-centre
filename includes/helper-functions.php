@@ -83,3 +83,66 @@ function is_renewal_period($memberships, $renewal_period){
 
   return $memberships_to_renew;
 }
+
+function wicket_profile_widget_validation( $fields = [] ){
+
+  $person = wicket_current_person();
+  $results = [];
+
+
+  if($fields && $person){
+    foreach($fields as $field){
+      if($field == 'addresses'){
+        $results[] = wicket_validation_addresses( $person );
+      } else {
+        $results[] = (!is_null($person->$field)) ? true : '';
+      }
+    }
+  }
+
+  if(count(array_unique($results)) === 1){
+    return false;
+  }
+
+  return true;
+
+}
+
+function wicket_validation_addresses( $person ){
+
+  $addresses = [];
+  $country_name = '';
+  $city = '';
+  $address1 = '';
+  $zip_code = '';
+
+  if($person){
+    if($person->relationship('addresses')){
+      foreach ($person->relationship('addresses') as $relationship) {
+        foreach ($person->included() as $included) {
+          if ($relationship->id == $included['id']) {
+            $addresses[] = $included;
+          }
+        }
+      }
+    }
+    
+    if($addresses) {
+      foreach ($addresses as $address) {
+        if($address['attributes']['primary'] == 1){
+          $country_name = $address['attributes']["country_name"];
+          $city = $address['attributes']["city"];
+          $address1 = $address['attributes']["address1"];
+          $zip_code = ($country_name == 'United States' || $country_name == 'Canada') ? $address['attributes']["zip_code"] : 'pass';
+        }
+      }
+    }
+  }
+ 
+
+  if($country_name && $city && $address1 && $zip_code){
+    return true;
+  }
+
+  return false;
+}

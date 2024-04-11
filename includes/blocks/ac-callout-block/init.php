@@ -11,7 +11,9 @@ function init( $block = [] ) {
 	$attrs = get_block_wrapper_attributes();
 	$block_logic = get_field('block_logic');
 	$renewal_period = get_field('renewal_period');
+	$mandatory_fields = get_field('select_profile_mandatory_fields');
 	$memberships = wicket_get_active_memberships();
+
 	switch($block_logic){
 
 		case 'become_member': 
@@ -19,55 +21,55 @@ function init( $block = [] ) {
 			break;
 
 		case 'renewal': 
-			$membership_to_renew = is_renewal_period($memberships, $renewal_period);
+			$membership_to_renew = is_renewal_period( $memberships, $renewal_period );
 			$show_block = ($membership_to_renew) ? true : false;
 			break;
 		
 		case 'profile': 
+			$show_block = wicket_profile_widget_validation( $mandatory_fields );
 			break;
 		
 	}
 	
 
 	$my_block_template = array(
-			array(
-					'core/group',
-					array(
-							'layout' => array(
-									'type' => 'constrained',
-							),
+		array(
+				'core/group',
+				array(
+					'layout' => array(
+						'type' => 'constrained',
 					),
-					array(
+				),
+				array(
+						array(
+							'core/heading',
 							array(
-								'core/heading',
+								'level'		=> '2',
+								'align'   => 'left',
+								'placeholder' => 'This is a block title',
+							),
+							array(),
+						),
+						array(
+								'core/paragraph',
 								array(
-										'level'		=> '2',
-										'align'   => 'left',
-										'placeholder' => 'This is a block title',
+									'align'   => 'left',
+									'placeholder' => 'Paragraph content.',
 								),
 								array(),
-							),
-							array(
-									'core/paragraph',
-									array(
-											'align'   => 'left',
-											'placeholder' => 'Paragraph content.',
-									),
-									array(),
-							),
-							array(
-									'core/button',
-									array(
-											'align'   => 'left',
-											'url'   => '#',
-											'placeholder' => 'Button Label',
-									),
-									array(),
-							),
-					),
-			),
+						),
+						array(
+								'core/button',
+								array(
+									'align'   => 'left',
+									'url'   => '#',
+									'placeholder' => 'Button Label',
+								),
+								array(),
+						),
+				),
+		),
 	);
-	
 
 	$allowed_blocks = array(
 		'core/heading', 
