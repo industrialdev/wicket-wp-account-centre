@@ -71,11 +71,9 @@ if ( ! class_exists( 'Wicket_AC_Blocks' ) ) {
 		 * Load ACF field groups for blocks
 		 */
 		public function wicket_load_acf_field_group( $paths ) {
-			$blocks = $this->wicket_get_blocks();
-			foreach( $blocks as $block ) {
-				$paths[] = WICKET_ACC_PLUGIN_DIR . 'includes/blocks/' . $block;
-			}
-			return $paths;
+			$paths[] = WICKET_ACC_PLUGIN_DIR . 'includes/acf-json';
+
+    	return $paths; 
 		}
 
 		/**
