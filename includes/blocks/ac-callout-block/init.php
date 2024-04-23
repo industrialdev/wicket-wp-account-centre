@@ -7,12 +7,13 @@
 namespace Wicket_AC\Blocks\AC_Callout_Block;
 
 function init( $block = [] ) { 
-
-	$attrs = get_block_wrapper_attributes();
-	$block_logic = get_field('block_logic');
-	$renewal_period = get_field('renewal_period');
+	$block_logic 			= get_field('block_logic');
+	$renewal_period 	= get_field('renewal_period');
 	$mandatory_fields = get_field('select_profile_mandatory_fields');
-	$memberships = wicket_get_active_memberships();
+	$title       			= get_field( 'ac_callout_title' );
+	$description 			= get_field( 'ac_callout_description' );
+	$links       			= get_field( 'ac_callout_links' );
+	$memberships 			= wicket_get_active_memberships();
 
 	switch($block_logic){
 
@@ -30,63 +31,21 @@ function init( $block = [] ) {
 			break;
 		
 	}
+
+	$attrs = get_block_wrapper_attributes(array('class' => 'callout-' . $block_logic));
+
+	// Show the block if conditional logic is true OR if viewing in the block editor
+	if($show_block || is_admin()): 
+
+	echo '<div ' . $attrs . '>';
 	
+	get_component( 'card-call-out', [ 
+		'title'       => $title,
+		'description' => $description,
+		'links'       => $links,
+		'style'       => '',
+	] );
+	echo '</div>';
 
-	$my_block_template = array(
-		array(
-				'core/group',
-				array(
-					'layout' => array(
-						'type' => 'constrained',
-					),
-				),
-				array(
-						array(
-							'core/heading',
-							array(
-								'level'		=> '2',
-								'align'   => 'left',
-								'placeholder' => 'This is a block title',
-							),
-							array(),
-						),
-						array(
-								'core/paragraph',
-								array(
-									'align'   => 'left',
-									'placeholder' => 'Paragraph content.',
-								),
-								array(),
-						),
-						array(
-								'core/button',
-								array(
-									'align'   => 'left',
-									'url'   => '#',
-									'placeholder' => 'Button Label',
-								),
-								array(),
-						),
-				),
-		),
-	);
-
-	$allowed_blocks = array(
-		'core/heading', 
-		'core/paragraph',
-		'core/button'
-	);
-	?>
-
-		<?php
-		// Show the block if conditional logic is true OR if viewing in the block editor
-		if($show_block || is_admin()): ?>
-
-		<div <?php echo $attrs; ?>>
-			<InnerBlocks allowedBlocks="<?php echo esc_attr( wp_json_encode( $allowed_blocks ) ); ?>" template="<?php echo esc_attr( wp_json_encode( $my_block_template ) ); ?>" />
-		</div>
-
-		<?php endif; ?>
-	
-	<?php
+	endif; 
 }

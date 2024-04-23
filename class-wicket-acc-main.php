@@ -58,6 +58,8 @@ if ( ! class_exists( 'Wicket_Acc_Main' ) ) {
 			add_action( 'init', array( $this, 'wicket_acc_register_custom_post_type' ) );
 			// Add menu locations
 			add_action( 'after_setup_theme', array( $this, 'wicket_acc_custom_nav_menus' ) );
+			// Add Wicket Widgets Icons
+			add_action( 'wp_enqueue_scripts', array( $this, 'wicket_acc_styles' ) );
 
 			// Registration hook setting
 			register_activation_hook( __FILE__, array( $this, 'wicket_acc_install_settings' ) );
@@ -184,10 +186,14 @@ if ( ! class_exists( 'Wicket_Acc_Main' ) ) {
 
 			// This theme uses wp_nav_menu() in one location.
 			register_nav_menus( array(
-	            'wicket-acc-key-links' => esc_html__( 'Account Centre Links', 'wicket-acc' ),
+	      'wicket-acc-key-links' => esc_html__( 'Account Centre Links', 'wicket-acc' ),
 			) );
 
-		}	
+		}
+		
+		public function wicket_acc_styles() {
+			wp_enqueue_style( 'wicket-widgets-icons', "https://fonts.googleapis.com/icon?family=Material+Icons" );
+		}
 
 	} // end Class Wicket_Acc_Main_Class.
 	new Wicket_Acc_Main();

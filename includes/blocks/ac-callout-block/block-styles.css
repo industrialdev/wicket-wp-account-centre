@@ -15,3 +15,28 @@
 .wp-block-wicket-ac-ac-callout .wp-block-button__link {
   margin-bottom: 0;
 }
+
+div[class*="wp-block"].callout-become_member,
+div[class*="wp-block"].callout-renewal,
+div[class*="wp-block"].callout-profile {
+  padding: 0;
+  margin-bottom: 1.5rem;
+}
+
+.callout-become_member .component-card-call-out {
+  border: 1px solid #4AB2DE;
+  background-color: #C9E8F5;
+  border-radius: 12px;
+}
+
+.callout-renewal .component-card-call-out {
+  border: 1px solid #FFC107;
+  background-color: #FFECB5;
+  border-radius: 12px;
+}
+
+.callout-profile .component-card-call-out {
+  border: 1px solid #A1A1A1;
+  background-color: #E8E8E8;
+  border-radius: 12px;
+}

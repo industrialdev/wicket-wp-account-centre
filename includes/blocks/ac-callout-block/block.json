@@ -19,7 +19,7 @@
     "alignContent": false,
     "color": {
       "text": false,
-      "background": true,
+      "background": false,
       "link": false
     },
     "alignText": true,
