@@ -74,9 +74,6 @@ if ( ! class_exists( 'Wicket_Acc_Main' ) ) {
 				include_once WICKET_ACC_PLUGIN_DIR . 'front/class-wicket-acc-front.php';
 			}
 
-			// TODO:
-			// Check if WooCommerce and Wicket is installed to enable plugin.
-
 			// include acf blocks
 			include_once WICKET_ACC_PLUGIN_DIR . 'includes/wicket-acc-blocks.php';
 
