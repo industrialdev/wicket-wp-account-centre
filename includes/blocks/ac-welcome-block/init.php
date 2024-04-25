@@ -10,14 +10,12 @@ function init( $block = [] ) {
 
 		$current_user = wp_get_current_user();
 		$person = wicket_current_person();
-		$edit_profile_button = get_field('edit_profile_button');
+		$edit_profile = get_field('edit_profile_button');
+		$edit_profile_button = get_field('edit_profile_button_link');
 		$member_since = get_field('member_since');
 		$renewal_date = get_field('renewal_date');
 		$image_url = get_avatar_url($current_user->ID, ['size' => '300']);
 		$active_memberships = wicket_get_active_memberships();
-
-		// TODO: 
-		// add block styles so the callout can have different bg color, border, etc. 
 		?>
 
 		<div class="wicket-welcome-block bg-light-010 rounded-100">
@@ -57,8 +55,9 @@ function init( $block = [] ) {
 							}
 							?>
 					</div>
-					<?php if($edit_profile_button){ ?>
-						<a href="#" class="button wicket-button"><i class="fa-regular fa-pen-to-square icon-r" aria-hidden="true"></i><?php _e('Edit Profile', 'wicket'); ?></a>
+					<?php if($edit_profile && isset($edit_profile_button['url']) && isset($edit_profile_button['title']) ){
+					?>
+						<a href="<?php echo $edit_profile_button['url']; ?>" class="button wicket-button"><i class="fa-regular fa-pen-to-square icon-r" aria-hidden="true"></i><?php echo $edit_profile_button['title']; ?></a>
 					<?php } ?>
 				</div>
 			</div>

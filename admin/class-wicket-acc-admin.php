@@ -47,9 +47,11 @@ if ( ! class_exists( 'Wicket_Acc_Admin' ) ) {
 			wp_enqueue_style( 'wicket_acc_admin', plugins_url( '../assets/css/wicket_acc_admin.css', __FILE__ ), array(), '1.0' );
 
 			// Enqueue Select2 JS CSS
-			wp_enqueue_style( 'select2', plugins_url( '../assets/css/select2.css', __FILE__ ), array(), '1.0' );
-
-			wp_enqueue_script( 'select2', plugins_url( '../assets/js/select2.js', __FILE__ ), false, '1.0', array( 'jquery' ), '1.0', false );
+			$screen = get_current_screen();
+			if($screen->id == 'wicket_acc_page_customize-my-account-page-layout'){
+				wp_enqueue_style( 'select2', plugins_url( '../assets/css/select2.css', __FILE__ ), array(), '1.0' );
+				wp_enqueue_script( 'select2', plugins_url( '../assets/js/select2.js', __FILE__ ), false, '1.0', array( 'jquery' ), '1.0', false );
+			}
 
 			// Enqueue WP_MEDIA
 			wp_enqueue_media();

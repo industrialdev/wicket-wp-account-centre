@@ -24,7 +24,7 @@ if ( ! class_exists( 'Wicket_Acc_Front' ) ) {
 
 			add_filter( 'woocommerce_get_query_vars', array( $this, 'wicket_acc_custom_query_vars' ), 1 );
 
-			add_filter( 'woocommerce_account_menu_items', array( $this, 'wicket_acc_custom_my_account_menu_items' ) );
+			add_filter( 'woocommerce_account_menu_items', array( $this, 'wicket_acc_custom_my_account_menu_items' ), 1200 );
 
 			$wicket_acc_allow_pp = get_option( 'wicket_acc_set_pro_pic_fld' );
 

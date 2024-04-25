@@ -18,9 +18,33 @@
             },
             "message": "",
             "default_value": 0,
-            "ui": 0,
             "ui_on_text": "",
-            "ui_off_text": ""
+            "ui_off_text": "",
+            "ui": 1
+        },
+        {
+            "key": "field_662a9bd181d60",
+            "label": "Edit Profile Button",
+            "name": "edit_profile_button_link",
+            "aria-label": "",
+            "type": "link",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_66100d9eca323",
+                        "operator": "==",
+                        "value": "1"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array"
         },
         {
             "key": "field_6613e7dd4c413",
@@ -38,9 +62,9 @@
             },
             "message": "",
             "default_value": 0,
-            "ui": 0,
             "ui_on_text": "",
-            "ui_off_text": ""
+            "ui_off_text": "",
+            "ui": 1
         },
         {
             "key": "field_6613e7dc4c412",
@@ -58,9 +82,9 @@
             },
             "message": "",
             "default_value": 0,
-            "ui": 0,
             "ui_on_text": "",
-            "ui_off_text": ""
+            "ui_off_text": "",
+            "ui": 1
         }
     ],
     "location": [
@@ -81,5 +105,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1712580643
+    "modified": 1714068497
 }
