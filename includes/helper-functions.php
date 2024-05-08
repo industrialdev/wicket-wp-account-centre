@@ -38,6 +38,32 @@
 }
 
 
+function woo_get_active_memberships() {
+
+  $membership_summary = null;
+
+  $args = array(
+    'status' => array('active', 'complimentary'),
+  );
+
+  if (function_exists('wc_memberships_get_user_memberships')) {
+    $memberships = wc_memberships_get_user_memberships(get_current_user_id(), $args);
+
+    foreach($memberships as $membership){
+      $entry_summary = [
+        'starts_at' => $membership->get_start_date(),
+        'ends_at' => $membership->get_end_date(),
+        'name' => $membership->plan->name
+      ];
+
+      $membership_summary[] = $entry_summary;
+    }
+  }
+
+  return $membership_summary;
+}
+
+
 function wicket_get_active_memberships_relationship() {
   $person_type = '';
   $wicket_memberships = wicket_get_current_person_memberships();

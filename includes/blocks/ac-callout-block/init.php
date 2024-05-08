@@ -14,20 +14,23 @@ function init( $block = [] ) {
 	$description 			= get_field( 'ac_callout_description' );
 	$links       			= get_field( 'ac_callout_links' );
 	$memberships 			= wicket_get_active_memberships();
+	$woo_memberships	= woo_get_active_memberships();
 
 	switch($block_logic){
 
 		case 'become_member': 
-			$show_block = (!$memberships) ? true : false;
+			$show_block = (!$memberships && !$woo_memberships) ? true : false;
 			break;
 
 		case 'renewal': 
 			$membership_to_renew = is_renewal_period( $memberships, $renewal_period );
+			$membership_to_renew = (!$membership_to_renew) ? is_renewal_period( $woo_memberships, $renewal_period ) : $membership_to_renew;
 			$show_block = ($membership_to_renew) ? true : false;
 			break;
 		
 		case 'profile': 
 			$show_block = wicket_profile_widget_validation( $mandatory_fields );
+			$show_block = ($show_block && ($memberships || $woo_memberships)) ? true : false;
 			break;
 		
 	}
