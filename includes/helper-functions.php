@@ -172,12 +172,3 @@ function wicket_validation_addresses( $person ){
 
   return false;
 }
-
-
-
-
-add_filter( 'woocommerce_enqueue_styles', 'wicket_dequeue_styles' );
-function wicket_dequeue_styles( $enqueue_styles ) {
-	unset( $enqueue_styles['woocommerce-general'] );	// Remove the gloss
-	return $enqueue_styles;
-}
