@@ -43,14 +43,6 @@ register_setting(
 	'wicket_acc_nav_heading'
 );
 
-add_settings_field(
-	'wicket_acc_set_ep_hide_fld', // ID used to identify the field throughout the theme.
-	esc_html__( 'Hide Endpoints:', 'wicket-acc' ), // The label to the left of the option interface element.
-	'wicket_acc_set_ep_hide_fld_callback', // The name of the function responsible for rendering the option interface.
-	'wicket_acc_settings_page', // The page on which this option will be displayed.
-	'wicket_acc_settings_sec' // The name of the section to which this field belongs.
-);
-
 register_setting(
 	'wicket_acc_settings',
 	'wicket_acc_set_ep_hide_fld'
@@ -112,43 +104,6 @@ function wicket_acc_nav_heading_callback( $args ) {
 	<p class="description"><?php esc_html_e( 'Optional. Displays for Left & Right layouts.', 'wicket-acc' ); ?></p>
 <?php
 
-}
-
-/**
- * Section callback.
- */
-function wicket_acc_set_ep_hide_fld_callback() {
-
-	$wicket_acc_set_ep_hide_fld = (array) get_option( 'wicket_acc_set_ep_hide_fld' );
-
-	$items = array(
-		'dashboard'       => __( 'Dashboard', 'woocommerce' ),
-		'orders'          => __( 'Orders', 'woocommerce' ),
-		'downloads'       => __( 'Downloads', 'woocommerce' ),
-		'edit-address'    => __( 'Addresses', 'woocommerce' ),
-		'payment-methods' => __( 'Payment methods', 'woocommerce' ),
-		'edit-account'    => __( 'Account details', 'woocommerce' ),
-		'customer-logout' => __( 'Logout', 'woocommerce' ),
-	);
-	if(in_array('woocommerce-subscriptions/woocommerce-subscriptions.php', apply_filters('active_plugins', get_option('active_plugins')))) {
-	   $items['subscriptions'] = __( 'Subscriptions', 'woocommerce' );
-	}
-	if(in_array('woocommerce-memberships/woocommerce-memberships.php', apply_filters('active_plugins', get_option('active_plugins')))) {
-	   $items['members-area'] = __( 'Memberships', 'woocommerce' );
-	}
-
-	foreach ( $items as $key => $value ) {
-		?>
-		<input type="checkbox" name="wicket_acc_set_ep_hide_fld[]" value="<?php echo esc_attr( $key ); ?>" 
-			<?php
-			if ( in_array( esc_attr( $key ), $wicket_acc_set_ep_hide_fld, true ) ) {
-				echo 'checked'; }
-			?>
-		><?php echo esc_attr( $value ); ?> 
-		<br>
-
-		<?php
-	}
 }
 
 /**

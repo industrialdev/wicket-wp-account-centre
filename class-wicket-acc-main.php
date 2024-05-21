@@ -78,7 +78,7 @@ if ( ! class_exists( 'Wicket_Acc_Main' ) ) {
 			include_once WICKET_ACC_PLUGIN_DIR . 'includes/wicket-acc-blocks.php';
 
 			// include wicket and AC plugin helper functions
-			include_once WICKET_ACC_PLUGIN_DIR . 'includes/helper-functions.php';
+			include_once WICKET_ACC_PLUGIN_DIR . 'includes/wicket-acc-helper-functions.php';
 
 			//HOPS compatibility
 			add_action('before_woocommerce_init', array($this, 'wicket_acc_HPOS_Compatibility'));
@@ -183,7 +183,7 @@ if ( ! class_exists( 'Wicket_Acc_Main' ) ) {
 
 			// This theme uses wp_nav_menu() in one location.
 			register_nav_menus( array(
-	      'wicket-acc-key-links' => esc_html__( 'Account Centre Links', 'wicket-acc' ),
+	      'wicket-acc-nav' => esc_html__( 'Account Centre Menu', 'wicket-acc' ),
 			) );
 
 		}

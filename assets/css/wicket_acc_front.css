@@ -1,5 +1,7 @@
 .woocommerce-wicket--container {
 	width: 100%;
+	max-width: var(--wp--style--global--content-size);
+  margin-inline: auto;
 	margin-left: auto;
 	margin-right: auto;
 	display: flex;

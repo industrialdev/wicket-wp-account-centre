@@ -106,30 +106,18 @@ if ( ! class_exists( 'Wicket_Acc_Admin' ) ) {
 
 			$wicket_acc_slug = get_post_meta( intval( $post->ID ), 'wicket_acc_slug_fld', true );
 
-			$wicket_acc_icon = get_post_meta( intval( $post->ID ), 'wicket_acc_icon_fld', true );
-
 			$wicket_acc_user_role = get_post_meta( intval( $post->ID ), 'wicket_acc_user_role', true );
 
 			$wicket_acc_eptype = get_post_meta( intval( $post->ID ), 'wicket_acc_endpType_fld', true );
 
-			$wicket_acc_placement = get_post_meta( intval( $post->ID ), 'wicket_acc_placement_fld', true );
-
-			$wicket_acc_link = get_post_meta( intval( $post->ID ), 'wicket_acc_link_fld', true );
-
-			$wicket_acc_page = get_post_meta( intval( $post->ID ), 'wicket_acc_page_fld', true );
-
 			$wicket_acc_menu_title = get_post_meta( intval( $post->ID ), 'wicket_acc_menu_title', true );
-
-			$wicket_acc_admin_notes = get_post_meta( intval( $post->ID ), 'wicket_acc_admin_notes_fld', true );
 
 			if ( empty( $wicket_acc_slug ) ) {
 				$wicket_acc_slug = 'wicket_slug_' . $post->ID;
 			}
 
 			if ( empty( $wicket_acc_grp_mem ) ) {
-
 				$wicket_acc_grp_mem = array();
-
 			}
 
 			?>
@@ -183,39 +171,6 @@ if ( ! class_exists( 'Wicket_Acc_Admin' ) ) {
 							<input type="text" class="wicket_acc_input width-60" name="wicket_acc_slug_fld" id="wicket_acc_slug_fld" value="<?php echo esc_attr( $wicket_acc_slug ) ? esc_attr( $wicket_acc_slug ) : ''; ?>" />
 							<br>
 							<p><?php esc_html_e( 'Assign a unique slug to each endpoint. For Core Endpoints, the slug must match exactly.', 'wicket-acc' ); ?></p>
-						</td>
-
-					</tr>
-
-					<tr class="addify-option-field">
-
-						<th>
-
-							<div class="option-head">
-
-								<h3>
-
-									<?php esc_html_e( 'Icon', 'wicket-acc' ); ?>
-
-								</h3>
-
-							</div>
-
-						</th>
-
-						<td>
-
-							<select name="wicket_acc_icon_fld" class="width-60" id="wicket_acc_icon_fld" >
-
-								<option value=''><?php echo esc_html__( 'Choose Icon', 'wicket-acc' ); ?></option>
-
-								<?php
-								include_once 'wicket-icon-options.php';
-								?>
-
-							</select>
-							<p> <?php echo esc_html__('The icons preview may not work for devices in dropdown. Please select any to see preview. Most of these fonts are available.', 'wicket-acc'); ?> 
-							<a href="https://fontawesome.com/icons?d=gallery&m=free"><?php echo esc_html__('here', 'wicket-acc'); ?></a>
 						</td>
 
 					</tr>
@@ -279,237 +234,6 @@ if ( ! class_exists( 'Wicket_Acc_Admin' ) ) {
 
 							</tr>
 
-							<tr class="addify-option-field">
-
-								<th>
-
-									<div class="option-head">
-
-										<h3>
-
-											<?php esc_html_e( 'Endpoint Type', 'wicket-acc' ); ?>
-
-										</h3>
-
-									</div>
-
-								</th>
-
-								<td>
-
-									<select name="wicket_acc_endpType_fld" class="width-60" id="wicket_acc_endpType_fld">
-										<option value="sendpoint" 
-										<?php
-										if ( 'sendpoint' === esc_attr( $wicket_acc_eptype ) ) {
-											echo 'selected'; }
-										?>
-											>
-											<?php esc_html_e( 'Single Endpoint', 'wicket-acc' ); ?>
-										</option>
-
-										<option value="cendpoint" 
-										<?php
-										if ( 'cendpoint' === esc_attr( $wicket_acc_eptype ) ) {
-											echo 'selected'; }
-										?>
-											>
-											<?php esc_html_e( 'Core Endpoint', 'wicket-acc' ); ?>
-										</option>
-
-										<option value="pendpoint" 
-										<?php
-										if ( 'pendpoint' === esc_attr( $wicket_acc_eptype ) ) {
-											echo 'selected'; }
-										?>
-											>
-											<?php esc_html_e( 'Page', 'wicket-acc' ); ?>
-										</option>
-										<option value="lendpoint" 
-										<?php
-										if ( 'lendpoint' === esc_attr( $wicket_acc_eptype ) ) {
-											echo 'selected'; }
-										?>
-											>
-											<?php esc_html_e( 'Link', 'wicket-acc' ); ?>
-
-										</option>group_endpoint
-
-										<option value="group_endpoint" 
-										<?php
-										if ( 'group_endpoint' === esc_attr( $wicket_acc_eptype ) ) {
-											echo 'selected'; }
-										?>
-											>
-											<?php esc_html_e( 'Group', 'wicket-acc' ); ?>
-										</option>
-									</select>
-								</td>
-							</tr>
-							
-							<tr class="addify-option-field wicket_acc_group_child_filed">
-								<th>
-									<div class="option-head">
-										<h3>
-											<?php esc_html_e( 'Add Custom Endpoints to Group', 'wicket-acc' ); ?>
-										</h3>
-									</div>
-								</th>
-								<td>
-									<select multiple='multiple' class="wicket_acc_group_child width-60" name="wicket_acc_group_child[]" id="wicket_acc_group_child">
-										<?php
-										$args           = array(
-											'numberposts' => -1,
-											'post_type'   => 'wicket_acc',
-										);
-										$selected_child = (array) json_decode( get_post_meta( $post->ID, 'wicket_acc_group_child', true ) );
-
-										$all_end_points = get_posts( $args );
-
-										foreach ( $all_end_points as $endpoint ) {
-											$endpoint_id = $endpoint->ID;
-
-											$end_point_type = get_post_meta( $endpoint_id, 'wicket_acc_endpType_fld', true );
-
-											if ( 'group_endpoint' === $end_point_type ) {
-												continue;
-											}
-											?>
-											<option  value="<?php echo esc_attr( $endpoint_id ); ?>" 
-												<?php
-												if ( in_array( (string) $endpoint_id, $selected_child, true ) ) {
-													echo 'selected';
-												}
-												?>
-												>
-												<?php echo esc_attr( $endpoint->post_title ); ?>
-											</option>
-											<?php
-										}
-										?>
-									</select>
-								</td>
-							</tr>
-							<tr class="addify-option-field wicket_acc_group_child_filed">
-								<th>
-									<div class="option-head">
-										<h3>
-											<?php esc_html_e( 'Add Default Endpoints to Group', 'wicket-acc' ); ?>
-										</h3>
-									</div>
-								</th>
-								<td>
-									<?php
-
-									$wicket_acc_group_default_filed = get_post_meta( intval( $post->ID ), 'wicket_acc_group_default_filed', true );
-
-									$wicket_acc_group_default_filed = (array) json_decode( $wicket_acc_group_default_filed );
-
-									$items = array(
-										'dashboard'       => __( 'Dashboard', 'woocommerce' ),
-										'orders'          => __( 'Orders', 'woocommerce' ),
-										'downloads'       => __( 'Downloads', 'woocommerce' ),
-										'edit-address'    => __( 'Addresses', 'woocommerce' ),
-										'payment-methods' => __( 'Payment methods', 'woocommerce' ),
-										'edit-account'    => __( 'Account details', 'woocommerce' ),
-										'customer-logout' => __( 'Logout', 'woocommerce' ),
-									);
-									if(in_array('woocommerce-subscriptions/woocommerce-subscriptions.php', apply_filters('active_plugins', get_option('active_plugins')))) {
-										$items['subscriptions'] = __( 'Subscriptions', 'woocommerce' );
-									}
-									if(in_array('woocommerce-memberships/woocommerce-memberships.php', apply_filters('active_plugins', get_option('active_plugins')))) {
-									   $items['members-area'] = __( 'Memberships', 'woocommerce' );
-									}
-
-									foreach ( $items as $key => $value ) {
-										?>
-										<input type="checkbox" name="wicket_acc_group_default_filed[]" value="<?php echo esc_attr( $key ); ?>" 
-										<?php
-										if ( in_array( esc_attr( $key ), $wicket_acc_group_default_filed, true ) ) {
-											echo 'checked';
-										}
-										?>
-										> 
-										<?php echo esc_attr( $value ); ?> 
-										<br>
-										<?php
-									}
-									?>
-								</td>
-							</tr>
-
-							<tr class="addify-option-field link_fld">
-								<th>
-									<div class="option-head">
-										<h3>
-											<?php esc_html_e( 'Link', 'wicket-acc' ); ?>
-										</h3>	
-									</div>
-								</th>
-								<td>
-									<input type="text" class="wicket_acc_input width-60" name="wicket_acc_link_fld" id="wicket_acc_link_fld" value="<?php echo esc_url( $wicket_acc_link ); ?>">
-								</td>
-							</tr>
-							<tr class="addify-option-field page_fld">
-								<th>
-									<div class="option-head">
-										<h3>
-											<?php esc_html_e( 'Select Page', 'wicket-acc' ); ?>
-										</h3>
-									</div>	
-								</th>
-								<td>
-									<?php
-									$pages = get_pages();
-									?>
-									<select name="wicket_acc_page_fld" class="width-60" id="wicket_acc_page_fld" >
-										<option value=""> Select Page</option>
-										<?php
-										foreach ( (array) $pages as $page ) {
-											?>
-											<option value="<?php echo esc_attr( $page->ID ); ?>" 
-												<?php
-												if ( $page->ID === (int) $wicket_acc_page ) {
-													echo 'selected';
-												}
-												?>
-												> 
-												<?php echo esc_attr( $page->post_title ); ?> </option>
-												<?php
-										}
-										?>
-										</select>
-
-									</td>
-
-								</tr>
-
-								<tr class="addify-option-field admin_notes_fld">
-									<th>
-										<div class="option-head">
-											<h3>
-												<?php esc_html_e( 'Admin Notes', 'wicket-acc' ); ?>
-											</h3>
-										</div>
-									</th>
-									<td>
-										<?php
-										$settings = array(
-											'wpautop'          => false,
-											'media_buttons'    => false,
-											'textarea_name'    => 'wicket_acc_admin_notes_fld',
-											'tinymce'          => true,
-											'textarea_rows'    => 10,
-											'quicktags'        => true,
-											'drag_drop_upload' => false,
-										);
-										wp_editor( $wicket_acc_admin_notes, 'wicket_acc_admin_notes_fld', $settings );
-										?>
-										<br>
-										<p class="description"><?php esc_html_e( 'For admin usage only and does not display on front end. Please do not include sensitive information.', 'wicket-acc' ); ?></p>
-									</td>
-
-								</tr>						
-
 							</table>
 
 						</div>
@@ -550,7 +274,6 @@ if ( ! class_exists( 'Wicket_Acc_Admin' ) ) {
 					<a href="?post_type=wicket_acc&page=customize-my-account-page-layout&tab=endpoints_settings" class="nav-tab  <?php echo esc_attr( $active_tab ) === 'endpoints_settings' ? ' nav-tab-active' : ''; ?>" > <?php esc_html_e( 'Account Centre Settings', 'wicket-acc' ); ?> </a>
 
 					<a href="?post_type=wicket_acc&page=customize-my-account-page-layout&tab=profile_img_settings" class="nav-tab  <?php echo esc_attr( $active_tab ) === 'profile_img_settings' ? ' nav-tab-active' : ''; ?>" > <?php esc_html_e( 'Profile Picture', 'wicket-acc' ); ?> </a>
-					<a href="?post_type=wicket_acc&page=customize-my-account-page-layout&tab=custom_sorting" class="nav-tab  <?php echo esc_attr( $active_tab ) === 'custom_sorting' ? ' nav-tab-active' : ''; ?>" > <?php esc_html_e( 'Menu Sorting', 'wicket-acc' ); ?> </a>
 
 				</h2>
 
@@ -570,15 +293,7 @@ if ( ! class_exists( 'Wicket_Acc_Admin' ) ) {
 
 						do_settings_sections( 'wicket_acc_pro_pic_settings_page' );
 
-					} elseif ( 'custom_sorting' === $active_tab ) {
-
-						settings_fields( 'wicket_acc_pro_sort_enpoints' );
-
-						do_settings_sections( 'wicket_acc_pro_sort_enpoints_section' );
-
-						include_once WICKET_ACC_PLUGIN_DIR . 'admin/templates/sort-endpoints.php';
-
-					}
+					} 
 
 					submit_button( esc_html__( 'Save Settings', 'wicket-acc' ), 'primary', 'wicket_acc_save_settings_btn' );
 
@@ -599,7 +314,6 @@ if ( ! class_exists( 'Wicket_Acc_Admin' ) ) {
 
 			include_once WICKET_ACC_PLUGIN_DIR . 'admin/settings/general-settings.php';
 			include_once WICKET_ACC_PLUGIN_DIR . 'admin/settings/profile-picture.php';
-			include_once WICKET_ACC_PLUGIN_DIR . 'admin/settings/sorting.php';
 
 		}
 
@@ -629,16 +343,12 @@ if ( ! class_exists( 'Wicket_Acc_Admin' ) ) {
 				return;
 			}
 
+			update_post_meta( $post_id, 'wicket_acc_endpType_fld', sanitize_meta( '', wp_unslash( 'cendpoint' ), '' ) );
+
 
 			if ( isset( $_POST['wicket_acc_slug_fld'] ) ) {
 
 				update_post_meta( $post_id, 'wicket_acc_slug_fld', sanitize_meta( '', wp_unslash( $_POST['wicket_acc_slug_fld'] ), '' ) );
-
-			}
-
-			if ( isset( $_POST['wicket_acc_icon_fld'] ) ) {
-
-				update_post_meta( $post_id, 'wicket_acc_icon_fld', sanitize_meta( '', wp_unslash( $_POST['wicket_acc_icon_fld'] ), '' ) );
 
 			}
 
@@ -649,22 +359,6 @@ if ( ! class_exists( 'Wicket_Acc_Admin' ) ) {
 			} else {
 
 				update_post_meta( $post_id, 'wicket_acc_user_role', array() );
-			}
-
-			if ( isset( $_POST['wicket_acc_endpType_fld'] ) ) {
-				update_post_meta( $post_id, 'wicket_acc_endpType_fld', sanitize_meta( '', wp_unslash( $_POST['wicket_acc_endpType_fld'] ), '' ) );
-			}
-
-			if ( isset( $_POST['wicket_acc_admin_notes_fld'] ) ) {
-				update_post_meta( $post_id, 'wicket_acc_admin_notes_fld', sanitize_meta( '', wp_unslash( $_POST['wicket_acc_admin_notes_fld'] ), '' ) );
-			}
-
-			if ( isset( $_POST['wicket_acc_link_fld'] ) ) {
-				update_post_meta( $post_id, 'wicket_acc_link_fld', sanitize_meta( '', wp_unslash( $_POST['wicket_acc_link_fld'] ), '' ) );
-			}
-
-			if ( isset( $_POST['wicket_acc_page_fld'] ) ) {
-				update_post_meta( $post_id, 'wicket_acc_page_fld', sanitize_meta( '', wp_unslash( $_POST['wicket_acc_page_fld'] ), '' ) );
 			}
 
 			if ( isset( $_POST['wicket_acc_menu_title'] ) ) {
@@ -733,20 +427,8 @@ if ( ! class_exists( 'Wicket_Acc_Admin' ) ) {
 			switch( $column ) {
 				case 'ep_type' :
 		             
-					if ( 'sendpoint' === esc_attr( $wicket_acc_eptype ) ) {
-					echo esc_html_e( 'Single Endpoint', 'wicket-acc' ); }
-
 					if ( 'cendpoint' === esc_attr( $wicket_acc_eptype ) ) {
-					echo esc_html_e( 'Core Endpoint', 'wicket-acc' ); }
-
-					if ( 'pendpoint' === esc_attr( $wicket_acc_eptype ) ) {
-					echo esc_html_e( 'Page', 'wicket-acc' ); }
-
-					if ( 'lendpoint' === esc_attr( $wicket_acc_eptype ) ) {
-					echo esc_html_e( 'Link', 'wicket-acc' ); }
-
-					if ( 'group_endpoint' === esc_attr( $wicket_acc_eptype ) ) {
-					echo esc_html_e( 'Group', 'wicket-acc' ); }
+						echo esc_html_e( 'Core Endpoint', 'wicket-acc' ); }
 										
 				break;
 

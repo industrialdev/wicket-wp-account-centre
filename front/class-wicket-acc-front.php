@@ -369,59 +369,7 @@ if ( ! class_exists( 'Wicket_Acc_Front' ) ) {
 
 			$wicket_acc_ep_type = get_post_meta( intval( $ep_id ), 'wicket_acc_endpType_fld', true );
 
-			$wicket_acc_page = get_post_meta( intval( $ep_id ), 'wicket_acc_page_fld', true );
-
-			$wicket_acc_link = get_post_meta( intval( $ep_id ), 'wicket_acc_link_fld', true );
-
-			if ( 'sendpoint' === esc_attr( $wicket_acc_ep_type ) ) {
-
-				//echo '<h2 class="wicket_acc_page_title">'.wp_kses_post( apply_filters( 'the_content', get_post_meta( intval( $ep_id ), 'wicket_acc_menu_title', true ) ) ).'</h2>';
-				
-				$post = get_post($ep_id); // specific post
-				$the_content = apply_filters('the_content', $post->post_content);
-				if ( !empty($the_content) ) {
-				  echo $the_content;
-				}
-
-				return;
-
-			} elseif ( 'pendpoint' === $wicket_acc_ep_type ) {
-
-				$redirect = get_permalink( $wicket_acc_page );
-
-				if ( wp_http_validate_url( $redirect ) ) {
-					if ( headers_sent() ) {
-						echo '<script>jQuery(document).ready(function(){ 
-							window.location.href = "' . esc_url( $redirect ) . '"
-						});</script>';
-					} else {
-						wp_safe_redirect( esc_url( $redirect ) );
-						exit;
-					}
-				} else {
-					wc_add_notice( esc_html__( 'The page URL is not valid', 'wicket-acc' ), $notice_type = 'error' );
-					return;
-				}
-			} elseif ( 'lendpoint' === $wicket_acc_ep_type ) {
-
-				$redirect = esc_url( $wicket_acc_link );
-
-				if ( wp_http_validate_url( $redirect ) ) {
-					if ( headers_sent() ) {
-						echo '<script>jQuery(document).ready(function(){ 
-							window.location.href = "' . esc_url( $redirect ) . '"
-						});</script>';
-					} else {
-						wp_safe_redirect( esc_url( $redirect ) );
-						exit;
-					}
-				} else {
-					wc_add_notice( esc_html__( 'The page URL is not valid', 'wicket-acc' ), $notice_type = 'error' );
-					return;
-				}
-			} elseif ( 'cendpoint' === esc_attr( $wicket_acc_ep_type ) ) {
-
-				//echo '<h2 class="wicket_acc_page_title">'.wp_kses_post( apply_filters( 'the_content', get_post_meta( intval( $ep_id ), 'wicket_acc_menu_title', true ) ) ).'</h2>';
+			if ( 'cendpoint' === esc_attr( $wicket_acc_ep_type ) ) {
 
 				$post = get_post($ep_id); // specific post
 				$the_content = apply_filters('the_content', $post->post_content);
