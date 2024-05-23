@@ -190,6 +190,7 @@ if ( ! class_exists( 'Wicket_Acc_Main' ) ) {
 		
 		public function wicket_acc_styles() {
 			wp_enqueue_style( 'wicket-widgets-icons', "https://fonts.googleapis.com/icon?family=Material+Icons" );
+			wp_enqueue_style( 'wicket-widgets-datepicker', plugins_url('/assets/css/react-datepicker.css', __FILE__ ));
 		}
 
 	} // end Class Wicket_Acc_Main_Class.
