@@ -21,48 +21,48 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $wp;
 
-$child_endpoints        = array();
-$default_endpoints      = array();
-$account_menu_item_slug = array();
+
 $nav_heading 			= get_option( 'wicket_acc_nav_heading' );
 $nav_layout				= get_option( 'wicket_acc_set_ep_as_fld' );
-
-foreach ( wc_get_account_menu_items() as $endpoint => $label ) {
-	$account_menu_item_slug[] = $endpoint;
-}
-
-$args         = array(
-	'numberposts' => -1,
-	'post_type'   => 'wicket_acc',
-	'post_status' => 'publish',
-);
-$wicket_acc_eps = get_posts( $args );
-
 do_action( 'woocommerce_before_account_navigation' );
 ?>
 
-<nav class="myaccount-nav">
-	<?php do_action( 'woocommerce_before_account_navigation_ul' ); ?>
+<?php do_action( 'woocommerce_before_account_navigation_ul' ); ?>
 
-	<?php if ($nav_heading && ($nav_layout !== 'tab') ) :
-		$myaccount_page = get_option( 'woocommerce_myaccount_page_id' );
-	?>
-		<h2 class="myaccount-nav-heading"><a href="<?php echo get_permalink($myaccount_page); ?>"><?php echo $nav_heading; ?></a></h2>
-	<?php endif; ?>
-
-	<?php
-	if (has_nav_menu('wicket-acc-nav')) : ?>
-		<?php
-			wp_nav_menu(array(
-				'container' => false,
-				'theme_location' => 'wicket-acc-nav',
-				'depth' => 3,
-				'menu_id' => 'wicket-acc-menu',
-				'menu_class' => 'wicket-acc-menu',
-				));
+<?php if (has_nav_menu('wicket-acc-nav')) : ?>
+	<div class="hidden lg:block myaccount-nav">
+		<?php if ($nav_heading) :
+			$myaccount_page = get_option( 'woocommerce_myaccount_page_id' );
 		?>
-	<?php endif; ?>
+		<h2 class="myaccount-nav-heading"><a href="<?php echo get_permalink($myaccount_page); ?>"><?php echo $nav_heading; ?></a></h2>
+		<?php endif; ?>
+			<?php
+				wp_nav_menu(array(
+					'container' => false,
+					'theme_location' => 'wicket-acc-nav',
+					'depth' => 3,
+					'menu_id' => 'wicket-acc-menu',
+					'menu_class' => 'wicket-acc-menu',
+					'walker' => new wicket_acc_menu_walker()
+					));
+			?>
+	</div>
 
-</nav>
+	<div class="col-lg-4 lg:hidden myaccount-nav myaccount-nav-mobile">
+		<div id="dropdown-my-account-menu" class="dropdown__content dropdown__content--nav" aria-labelledby="dropdown-control-my-account-menu" aria-expanded="false" role="region" style="display:none">
+			<?php
+				wp_nav_menu(array(
+					'container' => false,
+					'theme_location' => 'wicket-acc-nav',
+					'depth' => 3,
+					'menu_id' => 'wicket-acc-menu-mobile',
+					'menu_class' => 'wicket-acc-menu-mobile',
+					'walker' => new wicket_acc_menu_mobile_walker()
+					));
+			?>
+		</div>
+		<a href="#" id="dropdown-control-my-account-menu" class="dropdown__button dropdown__toggle dropdown__toggle--nav" aria-controls="dropdown-my-account-menu" aria-expanded="false"><?php echo $nav_heading; ?> <i class="fal fa-plus" aria-hidden="true"></i></a>
+	</div>
+<?php endif; ?>
 
 <?php do_action( 'woocommerce_after_account_navigation' ); ?>

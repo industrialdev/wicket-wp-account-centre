@@ -172,3 +172,137 @@ function wicket_validation_addresses( $person ){
 
   return false;
 }
+
+class wicket_acc_menu_walker extends Walker_Nav_Menu {
+  private $current_item;
+  private $submenu_order = 0;
+  private $classes_end_level;
+
+  function start_el(&$output, $item, $depth=0, $args=array(), $id = 0) {
+    $object = $item->object;
+    $type = $item->type;
+    $title = $item->title;
+    $permalink = $item->url;
+    $classes = $item->classes;
+    $target = $item->target;
+    $this->current_item = $item;
+
+   $output .= "<li class='" .  implode(" ", $classes) . "'>";
+
+    // if item has children, replace a link for a button toggle
+    if( in_array('menu-item-has-children', $classes) && $depth == 0) {
+      $this->submenu_order = 0;
+      $output .= "<button id='dropdown-{$item->ID}-control' class='nav__menu-link dropdown__toggle--menu' aria-expanded='false' aria-controls='dropdown-{$item->ID}'>";
+      $output .= $title;
+    }
+    elseif (isset($permalink)) {
+      if($target == '_blank') {
+        $output .= '<a  target="_blank" rel="noopener" href="' . $permalink . '">' . $title;
+        $output .= '<i class="fas fa-external-link" aria-hidden="true"></i> <span class="webaim-hidden">Opens in a new window</span>';
+      } else {
+        $output .= '<a href="' . $permalink . '">' . $title;
+      }
+    }
+
+    // close button or <a> item
+    if( in_array('menu-item-has-children', $classes) && $depth == 0 ) {
+      $output .= '<i class="fa-solid fa-caret-down" aria-hidden="true"></i> </button>';
+    } elseif (isset($permalink)) {
+      $output .= '</a>';
+    }
+  }
+
+  function start_lvl( &$output, $depth = 0, $args = array() ) {
+    $current_item_id = $this->current_item->ID;
+    $current_item_classes = $this->current_item->classes;
+    $this->classes_end_level = $current_item_classes;
+    $indent = str_repeat("\t", $depth);
+
+    // if item has children, replace ul sub-menu with dropdown
+    if( in_array('menu-item-has-children', $current_item_classes) && $depth == 0 ) {
+      $output .= "\n$indent<div id='dropdown-{$current_item_id}' class='nav__submenu' aria-expanded='false' aria-labelledby='dropdown-{$current_item_id}-control' role='region'><ul class='sub-menu'>\n";
+    }
+    else {
+      $output .= "\n$indent<ul class='sub-menu'>\n";
+    }
+  }
+
+  function end_lvl( &$output, $depth = 0, $args = array() ) {
+    $current_item_classes = $this->classes_end_level;
+    $indent = str_repeat("\t", $depth);
+    if( in_array('menu-item-has-children', $current_item_classes) && $depth == 0 ) {
+      $output .= "$indent</ul></div>\n";
+    }
+    else {
+      $output .= "$indent</ul>\n";
+    }
+  }
+
+}
+
+class wicket_acc_menu_mobile_walker extends Walker_Nav_Menu {
+  private $current_item;
+  private $submenu_order = 0;
+  private $classes_end_level;
+
+  function start_el(&$output, $item, $depth=0, $args=array(), $id = 0) {
+    $object = $item->object;
+    $type = $item->type;
+    $title = $item->title;
+    $permalink = $item->url;
+    $classes = $item->classes;
+    $target = $item->target;
+    $this->current_item = $item;
+
+   $output .= "<li class='" .  implode(" ", $classes) . "'>";
+
+    // if item has children, replace a link for a button toggle
+    if( in_array('menu-item-has-children', $classes) && $depth == 0) {
+      $this->submenu_order = 0;
+      $output .= "<button id='mobile-dropdown-{$item->ID}-control' class='nav__menu-link dropdown__toggle--menu' aria-expanded='false' aria-controls='mobile-dropdown-{$item->ID}'>";
+      $output .= $title;
+    }
+    elseif (isset($permalink)) {
+      if($target == '_blank') {
+        $output .= '<a  target="_blank" rel="noopener" href="' . $permalink . '">' . $title;
+        $output .= '<i class="fas fa-external-link" aria-hidden="true"></i> <span class="webaim-hidden">Opens in a new window</span>';
+      } else {
+        $output .= '<a href="' . $permalink . '">' . $title;
+      }
+    }
+
+    // close button or <a> item
+    if( in_array('menu-item-has-children', $classes) && $depth == 0 ) {
+      $output .= '<i class="fa-solid fa-caret-down" aria-hidden="true"></i> </button>';
+    } elseif (isset($permalink)) {
+      $output .= '</a>';
+    }
+  }
+
+  function start_lvl( &$output, $depth = 0, $args = array() ) {
+    $current_item_id = $this->current_item->ID;
+    $current_item_classes = $this->current_item->classes;
+    $this->classes_end_level = $current_item_classes;
+    $indent = str_repeat("\t", $depth);
+
+    // if item has children, replace ul sub-menu with dropdown
+    if( in_array('menu-item-has-children', $current_item_classes) && $depth == 0 ) {
+      $output .= "\n$indent<div id='mobile-dropdown-{$current_item_id}' class='nav__submenu' aria-expanded='false' aria-labelledby='mobile-dropdown-{$current_item_id}-control' role='region'><ul class='sub-menu'>\n";
+    }
+    else {
+      $output .= "\n$indent<ul class='sub-menu'>\n";
+    }
+  }
+
+  function end_lvl( &$output, $depth = 0, $args = array() ) {
+    $current_item_classes = $this->classes_end_level;
+    $indent = str_repeat("\t", $depth);
+    if( in_array('menu-item-has-children', $current_item_classes) && $depth == 0 ) {
+      $output .= "$indent</ul></div>\n";
+    }
+    else {
+      $output .= "$indent</ul>\n";
+    }
+  }
+
+}
