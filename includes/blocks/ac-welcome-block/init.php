@@ -49,10 +49,10 @@ function init( $block = [] ) {
 										}
 										echo '<p class="mt-2 mb-1 wicket-welcome-member-active">' . __('Active Member', 'wicket') . '</p>';
 									echo '</div>';
-									if($member_since){
+									if($member_since && !empty( $membership['starts_at'] ) && strtotime( $membership['starts_at'] )){
 										echo '<p class="mb-1 wicket-welcome-member-since">' . __('Member Since:', 'wicket') . ' ' . date('F j, Y', strtotime($membership['starts_at'])) . '</p>';
 									}
-									if($renewal_date){
+									if($renewal_date && !empty( $membership['ends_at'] ) && strtotime( $membership['ends_at'] )){
 										echo '<p class="mb-1 wicket-welcome-renewal">' . __('Renewal Date:', 'wicket') . ' ' . date('F j, Y', strtotime($membership['ends_at'])) . '</p>';
 									}
 									echo '</div>';
