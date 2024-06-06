@@ -34,6 +34,11 @@ function init( $block = [] ) {
 							<?php 
 							if($active_memberships){
 								foreach($active_memberships as $membership){
+                  if( function_exists('wicket_ac_welcome_filter_memberships') ) {
+                    if( wicket_ac_welcome_filter_memberships( $membership ) ) {
+                      continue;
+                    }
+                  }              
 									echo '<div class="mt-4 wicket-welcome-memberships">';
 
 									echo '<div class="mb-4">';
