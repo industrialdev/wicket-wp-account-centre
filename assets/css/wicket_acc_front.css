@@ -188,7 +188,8 @@ li ul{
 	border-bottom: 1px solid #e0e0e0;
 }
 
-.myaccount-nav ul li.nav-selected > a:first-of-type{
+.myaccount-nav ul li.nav-selected > a:first-of-type,
+.myaccount-nav .menu-item.current-menu-item > a:first-of-type{
 	text-decoration: none !important;
 	font-size: 14px;
 	line-height: 24px;
