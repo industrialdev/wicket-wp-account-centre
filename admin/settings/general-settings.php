@@ -43,6 +43,19 @@ register_setting(
 	'wicket_acc_nav_heading'
 );
 
+add_settings_field(
+	'wicket_acc_nav_heading_two', // ID used to identify the field throughout the theme.
+	esc_html__( 'Navigation Heading:', 'wicket-acc' ), // The label to the left of the option interface element.
+	'wicket_acc_nav_heading_callback_two', // The name of the function responsible for rendering the option interface.
+	'wicket_acc_settings_page', // The page on which this option will be displayed.
+	'wicket_acc_settings_sec' // The name of the section to which this field belongs.
+);
+
+register_setting(
+	'wicket_acc_settings',
+	'wicket_acc_nav_heading_two'
+);
+
 register_setting(
 	'wicket_acc_settings',
 	'wicket_acc_set_ep_hide_fld'
@@ -100,6 +113,23 @@ function wicket_acc_nav_heading_callback( $args ) {
 	$value = empty( $value ) ? null : $value;
 	?>
 	<input type="text" name="wicket_acc_nav_heading" class="width-60" value="<?php echo wp_kses_post( $value ); ?>">
+
+	<p class="description"><?php esc_html_e( 'Optional. Displays for Left & Right layouts.', 'wicket-acc' ); ?></p>
+<?php
+
+}
+
+/**
+ * Section callback.
+ *
+ * @param array $args Arguments.
+ */
+function wicket_acc_nav_heading_callback_two( $args ) {
+
+	$value = get_option( 'wicket_acc_nav_heading_two' );
+	$value = empty( $value ) ? null : $value;
+	?>
+	<input type="text" name="wicket_acc_nav_heading_two" class="width-60" value="<?php echo wp_kses_post( $value ); ?>">
 
 	<p class="description"><?php esc_html_e( 'Optional. Displays for Left & Right layouts.', 'wicket-acc' ); ?></p>
 <?php

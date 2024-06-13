@@ -1,5 +1,7 @@
 *** Wicket Account Centre (previously My Account Page Editor) Change log ***
 
+2024-06-13 - version 1.0.9
+* Add - Secondary menu area
 
 2023-09-02 - version 1.x.x
 * Forked - Forked plugin for Wicket Account Centre.

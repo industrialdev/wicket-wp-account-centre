@@ -186,6 +186,11 @@ if ( ! class_exists( 'Wicket_Acc_Main' ) ) {
 	      'wicket-acc-nav' => esc_html__( 'Account Centre Menu', 'wicket-acc' ),
 			) );
 
+      // This theme offers a secondary wp_nav_menu()
+			register_nav_menus( array(
+	      'wicket-acc-nav-two' => esc_html__( 'Account Centre Secondary Menu', 'wicket-acc' ),
+			) );
+
 		}
 		
 		public function wicket_acc_styles() {
