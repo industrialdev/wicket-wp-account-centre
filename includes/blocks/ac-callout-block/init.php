@@ -23,9 +23,50 @@ function init( $block = [] ) {
 			break;
 
 		case 'renewal': 
-			$membership_to_renew = is_renewal_period( $memberships, $renewal_period );
-			$membership_to_renew = (!$membership_to_renew) ? is_renewal_period( $woo_memberships, $renewal_period ) : $membership_to_renew;
-			$show_block = ($membership_to_renew) ? true : false;
+      if( ! class_exists( '\Wicket_Memberships\Wicket_Memberships' ) ) {
+        $membership_to_renew = is_renewal_period( $memberships, $renewal_period );
+        $membership_to_renew = (!$membership_to_renew) ? is_renewal_period( $woo_memberships, $renewal_period ) : $membership_to_renew;
+        $show_block = ($membership_to_renew) ? true : false;  
+      } else {
+        $membership_renewals = (new \Wicket_Memberships\Membership_Controller)->get_membership_callouts();
+        #echo '<pre>'; var_dump( $membership_renewals );exit;
+        foreach( $membership_renewals as $renewal_type => $renewal_data ) {
+          foreach( $renewal_data as $membership ) {
+            unset($links);
+            #echo '<pre>'; var_dump( $membership ); echo '</pre>';
+            if( !empty( $membership['membership']['next_tier'] ) ) {
+              #echo '<pre>'; var_dump( $membership['membership']['next_tier'] ); echo '</pre>';
+              $links = wicket_ac_memberships_get_product_link_data( $membership );
+            } else if ( !empty( $membership['membership']['form_page'] ) ) {
+              #echo '<pre>'; var_dump( $membership['membership']['form_page'] ); echo '</pre>';
+              $links = wicket_ac_memberships_get_page_link_data( $membership );
+            }
+            $title = $membership['callout']['header'];
+            $description = $membership['callout']['content'];
+            $attrs = get_block_wrapper_attributes(array('class' => 'callout-' . $block_logic . ' callout-' . $renewal_type ));
+            echo '<div ' . $attrs . '>';
+            if( !empty( $_ENV['WICKET_MEMBERSHIPS_DEBUG_MODE'] ) ) {
+              echo '<pre style="font-size:10px;">';
+              echo 'DEBUG:<br>';
+              echo "Renewal Type: {$renewal_type}<br>";
+              echo "Membership ID: {$membership['membership']['ID']}<br>";
+              echo "Membership Tier: {$membership['membership']['meta']['membership_tier_name']}<br>";
+              echo "Sta {$membership['membership']['meta']['membership_starts_at']}<br>";
+              echo "End {$membership['membership']['meta']['membership_ends_at']}<br>";
+              echo "Exp {$membership['membership']['meta']['membership_expires_at']}<br>";
+              echo '</pre>';
+            }
+            get_component( 'card-call-out', [ 
+              'title'       => $title,
+              'description' => $description,
+              'links'       => $links,
+              'style'       => '',
+            ] );
+            echo '</div>';          
+          }
+        }
+        return;
+      }
 			break;
 		
 		case 'profile': 

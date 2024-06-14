@@ -1,5 +1,8 @@
 *** Wicket Account Centre (previously My Account Page Editor) Change log ***
 
+2024-06-13 - version 1.0.10
+* Add - Membership Plugin Integration
+
 2024-06-13 - version 1.0.9
 * Add - Secondary menu area
 

@@ -7,7 +7,7 @@
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Customize Woocommerce my account features to build the Wicket Account Centre
- * Version:           1.0.0
+ * Version:           1.0.10
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        http://www.wicket.io
