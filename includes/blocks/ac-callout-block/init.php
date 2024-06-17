@@ -34,7 +34,13 @@ function init( $block = [] ) {
           foreach( $renewal_data as $membership ) {
             unset($links);
             #echo '<pre>'; var_dump( $membership ); echo '</pre>';
-            if( !empty( $membership['membership']['next_tier'] ) ) {
+            if( !empty( $membership['membership']['meta']['membership_status'] == 'pending' )) {
+              $link['link'] = [
+                'title' => $membership['callout']['button_label'],
+                'url' => 'mailto: '.$membership['callout']['email']
+              ];    
+              $links[] = $link;
+            } else if( !empty( $membership['membership']['next_tier'] ) ) {
               #echo '<pre>'; var_dump( $membership['membership']['next_tier'] ); echo '</pre>';
               $links = wicket_ac_memberships_get_product_link_data( $membership );
             } else if ( !empty( $membership['membership']['form_page'] ) ) {
