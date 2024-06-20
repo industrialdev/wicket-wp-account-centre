@@ -102,22 +102,22 @@ if ( ! class_exists( 'Wicket_Acc_Password' ) ) {
 			?>
 			<?php if (isset($_SESSION['wicket_password_form_errors']) && !empty($_SESSION['wicket_password_form_errors'])):?>
 			<div class='alert alert-danger' role="alert">
-				<p><?php printf( _n( 'The form could not be submitted because 1 error was found', 'The form could not be submitted because %s errors were found', count($_SESSION['wicket_password_form_errors']), 'sassquatch' ), number_format_i18n(count($_SESSION['wicket_password_form_errors']))); ?></p>
+				<p><?php printf( _n( 'The form could not be submitted because 1 error was found', 'The form could not be submitted because %s errors were found', count($_SESSION['wicket_password_form_errors']), 'wicket-acc' ), number_format_i18n(count($_SESSION['wicket_password_form_errors']))); ?></p>
 				<?php
 				$counter = 1;
 				echo "<ul>";
 				foreach ($_SESSION['wicket_password_form_errors'] as $key => $error) {
 					if ($error->meta->field == 'user.current_password') {
 						$prefix = __("Current Password").' ';
-						printf(__("<li><a href='#current_password'><strong>%s</strong> %s</a></li>", 'sassquatch'), 'Error: '.$counter, $prefix.__($error->title));
+						printf(__("<li><a href='#current_password'><strong>%s</strong> %s</a></li>", 'wicket-acc'), 'Error: '.$counter, $prefix.__($error->title));
 					}
 					if ($error->meta->field == 'user.password') {
 						$prefix = __("New Password").' ';
-						printf(__("<li><a href='#password'><strong>%s</strong> %s</a></li>", 'sassquatch'), 'Error: '.$counter, $prefix.__($error->title));
+						printf(__("<li><a href='#password'><strong>%s</strong> %s</a></li>", 'wicket-acc'), 'Error: '.$counter, $prefix.__($error->title));
 					}
 					if ($error->meta->field == 'user.password_confirmation') {
 						$prefix = __("Confirm Password").' ';
-						printf(__("<li><a href='#password_confirmation'><strong>%s</strong> %s</a></li>", 'sassquatch'), 'Error: '.$counter, $prefix.__($error->title));
+						printf(__("<li><a href='#password_confirmation'><strong>%s</strong> %s</a></li>", 'wicket-acc'), 'Error: '.$counter, $prefix.__($error->title));
 					}
 					$counter++;
 				}
@@ -126,13 +126,13 @@ if ( ! class_exists( 'Wicket_Acc_Password' ) ) {
 			</div>
 			<?php elseif(isset($_GET['success'])): ?>
 				<div class='alert alert-success' role="alert">
-					<p><?php _e("Successfully Updated"); ?></p>
+					<p><?php _e("Successfully Updated", 'wicket-acc'); ?></p>
 				</div>
 			<?php endif; ?>
 
 			<form class='manage_password_form' method="post">
 				<div class="form__group">
-					<label class="form__label" for="current_password"><?php _e('Current password') ?>
+					<label class="form__label" for="current_password"><?php _e('Current password', 'wicket-acc') ?>
 						<span class="required">*</span>
 						<?php
 						if (isset($_SESSION['wicket_password_form_errors']) && !empty($_SESSION['wicket_password_form_errors'])) {
@@ -149,7 +149,7 @@ if ( ! class_exists( 'Wicket_Acc_Password' ) ) {
 				</div>
 
 				<div class="form__group">
-					<label class="form__label" for="password"><?php _e('New password') ?>
+					<label class="form__label" for="password"><?php _e('New password', 'wicket-acc') ?>
 						<span class="required">*</span>
 						<?php
 						if (isset($_SESSION['wicket_password_form_errors']) && !empty($_SESSION['wicket_password_form_errors'])) {
@@ -167,7 +167,7 @@ if ( ! class_exists( 'Wicket_Acc_Password' ) ) {
 				</div>
 
 				<div class="form__group">
-					<label class="form__label" for="password_confirmation"><?php _e('Confirm new password') ?>
+					<label class="form__label" for="password_confirmation"><?php _e('Confirm new password', 'wicket-acc') ?>
 						<span class="required">*</span>
 						<?php
 						if (isset($_SESSION['wicket_password_form_errors']) && !empty($_SESSION['wicket_password_form_errors'])) {
@@ -184,7 +184,7 @@ if ( ! class_exists( 'Wicket_Acc_Password' ) ) {
 				</div>
 
 				<input type="hidden" name="wicket_update_password" value="wicket_update_password--1" />
-				<input class="button button--primary" type="submit" value="<?php _e('Change password') ?>">
+				<input class="button button--primary" type="submit" value="<?php _e('Change password', 'wicket-acc') ?>">
 			</form>
 			<?php
 		}

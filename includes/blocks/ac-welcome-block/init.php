@@ -22,13 +22,13 @@ function init( $block = [] ) {
 			<div class="wicket-acc-flex">
 				<div class="wicket-welcome-avatar">
 					<?php if($image_url){
-						echo '<img src="'.$image_url.'" alt="'. $person->given_name . " " . $person->family_name . __(' Profile Image', 'wicket') . '" />';
+						echo '<img src="'.$image_url.'" alt="'. $person->given_name . " " . $person->family_name . __(' Profile Image', 'wicket-acc') . '" />';
 					} ?>
 				</div>
 
 				<div class="wicket-acc-flex wicket-welcome-content-container wicket-align-item-start">
 					<div class="wicket-welcome-content">
-							<p class="text-heading-xs wicket-welcome-label"><?php _e('Welcome', 'wicket'); ?></p>
+							<p class="text-heading-xs wicket-welcome-label"><?php _e('Welcome', 'wicket-acc'); ?></p>
 							<p class="text-heading-lg wicket-welcome-name"><?php echo $person->given_name . " " . $person->family_name; ?></p>
 
 							<?php 
@@ -42,18 +42,18 @@ function init( $block = [] ) {
 									echo '<div class="mt-4 wicket-welcome-memberships">';
 
 									echo '<div class="mb-4">';
-										echo '<p class="mb-1 wicket-welcome-member-type"><strong>' . __('Membership Type:', 'wicket') . '</strong> ' . $membership['name'] . '</p>';
+										echo '<p class="mb-1 wicket-welcome-member-type"><strong>' . __('Membership Type:', 'wicket-acc') . '</strong> ' . $membership['name'] . '</p>';
 										if($membership['type'] == 'organization'){
 											$org_info = wicket_get_active_memberships_relationship();
 											echo '<p class="mb-2 wicket-welcome-member-org"><strong>' . $org_info['relationship'] . ' &ndash; ' . $org_info['name'] . '</strong></p>';
 										}
-										echo '<p class="mt-2 mb-1 wicket-welcome-member-active">' . __('Active Member', 'wicket') . '</p>';
+										echo '<p class="mt-2 mb-1 wicket-welcome-member-active">' . __('Active Member', 'wicket-acc') . '</p>';
 									echo '</div>';
 									if($member_since && !empty( $membership['starts_at'] ) && strtotime( $membership['starts_at'] )){
-										echo '<p class="mb-1 wicket-welcome-member-since">' . __('Member Since:', 'wicket') . ' ' . date('F j, Y', strtotime($membership['starts_at'])) . '</p>';
+										echo '<p class="mb-1 wicket-welcome-member-since">' . __('Member Since:', 'wicket-acc') . ' ' . date('F j, Y', strtotime($membership['starts_at'])) . '</p>';
 									}
 									if($renewal_date && !empty( $membership['ends_at'] ) && strtotime( $membership['ends_at'] )){
-										echo '<p class="mb-1 wicket-welcome-renewal">' . __('Renewal Date:', 'wicket') . ' ' . date('F j, Y', strtotime($membership['ends_at'])) . '</p>';
+										echo '<p class="mb-1 wicket-welcome-renewal">' . __('Renewal Date:', 'wicket-acc') . ' ' . date('F j, Y', strtotime($membership['ends_at'])) . '</p>';
 									}
 									echo '</div>';
 								}

@@ -398,9 +398,9 @@ if ( ! class_exists( 'Wicket_Acc_Admin' ) ) {
 
 			$columns = array(
 				'cb' => '<input type="checkbox" />',
-				'title' => __( 'Title', 'wicket_acc' ),
-				'ep_type' => __( 'Type', 'wicket_acc' ),
-				'date' => __('Date', 'wicket_acc'),
+				'title' => __( 'Title', 'wicket-acc' ),
+				'ep_type' => __( 'Type', 'wicket-acc' ),
+				'date' => __('Date', 'wicket-acc'),
 			);
 			return $columns;
 		}

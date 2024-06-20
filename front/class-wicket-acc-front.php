@@ -127,22 +127,22 @@ if ( ! class_exists( 'Wicket_Acc_Front' ) ) {
 			if ( ($id == $wp_query->queried_object_id) && in_the_loop() && ! is_admin() ) {
 
 			    if ( is_wc_endpoint_url( 'downloads' ) ) { // add your endpoint urls
-			        $title = "My Downloads"; // change your entry-title
+			        $title = __( "My Downloads", 'wicket-acc'); // change your entry-title
 			    }
 			    elseif ( is_wc_endpoint_url( 'orders' ) ) {
-			        $title = "My Orders";
+			        $title = __( "My Orders", 'wicket-acc');
 			    }
 			    elseif ( is_wc_endpoint_url( 'edit-account' ) ) {
-			        $title = "Change My Details";
+			        $title = __( "Change My Details", 'wicket-acc');
 			    }
 			    elseif ( is_wc_endpoint_url( 'edit-address' ) ) {
-			        $title = "My Addresses";
+			        $title = __( "My Addresses", 'wicket-acc');
 			    }
 			    elseif ( is_wc_endpoint_url( 'payment-methods' ) ) {
-			        $title = "My Payment Methods";
+			        $title = __( "My Payment Methods", 'wicket-acc');
 			    }
 			    elseif ( !is_wc_endpoint_url() && is_account_page() ) {
-			        $title = "My Account Centre";
+			        $title = __( "My Account Centre", 'wicket-acc');
 			    }
 
 			}
