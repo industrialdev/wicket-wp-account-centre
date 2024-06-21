@@ -21,39 +21,13 @@ add_settings_field(
 	'wicket_acc_settings_page', // The page on which this option will be displayed.
 	'wicket_acc_settings_sec', // The name of the section to which this field belongs.
 	array(
-		esc_html__( 'Select style for endpoint navigation.', 'wicket-acc' ),
+		esc_html__( 'Select menu location.', 'wicket-acc' ),
 	)
 );
 
 register_setting(
 	'wicket_acc_settings',
 	'wicket_acc_set_ep_as_fld'
-);
-
-add_settings_field(
-	'wicket_acc_nav_heading', // ID used to identify the field throughout the theme.
-	esc_html__( 'Navigation Heading:', 'wicket-acc' ), // The label to the left of the option interface element.
-	'wicket_acc_nav_heading_callback', // The name of the function responsible for rendering the option interface.
-	'wicket_acc_settings_page', // The page on which this option will be displayed.
-	'wicket_acc_settings_sec' // The name of the section to which this field belongs.
-);
-
-register_setting(
-	'wicket_acc_settings',
-	'wicket_acc_nav_heading'
-);
-
-add_settings_field(
-	'wicket_acc_nav_heading_two', // ID used to identify the field throughout the theme.
-	esc_html__( 'Navigation Heading:', 'wicket-acc' ), // The label to the left of the option interface element.
-	'wicket_acc_nav_heading_callback_two', // The name of the function responsible for rendering the option interface.
-	'wicket_acc_settings_page', // The page on which this option will be displayed.
-	'wicket_acc_settings_sec' // The name of the section to which this field belongs.
-);
-
-register_setting(
-	'wicket_acc_settings',
-	'wicket_acc_nav_heading_two'
 );
 
 register_setting(
@@ -63,10 +37,13 @@ register_setting(
 
 add_settings_field(
 	'wicket_acc_set_ep_custom_dashboard', // ID used to identify the field throughout the theme.
-	esc_html__( 'Custom Dashboard Page:', 'wicket-acc' ), // The label to the left of the option interface element.
+	esc_html(__( 'Dashboard Page:', 'wicket-acc' )), // The label to the left of the option interface element.
 	'wicket_acc_set_ep_custom_dashboard_callback', // The name of the function responsible for rendering the option interface.
 	'wicket_acc_settings_page', // The page on which this option will be displayed.
-	'wicket_acc_settings_sec' // The name of the section to which this field belongs.
+	'wicket_acc_settings_sec', // The name of the section to which this field belongs.
+	array(
+		esc_html__( 'Select the Account Centre Page to be used as the [Member Portal] default page.', 'wicket-acc' ),
+	)
 );
 
 register_setting(
@@ -104,49 +81,15 @@ function wicket_acc_set_ep_as_fld_callback( $args ) {
 
 /**
  * Section callback.
- *
- * @param array $args Arguments.
  */
-function wicket_acc_nav_heading_callback( $args ) {
-
-	$value = get_option( 'wicket_acc_nav_heading' );
-	$value = empty( $value ) ? null : $value;
-	?>
-	<input type="text" name="wicket_acc_nav_heading" class="width-60" value="<?php echo wp_kses_post( $value ); ?>">
-
-	<p class="description"><?php esc_html_e( 'Optional. Displays for Left & Right layouts.', 'wicket-acc' ); ?></p>
-<?php
-
-}
-
-/**
- * Section callback.
- *
- * @param array $args Arguments.
- */
-function wicket_acc_nav_heading_callback_two( $args ) {
-
-	$value = get_option( 'wicket_acc_nav_heading_two' );
-	$value = empty( $value ) ? null : $value;
-	?>
-	<input type="text" name="wicket_acc_nav_heading_two" class="width-60" value="<?php echo wp_kses_post( $value ); ?>">
-
-	<p class="description"><?php esc_html_e( 'Optional. Displays for Left & Right layouts.', 'wicket-acc' ); ?></p>
-<?php
-
-}
-
-/**
- * Section callback.
- */
-function wicket_acc_set_ep_custom_dashboard_callback() {
+function wicket_acc_set_ep_custom_dashboard_callback( $args ) {
 	?>
 	<select class="wicket_acc_custom_dashboard width-60" name="wicket_acc_set_ep_custom_dashboard" id="wicket_acc_set_ep_custom_dashboard">
 		<?php
-		$args           = array(
+		$args           = array_merge( $args, array(
 			'numberposts' => -1,
 			'post_type'   => 'wicket_acc',
-		);
+		));
 		$all_end_points = get_posts( $args );
 		$selected_dashboard = get_option( 'wicket_acc_set_ep_custom_dashboard' );
 
@@ -164,4 +107,5 @@ function wicket_acc_set_ep_custom_dashboard_callback() {
 		}
 		?>
 	</select>
+  <p class="description afreg_additional_fields_section_title"> <?php echo wp_kses_post( $args[0] ); ?> </p>
 <?php }

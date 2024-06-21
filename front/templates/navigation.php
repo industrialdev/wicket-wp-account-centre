@@ -21,9 +21,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $wp;
 
-
-$nav_heading 			= get_option( 'wicket_acc_nav_heading' );
-$nav_heading_two 	= get_option( 'wicket_acc_nav_heading_two' );
+$nav_heading 			= wp_get_nav_menu_name( 'wicket-acc-nav' );
+$nav_heading_two 	= wp_get_nav_menu_name( 'wicket-acc-nav-two' );
 $nav_layout				= get_option( 'wicket_acc_set_ep_as_fld' );
 do_action( 'woocommerce_before_account_navigation' );
 ?>
