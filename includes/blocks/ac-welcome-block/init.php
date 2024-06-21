@@ -8,14 +8,19 @@ namespace Wicket_AC\Blocks\AC_Welcome_Block;
 
 function init( $block = [] ) { 
 
-		$current_user = wp_get_current_user();
+    $iso_code = apply_filters( 'wpml_current_language', null );
+    if( empty( $iso_code )) {
+      $locale = get_locale(); // Get the full locale (e.g., en_US)
+      $iso_code = substr($locale, 0, 2); // Extract the first two characters  
+    }
+    $current_user = wp_get_current_user();
 		$person = wicket_current_person();
 		$edit_profile = get_field('edit_profile_button');
 		$edit_profile_button = get_field('edit_profile_button_link');
 		$member_since = get_field('member_since');
 		$renewal_date = get_field('renewal_date');
 		$image_url = get_avatar_url($current_user->ID, ['size' => '300']);
-		$active_memberships = wicket_get_active_memberships();
+		$active_memberships = wicket_get_active_memberships( $iso_code );
 		?>
 
 		<div class="wicket-welcome-block bg-light-010 rounded-100">

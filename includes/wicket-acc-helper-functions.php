@@ -6,7 +6,7 @@
  * @return array $memberships (slug and id)
  */
 
- function wicket_get_active_memberships() {
+ function wicket_get_active_memberships( $iso_code = 'en' ) {
   $all_summaries = [];
   $membership_summary = [];
 
@@ -22,12 +22,11 @@
       $membership_tier = $helper->getIncludedRelationship($entry, 'membership');
       if (!$membership_tier) continue;
       if ($entry['attributes']['status'] != 'Active') continue;
-
       $entry_summary = [
         'membership_category' => $entry['attributes']['membership_category'],
         'starts_at' => $entry['attributes']['starts_at'],
         'ends_at' => $entry['attributes']['ends_at'],
-        'name' => $membership_tier['attributes']['name'],
+        'name' => $membership_tier['attributes']['name_' . $iso_code],
         'type' => $membership_tier['attributes']['type']
       ];
 
