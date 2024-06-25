@@ -154,7 +154,7 @@ if ( ! class_exists( 'Wicket_Acc_Main' ) ) {
 				'labels'              => $labels,
 				'menu_icon'           => '',
 				'public'              => false,
-				'publicly_queryable'  => false,
+				'publicly_queryable'  => true,
 				'exclude_from_search' => true,
 				'show_ui'             => true,
 				'show_in_menu'        => true,
