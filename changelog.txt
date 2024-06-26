@@ -1,5 +1,14 @@
 *** Wicket Account Centre (previously My Account Page Editor) Change log ***
 
+2024-06-26 - version 1.0.15
+* Fix - Container and menu style updates
+
+2024-06-25 - version 1.0.14
+* Fix - Expose custom templates
+
+2024-06-21 - version 1.0.13
+* Add - Localization
+
 2024-06-13 - version 1.0.10
 * Add - Membership Plugin Integration
 

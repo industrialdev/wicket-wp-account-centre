@@ -21,12 +21,9 @@
 	.myaccount-nav {
 		width: 25%;
 	}
-}
-
-@media all and (min-width: 1536px) {
-	.woocommerce-wicket--container {
-		max-width: 1536px;
-	}
+  .wicket-acc-menu {
+    margin-bottom:40px !important;
+  }
 }
 
 button.wicket_acc_btn {
