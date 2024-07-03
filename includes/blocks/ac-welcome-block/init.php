@@ -23,7 +23,7 @@ function init( $block = [] ) {
 		$active_memberships = wicket_get_active_memberships( $iso_code );
 		?>
 
-		<div class="wicket-welcome-block bg-light-010 rounded-100">
+		<div class="wicket-welcome-block wp-block-wicket-ac-ac-callout bg-light-010 rounded-100">
 			<div class="wicket-acc-flex">
 				<div class="wicket-welcome-avatar">
 					<?php if($image_url){

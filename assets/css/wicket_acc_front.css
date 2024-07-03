@@ -378,6 +378,11 @@ margin-left: 5px;
 	display: none;
 }
 
+@media all and (max-width: 630px){
+  .woocommerce-wicket--account-centre {
+    max-width: 90%;
+  }
+}
 
 @media all and (max-width: 520px){
 	.woocommerce-MyAccount-content {

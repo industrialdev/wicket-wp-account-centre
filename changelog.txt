@@ -1,6 +1,6 @@
 *** Wicket Account Centre (previously My Account Page Editor) Change log ***
 
-2024-06-26 - version 1.0.15
+2024-06-26 - version 1.0.16
 * Fix - Container and menu style updates
 
 2024-06-25 - version 1.0.14
