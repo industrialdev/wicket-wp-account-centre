@@ -356,16 +356,17 @@ function wicket_ac_memberships_get_product_link_data( $membership ) {
     $late_fee_product_id = ',' . $membership['late_fee_product_id'];
   }
   foreach( $next_tier['product_data'] as $product_data ) {
-    #var_dump( $product_data['product_id'] );
     $product = wc_get_product( $product_data['product_id'] );
-    #var_dump($product->get_type());
-    if( $product->get_type() == 'variable' ){
+    if( $product->get_type() == 'variable' || $product->get_type() == 'variable-subscription' ){
       $variable_products = $product->get_children();
       foreach( $variable_products as $variable_product ) {
-        $product = wc_get_product( $variable_product['ID'] );
+        if( ! empty( $variable_product['ID']) ) {
+          $variable_product = $variable_product['ID'];
+        }
+        $product = wc_get_product( $variable_product );
         $link['link'] = [
           'title' => $product->get_name(),
-          'url' => '/cart/?add-to-cart=' . $variable_product['ID'] . $late_fee_product_id . '&quantity=1'
+          'url' => '/cart/?add-to-cart=' . $variable_product . $late_fee_product_id . '&quantity=1'
         ];      
         $links[] = $link;
       }

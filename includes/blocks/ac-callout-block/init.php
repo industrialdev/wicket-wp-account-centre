@@ -30,7 +30,9 @@ function init( $block = [] ) {
       } else {
         $membership_renewals = (new \Wicket_Memberships\Membership_Controller)->get_membership_callouts();
         #echo '<pre>'; var_dump( $membership_renewals );exit;
-        echo '<p>For testing callouts add <pre>?wicket_wp_membership_debug_days=123</pre> to see what callouts would appear in 123 days.</p><br><br>';
+        if( !empty( $_ENV['WICKET_MEMBERSHIPS_DEBUG_MODE'] ) ) {
+          echo '<p>For testing callouts add <pre>?wicket_wp_membership_debug_days=123</pre> to see what callouts would appear in 123 days.</p><br><br>';
+        }
         foreach( $membership_renewals as $renewal_type => $renewal_data ) {
           foreach( $renewal_data as $membership ) {
             if( !empty( $_ENV['WICKET_MEMBERSHIPS_DEBUG_MODE'] ) && $renewal_type == 'debug' ) {
