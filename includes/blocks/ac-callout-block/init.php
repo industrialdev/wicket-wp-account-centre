@@ -30,17 +30,20 @@ function init( $block = [] ) {
       } else {
         $membership_renewals = (new \Wicket_Memberships\Membership_Controller)->get_membership_callouts();
         #echo '<pre>'; var_dump( $membership_renewals );exit;
+        echo '<p>For testing callouts add <pre>?wicket_wp_membership_debug_days=123</pre> to see what callouts would appear in 123 days.</p><br><br>';
         foreach( $membership_renewals as $renewal_type => $renewal_data ) {
           foreach( $renewal_data as $membership ) {
-            if( $renewal_type == 'debug' ) {
+            if( !empty( $_ENV['WICKET_MEMBERSHIPS_DEBUG_MODE'] ) && $renewal_type == 'debug' ) {
               echo '<pre style="font-size:10px;">';
               echo 'DEBUG:<br>';
               echo "Renewal Type: {$renewal_type}<br>";
               echo "Membership ID: {$membership['membership']['ID']}<br>";
               echo "Membership Tier: {$membership['membership']['meta']['membership_tier_name']}<br>";
               echo "Sta {$membership['membership']['meta']['membership_starts_at']}<br>";
+              echo "Early {$membership['membership']['meta']['membership_early_renew_at']}<br>";
               echo "End {$membership['membership']['meta']['membership_ends_at']}<br>";
               echo "Exp {$membership['membership']['meta']['membership_expires_at']}<br>";
+              echo "End in {$membership['membership']['ends_in_days']} Days <br>";
               echo '</pre>';
               continue;
             }
@@ -70,8 +73,10 @@ function init( $block = [] ) {
               echo "Membership ID: {$membership['membership']['ID']}<br>";
               echo "Membership Tier: {$membership['membership']['meta']['membership_tier_name']}<br>";
               echo "Sta {$membership['membership']['meta']['membership_starts_at']}<br>";
+              echo "Early {$membership['membership']['meta']['membership_early_renew_at']}<br>";
               echo "End {$membership['membership']['meta']['membership_ends_at']}<br>";
               echo "Exp {$membership['membership']['meta']['membership_expires_at']}<br>";
+              echo "End in {$membership['membership']['ends_in_days']} Days <br>";
               echo '</pre>';
             }
             get_component( 'card-call-out', [ 
