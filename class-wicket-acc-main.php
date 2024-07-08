@@ -82,6 +82,8 @@ if ( ! class_exists( 'Wicket_Acc_Main' ) ) {
 
 			//HOPS compatibility
 			add_action('before_woocommerce_init', array($this, 'wicket_acc_HPOS_Compatibility'));
+
+                        add_filter( 'wp_dropdown_pages', 'wicket_acc_alter_wp_job_manager_pages', 10, 3 );
 		}
 
 		public function wicket_acc_HPOS_Compatibility() {

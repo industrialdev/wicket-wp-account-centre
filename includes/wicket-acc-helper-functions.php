@@ -346,7 +346,9 @@ foreach ( $product_ids as $product_id ) {
   }
 }
 
-add_action( 'wp_loaded', 'wicket_ac_maybe_add_multiple_products_to_cart', 15 );
+if(! function_exists( 'webroom_add_multiple_products_to_cart' ) ) {
+  add_action( 'wp_loaded', 'wicket_ac_maybe_add_multiple_products_to_cart', 15 );
+}
 
 function wicket_ac_memberships_get_product_link_data( $membership ) {
   $late_fee_product_id = '';
@@ -394,4 +396,36 @@ function wicket_ac_memberships_get_page_link_data( $membership ) {
   ];    
   $links[] = $link;
   return $links;
+}
+
+// ---------------------------------------------------------------------------------------------------
+// Alter the 'pages' admin settings to provide the wicket account center pages along with normal pages
+// ---------------------------------------------------------------------------------------------------
+function wicket_acc_alter_wp_job_manager_pages( $output, $parsed_args, $pages ) {
+  if(in_array($parsed_args['name'], ['job_manager_submit_job_form_page_id', 'job_manager_job_dashboard_page_id', 'job_manager_jobs_page_id', 'job_manager_terms_and_conditions_page_id',])){
+    $parsed_args['post_type'] = ['wicket_acc', 'page'];
+    $output = wp_job_dropdown_pages($parsed_args);
+    return $output;
+  }else{
+    return $output;
+  }
+}
+
+function wp_job_dropdown_pages( $parsed_args = '' ) {
+$pages  = get_posts( ['post_type' => $parsed_args['post_type'], 'numberposts' => -1] );
+$output = '';
+
+if ( ! empty( $pages ) ) {
+  $output = "<select name='" . esc_attr( $parsed_args['name'] ) . "'" . " id='" . esc_attr( $parsed_args['id'] ) . "'>\n";
+  if ( $parsed_args['show_option_no_change'] ) {
+    $output .= "\t<option value=\"-1\">" . $parsed_args['show_option_no_change'] . "</option>\n";
+  }
+  if ( $parsed_args['show_option_none'] ) {
+    $output .= "\t<option value=\"" . esc_attr( $parsed_args['option_none_value'] ) . '">' . $parsed_args['show_option_none'] . "</option>\n";
+  }
+  $output .= walk_page_dropdown_tree( $pages, $parsed_args['depth'], $parsed_args );
+  $output .= "</select>\n";
+}
+
+return $output;
 }
