@@ -429,3 +429,23 @@ if ( ! empty( $pages ) ) {
 
 return $output;
 }
+
+function wicket_acc_rewrite_permalinks($post_link, $post, $leavename, $sample) {
+  if ($post->post_type == 'wicket_acc') {
+    if( defined('ICL_LANGUAGE_CODE')) {
+      $lang = ICL_LANGUAGE_CODE;
+    } else {
+      $lang = 'en';
+    }
+    if( $lang == 'fr' ) {
+      $account_center_slug_locale['value'] = 'fr/mon-compte';
+    } else {
+      $account_center_slug_locale = get_field('field_66858df5a3430', 'option');
+    }
+    if( empty( $account_center_slug_locale['value'] ) ) {
+      $account_center_slug_locale['value'] = 'account-center';
+    }
+    $post_link = str_replace( 'wicket_acc', $account_center_slug_locale['value'], $post_link );
+  }
+  return $post_link;
+}
