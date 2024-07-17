@@ -77,6 +77,7 @@ if ( ! class_exists( 'Wicket_Acc_Front' ) ) {
 				'post_status' => 'publish',
 				'orderby'     => 'menu_order',
 				'order'       => 'ASC',
+				'suppress_filters' => false,
 				'post__not_in' => array($wicket_acc_custom_dashboard_id), /* exclude custom dashboard endpoint */
 			);
 
