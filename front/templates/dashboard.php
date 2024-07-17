@@ -27,9 +27,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	$wicket_acc_custom_dashboard_id = get_option( 'wicket_acc_set_ep_custom_dashboard' );
 
-	$dashboard_postid = $wicket_acc_custom_dashboard_id;
-	if ($dashboard_postid) {
-		$content_post = get_post($dashboard_postid);
+	// if WPML is installed, get the translated AC landing page if it exists 
+	if ( defined( 'ICL_SITEPRESS_VERSION' ) ) {
+		$type = apply_filters( 'wpml_element_type', get_post_type( 	$wicket_acc_custom_dashboard_id ) );
+		$trid = apply_filters( 'wpml_element_trid', false, 	$wicket_acc_custom_dashboard_id, $type );
+		$translations = apply_filters( 'wpml_get_element_translations', array(), $trid, $type );		
+		if (isset($translations[ICL_LANGUAGE_CODE])) {
+			$wicket_acc_custom_dashboard_id = $translations[ICL_LANGUAGE_CODE]->element_id;
+		}
+	 }
+
+	if ($wicket_acc_custom_dashboard_id) {
+		$content_post = get_post($wicket_acc_custom_dashboard_id);
 		$content = $content_post->post_content;
 		$content = apply_filters('the_content', $content);
 		$content = str_replace(']]>', ']]&gt;', $content);
