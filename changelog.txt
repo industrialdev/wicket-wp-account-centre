@@ -1,5 +1,8 @@
 *** Wicket Account Centre (previously My Account Page Editor) Change log ***
 
+2024-07-18 - version 1.0.21
+* Add - WPML Multilingual Compatibility
+
 2024-06-26 - version 1.0.16
 * Fix - Container and menu style updates
 
