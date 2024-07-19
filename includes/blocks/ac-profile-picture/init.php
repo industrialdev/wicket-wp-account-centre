@@ -127,7 +127,7 @@ if (!class_exists('Wicket_Acc_Profile_Picture')) {
 			global $uploads_dir;
 
 			// No data? no action?
-			if (empty($_POST) && !isset(($_POST['action'] && $_POST['action'] == 'wicket-ac-profile-picture-form'))) {
+			if (empty($_POST) && !isset($_POST['action']) && $_POST['action'] == 'wicket-ac-profile-picture-form') {
 				return;
 			}
 
