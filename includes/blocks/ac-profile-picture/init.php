@@ -97,7 +97,9 @@ if (!class_exists('Wicket_Acc_Profile_Picture')) {
 			}
 
 			// Get file URL
-			$pp_profile_picture = $this->uploads_dir['baseurl'] . '/wicket-profile-pictures/' . $current_user_id . '.' . $pp_valid_extension;
+			if(!empty($pp_valid_extension)) {
+				$pp_profile_picture = $this->uploads_dir['baseurl'] . '/wicket-profile-pictures/' . $current_user_id . '.' . $pp_valid_extension;
+			}
 
 			// Still no image? Return the default svg
 			if (empty($pp_profile_picture)) {
@@ -174,6 +176,11 @@ if (!class_exists('Wicket_Acc_Profile_Picture')) {
 
 			// Move the file to the uploads directory, move_uploaded_file
 			$movefile = move_uploaded_file($_FILES['profile-image']['tmp_name'], $file_path);
+			//Crop to square
+			$file_path_new = $this->crop_center_of_rectangle_from_file($file_path, $file_path);
+			// Replace with cropped file
+			unlink($file_path);
+			$movefile = rename($file_path_new, $file_path);
 
 			// Check for errors
 			if (!$movefile) {
@@ -181,6 +188,32 @@ if (!class_exists('Wicket_Acc_Profile_Picture')) {
 			}
 
 			return true;
+		}
+		/**
+		 * Crop square from the center of an image file
+		 *
+		 * @param string $src_file    Path to the source image file.
+		 * @param string $dst_file    Path to save the cropped image.
+		 * @return string|false       Path to the cropped image file on success, false on failure.
+		 */
+		function crop_center_of_rectangle_from_file($src_file, $dst_file) {
+		  list($src_width, $src_height) = getimagesize($src_file);
+		  // Determine the crop dimensions
+		  if ($src_width > $src_height) {
+		    $crop_x = ($src_width - $src_height) / 2;
+		    $crop_y = 0;
+		    $crop_size = $src_height;
+		  } else {
+		    $crop_x = 0;
+		    $crop_y = ($src_height - $src_width) / 2;
+		    $crop_size = $src_width;
+		  }
+		  if ( ! function_exists( 'wp_crop_image' ) ) {
+		    include( ABSPATH . 'wp-admin/includes/image.php' );
+		  }
+		  // Crop the image using wp_crop_image
+		  $cropped = wp_crop_image($src_file, $crop_x, $crop_y, $crop_size, $crop_size, $crop_size, $crop_size, false, $dst_file);
+		  return $cropped;
 		}
 	} // end Wicket_Acc_Profile_Picture class
 }
