@@ -39,7 +39,7 @@ if (!class_exists('Wicket_Acc_Touchpoint_Service_Micropoint')) {
 			echo '<div ' . $attrs . '>';
 
 			if ($is_preview) {
-				echo '[Block: Touchpoint for TEC (The Event Calendar)]';
+				echo '[Block: Touchpoint for Service Micropoint]';
 
 				return;
 			}

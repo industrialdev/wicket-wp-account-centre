@@ -1,6 +1,6 @@
 {
 	"key": "group_667d287439c52",
-	"title": "AC Touchpoint The Events Calendar",
+	"title": "AC Touchpoint Service Micropoint",
 	"fields": [
 		{
 			"key": "field_667d287486291",
@@ -86,7 +86,7 @@
 			{
 				"param": "block",
 				"operator": "==",
-				"value": "wicket-ac\/ac-touchpoint-event-calendar"
+				"value": "wicket-ac\/ac-touchpoint-service-micropoint"
 			}
 		]
 	],
