@@ -462,43 +462,56 @@ function wicket_acc_rewrite_permalinks($post_link, $post, $leavename, $sample)
 }
 
 /**
+ * Get user profile picture
  * To pull in as wp_user profile image
  * Use: add_filter( 'get_avatar_url', 'wicket_acc_get_avatar', 10, 3 );
  *
- * @param string $url
- * @param mixed $id_or_email
- * @param mixed $args
- * @return mixed
+ * @param mixed $user WP_User object, user ID or email
+ * @param mixed $args (Optional)
+ *
+ * @return string
  */
-function wicket_acc_get_avatar($url, $user_ref, $args)
+function wicket_acc_get_avatar($user, $args)
 {
 	$extensions       = ['jpg', 'jpeg', 'png', 'gif'];
 	$uploads_dir      = wp_get_upload_dir();
 	$uploads_url      = $uploads_dir['baseurl'] . '/wicket-profile-pictures';
+	$default_avatar   = WICKET_ACC_PLUGIN_URL . '/assets/img/profile-picture-default.svg';
 
-	if (is_numeric($user_ref)) {
-		$current_user_id = $user_ref;
-	} else if (is_email($user_ref)) {
-		$user = get_user_by('email', $user_ref);
+	// Get the user ID
+	if (is_numeric($user)) {
+		$current_user_id = $user;
+	} else if (is_email($user)) {
+		$user = get_user_by('email', $user);
 		$current_user_id = $user->ID;
-	} else if ($user_ref instanceof WP_User) {
-		$current_user_id = $user_ref->ID;
+	} else if ($user instanceof WP_User) {
+		$current_user_id = $user->ID;
 	} else {
-		//default for something else
-		return $url;
+		// Can we get the current user id directly?
+		$current_user_id = get_current_user_id();
 	}
 
+	if (!$current_user_id) {
+		// Filter URL (for child themes to manipulate) and return
+		return apply_filters('wicket/acc/get_avatar', $default_avatar);
+	}
+
+	// Search for the image
 	foreach ($extensions as $ext) {
-		$file_path = $uploads_dir['basedir'] . '/wicket-profile-pictures/' . $current_user_id . '.' . $ext;
+		$file_path = $uploads_url . '/' . $current_user_id . '.' . $ext;
+
 		if (file_exists($file_path)) {
 			// Found it!
 			$pp_profile_picture = $uploads_url . '/' . $current_user_id . '.' . $ext;
 			break;
 		}
 	}
+
 	// Still no image? Return the default svg
 	if (empty($pp_profile_picture)) {
-		$pp_profile_picture = WICKET_ACC_PLUGIN_URL . '/assets/img/profile-picture-default.svg';
+		$pp_profile_picture = $default_avatar;
 	}
-	return $pp_profile_picture;
+
+	// Filter URL (for child themes to manipulate) and return
+	return apply_filters('wicket/acc/get_avatar', $pp_profile_picture);
 }
