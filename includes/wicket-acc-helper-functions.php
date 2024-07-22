@@ -449,3 +449,44 @@ function wicket_acc_rewrite_permalinks($post_link, $post, $leavename, $sample) {
   }
   return $post_link;
 }
+
+/**
+ * To pull in as wp_user profile image
+ * Use: add_filter( 'get_avatar_url', 'wicket_acc_get_avatar', 10, 3 );
+ * 
+ * @param string $url
+ * @param mixed $id_or_email
+ * @param mixed $args
+ * @return mixed
+ */
+function wicket_acc_get_avatar( $url, $user_ref, $args ) {
+  $extensions       = ['jpg', 'jpeg', 'png', 'gif'];
+  $uploads_dir      = wp_get_upload_dir();
+  $uploads_url      = $uploads_dir['baseurl'] . '/wicket-profile-pictures';
+
+  if(is_numeric($user_ref)) {
+    $current_user_id = $user_ref;
+  } else if(is_email($user_ref)) {
+    $user = get_user_by('email', $user_ref);
+    $current_user_id = $user->ID;
+  } else if( $user_ref instanceof WP_User) { 
+    $current_user_id = $user_ref->ID;
+  } else {
+    //default for something else
+    return $url;
+  }
+
+  foreach ($extensions as $ext) {
+    $file_path = $uploads_dir['basedir'] . '/wicket-profile-pictures/' . $current_user_id . '.' . $ext;
+    if (file_exists($file_path)) {
+      // Found it!
+      $pp_profile_picture = $uploads_url . '/' . $current_user_id . '.' . $ext;
+      break;
+    }
+  }
+  // Still no image? Return the default svg
+  if (empty($pp_profile_picture)) {
+    $pp_profile_picture = WICKET_ACC_PLUGIN_URL . '/assets/img/profile-picture-default.svg';
+  }
+  return $pp_profile_picture;
+}
