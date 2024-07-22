@@ -1,0 +1,111 @@
+/* Define CSS variables for colors */
+:root {
+	--wicket-ac-black: #000000;
+	--wicket-ac-white: #ffffff;
+	--wicket-ac-gray: #f3f4f6;
+	--wicket-ac-dark-gray: #374151;
+	--wicket-ac-border-color: #d1d5db;
+	--wicket-ac-primary: #1f2937;
+	--wicket-ac-hover-primary: #111827;
+}
+
+.wicket-ac-profile-picture {
+  background-color: var(--wicket-ac-white);
+  padding: 24px;
+  border-radius: 8px;
+  border: 1px solid var(--wicket-ac-border-color);
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+
+	h2 {
+		font-size: 1.5rem;
+		font-weight: bold;
+		margin-bottom: 16px;
+	}
+
+	.profile-image {
+		display: flex;
+		justify-content: center;
+		margin-bottom: 16px;
+	}
+
+	.profile-image img {
+		width: 135px;
+		height: auto;
+		border-radius: 50%;
+	}
+
+	form {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		border: 0;
+	}
+
+	.buttons {
+		display: flex;
+		justify-content: center;
+		gap: 16px;
+		margin-top: 16px;
+	}
+
+	.btn {
+		padding: 8px 16px;
+		border-radius: 4px;
+		font-size: 1rem;
+		cursor: pointer;
+		transition: background-color 0.3s;
+	}
+
+	.choose-file {
+		background-color: var(--wicket-ac-dark-gray);
+		color: var(--wicket-ac-white);
+		border: none;
+	}
+
+	.choose-file:hover {
+		background-color: var(--wicket-ac-hover-primary);
+	}
+
+	.update-image {
+		background-color: var(--wicket-ac-white);
+		color: var(--wicket-ac-primary);
+		border: 1px solid var(--wicket-ac-border-color);
+	}
+
+	.update-image:hover {
+		background-color: var(--wicket-ac-gray);
+	}
+
+	/* Responsive styles */
+	@media (min-width: 640px) {
+		.container {
+			padding: 32px;
+		}
+
+		.btn {
+			font-size: 1.125rem;
+		}
+	}
+
+	@media (min-width: 768px) {
+		.container {
+			padding: 40px;
+		}
+
+		.btn {
+			font-size: 1.25rem;
+		}
+	}
+}
