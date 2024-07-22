@@ -28,7 +28,11 @@ if (!class_exists('Wicket_Acc_Profile_Picture')) {
 			$this->pp_uploads_subdir = 'wicket-profile-pictures';
 			$this->pp_extensions     = ['jpg', 'jpeg', 'png', 'gif'];
 
+			// Display the block
 			$this->display_block();
+
+			// Change WP get_avatar_url behavior
+			add_filter('get_avatar_url', [$this, 'get_avatar'], 10, 3);
 		}
 
 		protected function display_block()
@@ -219,6 +223,29 @@ if (!class_exists('Wicket_Acc_Profile_Picture')) {
 			$cropped = wp_crop_image($src_file, $crop_x, $crop_y, $crop_size, $crop_size, $crop_size, $crop_size, false, $dst_file);
 
 			return $cropped;
+		}
+
+		/**
+		 * Changes default WP get_avatar_url behavior
+		 *
+		 * @param string $avatar_url
+		 * @param mixed $id_or_email
+		 * @param array $args
+		 *
+		 * @return string
+		 */
+		public function get_avatar($avatar_url, $id_or_email, $args = [])
+		{
+			// Get the profile picture URL
+			$pp_profile_picture = $this->get_profile_picture();
+
+			// If the profile picture URL is not empty, return it
+			if (!empty($pp_profile_picture)) {
+				return $pp_profile_picture;
+			}
+
+			// Otherwise, return the default avatar
+			return $avatar_url;
 		}
 	} // end Wicket_Acc_Profile_Picture class
 }

@@ -464,14 +464,13 @@ function wicket_acc_rewrite_permalinks($post_link, $post, $leavename, $sample)
 /**
  * Get user profile picture
  * To pull in as wp_user profile image
- * Use: add_filter( 'get_avatar_url', 'wicket_acc_get_avatar', 10, 3 );
  *
  * @param mixed $user WP_User object, user ID or email
- * @param mixed $args (Optional)
+ * @param array $args (Optional)
  *
  * @return string
  */
-function wicket_acc_get_avatar($user, $args)
+function wicket_acc_get_avatar($user, $args = [])
 {
 	$extensions       = ['jpg', 'jpeg', 'png', 'gif'];
 	$uploads_dir      = wp_get_upload_dir();
