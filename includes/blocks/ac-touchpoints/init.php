@@ -19,7 +19,8 @@ function init($block = [], $is_preview)
 	echo '<div ' . $attrs . '>';
 
 	if ($is_preview) {
-		echo 'Touchpoint Block - TEC (The Event Calendar)';
+		echo '[Block: Touchpoint for TEC (The Event Calendar)]';
+
 		return;
 	}
 
@@ -139,7 +140,7 @@ function display_events($event_touchpoints, $display_type, $num_results)
 {
 	// No data
 	if (empty($event_touchpoints['data'])) {
-		esc_html_e('You do not have any ' . $display_type . ' events at this time', 'wicket-acc');
+		_e('<p>You do not have any ' . $display_type . ' events at this time.</p>', 'wicket-acc');
 		return;
 	}
 
