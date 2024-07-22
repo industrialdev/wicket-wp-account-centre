@@ -37,8 +37,10 @@ if (!class_exists('Wicket_Acc_Profile_Picture')) {
 
 		protected function display_block()
 		{
+			// Process the form
 			$this->process_form();
 
+			// Get user profile picture
 			$pp_profile_picture = $this->get_profile_picture();
 ?>
 

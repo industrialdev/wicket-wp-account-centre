@@ -6,13 +6,16 @@
 	"category": "wicket-account-center",
 	"icon": "",
 	"apiVersion": 2,
-	"keywords": ["account-center", "touchpoints", "wicket"],
+	"keywords": [
+		"account-center",
+		"touchpoints",
+		"wicket"
+	],
 	"acf": {
 		"mode": "preview",
 		"renderTemplate": "render.php"
 	},
-	"styles": [
-	],
+	"styles": [],
 	"supports": {
 		"align": false,
 		"anchor": false,

@@ -8,7 +8,7 @@
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Customize Woocommerce my account features to build the Wicket Account Centre
- * Version:           1.0.16
+ * Version:           1.0.22
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        http://www.wicket.io
@@ -33,7 +33,8 @@ if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get
 		deactivate_plugins(__FILE__);
 
 		$wicket_acc_plugin_check = '<div id="message" class="error">
-            <p><strong>Wicket Account Centre plugin is inactive.</strong> The <a href="http://wordpress.org/extend/plugins/woocommerce/">WooCommerce plugin</a> must be active for this plugin to be used. Please install &amp; activate WooCommerce »</p></div>';
+						<p><strong>Wicket Account Centre plugin is inactive.</strong> The <a href="http://wordpress.org/extend/plugins/woocommerce/">WooCommerce plugin</a> must be active for this plugin to be used. Please install &amp; activate WooCommerce »</p></div>';
+
 		echo wp_kses_post($wicket_acc_plugin_check);
 	}
 
@@ -102,7 +103,6 @@ if (!class_exists('Wicket_Acc_Main')) {
 		 */
 		public function wicket_acc_global_constants_vars()
 		{
-
 			if (!defined('WICKET_ACC_URL')) {
 				define('WICKET_ACC_URL', plugin_dir_url(__FILE__));
 			}
@@ -117,6 +117,12 @@ if (!class_exists('Wicket_Acc_Main')) {
 
 			if (!defined('WICKET_ACC_PLUGIN_URL')) {
 				define('WICKET_ACC_PLUGIN_URL', plugin_dir_url(__FILE__));
+			}
+
+			if (!defined('WICKET_ACC_PLUGIN_VERSION')) {
+				// Get version from plugin header
+				$plugin_data = get_plugin_data(__FILE__);
+				define('WICKET_ACC_PLUGIN_VERSION', $plugin_data['Version']);
 			}
 		}
 
@@ -143,10 +149,8 @@ if (!class_exists('Wicket_Acc_Main')) {
 		 */
 		public function wicket_acc_register_custom_post_type()
 		{
-
 			// Set UI labels for custom post type
-			$labels = array(
-
+			$labels = [
 				'name'               => esc_html__('Account Centre', 'wicket-acc'),
 				'singular_name'      => esc_html__('Page', 'wicket-acc'),
 				'add_new_item'       => esc_html__('Add New Page', 'wicket-acc'),
@@ -161,10 +165,10 @@ if (!class_exists('Wicket_Acc_Main')) {
 				'parent_item_colon'  => '',
 				'all_items'          => esc_html__('All Pages', 'wicket-acc'),
 				'attributes'         => __('Pages Sorting Order'),
-			);
+			];
 
 			// Set other options for custom post type
-			$args = array(
+			$args = [
 				'labels'              => $labels,
 				'menu_icon'           => '',
 				'public'              => false,
@@ -179,13 +183,18 @@ if (!class_exists('Wicket_Acc_Main')) {
 				'hierarchical'        => false,
 				'menu_position'       => 30,
 				'menu_icon'           => plugins_url('/assets/img/wicket-icon.png', __FILE__),
-				'rewrite'             => array(
+				'rewrite'             => [
 					'slug'            => 'wicket_acc',
 					'with_front'      => false,
-				),
-				'supports'            => array('title', 'page-attributes', 'editor'),
+				],
+				'supports'            => [
+					'title',
+					'page-attributes',
+					'editor'
+				],
 				'show_in_rest'        => true,
-			);
+			];
+
 			// Registering your Custom Post Type.
 			register_post_type('wicket_acc', $args);
 		}
@@ -195,7 +204,6 @@ if (!class_exists('Wicket_Acc_Main')) {
 		 */
 		public function wicket_acc_custom_nav_menus()
 		{
-
 			// This theme uses wp_nav_menu() in one location.
 			register_nav_menus(array(
 				'wicket-acc-nav' => esc_html__('Account Centre Menu', 'wicket-acc'),
@@ -213,5 +221,6 @@ if (!class_exists('Wicket_Acc_Main')) {
 			wp_enqueue_style('wicket-widgets-datepicker', plugins_url('/assets/css/react-datepicker.css', __FILE__));
 		}
 	} // end Class Wicket_Acc_Main_Class.
+
 	new Wicket_Acc_Main();
 }
