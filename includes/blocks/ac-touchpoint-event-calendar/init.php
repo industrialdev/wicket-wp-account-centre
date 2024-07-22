@@ -1,11 +1,10 @@
 <?php
 
 /**
- * Wicket Individual Profile Block
- *
+ * Wicket Touchpoint Event Calendar Block
  **/
 
-namespace Wicket_AC\Blocks\AC_Touchpoints_Block;
+namespace Wicket_AC\Blocks\AC_Touchpoint_Event_Calendar;
 
 function init($block = [], $is_preview)
 {

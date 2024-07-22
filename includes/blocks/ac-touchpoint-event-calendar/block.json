@@ -1,18 +1,17 @@
 {
-    "color": {
-	"name": "wicket-ac/ac-profile-picture",
-	"title": "AC Profile Picture",
-	"description": "Wicket block for user Profile Picture",
+	"name": "wicket-ac/ac-touchpoint-event-calendar",
+	"title": "AC Touchpoint TEC",
+	"description": "Wicket block for The Events Calendar Touchpoints",
 	"style": "file:./block-styles.css",
 	"category": "wicket-account-center",
 	"icon": "",
 	"apiVersion": 2,
 	"keywords": [
 		"account-center",
-		"profile",
-		"picture",
-		"profile-picture",
-		"avatar",
+		"touchpoints",
+		"events calendar",
+		"events",
+		"calendar",
 		"wicket"
 	],
 	"acf": {

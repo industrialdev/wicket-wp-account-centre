@@ -14,6 +14,7 @@ if (!class_exists('Wicket_Acc_Profile_Picture')) {
 		 * Constructor
 		 */
 		public function __construct(
+			protected bool $is_preview = false,
 			protected int $pp_max_size = 0,
 			protected string $pp_uploads_path = '',
 			protected string $pp_uploads_url = '',
@@ -21,6 +22,7 @@ if (!class_exists('Wicket_Acc_Profile_Picture')) {
 			protected array $uploads_dir = [],
 			protected array $pp_extensions = []
 		) {
+			$this->is_preview        = $is_preview;
 			$this->uploads_dir       = wp_get_upload_dir();
 			$this->pp_max_size       = absint(get_field('profile_picture_max_size'));         // in MB
 			$this->pp_uploads_path   = $this->uploads_dir['basedir'] . '/wicket-profile-pictures';
@@ -35,6 +37,11 @@ if (!class_exists('Wicket_Acc_Profile_Picture')) {
 			add_filter('get_avatar_url', [$this, 'get_avatar'], 10, 3);
 		}
 
+		/**
+		 * Display the block
+		 *
+		 * @return void
+		 */
 		protected function display_block()
 		{
 			// Process the form
@@ -202,7 +209,7 @@ if (!class_exists('Wicket_Acc_Profile_Picture')) {
 		 * @param string $dst_file    Path to save the cropped image.
 		 * @return string|false       Path to the cropped image file on success, false on failure.
 		 */
-		function crop_center_of_rectangle_from_file($src_file, $dst_file)
+		protected function crop_center_of_rectangle_from_file($src_file, $dst_file)
 		{
 			list($src_width, $src_height) = getimagesize($src_file);
 
@@ -258,10 +265,10 @@ if (!class_exists('Wicket_Acc_Profile_Picture')) {
  *
  * @param array $block
  */
-function init($block = [])
+function init($block = [], $is_preview)
 {
 	// Is ACF enabled?
 	if (function_exists('acf_get_field')) {
-		new Wicket_Acc_Profile_Picture();
+		new Wicket_Acc_Profile_Picture($is_preview);
 	}
 }

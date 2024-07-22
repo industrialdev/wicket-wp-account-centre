@@ -1,7 +1,7 @@
 {
-	"name": "wicket-ac/ac-touchpoints",
-	"title": "AC Touchpoints Block - TEC",
-	"description": "A Wicket block for The Events Calendar Touchpoints",
+	"name": "wicket-ac/ac-touchpoint-service-micropoint",
+	"title": "AC Touchpoint Service Micropoint",
+	"description": "Wicket block for AC Touchpoint Service Micropoint",
 	"style": "file:./block-styles.css",
 	"category": "wicket-account-center",
 	"icon": "",
@@ -9,6 +9,8 @@
 	"keywords": [
 		"account-center",
 		"touchpoints",
+		"service",
+		"micropoint",
 		"wicket"
 	],
 	"acf": {
