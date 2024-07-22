@@ -241,11 +241,12 @@ if (!class_exists('Wicket_Acc_Profile_Picture')) {
 
 			// If the profile picture URL is not empty, return it
 			if (!empty($pp_profile_picture)) {
-				return $pp_profile_picture;
+				// Filter URL (for child themes to manipulate) and return
+				return apply_filters('wicket/acc/get_avatar', $pp_profile_picture);
 			}
 
 			// Otherwise, return the default avatar
-			return $avatar_url;
+			return apply_filters('wicket/acc/get_avatar', $avatar_url);
 		}
 	} // end Wicket_Acc_Profile_Picture class
 }
