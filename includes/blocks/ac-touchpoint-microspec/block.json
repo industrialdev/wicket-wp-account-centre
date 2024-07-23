@@ -1,7 +1,7 @@
 {
-	"name": "wicket-ac/ac-touchpoint-service-micropoint",
-	"title": "AC Touchpoint Service Micropoint",
-	"description": "Wicket block for AC Touchpoint Service Micropoint",
+	"name": "wicket-ac/ac-touchpoint-microspec",
+	"title": "AC Touchpoint MicroSpec",
+	"description": "Wicket block for AC Touchpoint MicroSpec",
 	"style": "file:./block-styles.css",
 	"category": "wicket-account-center",
 	"icon": "",

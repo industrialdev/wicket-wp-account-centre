@@ -1,6 +1,6 @@
 {
-	"key": "group_667d287439c52",
-	"title": "AC Touchpoint Service Micropoint",
+	"key": "group_667d287439c53",
+	"title": "AC Touchpoint MicroSpec",
 	"fields": [
 		{
 			"key": "field_667d287486291",
@@ -86,7 +86,7 @@
 			{
 				"param": "block",
 				"operator": "==",
-				"value": "wicket-ac\/ac-touchpoint-service-micropoint"
+				"value": "wicket-ac\/ac-touchpoint-microspec"
 			}
 		]
 	],
