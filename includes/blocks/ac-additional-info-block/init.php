@@ -10,55 +10,51 @@ function init( $block = [] ) {
 	$wicket_settings = get_wicket_settings();
 	$person_id = wicket_current_person_uuid();
 	$environment = wicket_get_option('wicket_admin_settings_environment');
-	$ai_schema = get_field('additional_info_schema');
-		
+	$acf_ai_schema = get_field('additional_info_schema');
+	$acf_resource_type = get_field('additional_info_resource_type');
+	$acf_org_uuid = get_field('additional_info_organization_uuid') ?? '';
 
-	if ( $person_id ) { ?>
-
-		<script type="text/javascript">
-			window.Wicket=function(doc,tag,id,script){
-				var w=window.Wicket||{};if(doc.getElementById(id))return w;var ref=doc.getElementsByTagName(tag)[0];var js=doc.createElement(tag);js.id=id;js.src=script;ref.parentNode.insertBefore(js,ref);w._q=[];w.ready=function(f){w._q.push(f)};return w
-			}(document,"script","wicket-widgets","<?php echo $wicket_settings['wicket_admin'] ?>/dist/widgets.js");
-		</script>
-
-		<div class="wicket-section" role="complementary">
-			<h2><?php _e('Additional Info', 'wicket'); ?></h2>
-			<!-- additional information -->
-			<div id="additional_info"></div>
-		</div>
-
-		<script>
-			(function() {
-			Wicket.ready(function() {
-				var widgetRoot = document.getElementById('additional_info');
-				Wicket.widgets.editAdditionalInfo({
-				loadIcons: true,
-				rootEl: widgetRoot,
-				apiRoot: '<?php echo $wicket_settings['api_endpoint'] ?>',
-				accessToken: '<?php echo wicket_access_token_for_person($person_id) ?>',
-				resource: {
-					type: "people",
-					id: '<?php echo $person_id; ?>'
-				},
-				lang: "<?php echo defined('ICL_LANGUAGE_CODE') ? ICL_LANGUAGE_CODE : 'en' ?>",
-				schemas: [ // If schemas are not provided, the widget defaults to show all schemas.
-					<?php 
-					if($ai_schema):
-						foreach($ai_schema as $schema): ?>
-					{ id: '<?php echo ($environment == 'prod') ? $schema['schema_id_prod'] : $schema['schema_id_stage']; ?>', <?php if($schema['schema_read_only']){ ?> resourceId: '<?php echo ($environment == 'prod') ? $schema['read_only_schema_id_prod'] : $schema['read_only_schema_id_stage']; ?>' <?php } ?> }, 
-					<?php endforeach;
-					endif; ?>
-				]
-				}).then(function(widget) {
-					widget.listen(widget.eventTypes.SAVE_SUCCESS, function(payload) {
-						
-					});
-				});
-			});
-			})();
-		</script>
-
-	
-	<?php
+	if( !$person_id ) {
+		return;
 	}
+
+	// Create schemas_and_overrides payload for component
+	$schemas_and_overrides = [];
+
+	foreach( $acf_ai_schema as $ai_to_add ) {
+		$schema_uuid = '';
+		$resource_uuid = '';
+
+		if( $environment == 'prod' ) {
+			$schema_uuid = $ai_to_add['schema_uuid_prod'] ?? '';
+		} else {
+			$schema_uuid = $ai_to_add['schema_uuid_stage'] ?? '';
+		}
+
+		if( $ai_to_add['schema_use_override'] ) {
+			if( $environment == 'prod' ) {
+				$resource_uuid = $ai_to_add['schema_override_resource_uuid_prod'] ?? '';
+			} else {
+				$resource_uuid = $ai_to_add['schema_override_resource_uuid_stage'] ?? '';
+			}
+		}
+
+		if( !empty( $resource_uuid ) ) {
+			$schemas_and_overrides[] = [
+				$schema_uuid,
+				$resource_uuid
+			];
+		} else {
+			$schemas_and_overrides[] = [
+				$schema_uuid
+			];
+		}
+	}
+
+	get_component( 'widget-additional-info', [
+		'classes'                          => [],
+		'resource_type'                    => $acf_resource_type,
+		'org_uuid'												 => $acf_org_uuid,
+		'schemas_and_overrides'            => $schemas_and_overrides,
+	] );
 }
