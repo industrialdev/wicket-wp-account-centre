@@ -359,43 +359,42 @@ if (!function_exists('webroom_add_multiple_products_to_cart')) {
 function wicket_ac_memberships_get_product_link_data($membership)
 {
 	$late_fee_product_id = '';
+  $membership_post_id = $membership['membership']['ID'];
 	$next_tier = $membership['membership']['next_tier'];
 	$button_label = $membership['callout']['button_label'];
-	if (!empty($membership['late_fee_product_id'])) {
+	if (!empty($membership['late_fee_product_id']) && $membership['late_fee_product_id'] > 0) {
 		$late_fee_product_id = ',' . $membership['late_fee_product_id'];
 	}
+//  echo '<pre>'; var_dump([$membership['membership']['meta'],$next_tier['product_data']]);exit;
 	foreach ($next_tier['product_data'] as $product_data) {
-		$product = wc_get_product($product_data['product_id']);
-		if ($product->get_type() == 'variable' || $product->get_type() == 'variable-subscription') {
-			$variable_products = $product->get_children();
-			foreach ($variable_products as $variable_product) {
-				if (!empty($variable_product['ID'])) {
-					$variable_product = $variable_product['ID'];
-				}
-				$product = wc_get_product($variable_product);
-				$link['link'] = [
-					'title' => $product->get_name(),
-					'url' => '/cart/?add-to-cart=' . $variable_product . $late_fee_product_id . '&quantity=1'
-				];
-				$links[] = $link;
-			}
-		} else {
+    if(
+        !empty($membership['membership']['meta']['org_seats']) 
+        && $membership['membership']['meta']['org_seats'] > 0 
+        && $membership['membership']['meta']['org_seats'] != $product_data['max_seats']
+      ) 
+    {
+      continue;
+    }
+		$product = wc_get_product($product_data['variation_id']);
+    if(empty($product)) {
+      $product = wc_get_product($product_data['product_id']);
+    }
 			$link['link'] = [
 				'title' => $button_label,
-				'url' => '/cart/?add-to-cart=' . $product_data['product_id'] . $late_fee_product_id . '&quantity=1'
+				'url' => '/cart/?membership_post_id_renew=' .  $membership_post_id . '&add-to-cart=' . $product->get_id() . $late_fee_product_id . '&quantity=1'
 			];
 			$links[] = $link;
-		}
 	}
 	return $links;
 }
 
 function wicket_ac_memberships_get_page_link_data($membership)
 {
+  $membership_post_id = $membership['membership']['ID'];
 	if (!empty($membership['late_fee_product_id'])) {
-		$url = '/?page_id=' . $membership['membership']['form_page']['page_id'] . '&add-to-cart=' . $membership['late_fee_product_id'];
+		$url = '/?page_id=' . $membership['membership']['form_page']['page_id'] . '&membership_post_id_renew=' .  $membership_post_id . 'add-to-cart=' . $membership['late_fee_product_id'];
 	} else {
-		$url = $membership['membership']['form_page']['permalink'];
+		$url = $membership['membership']['form_page']['permalink'] . '?membership_post_id_renew=' . $membership['membership']['ID'];
 	}
 	$button_label = $membership['callout']['button_label'];
 	$link['link'] = [
