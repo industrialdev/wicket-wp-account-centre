@@ -57,6 +57,22 @@
 		font-weight: bold;
 	}
 
+	.show-more {
+		color: var(--color-dark-100);
+
+		.arrow {
+			text-decoration: none;
+		}
+
+		.text {
+			text-decoration: underline;
+		}
+
+		.text:hover {
+			text-decoration: underline;
+		}
+	}
+
 	/* Responsive styles */
 	@media (min-width: 640px) {
 		.wicket-ac-touchpoint-microspec {

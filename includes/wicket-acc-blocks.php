@@ -55,17 +55,27 @@ if (!class_exists('Wicket_AC_Blocks')) {
 		public function wicket_load_blocks()
 		{
 			$blocks = $this->wicket_get_blocks();
+
 			foreach ($blocks as $block) {
 				if (file_exists(WICKET_ACC_PLUGIN_DIR . 'includes/blocks/' . $block . '/block.json')) {
 					// Check if Block is already registered
 					$registry = WP_Block_Type_Registry::get_instance();
+
 					if (!$registry->get_registered('wicket-ac/' . $block)) {
 						register_block_type(WICKET_ACC_PLUGIN_DIR . 'includes/blocks/' . $block . '/block.json');
+
 						if (file_exists(WICKET_ACC_PLUGIN_DIR . 'includes/blocks/' . $block . '/style.css')) {
 							wp_register_style('block-' . $block, WICKET_ACC_PLUGIN_DIR . 'includes/blocks/' . $block . '/style.css', array(), filemtime(WICKET_ACC_PLUGIN_DIR . 'includes/blocks/' . $block . '/style.css'));
 						}
+
+						// Main block file
 						if (file_exists(WICKET_ACC_PLUGIN_DIR . 'includes/blocks/' . $block . '/init.php')) {
 							include_once WICKET_ACC_PLUGIN_DIR . 'includes/blocks/' . $block . '/init.php';
+						}
+
+						// Blcok ajax file
+						if (file_exists(WICKET_ACC_PLUGIN_DIR . 'includes/blocks/' . $block . '/ajax.php')) {
+							include_once WICKET_ACC_PLUGIN_DIR . 'includes/blocks/' . $block . '/ajax.php';
 						}
 					}
 				}

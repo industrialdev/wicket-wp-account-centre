@@ -67,6 +67,7 @@ if (!class_exists('Wicket_Acc_Main')) {
 
 			// Registration hook setting
 			register_activation_hook(__FILE__, array($this, 'wicket_acc_install_settings'));
+
 			// Include other files
 			if (is_admin()) {
 				// include admin class
@@ -77,13 +78,13 @@ if (!class_exists('Wicket_Acc_Main')) {
 				include_once WICKET_ACC_PLUGIN_DIR . 'front/class-wicket-acc-front.php';
 			}
 
-			// include acf blocks
+			// include ACF blocks
 			include_once WICKET_ACC_PLUGIN_DIR . 'includes/wicket-acc-blocks.php';
 
-			// include wicket and AC plugin helper functions
+			// include Wicket and AC plugin helper functions
 			include_once WICKET_ACC_PLUGIN_DIR . 'includes/wicket-acc-helper-functions.php';
 
-			//HOPS compatibility
+			// HOPS compatibility
 			add_action('before_woocommerce_init', array($this, 'wicket_acc_HPOS_Compatibility'));
 
 			add_filter('wp_dropdown_pages', 'wicket_acc_alter_wp_job_manager_pages', 10, 3);

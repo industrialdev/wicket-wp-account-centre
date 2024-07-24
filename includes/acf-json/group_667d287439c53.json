@@ -3,7 +3,7 @@
 	"title": "AC Touchpoint MicroSpec",
 	"fields": [
 		{
-			"key": "field_667d287486291",
+			"key": "field_667d287486292",
 			"label": "Display Registered Actions",
 			"name": "registered_action",
 			"aria-label": "",
@@ -30,9 +30,9 @@
 			"placeholder": ""
 		},
 		{
-			"key": "field_667d28e686292",
+			"key": "field_667d28e686293",
 			"label": "Number of Results to Show",
-			"name": "page_results",
+			"name": "num_results",
 			"aria-label": "",
 			"type": "select",
 			"instructions": "",
@@ -56,7 +56,7 @@
 			"placeholder": ""
 		},
 		{
-			"key": "field_667d2c9dbd448",
+			"key": "field_667d2c9dbd449",
 			"label": "Default Display",
 			"name": "default_display",
 			"aria-label": "",

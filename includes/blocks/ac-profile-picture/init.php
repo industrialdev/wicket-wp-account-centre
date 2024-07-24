@@ -264,6 +264,9 @@ if (!class_exists('Wicket_Acc_Profile_Picture')) {
  * Initialize the block
  *
  * @param array $block
+ * @param bool $is_preview
+ *
+ * @return void
  */
 function init($block = [], $is_preview)
 {

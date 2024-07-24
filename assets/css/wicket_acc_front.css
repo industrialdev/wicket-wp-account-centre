@@ -1,7 +1,7 @@
 .woocommerce-wicket--container {
 	width: 100%;
 	max-width: var(--wp--style--global--content-size);
-  margin-inline: auto;
+	margin-inline: auto;
 	margin-left: auto;
 	margin-right: auto;
 	display: flex;
@@ -18,12 +18,14 @@
 	.woocommerce-wicket--account-centre {
 		max-width: 70%;
 	}
+
 	.myaccount-nav {
 		width: 25%;
 	}
-  .wicket-acc-menu {
-    margin-bottom:40px !important;
-  }
+
+	.wicket-acc-menu {
+		margin-bottom: 40px !important;
+	}
 }
 
 button.wicket_acc_btn {
@@ -36,20 +38,26 @@ button.wicket_acc_btn {
 
 /* The Popup (background) */
 .wicket_acc_pp_opt {
-	
-	display: none;  /*Hidden by default */
 
-	position: relative; /* Stay in place */
+	display: none;
+	/*Hidden by default */
 
-	z-index: 1; /* Sit on top */
+	position: relative;
+	/* Stay in place */
+
+	z-index: 1;
+	/* Sit on top */
 
 	/*padding-top: 100px;  Location of the box */
 
-	overflow: auto; /* Enable scroll if needed */
+	overflow: auto;
+	/* Enable scroll if needed */
 
-	background-color: rgb(0,0,0); /* Fallback color */
+	background-color: rgb(0, 0, 0);
+	/* Fallback color */
 
-	background-color: rgba(0,0,0,0.1); /* Black w/ opacity */
+	background-color: rgba(0, 0, 0, 0.1);
+	/* Black w/ opacity */
 
 	width: 60%;
 
@@ -59,20 +67,26 @@ button.wicket_acc_btn {
 }
 
 .wicket_acc_pp_opt_close {
-	
-	display: none;  /*Hidden by default */
 
-	position: relative; /* Stay in place */
+	display: none;
+	/*Hidden by default */
 
-	z-index: 1; /* Sit on top */
+	position: relative;
+	/* Stay in place */
+
+	z-index: 1;
+	/* Sit on top */
 
 	/*padding-top: 100px;  Location of the box */
 
-	overflow: auto; /* Enable scroll if needed */
+	overflow: auto;
+	/* Enable scroll if needed */
 
-	background-color: rgb(0,0,0); /* Fallback color */
+	background-color: rgb(0, 0, 0);
+	/* Fallback color */
 
-	background-color: rgba(0,0,0,0.1); /* Black w/ opacity */
+	background-color: rgba(0, 0, 0, 0.1);
+	/* Black w/ opacity */
 
 	width: 60%;
 
@@ -84,17 +98,18 @@ button.wicket_acc_btn {
 
 
 
-.wicket_acc_profile_Pic{
+.wicket_acc_profile_Pic {
 	position: relative;
 }
 
-.wicket_acc_upload_button{
+.wicket_acc_upload_button {
 	position: absolute;
 	padding: 2px;
 	bottom: 1px;
 	left: 1px;
 }
-.wicket_acc_remove_button{
+
+.wicket_acc_remove_button {
 	position: absolute;
 	background-color: transparent;
 	color: #6d6d6d;
@@ -102,24 +117,33 @@ button.wicket_acc_btn {
 	left: 1px;
 	opacity: 70%;
 }
-.wicket_acc_remove_button:hover{
+
+.wicket_acc_remove_button:hover {
 	opacity: 100%;
 }
-.wicket_acc_remove_button:hover,.wicket_acc_upload_button:hover {
-  transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
-  color: #999;
+
+.wicket_acc_remove_button:hover,
+.wicket_acc_upload_button:hover {
+	transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+	color: #999;
 }
-.wicket_acc_upload_image{
+
+.wicket_acc_upload_image {
 	display: none;
 }
+
 .wicket_acc_pp_opt_remove {
-	display: none;  /*Hidden by default */
-	position: relative; /* Stay in place */
-	z-index: 1; /* Sit on top */
+	display: none;
+	/*Hidden by default */
+	position: relative;
+	/* Stay in place */
+	z-index: 1;
+	/* Sit on top */
 	/*padding-top: 100px;  Location of the box */
 	left: 0;
 	top: 0;
-	overflow: auto; /* Enable scroll if needed */
+	overflow: auto;
+	/* Enable scroll if needed */
 	/*background-color: rgb(0,0,0);  Fallback color */
 	/*background-color: rgba(0,0,0,0.4);  Black w/ opacity */
 	width: 60%;
@@ -130,7 +154,8 @@ button.wicket_acc_btn {
 
 /* Popup Content */
 
-form.woocommerce-EditAccountForm input.wicket_acc_pp_opt_content, a.wicket_acc_pp_opt_content {
+form.woocommerce-EditAccountForm input.wicket_acc_pp_opt_content,
+a.wicket_acc_pp_opt_content {
 	/*background-color: #fefefe;*/
 	/*padding: 20px; */
 	border: 1px solid #888;
@@ -160,11 +185,11 @@ form.woocommerce-EditAccountForm input.wicket_acc_pp_opt_content, a.wicket_acc_p
 	display: none;
 }
 
-li ul{
+li ul {
 	margin-left: 0.8em !important;
 }
 
-.woocommerce-MyAccount-navigation ul li.group_endpoint ul{
+.woocommerce-MyAccount-navigation ul li.group_endpoint ul {
 	display: none;
 }
 
@@ -173,20 +198,20 @@ li ul{
 	margin: 0 0 10px;
 }
 
-.myaccount-nav ul{
-	margin:0;
+.myaccount-nav ul {
+	margin: 0;
 	padding: 0;
 	list-style: none;
 }
 
-.myaccount-nav ul li{
-	display:block;
+.myaccount-nav ul li {
+	display: block;
 	margin: 5px 0px;
 	border-bottom: 1px solid #e0e0e0;
 }
 
-.myaccount-nav ul li.nav-selected > a:first-of-type,
-.myaccount-nav .menu-item.current-menu-item > a:first-of-type{
+.myaccount-nav ul li.nav-selected>a:first-of-type,
+.myaccount-nav .menu-item.current-menu-item>a:first-of-type {
 	text-decoration: none !important;
 	font-size: 14px;
 	line-height: 24px;
@@ -212,7 +237,7 @@ li ul{
 	box-shadow: none;
 	position: relative;
 	width: 100%;
-  text-align: left;
+	text-align: left;
 }
 
 .myaccount-nav ul li .nav__menu-link {
@@ -249,33 +274,35 @@ li ul{
 	padding: 5px;
 }
 
-.myaccount-nav ul > li .dropdown__toggle--menu i {
-  position: absolute;
-  right: 5px;
-  top: 15px;
+.myaccount-nav ul>li .dropdown__toggle--menu i {
+	position: absolute;
+	right: 5px;
+	top: 15px;
 }
-.myaccount-nav ul > li .dropdown__toggle--menu.open i {
-  -webkit-transform: rotate(-180deg);
-  -moz-transform: rotate(-180deg);
-  -ms-transform: rotate(-180deg);
-  -o-transform: rotate(-180deg);
-  transform: rotate(-180deg);
+
+.myaccount-nav ul>li .dropdown__toggle--menu.open i {
+	-webkit-transform: rotate(-180deg);
+	-moz-transform: rotate(-180deg);
+	-ms-transform: rotate(-180deg);
+	-o-transform: rotate(-180deg);
+	transform: rotate(-180deg);
 }
+
 @media screen and (max-width: 991px) {
-  .myaccount-nav ul > li .dropdown__toggle--menu i {
-    font-size: 20px;
+	.myaccount-nav ul>li .dropdown__toggle--menu i {
+		font-size: 20px;
 		top: 10px;
-  }
+	}
 }
 
 .myaccount-nav-mobile {
-  background-color: #fff;
+	background-color: #fff;
 	border-top: 1px solid #e0e0e0;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  padding: 0;
-  z-index: 900;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	padding: 0;
+	z-index: 900;
 }
 
 #dropdown-my-account-menu {
@@ -283,52 +310,57 @@ li ul{
 }
 
 .myaccount-nav-mobile .dropdown__toggle--nav {
-  display: block;
-  position: relative;
-  color: #333;
-  text-transform: uppercase;
-  font-weight: 700;
-  padding-top: 1.65rem;
-  padding-bottom: 1.65rem;
-  padding-right: 0.5rem;
-  padding-left: 0.5rem;
-  border-top: 1px solid #ffffff;
-  text-decoration: none;
-}
-.myaccount-nav-mobile .dropdown__toggle--nav i {
-  position: absolute;
-  top: 1.85rem;
-  right: 10px;
-}
-.myaccount-nav-mobile .dropdown__toggle--nav.open i {
-  -webkit-transform: rotate(-45deg);
-  -moz-transform: rotate(-45deg);
-  -ms-transform: rotate(-45deg);
-  -o-transform: rotate(-45deg);
-  transform: rotate(-45deg);
-  color: #333;
-}
-.myaccount-nav-mobile .nav__contextual {
-  padding: 1.2rem 0.5rem;
-}
-.myaccount-nav-mobile .nav__contextual h2 {
-  display: none;
-}
-.myaccount-nav-mobile .nav__contextual ul > li:first-of-type {
-  border-top: 0 none;
+	display: block;
+	position: relative;
+	color: #333;
+	text-transform: uppercase;
+	font-weight: 700;
+	padding-top: 1.65rem;
+	padding-bottom: 1.65rem;
+	padding-right: 0.5rem;
+	padding-left: 0.5rem;
+	border-top: 1px solid #ffffff;
+	text-decoration: none;
 }
 
-.wicket_acc_sub_list{
+.myaccount-nav-mobile .dropdown__toggle--nav i {
+	position: absolute;
+	top: 1.85rem;
+	right: 10px;
+}
+
+.myaccount-nav-mobile .dropdown__toggle--nav.open i {
+	-webkit-transform: rotate(-45deg);
+	-moz-transform: rotate(-45deg);
+	-ms-transform: rotate(-45deg);
+	-o-transform: rotate(-45deg);
+	transform: rotate(-45deg);
+	color: #333;
+}
+
+.myaccount-nav-mobile .nav__contextual {
+	padding: 1.2rem 0.5rem;
+}
+
+.myaccount-nav-mobile .nav__contextual h2 {
+	display: none;
+}
+
+.myaccount-nav-mobile .nav__contextual ul>li:first-of-type {
+	border-top: 0 none;
+}
+
+.wicket_acc_sub_list {
 	display: none;
 	margin: -5px 0px 10px !important;
 	padding: 0;
 }
 
-.nav-selected{
+.nav-selected {
 	background: whitesmoke;
 }
 
-.wicket_acc_sub_list li{
+.wicket_acc_sub_list li {
 	display: block !important;
 	margin: 0px 0px !important;
 	border-bottom: none !important;
@@ -339,28 +371,28 @@ ul.wicket_acc_sub_list li a {
 }
 
 .woocommerce-MyAccount-content {
-float: left !important;
-width: calc(75% - 50px - 20px) !important;
-padding: 0px 25px 0px !important;
-margin: 0px 0px 0px 20px !important
+	float: left !important;
+	width: calc(75% - 50px - 20px) !important;
+	padding: 0px 25px 0px !important;
+	margin: 0px 0px 0px 20px !important
 }
 
-.woocommerce{
-		display: block !important;
-		width:100%;
+.woocommerce {
+	display: block !important;
+	width: 100%;
 }
 
 .edit-link {
-margin-left: 5px;
+	margin-left: 5px;
 }
 
 .my-account .large-3,
-.my-account .dashboard-links{
+.my-account .dashboard-links {
 	display: none;
 }
 
 .my-account .large-9,
-#content-area #left-area{
+#content-area #left-area {
 	width: 100% !important;
 	max-width: 100% !important;
 	-ms-flex-preferred-size: 100% !important;
@@ -378,13 +410,13 @@ margin-left: 5px;
 	display: none;
 }
 
-@media all and (max-width: 630px){
-  .woocommerce-wicket--account-centre {
-    max-width: 90%;
-  }
+@media all and (max-width: 630px) {
+	.woocommerce-wicket--account-centre {
+		max-width: 90%;
+	}
 }
 
-@media all and (max-width: 520px){
+@media all and (max-width: 520px) {
 	.woocommerce-MyAccount-content {
 		float: none !important;
 		width: 100% !important;
