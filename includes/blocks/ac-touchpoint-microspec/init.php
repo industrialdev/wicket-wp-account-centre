@@ -179,9 +179,9 @@ if (!class_exists('Wicket_Acc_Touchpoint_Microspec')) {
 			endforeach;
 
 			// Show more like pagination, to load more data in the same page (if there are more than $num_results)
-			//if ($counter == $num_results && $ajax === false) {
-			$this->load_more_results($touchpoint_data, $num_results, $total_results, $counter, $display_type);
-			//}
+			if ($counter == $num_results && $ajax === false) {
+				$this->load_more_results($touchpoint_data, $num_results, $total_results, $counter, $display_type);
+			}
 		}
 
 		/**
