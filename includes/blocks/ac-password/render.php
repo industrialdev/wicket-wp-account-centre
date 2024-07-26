@@ -1,10 +1,10 @@
 <?php
+
+namespace Wicket_Acc\Blocks;
+
+use Wicket_Acc\Blocks\Block_Password;
+
 /**
  * Wicket Password Block
- *
  **/
-
-use Wicket_AC\Blocks\AC_Password_Block;
-
-echo AC_Password_Block\init( $block );
-
+new Block_Password($block = [], $is_preview);

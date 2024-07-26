@@ -1,4 +1,17 @@
 <?php
+// No direct access
+defined('ABSPATH') || exit;
+
+/**
+ * Global WAC() function
+ * Our entry point for this plugin functionality
+ *
+ * @return object $wac
+ */
+function WAC()
+{
+	return Wicket_Acc::instance();
+}
 
 /**
  * Returns active memberships from wicket API
@@ -520,7 +533,7 @@ function wicket_acc_get_avatar($user, $args = [])
 	$extensions       = ['jpg', 'jpeg', 'png', 'gif'];
 	$uploads_dir      = wp_get_upload_dir();
 	$uploads_url      = $uploads_dir['baseurl'] . '/wicket-profile-pictures';
-	$default_avatar   = WICKET_ACC_PLUGIN_URL . '/assets/img/profile-picture-default.svg';
+	$default_avatar   = WICKET_ACC_URL . '/assets/img/profile-picture-default.svg';
 
 	// Get the user ID
 	if (is_numeric($user)) {

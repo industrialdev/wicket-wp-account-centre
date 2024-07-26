@@ -1,4 +1,7 @@
 <?php
+
+namespace Wicket_Acc;
+
 // No direct access
 defined('ABSPATH') || exit;
 

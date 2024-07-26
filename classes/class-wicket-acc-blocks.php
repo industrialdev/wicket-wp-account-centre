@@ -1,5 +1,10 @@
 <?php
 
+namespace Wicket_Acc\Blocks;
+
+use Wicket_Acc;
+use WP_Block_Type_Registry;
+
 /**
  * ACF Blocks file for Wicket Account Centre Plugins
  *
@@ -11,15 +16,16 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
 
-if (!class_exists('Wicket_AC_Blocks')) {
+if (!class_exists('BlocksLoader')) {
 
 	/**
 	 * Wicket Blocks class
 	 */
-	class Wicket_AC_Blocks
+	class BlocksLoader extends Wicket_Acc
 	{
 
 		private $current_group_being_saved;
+
 		/**
 		 * Constructor
 		 */
@@ -56,26 +62,31 @@ if (!class_exists('Wicket_AC_Blocks')) {
 		{
 			$blocks = $this->wicket_get_blocks();
 
+			// No blocks found
+			if (empty($blocks)) {
+				return;
+			}
+
 			foreach ($blocks as $block) {
-				if (file_exists(WICKET_ACC_PLUGIN_DIR . 'includes/blocks/' . $block . '/block.json')) {
+				if (file_exists(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/block.json')) {
 					// Check if Block is already registered
 					$registry = WP_Block_Type_Registry::get_instance();
 
 					if (!$registry->get_registered('wicket-ac/' . $block)) {
-						register_block_type(WICKET_ACC_PLUGIN_DIR . 'includes/blocks/' . $block . '/block.json');
+						register_block_type(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/block.json');
 
-						if (file_exists(WICKET_ACC_PLUGIN_DIR . 'includes/blocks/' . $block . '/style.css')) {
-							wp_register_style('block-' . $block, WICKET_ACC_PLUGIN_DIR . 'includes/blocks/' . $block . '/style.css', array(), filemtime(WICKET_ACC_PLUGIN_DIR . 'includes/blocks/' . $block . '/style.css'));
+						if (file_exists(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/style.css')) {
+							wp_register_style('block-' . $block, WICKET_ACC_PATH . 'includes/blocks/' . $block . '/style.css', array(), filemtime(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/style.css'));
 						}
 
 						// Main block file
-						if (file_exists(WICKET_ACC_PLUGIN_DIR . 'includes/blocks/' . $block . '/init.php')) {
-							include_once WICKET_ACC_PLUGIN_DIR . 'includes/blocks/' . $block . '/init.php';
+						if (file_exists(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/init.php')) {
+							include_once WICKET_ACC_PATH . 'includes/blocks/' . $block . '/init.php';
 						}
 
 						// Blcok ajax file
-						if (file_exists(WICKET_ACC_PLUGIN_DIR . 'includes/blocks/' . $block . '/ajax.php')) {
-							include_once WICKET_ACC_PLUGIN_DIR . 'includes/blocks/' . $block . '/ajax.php';
+						if (file_exists(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/ajax.php')) {
+							include_once WICKET_ACC_PATH . 'includes/blocks/' . $block . '/ajax.php';
 						}
 					}
 				}
@@ -87,7 +98,7 @@ if (!class_exists('Wicket_AC_Blocks')) {
 		 */
 		public function wicket_load_acf_field_group($paths)
 		{
-			$paths[] = WICKET_ACC_PLUGIN_DIR . 'includes/acf-json';
+			$paths[] = WICKET_ACC_PATH . 'includes/acf-json';
 
 			return $paths;
 		}
@@ -97,8 +108,10 @@ if (!class_exists('Wicket_AC_Blocks')) {
 		 */
 		public function wicket_get_blocks()
 		{
-			$blocks = scandir(WICKET_ACC_PLUGIN_DIR . 'includes/blocks/');
+			$blocks = scandir(WICKET_ACC_PATH . 'includes/blocks/');
+
 			$blocks = array_values(array_diff($blocks, array('..', '.', '.DS_Store', '_base-block')));
+
 			return $blocks;
 		}
 
@@ -118,22 +131,76 @@ if (!class_exists('Wicket_AC_Blocks')) {
 
 			// store the group name and add action
 			$this->current_group_being_saved = $group['location'][0][0]['value'];
-			add_action('acf/settings/save_json',  array($this, 'wicket_acc_save_folder'), 999);
+			add_action('acf/settings/save_json',  array($this, 'wicket_acc_save_folder'), PHP_INT_MAX);
 
 			// don't forget to return the groups
 			return $group;
 		}
 
+		/**
+		 * Save ACF field group in plugin directory
+		 *
+		 * @param string $path
+		 *
+		 * @return string
+		 */
 		public function wicket_acc_save_folder($path)
 		{
 
 			// Save json file for blocks that have 'wicket-ac' in their name.
 			if (str_starts_with($this->current_group_being_saved, 'wicket-ac')) {
-				$path = WICKET_ACC_PLUGIN_DIR . 'includes/acf-json';
+				$path = WICKET_ACC_PATH . 'includes/acf-json';
 			}
 
 			return $path;
 		}
+
+		/**
+		 * Get Block template
+		 * Try to get the block template from child-theme/theme folder
+		 * If not found, get the block template from plugin folder
+		 *
+		 * @param string $block_name
+		 * @param string $template_name
+		 *
+		 * @return string
+		 */
+		public function get_block_template($block_name, $template_name)
+		{
+			$template_path = get_stylesheet_directory() . '/templates/blocks/block-' . $template_name . '.php';
+
+			if (!file_exists($template_path)) {
+				$template_path = WICKET_ACC_PATH . 'templates/blocks/block-' . $template_name . '.php';
+			}
+
+			if (!file_exists($template_path)) {
+				return '<p>Template block-' . $template_name . ' not found</p>';
+			}
+
+			return $template_path;
+		}
+
+		/**
+		 * Render Block template
+		 *
+		 * @param string $block_name
+		 * @param string $template_name
+		 *
+		 * @return void
+		 */
+		public function render_block($block_name = '', $template_name = '', $args = [])
+		{
+			if (empty($block_name) || empty($template_name)) {
+				return;
+			}
+
+			include $this->get_block_template($block_name, $template_name, $args);
+
+			return;
+		}
 	} // end Class Wicket_Blocks.
-	new Wicket_AC_Blocks();
+
+	if (function_exists('acf_get_field')) {
+		new BlocksLoader();
+	}
 }

@@ -10,7 +10,7 @@ $ac_post_id = 12051; //the Account Center Custom Post ID for managing content on
 
 $wicket_acc_ep_as = get_option('wicket_acc_set_ep_as_fld');
 
-if (!defined('WICKET_ACC_PLUGIN_DIR') || empty($wicket_acc_ep_as)) {
+if (!defined('WICKET_ACC_PATH') || empty($wicket_acc_ep_as)) {
 ?>
 	<div class="woocommerce-wicket--container" style="color:red; font-weight:bold;text-decoration:underline;">
 		Please activate and configure the Wicket Account Center plugin to use this template.
@@ -28,7 +28,7 @@ if (have_posts()) :
 		<div class="woocommerce-wicket--container">
 			<?php
 			if ('left-sidebar' == $wicket_acc_ep_as) {
-				include_once WICKET_ACC_PLUGIN_DIR . 'front/templates/navigation.php';
+				include_once WICKET_ACC_PATH . 'templates/front/navigation.php';
 			}
 			?>
 			<div class="woocommerce-wicket--account-centre">
@@ -50,7 +50,7 @@ if (have_posts()) :
 			</div>
 			<?php
 			if ('right-sidebar' == $wicket_acc_ep_as) {
-				include_once WICKET_ACC_PLUGIN_DIR . 'front/templates/navigation.php';
+				include_once WICKET_ACC_PATH . 'templates/front/navigation.php';
 			}
 			?>
 		</div>

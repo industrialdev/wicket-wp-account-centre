@@ -1,9 +1,14 @@
 <?php
+
+namespace Wicket_Acc\Blocks;
+
+use Wicket_Acc\Blocks\Block_Touchpoint_MicroSpec;
+
 // No direct access
 defined('ABSPATH') || exit;
 
-if (!class_exists('Wicket_Acc_Block_Ajax_Touchpoint_Microspec')) {
-	class Wicket_Acc_Block_Ajax_Touchpoint_Microspec extends \Wicket_AC\Blocks\AC_Touchpoint_Microspec\Wicket_Acc_Touchpoint_Microspec
+if (!class_exists('Block_Ajax_Touchpoint_MicroSpec')) {
+	class Block_Ajax_Touchpoint_MicroSpec extends Block_Touchpoint_MicroSpec
 	{
 		/**
 		 * Constructor
@@ -67,5 +72,5 @@ if (!class_exists('Wicket_Acc_Block_Ajax_Touchpoint_Microspec')) {
 		}
 	}
 
-	$Wicket_Acc_Block_Ajax_Touchpoint_Microspec = new Wicket_Acc_Block_Ajax_Touchpoint_Microspec();
+	new Block_Ajax_Touchpoint_MicroSpec();
 }

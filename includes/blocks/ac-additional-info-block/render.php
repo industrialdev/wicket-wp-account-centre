@@ -1,10 +1,10 @@
 <?php
+
+namespace Wicket_Acc\Blocks;
+
+use Wicket_Acc\Blocks\Block_Additional_Info;
+
 /**
  * Wicket Additional Info Block
- *
  **/
-
-use Wicket_AC\Blocks\AC_Additional_Info_Block;
-
-echo AC_Additional_Info_Block\init( $block );
-
+new Block_Additional_Info($block = [], $is_preview);

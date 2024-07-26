@@ -1,13 +1,10 @@
 <?php
+
+namespace Wicket_Acc\Blocks;
+
+use Wicket_Acc\Blocks\Block_Org_Profile;
+
 /**
  * Wicket Org Profile Block
- *
  **/
-
-use Wicket_AC\Blocks\AC_Org_Profile_Block;
-
-if(is_admin()){
-  echo '[Org Profile Block]';
-} else {
-  echo AC_Org_Profile_Block\init( $block );
-}
+new Block_Org_Profile($block = [], $is_preview);

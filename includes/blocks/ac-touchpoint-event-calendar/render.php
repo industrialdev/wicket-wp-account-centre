@@ -1,9 +1,10 @@
 <?php
 
+namespace Wicket_Acc\Blocks;
+
+use Wicket_Acc\Blocks\Block_Touchpoint_Event_Calendar;
+
 /**
  * Wicket Touchpoint Event Calendar Block
  **/
-
-use Wicket_AC\Blocks\AC_Touchpoint_Event_Calendar;
-
-echo AC_Touchpoint_Event_Calendar\init($block, $is_preview);
+new Block_Touchpoint_Event_Calendar($block = [], $is_preview);

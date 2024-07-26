@@ -1,6 +1,11 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
+# 1.1.0 / 2024-07-26
+- Added Block: Touchpoints MicroSpec
+- Added functionality to load block templates from child theme to be overridden by theme devs
+- Added a global WAC() function to access the plugin's functionality, without polluting the global namespace with more helper functions
+
 ## 1.0.22 / 2024-07-22
 - Added Profile Picture Block
 - Reordered Touchpoints Block

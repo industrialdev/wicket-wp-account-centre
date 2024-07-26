@@ -1,22 +1,31 @@
 <?php
 
+namespace Wicket_Acc\Blocks;
+
+use Wicket_Acc;
+use Wicket_Acc\Blocks\BlocksLoader;
+
+// No direct access
+defined('ABSPATH') || exit;
+
 /**
- * Wicket Touchpoint Microspec Block
+ * Wicket Touchpoint MicroSpec Block
  **/
-
-namespace Wicket_AC\Blocks\AC_Touchpoint_Microspec;
-
-if (!class_exists('Wicket_Acc_Touchpoint_Microspec')) {
-	class Wicket_Acc_Touchpoint_Microspec
+if (!class_exists('Block_Touchpoint_MicroSpec')) {
+	class Block_Touchpoint_MicroSpec extends Wicket_Acc
 	{
 		/**
 		 * Constructor
 		 */
 		public function __construct(
+			protected array $block     = [],
 			protected bool $is_preview = false,
 		) {
+			$this->block      = $block;
 			$this->is_preview = $is_preview;
-			$this->display_block();
+
+			// Display the block
+			$this->init_block();
 		}
 
 		/**
@@ -24,7 +33,7 @@ if (!class_exists('Wicket_Acc_Touchpoint_Microspec')) {
 		 *
 		 * @return void
 		 */
-		protected function display_block()
+		protected function init_block()
 		{
 			$is_preview = $this->is_preview;
 
@@ -95,12 +104,8 @@ if (!class_exists('Wicket_Acc_Touchpoint_Microspec')) {
 
 			$switch_link = esc_url($switch_link);
 
-			// Locate template if exists
-			$template = WICKET_ACC_PLUGIN_DIR . 'templates/blocks-account-centre/block_touchpoint_microspec.php';
-
-			if (file_exists($template)) {
-				include_once $template;
-			}
+			// Use render_block() method from BlocksLoader class
+			$this->render_block($block_logic, $template, $attrs);
 		}
 
 		/**
@@ -302,21 +307,5 @@ if (!class_exists('Wicket_Acc_Touchpoint_Microspec')) {
 			</div>
 <?php
 		}
-	}
-}
-
-/**
- * Initialize the block
- *
- * @param array $block
- * @param bool $is_preview
- *
- * @return void
- */
-function init($block = [], $is_preview)
-{
-	// Is ACF enabled?
-	if (function_exists('acf_get_field')) {
-		new Wicket_Acc_Touchpoint_Microspec($is_preview);
 	}
 }
