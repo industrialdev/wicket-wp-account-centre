@@ -1,10 +1,10 @@
 <?php
+
+namespace Wicket_Acc\Blocks;
+
+use Wicket_Acc\Blocks\Block_Callout;
+
 /**
  * Wicket Callout Block
- *
  **/
-
-use Wicket_AC\Blocks\AC_Callout_Block;
-
-echo AC_Callout_Block\init( $block );
-
+new Block_Callout($block = [], $is_preview);

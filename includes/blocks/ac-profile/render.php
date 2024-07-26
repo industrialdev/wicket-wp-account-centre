@@ -1,10 +1,10 @@
 <?php
+
+namespace Wicket_Acc\Blocks;
+
+use Wicket_Acc\Blocks\Block_Profile;
+
 /**
- * Wicket Individual Profile Block
- *
+ * Wicket Profile Block
  **/
-
-use Wicket_AC\Blocks\AC_Individual_Profile_Block;
-
-echo AC_Individual_Profile_Block\init( $block );
-
+new Block_Profile($block = [], $is_preview);

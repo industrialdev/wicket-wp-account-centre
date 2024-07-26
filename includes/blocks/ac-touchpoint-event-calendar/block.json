@@ -1,0 +1,34 @@
+{
+	"name": "wicket-ac/ac-touchpoint-event-calendar",
+	"title": "AC Touchpoint TEC",
+	"description": "Wicket block for The Events Calendar Touchpoints",
+	"style": "file:./block-styles.css",
+	"category": "wicket-account-center",
+	"icon": "",
+	"apiVersion": 2,
+	"keywords": [
+		"account-center",
+		"touchpoints",
+		"events calendar",
+		"events",
+		"calendar",
+		"wicket"
+	],
+	"acf": {
+		"mode": "preview",
+		"renderTemplate": "render.php"
+	},
+	"styles": [],
+	"supports": {
+		"align": false,
+		"anchor": false,
+		"alignContent": false,
+		"color": {
+			"text": false,
+			"background": false,
+			"link": false
+		},
+		"alignText": true,
+		"fullHeight": false
+	}
+}

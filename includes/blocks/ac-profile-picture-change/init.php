@@ -1,26 +1,34 @@
 <?php
 
+namespace Wicket_Acc\Blocks;
+
+use Wicket_Acc;
+
+// No direct access
+defined('ABSPATH') || exit;
+
 /**
  * Wicket Profile Picture Block
  *
  **/
-
-namespace Wicket_AC\Blocks\AC_Profile_Picture_Block;
-
-if (!class_exists('Wicket_Acc_Profile_Picture')) {
-	class Wicket_Acc_Profile_Picture
+if (!class_exists('Block_Profile_Picture_Change')) {
+	class Block_Profile_Picture_Change extends Wicket_Acc
 	{
 		/**
 		 * Constructor
 		 */
 		public function __construct(
-			protected int $pp_max_size = 0,
-			protected string $pp_uploads_path = '',
-			protected string $pp_uploads_url = '',
+			protected array $block              = [],
+			protected bool $is_preview          = false,
+			protected int $pp_max_size          = 0,
+			protected string $pp_uploads_path   = '',
+			protected string $pp_uploads_url    = '',
 			protected string $pp_uploads_subdir = '',
-			protected array $uploads_dir = [],
-			protected array $pp_extensions = []
+			protected array $uploads_dir        = [],
+			protected array $pp_extensions      = []
 		) {
+			$this->block             = $block;
+			$this->is_preview        = $is_preview;
 			$this->uploads_dir       = wp_get_upload_dir();
 			$this->pp_max_size       = absint(get_field('profile_picture_max_size'));         // in MB
 			$this->pp_uploads_path   = $this->uploads_dir['basedir'] . '/wicket-profile-pictures';
@@ -35,10 +43,17 @@ if (!class_exists('Wicket_Acc_Profile_Picture')) {
 			add_filter('get_avatar_url', [$this, 'get_avatar'], 10, 3);
 		}
 
+		/**
+		 * Display the block
+		 *
+		 * @return void
+		 */
 		protected function display_block()
 		{
+			// Process the form
 			$this->process_form();
 
+			// Get user profile picture
 			$pp_profile_picture = $this->get_profile_picture();
 ?>
 
@@ -107,7 +122,7 @@ if (!class_exists('Wicket_Acc_Profile_Picture')) {
 
 			// Still no image? Return the default svg
 			if (empty($pp_profile_picture)) {
-				$pp_profile_picture = WICKET_ACC_PLUGIN_URL . '/assets/img/profile-picture-default.svg';
+				$pp_profile_picture = WICKET_ACC_URL . '/assets/img/profile-picture-default.svg';
 			}
 
 			return $pp_profile_picture;
@@ -200,7 +215,7 @@ if (!class_exists('Wicket_Acc_Profile_Picture')) {
 		 * @param string $dst_file    Path to save the cropped image.
 		 * @return string|false       Path to the cropped image file on success, false on failure.
 		 */
-		function crop_center_of_rectangle_from_file($src_file, $dst_file)
+		protected function crop_center_of_rectangle_from_file($src_file, $dst_file)
 		{
 			list($src_width, $src_height) = getimagesize($src_file);
 
@@ -248,18 +263,5 @@ if (!class_exists('Wicket_Acc_Profile_Picture')) {
 			// Otherwise, return the default avatar
 			return apply_filters('wicket/acc/get_avatar', $avatar_url);
 		}
-	} // end Wicket_Acc_Profile_Picture class
-}
-
-/**
- * Initialize the block
- *
- * @param array $block
- */
-function init($block = [])
-{
-	// Is ACF enabled?
-	if (function_exists('acf_get_field')) {
-		new Wicket_Acc_Profile_Picture();
-	}
+	} // end Block_Profile_Picture_Change class
 }

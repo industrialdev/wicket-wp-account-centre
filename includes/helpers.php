@@ -1,18 +1,33 @@
 <?php
+// No direct access
+defined('ABSPATH') || exit;
+
+/**
+ * Global WAC() function
+ * Our entry point for this plugin functionality
+ *
+ * @return object $wac
+ */
+function WAC()
+{
+	return Wicket_Acc::instance();
+}
 
 /**
  * Returns active memberships from wicket API
  *
- * @return array $memberships (slug and id)
+ * @param string $iso_code (Optional) ISO code for the language: en, fr, es, etc.
+ *
+ * @return array $memberships slug and id
  */
 
 function wicket_get_active_memberships($iso_code = 'en')
 {
-	$all_summaries = [];
+	$all_summaries      = [];
 	$membership_summary = [];
 
 	$plan_lookup_slugs = [];
-	$plan_lookup_ids = [];
+	$plan_lookup_ids   = [];
 
 	$wicket_memberships = wicket_get_current_person_memberships();
 
@@ -25,10 +40,10 @@ function wicket_get_active_memberships($iso_code = 'en')
 			if ($entry['attributes']['status'] != 'Active') continue;
 			$entry_summary = [
 				'membership_category' => $entry['attributes']['membership_category'],
-				'starts_at' => $entry['attributes']['starts_at'],
-				'ends_at' => $entry['attributes']['ends_at'],
-				'name' => $membership_tier['attributes']['name_' . $iso_code],
-				'type' => $membership_tier['attributes']['type']
+				'starts_at'           => $entry['attributes']['starts_at'],
+				'ends_at'             => $entry['attributes']['ends_at'],
+				'name'                => $membership_tier['attributes']['name_' . $iso_code],
+				'type'                => $membership_tier['attributes']['type']
 			];
 
 			$membership_summary[] = $entry_summary;
@@ -38,7 +53,11 @@ function wicket_get_active_memberships($iso_code = 'en')
 	return $membership_summary;
 }
 
-
+/**
+ * Returns active memberships from WooCommerce
+ *
+ * @return array $memberships slug and id
+ */
 function woo_get_active_memberships()
 {
 
@@ -54,8 +73,8 @@ function woo_get_active_memberships()
 		foreach ($memberships as $membership) {
 			$entry_summary = [
 				'starts_at' => $membership->get_start_date(),
-				'ends_at' => $membership->get_end_date(),
-				'name' => $membership->plan->name
+				'ends_at'   => $membership->get_end_date(),
+				'name'      => $membership->plan->name
 			];
 
 			$membership_summary[] = $entry_summary;
@@ -65,13 +84,17 @@ function woo_get_active_memberships()
 	return $membership_summary;
 }
 
-
+/**
+ * Returns active memberships relationship from wicket API
+ *
+ * @return array $memberships relationship
+ */
 function wicket_get_active_memberships_relationship()
 {
-	$person_type = '';
+	$person_type        = '';
 	$wicket_memberships = wicket_get_current_person_memberships();
-	$person_uuid = wicket_current_person_uuid();
-	$org_info = [];
+	$person_uuid        = wicket_current_person_uuid();
+	$org_info           = [];
 
 	if ($wicket_memberships) {
 		foreach ($wicket_memberships['included'] as $included) {
@@ -117,7 +140,7 @@ function is_renewal_period($memberships, $renewal_period)
 function wicket_profile_widget_validation($fields = [])
 {
 
-	$person = wicket_current_person();
+	$person  = wicket_current_person();
 	$results = [];
 
 
@@ -138,14 +161,21 @@ function wicket_profile_widget_validation($fields = [])
 	return true;
 }
 
+/**
+ * Validates the addresses of the person
+ *
+ * @param object $person Person object
+ *
+ * @return bool $addresses
+ */
 function wicket_validation_addresses($person)
 {
 
-	$addresses = [];
+	$addresses    = [];
 	$country_name = '';
-	$city = '';
-	$address1 = '';
-	$zip_code = '';
+	$city         = '';
+	$address1     = '';
+	$zip_code     = '';
 
 	if ($person) {
 		if ($person->relationship('addresses')) {
@@ -178,6 +208,11 @@ function wicket_validation_addresses($person)
 	return false;
 }
 
+/**
+ * Menu walker for the wicket account center menu
+ *
+ * @return void
+ */
 class wicket_acc_menu_walker extends Walker_Nav_Menu
 {
 	private $current_item;
@@ -245,6 +280,11 @@ class wicket_acc_menu_walker extends Walker_Nav_Menu
 	}
 }
 
+/**
+ * Menu walker (mobile) for the wicket account center menu
+ *
+ * @return void
+ */
 class wicket_acc_menu_mobile_walker extends Walker_Nav_Menu
 {
 	private $current_item;
@@ -312,6 +352,11 @@ class wicket_acc_menu_mobile_walker extends Walker_Nav_Menu
 	}
 }
 
+/**
+ * Add multiple products to cart
+ *
+ * @return void
+ */
 function wicket_ac_maybe_add_multiple_products_to_cart()
 {
 	if (!class_exists('WC_Form_Handler') || empty($_REQUEST['add-to-cart'])) {
@@ -351,46 +396,43 @@ function wicket_ac_maybe_add_multiple_products_to_cart()
 		}
 	}
 }
-
-if (!function_exists('webroom_add_multiple_products_to_cart')) {
-	add_action('wp_loaded', 'wicket_ac_maybe_add_multiple_products_to_cart', 15);
-}
+add_action('wp_loaded', 'wicket_ac_maybe_add_multiple_products_to_cart', 15);
 
 function wicket_ac_memberships_get_product_link_data($membership)
 {
 	$late_fee_product_id = '';
-  $membership_post_id = $membership['membership']['ID'];
-	$next_tier = $membership['membership']['next_tier'];
-	$button_label = $membership['callout']['button_label'];
+	$membership_post_id  = $membership['membership']['ID'];
+	$next_tier           = $membership['membership']['next_tier'];
+	$button_label        = $membership['callout']['button_label'];
+
 	if (!empty($membership['late_fee_product_id']) && $membership['late_fee_product_id'] > 0) {
 		$late_fee_product_id = ',' . $membership['late_fee_product_id'];
 	}
-//  echo '<pre>'; var_dump([$membership['membership']['meta'],$next_tier['product_data']]);exit;
+
 	foreach ($next_tier['product_data'] as $product_data) {
-    if(
-        !empty($membership['membership']['meta']['org_seats']) 
-        && $membership['membership']['meta']['org_seats'] > 0 
-        && $membership['membership']['meta']['org_seats'] != $product_data['max_seats']
-      ) 
-    {
-      continue;
-    }
+		if (
+			!empty($membership['membership']['meta']['org_seats'])
+			&& $membership['membership']['meta']['org_seats'] > 0
+			&& $membership['membership']['meta']['org_seats'] != $product_data['max_seats']
+		) {
+			continue;
+		}
 		$product = wc_get_product($product_data['variation_id']);
-    if(empty($product)) {
-      $product = wc_get_product($product_data['product_id']);
-    }
-			$link['link'] = [
-				'title' => $button_label,
-				'url' => '/cart/?membership_post_id_renew=' .  $membership_post_id . '&add-to-cart=' . $product->get_id() . $late_fee_product_id . '&quantity=1'
-			];
-			$links[] = $link;
+		if (empty($product)) {
+			$product = wc_get_product($product_data['product_id']);
+		}
+		$link['link'] = [
+			'title' => $button_label,
+			'url' => '/cart/?membership_post_id_renew=' .  $membership_post_id . '&add-to-cart=' . $product->get_id() . $late_fee_product_id . '&quantity=1'
+		];
+		$links[] = $link;
 	}
 	return $links;
 }
 
 function wicket_ac_memberships_get_page_link_data($membership)
 {
-  $membership_post_id = $membership['membership']['ID'];
+	$membership_post_id = $membership['membership']['ID'];
 	if (!empty($membership['late_fee_product_id'])) {
 		$url = '/?page_id=' . $membership['membership']['form_page']['page_id'] . '&membership_post_id_renew=' .  $membership_post_id . 'add-to-cart=' . $membership['late_fee_product_id'];
 	} else {
@@ -408,6 +450,15 @@ function wicket_ac_memberships_get_page_link_data($membership)
 // ---------------------------------------------------------------------------------------------------
 // Alter the 'pages' admin settings to provide the wicket account center pages along with normal pages
 // ---------------------------------------------------------------------------------------------------
+/**
+ * Alter the 'pages' admin settings to provide the wicket account center pages along with normal pages
+ *
+ * @param string $output
+ * @param array $parsed_args
+ * @param array $pages
+ *
+ * @return string $output
+ */
 function wicket_acc_alter_wp_job_manager_pages($output, $parsed_args, $pages)
 {
 	if (in_array($parsed_args['name'], ['job_manager_submit_job_form_page_id', 'job_manager_job_dashboard_page_id', 'job_manager_jobs_page_id', 'job_manager_terms_and_conditions_page_id',])) {
@@ -419,6 +470,13 @@ function wicket_acc_alter_wp_job_manager_pages($output, $parsed_args, $pages)
 	}
 }
 
+/**
+ * Dropdown pages for the wicket account center Job Manager
+ *
+ * @param array $parsed_args
+ *
+ * @return string $output
+ */
 function wp_job_dropdown_pages($parsed_args = '')
 {
 	$pages  = get_posts(['post_type' => $parsed_args['post_type'], 'numberposts' => -1]);
@@ -467,14 +525,14 @@ function wicket_acc_rewrite_permalinks($post_link, $post, $leavename, $sample)
  * @param mixed $user WP_User object, user ID or email
  * @param array $args (Optional)
  *
- * @return string
+ * @return string URL to the profile picture
  */
 function wicket_acc_get_avatar($user, $args = [])
 {
 	$extensions       = ['jpg', 'jpeg', 'png', 'gif'];
 	$uploads_dir      = wp_get_upload_dir();
 	$uploads_url      = $uploads_dir['baseurl'] . '/wicket-profile-pictures';
-	$default_avatar   = WICKET_ACC_PLUGIN_URL . '/assets/img/profile-picture-default.svg';
+	$default_avatar   = WICKET_ACC_URL . '/assets/img/profile-picture-default.svg';
 
 	// Get the user ID
 	if (is_numeric($user)) {

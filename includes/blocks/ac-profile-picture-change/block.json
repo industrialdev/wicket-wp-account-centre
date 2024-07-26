@@ -1,0 +1,34 @@
+{
+	"name": "wicket-ac/ac-profile-picture",
+	"title": "AC Change Profile Picture",
+	"description": "Wicket block for Change Profile Picture",
+	"style": "file:./block-styles.css",
+	"category": "wicket-account-center",
+	"icon": "",
+	"apiVersion": 2,
+	"keywords": [
+		"account-center",
+		"profile",
+		"picture",
+		"profile-picture",
+		"avatar",
+		"wicket"
+	],
+	"acf": {
+		"mode": "preview",
+		"renderTemplate": "render.php"
+	},
+	"styles": [],
+	"supports": {
+		"align": false,
+		"anchor": false,
+		"alignContent": false,
+		"color": {
+			"text": false,
+			"background": false,
+			"link": false
+		},
+		"alignText": true,
+		"fullHeight": false
+	}
+}
