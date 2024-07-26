@@ -76,7 +76,7 @@ if (!class_exists('BlocksLoader')) {
 						register_block_type(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/block.json');
 
 						if (file_exists(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/style.css')) {
-							wp_register_style('block-' . $block, WICKET_ACC_PATH . 'includes/blocks/' . $block . '/style.css', array(), filemtime(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/style.css'));
+							wp_register_style('block-style-' . $block, WICKET_ACC_PATH . 'includes/blocks/' . $block . '/style.css', array(), filemtime(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/style.css'));
 						}
 
 						// Main block file
@@ -160,21 +160,21 @@ if (!class_exists('BlocksLoader')) {
 		 * Try to get the block template from child-theme/theme folder
 		 * If not found, get the block template from plugin folder
 		 *
-		 * @param string $block_name
 		 * @param string $template_name
 		 *
-		 * @return string
+		 * @return bool|string Template path or false if not found
 		 */
-		public function get_block_template($block_name, $template_name)
+		public function get_block_template_path($template_name)
 		{
-			$template_path = get_stylesheet_directory() . '/templates/blocks/block-' . $template_name . '.php';
+			// Child theme check
+			$template_path = get_stylesheet_directory() . '/templates/blocks/' . $template_name . '.php';
 
 			if (!file_exists($template_path)) {
-				$template_path = WICKET_ACC_PATH . 'templates/blocks/block-' . $template_name . '.php';
+				$template_path = WICKET_ACC_PATH . 'templates/blocks/' . $template_name . '.php';
 			}
 
 			if (!file_exists($template_path)) {
-				return '<p>Template block-' . $template_name . ' not found</p>';
+				return false;
 			}
 
 			return $template_path;
@@ -183,18 +183,22 @@ if (!class_exists('BlocksLoader')) {
 		/**
 		 * Render Block template
 		 *
-		 * @param string $block_name
 		 * @param string $template_name
 		 *
 		 * @return void
 		 */
-		public function render_block($block_name = '', $template_name = '', $args = [])
+		public function render_template($template_name = '', $args = [])
 		{
-			if (empty($block_name) || empty($template_name)) {
+			if (empty($template_name)) {
+				return;
+			}
+			// Avoid false include
+			if ($this->get_block_template_path($template_name) === false) {
+				echo '<p>Template ' . $template_name . ' not found</p>';
 				return;
 			}
 
-			include $this->get_block_template($block_name, $template_name, $args);
+			include $this->get_block_template_path($template_name);
 
 			return;
 		}

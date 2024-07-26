@@ -1,12 +1,9 @@
 <?php
-
-namespace Wicket_Acc;
-
 // No direct access
 defined('ABSPATH') || exit;
 
 /**
- * Available variables:
+ * Available $args[] variables:
  *
  * $attrs - Attributes for the block container.
  * $display - Display type: upcoming, past, all
@@ -14,8 +11,6 @@ defined('ABSPATH') || exit;
  * $total_results - Total results
  * $counter - Counter
  * $display_type - Touchpoint display type: upcoming, past, all
- *
- * @var $this Wicket_Acc_Block_Ajax_Touchpoint_Microspec
  */
 ?>
 <section <?php echo $attrs; ?>>

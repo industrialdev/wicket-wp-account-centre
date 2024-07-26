@@ -18,23 +18,22 @@ if (!class_exists('Block_Profile_Picture_Change')) {
 		 * Constructor
 		 */
 		public function __construct(
-			protected array $block              = [],
-			protected bool $is_preview          = false,
-			protected int $pp_max_size          = 0,
-			protected string $pp_uploads_path   = '',
-			protected string $pp_uploads_url    = '',
-			protected string $pp_uploads_subdir = '',
-			protected array $uploads_dir        = [],
-			protected array $pp_extensions      = []
+			protected array $block                = [],
+			protected bool $is_preview            = false,
+			protected ?BlocksLoader $blocksLoader = null,
+			protected int $pp_max_size            = 0,
+			protected string $pp_uploads_path     = '',
+			protected string $pp_uploads_url      = '',
+			protected array $pp_extensions        = []
 		) {
-			$this->block             = $block;
-			$this->is_preview        = $is_preview;
-			$this->uploads_dir       = wp_get_upload_dir();
-			$this->pp_max_size       = absint(get_field('profile_picture_max_size'));         // in MB
-			$this->pp_uploads_path   = $this->uploads_dir['basedir'] . '/wicket-profile-pictures';
-			$this->pp_uploads_url    = $this->uploads_dir['baseurl'] . '/wicket-profile-pictures';
-			$this->pp_uploads_subdir = 'wicket-profile-pictures';
-			$this->pp_extensions     = ['jpg', 'jpeg', 'png', 'gif'];
+			$this->block        = $block;
+			$this->is_preview   = $is_preview;
+			$this->blocksLoader = $blocksLoader ?? new BlocksLoader();
+
+			$this->pp_max_size     = absint(get_field('profile_picture_max_size'));  // in MB
+			$this->pp_uploads_path = WICKET_ACC_UPLOADS_PATH . 'profile-pictures/';
+			$this->pp_uploads_url  = WICKET_ACC_UPLOADS_URL . 'profile-pictures/';
+			$this->pp_extensions   = ['jpg', 'jpeg', 'png', 'gif'];
 
 			// Display the block
 			$this->display_block();
@@ -55,34 +54,13 @@ if (!class_exists('Block_Profile_Picture_Change')) {
 
 			// Get user profile picture
 			$pp_profile_picture = $this->get_profile_picture();
-?>
 
-			<section class="container wicket-ac-profile-picture">
-				<h2>
-					<?php esc_html_e('Profile Image', 'wicket-acc'); ?>
-				</h2>
-				<div class="profile-image">
-					<img src="<?php echo $pp_profile_picture; ?>" alt="<?php esc_html_e('Profile Image', 'wicket-acc'); ?>" class="profile-image-img">
-				</div>
-				<form name="wicket-ac-profile-picture-form" method="post" enctype="multipart/form-data">
-					<label for="profile-image" class="sr-only">
-						<?php esc_html_e('Choose File', 'wicket-acc'); ?>
-					</label>
-					<input type="file" id="profile-image" name="profile-image" class="sr-only">
-					<div class="buttons">
-						<label for="profile-image" class="btn choose-file">
-							<?php esc_html_e('Choose File', 'wicket-acc'); ?>
-						</label>
-						<button type="submit" class="btn update-image">
-							<?php esc_html_e('Update Image', 'wicket-acc'); ?>
-						</button>
-					</div>
-					<?php wp_nonce_field('wicket-ac-profile-picture-form', 'nonce'); ?>
-					<input type="hidden" name="user_id" value="<?php echo get_current_user_id(); ?>">
-					<input type="hidden" name="action" value="wicket-ac-profile-picture-form">
-				</form>
-			</section>
-<?php
+			$args = [
+				'pp_profile_picture' => $pp_profile_picture
+			];
+
+			// Render block
+			$this->blocksLoader->render_template('profile-picture-change', $args);
 		}
 
 		/**
@@ -106,7 +84,7 @@ if (!class_exists('Block_Profile_Picture_Change')) {
 			$pp_valid_extension = '';
 
 			foreach ($extensions as $ext) {
-				$file_path = $this->uploads_dir['basedir'] . '/wicket-profile-pictures/' . $current_user_id . '.' . $ext;
+				$file_path = $this->pp_uploads_path . $current_user_id . '.' . $ext;
 				if (file_exists($file_path)) {
 					// Found it!
 					$pp_profile_picture = $file_path;
@@ -117,7 +95,7 @@ if (!class_exists('Block_Profile_Picture_Change')) {
 
 			// Get file URL
 			if (!empty($pp_valid_extension)) {
-				$pp_profile_picture = $this->uploads_dir['baseurl'] . '/wicket-profile-pictures/' . $current_user_id . '.' . $pp_valid_extension;
+				$pp_profile_picture = $this->pp_uploads_path . $current_user_id . '.' . $pp_valid_extension;
 			}
 
 			// Still no image? Return the default svg
@@ -173,11 +151,11 @@ if (!class_exists('Block_Profile_Picture_Change')) {
 			$user_id = sanitize_text_field(wp_unslash($form['user_id']));
 
 			// Remove any existing file on wicket-profile-pictures/{user_id}.{extension}
-			$file_path   = $this->uploads_dir['basedir'] . '/wicket-profile-pictures/' . $user_id . '.' . $file_extension;
+			$file_path   = $this->pp_uploads_path .  $user_id . '.' . $file_extension;
 
 			// Delete the file if it exists
 			foreach ($this->pp_extensions as $ext) {
-				$other_file_path = $this->uploads_dir['basedir'] . '/wicket-profile-pictures/' . $user_id . '.' . $ext;
+				$other_file_path = $this->pp_uploads_path . $user_id . '.' . $ext;
 
 				if (file_exists($other_file_path)) {
 					wp_delete_file($other_file_path);
@@ -189,8 +167,8 @@ if (!class_exists('Block_Profile_Picture_Change')) {
 			$_FILES['profile-image']['full_path'] = $user_id . '.' . $file_extension;
 
 			// Create subfolder if it doesn't exist
-			if (!file_exists($this->uploads_dir['basedir'] . '/wicket-profile-pictures')) {
-				wp_mkdir_p($this->uploads_dir['basedir'] . '/wicket-profile-pictures');
+			if (!file_exists($this->pp_uploads_path)) {
+				wp_mkdir_p($this->pp_uploads_path);
 			}
 
 			// Move the file to the uploads directory, move_uploaded_file
