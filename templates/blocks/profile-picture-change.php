@@ -5,6 +5,7 @@ defined('ABSPATH') || exit;
 /**
  * Available $args[] variables:
  *
+ * is_custom - true if the profile picture URL is custom, false if it is the default
  * pp_url - Profile picture URL
  * pp_max_size - Max upload size in MB
  */
@@ -15,6 +16,14 @@ defined('ABSPATH') || exit;
 	</h2>
 	<div class="profile-image">
 		<img src="<?php echo $args['pp_url']; ?>" alt="<?php esc_html_e('Profile Image', 'wicket-acc'); ?>" class="profile-image-img">
+		<?php if ($args['is_custom']) : ?>
+			<form name="wicket-ac-profile-picture-remove-form" method="post">
+				<input type="hidden" name="user_id" value="<?php echo get_current_user_id(); ?>">
+				<input type="hidden" name="action" value="wicket-ac-profile-picture-remove-form">
+				<?php wp_nonce_field('wicket-ac-profile-picture-remove-form', 'nonce'); ?>
+				<button type="submit" class="remove-image circle-x" title="<?php esc_html_e('Remove Image', 'wicket-acc'); ?>">x</button>
+			</form>
+		<?php endif; ?>
 	</div>
 	<form name="wicket-ac-profile-picture-form" method="post" enctype="multipart/form-data">
 		<label for="profile-image" class="sr-only">

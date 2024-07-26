@@ -25,15 +25,39 @@
 	}
 
 	.profile-image {
-		display: flex;
 		justify-content: center;
 		margin-bottom: 16px;
+		position: relative;
+		display: inline-block;
 	}
 
 	.profile-image img {
+		display: block;
 		width: 135px;
 		height: auto;
 		border-radius: 50%;
+	}
+
+	.circle-x {
+		position: absolute;
+		top: 8px;
+		/* Adjust as necessary */
+		right: 8px;
+		/* Adjust as necessary */
+		width: 24px;
+		/* Adjust as necessary */
+		height: 24px;
+		/* Adjust as necessary */
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background-color: var(--color-white);
+		color: var(--color-primary);
+		border: 2px solid var(--color-primary);
+		border-radius: 50%;
+		font-weight: bold;
+		cursor: pointer;
+		/* Optional: if you want to make it clickable */
 	}
 
 	form {

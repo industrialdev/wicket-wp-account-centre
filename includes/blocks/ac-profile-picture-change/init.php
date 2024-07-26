@@ -51,6 +51,7 @@ if (!class_exists('Block_Profile_Picture_Change')) {
 		{
 			// Process the form
 			$process_form = $this->process_form();
+			$remove_form  = $this->remove_form();
 
 			if ($process_form === false) {
 				$this->blocksLoader->render_template('profile-picture-change_error');
@@ -62,14 +63,21 @@ if (!class_exists('Block_Profile_Picture_Change')) {
 
 			// Get user profile picture
 			$pp_profile_picture = $this->get_profile_picture();
+			$pp_is_custom       = $this->is_custom_profile_picture($pp_profile_picture);
 
 			$args = [
+				'is_custom'   => $pp_is_custom,
 				'pp_url'      => $pp_profile_picture,
 				'pp_max_size' => $this->pp_max_size
 			];
 
 			// Render block
 			$this->blocksLoader->render_template('profile-picture-change', $args);
+		}
+
+		protected function is_custom_profile_picture($pp_profile_picture)
+		{
+			return $pp_profile_picture !== WICKET_ACC_URL . '/assets/img/profile-picture-default.svg';
 		}
 
 		/**
@@ -196,6 +204,45 @@ if (!class_exists('Block_Profile_Picture_Change')) {
 
 			return true;
 		}
+
+		/**
+		 * Process the remove form and delete the profile picture
+		 *
+		 * @return bool
+		 */
+		public function remove_form()
+		{
+			if (is_admin()) {
+				return;
+			}
+
+			// No data? no action?
+			if (!isset($_POST['action']) || $_POST['action'] !== 'wicket-ac-profile-picture-remove-form') {
+				return;
+			}
+
+			$form = $_POST;
+
+			// Check nonce
+			if (!wp_verify_nonce(sanitize_text_field(wp_unslash($form['nonce'])), 'wicket-ac-profile-picture-remove-form')) {
+				return false;
+			}
+
+			// User ID
+			$user_id = absint($form['user_id']);
+
+			// Remove any existing file on wicket-profile-pictures/{user_id}.{extension}
+			foreach ($this->pp_extensions as $ext) {
+				$file_path = $this->pp_uploads_path . $user_id . '.' . $ext;
+
+				if (file_exists($file_path)) {
+					wp_delete_file($file_path);
+				}
+			}
+
+			return true;
+		}
+
 		/**
 		 * Crop square from the center of an image file
 		 *
