@@ -166,8 +166,11 @@ if (!class_exists('BlocksLoader')) {
 		 */
 		public function get_block_template_path($template_name)
 		{
+			// Santize template name
+			$template_name = sanitize_title($template_name);
+
 			// Child theme check
-			$template_path = get_stylesheet_directory() . '/templates/blocks/' . $template_name . '.php';
+			$template_path = WICKET_ACC_TEMPLATE_PATH 	. $template_name . '.php';
 
 			if (!file_exists($template_path)) {
 				$template_path = WICKET_ACC_PATH . 'templates/blocks/' . $template_name . '.php';
