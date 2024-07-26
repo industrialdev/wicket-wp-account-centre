@@ -85,6 +85,7 @@ if (!class_exists('Block_Profile_Picture_Change')) {
 
 			foreach ($extensions as $ext) {
 				$file_path = $this->pp_uploads_path . $current_user_id . '.' . $ext;
+
 				if (file_exists($file_path)) {
 					// Found it!
 					$pp_profile_picture = $file_path;
@@ -95,7 +96,7 @@ if (!class_exists('Block_Profile_Picture_Change')) {
 
 			// Get file URL
 			if (!empty($pp_valid_extension)) {
-				$pp_profile_picture = $this->pp_uploads_path . $current_user_id . '.' . $pp_valid_extension;
+				$pp_profile_picture = $this->pp_uploads_url . $current_user_id . '.' . $pp_valid_extension;
 			}
 
 			// Still no image? Return the default svg
