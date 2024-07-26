@@ -20,9 +20,11 @@ if (!class_exists('Block_Touchpoint_MicroSpec')) {
 		public function __construct(
 			protected array $block     = [],
 			protected bool $is_preview = false,
+			protected ?BlocksLoader $blocksLoader = null
 		) {
-			$this->block      = $block;
-			$this->is_preview = $is_preview;
+			$this->block        = $block;
+			$this->is_preview   = $is_preview;
+			$this->blocksLoader = $blocksLoader ?? new BlocksLoader();
 
 			// Display the block
 			$this->init_block();
@@ -45,22 +47,17 @@ if (!class_exists('Block_Touchpoint_MicroSpec')) {
 			);
 
 			if ($is_preview) {
-?>
-				<div class="wicket-ac-touchpoints__preview wicket-ac-touchpoint-microspec wicket-ac-block-preview">
-					<div class="wicket-ac-touchpoints__preview__title">
-						<?php esc_html_e('Block: Touchpoint for MicroSpec', 'wicket-acc'); ?>
-					</div>
-					<div class="wicket-ac-touchpoints__preview__content">
-						<?php esc_html_e('This block displays registered data for MicroSpec on the front-end.', 'wicket-acc'); ?>
-					</div>
-				</div>
-			<?php
+				$this->blocksLoader->render_template('preview');
+
 				return;
 			}
 
 			$display           = get_field('default_display');
 			$registered_action = get_field('registered_action');
 			$num_results       = get_field('num_results');
+			$total_results     = 0;
+			$counter           = 0;
+			$display_type      = 'upcoming';
 
 			$touchpoints_results = $this->get_touchpoints_results();
 
@@ -104,8 +101,25 @@ if (!class_exists('Block_Touchpoint_MicroSpec')) {
 
 			$switch_link = esc_url($switch_link);
 
-			// Use render_block() method from BlocksLoader class
-			$this->render_block($block_logic, $template, $attrs);
+			$args = [
+				'block_name'        => 'Touchpoint MicroSpec',
+				'block_description' => 'This block displays registered data for MicroSpec on the front-end.',
+				'block_slug'        => 'wicket-ac-touchpoint-microspec',
+				'attrs'             => $attrs,
+				'display'           => $display,
+				'num_results'       => $num_results,
+				'total_results'     => $total_results,
+				'counter'           => $counter,
+				'display_type'      => $display_type,
+				'touchpoints'       => $touchpoints_results,
+				'switch_link'       => $switch_link,
+				'is_preview'        => $is_preview
+			];
+
+			// Render block
+			$this->blocksLoader->render_template('touchpoint-microspec', $args);
+
+			return;
 		}
 
 		/**
@@ -149,7 +163,7 @@ if (!class_exists('Block_Touchpoint_MicroSpec')) {
 
 			// Ajax request?
 			if ($ajax === false) {
-			?>
+?>
 				<p class="text-base">
 					<?php echo ucfirst($display_type) . " Data: " . $total_results; ?>
 				</p>

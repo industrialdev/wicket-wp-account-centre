@@ -45,6 +45,8 @@ define('WICKET_ACC_VERSION', get_file_data(__FILE__, ['Version' => 'Version'], f
 define('WICKET_ACC_PATH', plugin_dir_path(__FILE__));
 define('WICKET_ACC_URL', plugin_dir_url(__FILE__));
 define('WICKET_ACC_BASENAME', plugin_basename(__FILE__));
+define('WICKET_ACC_UPLOADS_PATH', wp_get_upload_dir()['basedir'] . '/wicket-account-center/');
+define('WICKET_ACC_UPLOADS_URL', wp_get_upload_dir()['baseurl'] . '/wicket-account-center/');
 
 if (!class_exists('Wicket_Acc')) {
 	/**
