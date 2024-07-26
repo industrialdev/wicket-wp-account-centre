@@ -41,12 +41,12 @@ function init( $block = [] ) {
 
 		if( !empty( $resource_uuid ) ) {
 			$schemas_and_overrides[] = [
-				$schema_uuid,
-				$resource_uuid
+				'id'         => $schema_uuid,
+				'resourceId' => $resource_uuid
 			];
 		} else {
 			$schemas_and_overrides[] = [
-				$schema_uuid
+				'id'         => $schema_uuid
 			];
 		}
 	}
