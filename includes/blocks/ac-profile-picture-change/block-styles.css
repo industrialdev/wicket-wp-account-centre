@@ -84,6 +84,11 @@
 		border: 1px solid var(--wicket-ac-border-color);
 	}
 
+	.update-image:disabled {
+		pointer-events: none;
+		opacity: 0.3;
+	}
+
 	.update-image:hover {
 		background-color: var(--wicket-ac-gray);
 	}

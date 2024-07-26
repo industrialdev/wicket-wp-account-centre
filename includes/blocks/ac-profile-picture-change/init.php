@@ -64,7 +64,8 @@ if (!class_exists('Block_Profile_Picture_Change')) {
 			$pp_profile_picture = $this->get_profile_picture();
 
 			$args = [
-				'profile_picture_url' => $pp_profile_picture
+				'pp_url'      => $pp_profile_picture,
+				'pp_max_size' => $this->pp_max_size
 			];
 
 			// Render block

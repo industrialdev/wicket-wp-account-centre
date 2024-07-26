@@ -5,7 +5,8 @@ defined('ABSPATH') || exit;
 /**
  * Available $args[] variables:
  *
- * profile_picture_url - Profile picture URL
+ * pp_url - Profile picture URL
+ * pp_max_size - Max upload size in MB
  */
 ?>
 <section class="container wicket-ac-profile-picture">
@@ -13,18 +14,22 @@ defined('ABSPATH') || exit;
 		<?php esc_html_e('Profile Image', 'wicket-acc'); ?>
 	</h2>
 	<div class="profile-image">
-		<img src="<?php echo $args['profile_picture_url']; ?>" alt="<?php esc_html_e('Profile Image', 'wicket-acc'); ?>" class="profile-image-img">
+		<img src="<?php echo $args['pp_url']; ?>" alt="<?php esc_html_e('Profile Image', 'wicket-acc'); ?>" class="profile-image-img">
 	</div>
 	<form name="wicket-ac-profile-picture-form" method="post" enctype="multipart/form-data">
 		<label for="profile-image" class="sr-only">
 			<?php esc_html_e('Choose File', 'wicket-acc'); ?>
 		</label>
 		<input type="file" id="profile-image" name="profile-image" class="sr-only" accept="image/png, image/gif, image/jpeg">
+		<div class="guidance text-sm">
+			<?php esc_html_e('Upload a profile picture to personalize your profile. The image will be cropped to a square.', 'wicket-acc'); ?>
+			<?php esc_html_e('Max upload size:', 'wicket-acc'); ?> <?php echo $args['pp_max_size']; ?> <?php esc_html_e('MB', 'wicket-acc'); ?>
+		</div>
 		<div class="buttons">
 			<label for="profile-image" class="btn choose-file">
 				<?php esc_html_e('Choose File', 'wicket-acc'); ?>
 			</label>
-			<button type="submit" class="btn update-image">
+			<button type="submit" class="btn update-image" id="update-image" disabled="disabled">
 				<?php esc_html_e('Update Image', 'wicket-acc'); ?>
 			</button>
 		</div>
@@ -47,6 +52,11 @@ defined('ABSPATH') || exit;
 			} else {
 				fileAlert.style.display = 'none';
 			}
+		});
+
+		// On image selection, enable the update button
+		fileInput.addEventListener('change', function() {
+			document.getElementById('update-image').disabled = false;
 		});
 	});
 </script>
