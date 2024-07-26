@@ -168,7 +168,11 @@ if (!class_exists('AccFront')) {
 					);
 				}
 
-				flush_rewrite_rules();
+				/**
+				 * Do we really need to do this every single time, on every page load?!
+				 * See https://developer.wordpress.org/reference/functions/flush_rewrite_rules/
+				 */
+				//flush_rewrite_rules();
 			}
 		}
 
