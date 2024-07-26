@@ -50,13 +50,21 @@ if (!class_exists('Block_Profile_Picture_Change')) {
 		protected function display_block()
 		{
 			// Process the form
-			$this->process_form();
+			$process_form = $this->process_form();
+
+			if ($process_form === false) {
+				$this->blocksLoader->render_template('profile-picture-change_error');
+			}
+
+			if ($process_form === true) {
+				$this->blocksLoader->render_template('profile-picture-change_success');
+			}
 
 			// Get user profile picture
 			$pp_profile_picture = $this->get_profile_picture();
 
 			$args = [
-				'pp_profile_picture' => $pp_profile_picture
+				'profile_picture_url' => $pp_profile_picture
 			];
 
 			// Render block
@@ -139,7 +147,7 @@ if (!class_exists('Block_Profile_Picture_Change')) {
 			$file_extension = pathinfo($_FILES['profile-image']['name'], PATHINFO_EXTENSION);
 
 			// Check if is a valid image
-			if (getimagesize($_FILES['profile-image']['tmp_name']) === false) {
+			if (@getimagesize($_FILES['profile-image']['tmp_name']) === false) {
 				return false;
 			}
 
@@ -152,7 +160,7 @@ if (!class_exists('Block_Profile_Picture_Change')) {
 			$user_id = sanitize_text_field(wp_unslash($form['user_id']));
 
 			// Remove any existing file on wicket-profile-pictures/{user_id}.{extension}
-			$file_path   = $this->pp_uploads_path .  $user_id . '.' . $file_extension;
+			$file_path = $this->pp_uploads_path .  $user_id . '.' . $file_extension;
 
 			// Delete the file if it exists
 			foreach ($this->pp_extensions as $ext) {

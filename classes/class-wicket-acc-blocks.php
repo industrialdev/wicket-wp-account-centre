@@ -192,6 +192,7 @@ if (!class_exists('BlocksLoader')) {
 			if (empty($template_name)) {
 				return;
 			}
+
 			// Avoid false include
 			if ($this->get_block_template_path($template_name) === false) {
 				echo '<p>Template ' . $template_name . ' not found</p>';
