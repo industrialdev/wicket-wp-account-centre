@@ -3,12 +3,12 @@
 defined('ABSPATH') || exit;
 
 /**
- * Global WAC() function
- * Our entry point for this plugin functionality
+ * Global WACC() function
+ * Our entry point for this plugin functionality. All future helpers should live as Class methods accessible through this function.
  *
  * @return object $wac
  */
-function WAC()
+function WACC()
 {
 	return Wicket_Acc::instance();
 }

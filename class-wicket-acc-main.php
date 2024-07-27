@@ -1,7 +1,6 @@
 <?php
 
 /**
- *
  * @package  wicket-account-centre
  * @author  Wicket Inc.
  *
@@ -15,7 +14,6 @@
  * Support:           https://wicket.io
  * Domain Path:       /languages
  * Text Domain:       wicket-acc
- *
  */
 
 if (!defined('ABSPATH')) {
@@ -28,11 +26,11 @@ if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get
 	 */
 	function wicket_acc_admin_notice()
 	{
-		// Deactivate the plugin.
+		// Deactivate this plugin.
 		deactivate_plugins(__FILE__);
 
 		$wicket_acc_plugin_check = '<div id="message" class="error">
-						<p><strong>Wicket Account Centre plugin is inactive.</strong> The <a href="http://wordpress.org/extend/plugins/woocommerce/">WooCommerce plugin</a> must be active for this plugin to be used. Please install &amp; activate WooCommerce »</p></div>';
+						<p><strong>Wicket Account Centre plugin is inactive.</strong> The <a href="https://wordpress.org/extend/plugins/woocommerce/">WooCommerce plugin</a> must be active for this plugin to be used. Please install &amp; activate WooCommerce »</p></div>';
 
 		echo wp_kses_post($wicket_acc_plugin_check);
 	}

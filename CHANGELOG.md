@@ -2,14 +2,14 @@
 Previously known as My Account Page Editor
 
 # 1.1.0 / 2024-07-26
-- Added Block: Touchpoints MicroSpec
+- New Block: Touchpoints MicroSpec
 - Added functionality to load block templates from child theme to be overridden by theme devs, using same logic as WooCommerce. Copy files from /templates/ to your theme/child theme /wicket-templates/ folder and edit as needed.
-- Added a global WAC() function to access the plugin's functionality, without polluting the global namespace with more helper functions
+- Added a global WACC() function to access the plugin's functionality, without polluting the global namespace with more helper functions
 - Fixed an issue in AC plugin that was improperly doing a https://developer.wordpress.org/reference/functions/flush_rewrite_rules/ on EVERY WP page load.
 - Profile Picture Block: Added ability to remove an uploaded image.
 
 ## 1.0.22 / 2024-07-22
-- Added Profile Picture Block
+- New Blocl: Profile Picture Change
 - Reordered Touchpoints Block
 
 ## 1.0.21 / 2024-07-18
