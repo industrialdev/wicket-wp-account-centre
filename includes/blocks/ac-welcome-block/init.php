@@ -52,8 +52,6 @@ if (!class_exists('Block_Welcome')) {
 			$show_user_id        = get_field('show_user_id');
 			$image_url           = get_avatar_url($current_user->ID, ['size' => '300']);
 			$active_memberships  = wicket_get_active_memberships($iso_code);
-
-			$show_user_id = 1;
 ?>
 
 			<div class="wicket-welcome-block wp-block-wicket-ac-ac-callout bg-light-010 rounded-100">
