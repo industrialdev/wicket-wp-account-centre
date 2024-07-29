@@ -1,6 +1,10 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
+## 1.1.1 / 2024-07-29
+- Added user MDP ID into Welcome Block
+- Tested and released the new WACC() helper function.
+
 ## 1.1.0 / 2024-07-26
 - New Block: Touchpoints MicroSpec
 - Added functionality to load block templates from child theme to be overridden by theme devs, using same logic as WooCommerce. Copy files from /templates/ to your theme/child theme /wicket-templates/ folder and edit as needed.

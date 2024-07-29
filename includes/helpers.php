@@ -1,14 +1,23 @@
 <?php
+
+use Wicket_Acc;
+
 // No direct access
 defined('ABSPATH') || exit;
 
 /**
  * Global WACC() function
- * Our entry point for this plugin functionality. All future helpers should live as Class methods accessible through this function.
+ * Wicket Account Centre Helpers
  *
  * @return object $wac
  */
 function WACC()
 {
-	return Wicket_Acc::instance();
+	return new Wicket_Acc\MethodRouter();
 }
+
+/**
+ * DO NOT ADD MORE HELPERS HERE
+ *
+ * Please, use class-wicket-acc-helpers.php file instead
+ */
