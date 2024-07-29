@@ -3,7 +3,7 @@
 defined('ABSPATH') || exit;
 
 /**
- * Please:
+ * MARK: PLEASE READ.
  *
  * Don't add any new functions to this file.
  * Don't add any new functions to this file.
@@ -450,9 +450,6 @@ function wicket_ac_memberships_get_page_link_data($membership)
 	return $links;
 }
 
-// ---------------------------------------------------------------------------------------------------
-// Alter the 'pages' admin settings to provide the wicket account center pages along with normal pages
-// ---------------------------------------------------------------------------------------------------
 /**
  * Alter the 'pages' admin settings to provide the wicket account center pages along with normal pages
  *
@@ -574,3 +571,17 @@ function wicket_acc_get_avatar($user, $args = [])
 	// Filter URL (for child themes to manipulate) and return
 	return apply_filters('wicket/acc/get_avatar', $pp_profile_picture);
 }
+
+/**
+ * MARK: PLEASE READ.
+ *
+ * Don't add any new functions to this file.
+ * Don't add any new functions to this file.
+ * Don't add any new functions to this file.
+ * Don't add any new functions to this file.
+ * Don't add any new functions to this file.
+ * Don't add any new functions to this file.
+ * Don't add any new functions to this file.
+ *
+ * Thank you.
+ */
