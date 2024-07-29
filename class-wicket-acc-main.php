@@ -95,6 +95,7 @@ if (!class_exists('Wicket_Acc')) {
 			$includes_global = [
 				'includes/ray-stub.php',
 				'includes/helpers.php',
+				'includes/deprecated.php',
 			];
 
 			// Loop and include files
