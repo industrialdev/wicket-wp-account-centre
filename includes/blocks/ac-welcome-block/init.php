@@ -35,7 +35,6 @@ if (!class_exists('Block_Welcome')) {
 		 */
 		protected function init_block()
 		{
-
 			$iso_code = apply_filters('wpml_current_language', null);
 
 			if (empty($iso_code)) {
@@ -45,12 +44,16 @@ if (!class_exists('Block_Welcome')) {
 
 			$current_user        = wp_get_current_user();
 			$person              = wicket_current_person();
+			$identifying_number  = $person->identifying_number;
 			$edit_profile        = get_field('edit_profile_button');
 			$edit_profile_button = get_field('edit_profile_button_link');
 			$member_since        = get_field('member_since');
 			$renewal_date        = get_field('renewal_date');
+			$show_user_id        = get_field('show_user_id');
 			$image_url           = get_avatar_url($current_user->ID, ['size' => '300']);
 			$active_memberships  = wicket_get_active_memberships($iso_code);
+
+			$show_user_id = 1;
 ?>
 
 			<div class="wicket-welcome-block wp-block-wicket-ac-ac-callout bg-light-010 rounded-100">
@@ -66,6 +69,14 @@ if (!class_exists('Block_Welcome')) {
 							<p class="text-heading-xs wicket-welcome-label"><?php _e('Welcome', 'wicket-acc'); ?></p>
 							<p class="text-heading-lg wicket-welcome-name"><?php echo $person->given_name . " " . $person->family_name; ?></p>
 
+							<?php if ($show_user_id) : ?>
+								<p class="mb-2 wicket-welcome-member-mdp-id text-sm">
+									<span><?php echo __('ID:', 'wicket-acc'); ?></span>
+									<?php echo $identifying_number; ?>
+								</p>
+							<?php endif;
+							?>
+
 							<?php
 							if ($active_memberships) {
 								foreach ($active_memberships as $membership) {
@@ -74,23 +85,36 @@ if (!class_exists('Block_Welcome')) {
 											continue;
 										}
 									}
-									echo '<div class="mt-4 wicket-welcome-memberships">';
+							?>
+									<div class="mt-4 wicket-welcome-memberships">
+										<div class="mb-4">
+											<p class="mb-1 wicket-welcome-member-type">
+												<strong><?php echo __('Membership Type:', 'wicket-acc'); ?></strong> <?php echo $membership['name']; ?>
+											</p>
+											<?php if ($membership['type'] == 'organization') :
+												$org_info = wicket_get_active_memberships_relationship(); ?>
+												<p class="mb-2 wicket-welcome-member-org">
+													<strong><?php echo $org_info['relationship']; ?> &ndash; <?php echo $org_info['name']; ?></strong>
+												</p>
+											<?php endif; ?>
+											<p class="mt-2 mb-1 wicket-welcome-member-active">
+												<?php echo __('Active Member', 'wicket-acc'); ?>
+											</p>
+										</div>
 
-									echo '<div class="mb-4">';
-									echo '<p class="mb-1 wicket-welcome-member-type"><strong>' . __('Membership Type:', 'wicket-acc') . '</strong> ' . $membership['name'] . '</p>';
-									if ($membership['type'] == 'organization') {
-										$org_info = wicket_get_active_memberships_relationship();
-										echo '<p class="mb-2 wicket-welcome-member-org"><strong>' . $org_info['relationship'] . ' &ndash; ' . $org_info['name'] . '</strong></p>';
-									}
-									echo '<p class="mt-2 mb-1 wicket-welcome-member-active">' . __('Active Member', 'wicket-acc') . '</p>';
-									echo '</div>';
-									if ($member_since && !empty($membership['starts_at']) && strtotime($membership['starts_at'])) {
-										echo '<p class="mb-1 wicket-welcome-member-since">' . __('Member Since:', 'wicket-acc') . ' ' . date('F j, Y', strtotime($membership['starts_at'])) . '</p>';
-									}
-									if ($renewal_date && !empty($membership['ends_at']) && strtotime($membership['ends_at'])) {
-										echo '<p class="mb-1 wicket-welcome-renewal">' . __('Renewal Date:', 'wicket-acc') . ' ' . date('F j, Y', strtotime($membership['ends_at'])) . '</p>';
-									}
-									echo '</div>';
+										<?php if ($member_since && !empty($membership['starts_at']) && strtotime($membership['starts_at'])) : ?>
+											<p class="mb-1 wicket-welcome-member-since">
+												<?php echo __('Member Since:', 'wicket-acc'); ?> <?php echo date('F j, Y', strtotime($membership['starts_at'])); ?>
+											</p>
+										<?php endif; ?>
+
+										<?php if ($renewal_date && !empty($membership['ends_at']) && strtotime($membership['ends_at'])) : ?>
+											<p class="mb-1 wicket-welcome-renewal">
+												<?php echo __('Renewal Date:', 'wicket-acc'); ?> <?php echo date('F j, Y', strtotime($membership['ends_at'])); ?>
+											</p>
+										<?php endif; ?>
+									</div>
+							<?php
 								}
 							}
 							?>
@@ -102,7 +126,6 @@ if (!class_exists('Block_Welcome')) {
 					</div>
 				</div>
 			</div>
-
 <?php
 		}
 	}

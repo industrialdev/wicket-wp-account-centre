@@ -1,6 +1,6 @@
 {
 	"key": "group_66100d9d92030",
-	"title": "AC Welcome",
+	"title": "ACC Welcome",
 	"fields": [
 		{
 			"key": "field_66100d9eca323",
@@ -45,6 +45,26 @@
 				"id": ""
 			},
 			"return_format": "array"
+		},
+		{
+			"key": "field_66100d9eca324",
+			"label": "Show User ID",
+			"name": "show_user_id",
+			"aria-label": "",
+			"type": "true_false",
+			"instructions": "",
+			"required": 0,
+			"conditional_logic": 0,
+			"wrapper": {
+				"width": "",
+				"class": "",
+				"id": ""
+			},
+			"message": "",
+			"default_value": 1,
+			"ui_on_text": "",
+			"ui_off_text": "",
+			"ui": 1
 		},
 		{
 			"key": "field_6613e7dd4c413",
