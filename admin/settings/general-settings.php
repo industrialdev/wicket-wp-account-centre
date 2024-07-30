@@ -16,7 +16,7 @@ defined('ABSPATH') || exit;
 add_settings_section(
 	'wicket_acc_settings_sec', // ID used to identify this section and with which to register options.
 	__('General Settings', 'wicket-acc'), // Title to be displayed on the administration page.
-	'wicket_acc_settings_sec_cb', // Callback used to render the description of the section.
+	'acc_admin_settings_sec_cb', // Callback used to render the description of the section.
 	'wicket_acc_settings_page' // Page on which to add this section of options.
 );
 
@@ -26,9 +26,9 @@ add_settings_field(
 	'wicket_acc_set_ep_as_fld_callback', // The name of the function responsible for rendering the option interface.
 	'wicket_acc_settings_page', // The page on which this option will be displayed.
 	'wicket_acc_settings_sec', // The name of the section to which this field belongs.
-	array(
+	[
 		esc_html__('Select menu location.', 'wicket-acc'),
-	)
+	]
 );
 
 register_setting(
@@ -47,9 +47,9 @@ add_settings_field(
 	'wicket_acc_set_ep_custom_dashboard_callback', // The name of the function responsible for rendering the option interface.
 	'wicket_acc_settings_page', // The page on which this option will be displayed.
 	'wicket_acc_settings_sec', // The name of the section to which this field belongs.
-	array(
+	[
 		esc_html__('Select the Account Centre Page to be used as the [Member Portal] default page.', 'wicket-acc'),
-	)
+	]
 );
 
 register_setting(
@@ -58,9 +58,11 @@ register_setting(
 );
 
 /**
- * Section callback.
+ * Section callback
+ *
+ * @return void
  */
-function wicket_acc_settings_sec_cb()
+function acc_admin_settings_sec_cb()
 {
 }
 
@@ -83,11 +85,14 @@ function wicket_acc_set_ep_as_fld_callback($args)
 	<br />
 	<p class="description afreg_additional_fields_section_title"> <?php echo wp_kses_post($args[0]); ?> </p>
 <?php
-
 }
 
 /**
- * Section callback.
+ * Section callback
+ *
+ * @param array $args Arguments.
+ *
+ * @return void
  */
 function wicket_acc_set_ep_custom_dashboard_callback($args)
 {

@@ -145,12 +145,12 @@ class Block_TouchpointEventCalendar extends WicketAcc
 		}
 
 		if ($display == 'upcoming' || $display == 'all') {
-			display_events($events['past'], 'upcoming', $num_results);
+			$this->display_events($events['past'], 'upcoming', $num_results);
 			$close++;
 		}
 
 		if ($display == 'past' || $display == 'all') {
-			display_events($events['past'], 'past', $num_results);
+			$this->display_events($events['past'], 'past', $num_results);
 			$close++;
 		}
 
@@ -158,7 +158,7 @@ class Block_TouchpointEventCalendar extends WicketAcc
 		echo '</div>';
 	}
 
-	function display_events($event_touchpoints, $display_type, $num_results)
+	protected function display_events($event_touchpoints, $display_type, $num_results)
 	{
 		// No data
 		if (empty($event_touchpoints['data'])) {

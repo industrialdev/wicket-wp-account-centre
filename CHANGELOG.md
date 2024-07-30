@@ -1,7 +1,7 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
-## 1.1.2 / 2024-07-30
+## 1.1.3 / 2024-07-30
 - Proper namespace for the plugin.
 - Proper template interception/overriding for child themes.
 
