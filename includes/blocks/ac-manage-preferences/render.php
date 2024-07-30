@@ -1,10 +1,8 @@
 <?php
 
-namespace Wicket_Acc\Blocks;
-
-use Wicket_Acc\Blocks\Block_Manage_Preferences;
+namespace WicketAcc;
 
 /**
  * Wicket Manage Preferences Block
  **/
-new Block_Manage_Preferences($block = [], $is_preview);
+new Block_ManagePreferences($block = [], $is_preview);

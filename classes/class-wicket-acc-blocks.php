@@ -169,7 +169,7 @@ class Blocks extends WicketAcc
 		$template_path = WICKET_ACC_TEMPLATE_PATH 	. $template_name . '.php';
 
 		if (!file_exists($template_path)) {
-			$template_path = WICKET_ACC_PATH . 'templates/blocks/' . $template_name . '.php';
+			$template_path = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'blocks/' . $template_name . '.php';
 		}
 
 		if (!file_exists($template_path)) {

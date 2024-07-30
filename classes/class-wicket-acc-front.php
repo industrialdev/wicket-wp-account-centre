@@ -357,13 +357,12 @@ class Front extends WicketAcc
 	 */
 	public function intercept_wc_template($template, $template_name, $template_path)
 	{
-
 		if ('dashboard.php' === basename($template)) {
-			$template = WICKET_ACC_PATH . 'templates/front/dashboard.php';
+			$template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'front/dashboard.php';
 		}
 
 		if ('my-account.php' === basename($template)) {
-			$template = WICKET_ACC_PATH . 'templates/front/my-account.php';
+			$template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'front/my-account.php';
 		}
 
 		return $template;

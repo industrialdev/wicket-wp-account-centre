@@ -1,10 +1,8 @@
 <?php
 
-namespace Wicket_Acc\Blocks;
-
-use Wicket_Acc\Blocks\Block_Profile_Picture_Change;
+namespace WicketAcc;
 
 /**
  * Wicket Profile Picture change Block
  **/
-new Block_Profile_Picture_Change($block = [], $is_preview);
+new Block_ProfilePictureChange($block = [], $is_preview);

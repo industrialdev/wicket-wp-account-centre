@@ -47,6 +47,7 @@ define('WICKET_ACC_URL', plugin_dir_url(__FILE__));
 define('WICKET_ACC_BASENAME', plugin_basename(__FILE__));
 define('WICKET_ACC_UPLOADS_PATH', wp_get_upload_dir()['basedir'] . '/wicket-account-center/');
 define('WICKET_ACC_UPLOADS_URL', wp_get_upload_dir()['baseurl'] . '/wicket-account-center/');
+define('WICKET_ACC_PLUGIN_TEMPLATE_PATH', WICKET_ACC_PATH . 'templates-wicket/');
 define('WICKET_ACC_TEMPLATE_PATH', get_stylesheet_directory() . '/templates-wicket/');
 
 /**

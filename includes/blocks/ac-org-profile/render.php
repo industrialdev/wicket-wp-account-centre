@@ -1,10 +1,8 @@
 <?php
 
-namespace Wicket_Acc\Blocks;
-
-use Wicket_Acc\Blocks\Block_Org_Profile;
+namespace WicketAcc;
 
 /**
  * Wicket Org Profile Block
  **/
-new Block_Org_Profile($block = [], $is_preview);
+new Block_OrgProfile($block = [], $is_preview);

@@ -1,10 +1,8 @@
 <?php
 
-namespace Wicket_Acc\Blocks;
-
-use Wicket_Acc\Blocks\Block_Touchpoint_MicroSpec;
+namespace WicketAcc;
 
 /**
  * Wicket Touchpoint MicroSpec Block
  **/
-new Block_Touchpoint_MicroSpec($block = [], $is_preview);
+new Block_TouchpointMicroSpec($block = [], $is_preview);

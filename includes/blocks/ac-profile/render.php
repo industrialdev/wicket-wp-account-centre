@@ -1,8 +1,6 @@
 <?php
 
-namespace Wicket_Acc\Blocks;
-
-use Wicket_Acc\Blocks\Block_Profile;
+namespace WicketAcc;
 
 /**
  * Wicket Profile Block

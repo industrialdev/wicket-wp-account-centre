@@ -1,6 +1,6 @@
 <?php
 
-use Wicket_Acc;
+namespace WicketAcc;
 
 // No direct access
 defined('ABSPATH') || exit;
@@ -13,7 +13,7 @@ defined('ABSPATH') || exit;
  */
 function WACC()
 {
-	return new Wicket_Acc\MethodRouter();
+	return new MethodRouter();
 }
 
 /**
