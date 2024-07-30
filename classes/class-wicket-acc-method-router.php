@@ -1,6 +1,9 @@
 <?php
 
-namespace Wicket_Acc;
+namespace WicketAcc;
+
+// No direct access
+defined('ABSPATH') || exit;
 
 /**
  * Magic wrapper Class for WACC() helpers
@@ -16,9 +19,9 @@ class MethodRouter
 	{
 		// Register all classes
 		$this->instances = [
-			'Front'        => new \Wicket_Acc\Front(),
-			'BlocksLoader' => new \Wicket_Acc\Blocks(),
-			'Helpers'      => new \Wicket_Acc\Helpers(),
+			'Front'        => new Front(),
+			'BlocksLoader' => new Blocks(),
+			'Helpers'      => new Helpers(),
 		];
 	}
 

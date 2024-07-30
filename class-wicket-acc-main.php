@@ -1,5 +1,7 @@
 <?php
 
+namespace WicketAcc;
+
 /**
  * @package  wicket-account-centre
  * @author  Wicket Inc.
@@ -45,12 +47,12 @@ define('WICKET_ACC_URL', plugin_dir_url(__FILE__));
 define('WICKET_ACC_BASENAME', plugin_basename(__FILE__));
 define('WICKET_ACC_UPLOADS_PATH', wp_get_upload_dir()['basedir'] . '/wicket-account-center/');
 define('WICKET_ACC_UPLOADS_URL', wp_get_upload_dir()['baseurl'] . '/wicket-account-center/');
-define('WICKET_ACC_TEMPLATE_PATH', get_stylesheet_directory() . '/wicket-templates/');
+define('WICKET_ACC_TEMPLATE_PATH', get_stylesheet_directory() . '/templates-wicket/');
 
 /**
  * The main Wicket Account Centre class
  */
-class Wicket_Acc
+class WicketAcc
 {
 	/**
 	 * Constructor
@@ -65,10 +67,6 @@ class Wicket_Acc
 	public function run()
 	{
 		add_action('wp_loaded', [$this, 'language']);
-		add_action('init', [$this, 'register_custom_post_type']);
-		add_action('after_setup_theme', [$this, 'custom_nav_menus']);
-		add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
-		add_action('before_woocommerce_init', [$this, 'HPOS_Compatibility']);
 		add_filter('wp_dropdown_pages', 'wicket_acc_alter_wp_job_manager_pages', 10, 3);
 		add_filter('post_type_link', 'wicket_acc_rewrite_permalinks', 50, 4);
 
@@ -77,6 +75,13 @@ class Wicket_Acc
 
 		// Includes
 		$this->includes();
+
+		// Init classes
+		new WooCommerce();
+		new Blocks();
+		new Front();
+		new Helpers();
+		new Registers();
 	}
 
 	/**
@@ -92,6 +97,8 @@ class Wicket_Acc
 		];
 
 		$include_classes = [
+			'classes/class-wicket-acc-woocommerce.php',
+			'classes/class-wicket-acc-registers.php',
 			'classes/class-wicket-acc-blocks.php',
 			'classes/class-wicket-acc-front.php',
 			'classes/class-wicket-acc-helpers.php',
@@ -136,18 +143,6 @@ class Wicket_Acc
 	}
 
 	/**
-	 * HOPS compatibility for WooCommerce
-	 *
-	 * @return void
-	 */
-	public function HPOS_Compatibility()
-	{
-		if (class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class)) {
-			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true);
-		}
-	}
-
-	/**
 	 * Plugin settings
 	 */
 	public function install_settings()
@@ -164,88 +159,8 @@ class Wicket_Acc
 			load_plugin_textdomain('wicket-acc', false, dirname(plugin_basename(__FILE__)) . '/languages/');
 		}
 	}
-
-	/**
-	 * Register custom post type
-	 */
-	public function register_custom_post_type()
-	{
-		// Set UI labels for custom post type
-		$labels = [
-			'name'               => esc_html__('Account Centre', 'wicket-acc'),
-			'singular_name'      => esc_html__('Page', 'wicket-acc'),
-			'add_new_item'       => esc_html__('Add New Page', 'wicket-acc'),
-			'add_new'            => esc_html__('Add New Page', 'wicket-acc'),
-			'edit_item'          => esc_html__('Edit Page', 'wicket-acc'),
-			'view_item'          => esc_html__('View Page', 'wicket-acc'),
-			'update_item'        => esc_html__('Update Page', 'wicket-acc'),
-			'search_items'       => esc_html__('Search Page', 'wicket-acc'),
-			'not_found'          => esc_html__('Not Found', 'wicket-acc'),
-			'not_found_in_trash' => esc_html__('Not found in Trash', 'wicket-acc'),
-			'menu_name'          => esc_html__('Account Centre', 'wicket-acc'),
-			'parent_item_colon'  => '',
-			'all_items'          => esc_html__('All Pages', 'wicket-acc'),
-			'attributes'         => __('Pages Sorting Order'),
-		];
-
-		// Set other options for custom post type
-		$args = [
-			'labels'              => $labels,
-			'menu_icon'           => '',
-			'public'              => false,
-			'publicly_queryable'  => true,
-			'exclude_from_search' => true,
-			'show_ui'             => true,
-			'show_in_menu'        => true,
-			'query_var'           => true,
-			'rewrite'             => true,
-			'capability_type'     => 'post',
-			'has_archive'         => false,
-			'hierarchical'        => false,
-			'menu_position'       => 30,
-			'menu_icon'           => plugins_url('/assets/img/wicket-icon.png', __FILE__),
-			'rewrite'             => [
-				'slug'            => 'wicket_acc',
-				'with_front'      => false,
-			],
-			'supports'            => [
-				'title',
-				'page-attributes',
-				'editor'
-			],
-			'show_in_rest'        => true,
-		];
-
-		// Registering your Custom Post Type.
-		register_post_type('wicket_acc', $args);
-	}
-
-	/**
-	 * Register menu locations
-	 */
-	public function custom_nav_menus()
-	{
-		// This theme uses wp_nav_menu() in one location.
-		register_nav_menus([
-			'wicket-acc-nav' => esc_html__('Account Centre Menu', 'wicket-acc'),
-		]);
-
-		// This theme offers a secondary wp_nav_menu()
-		register_nav_menus([
-			'wicket-acc-nav-two' => esc_html__('Account Centre Secondary Menu', 'wicket-acc'),
-		]);
-	}
-
-	/**
-	 * Load plugin styles
-	 */
-	public function enqueue_assets()
-	{
-		wp_enqueue_style('wicket-widgets-icons', "https://fonts.googleapis.com/icon?family=Material+Icons");
-		wp_enqueue_style('wicket-widgets-datepicker', plugins_url('/assets/css/react-datepicker.css', __FILE__));
-	}
 } // end Class.
 
 // Initialize the plugin
-$Wicket_Acc = new Wicket_Acc();
-$Wicket_Acc->run();
+$WicketAcc = new WicketAcc();
+$WicketAcc->run();

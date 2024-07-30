@@ -1,6 +1,9 @@
 <?php
 
-namespace Wicket_Acc;
+namespace WicketAcc;
+
+// No direct access
+defined('ABSPATH') || exit;
 
 /**
  * General Settings

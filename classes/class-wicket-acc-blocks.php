@@ -1,8 +1,11 @@
 <?php
 
-namespace Wicket_Acc;
+namespace WicketAcc;
 
 use WP_Block_Type_Registry;
+
+// No direct access
+defined('ABSPATH') || exit;
 
 /**
  * ACF Blocks file for Wicket Account Centre Plugins
@@ -11,14 +14,10 @@ use WP_Block_Type_Registry;
  * @version  1.0.0
  */
 
-if (!defined('ABSPATH')) {
-	exit; // Exit if accessed directly
-}
-
 /**
  * Wicket Blocks class
  */
-class Blocks extends \Wicket_Acc
+class Blocks extends WicketAcc
 {
 
 	private $current_group_being_saved;
@@ -204,7 +203,3 @@ class Blocks extends \Wicket_Acc
 		return;
 	}
 } // end Class Wicket_Blocks.
-
-if (function_exists('acf_get_field')) {
-	new Blocks();
-}

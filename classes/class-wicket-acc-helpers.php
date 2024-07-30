@@ -1,6 +1,9 @@
 <?php
 
-namespace Wicket_Acc;
+namespace WicketAcc;
+
+// No direct access
+defined('ABSPATH') || exit;
 
 /**
  * Helpers file of Module
@@ -9,7 +12,7 @@ namespace Wicket_Acc;
  * @version  1.0.0
  */
 
-class Helpers extends \Wicket_Acc
+class Helpers extends WicketAcc
 {
 	/**
 	 * Get current person (MDP)
@@ -23,8 +26,4 @@ class Helpers extends \Wicket_Acc
 	{
 		return wicket_current_person();
 	}
-}
-
-if (function_exists('acf_get_field')) {
-	new Helpers();
 }

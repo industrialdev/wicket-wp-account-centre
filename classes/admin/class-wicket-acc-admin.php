@@ -1,8 +1,9 @@
 <?php
 
-namespace Wicket_Acc;
+namespace WicketAcc;
 
-use Wicket_Acc;
+// No direct access
+defined('ABSPATH') || exit;
 
 /**
  * Admin file for Wicket Account Centre
@@ -11,14 +12,10 @@ use Wicket_Acc;
  * @version  1.0.0
  */
 
-if (!defined('ABSPATH')) {
-	exit; // Exit if accessed directly
-}
-
 /**
  * Admin class of module
  */
-class WPAdmin extends Wicket_Acc
+class WPAdmin extends WicketAcc
 {
 	/**
 	 * Constructor of class

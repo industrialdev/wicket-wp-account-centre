@@ -1,6 +1,9 @@
 <?php
 
-namespace Wicket_Acc;
+namespace WicketAcc;
+
+// No direct access
+defined('ABSPATH') || exit;
 
 /**
  * Front file of Module
@@ -14,7 +17,7 @@ namespace Wicket_Acc;
 /**
  * Front class of module.
  */
-class Front extends \Wicket_Acc
+class Front extends WicketAcc
 {
 	/**
 	 * Constructor.
@@ -54,6 +57,9 @@ class Front extends \Wicket_Acc
 		// Enqueue Front CSS.
 		wp_enqueue_style('wicket_acc_front', plugins_url('../assets/css/wicket_acc_front.css', __FILE__), false, '1.1');
 		wp_enqueue_style('wicket_acc_grid', plugins_url('../assets/css/wicket_acc_grid.css', __FILE__), false, '1.0');
+
+		wp_enqueue_style('wicket-widgets-icons', "https://fonts.googleapis.com/icon?family=Material+Icons");
+		wp_enqueue_style('wicket-widgets-datepicker', plugins_url('/assets/css/react-datepicker.css', __FILE__));
 	}
 
 	/**
@@ -362,8 +368,4 @@ class Front extends \Wicket_Acc
 
 		return $template;
 	}
-}
-
-if (function_exists('acf_get_field')) {
-	new Front();
 }
