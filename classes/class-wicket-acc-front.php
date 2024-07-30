@@ -25,7 +25,7 @@ class Front extends WicketAcc
 	public function __construct()
 	{
 		add_action('wp_enqueue_scripts', [$this, 'front_assets']);
-		add_action('init', [$this, 'add_endpoints_and_content']);
+		add_action('init', [$this, 'add_endpoints_and_content'], 1200);
 		add_filter('woocommerce_get_query_vars', [$this, 'custom_query_vars'], 1);
 		add_filter('woocommerce_account_menu_items', [$this, 'custom_my_account_menu_items'], 1200);
 
