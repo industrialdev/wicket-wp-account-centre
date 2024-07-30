@@ -22,6 +22,7 @@ class MethodRouter
 			'Front'        => new Front(),
 			'BlocksLoader' => new Blocks(),
 			'Helpers'      => new Helpers(),
+			'AccRouter'    => new AccRouter(),
 		];
 	}
 

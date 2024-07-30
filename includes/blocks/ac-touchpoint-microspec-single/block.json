@@ -1,0 +1,33 @@
+{
+	"name": "wicket-ac/ac-touchpoint-microspec-single",
+	"title": "AC Touchpoint MicroSpec Single View",
+	"description": "Wicket block for AC Touchpoint MicroSpec Single View",
+	"style": "file:./block-styles.css",
+	"category": "wicket-account-center",
+	"icon": "",
+	"apiVersion": 2,
+	"keywords": [
+		"account-center",
+		"touchpoints",
+		"service",
+		"micropoint",
+		"wicket"
+	],
+	"acf": {
+		"mode": "preview",
+		"renderTemplate": "render.php"
+	},
+	"styles": [],
+	"supports": {
+		"align": false,
+		"anchor": false,
+		"alignContent": false,
+		"color": {
+			"text": false,
+			"background": false,
+			"link": false
+		},
+		"alignText": true,
+		"fullHeight": false
+	}
+}

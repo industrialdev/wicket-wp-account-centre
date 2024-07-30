@@ -11,6 +11,7 @@
   ],
   "type": "wordpress-plugin",
   "require": {
-    "php": ">=8.0"
+    "php": ">=8.0",
+    "hexbit/router": "^1.1"
   }
 }

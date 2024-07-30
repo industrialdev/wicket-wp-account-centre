@@ -51,6 +51,12 @@ define('WICKET_ACC_PLUGIN_TEMPLATE_PATH', WICKET_ACC_PATH . 'templates-wicket/')
 define('WICKET_ACC_TEMPLATE_PATH', get_stylesheet_directory() . '/templates-wicket/');
 
 /**
+ * Composer autoloader
+ */
+require_once WICKET_ACC_PATH . 'vendor/autoload.php';
+require_once WICKET_ACC_PATH . 'includes/routes/routes.php';
+
+/**
  * The main Wicket Account Centre class
  */
 class WicketAcc
@@ -78,7 +84,11 @@ class WicketAcc
 		$this->includes();
 
 		// Init classes
-		//new AdminSettings();
+		if (is_admin()) {
+			new AdminSettings();
+		}
+
+		new AccRouter();
 		new WooCommerce();
 		new Blocks();
 		new Front();
@@ -95,7 +105,7 @@ class WicketAcc
 	{
 		// Includes
 		$includes_admin = [
-			//'classes/admin/class-wicket-acc-admin.php',
+			'classes/admin/class-wicket-acc-admin.php',
 		];
 
 		$include_classes = [
@@ -103,14 +113,17 @@ class WicketAcc
 			'classes/class-wicket-acc-registers.php',
 			'classes/class-wicket-acc-blocks.php',
 			'classes/class-wicket-acc-front.php',
+			'classes/class-wicket-acc-router.php',
 			'classes/class-wicket-acc-helpers.php',
 			'classes/class-wicket-acc-method-router.php',
 		];
 
 		$includes_global = [
+			'includes/admin/options-main.php',
 			'includes/ray-stub.php',
 			'includes/helpers.php',
 			'includes/deprecated.php',
+			'includes/routes/routes.php',
 		];
 
 		// Admin Classes
