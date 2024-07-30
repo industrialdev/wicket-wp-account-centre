@@ -183,7 +183,14 @@ class Front extends WicketAcc
 	 */
 	public function account_navigation()
 	{
-		include_once WICKET_ACC_PATH . 'templates/front/navigation.php';
+		// Check if file exists on child theme first
+		if (file_exists(
+			WICKET_ACC_TEMPLATE_PATH . 'front/navigation.php'
+		)) {
+			include_once WICKET_ACC_TEMPLATE_PATH . 'front/navigation.php';
+		} else {
+			include_once WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'front/navigation.php';
+		}
 	}
 
 	/**

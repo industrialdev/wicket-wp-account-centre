@@ -28,7 +28,14 @@ if (have_posts()) :
 		<div class="woocommerce-wicket--container">
 			<?php
 			if ('left-sidebar' == $wicket_acc_ep_as) {
-				include_once WICKET_ACC_PATH . 'templates/front/navigation.php';
+				// Check if file exists on child theme first
+				if (file_exists(
+					WICKET_ACC_TEMPLATE_PATH . 'front/navigation.php'
+				)) {
+					include_once WICKET_ACC_TEMPLATE_PATH . 'front/navigation.php';
+				} else {
+					include_once WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'front/navigation.php';
+				}
 			}
 			?>
 			<div class="woocommerce-wicket--account-centre">
@@ -50,7 +57,14 @@ if (have_posts()) :
 			</div>
 			<?php
 			if ('right-sidebar' == $wicket_acc_ep_as) {
-				include_once WICKET_ACC_PATH . 'templates/front/navigation.php';
+				// Check if file exists on child theme first
+				if (file_exists(
+					WICKET_ACC_TEMPLATE_PATH . 'front/navigation.php'
+				)) {
+					include_once WICKET_ACC_TEMPLATE_PATH . 'front/navigation.php';
+				} else {
+					include_once WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'front/navigation.php';
+				}
 			}
 			?>
 		</div>

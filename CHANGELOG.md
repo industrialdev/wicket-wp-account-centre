@@ -1,20 +1,24 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
+## 1.1.2 / 2024-07-30
+- Proper namespace for the plugin.
+- Proper template interception/overriding for child themes.
+
 ## 1.1.1 / 2024-07-29
-- Added user MDP ID into Welcome Block
+- Added user MDP ID into Welcome Block.
 - Tested and released the new WACC() helper function.
 
 ## 1.1.0 / 2024-07-26
-- New Block: Touchpoints MicroSpec
+- New Block: Touchpoints MicroSpec.
 - Added functionality to load block templates from child theme to be overridden by theme devs, using same logic as WooCommerce. Copy files from /templates-wicket/ to your theme/child theme /templates-wicket/ folder and edit as needed.
 - Added a global WACC() function to access the plugin's functionality, without polluting the global namespace with more helper functions
 - Fixed an issue in AC plugin that was improperly doing a https://developer.wordpress.org/reference/functions/flush_rewrite_rules/ on EVERY WP page load.
 - Profile Picture Block: Added ability to remove an uploaded image.
 
 ## 1.0.22 / 2024-07-22
-- New Blocl: Profile Picture Change
-- Reordered Touchpoints Block
+- New Block: Profile Picture Change.
+- Reordered Touchpoints Block.
 
 ## 1.0.21 / 2024-07-18
 - Add WPML Multilingual Compatibility
