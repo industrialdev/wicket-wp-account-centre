@@ -8,13 +8,6 @@ defined('ABSPATH') || exit;
  * block_name - Block name
  * block_description - Block description
  * attrs - Attributes for the block container.
- * display - Display type: upcoming, past, all
- * num_results - Number of results to display
- * total_results - Total results
- * counter - Counter
- * display_type - Touchpoint display type: upcoming, past, all
- * touchpoints - Touchpoints results
- * switch_link - Switch link
  * is_preview - Is preview?
  */
 ?>

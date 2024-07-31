@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Requeriment:
+ *
+ * composer require hexbit/router
+ */
+
 namespace WicketAcc;
 
 use Hexbit\Router\WordPress\Router;

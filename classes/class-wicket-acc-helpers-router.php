@@ -19,6 +19,7 @@ class MethodRouter
 	{
 		// Register all classes
 		$this->instances = [
+			'MdpApi'       => new MdpApi(),
 			'Front'        => new Front(),
 			'BlocksLoader' => new Blocks(),
 			'Helpers'      => new Helpers(),

@@ -1,18 +1,21 @@
 {
 	"name": "wicket-ac/ac-org-profile",
-	"title": "AC Org Profile Block",
+	"title": "ACC Org Profile Block",
 	"description": "A Wicket block for Org Profile",
 	"style": "file:./block-styles.css",
 	"category": "wicket-account-center",
 	"icon": "",
 	"apiVersion": 2,
-	"keywords": ["account-center", "profile", "wicket"],
+	"keywords": [
+		"account-center",
+		"profile",
+		"wicket"
+	],
 	"acf": {
 		"mode": "preview",
 		"renderTemplate": "render.php"
 	},
-	"styles": [
-	],
+	"styles": [],
 	"supports": {
 		"align": false,
 		"anchor": false,

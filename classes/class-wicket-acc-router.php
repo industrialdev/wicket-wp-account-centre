@@ -11,18 +11,15 @@ defined('ABSPATH') || exit;
  */
 class Router extends WicketAcc
 {
-	private $acc_page_slug = 'account-centre';
-	private $acc_page_name = 'Account Centre';
-	private $acc_page_id   = '';
-	private $acc_pages_map = [
+	private array $acc_pages_map = [
 		'account-centre'                 => 'Account Centre',
 		'edit-profile'                   => 'Edit Profile',
 		'events'                         => 'My Events',
-		'event-single'                   => 'Event',
+		'event-view'                     => 'Event View',
 		'events-past'                    => 'Past Events',
 		'jobs'                           => 'My Jobs',
-		'job-single'                     => 'Job',
-		'job-post'                       => 'Post a Jobs',
+		'job-view'                       => 'Job View',
+		'job-post'                       => 'Post a Job',
 		'payments-settings'              => 'Payments Settings',
 		'locations-banners-subsidiaries' => 'View Locations, Banners and Subsidiaries',
 		'membership-history'             => 'Membership History',
@@ -87,18 +84,33 @@ class Router extends WicketAcc
 	 */
 	public function acc_create_page($slug, $name)
 	{
-		if ($this->acc_page_exists($slug)) {
-			return false;
+		// Let's ensure our setting option doesn't have a page defined yet
+		if (get_field('acc_page_' . $slug, 'option')) {
+			$page_id = $this->get_page_id_by_slug($slug);
+			$this->acc_set_post_type($page_id);
+
+			return $this->get_page_id_by_slug($slug);
+		}
+
+		$page_id = $this->get_page_id_by_slug($slug);
+
+		if ($page_id) {
+			$this->acc_set_post_type($page_id);
+			update_field('acc_page_' . $slug, $page_id, 'option');
+
+			return $page_id;
 		}
 
 		// Create requested page as a child of ACC index page
 		$page_id = wp_insert_post(
 			[
-				'post_type'    => 'wicket_acc',
-				'post_title'   => $name,
-				'post_name'    => $slug,
-				'post_status'  => 'publish',
+				'post_type'      => 'wicket_acc',
+				'post_author'    => wp_get_current_user()->ID,
+				'post_title'     => $name,
+				'post_name'      => $slug,
+				'post_status'    => 'publish',
 				'comment_status' => 'closed',
+				'post_content'   => '',
 			]
 		);
 
@@ -121,13 +133,70 @@ class Router extends WicketAcc
 	 */
 	public function acc_page_exists($slug)
 	{
-		$page_id = get_field('acc_page_' . $slug, 'option');
+		if (empty($slug)) {
+			return false;
+		}
+
+		$page_id = $this->get_page_id_by_slug($slug);
 
 		if ($page_id) {
 			return true;
 		}
 
 		return false;
+	}
+
+	/**
+	 * Set post_type of post/page to 'wicket_acc'
+	 *
+	 * @param string $post_id Post ID
+	 *
+	 * @return bool
+	 */
+	public function acc_set_post_type($post_id)
+	{
+		$post_type = get_post_type($post_id);
+
+		if ($post_type == 'page' || $post_type == 'post') {
+			// Set post type to 'wicket_acc'
+			wp_update_post(
+				[
+					'ID'          => $post_id,
+					'post_type'   => 'wicket_acc',
+					'post_status' => 'publish',
+				]
+			);
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get ACC page ID by slug
+	 *
+	 * @param string $slug
+	 *
+	 * @return int|bool Page ID or false if not found
+	 */
+	public function get_page_id_by_slug($slug)
+	{
+		global $wpdb;
+
+		$page_id = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT ID FROM $wpdb->posts WHERE post_name = %s AND post_type = 'wicket_acc' AND post_status = 'publish'",
+				$slug
+			)
+		);
+
+		// If page not found or is not a number, return false
+		if (empty($page_id) || !is_numeric($page_id)) {
+			return false;
+		}
+
+		return $page_id;
 	}
 
 	/**

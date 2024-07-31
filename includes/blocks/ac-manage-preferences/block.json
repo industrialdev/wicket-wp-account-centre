@@ -1,18 +1,21 @@
 {
 	"name": "wicket-ac/ac-manage-preferences",
-	"title": "AC Manage Preferences Block",
+	"title": "ACC Manage Preferences Block",
 	"description": "A Wicket block for Manage Preferences",
 	"style": "file:./block-styles.css",
 	"category": "wicket-account-center",
 	"icon": "",
 	"apiVersion": 2,
-	"keywords": ["account-center", "preferences", "wicket"],
+	"keywords": [
+		"account-center",
+		"preferences",
+		"wicket"
+	],
 	"acf": {
 		"mode": "preview",
 		"renderTemplate": "render.php"
 	},
-	"styles": [
-	],
+	"styles": [],
 	"supports": {
 		"align": false,
 		"anchor": false,

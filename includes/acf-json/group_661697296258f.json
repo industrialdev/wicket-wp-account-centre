@@ -226,6 +226,6 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "acfml_field_group_mode": "translation",
-    "modified": 1722433427
+    "acfml_field_group_mode": "advanced",
+    "modified": 1722458271
 }

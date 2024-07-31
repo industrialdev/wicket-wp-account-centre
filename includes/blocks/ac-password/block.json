@@ -1,18 +1,21 @@
 {
 	"name": "wicket-ac/ac-password",
-	"title": "AC Password Block",
+	"title": "ACC Password Block",
 	"description": "A Wicket block for Password",
 	"style": "file:./block-styles.css",
 	"category": "wicket-account-center",
 	"icon": "",
 	"apiVersion": 2,
-	"keywords": ["account-center", "password", "wicket"],
+	"keywords": [
+		"account-center",
+		"password",
+		"wicket"
+	],
 	"acf": {
 		"mode": "preview",
 		"renderTemplate": "render.php"
 	},
-	"styles": [
-	],
+	"styles": [],
 	"supports": {
 		"align": false,
 		"anchor": false,

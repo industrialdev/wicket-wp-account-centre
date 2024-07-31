@@ -1,18 +1,22 @@
 {
 	"name": "wicket-ac/ac-additional-info",
-	"title": "AC Additional Info Block",
+	"title": "ACC Additional Info Block",
 	"description": "A Wicket block for Additional Info",
 	"style": "file:./block-styles.css",
 	"category": "wicket-account-center",
 	"icon": "",
 	"apiVersion": 2,
-	"keywords": ["account-center", "additional", "info", "wicket"],
+	"keywords": [
+		"account-center",
+		"additional",
+		"info",
+		"wicket"
+	],
 	"acf": {
 		"mode": "preview",
 		"renderTemplate": "render.php"
 	},
-	"styles": [
-	],
+	"styles": [],
 	"supports": {
 		"align": false,
 		"anchor": false,

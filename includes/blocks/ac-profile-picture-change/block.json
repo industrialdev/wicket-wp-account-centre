@@ -1,6 +1,6 @@
 {
 	"name": "wicket-ac/ac-profile-picture",
-	"title": "AC Change Profile Picture",
+	"title": "ACC Change Profile Picture",
 	"description": "Wicket block for Change Profile Picture",
 	"style": "file:./block-styles.css",
 	"category": "wicket-account-center",

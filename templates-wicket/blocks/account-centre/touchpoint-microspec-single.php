@@ -11,6 +11,7 @@ defined('ABSPATH') || exit;
  * $total_results - Total results
  * $counter - Counter
  * $display_type - Touchpoint display type: upcoming, past, all
+ * $switch_link - Switch link
  */
 ?>
 <section <?php echo $attrs; ?>>
@@ -37,11 +38,13 @@ defined('ABSPATH') || exit;
 			<?php
 			if ($display == 'upcoming' || $display == 'all') {
 				$this->display_touchpoints($touchpoints_results['data'], 'upcoming', $num_results);
+
 				$close++;
 			}
 
 			if ($display == 'past' || $display == 'all') {
 				$this->display_touchpoints($touchpoints_results['data'], 'past', $num_results);
+
 				$close++;
 			}
 			?>
