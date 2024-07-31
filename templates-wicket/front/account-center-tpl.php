@@ -6,10 +6,10 @@
 
 get_header();
 
-$acc_post_index_id    = get_field('account_centre_index', 'option');
-$acc_sidebar_position = get_field('sidebar_position', 'option');
+$acc_post_index_id    = get_field('acc_page_account-centre', 'option');
+$acc_sidebar_location = get_field('acc_sidebar_location', 'option');
 
-if (!defined('WICKET_ACC_PATH') || empty($acc_sidebar_position)) {
+if (!defined('WICKET_ACC_PATH') || empty($acc_sidebar_location)) {
 	wp_die('Please activate and configure the Wicket Account Center plugin to use this template.');
 }
 
@@ -20,7 +20,7 @@ if (have_posts()) :
 ?>
 		<div class="woocommerce-wicket--container">
 			<?php
-			if ('left-sidebar' == $acc_sidebar_position) {
+			if ('left' == $acc_sidebar_location) {
 				// Check if file exists on child theme first
 				if (file_exists(
 					WICKET_ACC_TEMPLATE_PATH . 'front/navigation.php'
@@ -49,7 +49,7 @@ if (have_posts()) :
 				?>
 			</div>
 			<?php
-			if ('right-sidebar' == $acc_sidebar_position) {
+			if ('right' == $acc_sidebar_location) {
 				// Check if file exists on child theme first
 				if (file_exists(
 					WICKET_ACC_TEMPLATE_PATH . 'front/navigation.php'

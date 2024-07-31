@@ -49,12 +49,12 @@ define('WICKET_ACC_UPLOADS_PATH', wp_get_upload_dir()['basedir'] . '/wicket-acco
 define('WICKET_ACC_UPLOADS_URL', wp_get_upload_dir()['baseurl'] . '/wicket-account-center/');
 define('WICKET_ACC_PLUGIN_TEMPLATE_PATH', WICKET_ACC_PATH . 'templates-wicket/');
 define('WICKET_ACC_TEMPLATE_PATH', get_stylesheet_directory() . '/templates-wicket/');
+define('WICKET_ACC_SLUG', 'account-centre'); // We take care of multi-language support later on the plugin
 
 /**
  * Composer autoloader
  */
-require_once WICKET_ACC_PATH . 'vendor/autoload.php';
-require_once WICKET_ACC_PATH . 'includes/routes/routes.php';
+//require_once WICKET_ACC_PATH . 'vendor/autoload.php';
 
 /**
  * The main Wicket Account Centre class
@@ -88,7 +88,7 @@ class WicketAcc
 			new AdminSettings();
 		}
 
-		new AccRouter();
+		new Router();
 		new WooCommerce();
 		new Blocks();
 		new Front();
@@ -123,7 +123,7 @@ class WicketAcc
 			'includes/ray-stub.php',
 			'includes/helpers.php',
 			'includes/deprecated.php',
-			'includes/routes/routes.php',
+			//'includes/routes/routes.php',
 		];
 
 		// Admin Classes

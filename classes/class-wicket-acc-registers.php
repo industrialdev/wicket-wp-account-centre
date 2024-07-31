@@ -64,7 +64,7 @@ class Registers extends WicketAcc
 			'has_archive'         => false,
 			'hierarchical'        => false,
 			'menu_position'       => 30,
-			'menu_icon'           => plugins_url('/assets/img/wicket-icon.png', __FILE__),
+			'menu_icon'           => WICKET_ACC_URL . '/assets/images/wicket-logo-20-white.svg',
 			'rewrite'             => [
 				'slug'            => 'wicket_acc',
 				'with_front'      => false,
@@ -93,7 +93,7 @@ class Registers extends WicketAcc
 
 		// This theme offers a secondary wp_nav_menu()
 		register_nav_menus([
-			'wicket-acc-nav-two' => esc_html__('Account Centre Secondary Menu', 'wicket-acc'),
+			'wicket-acc-nav-secondary' => esc_html__('Account Centre Secondary Menu', 'wicket-acc'),
 		]);
 	}
 }

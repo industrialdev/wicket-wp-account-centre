@@ -27,27 +27,25 @@ class Blocks extends WicketAcc
 	 */
 	public function __construct()
 	{
+		add_filter('block_categories_all', [$this, 'editor_block_category']);
 
-		// Add Wicket block catgories
-		add_filter('block_categories_all', array($this, 'wicket_block_category'));
+		add_action('acf/init', [$this, 'load_wicket_blocks'], 5);
+		add_filter('acf/settings/load_json', [$this, 'load_acf_field_group']);
 
-		// Add ACF blocks and field groups
-		add_action('acf/init', array($this, 'load_wicket_blocks'), 5);
-		add_filter('acf/settings/load_json', array($this, 'wicket_load_acf_field_group'));
-
-		// SAVE AC plugin blocks in plugin directory
-		add_action('acf/update_field_group', array($this, 'update_field_group'), 1, 1);
+		add_action('acf/update_field_group', [$this, 'update_field_group'], 1, 1);
+		add_action('acf/settings/save_json',  [$this, 'acc_save_json_folder'], 100);
 	}
 
 	/**
-	 * Add Wicket block categories
+	 * Add Wicket block categories for Gutenberg Editor
 	 */
-	public function wicket_block_category($categories)
+	public function editor_block_category($categories)
 	{
-		$categories[] = array(
+		$categories[] = [
 			'slug'  => 'wicket-account-center',
 			'title' => 'Wicket_AC'
-		);
+		];
+
 		return $categories;
 	}
 
@@ -77,7 +75,7 @@ class Blocks extends WicketAcc
 
 				// Register block style
 				if (file_exists(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/style.css')) {
-					wp_register_style('block-style-' . $block, WICKET_ACC_PATH . 'includes/blocks/' . $block . '/style.css', array(), filemtime(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/style.css'));
+					wp_register_style('block-style-' . $block, WICKET_ACC_PATH . 'includes/blocks/' . $block . '/style.css', [], filemtime(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/style.css'));
 				}
 
 				// Main block file
@@ -96,9 +94,9 @@ class Blocks extends WicketAcc
 	}
 
 	/**
-	 * Load ACF field groups for blocks
+	 * Load ACF field groups
 	 */
-	public function wicket_load_acf_field_group($paths)
+	public function load_acf_field_group($paths)
 	{
 		$paths[] = WICKET_ACC_PATH . 'includes/acf-json';
 
@@ -112,30 +110,24 @@ class Blocks extends WicketAcc
 	{
 		$blocks = scandir(WICKET_ACC_PATH . 'includes/blocks/');
 
-		$blocks = array_values(array_diff($blocks, array('..', '.', '.DS_Store', '_base-block')));
+		$blocks = array_values(array_diff($blocks, ['..', '.', '.DS_Store', '_base-block']));
 
 		return $blocks;
 	}
 
-
+	/**
+	 * ACF field group update
+	 */
 	public function update_field_group($group)
 	{
-		// the purpose of this function is to see if we want to
-		// change the location where this group is saved
-		// and if we to to add a filter to alter the save path
-
-		// first check to see if this is one of our groups
-		if (!isset($group['location'][0][0]['value'])) {
-			// not one or our groups
+		// Check if group name starts with 'ACC'
+		if (!str_starts_with($group['title'], 'ACC')) {
 			return $group;
 		}
 
+		// Store the group name
+		$this->current_group_being_saved = $group['title'];
 
-		// store the group name and add action
-		$this->current_group_being_saved = $group['location'][0][0]['value'];
-		add_action('acf/settings/save_json',  array($this, 'wicket_acc_save_folder'), PHP_INT_MAX);
-
-		// don't forget to return the groups
 		return $group;
 	}
 
@@ -146,11 +138,10 @@ class Blocks extends WicketAcc
 	 *
 	 * @return string
 	 */
-	public function wicket_acc_save_folder($path)
+	public function acc_save_json_folder($path)
 	{
-
-		// Save json file for blocks that have 'wicket-ac' in their name.
-		if (str_starts_with($this->current_group_being_saved, 'wicket-ac')) {
+		// Save json file for blocks that have 'ACC' in their name.
+		if (str_starts_with($this->current_group_being_saved, 'ACC')) {
 			$path = WICKET_ACC_PATH . 'includes/acf-json';
 		}
 

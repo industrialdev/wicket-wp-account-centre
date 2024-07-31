@@ -1,4 +1,5 @@
 <?php
+
 /**
  * My Account page
  *
@@ -15,7 +16,7 @@
  * @version 3.5.0
  */
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * My Account navigation.
@@ -23,34 +24,30 @@ defined( 'ABSPATH' ) || exit;
  * @since 2.6.0
  */
 
+$acc_sidebar_location = get_field('acc_sidebar_location', 'option');
 ?>
 
 <div class="woocommerce-wicket--container">
-	<?php 
-
-	$wicket_acc_ep_as = get_option( 'wicket_acc_set_ep_as_fld' );
-
-	if ( 'left-sidebar' === $wicket_acc_ep_as ) {
-		do_action( 'woocommerce_account_navigation' );
+	<?php
+	if ('left' === $acc_sidebar_location) {
+		do_action('woocommerce_account_navigation');
 	}
 	?>
 
 	<div class="woocommerce-wicket--account-centre">
 		<?php
-			/**
-			 * My Account content.
-			 *
-			 * @since 2.6.0
-			 */
-			do_action( 'woocommerce_account_content' );
+		/**
+		 * My Account content.
+		 *
+		 * @since 2.6.0
+		 */
+		do_action('woocommerce_account_content');
 		?>
 	</div>
 
-	<?php 
-
-	if ( 'right-sidebar' === $wicket_acc_ep_as ) {
-		do_action( 'woocommerce_account_navigation' );
+	<?php
+	if ('right' === $acc_sidebar_location) {
+		do_action('woocommerce_account_navigation');
 	}
-
 	?>
 </div>

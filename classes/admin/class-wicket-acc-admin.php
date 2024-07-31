@@ -23,21 +23,22 @@ class AdminSettings extends WicketAcc
 	public function __construct()
 	{
 		add_action('acf/init', [$this, 'admin_register_options_page']);
+		add_action('admin_notices', [$this, 'acf_json_folder_permissions']);
 	}
 
 	public function admin_register_options_page()
 	{
 		// Check function exists.
 		if (function_exists('acf_add_options_sub_page')) {
-			// Add sub page under custom post type.
-			acf_add_options_sub_page(array(
+			// Add sub page under custom post type
+			acf_add_options_sub_page([
 				'page_title'  => 'ACC Options',
 				'menu_title'  => 'ACC Options',
 				'parent_slug' => 'edit.php?post_type=wicket_acc',
 				'capability'  => 'manage_options',
 				'menu_slug'   => 'wicket_acc_options',
 				'redirect'    => false
-			));
+			]);
 		}
 	}
 
@@ -57,5 +58,22 @@ class AdminSettings extends WicketAcc
 			[$this, 'wicket_acc_settings_callback'], // callback function
 			10 // position
 		);
+	}
+
+	/**
+	 * On ACF pages at the backend,
+	 * warn the user if /includes/acf-json/ folder is not writable.
+	 */
+	public function acf_json_folder_permissions()
+	{
+		if (!is_admin()) {
+			return;
+		}
+
+		$acf_json_folder = WICKET_ACC_PATH . 'includes/acf-json/';
+
+		if (!is_writable($acf_json_folder)) {
+			echo '<div class="notice notice-error"><p><strong>ACF JSON folder not writable</strong></p><p>The ' . $acf_json_folder . ' folder is not writable. Please make sure the folder is writable by the server.</p><p>Not solving this issue, will result in ACF fields not being saved at plugin level and will not be visible on other sites backend.</p></div>';
+		}
 	}
 }

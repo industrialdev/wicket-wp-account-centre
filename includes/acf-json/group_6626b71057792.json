@@ -1,233 +1,233 @@
 {
-	"key": "group_6626b71057792",
-	"title": "ACC Additional Info",
-	"fields": [
-		{
-			"key": "field_669fd8f2e112a",
-			"label": "Resource Type",
-			"name": "additional_info_resource_type",
-			"aria-label": "",
-			"type": "select",
-			"instructions": "",
-			"required": 0,
-			"conditional_logic": 0,
-			"wrapper": {
-				"width": "50",
-				"class": "",
-				"id": ""
-			},
-			"wpml_cf_preferences": 0,
-			"choices": {
-				"people": "People",
-				"organizations": "Organizations"
-			},
-			"default_value": "people",
-			"return_format": "value",
-			"multiple": 0,
-			"allow_null": 0,
-			"ui": 0,
-			"ajax": 0,
-			"placeholder": ""
-		},
-		{
-			"key": "field_669fd92ae112b",
-			"label": "Organization UUID",
-			"name": "additional_info_organization_uuid",
-			"aria-label": "",
-			"type": "text",
-			"instructions": "",
-			"required": 0,
-			"conditional_logic": [
-				[
-					{
-						"field": "field_669fd8f2e112a",
-						"operator": "==",
-						"value": "organizations"
-					}
-				]
-			],
-			"wrapper": {
-				"width": "50",
-				"class": "",
-				"id": ""
-			},
-			"wpml_cf_preferences": 0,
-			"default_value": "",
-			"maxlength": "",
-			"placeholder": "",
-			"prepend": "",
-			"append": ""
-		},
-		{
-			"key": "field_6626b7107f2e4",
-			"label": "Additional Info Schema",
-			"name": "additional_info_schema",
-			"aria-label": "",
-			"type": "repeater",
-			"instructions": "",
-			"required": 0,
-			"conditional_logic": 0,
-			"wrapper": {
-				"width": "",
-				"class": "",
-				"id": ""
-			},
-			"wpml_cf_preferences": 0,
-			"layout": "block",
-			"pagination": 0,
-			"min": 0,
-			"max": 0,
-			"collapsed": "",
-			"button_label": "Add Row",
-			"rows_per_page": 20,
-			"sub_fields": [
-				{
-					"key": "field_6626b73b7f2e5",
-					"label": "Schema UUID ($id) - Stage",
-					"name": "schema_uuid_stage",
-					"aria-label": "",
-					"type": "text",
-					"instructions": "",
-					"required": 0,
-					"conditional_logic": 0,
-					"wrapper": {
-						"width": "50",
-						"class": "",
-						"id": ""
-					},
-					"wpml_cf_preferences": 0,
-					"default_value": "",
-					"maxlength": "",
-					"placeholder": "",
-					"prepend": "",
-					"append": "",
-					"parent_repeater": "field_6626b7107f2e4"
-				},
-				{
-					"key": "field_6626b7597f2e6",
-					"label": "Schema UUID ($id) - Prod",
-					"name": "schema_uuid_prod",
-					"aria-label": "",
-					"type": "text",
-					"instructions": "",
-					"required": 0,
-					"conditional_logic": 0,
-					"wrapper": {
-						"width": "50",
-						"class": "",
-						"id": ""
-					},
-					"wpml_cf_preferences": 0,
-					"default_value": "",
-					"maxlength": "",
-					"placeholder": "",
-					"prepend": "",
-					"append": "",
-					"parent_repeater": "field_6626b7107f2e4"
-				},
-				{
-					"key": "field_6626b8197f2e7",
-					"label": "Use UI schema override resource UUID",
-					"name": "schema_use_override",
-					"aria-label": "",
-					"type": "true_false",
-					"instructions": "",
-					"required": 0,
-					"conditional_logic": 0,
-					"wrapper": {
-						"width": "",
-						"class": "",
-						"id": ""
-					},
-					"wpml_cf_preferences": 0,
-					"message": "",
-					"default_value": 0,
-					"ui_on_text": "",
-					"ui_off_text": "",
-					"ui": 1,
-					"parent_repeater": "field_6626b7107f2e4"
-				},
-				{
-					"key": "field_6626b8667f2e8",
-					"label": "Schema override resource UUID - Stage",
-					"name": "schema_override_resource_uuid_stage",
-					"aria-label": "",
-					"type": "text",
-					"instructions": "",
-					"required": 0,
-					"conditional_logic": [
-						[
-							{
-								"field": "field_6626b8197f2e7",
-								"operator": "==",
-								"value": "1"
-							}
-						]
-					],
-					"wrapper": {
-						"width": "50",
-						"class": "",
-						"id": ""
-					},
-					"wpml_cf_preferences": 0,
-					"default_value": "",
-					"maxlength": "",
-					"placeholder": "",
-					"prepend": "",
-					"append": "",
-					"parent_repeater": "field_6626b7107f2e4"
-				},
-				{
-					"key": "field_6626b9b37f2e9",
-					"label": "Schema override resource UUID - Prod",
-					"name": "schema_override_resource_uuid_prod",
-					"aria-label": "",
-					"type": "text",
-					"instructions": "",
-					"required": 0,
-					"conditional_logic": [
-						[
-							{
-								"field": "field_6626b8197f2e7",
-								"operator": "==",
-								"value": "1"
-							}
-						]
-					],
-					"wrapper": {
-						"width": "50",
-						"class": "",
-						"id": ""
-					},
-					"wpml_cf_preferences": 0,
-					"default_value": "",
-					"maxlength": "",
-					"placeholder": "",
-					"prepend": "",
-					"append": "",
-					"parent_repeater": "field_6626b7107f2e4"
-				}
-			]
-		}
-	],
-	"location": [
-		[
-			{
-				"param": "block",
-				"operator": "==",
-				"value": "wicket-ac\/ac-additional-info"
-			}
-		]
-	],
-	"menu_order": 0,
-	"position": "normal",
-	"style": "default",
-	"label_placement": "top",
-	"instruction_placement": "label",
-	"hide_on_screen": "",
-	"active": true,
-	"description": "",
-	"show_in_rest": 0,
-	"acfml_field_group_mode": "advanced",
-	"modified": 1721752007
+    "key": "group_6626b71057792",
+    "title": "ACC Additional Info",
+    "fields": [
+        {
+            "key": "field_669fd8f2e112a",
+            "label": "Resource Type",
+            "name": "additional_info_resource_type",
+            "aria-label": "",
+            "type": "select",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 1,
+            "choices": {
+                "people": "People",
+                "organizations": "Organizations"
+            },
+            "default_value": "people",
+            "return_format": "value",
+            "multiple": 0,
+            "allow_null": 0,
+            "ui": 0,
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_669fd92ae112b",
+            "label": "Organization UUID",
+            "name": "additional_info_organization_uuid",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_669fd8f2e112a",
+                        "operator": "==",
+                        "value": "organizations"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 2,
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_6626b7107f2e4",
+            "label": "Additional Info Schema",
+            "name": "additional_info_schema",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 1,
+            "layout": "block",
+            "pagination": 0,
+            "min": 0,
+            "max": 0,
+            "collapsed": "",
+            "button_label": "Add Row",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_6626b73b7f2e5",
+                    "label": "Schema UUID ($id) - Stage",
+                    "name": "schema_uuid_stage",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "50",
+                        "class": "",
+                        "id": ""
+                    },
+                    "wpml_cf_preferences": 2,
+                    "default_value": "",
+                    "maxlength": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "parent_repeater": "field_6626b7107f2e4"
+                },
+                {
+                    "key": "field_6626b7597f2e6",
+                    "label": "Schema UUID ($id) - Prod",
+                    "name": "schema_uuid_prod",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "50",
+                        "class": "",
+                        "id": ""
+                    },
+                    "wpml_cf_preferences": 2,
+                    "default_value": "",
+                    "maxlength": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "parent_repeater": "field_6626b7107f2e4"
+                },
+                {
+                    "key": "field_6626b8197f2e7",
+                    "label": "Use UI schema override resource UUID",
+                    "name": "schema_use_override",
+                    "aria-label": "",
+                    "type": "true_false",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "wpml_cf_preferences": 1,
+                    "message": "",
+                    "default_value": 0,
+                    "ui_on_text": "",
+                    "ui_off_text": "",
+                    "ui": 1,
+                    "parent_repeater": "field_6626b7107f2e4"
+                },
+                {
+                    "key": "field_6626b8667f2e8",
+                    "label": "Schema override resource UUID - Stage",
+                    "name": "schema_override_resource_uuid_stage",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_6626b8197f2e7",
+                                "operator": "==",
+                                "value": "1"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "50",
+                        "class": "",
+                        "id": ""
+                    },
+                    "wpml_cf_preferences": 2,
+                    "default_value": "",
+                    "maxlength": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "parent_repeater": "field_6626b7107f2e4"
+                },
+                {
+                    "key": "field_6626b9b37f2e9",
+                    "label": "Schema override resource UUID - Prod",
+                    "name": "schema_override_resource_uuid_prod",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_6626b8197f2e7",
+                                "operator": "==",
+                                "value": "1"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "50",
+                        "class": "",
+                        "id": ""
+                    },
+                    "wpml_cf_preferences": 2,
+                    "default_value": "",
+                    "maxlength": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "parent_repeater": "field_6626b7107f2e4"
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "wicket-ac\/ac-additional-info"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "acfml_field_group_mode": "translation",
+    "modified": 1722433431
 }

@@ -27,7 +27,7 @@ class Block_ProfilePictureChange extends WicketAcc
 		$this->is_preview   = $is_preview;
 		$this->blocks       = $blocks ?? new Blocks();
 
-		$this->pp_max_size     = absint(get_field('profile_picture_max_size'));  // in MB
+		$this->pp_max_size     = absint(get_field('acc_profile_picture_size', 'option'));  // in MB
 		$this->pp_uploads_path = WICKET_ACC_UPLOADS_PATH . 'profile-pictures/';
 		$this->pp_uploads_url  = WICKET_ACC_UPLOADS_URL . 'profile-pictures/';
 		$this->pp_extensions   = ['jpg', 'jpeg', 'png', 'gif'];
@@ -74,7 +74,7 @@ class Block_ProfilePictureChange extends WicketAcc
 
 	protected function is_custom_profile_picture($pp_profile_picture)
 	{
-		return $pp_profile_picture !== WICKET_ACC_URL . '/assets/img/profile-picture-default.svg';
+		return $pp_profile_picture !== WICKET_ACC_URL . '/assets/images/profile-picture-default.svg';
 	}
 
 	/**
@@ -115,7 +115,7 @@ class Block_ProfilePictureChange extends WicketAcc
 
 		// Still no image? Return the default svg
 		if (empty($pp_profile_picture)) {
-			$pp_profile_picture = WICKET_ACC_URL . '/assets/img/profile-picture-default.svg';
+			$pp_profile_picture = WICKET_ACC_URL . '/assets/images/profile-picture-default.svg';
 		}
 
 		return $pp_profile_picture;

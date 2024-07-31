@@ -3,7 +3,6 @@
 namespace WicketAcc;
 
 use Hexbit\Router\WordPress\Router;
-use Hexbit\Router\WordPress\VirtualPage;
 
 // No direct access
 defined('ABSPATH') || exit;
@@ -13,8 +12,7 @@ if (is_admin()) {
 }
 
 // ACC page slug
-//$acc_slug = WACC()->get_acc_page_slug();
-$acc_slug = 'account-centre';
+$acc_slug = WICKET_ACC_SLUG;
 
 // ACC page slug map for main supported languages
 $acc_slug_map_languages = [
@@ -43,6 +41,7 @@ if ($acc_lang != 'en') {
 	$acc_slug = $acc_slug_map_languages[$acc_slug][$acc_lang];
 }
 
+// TODO: make it overridable
 $acc_template_dir = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/';
 
 // Init router
@@ -55,33 +54,19 @@ add_action("init", function () {
  *
  * See: https://github.com/smarteist/wordpress-router
  */
-/*Router::get($acc_slug, function ($request) {
-	global $acc_template_dir;
-
-	include_once $acc_template_dir . 'account-center.php';
-	die();
-});*/
 
 Router::group($acc_slug, function ($group) {
-	global $acc_slug, $acc_template_dir;
-
 	$group->get('', function () {
-		global $acc_slug, $acc_template_dir;
+		global $acc_template_dir;
 
 		include_once $acc_template_dir . 'account-centre.php';
 	});
 
 	$group->get('edit-profile/', function () {
-		global $acc_slug, $acc_template_dir;
+		global $acc_template_dir;
 
 		include_once $acc_template_dir . 'edit-profile.php';
 	});
+
+	die();
 });
-
-/*$AccPage_Index = new VirtualPage($acc_slug, __('Account Centre', 'wicket-acc'), $acc_template_dir);
-
-ray($acc_slug);
-ray($AccPage_Index);
-ray($acc_slug . '/');
-
-Router::virtualPage($acc_slug . '/', $AccPage_Index);*/
