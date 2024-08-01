@@ -51,11 +51,11 @@ class Block_ProfilePictureChange extends WicketAcc
 		$remove_form  = $this->remove_form();
 
 		if ($process_form === false) {
-			$this->blocks->render_template('profile-picture-change_error');
+			$this->blocks->render_block_template('profile-picture-change_error');
 		}
 
 		if ($process_form === true) {
-			$this->blocks->render_template('profile-picture-change_success');
+			$this->blocks->render_block_template('profile-picture-change_success');
 		}
 
 		// Get user profile picture
@@ -69,7 +69,7 @@ class Block_ProfilePictureChange extends WicketAcc
 		];
 
 		// Render block
-		$this->blocks->render_template('profile-picture-change', $args);
+		$this->blocks->render_block_template('profile-picture-change', $args);
 	}
 
 	protected function is_custom_profile_picture($pp_profile_picture)

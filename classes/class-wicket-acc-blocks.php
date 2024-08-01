@@ -74,8 +74,15 @@ class Blocks extends WicketAcc
 				register_block_type(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/block.json');
 
 				// Register block style
-				if (file_exists(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/style.css')) {
-					wp_register_style('block-style-' . $block, WICKET_ACC_PATH . 'includes/blocks/' . $block . '/style.css', [], filemtime(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/style.css'));
+				if (file_exists(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/block-styles.css')) {
+					wp_register_style('block-style-' . $block, WICKET_ACC_URL . 'includes/blocks/' . $block . '/block-styles.css', [], filemtime(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/block-styles.css'));
+					wp_enqueue_style('block-style-' . $block);
+				}
+
+				// Register block script
+				if (file_exists(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/block-script.js')) {
+					wp_register_script('block-script-' . $block, WICKET_ACC_URL . 'includes/blocks/' . $block . '/block-script.js', [], filemtime(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/block-script.js'));
+					wp_enqueue_script('block-script-' . $block);
 				}
 
 				// Main block file
@@ -162,10 +169,11 @@ class Blocks extends WicketAcc
 		// Santize template name
 		$template_name = sanitize_title($template_name);
 
-		// Child theme check
+		// Assume template is in child theme
 		$template_path = WICKET_ACC_TEMPLATE_PATH 	. $template_name . '.php';
 
 		if (!file_exists($template_path)) {
+			// If not found, check if template is in plugin folder
 			$template_path = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'blocks/account-centre/' . $template_name . '.php';
 		}
 
@@ -183,7 +191,7 @@ class Blocks extends WicketAcc
 	 *
 	 * @return void
 	 */
-	public function render_template($template_name = '', $args = [])
+	public function render_block_template($template_name = '', $args = [])
 	{
 		if (empty($template_name)) {
 			return;
@@ -194,6 +202,8 @@ class Blocks extends WicketAcc
 			echo '<p>Template ' . $template_name . ' not found</p>';
 			return;
 		}
+
+		$args = wp_parse_args($args, []);
 
 		include $this->get_block_template_path($template_name);
 

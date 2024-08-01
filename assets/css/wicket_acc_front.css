@@ -424,3 +424,36 @@ ul.wicket_acc_sub_list li a {
 		display: block !important;
 	}
 }
+
+.cursor-auto {
+	cursor: auto;
+}
+
+.cursor-pointer {
+	cursor: pointer;
+}
+
+.wicketAcc-modal {
+	z-index: 10;
+
+	.backdrop {
+		background-color: rgba(0, 0, 0, 0.5);
+	}
+
+	.modalMain {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		cursor: auto;
+		z-index: 11;
+
+		.modalContent {
+			border-radius: 1rem;
+			padding: 1rem;
+
+			.close-modal {
+				cursor: pointer;
+			}
+		}
+	}
+}

@@ -8,7 +8,7 @@ defined('ABSPATH') || exit;
 /**
  * Wicket Touchpoint MicroSpec Block
  **/
-class Block_TouchpointMicroSpec extends WicketAcc
+class Block_TouchpointMicroSpec extends Blocks
 {
 	/**
 	 * Constructor
@@ -16,7 +16,7 @@ class Block_TouchpointMicroSpec extends WicketAcc
 	public function __construct(
 		protected array $block     = [],
 		protected bool $is_preview = false,
-		protected ?Blocks $blocks = null
+		protected ?Blocks $blocks = null,
 	) {
 		$this->block        = $block;
 		$this->is_preview   = $is_preview;
@@ -41,7 +41,7 @@ class Block_TouchpointMicroSpec extends WicketAcc
 		);
 
 		if ($this->is_preview) {
-			$this->blocks->render_template('preview');
+			$this->blocks->render_block_template('preview', []);
 
 			return;
 		}
@@ -96,22 +96,23 @@ class Block_TouchpointMicroSpec extends WicketAcc
 		$switch_link = esc_url($switch_link);
 
 		$args = [
-			'block_name'        => 'Touchpoint MicroSpec',
-			'block_description' => 'This block displays registered data for MicroSpec on the front-end.',
-			'block_slug'        => 'wicket-ac-touchpoint-microspec',
-			'attrs'             => $attrs,
-			'display'           => $display,
-			'num_results'       => $num_results,
-			'total_results'     => $total_results,
-			'counter'           => $counter,
-			'display_type'      => $display_type,
-			'touchpoints'       => $touchpoints_results,
-			'switch_link'       => $switch_link,
-			'is_preview'        => $this->is_preview
+			'block_name'          => 'Touchpoint MicroSpec',
+			'block_description'   => 'This block displays registered data for MicroSpec on the front-end.',
+			'block_slug'          => 'wicket-ac-touchpoint-microspec',
+			'attrs'               => $attrs,
+			'display'             => $display,
+			'num_results'         => $num_results,
+			'total_results'       => $total_results,
+			'counter'             => $counter,
+			'close'               => $close,
+			'display_type'        => $display_type,
+			'touchpoints_results' => $touchpoints_results,
+			'switch_link'         => $switch_link,
+			'is_preview'          => $this->is_preview
 		];
 
 		// Render block
-		$this->blocks->render_template('touchpoint-microspec', $args);
+		WACC()->render_block_template('touchpoint-microspec', $args);
 
 		return;
 	}
@@ -123,8 +124,9 @@ class Block_TouchpointMicroSpec extends WicketAcc
 	 */
 	protected function get_touchpoints_results()
 	{
-		$touchpoint_service = get_create_touchpoint_service_id('MicroSpec');
-		$touchpoints        = wicket_get_current_user_touchpoints($touchpoint_service);
+		// Debug with person: 9e0093fb-6df8-4da3-bf62-e6c135c1e4b0
+		$touchpoint_service = WACC()->mdp_create_touchpoint_service_id('MicroSpec');
+		$touchpoints        = WACC()->mdp_get_current_user_touchpoints($touchpoint_service, '9e0093fb-6df8-4da3-bf62-e6c135c1e4b0');
 
 		return $touchpoints;
 	}
@@ -139,7 +141,7 @@ class Block_TouchpointMicroSpec extends WicketAcc
 	 *
 	 * @return void
 	 */
-	protected function display_touchpoints($touchpoint_data = [], $display_type = 'upcoming', $num_results = 5, $ajax = false)
+	public static function display_touchpoints($touchpoint_data = [], $display_type = 'upcoming', $num_results = 5, $ajax = false)
 	{
 		// No data
 		if (empty($touchpoint_data)) {
@@ -150,7 +152,7 @@ class Block_TouchpointMicroSpec extends WicketAcc
 		}
 
 		// Filter data by type
-		$touchpoint_data = $this->filter_touchpoint_data($touchpoint_data, $display_type);
+		$touchpoint_data = self::filter_touchpoint_data($touchpoint_data, $display_type);
 
 		// Total results
 		$total_results = count($touchpoint_data);
@@ -161,7 +163,7 @@ class Block_TouchpointMicroSpec extends WicketAcc
 			<p class="text-base">
 				<?php echo ucfirst($display_type) . " Data: " . $total_results; ?>
 			</p>
-			<?php
+		<?php
 		}
 
 		$counter = 0;
@@ -170,30 +172,17 @@ class Block_TouchpointMicroSpec extends WicketAcc
 			//if ($tp['attributes']['code'] == 'cancelled_registration_for_an_event') :
 			$counter++;
 
-			if (isset($tp['attributes']['data']['StartDate'])) :
-			?>
-				<div class="event-card my-4 p-4 border border-gray-200 rounded-md shadow-md">
-					<p class="text-sm font-bold mb-2 event-type">
-						<?php echo $tp['attributes']['data']['BadgeType']; ?>
-					</p>
-					<h3 class="text-lg font-bold mb-2 event-name">
-						<?php echo $tp['attributes']['data']['EventName']; ?>
-					</h3>
-					<p class="text-sm mb-2 event-date">
-						<?php echo date('M', strtotime($tp['attributes']['data']['StartDate'])) . '-' . date('j', strtotime($tp['attributes']['data']['StartDate'])) . '-' . date('Y', strtotime($tp['attributes']['data']['StartDate'])) . ' | ' . date('g:i a', strtotime($tp['attributes']['data']['StartDate'])) . ' - ' . date('g:i a', strtotime($tp['attributes']['data']['EndDate'])); ?>
-					</p>
-					<p class="text-sm event-location hidden">
-						<strong><?php esc_attr_e('Location:', 'wicket-acc'); ?></strong>
-					</p>
-				</div>
-		<?php
-			endif;
+			if (isset($tp['attributes']['data']['StartDate'])) {
+				$args['tp'] = $tp;
+
+				WACC()->render_block_template('touchpoint-microspec-card', $args);
+			}
 		//endif;
 		endforeach;
 
 		// Show more like pagination, to load more data in the same page (if there are more than $num_results)
 		if ($counter == $num_results && $ajax === false) {
-			$this->load_more_results($touchpoint_data, $num_results, $total_results, $counter, $display_type);
+			self::load_more_results($touchpoint_data, $num_results, $total_results, $counter, $display_type);
 		}
 	}
 
@@ -205,7 +194,7 @@ class Block_TouchpointMicroSpec extends WicketAcc
 	 *
 	 * @return array
 	 */
-	protected function filter_touchpoint_data($touchpoint_data = [], $display_type = 'upcoming')
+	public static function filter_touchpoint_data($touchpoint_data = [], $display_type = 'upcoming')
 	{
 		if (empty($touchpoint_data)) {
 			return $touchpoint_data;
@@ -241,12 +230,12 @@ class Block_TouchpointMicroSpec extends WicketAcc
 	 * @param array $touchpoint_data Touchpoint data
 	 * @param int $num_results Number of results to display
 	 * @param int $total_results Total results
-	 * @param int $counter Counter
+	 * @param int $counter Counter of displayed results
 	 * @param string $display_type Touchpoint display type: upcoming, past, all
 	 *
 	 * @return void
 	 */
-	protected function load_more_results($touchpoint_data = [], $num_results = 5, $total_results = 0, $counter = 0, $display_type = 'upcoming')
+	public static function load_more_results($touchpoint_data = [], $num_results = 5, $total_results = 0, $counter = 0, $display_type = 'upcoming')
 	{
 		// Sanitize
 		$num_results   = absint($num_results);

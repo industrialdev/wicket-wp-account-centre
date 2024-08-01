@@ -1,4 +1,7 @@
 <?php
+
+namespace WicketAcc;
+
 // No direct access
 defined('ABSPATH') || exit;
 
@@ -12,7 +15,20 @@ defined('ABSPATH') || exit;
  * $counter - Counter
  * $display_type - Touchpoint display type: upcoming, past, all
  * $switch_link - Switch link
+ * $touchpoints_results - Touchpoint results
+ * $is_preview - Is preview?
  */
+
+$attrs               = $args['attrs'];
+$display             = $args['display'];
+$num_results         = $args['num_results'];
+$total_results       = $args['total_results'];
+$counter             = $args['counter'];
+$display_type        = $args['display_type'];
+$switch_link         = $args['switch_link'];
+$touchpoints_results = $args['touchpoints_results'];
+$is_preview          = $args['is_preview'];
+$close               = $args['close'];
 ?>
 <section <?php echo $attrs; ?>>
 	<div class="container">
@@ -37,13 +53,13 @@ defined('ABSPATH') || exit;
 		<div class="events-list grid gap-6">
 			<?php
 			if ($display == 'upcoming' || $display == 'all') {
-				$this->display_touchpoints($touchpoints_results['data'], 'upcoming', $num_results);
+				Block_TouchpointMicroSpec::display_touchpoints($touchpoints_results['data'], 'upcoming', $num_results);
 
 				$close++;
 			}
 
 			if ($display == 'past' || $display == 'all') {
-				$this->display_touchpoints($touchpoints_results['data'], 'past', $num_results);
+				Block_TouchpointMicroSpec::display_touchpoints($touchpoints_results['data'], 'past', $num_results);
 
 				$close++;
 			}

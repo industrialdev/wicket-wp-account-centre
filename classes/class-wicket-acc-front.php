@@ -59,7 +59,6 @@ class Front extends WicketAcc
 		wp_enqueue_style('wicket_acc_grid', plugins_url('../assets/css/wicket_acc_grid.css', __FILE__), false, '1.0');
 
 		wp_enqueue_style('wicket-widgets-icons', "https://fonts.googleapis.com/icon?family=Material+Icons");
-		wp_enqueue_style('wicket-widgets-datepicker', plugins_url('/assets/css/react-datepicker.css', __FILE__));
 	}
 
 	/**

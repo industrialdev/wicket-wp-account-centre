@@ -15,7 +15,6 @@ class Router extends WicketAcc
 		'account-centre'                 => 'Account Centre',
 		'edit-profile'                   => 'Edit Profile',
 		'events'                         => 'My Events',
-		'event-view'                     => 'Event View',
 		'events-past'                    => 'Past Events',
 		'jobs'                           => 'My Jobs',
 		'job-view'                       => 'Job View',
