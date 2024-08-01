@@ -1,6 +1,10 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
+## 1.1.4 / 2024-10-24
+- New block: Touchpoints MicroSpec. Can also show single event data on a page.
+- Added instructions on how to use WACC() helpers, and how to extend it.
+
 ## 1.1.3 / 2024-07-30
 - Proper namespace for the plugin.
 - Proper template interception/overriding for child themes.

@@ -33,7 +33,7 @@ class Blocks extends WicketAcc
 		add_filter('acf/settings/load_json', [$this, 'load_acf_field_group']);
 
 		add_action('acf/update_field_group', [$this, 'update_field_group'], 1, 1);
-		add_action('acf/settings/save_json',  [$this, 'acc_save_json_folder'], 100);
+		add_action('acf/settings/save_json',  [$this, 'save_json_folder'], 100);
 	}
 
 	/**
@@ -145,7 +145,7 @@ class Blocks extends WicketAcc
 	 *
 	 * @return string
 	 */
-	public function acc_save_json_folder($path)
+	public function save_json_folder($path)
 	{
 		// Save json file for blocks that have 'ACC' in their name.
 		if (str_starts_with($this->current_group_being_saved, 'ACC')) {
@@ -191,7 +191,7 @@ class Blocks extends WicketAcc
 	 *
 	 * @return void
 	 */
-	public function render_block_template($template_name = '', $args = [])
+	public function render_template($template_name = '', $args = [])
 	{
 		if (empty($template_name)) {
 			return;

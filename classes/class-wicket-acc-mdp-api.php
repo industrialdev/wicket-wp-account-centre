@@ -48,7 +48,7 @@ class MdpApi
 	/**
 	 * Get option
 	 */
-	public function wt_get_option($key, $default = null)
+	public function get_option($key, $default = null)
 	{
 		$options = get_option('wicket_settings', []);
 
@@ -61,7 +61,7 @@ class MdpApi
 	public function mdp_get_settings($environment = null)
 	{
 		$settings    = [];
-		$environment = $this->wt_get_option('wicket_admin_settings_environment');
+		$environment = $this->get_option('wicket_admin_settings_environment');
 
 		switch ($environment) {
 			case 'prod':
@@ -86,7 +86,7 @@ class MdpApi
 	/**
 	 * Get current person UUID
 	 */
-	public function mdp_get_current_person_uuid()
+	public function get_current_person_uuid()
 	{
 		// Get the SDK client from the wicket module.
 		if (function_exists('wicket_api_client')) {
@@ -102,13 +102,14 @@ class MdpApi
 	 * Get current user's touchpoints
 	 *
 	 * @param string $service_id
+	 * @param string $person_id Optional. If not provided, the current person ID will be used. Use this to debug with a specific person.
 	 *
 	 * @return array
 	 */
-	public function mdp_get_current_user_touchpoints($service_id, $person_id = null)
+	public function get_current_user_touchpoints($service_id, $person_id = null)
 	{
 		$client    = $this->init_client();
-		$person_id = $person_id ?? $this->mdp_get_current_person_uuid();
+		$person_id = $person_id ?? $this->get_current_person_uuid();
 
 		try {
 			$touchpoints = $client->get("people/$person_id/touchpoints?page[size]=100&filter[service_id]=$service_id", ['json']);
@@ -138,7 +139,7 @@ class MdpApi
 	 * @param string $service_description The description of the service. Default is 'Custom from WP'.
 	 * @return string|false               The service ID if successful, or false on failure.
 	 */
-	public function mdp_create_touchpoint_service_id($service_name, $service_description = 'Custom from WP')
+	public function create_touchpoint_service_id($service_name, $service_description = 'Custom from WP')
 	{
 		$client = $this->init_client();
 

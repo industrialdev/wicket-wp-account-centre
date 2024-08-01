@@ -57,24 +57,6 @@ class AdminSettings extends WicketAcc
 	}
 
 	/**
-	 * Add menu in admin bar
-	 *
-	 * @return void
-	 */
-	public function acc_admin_menu()
-	{
-		add_submenu_page(
-			'edit.php?post_type=wicket_acc', // parent_slug
-			esc_html__('Account Centre Page Editor', 'wicket-acc'), // page title
-			esc_html__('Settings', 'wicket-acc'), // menu title
-			'manage_options', // capability
-			'customize-my-account-page-layout', // slug
-			[$this, 'wicket_acc_settings_callback'], // callback function
-			10 // position
-		);
-	}
-
-	/**
 	 * On ACF pages at the backend,
 	 * warn the user if /includes/acf-json/ folder is not writable.
 	 */

@@ -25,7 +25,7 @@ class Front extends WicketAcc
 	public function __construct()
 	{
 		add_action('wp_enqueue_scripts', [$this, 'front_assets']);
-		add_action('init', [$this, 'acc_add_endpoints_and_content'], 2050); // High priority for WPML compatibility
+		add_action('init', [$this, 'add_endpoints_and_content'], 2050); // High priority for WPML compatibility
 		add_filter('woocommerce_get_query_vars', [$this, 'custom_query_vars'], 1);
 		add_filter('woocommerce_account_menu_items', [$this, 'custom_my_account_menu_items'], 2050); // High priority for WPML compatibility
 
@@ -58,7 +58,7 @@ class Front extends WicketAcc
 	/**
 	 * Get endpoints.
 	 */
-	public function wicket_acc_get_endpoints()
+	public function get_endpoints()
 	{
 		$wicket_acc_custom_dashboard_id = get_option('wicket_acc_set_ep_custom_dashboard');
 
@@ -83,7 +83,7 @@ class Front extends WicketAcc
 	public function custom_endpoint_titles($title, $id)
 	{
 
-		$wicket_acc_endpoints = $this->wicket_acc_get_endpoints();
+		$wicket_acc_endpoints = $this->get_endpoints();
 		if (is_array($wicket_acc_endpoints)) {
 			foreach ($wicket_acc_endpoints as $wicket_endpoint) {
 				global $wp_query;
@@ -136,14 +136,14 @@ class Front extends WicketAcc
 	/**
 	 * Endpoint contents.
 	 */
-	public function acc_add_endpoints_and_content()
+	public function add_endpoints_and_content()
 	{
 		if (!empty(get_option('wicket_acc_set_ep_as_fld'))) {
 			remove_action('woocommerce_account_navigation', 'woocommerce_account_navigation', 10);
 			add_action('woocommerce_account_navigation', array($this, 'account_navigation'), 10);
 		}
 
-		$wicket_acc_endpoints = $this->wicket_acc_get_endpoints();
+		$wicket_acc_endpoints = $this->get_endpoints();
 
 		if (is_array($wicket_acc_endpoints)) {
 
@@ -157,7 +157,7 @@ class Front extends WicketAcc
 				add_action(
 					'woocommerce_account_' . $wicket_slug . '_endpoint',
 					function () use ($ep_id) {
-						$this->wicket_acc_get_custom_endpoint_content($ep_id);
+						$this->get_custom_endpoint_content($ep_id);
 					},
 					5
 				);
@@ -194,7 +194,7 @@ class Front extends WicketAcc
 	public function custom_query_vars($vars)
 	{
 
-		$wicket_acc_endpoints = $this->wicket_acc_get_endpoints();
+		$wicket_acc_endpoints = $this->get_endpoints();
 
 		if (is_array($wicket_acc_endpoints)) {
 
@@ -215,7 +215,7 @@ class Front extends WicketAcc
 	 */
 	public function custom_my_account_menu_items($items)
 	{
-		$wicket_acc_endpoints = $this->wicket_acc_get_endpoints();
+		$wicket_acc_endpoints = $this->get_endpoints();
 		$hide_ep_list         = get_option('wicket_acc_set_ep_hide_fld');
 		$curr_user            = wp_get_current_user();
 		$user_data            = get_user_meta($curr_user->ID);
@@ -330,14 +330,16 @@ class Front extends WicketAcc
 	 *
 	 * @param int $id ID of menu item.
 	 */
-	public function wicket_acc_get_custom_endpoint_content($id = '')
+	public function get_custom_endpoint_content($id = '')
 	{
 		$ep_id              = $id;
 		$wicket_acc_ep_type = get_post_meta(intval($ep_id), 'wicket_acc_endpType_fld', true);
 
 		if ('cendpoint' === esc_attr($wicket_acc_ep_type)) {
 			$post = get_post($ep_id); // specific post
+
 			$the_content = apply_filters('the_content', $post->post_content);
+
 			if (!empty($the_content)) {
 				echo $the_content;
 			}

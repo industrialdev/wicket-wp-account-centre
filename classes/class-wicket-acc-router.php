@@ -31,15 +31,15 @@ class Router extends WicketAcc
 	 */
 	public function __construct()
 	{
-		add_action('admin_init', [$this, 'acc_init_all_pages']);
+		add_action('admin_init', [$this, 'init_all_pages']);
 	}
 
 	/**
-	 * Get ACC root page ID
+	 * Get ACC page ID
 	 *
 	 * @return int
 	 */
-	public function get_acc_root_page_id()
+	public function get_acc_page_id()
 	{
 		$acc_page_id = get_field('acc_page_account-centre', 'option');
 
@@ -47,13 +47,13 @@ class Router extends WicketAcc
 	}
 
 	/**
-	 * Get ACC Page Slug
+	 * Get ACC page Slug
 	 *
 	 * @return string
 	 */
-	public function get_acc_page_slug()
+	public function get_acc_slug()
 	{
-		$acc_page_id   = $this->get_acc_root_page_id();
+		$acc_page_id   = $this->get_acc_page_id();
 		$acc_page_slug = get_post($acc_page_id)->post_name;
 
 		return $acc_page_slug;
@@ -64,9 +64,9 @@ class Router extends WicketAcc
 	 *
 	 * @return string
 	 */
-	public function get_acc_page_url()
+	public function get_acc_url()
 	{
-		$acc_page_id  = $this->get_acc_root_page_id();
+		$acc_page_id  = $this->get_acc_page_id();
 		$acc_page_url = get_permalink($acc_page_id);
 
 		return $acc_page_url;
@@ -81,12 +81,12 @@ class Router extends WicketAcc
 	 *
 	 * @return mixed	ID of created page or false
 	 */
-	public function acc_create_page($slug, $name)
+	public function create_page($slug, $name)
 	{
 		// Let's ensure our setting option doesn't have a page defined yet
 		if (get_field('acc_page_' . $slug, 'option')) {
 			$page_id = $this->get_page_id_by_slug($slug);
-			$this->acc_set_post_type($page_id);
+			$this->set_post_type($page_id);
 
 			return $this->get_page_id_by_slug($slug);
 		}
@@ -94,7 +94,7 @@ class Router extends WicketAcc
 		$page_id = $this->get_page_id_by_slug($slug);
 
 		if ($page_id) {
-			$this->acc_set_post_type($page_id);
+			$this->set_post_type($page_id);
 			update_field('acc_page_' . $slug, $page_id, 'option');
 
 			return $page_id;
@@ -124,19 +124,30 @@ class Router extends WicketAcc
 	}
 
 	/**
-	 * Check if page exists, by slug
+	 * Check if page exists, by slug or ID
 	 *
-	 * @param string $slug
+	 * @param string|int $slug_or_id
 	 *
-	 * @return bool
+	 * @return bool True if page exists, false if not
 	 */
-	public function acc_page_exists($slug)
+	public function page_exists($slug_or_id)
 	{
-		if (empty($slug)) {
+		if (empty($slug_or_id)) {
 			return false;
 		}
 
-		$page_id = $this->get_page_id_by_slug($slug);
+		if (!is_numeric($slug_or_id)) {
+			$page_id = $this->get_page_id_by_slug($slug_or_id);
+		}
+
+		if (is_numeric($slug_or_id)) {
+			// Check if page ID exists in the database
+			if (!get_post($page_id)) {
+				return false;
+			}
+
+			$page_id = absint($slug_or_id);
+		}
 
 		if ($page_id) {
 			return true;
@@ -152,7 +163,7 @@ class Router extends WicketAcc
 	 *
 	 * @return bool
 	 */
-	public function acc_set_post_type($post_id)
+	public function set_post_type($post_id)
 	{
 		$post_type = get_post_type($post_id);
 
@@ -204,11 +215,11 @@ class Router extends WicketAcc
 	 *
 	 * @return void
 	 */
-	public function acc_init_all_pages()
+	public function init_all_pages()
 	{
 		// Create all other pages
 		foreach ($this->acc_pages_map as $slug => $name) {
-			$this->acc_create_page($slug, $name);
+			$this->create_page($slug, $name);
 		}
 	}
 }

@@ -11,43 +11,69 @@ defined('ABSPATH') || exit;
 class MethodRouter
 {
 	private $instances = [];
+	private $helpersInstance;
 
 	/**
 	 * Constructor
 	 */
 	public function __construct()
 	{
-		// Register all classes
+		// Register all class instances except Helpers
 		$this->instances = [
 			'MdpApi'       => new MdpApi(),
 			'Front'        => new Front(),
-			'BlocksLoader' => new Blocks(),
-			'Helpers'      => new Helpers(),
+			'Blocks'       => new Blocks(),
 			'Router'       => new Router(),
 		];
+
+		// Store Helpers instance separately
+		$this->helpersInstance = new Helpers();
 	}
 
 	/**
-	 * Call magic method
+	 * Get the instance of a class
+	 *
+	 * @param string $name
+	 *
+	 * @return object
+	 * @throws \Exception
+	 */
+	public function __get($name)
+	{
+		if (isset($this->instances[$name])) {
+			return $this->instances[$name];
+		}
+
+		throw new \Exception("Class instance $name does not exist.");
+	}
+
+	/**
+	 * Call magic method for class instances
 	 *
 	 * @param string $name
 	 * @param array $arguments
 	 *
-	 * @return mixed
+	 * @return object|mixed
 	 * @throws \Exception
 	 */
 	public function __call($name, $arguments)
 	{
-		foreach ($this->instances as $instance) {
-			if (method_exists($instance, $name)) {
-				return call_user_func_array([$instance, $name], $arguments);
-			}
+		// Handle Helpers class methods directly
+		if (method_exists($this->helpersInstance, $name)) {
+			return call_user_func_array([$this->helpersInstance, $name], $arguments);
 		}
-		throw new \Exception("Method $name does not exist in any registered class.");
+
+		// Handle dynamic class instance call
+		if (isset($this->instances[$name])) {
+			return $this->instances[$name];
+		}
+
+		//throw new \Exception("Method or class instance $name does not exist.");
+		throw new \Exception("Method or class instance '$name' does not exist. Available instances: " . implode(", ", array_keys($this->instances)));
 	}
 
 	/**
-	 * Static call magic method
+	 * Static call magic method for Helpers
 	 *
 	 * @param string $name
 	 * @param array $arguments

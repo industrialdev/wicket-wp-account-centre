@@ -6,18 +6,33 @@ namespace WicketAcc;
 defined('ABSPATH') || exit;
 
 /**
- * Global WACC() function
- * Wicket Account Centre Helpers
+ * Magic wrapper Class for WACC() helpers
  *
- * @return object $wac
+ * @return object
  */
 function WACC()
 {
-	return new MethodRouter();
+	static $instance = null;
+
+	if ($instance === null) {
+		$instance = new MethodRouter();
+	}
+
+	return $instance;
 }
 
 /**
+ *
  * DO NOT ADD MORE HELPERS HERE
  *
- * Please, use class-wicket-acc-helpers.php file instead
+ * Please, use class-wicket-acc-helpers.php file instead.
+ *
+ * class-wicket-acc-helpers.php can contain several methods as helpers.
+ *
+ * Usage inside those methods: WACC()->method_name();
+ *
+ * Also, class-acc-helpers-router.php can mount an already registered class, so WACC() can use them and their methods directly as helpers. Without the need to write a wrapper helper method for each method of the exposed class.
+ *
+ * Usage: WACC()->className()->method_name();
+ *
  */

@@ -82,7 +82,7 @@ if (!empty($event_id) && !empty($event_data)) {
 					'display_event_info' => $display_event_info
 				];
 
-				WACC()->render_block_template('touchpoint-microspec-card', $args);
+				WACC()->Blocks()->render_template('touchpoint-microspec-card', $args);
 			} else {
 
 				if ($display == 'upcoming' || $display == 'all') {

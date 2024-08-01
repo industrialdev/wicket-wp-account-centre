@@ -47,7 +47,7 @@ class Block_TouchpointMicroSpec extends Blocks
 				'block_slug'          => 'wicket-ac-touchpoint-microspec',
 			];
 
-			$this->blocks->render_block_template('preview', $args);
+			$this->blocks->render_template('preview', $args);
 
 			return;
 		}
@@ -121,7 +121,7 @@ class Block_TouchpointMicroSpec extends Blocks
 		];
 
 		// Render block
-		WACC()->render_block_template('touchpoint-microspec', $args);
+		WACC()->Blocks()->render_template('touchpoint-microspec', $args);
 
 		return;
 	}
@@ -134,8 +134,8 @@ class Block_TouchpointMicroSpec extends Blocks
 	protected function get_touchpoints_results()
 	{
 		// Debug with person: 9e0093fb-6df8-4da3-bf62-e6c135c1e4b0
-		$touchpoint_service = WACC()->mdp_create_touchpoint_service_id('MicroSpec');
-		$touchpoints        = WACC()->mdp_get_current_user_touchpoints($touchpoint_service, '9e0093fb-6df8-4da3-bf62-e6c135c1e4b0');
+		$touchpoint_service = WACC()->MdpApi()->create_touchpoint_service_id('MicroSpec');
+		$touchpoints        = WACC()->MdpApi()->get_current_user_touchpoints($touchpoint_service);
 
 		return $touchpoints;
 	}
@@ -189,7 +189,7 @@ class Block_TouchpointMicroSpec extends Blocks
 					$args['display_event_info'] = 'in_page';
 				}
 
-				WACC()->render_block_template('touchpoint-microspec-card', $args);
+				WACC()->Blocks()->render_template('touchpoint-microspec-card', $args);
 			}
 		//endif;
 		endforeach;
