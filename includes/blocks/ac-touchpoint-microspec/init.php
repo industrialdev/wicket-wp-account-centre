@@ -41,14 +41,22 @@ class Block_TouchpointMicroSpec extends Blocks
 		);
 
 		if ($this->is_preview) {
-			$this->blocks->render_block_template('preview', []);
+			$args = [
+				'block_name'          => 'Touchpoint MicroSpec',
+				'block_description'   => 'This block displays registered data for MicroSpec on the front-end.',
+				'block_slug'          => 'wicket-ac-touchpoint-microspec',
+			];
+
+			$this->blocks->render_block_template('preview', $args);
 
 			return;
 		}
 
-		$display           = get_field('default_display');
-		$registered_action = get_field('registered_action');
-		$num_results       = get_field('num_results');
+		$display            = get_field('default_display');
+		$registered_action  = get_field('registered_action');
+		$num_results        = get_field('num_results');
+		$display_event_info = get_field('display_event_info');
+
 		$total_results     = 0;
 		$counter           = 0;
 		$display_type      = 'upcoming';
@@ -108,6 +116,7 @@ class Block_TouchpointMicroSpec extends Blocks
 			'display_type'        => $display_type,
 			'touchpoints_results' => $touchpoints_results,
 			'switch_link'         => $switch_link,
+			'display_event_info'  => $display_event_info,
 			'is_preview'          => $this->is_preview
 		];
 
@@ -174,6 +183,11 @@ class Block_TouchpointMicroSpec extends Blocks
 
 			if (isset($tp['attributes']['data']['StartDate'])) {
 				$args['tp'] = $tp;
+				$args['display_event_info'] = get_field('display_event_info');
+
+				if (empty($args['display_event_info'])) {
+					$args['display_event_info'] = 'in_page';
+				}
 
 				WACC()->render_block_template('touchpoint-microspec-card', $args);
 			}

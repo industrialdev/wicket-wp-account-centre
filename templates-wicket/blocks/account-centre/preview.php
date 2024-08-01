@@ -10,15 +10,16 @@ defined('ABSPATH') || exit;
  *
  * block_name - Block name
  * block_description - Block description
- * attrs - Attributes for the block container.
- * is_preview - Is preview?
+ * block_slug - Block slug
  */
 ?>
-<div class="wicket-ac-touchpoints__previewc wicket-ac-block-preview <?php echo $args['block_slug']; ?>">
-	<div class="wicket-ac-touchpoints__preview__title">
-		<?php esc_html_e($args['block_name'], 'wicket-acc'); ?>
-	</div>
-	<div class="wicket-ac-touchpoints__preview__content">
-		<?php esc_html_e($args['block_description'], 'wicket-acc'); ?>
-	</div>
+<style type="text/css">
+	.wicket-ac-block-preview {
+		border: 2px dotted var(--tec-color-border-tertiary);
+		padding: 1rem;
+	}
+</style>
+<div class="wicket-ac-touchpoints__preview wicket-ac-block-preview <?php echo $args['block_slug']; ?>">
+	<div class="wicket-ac-touchpoints__preview__title"><?php esc_html_e($args['block_name'], 'wicket-acc'); ?></div>
+	<div class="wicket-ac-touchpoints__preview__content"><?php esc_html_e($args['block_description'], 'wicket-acc'); ?></div>
 </div>

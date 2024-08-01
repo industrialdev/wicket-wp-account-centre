@@ -33,6 +33,10 @@
 		box-shadow: var(--box-shadow-4);
 	}
 
+	.event-card-link {
+		text-decoration: none !important;
+	}
+
 	.event-card p,
 	.event-card h3 {
 		margin-bottom: var(--spacing-100);

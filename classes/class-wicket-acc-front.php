@@ -49,16 +49,10 @@ class Front extends WicketAcc
 			return;
 		}
 
-		// Upload Font-Awesome 4.
-		wp_enqueue_style('Font_Awesome', 'https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css', false, '1.0');
+		wp_enqueue_style('wicket_acc_front', WICKET_ACC_URL . 'assets/css/wicket_acc_front.css', false, '1.0');
+		wp_enqueue_style('wicket_acc_grid', WICKET_ACC_URL . 'assets/css/wicket_acc_grid.css', false, '1.0');
 
-		// Enqueue Front JS.
-		wp_enqueue_script('wicket_acc_front', plugins_url('../assets/js/wicket_acc_front.js', __FILE__), ['jquery'], '1.0', true);
-		// Enqueue Front CSS.
-		wp_enqueue_style('wicket_acc_front', plugins_url('../assets/css/wicket_acc_front.css', __FILE__), false, '1.1');
-		wp_enqueue_style('wicket_acc_grid', plugins_url('../assets/css/wicket_acc_grid.css', __FILE__), false, '1.0');
-
-		wp_enqueue_style('wicket-widgets-icons', "https://fonts.googleapis.com/icon?family=Material+Icons");
+		wp_enqueue_script('wicket_acc_front', WICKET_ACC_URL . 'assets/js/wicket_acc_front.js', false, '1.0', true);
 	}
 
 	/**

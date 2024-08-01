@@ -1,10 +1,5 @@
 // Vanilla DOM ready
 document.addEventListener('DOMContentLoaded', function () {
-	// Set up click event listeners for each event card to open the modal
-	document.querySelectorAll('.event-card').forEach(card => {
-		card.addEventListener('click', wicketAccOpenModal);
-	});
-
 	// Set up click event listeners for close elements inside the modals
 	document.querySelectorAll('.close-modal').forEach(card => {
 		card.addEventListener('click', wicketAccCloseModal);

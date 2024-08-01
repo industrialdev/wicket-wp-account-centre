@@ -24,6 +24,20 @@ class AdminSettings extends WicketAcc
 	{
 		add_action('acf/init', [$this, 'admin_register_options_page']);
 		add_action('admin_notices', [$this, 'acf_json_folder_permissions']);
+		add_action('admin_enqueue_scripts', [$this, 'acc_admin_assets']);
+	}
+
+	/**
+	 * Enqueue scripts and styles for admin.
+	 */
+	public function acc_admin_assets()
+	{
+		if (!is_admin()) {
+			return;
+		}
+
+		wp_enqueue_script('wicket_acc_admin', plugins_url('../assets/js/wicket_acc_admin.js', __FILE__), ['jquery'], '1.0', true);
+		wp_enqueue_style('wicket_acc_admin', plugins_url('../assets/css/wicket_acc_admin.css', __FILE__), false, '1.0');
 	}
 
 	public function admin_register_options_page()
