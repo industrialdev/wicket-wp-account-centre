@@ -1,0 +1,22 @@
+{
+	"name": "industrialdev/wicket-wp-account-centre",
+	"description": "Wicket's Account Centre for WordPress",
+	"keywords": [
+		"wordpress",
+		"wicket",
+		"account",
+		"centre"
+	],
+	"license": "GPLv2 or later",
+	"homepage": "https://wicket.io",
+	"authors": [
+		{
+			"name": "Wicket Inc.",
+			"homepage": "https://wicket.io"
+		}
+	],
+	"type": "wordpress-plugin",
+	"require": {
+		"php": ">=8.1.0"
+	}
+}
