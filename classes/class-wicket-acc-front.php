@@ -25,9 +25,9 @@ class Front extends WicketAcc
 	public function __construct()
 	{
 		add_action('wp_enqueue_scripts', [$this, 'front_assets']);
-		add_action('init', [$this, 'add_endpoints_and_content'], 1200);
+		add_action('init', [$this, 'acc_add_endpoints_and_content'], 2050); // High priority for WPML compatibility
 		add_filter('woocommerce_get_query_vars', [$this, 'custom_query_vars'], 1);
-		add_filter('woocommerce_account_menu_items', [$this, 'custom_my_account_menu_items'], 1200);
+		add_filter('woocommerce_account_menu_items', [$this, 'custom_my_account_menu_items'], 2050); // High priority for WPML compatibility
 
 		$wicket_acc_allow_pp = get_option('wicket_acc_set_pro_pic_fld');
 
@@ -136,7 +136,7 @@ class Front extends WicketAcc
 	/**
 	 * Endpoint contents.
 	 */
-	public function add_endpoints_and_content()
+	public function acc_add_endpoints_and_content()
 	{
 		if (!empty(get_option('wicket_acc_set_ep_as_fld'))) {
 			remove_action('woocommerce_account_navigation', 'woocommerce_account_navigation', 10);
