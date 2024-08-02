@@ -36,7 +36,7 @@ if (have_posts()) :
 			}
 			?>
 			<div class="woocommerce-wicket--account-centre">
-				<h2 class="wicket-h2">This is a custom Account Center Template account-center-tpl.php"</h2>
+				<h2 class="wicket-h2">This is a custom Account Center Template account-centre-tpl.php"</h2>
 				<p>
 					Copy and customise this template file and assign to a WP Page.<br>
 					Add the Wicket <b>'Banner'</b> block with added class: <b>alignfull</b> to span screen width.<br>

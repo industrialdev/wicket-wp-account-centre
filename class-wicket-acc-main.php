@@ -89,6 +89,7 @@ class WicketAcc
 		}
 
 		new MdpApi();
+		new Language();
 		new Router();
 		new WooCommerce();
 		new Blocks();
@@ -111,6 +112,7 @@ class WicketAcc
 		];
 
 		$include_classes = [
+			'classes/class-wicket-acc-language.php',
 			'classes/class-wicket-acc-mdp-api.php',
 			'classes/class-wicket-acc-woocommerce.php',
 			'classes/class-wicket-acc-registers.php',

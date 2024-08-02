@@ -15,7 +15,7 @@ defined('ABSPATH') || exit;
 class Router extends WicketAcc
 {
 	private array $acc_pages_map = [
-		WICKET_ACC_SLUG                  => 'Account Centre',
+		WACC()->get_slug()               => WACC()->get_name(),
 		'edit-profile'                   => 'Edit Profile',
 		'events'                         => 'My Events',
 		'events-past'                    => 'Past Events',
@@ -44,7 +44,7 @@ class Router extends WicketAcc
 	 */
 	public function get_acc_page_id()
 	{
-		$acc_page_id = get_field('acc_page_' . WICKET_ACC_SLUG, 'option');
+		$acc_page_id = get_field('acc_page_account-centre', 'option');
 
 		return $acc_page_id;
 	}
@@ -239,8 +239,10 @@ class Router extends WicketAcc
 			$requested_path = trim($_SERVER['REQUEST_URI'], '/');
 			$path_segments  = explode('/', $requested_path);
 
-			// Check if the first segment is 'account-centre'
-			if (isset($path_segments[0]) && $path_segments[0] === WICKET_ACC_SLUG) {
+			// Check if the first segment is ACC slug
+			$current_slug = WACC()->get_slug();
+
+			if (isset($path_segments[0]) && $path_segments[0] === $current_slug) {
 				// Get the slug from the second segment
 				$slug = isset($path_segments[1]) ? $path_segments[1] : '';
 

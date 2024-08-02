@@ -18,12 +18,13 @@ if (is_admin()) {
 }
 
 // ACC page slug
-$acc_slug = WICKET_ACC_SLUG;
+$acc_slug = WACC()->get_slug();
+$acc_name = WACC()->get_name();
 
 // ACC page slug map for main supported languages
 $acc_slug_map_languages = [
-	WICKET_ACC_SLUG => [
-		'en' => WICKET_ACC_SLUG,
+	$acc_slug => [
+		'en' => $acc_slug,
 		'fr' => 'centre-de-compte',
 		'es' => 'centro-de-cuenta',
 	],
