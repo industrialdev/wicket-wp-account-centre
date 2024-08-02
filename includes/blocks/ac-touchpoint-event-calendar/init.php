@@ -16,9 +16,11 @@ class Block_TouchpointEventCalendar extends WicketAcc
 	public function __construct(
 		protected array $block     = [],
 		protected bool $is_preview = false,
+		protected ?Blocks $blocks = null,
 	) {
 		$this->block      = $block;
 		$this->is_preview = $is_preview;
+		$this->blocks     = $blocks ?? new Blocks();
 
 		// Display the block
 		$this->init_block();
@@ -34,22 +36,31 @@ class Block_TouchpointEventCalendar extends WicketAcc
 		$close = 0;
 		$attrs = get_block_wrapper_attributes(
 			[
-				'class' => 'wicket-ac-touchpoints flex flex-col gap-8'
+				'class' => 'wicket-acc-block wicket-ac-touchpoints-tec flex flex-col gap-8'
 			]
 		);
 
-		echo '<div ' . $attrs . '>';
+		echo '<section ' . $attrs . '>';
 
 		if ($this->is_preview) {
-			echo '[Block: Touchpoint for TEC (The Event Calendar)]';
+			$args = [
+				'block_name'          => 'Touchpoint TEC',
+				'block_description'   => 'This block displays registered data for The Events Calendar on the front-end.',
+				'block_slug'          => 'wicket-ac-touchpoint-tec',
+			];
+
+			$this->blocks->render_template('preview', $args);
 
 			return;
 		}
 
-		$num_results       = 2; //get_field('page_results');
+		$num_results       = get_field('page_results');
 		$display           = get_field('default_display');
 		$registered_action = get_field('registered_action');
 		$environment       = get_option('wicket_admin_settings_environment');
+		$events            = [];
+
+		ray($display);
 
 		$events_calendar_touchpoint_service = get_create_touchpoint_service_id('Events Calendar');
 		$event_touchpoints                  = wicket_get_current_user_touchpoints($events_calendar_touchpoint_service);
@@ -71,8 +82,10 @@ class Block_TouchpointEventCalendar extends WicketAcc
 		}
 
 		if (empty($display)) {
-			$display = 'all';
+			$display = 'upcoming';
 		}
+
+		ray($display);
 
 		if (!empty($_REQUEST['num_results'])) {
 			$num_results = absint($_REQUEST['num_results']);
@@ -128,34 +141,58 @@ class Block_TouchpointEventCalendar extends WicketAcc
 			}
 		}
 
-		echo '<div class="grid" x-data="{show: false}">';
+?>
+		<div class="header flex justify-between items-center mb-6">
+			<?php
+			if ($display == 'upcoming') {
+				$switch_link = add_query_arg(
+					[
+						'display' => 'past'
+					],
+					remove_query_arg('display')
+				);
+			?>
+				<h2 class="font-bold"><?php esc_html_e('Upcoming Registered Events', 'wicket-acc'); ?></h2>
+				<a href="<?php echo $switch_link; ?>" class="past-link font-bold"><?php esc_html_e('See Past Registered Events →', 'wicket-acc'); ?></a>
 
-		if ($display == 'upcoming') {
-			echo '
-			<div class="touchpoint_header">
-				<a class="mb-5 mt-8 block" href="?display=past">See Past Registered Events</a>
-			</div>';
-		}
+			<?php
+			}
 
-		if ($display == 'past') {
-			echo '
-		<div class="touchpoint_header">
-			<a class="mb-5 mt-8 block" href="?display=upcoming">See Upcoming Registered Events</a>
-		</div>';
-		}
+			if ($display == 'past') {
+				$switch_link = add_query_arg(
+					[
+						'display' => 'upcoming'
+					],
+					remove_query_arg('display')
+				);
+			?>
+				<h2 class="font-bold"><?php esc_html_e('Past Registered Events', 'wicket-acc'); ?></h2>
+				<a href="<?php echo $switch_link; ?>" class="upcoming-link font-bold"><?php esc_html_e('See Upcoming Registered Events →', 'wicket-acc'); ?></a>
+			<?php
+			}
 
-		if ($display == 'upcoming' || $display == 'all') {
-			$this->display_events($events['past'], 'upcoming', $num_results);
-			$close++;
-		}
+			?>
+		</div>
+		<div class="grid" x-data="{show: false}">
+			<?php
 
-		if ($display == 'past' || $display == 'all') {
-			$this->display_events($events['past'], 'past', $num_results);
-			$close++;
-		}
+			if ($display == 'upcoming' || $display == 'all') {
+				if (isset($events['upcoming']) && !empty($events['upcoming'])) {
+					$this->display_events($events['upcoming'], 'upcoming', $num_results);
+					$close++;
+				}
+			}
 
-		echo '</div>';
-		echo '</div>';
+			if ($display == 'past' || $display == 'all') {
+				if (isset($events['past']) && !empty($events['past'])) {
+					$this->display_events($events['past'], 'past', $num_results);
+					$close++;
+				}
+			}
+			?>
+		</div>
+		<?php
+		echo '</section>';
 	}
 
 	protected function display_events($event_touchpoints, $display_type, $num_results)
@@ -171,7 +208,7 @@ class Block_TouchpointEventCalendar extends WicketAcc
 		$counter = 0;
 
 		foreach ($event_touchpoints['data'] as $tp) :
-?>
+		?>
 			<?php if ($tp['attributes']['code'] == 'registered_for_an_event') : ?>
 				<?php $counter++; ?>
 				<?php if (isset($tp['attributes']['data']['start_date'])) : ?>
@@ -233,7 +270,7 @@ class Block_TouchpointEventCalendar extends WicketAcc
 			<?php endif; ?>
 
 			<?php if ($counter == $num_results) : ?>
-				<p>
+				<p class="text-center">
 					<a href='#' class='touchpoint_show_more_cta' id='touchpoint_show_more_cta' @click.prevent="show = !show" x-show="!show"><?php esc_html_e('Show More', 'wicket-acc'); ?></a>
 				</p>
 				<div x-show="show" x-transition class='touchpoint_show_more'>

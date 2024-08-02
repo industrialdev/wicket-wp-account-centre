@@ -34,14 +34,15 @@
             "allow_custom": 0,
             "save_custom": 0,
             "toggle": 0,
-            "custom_choice_button_text": "Add new choice"
+            "custom_choice_button_text": "Add new choice",
+            "wpml_cf_preferences": 1
         },
         {
             "key": "field_667d28e686292",
             "label": "Number of Results to Show",
             "name": "page_results",
             "aria-label": "",
-            "type": "select",
+            "type": "number",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -50,17 +51,14 @@
                 "class": "",
                 "id": ""
             },
-            "choices": {
-                "5": "5",
-                "10": "10"
-            },
+            "wpml_cf_preferences": 1,
             "default_value": 5,
-            "return_format": "value",
-            "multiple": 0,
-            "allow_null": 0,
-            "ui": 0,
-            "ajax": 0,
-            "placeholder": ""
+            "min": 1,
+            "max": 20,
+            "placeholder": "",
+            "step": 1,
+            "prepend": "",
+            "append": ""
         },
         {
             "key": "field_667d2c9dbd448",
@@ -86,7 +84,8 @@
             "allow_null": 0,
             "other_choice": 0,
             "layout": "vertical",
-            "save_other_choice": 0
+            "save_other_choice": 0,
+            "wpml_cf_preferences": 1
         }
     ],
     "location": [
@@ -108,5 +107,5 @@
     "description": "",
     "show_in_rest": 0,
     "acfml_field_group_mode": "translation",
-    "modified": 1722433381
+    "modified": 1722631565
 }

@@ -52,14 +52,14 @@ if (!empty($event_id) && !empty($event_data)) {
 			<?php
 			if ($display == 'upcoming' && !$single_event) {
 			?>
-				<h2 class="text-2xl font-bold"><?php esc_html_e('Upcoming Registered Events', 'wicket-acc'); ?></h2>
+				<h2 class="font-bold"><?php esc_html_e('Upcoming Registered Events', 'wicket-acc'); ?></h2>
 				<a href="<?php echo $switch_link; ?>" class="past-link font-bold"><?php esc_html_e('See Past Registered Events →', 'wicket-acc'); ?></a>
 			<?php
 			}
 
 			if ($display == 'past' && !$single_event) {
 			?>
-				<h2 class="text-2xl font-bold"><?php esc_html_e('Past Registered Events', 'wicket-acc'); ?></h2>
+				<h2 class="font-bold"><?php esc_html_e('Past Registered Events', 'wicket-acc'); ?></h2>
 				<a href="<?php echo $switch_link; ?>" class="upcoming-link font-bold"><?php esc_html_e('See Upcoming Registered Events →', 'wicket-acc'); ?></a>
 			<?php
 			}
