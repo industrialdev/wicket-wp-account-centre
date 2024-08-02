@@ -15,7 +15,7 @@ defined('ABSPATH') || exit;
 class Router extends WicketAcc
 {
 	private array $acc_pages_map = [
-		'account-centre'                 => 'Account Centre',
+		WICKET_ACC_SLUG                  => 'Account Centre',
 		'edit-profile'                   => 'Edit Profile',
 		'events'                         => 'My Events',
 		'events-past'                    => 'Past Events',
@@ -44,7 +44,7 @@ class Router extends WicketAcc
 	 */
 	public function get_acc_page_id()
 	{
-		$acc_page_id = get_field('acc_page_account-centre', 'option');
+		$acc_page_id = get_field('acc_page_' . WICKET_ACC_SLUG, 'option');
 
 		return $acc_page_id;
 	}

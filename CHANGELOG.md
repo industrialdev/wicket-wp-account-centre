@@ -2,11 +2,10 @@
 Previously known as My Account Page Editor
 
 ## 1.1.8 / 2024-08-02
-- Removed page for Locations, Banners and Subsidiaries.
-- Fixed loading of ACC pages.
-- Fixed WP menu not showing on the ACC pages.
-- Fixed an issue with no default option for the sidebar location.
-- Fixed issue with the welcome block not showing MDP ID on the front end when the option was enabled.
+- Removed page for Locations, Banners and Subsidiaries from ACC options.
+- Fixed loading of ACC pages (CPT wicket_acc).
+- Fixed WP menu not showing on the ACC pages, because of missing default value for the sidebar location.
+- Fixed an issue with the welcome block not showing MDP ID on the front end when the option was enabled.
 - Fixed an issue with ACC plugin not overriding the default WP avatar behavior properly.
 
 ## 1.1.6 / 2024-08-01

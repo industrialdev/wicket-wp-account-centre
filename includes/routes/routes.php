@@ -22,8 +22,8 @@ $acc_slug = WICKET_ACC_SLUG;
 
 // ACC page slug map for main supported languages
 $acc_slug_map_languages = [
-	'account-centre' => [
-		'en' => 'account-centre',
+	WICKET_ACC_SLUG => [
+		'en' => WICKET_ACC_SLUG,
 		'fr' => 'centre-de-compte',
 		'es' => 'centro-de-cuenta',
 	],
@@ -48,7 +48,7 @@ if ($acc_lang != 'en') {
 }
 
 // TODO: make it overridable
-$acc_template_dir = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/';
+$acc_template_dir = WICKET_ACC_PLUGIN_TEMPLATE_PATH . WICKET_ACC_SLUG . '/';
 
 // Init router
 add_action("init", function () {

@@ -174,7 +174,7 @@ class Blocks extends WicketAcc
 
 		if (!file_exists($template_path)) {
 			// If not found, check if template is in plugin folder
-			$template_path = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'blocks/account-centre/' . $template_name . '.php';
+			$template_path = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'blocks/' . WICKET_ACC_SLUG . '/' . $template_name . '.php';
 		}
 
 		if (!file_exists($template_path)) {

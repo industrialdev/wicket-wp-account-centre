@@ -11,22 +11,38 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 This official Wicket plugin includes the Account Centre blocks and pages for WooCommerce and Wicket member data.
 
-1. Create WP Page for Account-Center and add shortcode block with: [woocommerce_my_account]
-		- this is the Account Center - Dashboard template. Content can be added that will appear on all the account center pages.
-2. Under the Account Center menu you can now add the Dashboard Pages.
-3. There are unique Wicket Blocks available for the Account Center pages that are used to manage data in the MDP.
-4. The following blocks are available:
-	- AC Welcome Block: display the user's active memberships.
-	- AC Additional Info: display the user's additional information fields.
-	- AC Individual Profile: update the user's profile information.
-	- AC Organization Profile: update an organization profile owned by user.
-	- AC Callout Block:
-			- Become a Member: prompt the user to obtain a membership.
-			- Complete your Profile: prompt the user to complete their profile information.
-			- Membership Renewal: prompt the user to renew their membership(s).
-5. Setup a Menu for the Account Center
-	- there are 2 possible menu locations for the account center
-	- add pages using Woocommerce Endpoints or as custom url option: /account-center/{ac-page-slug}
-	- assign your menu to either Account Center 1st or 2nd menu area
-6. Using WPML the Account Center can be localized to reflect languages in the MDP.
-	- create your multilingual menus directly in WPML.
+## ACC Main Page
+
+The page that hosts the Account-Center needs to have the shortcode block:
+
+[woocommerce_my_account]
+
+This is the Account Center main page. Content can be added that will appear on all the account center pages.
+Keep in mind that WooCommerce could already have created this page. Use that if it's available.
+
+## ACC Pages
+
+Inside Account Centre menu in WP, you can create multiple pages that will be available as child pages of the main ACC page.
+
+ACC will create the default pages for you (and you can see them in ACC Options), but you can also create your own pages for extra information or to display data from other sources.
+
+## ACC Menu
+
+Under Appearance > Menus you can control ACC menu elements.
+
+Assign your menu to either Account Center 1st or 2nd menu location.
+
+## ACC Blocks
+
+There are unique Wicket Blocks available for the Account Center pages (or any WP page) that are used to manage and display user/MDP data.
+
+- ACC Welcome Block: display the user's active memberships.
+- ACC Additional Info: display the user's additional information fields.
+- ACC Individual Profile: update the user's profile information.
+- ACC Organization Profile: update an organization profile owned by user.
+- ACC Callout Block Become a Member: prompt the user to obtain a membership.
+- ACC Callout Complete your Profile: prompt the user to complete their profile information.
+- ACC Membership Renewal: prompt the user to renew their membership(s).
+- ACC Profile Picture Change: allow the user to update their profile picture.
+- ACC Touchpoints MicroSpec: display a list of events (from MicroSpec) and their data.
+- ACC Touchpoints TEC: display a list of events (from The Events Calendar) and their data.
