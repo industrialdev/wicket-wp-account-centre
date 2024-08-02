@@ -4,10 +4,13 @@ Previously known as My Account Page Editor
 ## 1.1.7 / 2024-08-02
 - Removed page for Locations, Banners and Subsidiaries.
 - Fixed loading of ACC pages.
+- Fixed WP menu not showing on the ACC pages.
+- Fixed and issue with no default option for the sidebar location.
 
 ## 1.1.6 / 2024-08-01
 - New block: Touchpoints MicroSpec. Can also show single event data on a page.
 - Added instructions on how to use WACC() helpers, and how to extend it.
+- Fixed the exporting of json files from ACF field groups. Caused by a dual issue with the plugin and the docker container and his permissions to write to the file system. New set of json files are now cleanly generated and available for syncing on clients sites via ACF settings.
 
 ## 1.1.3 / 2024-07-30
 - Proper namespace for the plugin.

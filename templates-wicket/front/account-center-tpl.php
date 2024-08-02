@@ -9,6 +9,10 @@ get_header();
 $acc_post_index_id    = get_field('acc_page_account-centre', 'option');
 $acc_sidebar_location = get_field('acc_sidebar_location', 'option');
 
+if (empty($acc_sidebar_location)) {
+	$acc_sidebar_location = 'right';
+}
+
 if (!defined('WICKET_ACC_PATH') || empty($acc_sidebar_location)) {
 	wp_die('Please activate and configure the Wicket Account Center plugin to use this template.');
 }

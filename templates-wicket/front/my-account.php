@@ -25,6 +25,10 @@ defined('ABSPATH') || exit;
  */
 
 $acc_sidebar_location = get_field('acc_sidebar_location', 'option');
+
+if (empty($acc_sidebar_location)) {
+	$acc_sidebar_location = 'right';
+}
 ?>
 
 <div class="woocommerce-wicket--container">
