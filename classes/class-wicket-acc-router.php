@@ -33,6 +33,7 @@ class Router extends WicketAcc
 	public function __construct()
 	{
 		add_action('admin_init', [$this, 'init_all_pages']);
+		add_action('admin_init', [$this, 'maybe_create_acc_page']);
 		add_action('template_redirect', [$this, 'load_acc_page']);
 	}
 
