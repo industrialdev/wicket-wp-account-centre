@@ -1,18 +1,20 @@
 {
 	"name": "wicket-ac/ac-welcome",
-	"title": "AC Welcome Block",
+	"title": "ACC Welcome Block",
 	"description": "A Wicket block for Welcome Block",
 	"style": "file:./block-styles.css",
 	"category": "wicket-account-center",
 	"icon": "",
 	"apiVersion": 2,
-	"keywords": ["account-center", "welcome"],
+	"keywords": [
+		"account-center",
+		"welcome"
+	],
 	"acf": {
 		"mode": "preview",
 		"renderTemplate": "render.php"
 	},
-	"styles": [
-	],
+	"styles": [],
 	"supports": {
 		"align": false,
 		"anchor": false,

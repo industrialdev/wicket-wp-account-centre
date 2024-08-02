@@ -46,7 +46,7 @@ class Block_Welcome extends WicketAcc
 		$edit_profile_button = get_field('edit_profile_button_link');
 		$member_since        = get_field('member_since');
 		$renewal_date        = get_field('renewal_date');
-		$show_user_id        = get_field('show_user_id');
+		$display_mdp_id      = get_field('display_mdp_id');
 		$image_url           = get_avatar_url($current_user->ID, ['size' => '300']);
 		$active_memberships  = wicket_get_active_memberships($iso_code);
 ?>
@@ -64,7 +64,7 @@ class Block_Welcome extends WicketAcc
 						<p class="text-heading-xs wicket-welcome-label"><?php _e('Welcome', 'wicket-acc'); ?></p>
 						<p class="text-heading-lg wicket-welcome-name"><?php echo $person->given_name . " " . $person->family_name; ?></p>
 
-						<?php if ($show_user_id) : ?>
+						<?php if ($display_mdp_id) : ?>
 							<p class="mb-2 wicket-welcome-member-mdp-id text-sm">
 								<span><?php echo __('ID:', 'wicket-acc'); ?></span>
 								<?php echo $identifying_number; ?>
