@@ -60,8 +60,6 @@ class Block_TouchpointEventCalendar extends WicketAcc
 		$environment       = get_option('wicket_admin_settings_environment');
 		$events            = [];
 
-		ray($display);
-
 		$events_calendar_touchpoint_service = get_create_touchpoint_service_id('Events Calendar');
 		$event_touchpoints                  = wicket_get_current_user_touchpoints($events_calendar_touchpoint_service);
 
@@ -84,8 +82,6 @@ class Block_TouchpointEventCalendar extends WicketAcc
 		if (empty($display)) {
 			$display = 'upcoming';
 		}
-
-		ray($display);
 
 		if (!empty($_REQUEST['num_results'])) {
 			$num_results = absint($_REQUEST['num_results']);
