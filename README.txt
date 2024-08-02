@@ -13,11 +13,11 @@ This official Wicket plugin includes the Account Centre blocks and pages for Woo
 
 ## ACC Main Page
 
-The page that hosts the Account-Center needs to have the shortcode block:
+The page that hosts the Account-Centre needs to have the shortcode block:
 
 [woocommerce_my_account]
 
-This is the Account Center main page. Content can be added that will appear on all the account center pages.
+This is the Account Centre main page. Content can be added that will appear on all the account Centre pages.
 Keep in mind that WooCommerce could already have created this page. Use that if it's available.
 
 ## ACC Pages
@@ -30,11 +30,11 @@ ACC will create the default pages for you (and you can see them in ACC Options),
 
 Under Appearance > Menus you can control ACC menu elements.
 
-Assign your menu to either Account Center 1st or 2nd menu location.
+Assign your menu to either Account Centre 1st or 2nd menu location.
 
 ## ACC Blocks
 
-There are unique Wicket Blocks available for the Account Center pages (or any WP page) that are used to manage and display user/MDP data.
+There are unique Wicket Blocks available for the Account Centre pages (or any WP page) that are used to manage and display user/MDP data.
 
 - ACC Welcome Block: display the user's active memberships.
 - ACC Additional Info: display the user's additional information fields.

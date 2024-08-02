@@ -6,7 +6,7 @@ namespace WicketAcc;
 defined('ABSPATH') || exit;
 
 /**
- * Wicket Account Center
+ * Wicket Account Centre
  * Post Types
  *
  * @package Wicket

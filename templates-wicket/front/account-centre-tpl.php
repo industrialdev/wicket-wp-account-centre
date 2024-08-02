@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Template Name: Account Center - Tpl
+ * Template Name: Account Centre - Tpl
  */
 
 get_header();
@@ -14,7 +14,7 @@ if (empty($acc_sidebar_location)) {
 }
 
 if (!defined('WICKET_ACC_PATH') || empty($acc_sidebar_location)) {
-	wp_die('Please activate and configure the Wicket Account Center plugin to use this template.');
+	wp_die('Please activate and configure the Wicket Account Centre plugin to use this template.');
 }
 
 if (have_posts()) :
@@ -36,11 +36,11 @@ if (have_posts()) :
 			}
 			?>
 			<div class="woocommerce-wicket--account-centre">
-				<h2 class="wicket-h2">This is a custom Account Center Template account-centre-tpl.php"</h2>
+				<h2 class="wicket-h2">This is a custom Account Centre Template account-centre-tpl.php"</h2>
 				<p>
 					Copy and customise this template file and assign to a WP Page.<br>
 					Add the Wicket <b>'Banner'</b> block with added class: <b>alignfull</b> to span screen width.<br>
-					To add content on the front-end create the corresponding Account Center Page and note the Post_ID number.<br>
+					To add content on the front-end create the corresponding Account Centre Page and note the Post_ID number.<br>
 					Set the Post ID at the top of your template to inject the content: <b>&lt;?php $acc_post_index_id = 12051; ?&gt;</b>
 				</p>
 				</h2>

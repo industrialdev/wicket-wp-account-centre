@@ -212,7 +212,7 @@ function wicket_validation_addresses($person)
 }
 
 /**
- * Menu walker for the wicket account center menu
+ * Menu walker for the wicket ACC menu
  *
  * @return void
  */
@@ -284,7 +284,7 @@ class wicket_acc_menu_walker extends Walker_Nav_Menu
 }
 
 /**
- * Menu walker (mobile) for the wicket account center menu
+ * Menu walker (mobile) for the wicket ACC menu
  *
  * @return void
  */
@@ -451,7 +451,7 @@ function wicket_ac_memberships_get_page_link_data($membership)
 }
 
 /**
- * Alter the 'pages' admin settings to provide the wicket account center pages along with normal pages
+ * Alter the 'pages' admin settings to provide the wicket ACC pages along with normal pages
  *
  * @param string $output
  * @param array $parsed_args
@@ -471,7 +471,7 @@ function wicket_acc_alter_wp_job_manager_pages($output, $parsed_args, $pages)
 }
 
 /**
- * Dropdown pages for the wicket account center Job Manager
+ * Dropdown pages for the wicket ACC Job Manager
  *
  * @param array $parsed_args
  *
