@@ -2,12 +2,15 @@
 
 namespace WicketAcc;
 
+use WP_Query;
+
 // No direct access
 defined('ABSPATH') || exit;
 
 /**
  * Router Class
- * Implements hexbit/router library
+ * Get ACC pages, IDs, slugs, and data needed to jump between them.
+ * Also implements hexbit/router library.
  */
 class Router extends WicketAcc
 {
@@ -31,6 +34,7 @@ class Router extends WicketAcc
 	public function __construct()
 	{
 		add_action('admin_init', [$this, 'init_all_pages']);
+		add_action('template_redirect', [$this, 'load_acc_page']);
 	}
 
 	/**
@@ -219,6 +223,62 @@ class Router extends WicketAcc
 		// Create all other pages
 		foreach ($this->acc_pages_map as $slug => $name) {
 			$this->create_page($slug, $name);
+		}
+	}
+
+	/**
+	 * Load ACC page
+	 * Loads the correct page from the ACC CPT, based on the URL path.
+	 *
+	 * @return void
+	 */
+	public function load_acc_page()
+	{
+		// Check if we are on a 404 page and not on the admin
+		if (is_404() && !is_admin()) {
+			$requested_path = trim($_SERVER['REQUEST_URI'], '/');
+			$path_segments  = explode('/', $requested_path);
+
+			// Check if the first segment is 'account-centre'
+			if (isset($path_segments[0]) && $path_segments[0] === WICKET_ACC_SLUG) {
+				// Get the slug from the second segment
+				$slug = isset($path_segments[1]) ? $path_segments[1] : '';
+
+				// Check if the slug is not empty
+				if (!empty($slug)) {
+					// Try to find a post with this slug in the custom post type 'wicket_acc'
+					$query = new WP_Query([
+						'name'           => $slug,
+						'post_type'      => 'wicket_acc',
+						'post_status'    => 'publish',
+						'posts_per_page' => 1,
+					]);
+
+					// If a matching post is found, display that post
+					if ($query->have_posts()) {
+						$query->the_post();
+
+						// Setup the global post data for the template
+						global $wp_query;
+
+						$wp_query->is_404         = false;
+						$wp_query->is_single      = true;
+						$wp_query->is_singular    = true;
+						$wp_query->is_post        = true;
+						$wp_query->post           = $query->post;
+						$wp_query->posts          = [$query->post];
+						$wp_query->found_posts    = 1;
+						$wp_query->post_count     = 1;
+						$wp_query->max_num_pages  = 1;
+						$wp_query->is_found_posts = true;
+
+						// Output the content using the correct template
+						include get_single_template();
+
+						exit;
+					}
+				}
+			}
 		}
 	}
 }

@@ -53,7 +53,7 @@ class Registers extends WicketAcc
 		$args = [
 			'labels'              => $labels,
 			'menu_icon'           => '',
-			'public'              => false,
+			'public'              => true,
 			'publicly_queryable'  => true,
 			'exclude_from_search' => true,
 			'show_ui'             => true,
@@ -72,7 +72,8 @@ class Registers extends WicketAcc
 			'supports'            => [
 				'title',
 				'page-attributes',
-				'editor'
+				'editor',
+				'revisions',
 			],
 			'show_in_rest'        => true,
 		];
