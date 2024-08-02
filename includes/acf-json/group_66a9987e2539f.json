@@ -322,35 +322,6 @@
             "bidirectional_target": []
         },
         {
-            "key": "field_66a99a4ed4a94",
-            "label": "Page: Location\/Banner\/Subsid.",
-            "name": "acc_page_locations-banners-subsidiaries",
-            "aria-label": "",
-            "type": "post_object",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "wpml_cf_preferences": 1,
-            "post_type": [
-                "wicket_acc"
-            ],
-            "post_status": [
-                "publish"
-            ],
-            "taxonomy": "",
-            "return_format": "id",
-            "multiple": 0,
-            "allow_null": 0,
-            "bidirectional": 0,
-            "ui": 1,
-            "bidirectional_target": []
-        },
-        {
             "key": "field_66a99a6fde66c",
             "label": "Page: Membership History",
             "name": "acc_page_membership-history",
@@ -457,5 +428,5 @@
     "description": "Main options for ACC plugin",
     "show_in_rest": 0,
     "acfml_field_group_mode": "translation",
-    "modified": 1722516143
+    "modified": 1722604275
 }

@@ -1,6 +1,9 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
+## 1.1.7 / 2024-08-02
+- Removed page for Locations, Banners and Subsidiaries.
+
 ## 1.1.6 / 2024-08-01
 - New block: Touchpoints MicroSpec. Can also show single event data on a page.
 - Added instructions on how to use WACC() helpers, and how to extend it.

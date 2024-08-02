@@ -20,7 +20,6 @@ class Router extends WicketAcc
 		'job-view'                       => 'Job View',
 		'job-post'                       => 'Post a Job',
 		'payments-settings'              => 'Payments Settings',
-		'locations-banners-subsidiaries' => 'View Locations, Banners and Subsidiaries',
 		'membership-history'             => 'Membership History',
 		'purchase-history'               => 'Purchase History',
 		'change-password'                => 'Change Password',
