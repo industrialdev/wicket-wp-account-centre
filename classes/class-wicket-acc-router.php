@@ -290,5 +290,28 @@ class Router extends WicketAcc
 	 */
 	public function maybe_create_acc_page()
 	{
+		$set_slug = WACC()->get_slug();
+		$set_name = WACC()->get_name();
+
+		// Empty?
+		if (empty($set_slug) || empty($set_name)) {
+			return;
+		}
+
+		// Query wicket_acc CPT an check if get already have one with set_slug
+		$query = new WP_Query([
+			'name'           => $set_slug,
+			'post_type'      => 'wicket_acc',
+			'post_status'    => 'publish',
+			'posts_per_page' => 1,
+		]);
+
+		if ($query->have_posts()) {
+			// We already have a page with this slug
+			return;
+		}
+
+		// Create page
+		$this->create_page($set_slug, $set_name);
 	}
 }
