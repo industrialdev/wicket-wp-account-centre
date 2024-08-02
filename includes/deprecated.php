@@ -511,17 +511,17 @@ function wicket_acc_rewrite_permalinks($post_link, $post, $leavename, $sample)
 		}
 
 		if ($lang == 'fr') {
-			$account_center_slug_locale['value'] = 'fr/mon-compte';
+			$account_center_slug_locale = 'fr/mon-compte';
 		} else {
 			// Get it from base plugin settings
 			$account_center_slug_locale = WicketAcc\WACC()->get_slug();
 		}
 
-		if (is_array($account_center_slug_locale) && empty($account_center_slug_locale['value'])) {
-			$account_center_slug_locale['value'] = 'account-center';
+		if (empty($account_center_slug_locale)) {
+			$account_center_slug_locale = WICKET_ACC_SLUG; // fallback
 		}
 
-		$post_link = str_replace('wicket_acc', $account_center_slug_locale['value'], $post_link);
+		$post_link = str_replace('wicket_acc', $account_center_slug_locale, $post_link);
 	}
 
 	return $post_link;
