@@ -33,6 +33,6 @@ function WACC()
  *
  * Also, class-acc-helpers-router.php can mount an already registered class, so WACC() can use them and their methods directly as helpers. Without the need to write a wrapper helper method for each method of the exposed class.
  *
- * Usage: WACC()->className()->method_name();
+ * Usage: WACC()->className->method_name();
  *
  */

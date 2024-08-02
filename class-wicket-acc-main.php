@@ -93,6 +93,7 @@ class WicketAcc
 		new WooCommerce();
 		new Blocks();
 		new Front();
+		new Profile();
 		new Helpers();
 		new Registers();
 	}
@@ -115,6 +116,7 @@ class WicketAcc
 			'classes/class-wicket-acc-registers.php',
 			'classes/class-wicket-acc-blocks.php',
 			'classes/class-wicket-acc-front.php',
+			'classes/class-wicket-acc-profile.php',
 			'classes/class-wicket-acc-router.php',
 			'classes/class-wicket-acc-helpers.php',
 			'classes/class-wicket-acc-helpers-router.php',

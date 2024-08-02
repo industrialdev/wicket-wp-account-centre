@@ -36,7 +36,7 @@ $event_data = base64_encode(json_encode($tp));
 	<?php endif; ?>
 	<?php
 	if ($args['display_event_info'] == 'in_modal') {
-		WACC()->Blocks()->render_template('modal-touchpoint-microspec', $tp);
+		WACC()->Blocks->render_template('modal-touchpoint-microspec', $tp);
 	}
 	?>
 </div>

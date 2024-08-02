@@ -34,9 +34,6 @@ class Block_ProfilePictureChange extends WicketAcc
 
 		// Display the block
 		$this->display_block();
-
-		// Change WP get_avatar_url behavior
-		add_filter('get_avatar_url', [$this, 'get_avatar'], 10, 3);
 	}
 
 	/**
@@ -59,8 +56,8 @@ class Block_ProfilePictureChange extends WicketAcc
 		}
 
 		// Get user profile picture
-		$pp_profile_picture = $this->get_profile_picture();
-		$pp_is_custom       = $this->is_custom_profile_picture($pp_profile_picture);
+		$pp_profile_picture = WACC()->Profile->get_profile_picture();
+		$pp_is_custom       = WACC()->Profile->is_custom_profile_picture($pp_profile_picture);
 
 		$args = [
 			'is_custom'   => $pp_is_custom,
@@ -70,55 +67,6 @@ class Block_ProfilePictureChange extends WicketAcc
 
 		// Render block
 		$this->blocks->render_template('profile-picture-change', $args);
-	}
-
-	protected function is_custom_profile_picture($pp_profile_picture)
-	{
-		return $pp_profile_picture !== WICKET_ACC_URL . '/assets/images/profile-picture-default.svg';
-	}
-
-	/**
-	 * Get the profile picture URL
-	 *
-	 * @return string|bool Profile picture URL, default one or false on error
-	 */
-	protected function get_profile_picture()
-	{
-		// Get current WP user ID
-		$current_user_id = get_current_user_id();
-
-		// Guest?
-		if (is_wp_error($current_user_id)) {
-			return false;
-		}
-
-		// Check for jpg or png
-		$extensions = $this->pp_extensions;
-		$pp_profile_picture = '';
-		$pp_valid_extension = '';
-
-		foreach ($extensions as $ext) {
-			$file_path = $this->pp_uploads_path . $current_user_id . '.' . $ext;
-
-			if (file_exists($file_path)) {
-				// Found it!
-				$pp_profile_picture = $file_path;
-				$pp_valid_extension = $ext;
-				break;
-			}
-		}
-
-		// Get file URL
-		if (!empty($pp_valid_extension)) {
-			$pp_profile_picture = $this->pp_uploads_url . $current_user_id . '.' . $pp_valid_extension;
-		}
-
-		// Still no image? Return the default svg
-		if (empty($pp_profile_picture)) {
-			$pp_profile_picture = WICKET_ACC_URL . '/assets/images/profile-picture-default.svg';
-		}
-
-		return $pp_profile_picture;
 	}
 
 	/**
@@ -270,29 +218,5 @@ class Block_ProfilePictureChange extends WicketAcc
 		$cropped = wp_crop_image($src_file, $crop_x, $crop_y, $crop_size, $crop_size, $crop_size, $crop_size, false, $dst_file);
 
 		return $cropped;
-	}
-
-	/**
-	 * Changes default WP get_avatar_url behavior
-	 *
-	 * @param string $avatar_url
-	 * @param mixed $id_or_email
-	 * @param array $args
-	 *
-	 * @return string
-	 */
-	public function get_avatar($avatar_url, $id_or_email, $args = [])
-	{
-		// Get the profile picture URL
-		$pp_profile_picture = $this->get_profile_picture();
-
-		// If the profile picture URL is not empty, return it
-		if (!empty($pp_profile_picture)) {
-			// Filter URL (for child themes to manipulate) and return
-			return apply_filters('wicket/acc/get_avatar', $pp_profile_picture);
-		}
-
-		// Otherwise, return the default avatar
-		return apply_filters('wicket/acc/get_avatar', $avatar_url);
 	}
 }

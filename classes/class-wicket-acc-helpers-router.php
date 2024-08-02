@@ -22,6 +22,7 @@ class MethodRouter
 		$this->instances = [
 			'MdpApi'       => new MdpApi(),
 			'Front'        => new Front(),
+			'Profile'      => new Profile(),
 			'Blocks'       => new Blocks(),
 			'Router'       => new Router(),
 		];
