@@ -15,7 +15,6 @@ defined('ABSPATH') || exit;
 class Router extends WicketAcc
 {
 	private array $acc_pages_map = [
-		WACC()->get_slug()               => WACC()->get_name(),
 		'edit-profile'                   => 'Edit Profile',
 		'events'                         => 'My Events',
 		'events-past'                    => 'Past Events',
@@ -282,5 +281,14 @@ class Router extends WicketAcc
 				}
 			}
 		}
+	}
+
+	/**
+	 * Maybe create ACC page
+	 *
+	 * return void
+	 */
+	public function maybe_create_acc_page()
+	{
 	}
 }
