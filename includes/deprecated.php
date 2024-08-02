@@ -499,22 +499,31 @@ function wp_job_dropdown_pages($parsed_args = '')
 
 function wicket_acc_rewrite_permalinks($post_link, $post, $leavename, $sample)
 {
+	// Only on CPT wicket_acc
 	if ($post->post_type == 'wicket_acc') {
-		if (defined('ICL_LANGUAGE_CODE')) {
-			$lang = ICL_LANGUAGE_CODE;
+		global $sitepress;
+
+		// Get the current language from WPML
+		if ($sitepress->get_current_language()) {
+			$lang = $sitepress->get_current_language();
 		} else {
 			$lang = 'en';
 		}
+
 		if ($lang == 'fr') {
 			$account_center_slug_locale['value'] = 'fr/mon-compte';
 		} else {
-			$account_center_slug_locale = get_field('field_66858df5a3430', 'option');
+			// Get it from base plugin settings
+			$account_center_slug_locale = WicketAcc\WACC()->get_slug();
 		}
+
 		if (empty($account_center_slug_locale['value'])) {
 			$account_center_slug_locale['value'] = 'account-center';
 		}
+
 		$post_link = str_replace('wicket_acc', $account_center_slug_locale['value'], $post_link);
 	}
+
 	return $post_link;
 }
 
