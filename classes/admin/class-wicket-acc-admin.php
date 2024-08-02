@@ -25,6 +25,7 @@ class AdminSettings extends WicketAcc
 		add_action('acf/init', [$this, 'admin_register_options_page']);
 		add_action('admin_notices', [$this, 'acf_json_folder_permissions']);
 		add_action('admin_enqueue_scripts', [$this, 'acc_admin_assets']);
+		add_action('acf/options_page/save', [$this, 'acc_options_save'], 10, 2);
 	}
 
 	/**
@@ -71,5 +72,18 @@ class AdminSettings extends WicketAcc
 		if (!is_writable($acf_json_folder)) {
 			echo '<div class="notice notice-error"><p><strong>ACF JSON folder not writable</strong></p><p>The ' . $acf_json_folder . ' folder is not writable. Please make sure the folder is writable by the server.</p><p>Not solving this issue, will result in ACF fields not being saved at plugin level and will not be visible on other sites backend.</p></div>';
 		}
+	}
+
+	/**
+	 * Actions when saving ACC Options (ACF based) in the backend.
+	 */
+	public function acc_options_save($post_id, $menu_slug)
+	{
+		if ($menu_slug !== 'wicket_acc_options') {
+			return;
+		}
+
+		// Flush rewrite rules
+		flush_rewrite_rules();
 	}
 }

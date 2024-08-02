@@ -1,13 +1,15 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
-## 1.1.10 / 2024-08-02
+## 1.1.11 / 2024-08-02
 - Removed page for Locations, Banners and Subsidiaries from ACC options.
+- When saving ACC options, flush rewrite rules once.
 - Fixed loading of ACC pages (CPT wicket_acc).
 - Fixed WP menu not showing on the ACC pages, because of missing default value for the sidebar location.
 - Fixed an issue with the welcome block not showing MDP ID on the front end when the option was enabled.
 - Fixed an issue with ACC plugin not overriding the default WP avatar behavior properly.
 - Fixed and issue where ACC wasn't using the correct spelling of the ACC, based on the main base plugin option.
+
 
 ## 1.1.6 / 2024-08-01
 - New block: Touchpoints MicroSpec. Can also show single event data on a page.
