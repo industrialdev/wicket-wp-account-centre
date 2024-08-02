@@ -7,6 +7,7 @@ Previously known as My Account Page Editor
 - Fixed WP menu not showing on the ACC pages, because of missing default value for the sidebar location.
 - Fixed an issue with the welcome block not showing MDP ID on the front end when the option was enabled.
 - Fixed an issue with ACC plugin not overriding the default WP avatar behavior properly.
+- Fixed and issue where ACC wasn't using the correct spelling of the ACC, based on the main base plugin option.
 
 ## 1.1.6 / 2024-08-01
 - New block: Touchpoints MicroSpec. Can also show single event data on a page.
