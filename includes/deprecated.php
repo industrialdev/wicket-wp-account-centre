@@ -517,7 +517,7 @@ function wicket_acc_rewrite_permalinks($post_link, $post, $leavename, $sample)
 			$account_center_slug_locale = WicketAcc\WACC()->get_slug();
 		}
 
-		if (empty($account_center_slug_locale['value'])) {
+		if (is_array($account_center_slug_locale) && empty($account_center_slug_locale['value'])) {
 			$account_center_slug_locale['value'] = 'account-center';
 		}
 

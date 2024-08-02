@@ -1,7 +1,7 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
-## 1.1.8 / 2024-08-02
+## 1.1.9 / 2024-08-02
 - Removed page for Locations, Banners and Subsidiaries from ACC options.
 - Fixed loading of ACC pages (CPT wicket_acc).
 - Fixed WP menu not showing on the ACC pages, because of missing default value for the sidebar location.
