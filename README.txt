@@ -46,3 +46,4 @@ There are unique Wicket Blocks available for the Account Centre pages (or any WP
 - ACC Profile Picture Change: allow the user to update their profile picture.
 - ACC Touchpoints MicroSpec: display a list of events (from MicroSpec) and their data.
 - ACC Touchpoints TEC: display a list of events (from The Events Calendar) and their data.
+- ACC Organization Management: display a list of organizations (from the Organization Management plugin) and their members. Allows to manage memberships.
