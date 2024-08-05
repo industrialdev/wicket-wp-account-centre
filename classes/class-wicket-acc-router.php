@@ -25,6 +25,7 @@ class Router extends WicketAcc
 		'membership-history'             => 'Membership History',
 		'purchase-history'               => 'Purchase History',
 		'change-password'                => 'Change Password',
+		'organization-management'        => 'Organization Management',
 	];
 
 	/**

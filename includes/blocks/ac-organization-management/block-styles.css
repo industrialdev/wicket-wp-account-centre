@@ -1,0 +1,13 @@
+/* Define CSS variables for colors */
+:root {
+	--wicket-ac-black: #000000;
+	--wicket-ac-white: #ffffff;
+	--wicket-ac-gray: #f3f4f6;
+	--wicket-ac-dark-gray: #374151;
+	--wicket-ac-border-color: #d1d5db;
+	--wicket-ac-primary: #1f2937;
+	--wicket-ac-hover-primary: #111827;
+}
+
+.wicket-acc-organization-management {
+}

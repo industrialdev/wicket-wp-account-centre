@@ -83,4 +83,23 @@ class Helpers extends WicketAcc
 
 		return 'Account Centre';
 	}
+
+	/**
+	 * Get language
+	 * If WPML is not installed, return 'en'
+	 *
+	 * @return string
+	 */
+	public function get_language()
+	{
+		global $sitepress;
+
+		if (!isset($sitepress)) {
+			return 'en';
+		}
+
+		$lang = $sitepress->get_current_language();
+
+		return $lang;
+	}
 }
