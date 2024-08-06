@@ -51,6 +51,10 @@ class Blocks extends WicketAcc
 
 	/**
 	 * Load ACF Blocks
+	 * Automatically register blocks from the blocks folder
+	 * Also register block styles and scripts
+	 *
+	 * @return void
 	 */
 	public function load_wicket_blocks()
 	{
@@ -117,7 +121,12 @@ class Blocks extends WicketAcc
 	{
 		$blocks = scandir(WICKET_ACC_PATH . 'includes/blocks/');
 
-		$blocks = array_values(array_diff($blocks, ['..', '.', '.DS_Store', '_base-block']));
+		$blocks = array_values(array_diff($blocks, ['..', '.', '.DS_Store', '_ac-base-block']));
+
+		// Also ignore any block folder that starts with an underscore
+		$blocks = array_filter($blocks, function ($block) {
+			return !str_starts_with($block, '_');
+		});
 
 		return $blocks;
 	}
