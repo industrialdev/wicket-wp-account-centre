@@ -99,6 +99,121 @@ class MdpApi
 	}
 
 	/**
+	 * Get current person
+	 */
+	public function get_current_person()
+	{
+		$person_id = $this->get_current_person_uuid();
+
+		if (!empty($person_id)) {
+			return false;
+		}
+
+		$client = $this->init_client();
+
+		try {
+			$person = $client->people->fetch($person_id);
+		} catch (Exception $e) {
+			$errors = json_decode($e->getResponse()->getBody())->errors;
+
+			return false;
+		}
+
+		return $person;
+	}
+
+	/**
+	 * Get organization info
+	 *
+	 * @param string $org_uuid Organization UUID
+	 * @param string $lang Optional. Default is 'en'. Can be: en, fr, es.
+	 *
+	 * @return array|false
+	 */
+	public function get_organization_info($org_uuid, $lang = 'en')
+	{
+		// Empty?
+		if (empty($org_uuid) || empty($lang)) {
+			return false;
+		}
+
+		// Empty defaults
+		$org_parent_name    = '';
+		$org_parent_uuid    = '';
+		$org_type           = '';
+		$org_type_nice_name = '';
+		$org_address        = [];
+		$org_phone          = [];
+		$org_email          = [];
+
+		// Get the organization
+		$organization    = WACC()->MdpApi()->get_organization_by_uuid($org_uuid);
+		$org_parent_uuid = $org_info['data']['relationships']['parent_organization']['data']['id'] ?? '';
+
+		if (!empty($org_parent_uuid)) {
+			$org_parent_info = WACC()->MdpApi()->get_organization_by_uuid($org_parent_uuid);
+		}
+
+		// Organization name
+		$org_name = $organization['data']['attributes']['legal_name_' . $lang] ?? $organization['data']['attributes']['legal_name'];
+
+		$org_description = $organization['data']['attributes']['description_' . $lang] ?? $organization['data']['attributes']['description'];
+
+		// Organization parent name
+		if (!empty($org_parent_info)) {
+			$org_parent_name = $org_parent_info['data']['attributes']['legal_name_' . $lang] ?? $org_parent_info['data']['attributes']['legal_name'];
+		}
+
+		// Organization type
+		if (!empty($organization['data']['attributes']['type'])) {
+			$org_type = $organization['data']['attributes']['type'];
+
+			$org_type_nice_name = ucwords(str_replace('_', ' ', $org_type));
+		}
+
+		// Organization status
+		$org_status = $organization['data']['attributes']['status'] ?? '';
+
+		// Organization address
+		$client   = $this->init_client();
+		$response = $client->get("organizations/$org_uuid/addresses");
+
+		if (isset($response['data']) && !empty($response['data'])) {
+			$org_address = $response['data'][0]['attributes'];
+		}
+
+		// Organization phone number
+		$response = $client->get("organizations/$org_uuid/phones");
+
+		if (isset($response['data']) && !empty($response['data'])) {
+			$org_phone = $response['data'][0]['attributes'];
+		}
+
+		// Organization email
+		$response = $client->get("organizations/$org_uuid/emails");
+
+		if (isset($response['data']) && !empty($response['data'])) {
+			$org_email = $response['data'][0]['attributes'];
+		}
+
+		$organization_info = [
+			'org_uuid'           => $org_uuid,
+			'org_name'           => $org_name,
+			'org_description'    => $org_description,
+			'org_parent_uuid'    => $org_parent_uuid,
+			'org_parent_name'    => $org_parent_name,
+			'org_type'           => $org_type,
+			'org_type_nice_name' => $org_type_nice_name,
+			'org_status'         => $org_status,
+			'org_address'        => $org_address,
+			'org_phone'          => $org_phone,
+			'org_email'          => $org_email,
+		];
+
+		return $organization_info;
+	}
+
+	/**
 	 * Get current user's touchpoints
 	 *
 	 * @param string $service_id
@@ -168,5 +283,74 @@ class MdpApi
 		}
 
 		return false;
+	}
+
+	/**
+	 * Get organization by UUID
+	 *
+	 * @param string $uuid
+	 *
+	 * @return array|false
+	 */
+	public function get_organization_by_uuid($uuid = '')
+	{
+		if (empty($uuid)) {
+			return false;
+		}
+
+		$client = $this->init_client();
+
+		try {
+			$organization = $client->get("organizations/$uuid");
+		} catch (Exception $e) {
+			$errors = json_decode($e->getResponse()->getBody())->errors;
+
+			return false;
+		}
+
+		return $organization;
+	}
+
+	/**
+	 * Get organization memberships
+	 *
+	 * @param string $org_uuid Organization UUID
+	 *
+	 * @return array|bool
+	 */
+	public function get_organization_memberships(string $org_uuid)
+	{
+		// Empty?
+		if (empty($org_uuid)) {
+			return false;
+		}
+
+		$client = $this->init_client();
+
+		try {
+			$org_memberships = $client->get("/organizations/$org_uuid/membership_entries?sort=-ends_at&include=membership");
+		} catch (Exception $e) {
+			$errors = json_decode($e->getResponse()->getBody())->errors;
+
+			return false;
+		}
+
+		if (empty($org_memberships['data'])) {
+			return false;
+		}
+
+		$memberships = [];
+
+		foreach ($org_memberships['data'] as $org_membership) {
+			$memberships[$org_membership['id']]['membership'] = $org_membership;
+
+			foreach ($org_memberships['included'] as $included) {
+				if ($included['id'] == $org_membership['relationships']['membership']['data']['id']) {
+					$memberships[$org_membership['id']]['included'] = $included;
+				}
+			}
+		}
+
+		return $memberships;
 	}
 }

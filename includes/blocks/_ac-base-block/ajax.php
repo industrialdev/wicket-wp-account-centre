@@ -5,7 +5,7 @@ namespace WicketAcc;
 // No direct access
 defined('ABSPATH') || exit;
 
-class BlockAjax_TouchpointMicroSpec extends Block_TouchpointMicroSpec
+class BlockAjax_BaseBlock extends Block_BaseBlock
 {
 	/**
 	 * Constructor
@@ -13,8 +13,8 @@ class BlockAjax_TouchpointMicroSpec extends Block_TouchpointMicroSpec
 	public function __construct()
 	{
 		// Register Ajax actions
-		add_action('wp_ajax_wicket_ac_touchpoint_microspec_results', [$this, 'ajax_load_more_results']);
-		add_action('wp_ajax_nopriv_wicket_ac_touchpoint_microspec_results', [$this, 'ajax_load_more_results']);
+		add_action('wp_ajax_wicket_acc_base_block_results', [$this, 'ajax_load_more_results']);
+		add_action('wp_ajax_nopriv_wicket_acc_base_block_results', [$this, 'ajax_load_more_results']);
 	}
 
 	/**
@@ -24,13 +24,13 @@ class BlockAjax_TouchpointMicroSpec extends Block_TouchpointMicroSpec
 	 */
 	public function ajax_load_more_results()
 	{
-		// If action != wicket_ac_touchpoint_microspec_results, return
-		if (!isset($_POST['action']) || $_POST['action'] != 'wicket_ac_touchpoint_microspec_results') {
+		// If action != wicket_acc_base_block_results, return
+		if (!isset($_POST['action']) || $_POST['action'] != 'wicket_acc_base_block_results') {
 			return false;
 		}
 
 		// Verify nonce
-		$nonce_validation = check_ajax_referer('wicket_ac_touchpoint_microspec_results', 'security');
+		$nonce_validation = check_ajax_referer('wicket_acc_base_block_results', 'security');
 
 		if (!$nonce_validation) {
 			echo '<p class="error no-data">';
@@ -40,19 +40,18 @@ class BlockAjax_TouchpointMicroSpec extends Block_TouchpointMicroSpec
 		}
 
 		// Retrieve form data
-		$num_results   = absint($_POST['num_results']);
-		$total_results = absint($_POST['total_results']);
-		$counter       = absint($_POST['counter']);
-		$display_type  = sanitize_text_field($_POST['type']);
-
-		$touchpoints_results = $this->get_touchpoints_results();
+		$variable     = absint($_POST['variable']);
+		$other_field  = sanitize_text_field($_POST['other_field']);
 
 		// We will get $this->display_touchpoints results and return it as html
 		// Ideally, we should return the results as json, but... i don't know if Wicket has any standar way to render json results on the front-end
 		// Even more ideally, we should be using HTMX ;)
+
+		// Process some data and retrieve results in HTML
+		// Don't need to use ob_start, if your methods already return HTML
 		ob_start();
-		$this->display_touchpoints($touchpoints_results['data'], $display_type, $num_results, true);
-		$results = ob_get_clean();
+
+		$results = 'Some response';
 
 		// If empty, results json error
 		if (empty($results)) {
