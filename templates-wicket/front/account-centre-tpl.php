@@ -27,9 +27,9 @@ if (have_posts()) :
 			if ('left' == $acc_sidebar_location) {
 				// Check if file exists on child theme first
 				if (file_exists(
-					WICKET_ACC_TEMPLATE_PATH . 'front/navigation.php'
+					WICKET_ACC_USER_TEMPLATE_PATH . 'front/navigation.php'
 				)) {
-					include_once WICKET_ACC_TEMPLATE_PATH . 'front/navigation.php';
+					include_once WICKET_ACC_USER_TEMPLATE_PATH . 'front/navigation.php';
 				} else {
 					include_once WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'front/navigation.php';
 				}
@@ -56,9 +56,9 @@ if (have_posts()) :
 			if ('right' == $acc_sidebar_location) {
 				// Check if file exists on child theme first
 				if (file_exists(
-					WICKET_ACC_TEMPLATE_PATH . 'front/navigation.php'
+					WICKET_ACC_USER_TEMPLATE_PATH . 'front/navigation.php'
 				)) {
-					include_once WICKET_ACC_TEMPLATE_PATH . 'front/navigation.php';
+					include_once WICKET_ACC_USER_TEMPLATE_PATH . 'front/navigation.php';
 				} else {
 					include_once WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'front/navigation.php';
 				}

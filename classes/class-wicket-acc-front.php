@@ -178,9 +178,9 @@ class Front extends WicketAcc
 	{
 		// Check if file exists on child theme first
 		if (file_exists(
-			WICKET_ACC_TEMPLATE_PATH . 'front/navigation.php'
+			WICKET_ACC_USER_TEMPLATE_PATH . 'front/navigation.php'
 		)) {
-			include_once WICKET_ACC_TEMPLATE_PATH . 'front/navigation.php';
+			include_once WICKET_ACC_USER_TEMPLATE_PATH . 'front/navigation.php';
 		} else {
 			include_once WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'front/navigation.php';
 		}
@@ -362,9 +362,9 @@ class Front extends WicketAcc
 		if ('dashboard.php' === basename($template)) {
 			// Check if file exists on child theme first
 			if (file_exists(
-				WICKET_ACC_TEMPLATE_PATH . 'front/dashboard.php'
+				WICKET_ACC_USER_TEMPLATE_PATH . 'front/dashboard.php'
 			)) {
-				$template = WICKET_ACC_TEMPLATE_PATH . 'front/dashboard.php';
+				$template = WICKET_ACC_USER_TEMPLATE_PATH . 'front/dashboard.php';
 			} else {
 				$template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'front/dashboard.php';
 			}
@@ -373,9 +373,9 @@ class Front extends WicketAcc
 		if ('my-account.php' === basename($template)) {
 			// Check if file exists on child theme first
 			if (file_exists(
-				WICKET_ACC_TEMPLATE_PATH . 'front/my-account.php'
+				WICKET_ACC_USER_TEMPLATE_PATH . 'front/my-account.php'
 			)) {
-				$template = WICKET_ACC_TEMPLATE_PATH . 'front/my-account.php';
+				$template = WICKET_ACC_USER_TEMPLATE_PATH . 'front/my-account.php';
 			} else {
 				$template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'front/my-account.php';
 			}

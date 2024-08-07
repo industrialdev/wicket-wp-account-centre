@@ -48,13 +48,8 @@ define('WICKET_ACC_BASENAME', plugin_basename(__FILE__));
 define('WICKET_ACC_UPLOADS_PATH', wp_get_upload_dir()['basedir'] . '/wicket-account-center/');
 define('WICKET_ACC_UPLOADS_URL', wp_get_upload_dir()['baseurl'] . '/wicket-account-center/');
 define('WICKET_ACC_PLUGIN_TEMPLATE_PATH', WICKET_ACC_PATH . 'templates-wicket/');
-define('WICKET_ACC_TEMPLATE_PATH', get_stylesheet_directory() . '/templates-wicket/');
+define('WICKET_ACC_USER_TEMPLATE_PATH', get_stylesheet_directory() . '/templates-wicket/');
 define('WICKET_ACC_SLUG', 'account-centre'); // We take care of multi-language support later on the plugin
-
-/**
- * Composer autoloader
- */
-//require_once WICKET_ACC_PATH . 'vendor/autoload.php';
 
 /**
  * The main Wicket Account Centre class

@@ -179,7 +179,7 @@ class Blocks extends WicketAcc
 		$template_name = sanitize_title($template_name);
 
 		// Assume template is in child theme
-		$template_path = WICKET_ACC_TEMPLATE_PATH 	. $template_name . '.php';
+		$template_path = WICKET_ACC_USER_TEMPLATE_PATH 	. $template_name . '.php';
 
 		if (!file_exists($template_path)) {
 			// If not found, check if template is in plugin folder
