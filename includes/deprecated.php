@@ -501,10 +501,9 @@ function wicket_acc_rewrite_permalinks($post_link, $post, $leavename, $sample)
 {
 	// Only on CPT wicket_acc
 	if ($post->post_type == 'wicket_acc') {
-		global $sitepress;
+		if (defined('ICL_SITEPRESS_VERSION')) {
+			global $sitepress;
 
-		// Get the current language from WPML
-		if ($sitepress->get_current_language()) {
 			$lang = $sitepress->get_current_language();
 		} else {
 			$lang = 'en';
