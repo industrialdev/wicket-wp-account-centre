@@ -63,7 +63,6 @@ function wicket_get_active_memberships($iso_code = 'en')
  */
 function woo_get_active_memberships()
 {
-
 	$membership_summary = null;
 
 	$args = array(
@@ -142,7 +141,6 @@ function is_renewal_period($memberships, $renewal_period)
 
 function wicket_profile_widget_validation($fields = [])
 {
-
 	$person  = wicket_current_person();
 	$results = [];
 
@@ -173,7 +171,6 @@ function wicket_profile_widget_validation($fields = [])
  */
 function wicket_validation_addresses($person)
 {
-
 	$addresses    = [];
 	$country_name = '';
 	$city         = '';
@@ -224,12 +221,12 @@ class wicket_acc_menu_walker extends Walker_Nav_Menu
 
 	function start_el(&$output, $item, $depth = 0, $args = array(), $id = 0)
 	{
-		$object = $item->object;
-		$type = $item->type;
-		$title = $item->title;
-		$permalink = $item->url;
-		$classes = $item->classes;
-		$target = $item->target;
+		$object             = $item->object;
+		$type               = $item->type;
+		$title              = $item->title;
+		$permalink          = $item->url;
+		$classes            = $item->classes;
+		$target             = $item->target;
 		$this->current_item = $item;
 
 		$output .= "<li class='" .  implode(" ", $classes) . "'>";
@@ -296,12 +293,12 @@ class wicket_acc_menu_mobile_walker extends Walker_Nav_Menu
 
 	function start_el(&$output, $item, $depth = 0, $args = array(), $id = 0)
 	{
-		$object = $item->object;
-		$type = $item->type;
-		$title = $item->title;
-		$permalink = $item->url;
-		$classes = $item->classes;
-		$target = $item->target;
+		$object             = $item->object;
+		$type               = $item->type;
+		$title              = $item->title;
+		$permalink          = $item->url;
+		$classes            = $item->classes;
+		$target             = $item->target;
 		$this->current_item = $item;
 
 		$output .= "<li class='" .  implode(" ", $classes) . "'>";

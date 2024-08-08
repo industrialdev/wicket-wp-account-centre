@@ -3,6 +3,7 @@ Previously known as My Account Page Editor
 
 ## 1.1.13 / 2024-08-07
 - Implemented a way to keep but disable any block (for devs). Add an underscore to the block folder name to disable it.
+- Fixed an issue related to ACC assuming WPML was always installed and active.
 
 ## 1.1.12 / 2024-08-02
 - Removed page for Locations, Banners and Subsidiaries from ACC options.
