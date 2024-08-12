@@ -172,17 +172,17 @@ class Front extends WicketAcc
 	}
 
 	/**
-	 * Replace navigation.
+	 * Replace sidebar (navigation)
 	 */
 	public function account_navigation()
 	{
 		// Check if file exists on child theme first
 		if (file_exists(
-			WICKET_ACC_USER_TEMPLATE_PATH . 'front/navigation.php'
+			WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/sidebar.php'
 		)) {
-			include_once WICKET_ACC_USER_TEMPLATE_PATH . 'front/navigation.php';
+			include_once WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/sidebar.php';
 		} else {
-			include_once WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'front/navigation.php';
+			include_once WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/sidebar.php';
 		}
 	}
 
@@ -362,22 +362,22 @@ class Front extends WicketAcc
 		if ('dashboard.php' === basename($template)) {
 			// Check if file exists on child theme first
 			if (file_exists(
-				WICKET_ACC_USER_TEMPLATE_PATH . 'front/dashboard.php'
+				WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/dashboard.php'
 			)) {
-				$template = WICKET_ACC_USER_TEMPLATE_PATH . 'front/dashboard.php';
+				$template = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/dashboard.php';
 			} else {
-				$template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'front/dashboard.php';
+				$template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/dashboard.php';
 			}
 		}
 
 		if ('my-account.php' === basename($template)) {
 			// Check if file exists on child theme first
 			if (file_exists(
-				WICKET_ACC_USER_TEMPLATE_PATH . 'front/my-account.php'
+				WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/my-account.php'
 			)) {
-				$template = WICKET_ACC_USER_TEMPLATE_PATH . 'front/my-account.php';
+				$template = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/my-account.php';
 			} else {
-				$template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'front/my-account.php';
+				$template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/my-account.php';
 			}
 		}
 
