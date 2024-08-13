@@ -1,6 +1,9 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
+# 1.1.14 / 2024-08-13
+- Fixed an issue where the Touchpoints Events Calendar block wasn't showing events.
+
 ## 1.1.13 / 2024-08-07
 - Implemented a way to keep but disable any block (for devs). Add an underscore to the block folder name to disable it.
 - Fixed an issue related to ACC assuming WPML was always installed and active.
