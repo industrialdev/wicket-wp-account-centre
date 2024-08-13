@@ -40,8 +40,6 @@ class Block_TouchpointEventCalendar extends WicketAcc
 			]
 		);
 
-		echo '<section ' . $attrs . '>';
-
 		if ($this->is_preview) {
 			$args = [
 				'block_name'          => 'Touchpoint TEC',
@@ -54,14 +52,18 @@ class Block_TouchpointEventCalendar extends WicketAcc
 			return;
 		}
 
-		$num_results       = get_field('page_results');
-		$display           = get_field('default_display');
-		$registered_action = get_field('registered_action');
-		$environment       = get_option('wicket_admin_settings_environment');
-		$events            = [];
+		echo '<section ' . $attrs . '>';
 
-		$events_calendar_touchpoint_service = get_create_touchpoint_service_id('Events Calendar');
-		$event_touchpoints                  = wicket_get_current_user_touchpoints($events_calendar_touchpoint_service);
+		$display            = get_field('default_display');
+		$registered_action  = get_field('registered_action');
+		$num_results        = get_field('page_results');
+		$display_event_info = get_field('display_event_info');
+
+		$total_results     = 0;
+		$counter           = 0;
+		$display_type      = 'upcoming';
+
+		$touchpoints_results = $this->get_touchpoints_results('Events Calendar');
 
 		if (empty($registered_action)) {
 			$registered_action = [
@@ -71,211 +73,257 @@ class Block_TouchpointEventCalendar extends WicketAcc
 			];
 		}
 
-		if (!empty($_REQUEST['display'])) {
-			$default_display = sanitize_text_field($_REQUEST['display']);
-
-			if (in_array($default_display, ['upcoming', 'past', 'all'])) {
-				$display = $default_display; // Sanitized
-			}
-		}
+		// Get query vars
+		$display     = isset($_REQUEST['show']) ? sanitize_text_field($_REQUEST['show']) : 'upcoming';
+		$num_results = isset($_REQUEST['num_results']) ? absint($_REQUEST['num_results']) : 5;
 
 		if (empty($display)) {
 			$display = 'upcoming';
 		}
 
-		if (!empty($_REQUEST['num_results'])) {
-			$num_results = absint($_REQUEST['num_results']);
+		// Allowed query vars for display
+		$valid_display = [
+			'upcoming',
+			'past',
+			'all'
+		];
+
+		if (!in_array($display, $valid_display)) {
+			$display = 'upcoming';
 		}
 
-		// &filter%5Baction_eq%5D=RSVP%20to%20event
-		// &filter%5Baction_eq%5D=Registered%20for%20an%20event
-		// &filter%5Baction_eq%5D=Attended%an%20event
-		// array(3) { [0]=> string(10) "registered" [1]=> string(4) "rsvp" [2]=> string(6) "attend" }
+		// Switch link
+		$display_other = $display == 'upcoming' ? 'past' : 'upcoming';
 
-		// pre-filter events based on time. Add upcoming events
-		foreach ($event_touchpoints['data'] as $key => $tp) {
-			if (!in_array($tp['attributes']['code'], $registered_action)) {
-				continue;
-			}
-			if (isset($tp['attributes']['data']['start_date']) && strtotime($tp['attributes']['data']['start_date']) > time()) {
-				$events['upcoming']['data'][] = $tp;
-			} else if (isset($tp['attributes']['data']['start_date']) && strtotime($tp['attributes']['data']['start_date']) < time()) {
-				$events['past']['data'][] = $tp;
-			}
-		}
+		$switch_link   = add_query_arg(
+			[
+				'show'        => $display_other,
+				'num_results' => $num_results
+			],
+			remove_query_arg('show')
+		);
 
-		foreach ($event_touchpoints['data'] as $key => $tp) {
-			if (!in_array($tp['attributes']['code'], $registered_action)) {
-				continue;
-			}
-			if (isset($tp['attributes']['data']['start_date']) && strtotime($tp['attributes']['data']['start_date']) > time()) {
-				$events['upcoming']['data'][] = $tp;
-			} else if (isset($tp['attributes']['data']['start_date']) && strtotime($tp['attributes']['data']['start_date']) < time()) {
-				$events['past']['data'][] = $tp;
-			}
-		}
+		$switch_link = esc_url($switch_link);
 
-		foreach ($event_touchpoints['data'] as $key => $tp) {
-			if (!in_array($tp['attributes']['code'], $registered_action)) {
-				continue;
-			}
-			if (isset($tp['attributes']['data']['start_date']) && strtotime($tp['attributes']['data']['start_date']) > time()) {
-				$events['upcoming']['data'][] = $tp;
-			} else if (isset($tp['attributes']['data']['start_date']) && strtotime($tp['attributes']['data']['start_date']) < time()) {
-				$events['past']['data'][] = $tp;
-			}
-		}
+		$args = [
+			'block_name'          => 'Touchpoint TEC',
+			'block_description'   => 'This block displays registered data for TEC (The Events Calendar) on the front-end.',
+			'block_slug'          => 'wicket-ac-touchpoint-tec',
+			'attrs'               => $attrs,
+			'display'             => $display,
+			'num_results'         => $num_results,
+			'total_results'       => $total_results,
+			'counter'             => $counter,
+			'close'               => $close,
+			'display_type'        => $display_type,
+			'touchpoints_results' => $touchpoints_results,
+			'switch_link'         => $switch_link,
+			'display_event_info'  => $display_event_info,
+			'is_preview'          => $this->is_preview
+		];
 
-		foreach ($event_touchpoints['data'] as $key => $tp) {
-			if (!in_array($tp['attributes']['code'], $registered_action)) {
-				continue;
-			}
-			if (isset($tp['attributes']['data']['start_date']) && strtotime($tp['attributes']['data']['start_date']) > time()) {
-				$events['upcoming']['data'][] = $tp;
-			} else if (isset($tp['attributes']['data']['start_date']) && strtotime($tp['attributes']['data']['start_date']) < time()) {
-				$events['past']['data'][] = $tp;
-			}
-		}
+		// Render block
+		WACC()->Blocks->render_template('touchpoint-tec', $args);
 
-?>
-		<div class="header flex justify-between items-center mb-6">
-			<?php
-			if ($display == 'upcoming') {
-				$switch_link = add_query_arg(
-					[
-						'display' => 'past'
-					],
-					remove_query_arg('display')
-				);
-			?>
-				<h2 class="font-bold"><?php esc_html_e('Upcoming Registered Events', 'wicket-acc'); ?></h2>
-				<a href="<?php echo $switch_link; ?>" class="past-link font-bold"><?php esc_html_e('See Past Registered Events →', 'wicket-acc'); ?></a>
-
-			<?php
-			}
-
-			if ($display == 'past') {
-				$switch_link = add_query_arg(
-					[
-						'display' => 'upcoming'
-					],
-					remove_query_arg('display')
-				);
-			?>
-				<h2 class="font-bold"><?php esc_html_e('Past Registered Events', 'wicket-acc'); ?></h2>
-				<a href="<?php echo $switch_link; ?>" class="upcoming-link font-bold"><?php esc_html_e('See Upcoming Registered Events →', 'wicket-acc'); ?></a>
-			<?php
-			}
-
-			?>
-		</div>
-		<div class="grid" x-data="{show: false}">
-			<?php
-
-			if ($display == 'upcoming' || $display == 'all') {
-				if (isset($events['upcoming']) && !empty($events['upcoming'])) {
-					$this->display_events($events['upcoming'], 'upcoming', $num_results);
-					$close++;
-				}
-			}
-
-			if ($display == 'past' || $display == 'all') {
-				if (isset($events['past']) && !empty($events['past'])) {
-					$this->display_events($events['past'], 'past', $num_results);
-					$close++;
-				}
-			}
-			?>
-		</div>
-		<?php
-		echo '</section>';
+		return;
 	}
 
-	protected function display_events($event_touchpoints, $display_type, $num_results)
+	/**
+	 * Get touchpoints results
+	 *
+	 * $service_id - Touchpoint service id
+	 *
+	 * @return mixed Array of touchpoints or false on error
+	 */
+	protected function get_touchpoints_results($service_id = '')
+	{
+		if (empty($service_id)) {
+			return false;
+		}
+
+		// Debug with person: 9e0093fb-6df8-4da3-bf62-e6c135c1e4b0
+		$touchpoint_service = WACC()->MdpApi->create_touchpoint_service_id($service_id);
+		$touchpoints        = WACC()->MdpApi->get_current_user_touchpoints($touchpoint_service);
+
+		return $touchpoints;
+	}
+
+	/**
+	 * Display the touchpoints
+	 *
+	 * @param array $touchpoint_data Touchpoint data
+	 * @param string $display Touchpoint display type: upcoming, past, all
+	 * @param int $num_results Number of results to display
+	 * @param bool $ajax Is ajax request?
+	 *
+	 * @return void
+	 */
+	public static function display_touchpoints($touchpoint_data = [], $display_type = 'upcoming', $num_results = 5, $ajax = false)
 	{
 		// No data
-		if (empty($event_touchpoints['data'])) {
-			_e('<p>You do not have any ' . $display_type . ' events at this time.</p>', 'wicket-acc');
+		if (empty($touchpoint_data)) {
+			echo '<p class="no-data">';
+			_e('You do not have any ' . $display_type . ' data at this time.', 'wicket-acc');
+			echo '</p>';
 			return;
 		}
 
-		echo "<h2> " . ucfirst($display_type) . " Events: " . count($event_touchpoints['data']) . "</h2>";
+		// Filter data by type
+		$touchpoint_data = self::filter_touchpoint_data($touchpoint_data, $display_type);
+
+		// Total results
+		$total_results = count($touchpoint_data);
+
+		// Ajax request?
+		if ($ajax === false) {
+?>
+			<p class="text-base">
+				<?php echo ucfirst($display_type) . " Data: " . $total_results; ?>
+			</p>
+		<?php
+		}
 
 		$counter = 0;
 
-		foreach ($event_touchpoints['data'] as $tp) :
-		?>
-			<?php if ($tp['attributes']['code'] == 'registered_for_an_event') : ?>
-				<?php $counter++; ?>
-				<?php if (isset($tp['attributes']['data']['start_date'])) : ?>
-					<div class='wicket-ac-display-events touchpoint_row mb-3 flex' id="event-<?php echo $counter; ?>">
-						<div class='shadow-4 rounded-100 p-5 w-full sm:w-2/3 event_touchpoint_row_content'>
-							<div class="calendar_entry">
-								<?php echo date('M', strtotime($tp['attributes']['data']['start_date'])); ?><br>
-								<?php echo date('j', strtotime($tp['attributes']['data']['start_date'])); ?>
-							</div>
-							<div class="calendar_content">
-								<?php if ($tp['attributes']['data']['event_type'] != 'Not set') {
-									echo '<div class="event_type">';
-									echo $tp['attributes']['data']['event_type'];
-									echo '</div>';
-								} ?>
-								<a target='_blank' href='<?php echo $tp['attributes']['data']['url'] ?>'>
-									<?php
-									echo '<div class="event_title">';
-									echo $tp['attributes']['data']['event_title'];
-									echo '</div>';
-									?>
-									<span class='sr-only'><?php esc_html_e('(opens in a new window)', 'wicket-acc'); ?></span></a>
-								<?php
-								echo '<div class="event_date">';
-								?>
-								<span class="label"><?php esc_html_e('Date:', 'wicket-acc'); ?></span>
-								<?php echo date('F j, Y, g:i a', strtotime($tp['attributes']['data']['start_date'])) ?> - <?php echo date('F j, Y, g:i a', strtotime($tp['attributes']['data']['end_date'])) ?>
-								<?php if ($tp['attributes']['data']['location'] && strlen($tp['attributes']['data']['location']) > 10) : ?>
-									<?php
-									echo '</div>';
-									?>
-									<?php
-									echo '<div class="event_location">';
-									?><span class="label"><?php esc_html_e('Location:', 'wicket-acc'); ?></span>
-									<?php echo $tp['attributes']['data']['location'] ?>
-									<?php
-									echo '</div>';
-									?>
-								<?php endif; ?>
-								<?php
-								if (isset($tp['attributes']['data']['event_additional_fields'])) :
-									foreach ($tp['attributes']['data']['event_additional_fields'] as $meta) :
-										foreach ($meta as $label => $value) :
-								?>
-											<div class='event_landing_custom_field'>
-												<strong><?php echo $label; ?>: </strong>
-												<span><?php echo $value; ?></span>
-											</div>
-								<?php
-										endforeach;
-									endforeach;
-								endif;
-								?>
-							</div>
-						</div>
-					</div>
-				<?php endif; ?>
+		foreach ($touchpoint_data as $tp) :
+			//if ($tp['attributes']['code'] == 'cancelled_registration_for_an_event') :
+			$counter++;
 
-			<?php endif; ?>
+			if (isset($tp['attributes']['data']['start_date'])) {
+				$args['tp'] = $tp;
+				$args['display_event_info'] = get_field('display_event_info');
 
-			<?php if ($counter == $num_results) : ?>
-				<p class="text-center">
-					<a href='#' class='touchpoint_show_more_cta' id='touchpoint_show_more_cta' @click.prevent="show = !show" x-show="!show"><?php esc_html_e('Show More', 'wicket-acc'); ?></a>
-				</p>
-				<div x-show="show" x-transition class='touchpoint_show_more'>
-				<?php endif; ?>
+				if (empty($args['display_event_info'])) {
+					$args['display_event_info'] = 'in_page';
+				}
 
-				<?php if ($counter == count($event_touchpoints['data']) && count($event_touchpoints['data']) > $num_results) : ?>
-				</div>
-			<?php endif; ?>
-<?php
+				WACC()->Blocks->render_template('touchpoint-tec-card', $args);
+			}
+		//endif;
 		endforeach;
+
+		// Show more like pagination, to load more data in the same page (if there are more than $num_results)
+		if ($counter == $num_results && $ajax === false) {
+			self::load_more_results($touchpoint_data, $num_results, $total_results, $counter, $display_type);
+		}
+	}
+
+	/**
+	 * Filter touchpoint data
+	 *
+	 * @param array $touchpoint_data Touchpoint data
+	 * @param string $display_type Touchpoint display type: upcoming, past, all
+	 *
+	 * @return array
+	 */
+	public static function filter_touchpoint_data($touchpoint_data = [], $display_type = 'upcoming')
+	{
+		if (empty($touchpoint_data)) {
+			return $touchpoint_data;
+		}
+
+		// Get current date as: 2024-09-19T14:00:00.000Z
+		$current_date = date('Y-m-d\TH:i:s.000Z');
+
+		// Check inside every touchpoint for attributes->data->start_date, and compare with current date. If display_type = upcoming, return an array of touchpoints that are greater than current date. If display_type = past, return an array of touchpoints that are less than current date.
+		$filtered_touchpoint_data = array_filter($touchpoint_data, function ($touchpoint) use ($current_date, $display_type) {
+			if (isset($touchpoint['attributes']['data']['start_date'])) {
+				$start_date = $touchpoint['attributes']['data']['start_date'];
+
+				// Check if start date is greater than current date
+				if (strtotime($start_date) > strtotime($current_date)) {
+					return $display_type == 'upcoming';
+				}
+
+				// Check if start date is less than current date
+				if (strtotime($start_date) < strtotime($current_date)) {
+					return $display_type == 'past';
+				}
+			}
+			return false;
+		});
+
+		return $filtered_touchpoint_data;
+	}
+
+	/**
+	 * Load more results
+	 *
+	 * @param array $touchpoint_data Touchpoint data
+	 * @param int $num_results Number of results to display
+	 * @param int $total_results Total results
+	 * @param int $counter Counter of displayed results
+	 * @param string $display_type Touchpoint display type: upcoming, past, all
+	 *
+	 * @return void
+	 */
+	public static function load_more_results($touchpoint_data = [], $num_results = 5, $total_results = 0, $counter = 0, $display_type = 'upcoming')
+	{
+		// Sanitize
+		$num_results   = absint($num_results);
+		$total_results = absint($total_results);
+		$counter       = absint($counter);
+		?>
+
+		<div x-data="ajaxFormHandler()">
+			<div class="wicket-ac-touchpoint__tec-results container">
+				<div class="events-list grid gap-6" x-html="responseMessage"></div>
+			</div>
+
+			<div class="flex justify-center items-center">
+				<form action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>" method="post" @submit.prevent="submitForm">
+					<input type="hidden" name="action" value="wicket_ac_touchpoint_tec_results">
+					<input type="hidden" name="num_results" value="<?php echo $num_results; ?>">
+					<input type="hidden" name="total_results" value="<?php echo $total_results; ?>">
+					<input type="hidden" name="type" value="<?php echo $display_type; ?>">
+					<input type="hidden" name="counter" value="<?php echo $counter; ?>">
+					<?php wp_nonce_field('wicket_ac_touchpoint_tec_results'); ?>
+
+					<div x-show="loading" class="wicket-ac-touchpoint__loader flex justify-center items-center self-center">
+						<i class="fas fa-spinner fa-spin"></i>
+					</div>
+
+					<button type="submit" class="show-more flex items-center font-bold text-color-dark-100 my-4" x-show="!loading">
+						<span class="arrow mr-2">&#9660;</span>
+						<span class="text"><?php esc_html_e('Show More', 'wicket-acc'); ?></span>
+					</button>
+				</form>
+			</div>
+
+			<script>
+				function ajaxFormHandler() {
+					return {
+						loading: false,
+						responseMessage: '',
+						submitForm(event) {
+							this.loading = true;
+							const formData = new FormData(event.target);
+
+							console.log(formData);
+							console.log(woocommerce_params.ajax_url);
+
+							fetch(woocommerce_params.ajax_url, {
+									method: 'POST',
+									body: formData
+								})
+								.then(response => response.text())
+								.then(data => {
+									this.loading = false;
+									if (data) {
+										this.responseMessage = data;
+									} else {
+										this.responseMessage = '<?php esc_html_e('An error occurred. No data.', 'wicket-acc'); ?>';
+									}
+								})
+								.catch(error => {
+									this.loading = false;
+									this.responseMessage = '<?php esc_html_e('An error occurred. Failed.', 'wicket-acc'); ?>';
+								});
+						}
+					};
+				}
+			</script>
+		</div>
+<?php
 	}
 }

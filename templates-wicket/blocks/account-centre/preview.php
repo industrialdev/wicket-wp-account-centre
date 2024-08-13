@@ -15,7 +15,7 @@ defined('ABSPATH') || exit;
 ?>
 <style type="text/css">
 	.wicket-ac-block-preview {
-		border: 2px dotted var(--tec-color-border-tertiary);
+		border: 2px dotted var(--wp--preset--color--tertiary);
 		padding: 1rem;
 	}
 </style>

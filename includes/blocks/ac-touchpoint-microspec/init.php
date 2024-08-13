@@ -61,7 +61,7 @@ class Block_TouchpointMicroSpec extends Blocks
 		$counter           = 0;
 		$display_type      = 'upcoming';
 
-		$touchpoints_results = $this->get_touchpoints_results();
+		$touchpoints_results = $this->get_touchpoints_results('MicroSpec');
 
 		if (empty($registered_action)) {
 			$registered_action = [
@@ -129,12 +129,18 @@ class Block_TouchpointMicroSpec extends Blocks
 	/**
 	 * Get touchpoints results
 	 *
-	 * @return array
+	 * $service_id - Touchpoint service id
+	 *
+	 * @return mixed Array of touchpoints or false on error
 	 */
-	protected function get_touchpoints_results()
+	protected function get_touchpoints_results($service_id = '')
 	{
+		if (empty($service_id)) {
+			return false;
+		}
+
 		// Debug with person: 9e0093fb-6df8-4da3-bf62-e6c135c1e4b0
-		$touchpoint_service = WACC()->MdpApi->create_touchpoint_service_id('MicroSpec');
+		$touchpoint_service = WACC()->MdpApi->create_touchpoint_service_id($service_id);
 		$touchpoints        = WACC()->MdpApi->get_current_user_touchpoints($touchpoint_service);
 
 		return $touchpoints;

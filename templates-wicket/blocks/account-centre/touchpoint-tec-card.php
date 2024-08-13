@@ -20,13 +20,14 @@ $event_data = urlencode(base64_encode(json_encode($tp)));
 		<a href="?event-id=<?php echo $tp['id']; ?>&event-data=<?php echo $event_data; ?>" class="event-card-link">
 		<?php endif; ?>
 		<p class="text-sm font-bold mb-2 event-type">
-			<?php echo $tp['attributes']['data']['BadgeType']; ?>
+			<?php //echo $tp['attributes']['data']['BadgeType'];
+			?>
 		</p>
 		<h3 class="text-lg font-bold mb-2 event-name">
-			<?php echo $tp['attributes']['data']['EventName']; ?>
+			<?php echo $tp['attributes']['data']['event_title']; ?>
 		</h3>
 		<p class="text-sm mb-2 event-date">
-			<?php echo date('M', strtotime($tp['attributes']['data']['StartDate'])) . '-' . date('j', strtotime($tp['attributes']['data']['StartDate'])) . '-' . date('Y', strtotime($tp['attributes']['data']['StartDate'])) . ' | ' . date('g:i a', strtotime($tp['attributes']['data']['StartDate'])) . ' - ' . date('g:i a', strtotime($tp['attributes']['data']['EndDate'])); ?>
+			<?php echo date('M', strtotime($tp['attributes']['data']['start_date'])) . '-' . date('j', strtotime($tp['attributes']['data']['start_date'])) . '-' . date('Y', strtotime($tp['attributes']['data']['start_date'])) . ' | ' . date('g:i a', strtotime($tp['attributes']['data']['start_date'])) . ' - ' . date('g:i a', strtotime($tp['attributes']['data']['end_date'])); ?>
 		</p>
 		<p class="text-sm event-location hidden">
 			<strong><?php esc_attr_e('Location:', 'wicket-acc'); ?></strong>
@@ -36,7 +37,7 @@ $event_data = urlencode(base64_encode(json_encode($tp)));
 	<?php endif; ?>
 	<?php
 	if ($args['display_event_info'] == 'in_modal') {
-		WACC()->Blocks->render_template('modal-touchpoint-microspec', $tp);
+		WACC()->Blocks->render_template('modal-touchpoint-tec', $tp);
 	}
 	?>
 </div>
