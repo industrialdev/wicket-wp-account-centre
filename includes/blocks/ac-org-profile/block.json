@@ -1,6 +1,6 @@
 {
 	"name": "wicket-ac/ac-org-profile",
-	"title": "ACC Org Profile Block",
+	"title": "ACC Org Profile",
 	"description": "A Wicket block for Org Profile",
 	"style": "file:./block-styles.css",
 	"category": "wicket-account-center",
