@@ -1,7 +1,7 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
-# 1.1.15 / 2024-08-14
+# 1.1.16 / 2024-08-14
 - Added option to hide the "Additional Info" section from the Org Profile block. To be used when the Additional Info block is used by itself with a custom schema.
 
 # 1.1.14 / 2024-08-13
