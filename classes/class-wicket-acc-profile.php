@@ -113,6 +113,11 @@ class Profile extends WicketAcc
 			$pp_profile_picture = $this->pp_uploads_url . $user_id . '.' . $pp_valid_extension;
 		}
 
+		// Check if ACC option acc_profile_picture_default has an image URL set
+		if (empty($pp_profile_picture) && get_field('acc_profile_picture_default', 'option') !== '') {
+			$pp_profile_picture = get_field('acc_profile_picture_default', 'option');
+		}
+
 		// Still no image? Return the default svg
 		if (empty($pp_profile_picture)) {
 			$pp_profile_picture = WICKET_ACC_URL . '/assets/images/profile-picture-default.svg';
@@ -126,10 +131,14 @@ class Profile extends WicketAcc
 	 *
 	 * @param string $pp_profile_picture
 	 *
-	 * @return bool
+	 * @return bool True if the profile picture is a custom one, false if it is the default one
 	 */
 	public function is_custom_profile_picture($pp_profile_picture)
 	{
-		return $pp_profile_picture !== WICKET_ACC_URL . '/assets/images/profile-picture-default.svg';
+		$pp_profile_picture_plugin   = WICKET_ACC_URL . '/assets/images/profile-picture-default.svg';
+		$pp_profile_picture_override = get_field('acc_profile_picture_default', 'option');
+
+		// Check if $pp_profile_picture is one of the two
+		return $pp_profile_picture !== $pp_profile_picture_plugin && $pp_profile_picture !== $pp_profile_picture_override;
 	}
 }

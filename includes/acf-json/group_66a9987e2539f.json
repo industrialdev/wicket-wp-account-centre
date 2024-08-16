@@ -27,7 +27,7 @@
             "name": "acc_sidebar_location",
             "aria-label": "",
             "type": "radio",
-            "instructions": "",
+            "instructions": "Location of the sidebar navigation menu inside ACC pages.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -69,6 +69,32 @@
             "step": "",
             "prepend": "",
             "append": ""
+        },
+        {
+            "key": "field_66bfb62db5a0d",
+            "label": "Default profile picture",
+            "name": "acc_profile_picture_default",
+            "aria-label": "",
+            "type": "image",
+            "instructions": "If not set, a default \"person\" image will be used as default profile picture.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 1,
+            "return_format": "url",
+            "library": "all",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": 1,
+            "mime_types": "jpg, jpeg, png, webp, gif",
+            "preview_size": "medium"
         },
         {
             "key": "field_66a99ac81a2fe",
@@ -457,5 +483,5 @@
     "description": "Main options for ACC plugin",
     "show_in_rest": 0,
     "acfml_field_group_mode": "translation",
-    "modified": 1722885176
+    "modified": 1723840207
 }
