@@ -31,11 +31,11 @@
         },
         {
             "key": "field_669fd92ae112b",
-            "label": "Organization UUID",
+            "label": "Organization UUID Override (Optional)",
             "name": "additional_info_organization_uuid",
             "aria-label": "",
             "type": "text",
-            "instructions": "",
+            "instructions": "If left blank, the Org UUID will be set by the URL parameter \"org_id\"",
             "required": 0,
             "conditional_logic": [
                 [
@@ -57,6 +57,27 @@
             "placeholder": "",
             "prepend": "",
             "append": ""
+        },
+        {
+            "key": "field_66be0e608feea",
+            "label": "Use slugs instead of schema IDs",
+            "name": "additional_info_use_slugs_instead_of_schema_ids",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 1,
+            "message": "",
+            "default_value": 1,
+            "ui_on_text": "",
+            "ui_off_text": "",
+            "ui": 1
         },
         {
             "key": "field_6626b7107f2e4",
@@ -89,7 +110,15 @@
                     "type": "text",
                     "instructions": "",
                     "required": 0,
-                    "conditional_logic": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_66be0e608feea",
+                                "operator": "!=",
+                                "value": "1"
+                            }
+                        ]
+                    ],
                     "wrapper": {
                         "width": "50",
                         "class": "",
@@ -111,7 +140,15 @@
                     "type": "text",
                     "instructions": "",
                     "required": 0,
-                    "conditional_logic": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_66be0e608feea",
+                                "operator": "!=",
+                                "value": "1"
+                            }
+                        ]
+                    ],
                     "wrapper": {
                         "width": "50",
                         "class": "",
@@ -126,8 +163,38 @@
                     "parent_repeater": "field_6626b7107f2e4"
                 },
                 {
+                    "key": "field_66be0edf8feeb",
+                    "label": "Schema Slug",
+                    "name": "schema_slug",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "Same for both stage and prod",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_66be0e608feea",
+                                "operator": "==",
+                                "value": "1"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "wpml_cf_preferences": 2,
+                    "default_value": "",
+                    "maxlength": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "parent_repeater": "field_6626b7107f2e4"
+                },
+                {
                     "key": "field_6626b8197f2e7",
-                    "label": "Use UI schema override resource UUID",
+                    "label": "Use UI schema override resource UUID or Slug",
                     "name": "schema_use_override",
                     "aria-label": "",
                     "type": "true_false",
@@ -135,7 +202,29 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "",
+                        "width": "50",
+                        "class": "",
+                        "id": ""
+                    },
+                    "wpml_cf_preferences": 1,
+                    "message": "",
+                    "default_value": 0,
+                    "ui_on_text": "",
+                    "ui_off_text": "",
+                    "ui": 1,
+                    "parent_repeater": "field_6626b7107f2e4"
+                },
+                {
+                    "key": "field_66be12e6e2495",
+                    "label": "Show as required",
+                    "name": "show_as_required",
+                    "aria-label": "",
+                    "type": "true_false",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "50",
                         "class": "",
                         "id": ""
                     },
@@ -160,6 +249,11 @@
                             {
                                 "field": "field_6626b8197f2e7",
                                 "operator": "==",
+                                "value": "1"
+                            },
+                            {
+                                "field": "field_66be0e608feea",
+                                "operator": "!=",
                                 "value": "1"
                             }
                         ]
@@ -191,6 +285,11 @@
                                 "field": "field_6626b8197f2e7",
                                 "operator": "==",
                                 "value": "1"
+                            },
+                            {
+                                "field": "field_66be0e608feea",
+                                "operator": "!=",
+                                "value": "1"
                             }
                         ]
                     ],
@@ -205,6 +304,107 @@
                     "placeholder": "",
                     "prepend": "",
                     "append": "",
+                    "parent_repeater": "field_6626b7107f2e4"
+                },
+                {
+                    "key": "field_66be0f298feec",
+                    "label": "Schema override resource Slug",
+                    "name": "schema_override_resource_slug",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "Same for both stage and prod",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_66be0e608feea",
+                                "operator": "==",
+                                "value": "1"
+                            },
+                            {
+                                "field": "field_6626b8197f2e7",
+                                "operator": "==",
+                                "value": "1"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "wpml_cf_preferences": 2,
+                    "default_value": "",
+                    "maxlength": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "parent_repeater": "field_6626b7107f2e4"
+                },
+                {
+                    "key": "field_66be0fb18fef1",
+                    "label": "Only Activate Resource Override Within This Month\/Day Range (Optional)",
+                    "name": "resource_override_activation_range",
+                    "aria-label": "",
+                    "type": "group",
+                    "instructions": "Note that the year in the date picker will not apply, as these date ranges will recur annually.",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_6626b8197f2e7",
+                                "operator": "==",
+                                "value": "1"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "wpml_cf_preferences": 1,
+                    "layout": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_66be0f7e8fef0",
+                            "label": "From",
+                            "name": "date_range_from",
+                            "aria-label": "",
+                            "type": "date_picker",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "wpml_cf_preferences": 1,
+                            "display_format": "F j",
+                            "return_format": "Y-m-d",
+                            "first_day": 1
+                        },
+                        {
+                            "key": "field_66be10258fef2",
+                            "label": "To",
+                            "name": "date_range_to",
+                            "aria-label": "",
+                            "type": "date_picker",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "wpml_cf_preferences": 1,
+                            "display_format": "F j",
+                            "return_format": "Y-m-d",
+                            "first_day": 1
+                        }
+                    ],
                     "parent_repeater": "field_6626b7107f2e4"
                 }
             ]
@@ -229,5 +429,5 @@
     "description": "",
     "show_in_rest": 0,
     "acfml_field_group_mode": "translation",
-    "modified": 1722433431
+    "modified": 1723736169
 }
