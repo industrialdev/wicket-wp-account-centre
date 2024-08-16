@@ -1,6 +1,10 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
+# 1.1.19 / 2024-08-16
+- Additional info block: Resources overrides can be activated on an annual date range, Org UUIDs can be set dynamically with URL param, can tell AIs to show required star, and Slug Support.
+- Fixed an issue for additional ACC pages not loading navigation menu. Pages that aren't default WooCommerce pages, weren't being considered on the previous method of template override. Now, every page inside ACC is considered. A default template is provided for all pages: page-wicket-acc.php
+
 # 1.1.16 / 2024-08-14
 - Added option to hide the "Additional Info" section from the Org Profile block. To be used when the Additional Info block is used by itself with a custom schema.
 

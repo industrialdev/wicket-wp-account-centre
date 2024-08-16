@@ -29,10 +29,12 @@ function WACC()
  *
  * class-wicket-acc-helpers.php can contain several methods as helpers.
  *
- * Usage inside those methods: WACC()->method_name();
+ * Usage of methods inside the class, from outsite this plugin:
+ * WACC()->method_name();
  *
  * Also, class-acc-helpers-router.php can mount an already registered class, so WACC() can use them and their methods directly as helpers. Without the need to write a wrapper helper method for each method of the exposed class.
  *
- * Usage: WACC()->className->method_name();
+ * Usage of any method from outside this plugin:
+ * WACC()->className->method_name();
  *
  */
