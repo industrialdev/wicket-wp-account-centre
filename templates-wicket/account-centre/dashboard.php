@@ -26,20 +26,20 @@ if (!defined('ABSPATH')) {
 ?>
 
 <?php
-$acc_page_index = get_field('acc_page_account-centre', 'option');
+$acc_index_id = get_field('acc_page_account-centre', 'option');
 
 // if WPML is installed, get the translated AC landing page if it exists
 if (defined('ICL_SITEPRESS_VERSION')) {
-	$type = apply_filters('wpml_element_type', get_post_type($acc_page_index));
-	$trid = apply_filters('wpml_element_trid', false, 	$acc_page_index, $type);
+	$type = apply_filters('wpml_element_type', get_post_type($acc_index_id));
+	$trid = apply_filters('wpml_element_trid', false, 	$acc_index_id, $type);
 	$translations = apply_filters('wpml_get_element_translations', array(), $trid, $type);
 	if (isset($translations[ICL_LANGUAGE_CODE])) {
-		$acc_page_index = $translations[ICL_LANGUAGE_CODE]->element_id;
+		$acc_index_id = $translations[ICL_LANGUAGE_CODE]->element_id;
 	}
 }
 
-if ($acc_page_index) {
-	$content_post = get_post($acc_page_index);
+if ($acc_index_id) {
+	$content_post = get_post($acc_index_id);
 	$content      = $content_post->post_content;
 	$content      = apply_filters('the_content', $content);
 	$content      = str_replace(']]>', ']]&gt;', $content);

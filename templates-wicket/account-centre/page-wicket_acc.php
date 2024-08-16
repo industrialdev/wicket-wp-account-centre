@@ -2,28 +2,26 @@
 // No direct access
 defined('ABSPATH') || exit;
 
-if (!defined('WICKET_ACC_PATH') || empty($acc_sidebar_location)) {
-	wp_die('Please activate and configure the Wicket Account Centre plugin to use this template.');
-}
-
 /**
- * Template Name: ACC Generic Template
+ * Template Name: ACC Default Template
+ *
+ * This is the default template for the Wicket Account Centre pages.
+ *
+ * This template can be overridden by copying it to yourtheme/templates-wicket/account-centre/page-wicket_acc.php.
  */
 
 get_header();
 
 $wrapper_classes     = [];
+$wrapper_classes[]   = 'wicket-acc-page wicket-acc-postid-' . get_the_ID();
+
 $dev_wrapper_classes = get_field('page_wrapper_class');
 if (!empty($dev_wrapper_classes)) {
 	$wrapper_classes[] = $dev_wrapper_classes;
 }
 
-// Class for Roster Managment styling
-$wrapper_classes[] = 'roster-management';
-$wrapper_classes[] = 'acc-organization-management';
-
 // ACC Options
-$acc_post_index_id    = get_field('acc_page_account-centre', 'option');
+$acc_index_id        = get_field('acc_page_account-centre', 'option');
 $acc_sidebar_location = get_field('acc_sidebar_location', 'option');
 
 if (empty($acc_sidebar_location)) {
@@ -38,8 +36,9 @@ if ($display_breadcrumb) {
 	get_component('breadcrumbs', []);
 	echo '</div>';
 }
+
 if ($display_publish_date) {
-	echo '<div class="wp-block-published-date">';
+	echo '<div class="wp-block-published-date">'; // Having the `wp-block-` prefix will help align it with the other Blocks
 	echo "<p class='mt-3 mb-4'><strong>" . __('Published:', 'wicket') . ' ' . get_the_date('d-m-Y') . "</strong></p>";
 	echo '</div>';
 }
@@ -53,9 +52,7 @@ if ($display_publish_date) {
 	?>
 
 	<div class="woocommerce-wicket--account-centre">
-		<?php
-		the_content();
-		?>
+		<?php the_content(); ?>
 	</div>
 
 	<?php
@@ -64,3 +61,6 @@ if ($display_publish_date) {
 	}
 	?>
 </div>
+
+<?php
+get_footer();

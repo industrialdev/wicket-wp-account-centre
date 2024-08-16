@@ -35,7 +35,12 @@ class Front extends WicketAcc
 			add_action('woocommerce_before_account_navigation_ul', [$this, 'custom_profilepicture_form'], 10, 2);
 		}
 
+		// Intercept templates for WP CPT: wicket_acc
+		add_filter('single_template', [$this, 'intercept_cpt_template'], 10, 1);
+
+		// Intercept templates for WC
 		add_action('woocommerce_locate_template', [$this, 'intercept_wc_template'], 10, 3);
+
 		add_filter('the_title', [$this, 'custom_endpoint_titles'], 10, 2);
 		add_filter('the_title', [$this, 'core_endpoint_titles'], 10, 2);
 	}
@@ -382,5 +387,36 @@ class Front extends WicketAcc
 		}
 
 		return $template;
+	}
+
+	/**
+	 * Intercept single templates for CPT: wicket_acc
+	 *
+	 * @param string $single Default template file path.
+	 *
+	 * @return string The new Template file path.
+	 */
+	public function intercept_cpt_template($single)
+	{
+		global $post;
+
+		// Define the paths to your custom templates
+		$user_custom_template = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/page-wicket_acc.php';
+		$plugin_custom_template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/page-wicket_acc.php';
+
+		// Check if the post type is 'wicket_acc'
+		if ($post->post_type === 'wicket_acc') {
+			// First, check if the user-defined custom template exists
+			if (file_exists($user_custom_template)) {
+				return $user_custom_template;
+			}
+			// If not, fall back to the plugin-defined custom template
+			elseif (file_exists($plugin_custom_template)) {
+				return $plugin_custom_template;
+			}
+		}
+
+		// Return the default template if neither custom template exists
+		return $single;
 	}
 }
