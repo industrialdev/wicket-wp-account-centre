@@ -4,6 +4,9 @@
  */
 
 :root {
+	--wicket-grid-maxWidth: 120rem; /* 1200px */
+	--wicket-grid-gutter: 0.125rem; /* 2px */
+
 	--wicket-acc-bg-color-light: #fff;
 	--wicket-acc-bg-color-dark: #000;
 

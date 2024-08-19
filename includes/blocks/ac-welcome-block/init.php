@@ -51,15 +51,15 @@ class Block_Welcome extends WicketAcc
 		$active_memberships  = wicket_get_active_memberships($iso_code);
 ?>
 
-		<div class="wicket-acc-block wicket-acc-welcome wp-block-wicket-acc-callout bg-light-010">
-			<div class="wicket-welcome-avatar">
+		<div class="wicket-acc-block wicket-acc-welcome wp-block-wicket-acc-callout bg-light-010 row">
+			<div class="wicket-welcome-avatar col-2">
 				<?php if ($image_url) {
 					echo '<img src="' . $image_url . '" alt="' . $person->given_name . " " . $person->family_name . __(' Profile Image', 'wicket-acc') . '" />';
 				} ?>
 			</div>
 
-			<div class="wicket-welcome-content-container">
-				<div class="wicket-welcome-content">
+			<div class="wicket-welcome-content-container col-10 row">
+				<div class="wicket-welcome-content col">
 					<p class="wicket-welcome-label"><?php _e('Welcome', 'wicket-acc'); ?></p>
 					<p class="wicket-welcome-name"><?php echo $person->given_name . " " . $person->family_name; ?></p>
 
@@ -115,7 +115,7 @@ class Block_Welcome extends WicketAcc
 				</div>
 				<?php if ($edit_profile && isset($edit_profile_button['url']) && isset($edit_profile_button['title'])) {
 				?>
-					<div class="wicket-welcome-edit-profile-button">
+					<div class="wicket-welcome-edit-profile-button col-4 text-right">
 						<a href="<?php echo $edit_profile_button['url']; ?>" class="button button--primary"><i class="fa-regular fa-pen-to-square icon-r" aria-hidden="true"></i><?php echo $edit_profile_button['title']; ?></a>
 					</div>
 				<?php } ?>

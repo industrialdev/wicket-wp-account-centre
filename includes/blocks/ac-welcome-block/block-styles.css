@@ -35,9 +35,9 @@
 	.wicket-welcome-content-container {
 		display: flex;
 		flex-direction: inherit;
-		width: 100%;
+		/*width: 100%;
 		justify-content: space-between;
-		padding: 0 var(--wicket-acc-padding-16);
+		padding: 0 var(--wicket-acc-padding-16);*/
 	}
 
 	.wicket-welcome-member-mdp-id {
@@ -78,18 +78,5 @@
 
 	.wicket-welcome-content {
 		margin-bottom: 1rem;
-	}
-
-	@media (min-width: 1024px) {
-		.wicket-welcome-content {}
-	}
-
-	@media (min-width: 640px) {
-		.wicket-welcome-avatar {
-			display: block;
-			text-align: center;
-		}
-
-		.wicket-welcome-content-container {}
 	}
 }
