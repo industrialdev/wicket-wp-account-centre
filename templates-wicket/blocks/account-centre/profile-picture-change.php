@@ -13,7 +13,7 @@ defined('ABSPATH') || exit;
  * pp_max_size - Max upload size in MB
  */
 ?>
-<section class="container wicket-ac-profile-picture">
+<section class="container wicket-acc-profile-picture">
 	<h2>
 		<?php esc_html_e('Profile Image', 'wicket-acc'); ?>
 	</h2>

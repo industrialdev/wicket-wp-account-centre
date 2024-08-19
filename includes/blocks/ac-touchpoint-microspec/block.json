@@ -3,6 +3,7 @@
 	"title": "ACC Touchpoint MicroSpec",
 	"description": "Wicket block for AC Touchpoint MicroSpec",
 	"style": "file:./block-styles.css",
+	"script": "file:./block-script.js",
 	"category": "wicket-account-center",
 	"icon": "",
 	"apiVersion": 2,

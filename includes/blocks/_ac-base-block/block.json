@@ -3,6 +3,7 @@
 	"title": "ACC Base Block",
 	"description": "Wicket Base block. Copy this block to create a new one.",
 	"style": "file:./block-styles.css",
+	"script": "file:./block-script.js",
 	"category": "wicket-account-center",
 	"icon": "",
 	"apiVersion": 2,

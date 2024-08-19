@@ -3,6 +3,7 @@
 	"title": "ACC Touchpoint TEC",
 	"description": "Wicket block for The Events Calendar Touchpoints",
 	"style": "file:./block-styles.css",
+	"script": "file:./block-script.js",
 	"category": "wicket-account-center",
 	"icon": "",
 	"apiVersion": 2,

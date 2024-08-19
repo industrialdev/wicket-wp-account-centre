@@ -37,8 +37,8 @@ class AdminSettings extends WicketAcc
 			return;
 		}
 
-		wp_enqueue_script('wicket_acc_admin', plugins_url('../assets/js/wicket_acc_admin.js', __FILE__), ['jquery'], '1.0', true);
-		wp_enqueue_style('wicket_acc_admin', plugins_url('../assets/css/wicket_acc_admin.css', __FILE__), false, '1.0');
+		wp_enqueue_script('wicket-acc-admin', plugins_url('../assets/js/wicket-acc-admin.js', __FILE__), ['jquery'], '1.0', true);
+		wp_enqueue_style('wicket-acc-admin', plugins_url('../assets/css/wicket-acc-admin.css', __FILE__), false, '1.0');
 	}
 
 	public function admin_register_options_page()

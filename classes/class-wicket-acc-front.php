@@ -54,10 +54,14 @@ class Front extends WicketAcc
 			return;
 		}
 
-		wp_enqueue_style('wicket_acc_front', WICKET_ACC_URL . 'assets/css/wicket_acc_front.css', false, '1.0');
-		wp_enqueue_style('wicket_acc_grid', WICKET_ACC_URL . 'assets/css/wicket_acc_grid.css', false, '1.0');
+		// Legacy javascript
+		wp_enqueue_script('wicket-acc-front', WICKET_ACC_URL . 'assets/js/wicket-acc-legacy.js', false, '1.0', true);
 
-		wp_enqueue_script('wicket_acc_front', WICKET_ACC_URL . 'assets/js/wicket_acc_front.js', false, '1.0', true);
+		// Load the block styles
+		wp_enqueue_style('wicket-acc', WICKET_ACC_URL . 'assets/css/wicket-acc.css', false, WICKET_ACC_VERSION);
+
+		// Load the block scripts
+		wp_enqueue_script('wicket-acc', WICKET_ACC_URL . 'assets/js/wicket-acc.js', false, WICKET_ACC_VERSION, true);
 	}
 
 	/**

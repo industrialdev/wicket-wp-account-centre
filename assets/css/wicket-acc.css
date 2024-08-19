@@ -1,0 +1,8 @@
+/**
+ * Wicket ACC Blocks
+ * Base styles for Wicket ACC Blocks
+ */
+
+@import "wicket-acc-variables.css";
+@import "wicket-acc-blocks-global.css";
+@import "wicket-acc-legacy.css"; // Don't add anything here
