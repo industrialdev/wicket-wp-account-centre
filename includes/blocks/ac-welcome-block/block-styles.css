@@ -44,6 +44,12 @@
 		font-size: var(--wicket-acc-font-size-14);
 	}
 
+	.wicket-welcome-edit-profile-button {
+		a {
+			display: block;
+		}
+	}
+
 	.wicket-welcome-member-since,
 	.wicket-welcome-renewal {
 		font-size: 14px;
