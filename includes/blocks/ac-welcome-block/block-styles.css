@@ -47,6 +47,8 @@
 	.wicket-welcome-edit-profile-button {
 		a {
 			display: block;
+			font-size: var(--wicket-acc-font-size-md);
+			border-radius: var(--wicket-acc-border-radius-4);
 		}
 	}
 

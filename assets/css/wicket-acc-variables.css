@@ -9,7 +9,10 @@
 
 	--wicket-acc-border-color-light: #D3D4D6;
 	--wicket-acc-border-color-dark: #1d2327;
-	--wicket-acc-border-radius: 1rem; /* 16px */
+
+	--wicket-acc-border-radius-2: 0.125rem; /* 2px */
+	--wicket-acc-border-radius-4: 0.25rem; /* 4px */
+	--wicket-acc-border-radius-8: 0.5rem; /* 8px */
 
 	--wicket-acc-padding: 1rem; /* 16px */
 	--wicket-acc-padding-sm: 0.5rem; /* 8px */
