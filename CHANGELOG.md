@@ -2,9 +2,10 @@
 Previously known as My Account Page Editor
 
 
-# 1.1.23 / 2024-08-19
+# 1.1.24 / 2024-08-19
 - Applied Wicket language style to block: Welcome.
 - Fixed and issue where ACC blocks were loading stylings twice. WP already handles styles and scripts inclusion for blocks defined in block.json file.
+- Fixed responsive issues on the Welcome block.
 
 # 1.1.20 / 2024-08-16
 - Additional info block: Resources overrides can be activated on an annual date range, Org UUIDs can be set dynamically with URL param, can tell AIs to show required star, and Slug Support.
