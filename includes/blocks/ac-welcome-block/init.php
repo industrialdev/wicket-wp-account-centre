@@ -116,7 +116,7 @@ class Block_Welcome extends WicketAcc
 				<?php if ($edit_profile && isset($edit_profile_button['url']) && isset($edit_profile_button['title'])) {
 				?>
 					<div class="wicket-welcome-edit-profile-button col-4 text-right">
-						<a href="<?php echo $edit_profile_button['url']; ?>" class="button button--primary"><i class="fa-regular fa-pen-to-square icon-r" aria-hidden="true"></i><?php echo $edit_profile_button['title']; ?></a>
+						<a href="<?php echo $edit_profile_button['url']; ?>" class="button button--secondary"><i class="fa-regular fa-pen-to-square icon-r" aria-hidden="true"></i><?php echo $edit_profile_button['title']; ?></a>
 					</div>
 				<?php } ?>
 			</div>
