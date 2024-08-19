@@ -37,7 +37,7 @@
 		flex-direction: inherit;
 		width: 100%;
 		justify-content: space-between;
-		padding: 0 var(--wicket-acc-padding-md);
+		padding: 0 var(--wicket-acc-padding-16);
 	}
 
 	.wicket-welcome-member-mdp-id {
