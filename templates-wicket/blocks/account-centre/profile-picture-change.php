@@ -20,15 +20,15 @@ defined('ABSPATH') || exit;
 	<div class="profile-image">
 		<img src="<?php echo $args['pp_url']; ?>" alt="<?php esc_html_e('Profile Image', 'wicket-acc'); ?>" class="profile-image-img">
 		<?php if ($args['is_custom']) : ?>
-			<form name="wicket-ac-profile-picture-remove-form" method="post">
+			<form name="wicket-acc-profile-picture-remove-form" method="post">
 				<input type="hidden" name="user_id" value="<?php echo get_current_user_id(); ?>">
-				<input type="hidden" name="action" value="wicket-ac-profile-picture-remove-form">
-				<?php wp_nonce_field('wicket-ac-profile-picture-remove-form', 'nonce'); ?>
+				<input type="hidden" name="action" value="wicket-acc-profile-picture-remove-form">
+				<?php wp_nonce_field('wicket-acc-profile-picture-remove-form', 'nonce'); ?>
 				<button type="submit" class="remove-image circle-x" title="<?php esc_html_e('Remove Image', 'wicket-acc'); ?>">x</button>
 			</form>
 		<?php endif; ?>
 	</div>
-	<form name="wicket-ac-profile-picture-form" method="post" enctype="multipart/form-data">
+	<form name="wicket-acc-profile-picture-form" method="post" enctype="multipart/form-data">
 		<label for="profile-image" class="sr-only">
 			<?php esc_html_e('Choose File', 'wicket-acc'); ?>
 		</label>
@@ -48,9 +48,9 @@ defined('ABSPATH') || exit;
 		<div id="file-alert" class="file-alert" style="display: none;">
 			<?php esc_html_e('File selected. Ready to upload!', 'wicket-acc'); ?>
 		</div>
-		<?php wp_nonce_field('wicket-ac-profile-picture-form', 'nonce'); ?>
+		<?php wp_nonce_field('wicket-acc-profile-picture-form', 'nonce'); ?>
 		<input type="hidden" name="user_id" value="<?php echo get_current_user_id(); ?>">
-		<input type="hidden" name="action" value="wicket-ac-profile-picture-form">
+		<input type="hidden" name="action" value="wicket-acc-profile-picture-form">
 	</form>
 </section>
 <script>

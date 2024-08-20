@@ -80,7 +80,7 @@ class Blocks extends WicketAcc
 				// TODO: When registering a block using block.json, the block style and script are automatically registered. We shouldn't need to do it manually. Test it!
 
 				// Register block style
-				if (file_exists(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/block-styles.css')) {
+				/*if (file_exists(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/block-styles.css')) {
 					wp_register_style('block-style-' . $block, WICKET_ACC_URL . 'includes/blocks/' . $block . '/block-styles.css', [], filemtime(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/block-styles.css'));
 					wp_enqueue_style('block-style-' . $block);
 				}
@@ -89,7 +89,7 @@ class Blocks extends WicketAcc
 				if (file_exists(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/block-script.js')) {
 					wp_register_script('block-script-' . $block, WICKET_ACC_URL . 'includes/blocks/' . $block . '/block-script.js', [], filemtime(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/block-script.js'));
 					wp_enqueue_script('block-script-' . $block);
-				}
+				}*/
 
 				// Main block file
 				if (file_exists(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/init.php')) {

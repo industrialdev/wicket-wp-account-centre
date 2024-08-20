@@ -11,7 +11,7 @@ defined('ABSPATH') || exit;
  * NONE
  */
 ?>
-<section class="container wicket-ac-profile-picture wicket-ac-profile-picture__success">
+<section class="container wicket-acc-profile-picture wicket-acc-profile-picture__success">
 	<h3><?php esc_html_e('Success', 'wicket-acc'); ?></h3>
 	<p><?php esc_html_e('Your profile picture has been updated successfully.', 'wicket-acc'); ?></p>
 </section>

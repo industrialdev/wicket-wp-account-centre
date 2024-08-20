@@ -81,14 +81,14 @@ class Block_ProfilePictureChange extends WicketAcc
 		}
 
 		// No data? no action?
-		if (!isset($_POST['action']) || $_POST['action'] !== 'wicket-ac-profile-picture-form') {
+		if (!isset($_POST['action']) || $_POST['action'] !== 'wicket-acc-profile-picture-form') {
 			return;
 		}
 
 		$form = $_POST;
 
 		// Check nonce
-		if (!wp_verify_nonce(sanitize_text_field(wp_unslash($form['nonce'])), 'wicket-ac-profile-picture-form')) {
+		if (!wp_verify_nonce(sanitize_text_field(wp_unslash($form['nonce'])), 'wicket-acc-profile-picture-form')) {
 			return false;
 		}
 
@@ -162,14 +162,14 @@ class Block_ProfilePictureChange extends WicketAcc
 		}
 
 		// No data? no action?
-		if (!isset($_POST['action']) || $_POST['action'] !== 'wicket-ac-profile-picture-remove-form') {
+		if (!isset($_POST['action']) || $_POST['action'] !== 'wicket-acc-profile-picture-remove-form') {
 			return;
 		}
 
 		$form = $_POST;
 
 		// Check nonce
-		if (!wp_verify_nonce(sanitize_text_field(wp_unslash($form['nonce'])), 'wicket-ac-profile-picture-remove-form')) {
+		if (!wp_verify_nonce(sanitize_text_field(wp_unslash($form['nonce'])), 'wicket-acc-profile-picture-remove-form')) {
 			return false;
 		}
 
