@@ -77,7 +77,17 @@ class Blocks extends WicketAcc
 
 				register_block_type(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/block.json');
 
-				// When registering a block using block.json, the block style and script are automatically registered. We don't need to do it manually.
+				// TODO: When registering a block using block.json, the block style and script are automatically registered. We don't need to do it manually. Test it!
+
+				// Block style
+				if (file_exists(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/block-styles.css')) {
+					wp_enqueue_style('wicket-ac-block-styles-' . $block, plugins_url('includes/blocks/' . $block . '/block-styles.css', __FILE__), [], WICKET_ACC_VERSION);
+				}
+
+				// Block script
+				if (file_exists(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/block-scripts.js')) {
+					wp_enqueue_script('wicket-ac-block-scripts-' . $block, plugins_url('includes/blocks/' . $block . '/block-scripts.js', __FILE__), [], WICKET_ACC_VERSION);
+				}
 
 				// Main block file
 				if (file_exists(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/init.php')) {
