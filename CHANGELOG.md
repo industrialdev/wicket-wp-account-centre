@@ -2,7 +2,7 @@
 Previously known as My Account Page Editor
 
 
-# 1.1.28 / 2024-08-19
+# 1.1.29 / 2024-08-19
 - Applied Wicket language style to block: Welcome.
 - Fixed and issue where ACC blocks were loading stylings twice. WP already handles styles and scripts inclusion for blocks defined in block.json file.
 - Fixed responsive issues on the Welcome block.
