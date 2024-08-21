@@ -84,8 +84,9 @@ class Block_Welcome extends WicketAcc
 									</p>
 								<?php endif; ?>
 
-								<p class="mt-0 mb-2 wicket-welcome-member-active">
-									<?php echo __('Active Member', 'wicket-acc'); ?>
+								<p class="mt-0 mb-2 wicket-welcome-member-active flex items-center space-x-2">
+									<span class="green-circle inline-block w-3 h-3 mr-1 bg-green-500 rounded-full"></span>
+									<span class="text-gray-700"><?php echo __('Active Member', 'wicket-acc'); ?></span>
 								</p>
 
 								<?php if ($display_mdp_id) : ?>

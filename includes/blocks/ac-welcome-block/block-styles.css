@@ -1,4 +1,4 @@
-.wicket-acc-welcome {
+.wicket-acc-welcome, .wicket-acc-block-welcome {
 	display: flex;
 	padding: 1rem;
 	margin: 1rem;
@@ -61,6 +61,14 @@
 		position: relative;
 		padding-left: 20px;
 		font-size: 14px;
+		margin-bottom: var(--wicket-acc-margin-md) !important;
+
+		green-circle {
+			background-color: var(--wicket-acc-color-green);
+			border-radius: 100%;
+			width: 12px;
+			height: 12px;
+		}
 	}
 
 	.wicket-welcome-member-active::after {
