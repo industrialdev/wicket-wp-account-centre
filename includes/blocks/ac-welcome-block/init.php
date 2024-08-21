@@ -63,14 +63,6 @@ class Block_Welcome extends WicketAcc
 					<p class="wicket-welcome-label"><?php _e('Welcome', 'wicket-acc'); ?></p>
 					<p class="wicket-welcome-name"><?php echo $person->given_name . " " . $person->family_name; ?></p>
 
-					<?php if ($display_mdp_id) : ?>
-						<p class="wicket-welcome-member-mdp-id">
-							<span><?php echo __('ID:', 'wicket-acc'); ?></span>
-							<?php echo $identifying_number; ?>
-						</p>
-					<?php endif;
-					?>
-
 					<?php
 					if ($active_memberships) {
 						foreach ($active_memberships as $membership) {
@@ -80,30 +72,37 @@ class Block_Welcome extends WicketAcc
 								}
 							}
 					?>
-							<div class="mt-4 wicket-welcome-memberships">
-								<div class="mb-4">
-									<p class="mb-1 wicket-welcome-member-type">
-										<strong><?php echo __('Membership Type:', 'wicket-acc'); ?></strong> <?php echo $membership['name']; ?>
+							<div class="my-4 wicket-welcome-memberships">
+								<p class="mb-0 wicket-welcome-member-type">
+									<strong><?php echo __('Membership Type:', 'wicket-acc'); ?></strong> <?php echo $membership['name']; ?>
+								</p>
+
+								<?php if ($membership['type'] == 'organization') :
+									$org_info = wicket_get_active_memberships_relationship(); ?>
+									<p class="mb-0 wicket-welcome-member-org">
+										<strong><?php echo $org_info['relationship']; ?> &ndash; <?php echo $org_info['name']; ?></strong>
 									</p>
-									<?php if ($membership['type'] == 'organization') :
-										$org_info = wicket_get_active_memberships_relationship(); ?>
-										<p class="mb-2 wicket-welcome-member-org">
-											<strong><?php echo $org_info['relationship']; ?> &ndash; <?php echo $org_info['name']; ?></strong>
-										</p>
-									<?php endif; ?>
-									<p class="mt-2 mb-1 wicket-welcome-member-active">
-										<?php echo __('Active Member', 'wicket-acc'); ?>
+								<?php endif; ?>
+
+								<p class="mt-0 mb-2 wicket-welcome-member-active">
+									<?php echo __('Active Member', 'wicket-acc'); ?>
+								</p>
+
+								<?php if ($display_mdp_id) : ?>
+									<p class="wicket-welcome-member-mdp-id mb-0">
+										<span><?php echo __('ID:', 'wicket-acc'); ?></span>
+										<?php echo $identifying_number; ?>
 									</p>
-								</div>
+								<?php endif; ?>
 
 								<?php if ($member_since && !empty($membership['starts_at']) && strtotime($membership['starts_at'])) : ?>
-									<p class="mb-1 wicket-welcome-member-since">
+									<p class="wicket-welcome-member-since mb-0">
 										<?php echo __('Member Since:', 'wicket-acc'); ?> <?php echo date('F j, Y', strtotime($membership['starts_at'])); ?>
 									</p>
 								<?php endif; ?>
 
 								<?php if ($renewal_date && !empty($membership['ends_at']) && strtotime($membership['ends_at'])) : ?>
-									<p class="mb-1 wicket-welcome-renewal">
+									<p class="wicket-welcome-renewal mb-0">
 										<?php echo __('Renewal Date:', 'wicket-acc'); ?> <?php echo date('F j, Y', strtotime($membership['ends_at'])); ?>
 									</p>
 								<?php endif; ?>

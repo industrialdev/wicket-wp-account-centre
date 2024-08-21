@@ -1,8 +1,9 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
-# 1.1.32 / 2024-08-21
+# 1.1.33 / 2024-08-21
 - Fixes an issue where a malformed image could trigger a fatal error on the Picture Profile Change block.
+- Fixes ID placement and spacing of items on the Welcome block.
 
 # 1.1.31 / 2024-08-19
 - Applied Wicket language style to block: Welcome.
