@@ -81,8 +81,4 @@
 		top: 50%;
 		transform: translateY(-50%);
 	}
-
-	.wicket-welcome-content {
-		margin-bottom: 1rem;
-	}
 }
