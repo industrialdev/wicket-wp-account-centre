@@ -51,7 +51,7 @@ class Block_Welcome extends WicketAcc
 		$active_memberships  = wicket_get_active_memberships($iso_code);
 ?>
 
-		<div class="wicket-acc-block wicket-acc-welcome wp-block-wicket-acc-callout bg-light-010 row">
+		<div class="wicket-acc-block wicket-acc-block-welcome wp-block-wicket-acc-callout bg-light-010 row">
 			<div class="wicket-welcome-avatar col-2">
 				<?php if ($image_url) {
 					echo '<img src="' . $image_url . '" alt="' . $person->given_name . " " . $person->family_name . __(' Profile Image', 'wicket-acc') . '" />';
