@@ -136,11 +136,22 @@ class Block_ProfilePictureChange extends WicketAcc
 
 		// Move the file to the uploads directory, move_uploaded_file
 		$movefile = move_uploaded_file($_FILES['profile-image']['tmp_name'], $file_path);
-		//Crop to square
-		$file_path_new = $this->crop_center_of_rectangle_from_file($file_path, $file_path);
+
+		// Crop to square
+		$file_path_crop = $this->crop_center_of_rectangle_from_file($file_path, $file_path);
+
+		// Check for errors
+		if ($file_path_crop === false) {
+			@unlink($file_path);
+			@unlink($file_path_crop);
+
+			return false;
+		}
+
 		// Replace with cropped file
 		unlink($file_path);
-		$movefile = rename($file_path_new, $file_path);
+
+		$movefile = rename($file_path_crop, $file_path);
 
 		// Check for errors
 		if (!$movefile) {
@@ -192,12 +203,17 @@ class Block_ProfilePictureChange extends WicketAcc
 	 * Crop square from the center of an image file
 	 *
 	 * @param string $src_file    Path to the source image file.
-	 * @param string $dst_file    Path to save the cropped image.
+	 * @param string $destination_file    Path to save the cropped image.
 	 * @return string|false       Path to the cropped image file on success, false on failure.
 	 */
-	protected function crop_center_of_rectangle_from_file($src_file, $dst_file)
+	protected function crop_center_of_rectangle_from_file($src_file, $destination_file)
 	{
 		list($src_width, $src_height) = getimagesize($src_file);
+
+		// Could we get the dimensions?
+		if ($src_width === false || $src_height === false) {
+			return false;
+		}
 
 		// Determine the crop dimensions
 		if ($src_width > $src_height) {
@@ -215,8 +231,12 @@ class Block_ProfilePictureChange extends WicketAcc
 		}
 
 		// Crop the image using wp_crop_image
-		$cropped = wp_crop_image($src_file, $crop_x, $crop_y, $crop_size, $crop_size, $crop_size, $crop_size, false, $dst_file);
+		$cropped_file = wp_crop_image($src_file, $crop_x, $crop_y, $crop_size, $crop_size, $crop_size, $crop_size, false, $destination_file);
 
-		return $cropped;
+		if (is_wp_error($cropped_file) || $cropped_file === false) {
+			return false;
+		}
+
+		return $cropped_file;
 	}
 }
