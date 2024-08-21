@@ -72,7 +72,7 @@ class Block_Welcome extends WicketAcc
 								}
 							}
 					?>
-							<div class="my-4 wicket-welcome-memberships">
+							<div class="my-0 wicket-welcome-memberships">
 								<p class="mb-0 wicket-welcome-member-type">
 									<strong><?php echo __('Membership Type:', 'wicket-acc'); ?></strong> <?php echo $membership['name']; ?>
 								</p>

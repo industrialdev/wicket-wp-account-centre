@@ -23,13 +23,11 @@
 	.wicket-welcome-name {
 		font-weight: var(--wicket-acc-font-weight-normal);
 		font-size: var(--wicket-acc-font-size-xxxl);
-		margin-bottom: var(--wicket-acc-margin-md);
 	}
 
 	.wicket-welcome-content {
 		display: flex;
 		flex-direction: column;
-		margin-bottom: var(--wicket-acc-margin-sm);
 	}
 
 	.wicket-welcome-content-container {
