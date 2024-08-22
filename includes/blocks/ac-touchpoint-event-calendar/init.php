@@ -177,7 +177,7 @@ class Block_TouchpointEventCalendar extends WicketAcc
 		// Ajax request?
 		if ($ajax === false) {
 ?>
-			<p class="text-base">
+			<p class="data-quantity text-base">
 				<?php echo ucfirst($display_type) . " Data: " . $total_results; ?>
 			</p>
 		<?php

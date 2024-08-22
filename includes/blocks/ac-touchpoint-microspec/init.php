@@ -175,7 +175,7 @@ class Block_TouchpointMicroSpec extends Blocks
 		// Ajax request?
 		if ($ajax === false) {
 ?>
-			<p class="text-base">
+			<p class="data-quantity text-base">
 				<?php echo ucfirst($display_type) . " Data: " . $total_results; ?>
 			</p>
 		<?php
