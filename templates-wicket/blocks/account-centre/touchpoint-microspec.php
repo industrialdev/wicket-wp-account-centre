@@ -29,7 +29,6 @@ $switch_link         = $args['switch_link'];
 $touchpoints_results = $args['touchpoints_results'];
 $is_preview          = $args['is_preview'];
 $close               = $args['close'];
-$display_event_info  = $args['display_event_info'];
 
 // Process event data from URL
 $single_event = false;
@@ -79,7 +78,6 @@ if (!empty($event_id) && !empty($event_data)) {
 			if ($single_event) {
 				$args = [
 					'tp'                 => $event_data,
-					'display_event_info' => $display_event_info
 				];
 
 				WACC()->Blocks->render_template('touchpoint-microspec-card', $args);
@@ -101,14 +99,3 @@ if (!empty($event_id) && !empty($event_data)) {
 		</div>
 	</div>
 </section>
-
-<script>
-	<?php if ($display_event_info == 'in_modal') : ?>
-		document.addEventListener('DOMContentLoaded', function() {
-			// Set up click event listeners for each event card to open the modal
-			document.querySelectorAll('.event-card').forEach(card => {
-				card.addEventListener('click', wicketAccOpenModal);
-			});
-		});
-	<?php endif; ?>
-</script>

@@ -57,7 +57,6 @@ class Block_TouchpointEventCalendar extends WicketAcc
 		$display            = get_field('default_display');
 		$registered_action  = get_field('registered_action');
 		$num_results        = get_field('page_results');
-		$display_event_info = get_field('display_event_info');
 
 		$total_results     = 0;
 		$counter           = 0;
@@ -118,7 +117,6 @@ class Block_TouchpointEventCalendar extends WicketAcc
 			'display_type'        => $display_type,
 			'touchpoints_results' => $touchpoints_results,
 			'switch_link'         => $switch_link,
-			'display_event_info'  => $display_event_info,
 			'is_preview'          => $this->is_preview
 		];
 
@@ -191,11 +189,6 @@ class Block_TouchpointEventCalendar extends WicketAcc
 
 			if (isset($tp['attributes']['data']['start_date'])) {
 				$args['tp'] = $tp;
-				$args['display_event_info'] = get_field('display_event_info');
-
-				if (empty($args['display_event_info'])) {
-					$args['display_event_info'] = 'in_page';
-				}
 
 				WACC()->Blocks->render_template('touchpoint-tec-card', $args);
 			}

@@ -90,32 +90,6 @@
             "layout": "vertical",
             "save_other_choice": 0,
             "wpml_cf_preferences": 1
-        },
-        {
-            "key": "field_66abb1ed5a5de",
-            "label": "Display event info",
-            "name": "display_event_info",
-            "aria-label": "",
-            "type": "radio",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "wpml_cf_preferences": 0,
-            "choices": {
-                "in_page": "In Page",
-                "in_modal": "In Modal"
-            },
-            "default_value": "in_page",
-            "return_format": "value",
-            "allow_null": 0,
-            "other_choice": 0,
-            "layout": "vertical",
-            "save_other_choice": 0
         }
     ],
     "location": [
@@ -142,5 +116,5 @@
     "description": "",
     "show_in_rest": 0,
     "acfml_field_group_mode": "translation",
-    "modified": 1722528296
+    "modified": 1724348059
 }
