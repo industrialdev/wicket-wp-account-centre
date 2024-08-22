@@ -36,13 +36,13 @@ class Block_TouchpointEventCalendar extends WicketAcc
 		$close = 0;
 		$attrs = get_block_wrapper_attributes(
 			[
-				'class' => 'wicket-acc-block wicket-ac-touchpoints-tec flex flex-col gap-8'
+				'class' => 'wicket-acc-block wicket-acc-block-touchpoints-tec flex flex-col gap-8'
 			]
 		);
 
 		if ($this->is_preview) {
 			$args = [
-				'block_name'          => 'Touchpoint TEC',
+				'block_name'          => 'Touchpoints TEC',
 				'block_description'   => 'This block displays registered data for The Events Calendar on the front-end.',
 				'block_slug'          => 'wicket-ac-touchpoint-tec',
 			];
