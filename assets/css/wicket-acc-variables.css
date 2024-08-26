@@ -21,11 +21,8 @@
 	--wicket-acc-border-radius-8: 0.5rem; /* 8px */
 
 	--wicket-acc-padding-xxxs: 0.125rem; /* 2px */
-	--wicket-acc-padding-2: 0.125rem; /* 2px */
 	--wicket-acc-padding-xxs: 0.25rem; /* 4px */
-	--wicket-acc-padding-4: 0.25rem; /* 4px */
 	--wicket-acc-padding-xs: 0.5rem; /* 8px */
-	--wicket-acc-padding-8: 0.5rem; /* 8px */
 	--wicket-acc-padding: 1rem; /* 16px */
 	--wicket-acc-padding-16: 1rem; /* 16px */
 	--wicket-acc-padding-sm: 0.5rem; /* 8px */
@@ -35,6 +32,9 @@
 	--wicket-acc-padding-lg: 1.5rem; /* 24px */
 	--wicket-acc-padding-24: 1.5rem; /* 24px */
 
+	--wicket-acc-margin-xxxs: 0.125rem; /* 2px */
+	--wicket-acc-margin-xxs: 0.25rem; /* 4px */
+	--wicket-acc-margin-xs: 0.5rem; /* 8px */
 	--wicket-acc-margin: 1rem; /* 16px */
 	--wicket-acc-margin-sm: 0.5rem; /* 8px */
 	--wicket-acc-margin-8: 0.5rem; /* 8px */
