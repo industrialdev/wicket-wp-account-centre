@@ -1,5 +1,5 @@
 .wicket-acc-container {
-	// <= 1280px media query
+	/* <= 1280px Wicket ACC container */
 	@media all and (max-width: 1280px) {
 		padding: 0 var(--wicket-acc-padding-xs);
 	}
