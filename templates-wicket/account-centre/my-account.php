@@ -31,7 +31,7 @@ if (empty($acc_sidebar_location)) {
 }
 ?>
 
-<div class="woocommerce-wicket--container">
+<div class="woocommerce-wicket--container wicket-acc-container">
 	<?php
 	if ('left' === $acc_sidebar_location) {
 		do_action('woocommerce_account_navigation');

@@ -14,6 +14,7 @@ get_header();
 
 $wrapper_classes     = [];
 $wrapper_classes[]   = 'wicket-acc-page wicket-acc-postid-' . get_the_ID();
+$wrapper_classes[]   = 'wicket-acc-container';
 
 $dev_wrapper_classes = get_field('page_wrapper_class');
 if (!empty($dev_wrapper_classes)) {

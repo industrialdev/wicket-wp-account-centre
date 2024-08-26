@@ -415,12 +415,6 @@ ul.wicket_acc_sub_list li a {
 	display: none;
 }
 
-@media all and (max-width: 630px) {
-	.woocommerce-wicket--account-centre {
-		padding: 0 0.9rem;
-	}
-}
-
 @media all and (max-width: 520px) {
 	.woocommerce-MyAccount-content {
 		float: none !important;
