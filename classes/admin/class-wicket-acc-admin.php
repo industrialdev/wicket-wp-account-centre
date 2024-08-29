@@ -26,7 +26,7 @@ class AdminSettings extends WicketAcc
 		add_action('admin_notices', [$this, 'acf_json_folder_permissions']);
 		add_action('admin_enqueue_scripts', [$this, 'acc_admin_assets']);
 		add_action('acf/options_page/save', [$this, 'acc_options_save'], 10, 2);
-		add_filter('acf/load_field', [$this, 'acf_field_description_centre_spelling']);
+		//add_filter('acf/load_field', [$this, 'acf_field_description_centre_spelling']);
 	}
 
 	/**
