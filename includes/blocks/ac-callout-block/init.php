@@ -40,6 +40,7 @@ class Block_Callout extends WicketAcc
 		$links       			= get_field('ac_callout_links');
 		$memberships 			= wicket_get_active_memberships();
 		$woo_memberships	= woo_get_active_memberships();
+    $classes          = [];
 
 		switch ($block_logic) {
 
@@ -76,7 +77,7 @@ class Block_Callout extends WicketAcc
 							}
 							unset($links);
 							#echo '<pre>'; var_dump( $membership ); echo '</pre>';
-							if (!empty($membership['membership']['meta']['membership_status'] == 'pending')) {
+							if ($membership['membership']['meta']['membership_status'] == 'pending') {
 								$link['link'] = [
 									'title' => $membership['callout']['button_label'],
 									'url' => 'mailto: ' . $membership['callout']['email']
