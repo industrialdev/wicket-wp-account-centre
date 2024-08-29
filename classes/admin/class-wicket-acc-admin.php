@@ -26,6 +26,7 @@ class AdminSettings extends WicketAcc
 		add_action('admin_notices', [$this, 'acf_json_folder_permissions']);
 		add_action('admin_enqueue_scripts', [$this, 'acc_admin_assets']);
 		add_action('acf/options_page/save', [$this, 'acc_options_save'], 10, 2);
+		add_filter('acf/load_field', [$this, 'acf_field_description_centre_spelling']);
 	}
 
 	/**
@@ -85,5 +86,26 @@ class AdminSettings extends WicketAcc
 
 		// Flush rewrite rules
 		flush_rewrite_rules();
+	}
+
+	/**
+	 * Modify the ACF field description for the Centre/Center spelling.
+	 *
+	 * @param array $field The ACF field array.
+	 *
+	 * @return array The modified ACF field array.
+	 */
+	public function acf_field_description_centre_spelling($field)
+	{
+		// Check if it's the correct field by comparing the field name and parent
+		if ($field['name'] == 'ac_localization' && $field['parent'] == 'group_66a9987e2539f') {
+			// Get current meta value for ac_localization
+			$current_value = get_field('ac_localization', 'option');
+
+			// Replace the instructions (description) with your custom text
+			$field['instructions'] .= sprintf(__('<br/>Current DB value: %s', 'wicket-acc'), $current_value);
+		}
+
+		return $field;
 	}
 }

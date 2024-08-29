@@ -1,6 +1,9 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
+# 1.1.48 / 2024-08-29
+- Added a new option to change the spelling of Centre/Center in the ACC. Option is linked with previous option available at base theme level. Both read/write to the same DB field.
+
 # 1.1.36 / 2024-08-21
 - Fixes an issue where a malformed image could trigger a fatal error on the Picture Profile Change block.
 - Fixes ID placement and spacing of items on the Welcome block.
