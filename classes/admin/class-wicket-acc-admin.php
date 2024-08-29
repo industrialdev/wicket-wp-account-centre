@@ -99,10 +99,17 @@ class AdminSettings extends WicketAcc
 	{
 		// Check if it's the correct field by comparing the field name and parent
 		if ($field['name'] == 'ac_localization' && $field['parent'] == 'group_66a9987e2539f') {
-			// Get current meta value for ac_localization
+			// Get current meta value for ac_localization from the options page
 			$current_value = get_field('ac_localization', 'option');
 
-			// Replace the instructions (description) with your custom text
+			// Check if the current value is an array and format it for display
+			if (is_array($current_value)) {
+				$current_value = implode(', ', array_map('esc_html', $current_value));
+			} else {
+				$current_value = esc_html($current_value); // In case it's not an array
+			}
+
+			// Append the current value to the field's instructions
 			$field['instructions'] .= sprintf(__('<br/>Current DB value: %s', 'wicket-acc'), $current_value);
 		}
 

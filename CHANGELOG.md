@@ -1,7 +1,7 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
-# 1.1.48 / 2024-08-29
+# 1.1.49 / 2024-08-29
 - Added a new option to change the spelling of Centre/Center in the ACC. Option is linked with previous option available at base theme level. Both read/write to the same DB field.
 
 # 1.1.36 / 2024-08-21
