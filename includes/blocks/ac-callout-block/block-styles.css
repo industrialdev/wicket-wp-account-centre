@@ -29,6 +29,12 @@ div[class*="wp-block"].callout-profile {
   border-radius: 12px;
 }
 
+.callout-become_member.callout-pending_approval .component-card-call-out {
+  border: 1px solid rgba(25, 135, 84, 1);
+  background-color: rgba(209, 231, 221, 1);
+  border-radius: 12px;
+}
+
 .callout-renewal .component-card-call-out {
   border: 1px solid #FFC107;
   background-color: #FFECB5;
@@ -38,12 +44,6 @@ div[class*="wp-block"].callout-profile {
 .callout-renewal.callout-grace_period .component-card-call-out {
   border: 1px solid rgba(220, 53, 69, 1);
   background-color: rgba(245, 194, 199, 1);
-  border-radius: 12px;
-}
-
-.callout-renewal.callout-pending_approval .component-card-call-out {
-  border: 1px solid rgba(25, 135, 84, 1);
-  background-color: rgba(209, 231, 221, 1);
   border-radius: 12px;
 }
 
