@@ -17,9 +17,7 @@ class Router extends WicketAcc
 	private array $acc_pages_map = [
 		'edit-profile'                   => 'Edit Profile',
 		'events'                         => 'My Events',
-		'events-past'                    => 'Past Events',
 		'jobs'                           => 'My Jobs',
-		'job-view'                       => 'Job View',
 		'job-post'                       => 'Post a Job',
 		'payments-settings'              => 'Payments Settings',
 		'membership-history'             => 'Membership History',
