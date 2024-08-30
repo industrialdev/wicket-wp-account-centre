@@ -1,6 +1,9 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
+# 1.1.51 / 2024-08-30
+- Switch display Pending Approval Callout to swap out the Become A Member Callout and remove from Renewal Callout
+
 # 1.1.50 / 2024-08-29
 - Added a new option to change the spelling of Centre/Center in the ACC. Option is linked with previous option available at base theme level. Both read/write to the same DB field.
 
