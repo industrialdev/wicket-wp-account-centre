@@ -52,11 +52,12 @@ class Block_TouchpointMicroSpec extends Blocks
 			return;
 		}
 
-		$title                     = get_field('title');
-		$display                   = get_field('default_display');
-		$registered_action         = get_field('registered_action');
-		$num_results               = get_field('num_results');
-		$override_past_events_link = get_field('override_past_events_link');
+		$title                          = get_field('title');
+		$display                        = get_field('default_display');
+		$registered_action              = get_field('registered_action');
+		$num_results                    = get_field('num_results');
+		$override_past_events_link      = get_field('override_past_events_link');
+		$override_past_events_link_text = get_field('override_past_events_link_text');
 
 		$total_results     = 0;
 		$counter           = 0;
@@ -105,21 +106,22 @@ class Block_TouchpointMicroSpec extends Blocks
 		$switch_link = esc_url($switch_link);
 
 		$args = [
-			'block_name'                => 'Touchpoint MicroSpec',
-			'block_description'         => 'This block displays registered data for MicroSpec on the front-end.',
-			'block_slug'                => 'wicket-ac-touchpoint-microspec',
-			'attrs'                     => $attrs,
-			'title'                     => $title,
-			'display'                   => $display,
-			'num_results'               => $num_results,
-			'total_results'             => $total_results,
-			'counter'                   => $counter,
-			'close'                     => $close,
-			'display_type'              => $display_type,
-			'touchpoints_results'       => $touchpoints_results,
-			'switch_link'               => $switch_link,
-			'override_past_events_link' => $override_past_events_link,
-			'is_preview'                => $this->is_preview
+			'block_name'                     => 'Touchpoint MicroSpec',
+			'block_description'              => 'This block displays registered data for MicroSpec on the front-end.',
+			'block_slug'                     => 'wicket-ac-touchpoint-microspec',
+			'attrs'                          => $attrs,
+			'title'                          => $title,
+			'display'                        => $display,
+			'num_results'                    => $num_results,
+			'total_results'                  => $total_results,
+			'counter'                        => $counter,
+			'close'                          => $close,
+			'display_type'                   => $display_type,
+			'touchpoints_results'            => $touchpoints_results,
+			'switch_link'                    => $switch_link,
+			'override_past_events_link'      => $override_past_events_link,
+			'override_past_events_link_text' => $override_past_events_link_text,
+			'is_preview'                     => $this->is_preview
 		];
 
 		// Render block

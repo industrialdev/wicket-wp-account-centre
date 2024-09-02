@@ -126,9 +126,37 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 0,
+            "wpml_cf_preferences": 1,
             "default_value": "",
             "placeholder": ""
+        },
+        {
+            "key": "field_66d5f53780b4d",
+            "label": "Override past events link text",
+            "name": "override_past_events_link_text",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "If an override URL is set, you must specify a title for that link.",
+            "required": 1,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_66d5f232ee48a",
+                        "operator": "!=empty"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 2,
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
         }
     ],
     "location": [
@@ -155,5 +183,5 @@
     "description": "",
     "show_in_rest": 0,
     "acfml_field_group_mode": "translation",
-    "modified": 1725297224
+    "modified": 1725298063
 }
