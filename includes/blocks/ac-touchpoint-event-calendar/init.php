@@ -54,6 +54,7 @@ class Block_TouchpointEventCalendar extends WicketAcc
 
 		echo '<section ' . $attrs . '>';
 
+		$title              = get_field('title');
 		$display            = get_field('default_display');
 		$registered_action  = get_field('registered_action');
 		$num_results        = get_field('page_results');
@@ -109,6 +110,7 @@ class Block_TouchpointEventCalendar extends WicketAcc
 			'block_description'   => 'This block displays registered data for TEC (The Events Calendar) on the front-end.',
 			'block_slug'          => 'wicket-ac-touchpoint-tec',
 			'attrs'               => $attrs,
+			'title'               => $title,
 			'display'             => $display,
 			'num_results'         => $num_results,
 			'total_results'       => $total_results,

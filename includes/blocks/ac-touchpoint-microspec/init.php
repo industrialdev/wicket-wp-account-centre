@@ -52,6 +52,7 @@ class Block_TouchpointMicroSpec extends Blocks
 			return;
 		}
 
+		$title              = get_field('title');
 		$display            = get_field('default_display');
 		$registered_action  = get_field('registered_action');
 		$num_results        = get_field('num_results');
@@ -107,6 +108,7 @@ class Block_TouchpointMicroSpec extends Blocks
 			'block_description'   => 'This block displays registered data for MicroSpec on the front-end.',
 			'block_slug'          => 'wicket-ac-touchpoint-microspec',
 			'attrs'               => $attrs,
+			'title'               => $title,
 			'display'             => $display,
 			'num_results'         => $num_results,
 			'total_results'       => $total_results,

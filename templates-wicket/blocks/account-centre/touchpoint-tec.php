@@ -20,6 +20,7 @@ defined('ABSPATH') || exit;
  */
 
 $attrs               = $args['attrs'];
+$title               = $args['title'];
 $display             = $args['display'];
 $num_results         = $args['num_results'];
 $total_results       = $args['total_results'];
@@ -47,30 +48,23 @@ if (!empty($event_id) && !empty($event_data)) {
 ?>
 <section <?php echo $attrs; ?>>
 	<div class="container">
-		<div class="header flex justify-between items-center mb-6">
-			<?php
-			if ($display == 'upcoming' && !$single_event) {
-			?>
-				<h2 class="font-bold"><?php esc_html_e('Upcoming Registered Events', 'wicket-acc'); ?></h2>
-				<a href="<?php echo $switch_link; ?>" class="past-link font-bold"><?php esc_html_e('See Past Registered Events →', 'wicket-acc'); ?></a>
-			<?php
-			}
+		<div class="header flex flex-col mb-6">
+			<?php if (!empty($title)) : ?>
+				<h2 class="wicket-acc-touchpoint-tec__title mb-4 w-full"><?php echo esc_html($title); ?></h2>
+			<?php endif; ?>
 
-			if ($display == 'past' && !$single_event) {
-			?>
-				<h2 class="font-bold"><?php esc_html_e('Past Registered Events', 'wicket-acc'); ?></h2>
-				<a href="<?php echo $switch_link; ?>" class="upcoming-link font-bold"><?php esc_html_e('See Upcoming Registered Events →', 'wicket-acc'); ?></a>
-			<?php
-			}
-
-			if ($single_event) {
-			?>
-				<h2 class="text-2xl font-bold"><?php esc_html_e('Event Details', 'wicket-acc'); ?></h2>
-
-				<a href="javascript:history.back()" class="back-link font-bold"><?php esc_html_e('Go Back ←', 'wicket-acc'); ?></a>
-			<?php
-			}
-			?>
+			<div class="flex flex-col md:flex-row md:justify-between items-center md:items-center w-full">
+				<?php if ($display == 'upcoming' && !$single_event) : ?>
+					<h3 class="font-bold mb-2 md:mb-0 md:text-left text-center lg:text-left w-full md:w-auto"><?php esc_html_e('Upcoming Registered Events', 'wicket-acc'); ?></h3>
+					<a href="<?php echo $switch_link; ?>" class="past-link font-bold text-center md:text-right w-full md:w-auto"><?php esc_html_e('See Past Registered Events →', 'wicket-acc'); ?></a>
+				<?php elseif ($display == 'past' && !$single_event) : ?>
+					<h3 class="font-bold mb-2 md:mb-0 md:text-left text-center w-full md:w-auto"><?php esc_html_e('Past Registered Events', 'wicket-acc'); ?></h3>
+					<a href="<?php echo $switch_link; ?>" class="upcoming-link font-bold text-center md:text-right w-full md:w-auto"><?php esc_html_e('See Upcoming Registered Events →', 'wicket-acc'); ?></a>
+				<?php elseif ($single_event) : ?>
+					<h3 class="text-2xl font-bold mb-2 md:mb-0 md:text-left text-center w-full md:w-auto"><?php esc_html_e('Event Details', 'wicket-acc'); ?></h3>
+					<a href="javascript:history.back()" class="back-link font-bold text-center md:text-right w-full md:w-auto"><?php esc_html_e('Go Back ←', 'wicket-acc'); ?></a>
+				<?php endif; ?>
+			</div>
 		</div>
 
 		<div class="events-list grid gap-6">
