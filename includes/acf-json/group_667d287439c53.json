@@ -111,6 +111,24 @@
             "layout": "vertical",
             "save_other_choice": 0,
             "wpml_cf_preferences": 1
+        },
+        {
+            "key": "field_66d5f232ee48a",
+            "label": "Override \"see past events\" link",
+            "name": "override_past_events_link",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "Optional.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 0,
+            "default_value": "",
+            "placeholder": ""
         }
     ],
     "location": [
@@ -137,5 +155,5 @@
     "description": "",
     "show_in_rest": 0,
     "acfml_field_group_mode": "translation",
-    "modified": 1725296839
+    "modified": 1725297224
 }
