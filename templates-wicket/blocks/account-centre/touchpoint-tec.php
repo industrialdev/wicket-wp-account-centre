@@ -79,7 +79,7 @@ if (!empty($override_past_events_link)) {
 			</div>
 		</div>
 
-		<div class="events-list grid gap-6">
+		<div class="events-list grid gap-4">
 			<?php
 			if ($single_event) {
 				$args = [
