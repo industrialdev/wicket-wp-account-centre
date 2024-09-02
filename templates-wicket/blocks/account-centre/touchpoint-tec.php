@@ -34,6 +34,7 @@ $is_preview                = $args['is_preview'];
 $close                     = $args['close'];
 $override_past_events_link = $args['override_past_events_link'];
 $past_events_link_text     = __('See Past Registered Events →', 'wicket-acc');
+$show_view_more_events     = $args['show_view_more_events'];
 // @formatter:on
 
 // Process event data from URL
@@ -82,7 +83,8 @@ if (!empty($override_past_events_link)) {
 			<?php
 			if ($single_event) {
 				$args = [
-					'tp'                 => $event_data,
+					'tp'                    => $event_data,
+					'show_view_more_events' => $show_view_more_events
 				];
 
 				WACC()->Blocks->render_template('touchpoint-tec-card', $args);

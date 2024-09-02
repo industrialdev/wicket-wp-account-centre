@@ -60,6 +60,7 @@ class Block_TouchpointEventCalendar extends WicketAcc
 		$num_results                    = get_field('page_results');
 		$override_past_events_link      = get_field('override_past_events_link');
 		$override_past_events_link_text = get_field('override_past_events_link_text');
+		$show_view_more_events          = get_field('show_view_more_events');
 
 		$total_results     = 0;
 		$counter           = 0;
@@ -123,6 +124,7 @@ class Block_TouchpointEventCalendar extends WicketAcc
 			'switch_link'                    => $switch_link,
 			'override_past_events_link'      => $override_past_events_link,
 			'override_past_events_link_text' => $override_past_events_link_text,
+			'show_view_more_events'          => $show_view_more_events,
 			'is_preview'                     => $this->is_preview
 		];
 
@@ -159,10 +161,11 @@ class Block_TouchpointEventCalendar extends WicketAcc
 	 * @param string $display Touchpoint display type: upcoming, past, all
 	 * @param int $num_results Number of results to display
 	 * @param bool $ajax Is ajax request?
+	 * @param bool $show_view_more_events Show view more events?
 	 *
 	 * @return void
 	 */
-	public static function display_touchpoints($touchpoint_data = [], $display_type = 'upcoming', $num_results = 5, $ajax = false)
+	public static function display_touchpoints($touchpoint_data = [], $display_type = 'upcoming', $num_results = 5, $ajax = false, $show_view_more_events = true)
 	{
 		// No data
 		if (empty($touchpoint_data)) {
@@ -202,7 +205,7 @@ class Block_TouchpointEventCalendar extends WicketAcc
 		endforeach;
 
 		// Show more like pagination, to load more data in the same page (if there are more than $num_results)
-		if ($counter == $num_results && $ajax === false) {
+		if ($counter == $num_results && $ajax === false && $show_view_more_events) {
 			self::load_more_results($touchpoint_data, $num_results, $total_results, $counter, $display_type);
 		}
 	}
