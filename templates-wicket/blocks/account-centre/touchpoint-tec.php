@@ -19,17 +19,21 @@ defined('ABSPATH') || exit;
  * $is_preview - Is preview?
  */
 
-$attrs               = $args['attrs'];
-$title               = $args['title'];
-$display             = $args['display'];
-$num_results         = $args['num_results'];
-$total_results       = $args['total_results'];
-$counter             = $args['counter'];
-$display_type        = $args['display_type'];
-$switch_link         = $args['switch_link'];
-$touchpoints_results = $args['touchpoints_results'];
-$is_preview          = $args['is_preview'];
-$close               = $args['close'];
+// @formatter:off
+$attrs                     = $args['attrs'];
+$title                     = $args['title'];
+$display                   = $args['display'];
+$num_results               = $args['num_results'];
+$total_results             = $args['total_results'];
+$counter                   = $args['counter'];
+$display_type              = $args['display_type'];
+$switch_link               = $args['switch_link'];
+$switch_link_past          = $args['switch_link'];
+$touchpoints_results       = $args['touchpoints_results'];
+$is_preview                = $args['is_preview'];
+$close                     = $args['close'];
+$override_past_events_link = $args['override_past_events_link'];
+//@formatter:on
 
 // Process event data from URL
 $single_event = false;
@@ -45,6 +49,11 @@ if (!empty($event_id) && !empty($event_data)) {
 
 	$single_event = true;
 }
+
+// If override_past_events_link is not empty, use it
+if (!empty($override_past_events_link)) {
+	$switch_link_past = $override_past_events_link;
+}
 ?>
 <section <?php echo $attrs; ?>>
 	<div class="container">
@@ -56,7 +65,7 @@ if (!empty($event_id) && !empty($event_data)) {
 			<div class="flex flex-col md:flex-row md:justify-between items-center md:items-center w-full">
 				<?php if ($display == 'upcoming' && !$single_event) : ?>
 					<h3 class="font-bold mb-2 md:mb-0 md:text-left text-center lg:text-left w-full md:w-auto"><?php esc_html_e('Upcoming Registered Events', 'wicket-acc'); ?></h3>
-					<a href="<?php echo $switch_link; ?>" class="past-link font-bold text-center md:text-right w-full md:w-auto"><?php esc_html_e('See Past Registered Events →', 'wicket-acc'); ?></a>
+					<a href="<?php echo $switch_link_past; ?>" class="past-link font-bold text-center md:text-right w-full md:w-auto"><?php esc_html_e('See Past Registered Events →', 'wicket-acc'); ?></a>
 				<?php elseif ($display == 'past' && !$single_event) : ?>
 					<h3 class="font-bold mb-2 md:mb-0 md:text-left text-center w-full md:w-auto"><?php esc_html_e('Past Registered Events', 'wicket-acc'); ?></h3>
 					<a href="<?php echo $switch_link; ?>" class="upcoming-link font-bold text-center md:text-right w-full md:w-auto"><?php esc_html_e('See Upcoming Registered Events →', 'wicket-acc'); ?></a>
