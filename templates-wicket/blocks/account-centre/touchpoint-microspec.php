@@ -91,13 +91,13 @@ if (!empty($override_past_events_link)) {
 			} else {
 
 				if ($display == 'upcoming' || $display == 'all') {
-					Block_TouchpointMicroSpec::display_touchpoints($touchpoints_results['data'], 'upcoming', $num_results);
+					Block_TouchpointMicroSpec::display_touchpoints($touchpoints_results['data'], 'upcoming', $num_results, false, $show_view_more_events);
 
 					$close++;
 				}
 
 				if ($display == 'past' || $display == 'all') {
-					Block_TouchpointMicroSpec::display_touchpoints($touchpoints_results['data'], 'past', $num_results);
+					Block_TouchpointMicroSpec::display_touchpoints($touchpoints_results['data'], 'past', $num_results, false, $show_view_more_events);
 
 					$close++;
 				}
