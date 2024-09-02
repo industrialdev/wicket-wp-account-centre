@@ -1,7 +1,7 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
-# 1.1.52 / 2024-08-30
+# 1.1.54 / 2024-09-02
 - Switch display Pending Approval Callout to swap out the Become A Member Callout and remove from Renewal Callout
 - Added options to Touchpoints Blocks to show/hide View More Events link and to display an optional Title.
 

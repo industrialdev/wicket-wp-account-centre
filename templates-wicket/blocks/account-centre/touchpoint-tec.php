@@ -59,7 +59,7 @@ if (!empty($override_past_events_link)) {
 }
 ?>
 <section <?php echo $attrs; ?>>
-	<div class="container">
+	<div class="container events_<?php echo $display; ?>">
 		<div class="header flex flex-col mb-6">
 			<?php if (!empty($title)) : ?>
 				<h2 class="wicket-acc-touchpoint-tec__title mb-4 w-full"><?php echo esc_html($title); ?></h2>
