@@ -29,12 +29,6 @@ class Front extends WicketAcc
 		add_filter('woocommerce_get_query_vars', [$this, 'custom_query_vars'], 1);
 		add_filter('woocommerce_account_menu_items', [$this, 'custom_my_account_menu_items'], 2050); // High priority for WPML compatibility
 
-		$wicket_acc_allow_pp = get_option('wicket_acc_set_pro_pic_fld');
-
-		if ('yes' === esc_attr($wicket_acc_allow_pp)) {
-			add_action('woocommerce_before_account_navigation_ul', [$this, 'custom_profilepicture_form'], 10, 2);
-		}
-
 		// Intercept templates for WP CPT: wicket_acc
 		add_filter('single_template', [$this, 'intercept_cpt_template'], 10, 1);
 
