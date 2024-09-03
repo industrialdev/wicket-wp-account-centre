@@ -49,6 +49,11 @@ class Block_Welcome extends WicketAcc
 		$display_mdp_id      = get_field('display_mdp_id');
 		$image_url           = get_avatar_url($current_user->ID, ['size' => '300']);
 		$active_memberships  = wicket_get_active_memberships($iso_code);
+
+		// We can't query with /account-centre or /account-center, because that URL part was injected by ACC plugin
+		$editprofile_page_slug = str_replace(['/account-centre', '/account-center', '/mon-compte'], '', $edit_profile_button['url']);
+		$editprofile_page      = get_page_by_path($editprofile_page_slug, OBJECT, 'wicket_acc');
+		$editprofile_page_link = get_permalink($editprofile_page->ID);
 ?>
 
 		<div class="wicket-acc-block wicket-acc-block-welcome wp-block-wicket-acc-callout bg-light-010 row">
@@ -113,10 +118,10 @@ class Block_Welcome extends WicketAcc
 					}
 					?>
 				</div>
-				<?php if ($edit_profile && isset($edit_profile_button['url']) && isset($edit_profile_button['title'])) {
+				<?php if ($edit_profile && isset($editprofile_page_link) && isset($edit_profile_button['title'])) {
 				?>
 					<div class="wicket-welcome-edit-profile-button col-3 text-right">
-						<a href="<?php echo $edit_profile_button['url']; ?>" class="button button--secondary text-center"><i class="fa-regular fa-pen-to-square icon-r" aria-hidden="true"></i><?php echo $edit_profile_button['title']; ?></a>
+						<a href="<?php echo $editprofile_page_link; ?>" class="button button--secondary text-center"><i class="fa-regular fa-pen-to-square icon-r" aria-hidden="true"></i><?php echo $edit_profile_button['title']; ?></a>
 					</div>
 				<?php } ?>
 			</div>
