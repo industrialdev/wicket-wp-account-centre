@@ -421,7 +421,7 @@ class Front extends WicketAcc
 	private function is_acc_request()
 	{
 		$current_url = add_query_arg(null, null);
-		$acc_slug    = WACC()->get_acc_slug();
+		$acc_slug    = WACC()->Router->get_acc_slug();
 		return strpos($current_url, "/$acc_slug/") !== false;
 	}
 }
