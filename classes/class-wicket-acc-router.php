@@ -252,7 +252,7 @@ class Router extends WicketAcc
 			$woo_my_account_page_slug = get_post($woo_my_account_page_id)->post_name;
 
 			// Check if slug don't end with '-woo'
-			if (str_ends_with($woo_my_account_page_slug, '-woo')) {
+			if (!str_ends_with($woo_my_account_page_slug, '-woo')) {
 				global $wpdb;
 
 				// SQL query to rename page slug to {slug}-woo. We want to avoid WP triggering a redirect to the new slug.
