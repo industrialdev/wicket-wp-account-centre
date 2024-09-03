@@ -7,9 +7,6 @@ defined('ABSPATH') || exit;
 
 /**
  * Admin file for Wicket Account Centre
- *
- * @package  wicket-account-centre
- * @version  1.0.0
  */
 
 /**

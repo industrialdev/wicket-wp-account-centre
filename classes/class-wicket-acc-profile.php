@@ -9,9 +9,6 @@ defined('ABSPATH') || exit;
  * Profile for Wicket Account Centre
  *
  * Manage all actions of user's profile on WordPress.
- *
- * @package  wicket-account-centre
- * @version  1.0.0
  */
 class Profile extends WicketAcc
 {

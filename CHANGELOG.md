@@ -1,7 +1,10 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
-# 1.1.56 / 2024-09-03
+# 1.2.0 / 2024-09-03
+- Revamped the entire /account-centre/ rewrites from before, that were only hijacking parts of the WooCommerce my-account page. Now the new implementation does not interfere with WordPress rewrite rules. This was causing issues with 3rd party plugins, like WPML, that simply broke because they weren't able to determine the proper URL for a page.
+
+# 1.1.56 / 2024-09-02
 - Switch display Pending Approval Callout to swap out the Become A Member Callout and remove from Renewal Callout
 - Added options to Touchpoints Blocks to show/hide View More Events link and to display an optional Title.
 - Removed leftovers from old profile picture implementation.

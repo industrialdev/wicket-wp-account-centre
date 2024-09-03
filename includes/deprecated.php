@@ -494,35 +494,6 @@ function wp_job_dropdown_pages($parsed_args = '')
 	return $output;
 }
 
-function wicket_acc_rewrite_permalinks($post_link, $post, $leavename, $sample)
-{
-	// Only on CPT wicket_acc
-	if ($post->post_type == 'wicket_acc') {
-		if (defined('ICL_SITEPRESS_VERSION')) {
-			global $sitepress;
-
-			$lang = $sitepress->get_current_language();
-		} else {
-			$lang = 'en';
-		}
-
-		if ($lang == 'fr') {
-			$account_center_slug_locale = 'fr/mon-compte';
-		} else {
-			// Get it from base plugin settings
-			$account_center_slug_locale = WicketAcc\WACC()->get_slug();
-		}
-
-		if (empty($account_center_slug_locale)) {
-			$account_center_slug_locale = WICKET_ACC_SLUG; // fallback
-		}
-
-		$post_link = str_replace('wicket_acc', $account_center_slug_locale, $post_link);
-	}
-
-	return $post_link;
-}
-
 /**
  * Get user profile picture
  * To pull in as wp_user profile image

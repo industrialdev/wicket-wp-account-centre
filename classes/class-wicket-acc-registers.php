@@ -67,7 +67,7 @@ class Registers extends WicketAcc
 			'menu_icon'           => WICKET_ACC_URL . '/assets/images/wicket-logo-20-white.svg',
 			'rewrite'             => [
 				'slug'            => 'wicket_acc',
-				'with_front'      => false,
+				'with_front'      => true,
 			],
 			'supports'            => [
 				'title',

@@ -41,16 +41,21 @@ class Helpers extends WicketAcc
 	{
 		$locale = get_field('ac_localization', 'option');
 
-		if (empty($locale)) {
+		if (!isset($locale) || empty($locale)) {
 			return WICKET_ACC_SLUG;
 		}
 
-		// Check if returned value is a valid and allowed slug
-		if (!in_array($locale, [WICKET_ACC_SLUG, 'account-centre', 'account-center'])) {
-			return WICKET_ACC_SLUG;
+		// WPML enabled?
+		if (function_exists('icl_get_languages')) {
+			global $sitepress;
+			$current_language = $sitepress->get_current_language();
+
+			if (isset($this->acc_slugs[$current_language])) {
+				return $this->acc_slugs[$current_language];
+			}
 		}
 
-		return $locale;
+		return $locale['value'];
 	}
 
 	/**

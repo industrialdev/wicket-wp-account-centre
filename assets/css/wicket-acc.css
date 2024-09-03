@@ -3,10 +3,6 @@
  * Base styles for Wicket ACC Blocks
  */
 
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
-
 @import "wicket-acc-variables.css";
 @import "wicket-acc-grid.css";
 @import "wicket-acc-blocks-global.css";

@@ -5,10 +5,6 @@ defined('ABSPATH') || exit;
 /**
  * Ray stub
  * https://myray.app
- *
- * @package  wicket-account-centre
- * @author   Wicket Inc.
- * @version  1.0.0
  */
 
 if (!function_exists('ray')) {

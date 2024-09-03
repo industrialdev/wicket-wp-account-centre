@@ -32,8 +32,12 @@ class Router extends WicketAcc
 	public function __construct()
 	{
 		add_action('admin_init', [$this, 'init_all_pages']);
-		add_action('admin_init', [$this, 'maybe_create_acc_page']);
-		add_action('template_redirect', [$this, 'load_acc_page']);
+		add_action('admin_init', [$this, 'maybe_create_main_acc_page']);
+		add_action('init', [$this, 'wicket_acc_custom_rewrite_rules'], 10, 0);
+		add_action('template_redirect', [$this, 'redirect_myaccount_to_acc']);
+		add_filter('post_type_link', [$this, 'wicket_acc_remove_cpt_slug'], 10, 2);
+		add_action('parse_request', [$this, 'handle_acc_request'], 1);
+		add_filter('redirect_canonical', [$this, 'prevent_acc_redirect'], 10, 2);
 	}
 
 	/**
@@ -226,69 +230,11 @@ class Router extends WicketAcc
 	}
 
 	/**
-	 * Load ACC page
-	 * Loads the correct page from the ACC CPT, based on the URL path.
-	 *
-	 * @return void
-	 */
-	public function load_acc_page()
-	{
-		// Check if we are on a 404 page and not on the admin
-		if (is_404() && !is_admin()) {
-			$requested_path = trim($_SERVER['REQUEST_URI'], '/');
-			$path_segments  = explode('/', $requested_path);
-
-			// Check if the first segment is ACC slug
-			$current_slug = WACC()->get_slug();
-
-			if (isset($path_segments[0]) && $path_segments[0] === $current_slug) {
-				// Get the slug from the second segment
-				$slug = isset($path_segments[1]) ? $path_segments[1] : '';
-
-				// Check if the slug is not empty
-				if (!empty($slug)) {
-					// Try to find a post with this slug in the custom post type 'wicket_acc'
-					$query = new WP_Query([
-						'name'           => $slug,
-						'post_type'      => 'wicket_acc',
-						'post_status'    => 'publish',
-						'posts_per_page' => 1,
-					]);
-
-					// If a matching post is found, display that post
-					if ($query->have_posts()) {
-						$query->the_post();
-
-						// Setup the global post data for the template
-						global $wp_query;
-
-						$wp_query->is_404         = false;
-						$wp_query->is_single      = true;
-						$wp_query->is_singular    = true;
-						$wp_query->is_post        = true;
-						$wp_query->post           = $query->post;
-						$wp_query->posts          = [$query->post];
-						$wp_query->found_posts    = 1;
-						$wp_query->post_count     = 1;
-						$wp_query->max_num_pages  = 1;
-						$wp_query->is_found_posts = true;
-
-						// Output the content using the correct template
-						include get_single_template();
-
-						exit;
-					}
-				}
-			}
-		}
-	}
-
-	/**
 	 * Maybe create ACC page
 	 *
 	 * return void
 	 */
-	public function maybe_create_acc_page()
+	public function maybe_create_main_acc_page()
 	{
 		$set_slug = WACC()->get_slug();
 		$set_name = WACC()->get_name();
@@ -298,20 +244,136 @@ class Router extends WicketAcc
 			return;
 		}
 
+		// Get WooCommerce my-account page ID
+		$woo_my_account_page_id = wc_get_page_id('myaccount');
+
+		if ($woo_my_account_page_id > 0) {
+			// Get page slug
+			$woo_my_account_page_slug = get_post($woo_my_account_page_id)->post_name;
+
+			// Check if slug don't end with '-woo'
+			if (str_ends_with($woo_my_account_page_slug, '-woo')) {
+				global $wpdb;
+
+				// SQL query to rename page slug to {slug}-woo. We want to avoid WP triggering a redirect to the new slug.
+				$wpdb->update($wpdb->posts, ['post_name' => $set_slug . '-woo'], ['ID' => $woo_my_account_page_id]);
+
+				// Delete meta _wp_old_slug
+				delete_post_meta($woo_my_account_page_id, '_wp_old_slug');
+
+				// Flush rewrite rules
+				flush_rewrite_rules();
+			}
+		}
+
 		// Query wicket_acc CPT an check if get already have one with set_slug
-		$query = new WP_Query([
+		$args = [
 			'name'           => $set_slug,
 			'post_type'      => 'wicket_acc',
 			'post_status'    => 'publish',
 			'posts_per_page' => 1,
-		]);
+		];
 
-		if ($query->have_posts()) {
+		$post_acc = get_posts($args);
+
+		if ($post_acc) {
 			// We already have a page with this slug
 			return;
 		}
 
 		// Create page
 		$this->create_page($set_slug, $set_name);
+	}
+
+	/**
+	 * Custom rewrite rules for ACC
+	 *
+	 * @return void
+	 */
+	public function wicket_acc_custom_rewrite_rules()
+	{
+		$acc_slug = $this->get_acc_slug();
+		add_rewrite_rule(
+			"^$acc_slug/?$",
+			'index.php?post_type=wicket_acc&pagename=' . $acc_slug,
+			'top'
+		);
+		add_rewrite_rule(
+			"^$acc_slug/([^/]+)/?$",
+			'index.php?post_type=wicket_acc&pagename=$matches[1]',
+			'top'
+		);
+	}
+
+	/**
+	 * Redirect WooCommerce My Account page to Wicket Account Centre
+	 */
+	public function redirect_myaccount_to_acc()
+	{
+		// Check if we're on the WooCommerce My Account page
+		if (is_page(wc_get_page_id('myaccount'))) {
+			// Construct the redirect URL
+			$redirect_url = $this->get_acc_url();
+
+			// Perform the redirect
+			wp_safe_redirect($redirect_url);
+			exit;
+		}
+	}
+
+	/**
+	 * Remove CPT slug from permalink
+	 *
+	 * @param string $post_link The permalink of the post
+	 * @param WP_Post $post The post object
+	 * @return string The modified permalink
+	 */
+	public function wicket_acc_remove_cpt_slug($post_link, $post)
+	{
+		if ('wicket_acc' === $post->post_type && 'publish' === $post->post_status) {
+			return str_replace('/wicket_acc/', '/account-centre/', $post_link);
+		}
+		return $post_link;
+	}
+
+	/**
+	 * Handle ACC request
+	 */
+	public function handle_acc_request($wp)
+	{
+		$request_uri = trim($wp->request, '/');
+		$acc_slug = $this->get_acc_slug();
+
+		if (strpos($request_uri, $acc_slug) === 0) {
+			$path_parts = explode('/', $request_uri);
+			$slug = isset($path_parts[1]) ? $path_parts[1] : $acc_slug;
+
+			$page_id = $this->get_page_id_by_slug($slug);
+
+			if (!$page_id) {
+				$page_id = get_field('acc_page_' . $acc_slug, 'option');
+			}
+
+			if ($page_id) {
+				$wp->query_vars['page_id'] = $page_id;
+				$wp->query_vars['post_type'] = 'wicket_acc';
+
+				set_query_var('wicket_acc', $slug);
+
+				return;
+			}
+		}
+	}
+
+	/**
+	 * Prevent default WordPress redirect for ACC pages
+	 */
+	public function prevent_acc_redirect($redirect_url, $requested_url)
+	{
+		$acc_slug = $this->get_acc_slug();
+		if (strpos($requested_url, "/$acc_slug/") !== false) {
+			return false;
+		}
+		return $redirect_url;
 	}
 }
