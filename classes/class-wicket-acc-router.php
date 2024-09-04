@@ -41,6 +41,7 @@ class Router extends WicketAcc
 		add_filter('redirect_canonical', [$this, 'prevent_acc_redirect'], 10, 2);
 		add_action('init', [$this, 'register_acc_slug_for_translation'], 11);
 		add_action('template_redirect', [$this, 'maybe_redirect_trailing_slash'], 1);
+		add_action('template_redirect', [$this, 'redirect_duplicate_acc_slugs'], 1);
 	}
 
 	/**
@@ -499,6 +500,35 @@ class Router extends WicketAcc
 
 		if (substr($request_uri, -1) !== '/') {
 			$redirect_url = trailingslashit($request_uri);
+			wp_safe_redirect($redirect_url, 301);
+			exit;
+		}
+	}
+
+	/**
+	 * Redirect duplicate ACC slugs
+	 */
+	public function redirect_duplicate_acc_slugs()
+	{
+		$request_uri = $_SERVER['REQUEST_URI'];
+		$path_parts = explode('/', trim($request_uri, '/'));
+
+		if (count($path_parts) < 2) {
+			return;
+		}
+
+		$lang_code = '';
+		if (function_exists('icl_get_languages')) {
+			$languages = icl_get_languages('skip_missing=0&orderby=code');
+			if (isset($languages[$path_parts[0]])) {
+				$lang_code = array_shift($path_parts);
+			}
+		}
+
+		$acc_slug = $this->get_translated_acc_slug($lang_code);
+
+		if ($path_parts[0] === $acc_slug && isset($path_parts[1]) && $path_parts[1] === $acc_slug) {
+			$redirect_url = '/' . ($lang_code ? $lang_code . '/' : '') . $acc_slug . '/';
 			wp_safe_redirect($redirect_url, 301);
 			exit;
 		}
