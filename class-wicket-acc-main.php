@@ -9,7 +9,7 @@ namespace WicketAcc;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Customize WooCommerce my account features to build the Wicket Account Centre. Expands it with additional blocks and pages.
- * Version:           1.2.5
+ * Version:           1.2.6
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -105,6 +105,11 @@ class WicketAcc
 			new Language();
 		}
 
+		// Only on admin
+		if (is_admin()) {
+			new AdminMenuEditor();
+		}
+
 		if (class_exists('WooCommerce')) {
 			new WooCommerce();
 		}
@@ -120,6 +125,7 @@ class WicketAcc
 		// Includes
 		$includes_admin = [
 			'classes/admin/class-wicket-acc-admin.php',
+			'classes/admin/class-wicket-acc-admin-menu-editor.php',
 		];
 
 		$include_classes = [

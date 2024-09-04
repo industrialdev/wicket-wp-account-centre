@@ -82,7 +82,7 @@ class AdminSettings extends WicketAcc
 		}
 
 		// Flush rewrite rules
-		flush_rewrite_rules();
+		flush_rewrite_rules(false);
 	}
 
 	/**
