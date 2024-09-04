@@ -405,9 +405,9 @@ class Router extends WicketAcc
 		$path_parts = explode('/', $request_uri);
 
 		$lang_code = '';
-		if (function_exists('icl_get_languages')) {
-			$languages = icl_get_languages('skip_missing=0&orderby=code');
-			if (isset($languages[$path_parts[0]])) {
+		if (function_exists('wpml_get_active_languages_filter')) {
+			$active_languages = apply_filters('wpml_active_languages', null, 'skip_missing=0&orderby=code');
+			if (isset($active_languages[$path_parts[0]])) {
 				$lang_code = array_shift($path_parts);
 			}
 		}
@@ -518,9 +518,9 @@ class Router extends WicketAcc
 		}
 
 		$lang_code = '';
-		if (function_exists('icl_get_languages')) {
-			$languages = icl_get_languages('skip_missing=0&orderby=code');
-			if (isset($languages[$path_parts[0]])) {
+		if (function_exists('wpml_get_active_languages_filter')) {
+			$active_languages = apply_filters('wpml_active_languages', null, 'skip_missing=0&orderby=code');
+			if (isset($active_languages[$path_parts[0]])) {
 				$lang_code = array_shift($path_parts);
 			}
 		}
