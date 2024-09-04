@@ -82,29 +82,32 @@ class WicketAcc
 	 */
 	public function run()
 	{
-		add_action('wp_loaded', [$this, 'language']);
 		add_filter('wp_dropdown_pages', 'wicket_acc_alter_wp_job_manager_pages', 10, 3);
 
-		// Registration hook setting
-		register_activation_hook(__FILE__, [$this, 'install_settings']);
+		register_activation_hook(__FILE__, [$this, 'plugin_activated']);
 
-		// Includes
 		$this->includes();
 
-		// Init classes
 		if (is_admin()) {
 			new AdminSettings();
 		}
 
 		new MdpApi();
-		new Language();
 		new Router();
-		new WooCommerce();
 		new Blocks();
-		new Front();
-		new Profile();
 		new Helpers();
 		new Registers();
+
+		// Conditionally load these classes
+		if (!is_admin() || (isset($_GET['post_type']) && $_GET['post_type'] !== 'wicket_acc')) {
+			new Front();
+			new Profile();
+			new Language();
+		}
+
+		if (class_exists('WooCommerce')) {
+			new WooCommerce();
+		}
 	}
 
 	/**
@@ -133,7 +136,6 @@ class WicketAcc
 		];
 
 		$includes_global = [
-			'includes/admin/options-main.php',
 			'includes/ray-stub.php',
 			'includes/helpers.php',
 			'includes/deprecated.php',
@@ -171,22 +173,9 @@ class WicketAcc
 	}
 
 	/**
-	 * Plugin settings
+	 * Plugin activation
 	 */
-	public function install_settings()
-	{
-		// Default setting for plugin.
-	}
-
-	/**
-	 * Load text domain
-	 */
-	public function language()
-	{
-		if (function_exists('load_plugin_textdomain')) {
-			load_plugin_textdomain('wicket-acc', false, dirname(plugin_basename(__FILE__)) . '/languages/');
-		}
-	}
+	public function plugin_activated() {}
 } // end Class.
 
 // Initialize the plugin

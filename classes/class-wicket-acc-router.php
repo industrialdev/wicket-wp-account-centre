@@ -2,8 +2,6 @@
 
 namespace WicketAcc;
 
-use WP_Query;
-
 // No direct access
 defined('ABSPATH') || exit;
 
@@ -31,6 +29,9 @@ class Router extends WicketAcc
 	 */
 	public function __construct()
 	{
+		// DEBUG ONLY
+		//flush_rewrite_rules(false);
+
 		add_action('admin_init', [$this, 'init_all_pages']);
 		add_action('admin_init', [$this, 'maybe_create_main_acc_page']);
 		add_action('init', [$this, 'wicket_acc_custom_rewrite_rules'], 10, 0);
@@ -38,6 +39,8 @@ class Router extends WicketAcc
 		add_filter('post_type_link', [$this, 'wicket_acc_remove_cpt_slug'], 10, 2);
 		add_action('parse_request', [$this, 'handle_acc_request'], 1);
 		add_filter('redirect_canonical', [$this, 'prevent_acc_redirect'], 10, 2);
+		add_action('init', [$this, 'register_acc_slug_for_translation'], 11);
+		add_action('template_redirect', [$this, 'maybe_redirect_trailing_slash'], 1);
 	}
 
 	/**
@@ -292,17 +295,71 @@ class Router extends WicketAcc
 	 */
 	public function wicket_acc_custom_rewrite_rules()
 	{
+		if (defined('ICL_SITEPRESS_VERSION')) {
+			$languages = apply_filters('wpml_active_languages', null, 'orderby=id&order=desc');
+
+			foreach ($languages as $lang_code => $language) {
+				$acc_slug = $this->get_translated_acc_slug($lang_code);
+
+				add_rewrite_rule(
+					"^{$lang_code}/{$acc_slug}/?$",
+					"index.php?post_type=wicket_acc&pagename={$acc_slug}&lang={$lang_code}",
+					'top'
+				);
+				add_rewrite_rule(
+					"^{$lang_code}/{$acc_slug}/([^/]+)/?$",
+					"index.php?post_type=wicket_acc&pagename=\$matches[1]&lang={$lang_code}",
+					'top'
+				);
+			}
+		}
+
+		// Add rules for the default language or when WPML is not active
+		$default_acc_slug = $this->get_translated_acc_slug();
+		add_rewrite_rule(
+			"^{$default_acc_slug}/?$",
+			"index.php?post_type=wicket_acc&pagename={$default_acc_slug}",
+			'top'
+		);
+		add_rewrite_rule(
+			"^{$default_acc_slug}/([^/]+)/?$",
+			"index.php?post_type=wicket_acc&pagename=\$matches[1]",
+			'top'
+		);
+	}
+
+	/**
+	 * Get translated ACC slug
+	 *
+	 * @param string $language
+	 *
+	 * @return string
+	 */
+	private function get_translated_acc_slug($language = null)
+	{
 		$acc_slug = $this->get_acc_slug();
-		add_rewrite_rule(
-			"^$acc_slug/?$",
-			'index.php?post_type=wicket_acc&pagename=' . $acc_slug,
-			'top'
-		);
-		add_rewrite_rule(
-			"^$acc_slug/([^/]+)/?$",
-			'index.php?post_type=wicket_acc&pagename=$matches[1]',
-			'top'
-		);
+
+		if (defined('ICL_SITEPRESS_VERSION')) {
+			// Get the post ID of the main account page
+			$acc_page_id = $this->get_acc_page_id();
+
+			// Get the translated post ID
+			$translated_page_id = apply_filters('wpml_object_id', $acc_page_id, 'wicket_acc', false, $language);
+
+			if ($translated_page_id) {
+				// Get the slug of the translated page
+				$translated_post = get_post($translated_page_id);
+				if ($translated_post) {
+					return $translated_post->post_name;
+				}
+			}
+
+			// If no translation found, use WPML's string translation
+			$translated_slug = apply_filters('wpml_translate_single_string', $acc_slug, 'WordPress', 'URL slug: wicket_acc', $language);
+			return $translated_slug !== null && $translated_slug !== '' ? $translated_slug : $acc_slug;
+		}
+
+		return $acc_slug;
 	}
 
 	/**
@@ -331,7 +388,9 @@ class Router extends WicketAcc
 	public function wicket_acc_remove_cpt_slug($post_link, $post)
 	{
 		if ('wicket_acc' === $post->post_type && 'publish' === $post->post_status) {
-			return str_replace('/wicket_acc/', '/account-centre/', $post_link);
+			$language = apply_filters('wpml_current_language', null);
+			$translated_slug = $this->get_translated_acc_slug($language);
+			return str_replace('/wicket_acc/', '/' . $translated_slug . '/', $post_link);
 		}
 		return $post_link;
 	}
@@ -342,13 +401,26 @@ class Router extends WicketAcc
 	public function handle_acc_request($wp)
 	{
 		$request_uri = trim($wp->request, '/');
-		$acc_slug = $this->get_acc_slug();
+		$path_parts = explode('/', $request_uri);
 
-		if (strpos($request_uri, $acc_slug) === 0) {
-			$path_parts = explode('/', $request_uri);
-			$slug = isset($path_parts[1]) ? $path_parts[1] : $acc_slug;
+		$lang_code = '';
+		if (function_exists('icl_get_languages')) {
+			$languages = icl_get_languages('skip_missing=0&orderby=code');
+			if (isset($languages[$path_parts[0]])) {
+				$lang_code = array_shift($path_parts);
+			}
+		}
+
+		$acc_slug = $this->get_translated_acc_slug($lang_code);
+
+		if (isset($path_parts[0]) && $path_parts[0] === $acc_slug) {
+			$slug = isset($path_parts[1]) && $path_parts[1] !== '' ? $path_parts[1] : $acc_slug;
 
 			$page_id = $this->get_page_id_by_slug($slug);
+
+			if (!$page_id && $slug === $acc_slug) {
+				$page_id = $this->get_acc_page_id();
+			}
 
 			if (!$page_id) {
 				$page_id = get_field('acc_page_' . $acc_slug, 'option');
@@ -357,6 +429,7 @@ class Router extends WicketAcc
 			if ($page_id) {
 				$wp->query_vars['page_id'] = $page_id;
 				$wp->query_vars['post_type'] = 'wicket_acc';
+				$wp->query_vars['lang'] = $lang_code;
 
 				set_query_var('wicket_acc', $slug);
 
@@ -371,9 +444,63 @@ class Router extends WicketAcc
 	public function prevent_acc_redirect($redirect_url, $requested_url)
 	{
 		$acc_slug = $this->get_acc_slug();
-		if (strpos($requested_url, "/$acc_slug/") !== false) {
-			return false;
+		if (strpos($requested_url, "/$acc_slug") !== false) {
+			// Allow WordPress to handle trailing slashes
+			return $redirect_url;
 		}
 		return $redirect_url;
+	}
+
+	/**
+	 * Register 'wicket_acc' slug for translation
+	 */
+	public function register_acc_slug_for_translation()
+	{
+		if (function_exists('wpml_register_single_string')) {
+			$acc_slug = $this->get_acc_slug();
+			wpml_register_single_string('WordPress', 'URL slug: wicket_acc', $acc_slug);
+
+			// Also register the string for WPML String Translation
+			do_action('wpml_register_string', $acc_slug, 'URL slug: wicket_acc', 'WordPress', 'URL slug', 1);
+		}
+	}
+
+	/**
+	 * Redirect to the page with a trailing slash
+	 *
+	 * @return void
+	 */
+	public function maybe_redirect_trailing_slash()
+	{
+		if (is_admin() || wp_doing_ajax() || wp_is_json_request() || (defined('REST_REQUEST') && REST_REQUEST)) {
+			return;
+		}
+
+		if (!get_option('permalink_structure')) {
+			return;
+		}
+
+		$request_uri = $_SERVER['REQUEST_URI'];
+
+		// Ignore URLs with query parameters
+		if (strpos($request_uri, '?') !== false) {
+			return;
+		}
+
+		// Ignore URLs with file extensions
+		if (pathinfo($request_uri, PATHINFO_EXTENSION)) {
+			return;
+		}
+
+		// Ignore the root URL
+		if ($request_uri === '/') {
+			return;
+		}
+
+		if (substr($request_uri, -1) !== '/') {
+			$redirect_url = trailingslashit($request_uri);
+			wp_safe_redirect($redirect_url, 301);
+			exit;
+		}
 	}
 }
