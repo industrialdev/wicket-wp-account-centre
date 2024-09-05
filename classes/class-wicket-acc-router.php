@@ -40,6 +40,7 @@ class Router extends WicketAcc
 		add_action('template_redirect', [$this, 'maybe_redirect_trailing_slash'], 1);
 		add_action('template_redirect', [$this, 'redirect_duplicate_acc_slugs'], 1);
 		add_action('template_redirect', [$this, 'handle_404'], 99);
+		add_action('template_redirect', [$this, 'redirect_woocommerce_endpoints']);
 	}
 
 	/**
@@ -294,6 +295,8 @@ class Router extends WicketAcc
 	 */
 	public function wicket_acc_custom_rewrite_rules()
 	{
+		$wc_endpoints = WC()->query->get_query_vars();
+
 		if (defined('ICL_SITEPRESS_VERSION')) {
 			$languages = apply_filters('wpml_active_languages', null, 'orderby=id&order=desc');
 
@@ -310,6 +313,14 @@ class Router extends WicketAcc
 					"index.php?post_type=wicket_acc,page&pagename=\$matches[1]&lang={$lang_code}",
 					'top'
 				);
+
+				foreach ($wc_endpoints as $key => $value) {
+					add_rewrite_rule(
+						"^{$lang_code}/{$acc_slug}/{$value}(/(.*))?/?$",
+						"index.php?post_type=wicket_acc,page&pagename={$acc_slug}&{$key}=\$matches[2]&lang={$lang_code}",
+						'top'
+					);
+				}
 			}
 		}
 
@@ -325,6 +336,14 @@ class Router extends WicketAcc
 			"index.php?post_type=wicket_acc,page&pagename=\$matches[1]",
 			'top'
 		);
+
+		foreach ($wc_endpoints as $key => $value) {
+			add_rewrite_rule(
+				"^{$default_acc_slug}/{$value}(/(.*))?/?$",
+				"index.php?post_type=wicket_acc,page&pagename={$default_acc_slug}&{$key}=\$matches[2]",
+				'top'
+			);
+		}
 	}
 
 	/**
@@ -639,5 +658,21 @@ class Router extends WicketAcc
 		}
 
 		return $url;
+	}
+
+	/**
+	 * Redirect WooCommerce endpoints to the ACC
+	 */
+	public function redirect_woocommerce_endpoints()
+	{
+		$acc_slug = $this->get_acc_slug();
+		$acc_slug_woo = $acc_slug . '-woo';
+		$current_url = $_SERVER['REQUEST_URI'];
+
+		if (strpos($current_url, $acc_slug_woo) !== false) {
+			$new_url = str_replace($acc_slug_woo, $acc_slug, $current_url);
+			wp_safe_redirect($new_url);
+			exit;
+		}
 	}
 }
