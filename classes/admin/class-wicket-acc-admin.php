@@ -24,6 +24,7 @@ class AdminSettings extends WicketAcc
 		add_action('admin_enqueue_scripts', [$this, 'acc_admin_assets']);
 		add_action('acf/options_page/save', [$this, 'acc_options_save'], 10, 2);
 		//add_filter('acf/load_field', [$this, 'acf_field_description_centre_spelling']);
+		add_action('admin_menu', [$this, 'admin_register_submenu_pages']);
 	}
 
 	/**
@@ -39,6 +40,9 @@ class AdminSettings extends WicketAcc
 		wp_enqueue_style('wicket-acc-admin', plugins_url('../assets/css/wicket-acc-admin.css', __FILE__), false, '1.0');
 	}
 
+	/**
+	 * Register options page for ACF
+	 */
 	public function admin_register_options_page()
 	{
 		// Check function exists.
@@ -50,9 +54,38 @@ class AdminSettings extends WicketAcc
 				'parent_slug' => 'edit.php?post_type=wicket_acc',
 				'capability'  => 'manage_options',
 				'menu_slug'   => 'wicket_acc_options',
-				'redirect'    => false
+				'redirect'    => false,
+				'position'    => 2
 			]);
 		}
+	}
+
+	/**
+	 * Register submenu pages for wicket_acc CPT
+	 */
+	public function admin_register_submenu_pages()
+	{
+		// Shortcut: Menu Editor
+		add_submenu_page(
+			'edit.php?post_type=wicket_acc',
+			'Menu Editor',
+			'Menu Editor',
+			'manage_options',
+			admin_url('nav-menus.php'),
+			null,
+			10
+		);
+
+		// Shortcut: WooCommerce Endpoints
+		add_submenu_page(
+			'edit.php?post_type=wicket_acc',
+			'WC Endpoints',
+			'WC Endpoints',
+			'manage_options',
+			admin_url('admin.php?page=wc-settings&tab=advanced'),
+			null,
+			11
+		);
 	}
 
 	/**

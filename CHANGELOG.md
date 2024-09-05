@@ -1,10 +1,11 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
-# 1.2.7 / 2024-09-04
+# 1.2.8 / 2024-09-04
 - Revamped the entire /account-centre/ rewrites from before, that were only hijacking parts of the WooCommerce my-account page. Now the new implementation does not interfere with WordPress rewrite rules. This was causing issues with 3rd party plugins, like WPML, that simply broke because they weren't able to determine the proper URL for a page.
 - Fixed WPML compatibility issues with ACC pages.
 - Added ACC pages into the default WordPress menu editor.
+- Added Shortcuts to the ACC Menu on the backend, for easy access to: Menu Editor, WooCommerce Endpoints. Can be extended with new shortcuts in the future.
 
 # 1.1.56 / 2024-09-02
 - Switch display Pending Approval Callout to swap out the Become A Member Callout and remove from Renewal Callout
