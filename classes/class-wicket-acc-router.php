@@ -36,10 +36,8 @@ class Router extends WicketAcc
 		add_filter('post_type_link', [$this, 'wicket_acc_remove_cpt_slug'], 10, 2);
 		add_action('parse_request', [$this, 'handle_acc_request'], 1);
 		add_filter('redirect_canonical', [$this, 'prevent_acc_redirect'], 10, 2);
-		add_action('init', [$this, 'register_acc_slug_for_translation'], 11);
-		add_action('template_redirect', [$this, 'maybe_redirect_trailing_slash'], 1);
-		add_action('template_redirect', [$this, 'redirect_duplicate_acc_slugs'], 1);
-		add_action('template_redirect', [$this, 'handle_404'], 99);
+		add_action('admin_init', [$this, 'register_acc_slug_for_translation'], 11);
+		add_action('template_redirect', [$this, 'handle_acc_url_redirects'], 1);
 		add_action('template_redirect', [$this, 'redirect_woocommerce_endpoints']);
 	}
 
@@ -323,6 +321,10 @@ class Router extends WicketAcc
 	 */
 	public function wicket_acc_custom_rewrite_rules()
 	{
+		if (is_admin()) {
+			return;
+		}
+
 		$wc_endpoints = WC()->query->get_query_vars();
 
 		if (defined('ICL_SITEPRESS_VERSION')) {
@@ -413,6 +415,10 @@ class Router extends WicketAcc
 	 */
 	public function redirect_myaccount_to_acc()
 	{
+		if (is_admin()) {
+			return;
+		}
+
 		// Check if we're on the WooCommerce My Account page
 		if (is_page(wc_get_page_id('myaccount'))) {
 			// Check if there's a WooCommerce endpoint in the URL
@@ -454,6 +460,10 @@ class Router extends WicketAcc
 	 */
 	public function handle_acc_request($wp)
 	{
+		if (is_admin()) {
+			return;
+		}
+
 		$request_uri = trim($wp->request, '/');
 		$path_parts = explode('/', $request_uri);
 
@@ -545,6 +555,10 @@ class Router extends WicketAcc
 	 */
 	public function prevent_acc_redirect($redirect_url, $requested_url)
 	{
+		if (is_admin()) {
+			return $redirect_url;
+		}
+
 		$acc_slug = $this->get_acc_slug();
 
 		if (str_contains($requested_url, $acc_slug)) {
@@ -567,6 +581,10 @@ class Router extends WicketAcc
 	 */
 	public function register_acc_slug_for_translation()
 	{
+		if (!is_admin()) {
+			return;
+		}
+
 		if (function_exists('wpml_register_single_string')) {
 			$acc_slug = $this->get_acc_slug();
 			wpml_register_single_string('WordPress', 'URL slug: wicket_acc', $acc_slug);
@@ -577,11 +595,9 @@ class Router extends WicketAcc
 	}
 
 	/**
-	 * Redirect to the page with a trailing slash
-	 *
-	 * @return void
+	 * Handle ACC URL redirects
 	 */
-	public function maybe_redirect_trailing_slash()
+	public function handle_acc_url_redirects()
 	{
 		if (is_admin() || wp_doing_ajax() || wp_is_json_request() || (defined('REST_REQUEST') && REST_REQUEST)) {
 			return;
@@ -593,13 +609,8 @@ class Router extends WicketAcc
 
 		$request_uri = $_SERVER['REQUEST_URI'];
 
-		// Ignore URLs with query parameters
-		if (strpos($request_uri, '?') !== false) {
-			return;
-		}
-
-		// Ignore URLs with file extensions
-		if (pathinfo($request_uri, PATHINFO_EXTENSION)) {
+		// Ignore URLs with query parameters or file extensions
+		if (strpos($request_uri, '?') !== false || pathinfo($request_uri, PATHINFO_EXTENSION)) {
 			return;
 		}
 
@@ -608,24 +619,7 @@ class Router extends WicketAcc
 			return;
 		}
 
-		if (substr($request_uri, -1) !== '/') {
-			$redirect_url = trailingslashit($request_uri);
-			wp_safe_redirect($redirect_url, 301);
-			exit;
-		}
-	}
-
-	/**
-	 * Redirect duplicate ACC slugs
-	 */
-	public function redirect_duplicate_acc_slugs()
-	{
-		$request_uri = $_SERVER['REQUEST_URI'];
 		$path_parts = explode('/', trim($request_uri, '/'));
-
-		if (count($path_parts) < 2) {
-			return;
-		}
 
 		$lang_code = '';
 		if (function_exists('wpml_get_active_languages_filter')) {
@@ -637,20 +631,17 @@ class Router extends WicketAcc
 
 		$acc_slug = $this->get_translated_acc_slug($lang_code);
 
-		if ($path_parts[0] === $acc_slug && isset($path_parts[1]) && $path_parts[1] === $acc_slug) {
+		// Handle trailing slash
+		if (substr($request_uri, -1) !== '/') {
+			wp_safe_redirect(trailingslashit($request_uri), 301);
+			exit;
+		}
+
+		// Handle duplicate ACC slugs
+		if (count($path_parts) >= 2 && $path_parts[0] === $acc_slug && $path_parts[1] === $acc_slug) {
 			$redirect_url = '/' . ($lang_code ? $lang_code . '/' : '') . $acc_slug . '/';
 			wp_safe_redirect($redirect_url, 301);
 			exit;
-		}
-	}
-
-	/**
-	 * Handle 404 errors
-	 */
-	public function handle_404()
-	{
-		if (is_404()) {
-			$this->handle_acc_request($GLOBALS['wp']);
 		}
 	}
 
@@ -707,6 +698,10 @@ class Router extends WicketAcc
 	 */
 	public function redirect_woocommerce_endpoints()
 	{
+		if (is_admin()) {
+			return;
+		}
+
 		$acc_slug = $this->get_acc_slug();
 		$acc_slug_woo = $acc_slug . '-woo';
 		$current_url = $_SERVER['REQUEST_URI'];
