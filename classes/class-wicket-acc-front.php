@@ -19,6 +19,8 @@ defined('ABSPATH') || exit;
  */
 class Front extends WicketAcc
 {
+	private $cached_endpoints = null;
+
 	/**
 	 * Constructor.
 	 */
@@ -61,23 +63,17 @@ class Front extends WicketAcc
 	/**
 	 * Get endpoints.
 	 */
-	public function get_endpoints()
+	private function get_endpoints()
 	{
-		$wicket_acc_custom_dashboard_id = get_option('wicket_acc_set_ep_custom_dashboard');
-
-		$args = [
-			'numberposts' => -1,
-			'post_type'   => 'wicket_acc',
-			'post_status' => 'publish',
-			'orderby'     => 'menu_order',
-			'order'       => 'ASC',
-			'suppress_filters' => false,
-			'post__not_in' => [$wicket_acc_custom_dashboard_id], /* exclude custom dashboard endpoint */
-		];
-
-		$wicket_acc_eps = get_posts($args);
-
-		return $wicket_acc_eps;
+		if ($this->cached_endpoints === null) {
+			$this->cached_endpoints = get_posts([
+				'post_type'      => 'wicket_acc',
+				'posts_per_page' => -1,
+				'orderby'        => 'menu_order',
+				'order'          => 'ASC',
+			]);
+		}
+		return $this->cached_endpoints;
 	}
 
 	/**
@@ -218,33 +214,27 @@ class Front extends WicketAcc
 	public function custom_my_account_menu_items($items)
 	{
 		$wicket_acc_endpoints = $this->get_endpoints();
-		$hide_ep_list         = get_option('wicket_acc_set_ep_hide_fld');
-		$curr_user            = wp_get_current_user();
-		$user_data            = get_user_meta($curr_user->ID);
-		$curr_user_role       = $curr_user->roles;
+		$hide_ep_list = get_option('wicket_acc_set_ep_hide_fld');
+		$curr_user = wp_get_current_user();
+		$curr_user_role = $curr_user->roles;
 
 		// Remove the logout menu item.
 		$logout = $items['customer-logout'];
-
 		unset($items['customer-logout']);
 
 		if (is_array($wicket_acc_endpoints)) {
+			$ep_ids = wp_list_pluck($wicket_acc_endpoints, 'ID');
+			$all_meta = get_post_meta($ep_ids);
 
 			foreach ($wicket_acc_endpoints as $wicket_endpoint) {
-				// Insert your custom endpoint.
-				$ep_id           = $wicket_endpoint->ID;
-				$wicket_slug     = get_post_meta(intval($ep_id), 'wicket_acc_slug_fld', true);
-				$wicket_acc_icon = get_post_meta(intval($ep_id), 'wicket_acc_icon_fld', true);
+				$ep_id = $wicket_endpoint->ID;
+				$meta = isset($all_meta[$ep_id]) ? $all_meta[$ep_id] : [];
 
-				if (!empty($wicket_acc_icon)) {
-					$wicket_acc_icon = '\\' . $wicket_acc_icon;
-				}
-
-				$wicket_acc_ep_type = get_post_meta(intval($ep_id), 'wicket_acc_endpType_fld', true);
-
-				$wicket_acc_user_role = get_post_meta(intval($ep_id), 'wicket_acc_user_role', true);
-
-				$wicket_acc_menu_title = get_post_meta(intval($ep_id), 'wicket_acc_menu_title', true);
+				$wicket_slug     = isset($meta['wicket_acc_slug_fld'][0]) ? $meta['wicket_acc_slug_fld'][0] : '';
+				$wicket_acc_icon = isset($meta['wicket_acc_icon_fld'][0]) ? '\\' . $meta['wicket_acc_icon_fld'][0] : '';
+				$wicket_acc_ep_type    = isset($meta['wicket_acc_endpType_fld'][0]) ? $meta['wicket_acc_endpType_fld'][0] : '';
+				$wicket_acc_user_role  = isset($meta['wicket_acc_user_role'][0]) ? maybe_unserialize($meta['wicket_acc_user_role'][0]) : [];
+				$wicket_acc_menu_title = isset($meta['wicket_acc_menu_title'][0]) ? $meta['wicket_acc_menu_title'][0] : $wicket_endpoint->post_title;
 
 				if (empty($wicket_acc_menu_title)) {
 					$wicket_acc_menu_title = $wicket_endpoint->post_title;
