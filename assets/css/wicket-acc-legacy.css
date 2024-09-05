@@ -3,6 +3,29 @@
  * Legacy styles. Don't add anything here.
  */
 
+.woocommerce {
+	.container {
+		display: flex;
+		justify-content: space-between;
+		flex-flow: row wrap;
+	}
+}
+
+/* MQ: breakpoint-mobile */
+@media all and (max-width: 1023px) {
+	.woocommerce {
+		.container {
+			flex-flow: column wrap;
+			max-width: 100%;
+
+			.woocommerce-MyAccount-content {
+				width: 100%;
+				padding: 0 var(--wicket-acc-padding-md);
+			}
+		}
+	}
+}
+
 .woocommerce-wicket--container {
 	width: 100%;
 	max-width: var(--wp--style--global--content-size);
@@ -14,10 +37,10 @@
 	flex-flow: row wrap;
 }
 
-.woocommerce-wicket--account-centre,
+/*.woocommerce-wicket--account-centre,
 .myaccount-nav {
 	width: 100%;
-}
+}*/
 
 @media all and (min-width: 1020px) {
 	.woocommerce-wicket--account-centre {
@@ -300,93 +323,6 @@ li ul {
 	}
 }
 
-.myaccount-nav-mobile {
-	background-color: #fff;
-	border-top: 1px solid #e0e0e0;
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	padding: 0;
-	z-index: 900;
-}
-
-#dropdown-my-account-menu {
-	padding: 0.5rem 0.5rem 1rem 0.5rem;
-}
-
-.myaccount-nav-mobile .dropdown__toggle--nav {
-	display: block;
-	position: relative;
-	color: #333;
-	text-transform: uppercase;
-	font-weight: 700;
-	padding-top: 1.65rem;
-	padding-bottom: 1.65rem;
-	padding-right: 0.5rem;
-	padding-left: 0.5rem;
-	border-top: 1px solid #ffffff;
-	text-decoration: none;
-}
-
-.myaccount-nav-mobile .dropdown__toggle--nav i {
-	position: absolute;
-	top: 1.85rem;
-	right: 10px;
-}
-
-.myaccount-nav-mobile .dropdown__toggle--nav.open i {
-	-webkit-transform: rotate(-45deg);
-	-moz-transform: rotate(-45deg);
-	-ms-transform: rotate(-45deg);
-	-o-transform: rotate(-45deg);
-	transform: rotate(-45deg);
-	color: #333;
-}
-
-.myaccount-nav-mobile .nav__contextual {
-	padding: 1.2rem 0.5rem;
-}
-
-.myaccount-nav-mobile .nav__contextual h2 {
-	display: none;
-}
-
-.myaccount-nav-mobile .nav__contextual ul>li:first-of-type {
-	border-top: 0 none;
-}
-
-.wicket_acc_sub_list {
-	display: none;
-	margin: -5px 0px 10px !important;
-	padding: 0;
-}
-
-.nav-selected {
-	background: whitesmoke;
-}
-
-.wicket_acc_sub_list li {
-	display: block !important;
-	margin: 0px 0px !important;
-	border-bottom: none !important;
-}
-
-ul.wicket_acc_sub_list li a {
-	padding: 3px 6px 3px 13px !important;
-}
-
-.woocommerce-MyAccount-content {
-	float: left !important;
-	width: calc(75% - 50px - 20px) !important;
-	padding: 0px 25px 0px !important;
-	margin: 0px 0px 0px 20px !important
-}
-
-.woocommerce {
-	display: block !important;
-	width: 100%;
-}
-
 .edit-link {
 	margin-left: 5px;
 }
@@ -415,44 +351,10 @@ ul.wicket_acc_sub_list li a {
 	display: none;
 }
 
-@media all and (max-width: 520px) {
-	.woocommerce-MyAccount-content {
-		float: none !important;
-		width: 100% !important;
-		padding: 10px !important;
-		display: block !important;
-	}
-}
-
 .cursor-auto {
 	cursor: auto;
 }
 
 .cursor-pointer {
 	cursor: pointer;
-}
-
-.wicketAcc-modal {
-	z-index: 10;
-
-	.backdrop {
-		background-color: rgba(0, 0, 0, 0.5);
-	}
-
-	.modalMain {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		cursor: auto;
-		z-index: 11;
-
-		.modalContent {
-			border-radius: 1rem;
-			padding: 1rem;
-
-			.close-modal {
-				cursor: pointer;
-			}
-		}
-	}
 }

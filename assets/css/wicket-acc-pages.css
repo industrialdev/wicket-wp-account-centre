@@ -1,6 +1,52 @@
-.wicket-acc-container {
-	/* <= 1280px Wicket ACC container */
-	@media all and (max-width: 1280px) {
-		padding: 0 var(--wicket-acc-padding-xs);
+.wicket_acc-template-default {
+	.wicket-acc-container {
+		display: flex;
+		justify-content: space-around;
+		max-width: var(--wicket-acc-container-width);
+		/*width: var(--wicket-acc-container-width);*/
+		margin: 0 auto;
+
+		.woocommerce-wicket--account-centre {
+			width: 70%;
+		}
+	}
+}
+
+.page-template-default {
+	.woocommerce-wicket--account-centre {
+		width: 100%;
+	}
+}
+
+@media all and (max-width: 1030px) {
+	.wicket_acc-template-default {
+		.wicket-acc-container {
+			display: block;
+			width: 100%;
+
+			.woocommerce-wicket--account-centre {
+				width: 100%;
+			}
+		}
+	}
+
+	.page-template-default {
+		.woocommerce-wicket--account-centre {
+			width: 100%;
+		}
+	}
+}
+
+@media all and (max-width: 1280px) {
+	.wicket_acc-template-default {
+		.wicket-acc-container {
+			padding: 0 var(--wicket-acc-padding-sm);
+		}
+	}
+
+	.page-template-default {
+		.woocommerce-wicket--account-centre {
+			padding: 0 var(--wicket-acc-padding-sm);
+		}
 	}
 }

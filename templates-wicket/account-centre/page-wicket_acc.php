@@ -15,6 +15,7 @@ get_header();
 $wrapper_classes     = [];
 $wrapper_classes[]   = 'wicket-acc-page wicket-acc-postid-' . get_the_ID();
 $wrapper_classes[]   = 'wicket-acc-container';
+$wrapper_classes[]   = 'woocommerce-wicket--container';
 
 $dev_wrapper_classes = get_field('page_wrapper_class');
 if (!empty($dev_wrapper_classes)) {
@@ -22,7 +23,7 @@ if (!empty($dev_wrapper_classes)) {
 }
 
 // ACC Options
-$acc_index_id        = get_field('acc_page_account-centre', 'option');
+$acc_index_id         = get_field('acc_page_account-centre', 'option');
 $acc_sidebar_location = get_field('acc_sidebar_location', 'option');
 
 if (empty($acc_sidebar_location)) {
@@ -45,14 +46,14 @@ if ($display_publish_date) {
 }
 ?>
 
-<div class="woocommerce-wicket--container <?php echo implode(' ', $wrapper_classes) ?>">
+<div class="<?php echo implode(' ', $wrapper_classes) ?>">
 	<?php
 	if ('left' === $acc_sidebar_location) {
 		do_action('woocommerce_account_navigation');
 	}
 	?>
 
-	<div class="woocommerce-wicket--account-centre">
+	<div class="woocommerce-wicket--account-centre wicket-acc-page-acc">
 		<?php the_content(); ?>
 	</div>
 

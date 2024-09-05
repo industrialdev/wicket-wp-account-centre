@@ -30,7 +30,7 @@ class Router extends WicketAcc
 	public function __construct()
 	{
 		// DEBUG ONLY
-		//flush_rewrite_rules(false);
+		//flush_rewrite_rules();
 
 		add_action('admin_init', [$this, 'init_all_pages']);
 		add_action('admin_init', [$this, 'maybe_create_main_acc_page']);
@@ -42,6 +42,7 @@ class Router extends WicketAcc
 		add_action('init', [$this, 'register_acc_slug_for_translation'], 11);
 		add_action('template_redirect', [$this, 'maybe_redirect_trailing_slash'], 1);
 		add_action('template_redirect', [$this, 'redirect_duplicate_acc_slugs'], 1);
+		add_action('template_redirect', [$this, 'handle_404'], 99);
 	}
 
 	/**
@@ -206,7 +207,7 @@ class Router extends WicketAcc
 
 		$page_id = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT ID FROM $wpdb->posts WHERE post_name = %s AND post_type = 'wicket_acc' AND post_status = 'publish'",
+				"SELECT ID FROM $wpdb->posts WHERE post_name = %s AND (post_type = 'wicket_acc' OR post_type = 'page') AND post_status = 'publish'",
 				$slug
 			)
 		);
@@ -304,12 +305,12 @@ class Router extends WicketAcc
 
 				add_rewrite_rule(
 					"^{$lang_code}/{$acc_slug}/?$",
-					"index.php?post_type=wicket_acc&pagename={$acc_slug}&lang={$lang_code}",
+					"index.php?post_type=wicket_acc,page&pagename={$acc_slug}&lang={$lang_code}",
 					'top'
 				);
 				add_rewrite_rule(
 					"^{$lang_code}/{$acc_slug}/([^/]+)/?$",
-					"index.php?post_type=wicket_acc&pagename=\$matches[1]&lang={$lang_code}",
+					"index.php?post_type=wicket_acc,page&pagename=\$matches[1]&lang={$lang_code}",
 					'top'
 				);
 			}
@@ -319,12 +320,12 @@ class Router extends WicketAcc
 		$default_acc_slug = $this->get_translated_acc_slug();
 		add_rewrite_rule(
 			"^{$default_acc_slug}/?$",
-			"index.php?post_type=wicket_acc&pagename={$default_acc_slug}",
+			"index.php?post_type=wicket_acc,page&pagename={$default_acc_slug}",
 			'top'
 		);
 		add_rewrite_rule(
 			"^{$default_acc_slug}/([^/]+)/?$",
-			"index.php?post_type=wicket_acc&pagename=\$matches[1]",
+			"index.php?post_type=wicket_acc,page&pagename=\$matches[1]",
 			'top'
 		);
 	}
@@ -370,6 +371,14 @@ class Router extends WicketAcc
 	{
 		// Check if we're on the WooCommerce My Account page
 		if (is_page(wc_get_page_id('myaccount'))) {
+			// Check if there's a WooCommerce endpoint in the URL
+			$current_endpoint = WC()->query->get_current_endpoint();
+
+			// Don't redirect if there's a WooCommerce endpoint
+			if ($current_endpoint) {
+				return;
+			}
+
 			// Construct the redirect URL
 			$redirect_url = $this->get_acc_url();
 
@@ -413,10 +422,37 @@ class Router extends WicketAcc
 		}
 
 		$acc_slug = $this->get_translated_acc_slug($lang_code);
+		$acc_slug_woo = $acc_slug . '-woo';
 
-		if (isset($path_parts[0]) && $path_parts[0] === $acc_slug) {
+		if (isset($path_parts[0]) && ($path_parts[0] === $acc_slug || $path_parts[0] === $acc_slug_woo)) {
 			$slug = isset($path_parts[1]) && $path_parts[1] !== '' ? $path_parts[1] : $acc_slug;
 
+			// Check WooCommerce endpoints first
+			$wc_endpoint = $this->get_woocommerce_endpoint($slug);
+			if ($wc_endpoint) {
+				$wp->query_vars['page'] = '';
+				$wp->query_vars['post_type'] = '';
+				$wp->query_vars[$wc_endpoint] = isset($path_parts[2]) ? $path_parts[2] : '';
+
+				// Set the endpoint for WooCommerce
+				if (method_exists(WC()->query, 'set_current_endpoint')) {
+					WC()->query->set_current_endpoint($wc_endpoint);
+				} else {
+					// Fallback: manually set the query var
+					set_query_var($wc_endpoint, isset($path_parts[2]) ? $path_parts[2] : '');
+				}
+
+				// Set the page_id to the WooCommerce My Account page
+				$wp->query_vars['page_id'] = wc_get_page_id('myaccount');
+
+				// Prevent further redirects
+				add_filter('redirect_canonical', '__return_false');
+				add_filter('woocommerce_get_endpoint_url', [$this, 'modify_wc_endpoint_url'], 10, 4);
+
+				return;
+			}
+
+			// If not a WooCommerce endpoint, proceed with the existing logic
 			$page_id = $this->get_page_id_by_slug($slug);
 
 			if (!$page_id && $slug === $acc_slug) {
@@ -428,15 +464,22 @@ class Router extends WicketAcc
 			}
 
 			if ($page_id) {
+				$post_type = get_post_type($page_id);
 				$wp->query_vars['page_id'] = $page_id;
-				$wp->query_vars['post_type'] = 'wicket_acc';
+				$wp->query_vars['post_type'] = $post_type;
 				$wp->query_vars['lang'] = $lang_code;
-
 				set_query_var('wicket_acc', $slug);
+				set_query_var('page_id', $page_id);
+
+				// Prevent further redirects
+				add_filter('redirect_canonical', '__return_false');
 
 				return;
 			}
 		}
+
+		// If we reach here, it means we couldn't find a matching page
+		// We'll let WordPress handle the 404 error
 	}
 
 	/**
@@ -445,10 +488,19 @@ class Router extends WicketAcc
 	public function prevent_acc_redirect($redirect_url, $requested_url)
 	{
 		$acc_slug = $this->get_acc_slug();
-		if (strpos($requested_url, "/$acc_slug") !== false) {
+
+		if (str_contains($requested_url, $acc_slug)) {
+			// Check if there's a WooCommerce endpoint in the URL
+			$current_endpoint = WC()->query->get_current_endpoint();
+
+			if ($current_endpoint) {
+				return false; // Prevent redirect for WooCommerce endpoints
+			}
+
 			// Allow WordPress to handle trailing slashes
 			return $redirect_url;
 		}
+
 		return $redirect_url;
 	}
 
@@ -532,5 +584,63 @@ class Router extends WicketAcc
 			wp_safe_redirect($redirect_url, 301);
 			exit;
 		}
+	}
+
+	/**
+	 * Handle 404 errors
+	 */
+	public function handle_404()
+	{
+		if (is_404()) {
+			$this->handle_acc_request($GLOBALS['wp']);
+		}
+	}
+
+	/**
+	 * Get WooCommerce endpoint
+	 *
+	 * @param string $endpoint
+	 * @return string|bool The query var key for the endpoint or false if not found
+	 */
+	private function get_woocommerce_endpoint($slug)
+	{
+		if (!function_exists('WC')) {
+			return false;
+		}
+
+		$wc_query = WC()->query;
+		if (!$wc_query) {
+			return false;
+		}
+
+		$query_vars = $wc_query->get_query_vars();
+		foreach ($query_vars as $key => $value) {
+			if ($value === $slug || $value === $slug . '-woo') {
+				return $key;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Modify WooCommerce endpoint URLs
+	 *
+	 * @param string $url The endpoint URL
+	 * @param string $endpoint The endpoint name
+	 * @param string $value The endpoint value
+	 * @param string $permalink The permalink
+	 * @return string The modified endpoint URL
+	 */
+	public function modify_wc_endpoint_url($url, $endpoint, $value, $permalink)
+	{
+		$acc_slug = $this->get_acc_slug();
+		$acc_slug_woo = $acc_slug . '-woo';
+
+		if (strpos($url, $acc_slug_woo) !== false) {
+			$url = str_replace($acc_slug_woo, $acc_slug, $url);
+		}
+
+		return $url;
 	}
 }

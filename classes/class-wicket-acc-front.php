@@ -85,7 +85,6 @@ class Front extends WicketAcc
 	 */
 	public function custom_endpoint_titles($title, $id)
 	{
-
 		$wicket_acc_endpoints = $this->get_endpoints();
 		if (is_array($wicket_acc_endpoints)) {
 			foreach ($wicket_acc_endpoints as $wicket_endpoint) {
@@ -400,6 +399,11 @@ class Front extends WicketAcc
 
 		// Check if we're on a single wicket_acc post or if the current request is for the account centre
 		if (is_singular('wicket_acc') || $this->is_acc_request()) {
+			// WooCommerce endpoint being loaded?
+			if (is_wc_endpoint_url()) {
+				return $single;
+			}
+
 			// Define the paths to your custom templates
 			$user_custom_template = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/page-wicket_acc.php';
 			$plugin_custom_template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/page-wicket_acc.php';

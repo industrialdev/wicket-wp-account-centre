@@ -38,7 +38,7 @@ if (empty($acc_sidebar_location)) {
 	}
 	?>
 
-	<div class="woocommerce-wicket--account-centre">
+	<div class="woocommerce-wicket--account-centre wicket-acc-my-account">
 		<?php
 		/**
 		 * My Account content.
