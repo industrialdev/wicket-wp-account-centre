@@ -25,13 +25,12 @@ if (!empty($dev_wrapper_classes)) {
 // ACC Options
 $acc_index_id         = get_field('acc_page_account-centre', 'option');
 $acc_sidebar_location = get_field('acc_sidebar_location', 'option');
+$display_breadcrumb   = false;
+$display_publish_date = false;
 
 if (empty($acc_sidebar_location)) {
 	$acc_sidebar_location = 'right';
 }
-
-$display_breadcrumb   = get_field('display_breadcrumb');
-$display_publish_date = get_field('display_publish_date');
 
 if ($display_breadcrumb) {
 	echo '<div class="wp-block-breadcrumbs">'; // Having the `wp-block-` prefix will help align it with the other Blocks
@@ -45,6 +44,18 @@ if ($display_publish_date) {
 	echo '</div>';
 }
 ?>
+
+<div class="alignfull wp-block-wicket-banner">
+	<?php get_component('banner', [
+		'title'            => 'Member Portal',
+		'intro'            => __('Welcome to the Member Portal. Here you can manage your account, view your membership details and more.', 'wicket-acc'),
+		'show_date'        => false,
+		'text_alignment'   => 'left',
+		'reversed'         => false,
+		'background_style' => 'reversed',
+		'classes'          => ['py-8', 'px-4', 'relative', 'bg-dark-100', 'text-white', 'bg-mode-reversed'],
+	]); ?>
+</div>
 
 <div class="<?php echo implode(' ', $wrapper_classes) ?>">
 	<?php
