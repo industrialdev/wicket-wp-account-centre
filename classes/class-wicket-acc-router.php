@@ -35,9 +35,9 @@ class Router extends WicketAcc
 
 		add_action('admin_init', [$this, 'init_all_pages']);
 		add_action('admin_init', [$this, 'maybe_create_main_acc_page']);
-		add_action('init', [$this, 'wicket_acc_custom_rewrite_rules'], 10, 0);
+		add_action('init', [$this, 'acc_custom_rewrite_rules'], 10, 0);
 		add_action('template_redirect', [$this, 'redirect_myaccount_to_acc']);
-		add_filter('post_type_link', [$this, 'wicket_acc_remove_cpt_slug'], 10, 2);
+		add_filter('post_type_link', [$this, 'acc_remove_cpt_slug'], 10, 2);
 		add_action('parse_request', [$this, 'handle_acc_request'], 1);
 		add_filter('redirect_canonical', [$this, 'prevent_acc_redirect'], 10, 2);
 		add_action('admin_init', [$this, 'register_acc_slug_for_translation'], 11);
@@ -210,7 +210,7 @@ class Router extends WicketAcc
 
 		$page_id = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT ID FROM $wpdb->posts WHERE post_name = %s AND (post_type = 'wicket_acc' OR post_type = 'page') AND post_status = 'publish'",
+				"SELECT ID FROM $wpdb->posts WHERE post_name = %s AND (post_type = 'wicket_acc') AND post_status = 'publish'",
 				$slug
 			)
 		);
@@ -326,7 +326,7 @@ class Router extends WicketAcc
 	 *
 	 * @return void
 	 */
-	public function wicket_acc_custom_rewrite_rules()
+	public function acc_custom_rewrite_rules()
 	{
 		if (is_admin()) {
 			return;
@@ -342,19 +342,19 @@ class Router extends WicketAcc
 
 				add_rewrite_rule(
 					"^{$lang_code}/{$acc_slug}/?$",
-					"index.php?post_type=wicket_acc,page&pagename={$acc_slug}&lang={$lang_code}",
+					"index.php?post_type=wicket_acc&pagename={$acc_slug}&lang={$lang_code}",
 					'top'
 				);
 				add_rewrite_rule(
 					"^{$lang_code}/{$acc_slug}/([^/]+)/?$",
-					"index.php?post_type=wicket_acc,page&pagename=\$matches[1]&lang={$lang_code}",
+					"index.php?post_type=wicket_acc&pagename=\$matches[1]&lang={$lang_code}",
 					'top'
 				);
 
 				foreach ($wc_endpoints as $key => $value) {
 					add_rewrite_rule(
 						"^{$lang_code}/{$acc_slug}/{$value}(/(.*))?/?$",
-						"index.php?post_type=wicket_acc,page&pagename={$acc_slug}&{$key}=\$matches[2]&lang={$lang_code}",
+						"index.php?post_type=wicket_acc&pagename={$acc_slug}&{$key}=\$matches[2]&lang={$lang_code}",
 						'top'
 					);
 				}
@@ -365,19 +365,19 @@ class Router extends WicketAcc
 		$default_acc_slug = $this->get_translated_acc_slug();
 		add_rewrite_rule(
 			"^{$default_acc_slug}/?$",
-			"index.php?post_type=wicket_acc,page&pagename={$default_acc_slug}",
+			"index.php?post_type=wicket_acc&pagename={$default_acc_slug}",
 			'top'
 		);
 		add_rewrite_rule(
 			"^{$default_acc_slug}/([^/]+)/?$",
-			"index.php?post_type=wicket_acc,page&pagename=\$matches[1]",
+			"index.php?post_type=wicket_acc&pagename=\$matches[1]",
 			'top'
 		);
 
 		foreach ($wc_endpoints as $key => $value) {
 			add_rewrite_rule(
 				"^{$default_acc_slug}/{$value}(/(.*))?/?$",
-				"index.php?post_type=wicket_acc,page&pagename={$default_acc_slug}&{$key}=\$matches[2]",
+				"index.php?post_type=wicket_acc&pagename={$default_acc_slug}&{$key}=\$matches[2]",
 				'top'
 			);
 		}
@@ -452,7 +452,7 @@ class Router extends WicketAcc
 	 * @param WP_Post $post The post object
 	 * @return string The modified permalink
 	 */
-	public function wicket_acc_remove_cpt_slug($post_link, $post)
+	public function acc_remove_cpt_slug($post_link, $post)
 	{
 		if ('wicket_acc' === $post->post_type && 'publish' === $post->post_status) {
 			$language = apply_filters('wpml_current_language', null);
