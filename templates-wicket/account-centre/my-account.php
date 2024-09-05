@@ -31,6 +31,18 @@ if (empty($acc_sidebar_location)) {
 }
 ?>
 
+<div class="alignfull wp-block-wicket-banner">
+	<?php get_component('banner', [
+		'title'            => 'Member Portal',
+		'intro'            => __('Welcome to the Member Portal. Here you can manage your account, view your membership details and more.', 'wicket-acc'),
+		'show_date'        => false,
+		'text_alignment'   => 'left',
+		'reversed'         => false,
+		'background_style' => 'reversed',
+		'classes'          => ['py-8', 'px-4', 'relative', 'bg-dark-100', 'text-white', 'bg-mode-reversed'],
+	]); ?>
+</div>
+
 <div class="woocommerce-wicket--container wicket-acc-container">
 	<?php
 	if ('left' === $acc_sidebar_location) {

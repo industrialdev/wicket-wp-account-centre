@@ -267,6 +267,34 @@ class Router extends WicketAcc
 				// Flush rewrite rules
 				flush_rewrite_rules();
 			}
+
+			// Do we have translations for this page?
+			if (function_exists('wpml_get_active_languages_filter')) {
+				global $wpdb;
+
+				$languages = apply_filters('wpml_active_languages', null, 'skip_missing=0&orderby=code');
+				$translation_found = false;
+				foreach ($languages as $language) {
+					$language_code = $language['code'];
+
+					if ($language_code !== $wpdb->get_var("SELECT language_code FROM {$wpdb->prefix}icl_translations WHERE element_id = $woo_my_account_page_id AND element_type = 'post_page'")) {
+						$translated_page_id = apply_filters('wpml_object_id', $woo_my_account_page_id, 'page', false, $language_code);
+
+						if ($translated_page_id) {
+							$wpdb->update($wpdb->posts, ['post_name' => $set_slug . '-woo'], ['ID' => $translated_page_id]);
+
+							delete_post_meta($translated_page_id, '_wp_old_slug');
+
+							$translation_found = true;
+						}
+					}
+				}
+
+				// Flush rewrite rules
+				if ($translation_found) {
+					flush_rewrite_rules();
+				}
+			}
 		}
 
 		// Query wicket_acc CPT an check if get already have one with set_slug
@@ -443,7 +471,7 @@ class Router extends WicketAcc
 		if (isset($path_parts[0]) && ($path_parts[0] === $acc_slug || $path_parts[0] === $acc_slug_woo)) {
 			$slug = isset($path_parts[1]) && $path_parts[1] !== '' ? $path_parts[1] : $acc_slug;
 
-			// Check WooCommerce endpoints first
+			// Check WooCommerce endpoints
 			$wc_endpoint = $this->get_woocommerce_endpoint($slug);
 			if ($wc_endpoint) {
 				$wp->query_vars['page'] = '';
@@ -468,7 +496,7 @@ class Router extends WicketAcc
 				return;
 			}
 
-			// If not a WooCommerce endpoint, proceed with the existing logic
+			// Check for pages at wicket_acc or page post type
 			$page_id = $this->get_page_id_by_slug($slug);
 
 			if (!$page_id && $slug === $acc_slug) {
@@ -480,7 +508,21 @@ class Router extends WicketAcc
 			}
 
 			if ($page_id) {
-				$post_type = get_post_type($page_id);
+				// First, try to get a wicket_acc post type
+				$wicket_acc_post = get_posts([
+					'name' => $slug,
+					'post_type' => 'wicket_acc',
+					'post_status' => 'publish',
+					'numberposts' => 1
+				]);
+
+				if (!empty($wicket_acc_post)) {
+					$page_id = $wicket_acc_post[0]->ID;
+					$post_type = 'wicket_acc';
+				} else {
+					$post_type = get_post_type($page_id);
+				}
+
 				$wp->query_vars['page_id'] = $page_id;
 				$wp->query_vars['post_type'] = $post_type;
 				$wp->query_vars['lang'] = $lang_code;
