@@ -17,9 +17,6 @@ class Router extends WicketAcc
 		'events'                         => 'My Events',
 		'jobs'                           => 'My Jobs',
 		'job-post'                       => 'Post a Job',
-		'payments-settings'              => 'Payments Settings',
-		'membership-history'             => 'Membership History',
-		'purchase-history'               => 'Purchase History',
 		'change-password'                => 'Change Password',
 		'organization-management'        => 'Organization Management',
 	];
