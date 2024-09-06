@@ -25,6 +25,8 @@ class AdminSettings extends WicketAcc
 		add_action('acf/options_page/save', [$this, 'acc_options_save'], 10, 2);
 		//add_filter('acf/load_field', [$this, 'acf_field_description_centre_spelling']);
 		add_action('admin_menu', [$this, 'admin_register_submenu_pages']);
+		add_action('pre_get_posts', [$this, 'filter_acc_posts']);
+		add_filter('wp_count_posts', [$this, 'adjust_post_counts'], 10, 3);
 	}
 
 	/**
@@ -65,15 +67,34 @@ class AdminSettings extends WicketAcc
 	 */
 	public function admin_register_submenu_pages()
 	{
+		// Shortcut: global banner page
+		if (get_field('acc_global_banner', 'option') === true) {
+			$global_banner_page = get_page_by_path('acc_global-banner', OBJECT, 'wicket_acc');
+
+			if ($global_banner_page) {
+				$edit_link = get_edit_post_link($global_banner_page->ID);
+
+				add_submenu_page(
+					'edit.php?post_type=wicket_acc',
+					'Global Banner',
+					'Global Banner',
+					'manage_options',
+					$edit_link,
+					null,
+					10
+				);
+			}
+		}
+
 		// Shortcut: Menu Editor
 		add_submenu_page(
 			'edit.php?post_type=wicket_acc',
 			'Menu Editor',
-			'Menu Editor',
+				'Menu Editor',
 			'manage_options',
 			admin_url('nav-menus.php'),
 			null,
-			10
+			11
 		);
 
 		// Shortcut: WooCommerce Endpoints
@@ -84,7 +105,7 @@ class AdminSettings extends WicketAcc
 			'manage_options',
 			admin_url('admin.php?page=wc-settings&tab=advanced'),
 			null,
-			11
+			12
 		);
 	}
 
@@ -144,5 +165,47 @@ class AdminSettings extends WicketAcc
 		}
 
 		return $field;
+	}
+
+	public function filter_acc_posts($query)
+	{
+		global $pagenow, $post_type;
+
+		if (is_admin() && $pagenow == 'edit.php' && $post_type == 'wicket_acc' && !isset($_GET['post_status'])) {
+			$acc_slugs = $this->get_acc_slugs();
+			$query->set('post__not_in', $acc_slugs);
+		}
+	}
+
+	private function get_acc_slugs()
+	{
+		global $wpdb;
+		return $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT ID FROM $wpdb->posts WHERE post_type = %s AND post_name LIKE %s",
+				'wicket_acc',
+				'acc_%'
+			)
+		);
+	}
+
+	public function adjust_post_counts($counts, $type, $perm)
+	{
+		if ($type !== 'wicket_acc' || !is_admin()) {
+			return $counts;
+		}
+
+		global $wpdb;
+		$acc_slugs = $this->get_acc_slugs();
+
+		foreach ($counts as $status => $count) {
+			$adjusted_count = $wpdb->get_var($wpdb->prepare(
+				"SELECT COUNT(*) FROM $wpdb->posts WHERE post_type = %s AND post_status = %s AND ID NOT IN (" . implode(',', array_fill(0, count($acc_slugs), '%d')) . ")",
+				array_merge([$type, $status], $acc_slugs)
+			));
+			$counts->$status = $adjusted_count;
+		}
+
+		return $counts;
 	}
 }

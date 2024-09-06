@@ -22,6 +22,27 @@
             "selected": 0
         },
         {
+            "key": "field_66db6162c29a1",
+            "label": "Global header-banner on ACC pages",
+            "name": "acc_global_banner",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 1,
+            "message": "",
+            "default_value": 1,
+            "ui_on_text": "",
+            "ui_off_text": "",
+            "ui": 1
+        },
+        {
             "key": "field_66a99ae11a2ff",
             "label": "Sidebar location",
             "name": "acc_sidebar_location",
@@ -599,5 +620,5 @@
     "description": "Main options for ACC plugin",
     "show_in_rest": 0,
     "acfml_field_group_mode": "translation",
-    "modified": 1725647606
+    "modified": 1725653597
 }

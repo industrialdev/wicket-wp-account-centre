@@ -53,8 +53,18 @@ if (!empty($acc_spelling)) {
 }
 ?>
 
-<div class="alignfull wp-block-wicket-banner">
-	<?php
+<?php
+// Check if we have a global banner page
+$global_banner_page_id = WACC()->get_global_banner_page_id();
+if ($global_banner_page_id) {
+	$global_banner_page = get_post($global_banner_page_id);
+	if ($global_banner_page) {
+		echo apply_filters('the_content', $global_banner_page->post_content);
+	}
+} else {
+?>
+	<div class="alignfull wp-block-wicket-banner">
+		<?php
 
 	get_component('banner', [
 		'title'            => sprintf(__('%s', 'wicket-acc'), $acc_spelling),
@@ -66,6 +76,7 @@ if (!empty($acc_spelling)) {
 		'classes'          => ['py-8', 'px-4', 'relative', 'bg-dark-100', 'text-white', 'bg-mode-reversed'],
 	]); ?>
 </div>
+<?php } ?>
 
 <div class="<?php echo implode(' ', $wrapper_classes) ?>">
 	<?php

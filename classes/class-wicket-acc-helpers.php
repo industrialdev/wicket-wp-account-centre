@@ -107,4 +107,17 @@ class Helpers extends WicketAcc
 
 		return $lang;
 	}
+
+	/**
+	 * Get global banner page ID
+	 * from slug: acc_global-banner
+	 * CPT: wicket_acc
+	 *
+	 * @return int
+	 */
+	public function get_global_banner_page_id()
+	{
+		$page = get_page_by_path('acc_global-banner', OBJECT, 'wicket_acc');
+		return $page->ID;
+	}
 }
