@@ -1,6 +1,9 @@
 <?php
 
 // No direct access
+
+use WicketAcc\MethodRouter;
+
 defined('ABSPATH') || exit;
 
 /**
