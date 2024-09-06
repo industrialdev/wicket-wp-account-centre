@@ -26,6 +26,7 @@ if (!empty($dev_wrapper_classes)) {
 // ACC Options
 $acc_index_id         = get_field('acc_page_account-centre', 'option');
 $acc_sidebar_location = get_field('acc_sidebar_location', 'option');
+$acc_spelling         = get_field('acc_localization', 'option');
 $display_breadcrumb   = false;
 $display_publish_date = false;
 
@@ -44,12 +45,20 @@ if ($display_publish_date) {
 	echo "<p class='mt-3 mb-4'><strong>" . __('Published:', 'wicket') . ' ' . get_the_date('d-m-Y') . "</strong></p>";
 	echo '</div>';
 }
+
+if (!empty($acc_spelling)) {
+	$acc_spelling = $acc_spelling['label'];
+} else {
+	$acc_spelling = __('Account Centre', 'wicket-acc');
+}
 ?>
 
 <div class="alignfull wp-block-wicket-banner">
-	<?php get_component('banner', [
-		'title'            => __('Account Centre', 'wicket-acc'),
-		'intro'            => __('Welcome to the Member Portal. Here you can manage your account, view your membership details and more.', 'wicket-acc'),
+	<?php
+
+	get_component('banner', [
+		'title'            => sprintf(__('%s', 'wicket-acc'), $acc_spelling),
+		'intro'            => sprintf(__('Welcome to the %s. Here you can manage your account, view your membership details and more.', 'wicket-acc'), $acc_spelling),
 		'show_date'        => false,
 		'text_alignment'   => 'left',
 		'reversed'         => false,
@@ -83,14 +92,18 @@ if ($display_publish_date) {
 			if ($endpoint) {
 				// Get a wicket_acc page from ACC Option
 				$acc_page_id     = get_field('acc_page_' . $endpoint, 'option');
-				$wicket_acc_page = get_post($acc_page_id);
+				if ($acc_page_id) {
+					// Do we have a translated page for this ID?
+					$translated_page_id = apply_filters('wpml_object_id', $acc_page_id, 'wicket_acc', false, 'en');
+					if ($translated_page_id) {
+						$acc_page_id = $translated_page_id;
+					}
 
-				if (!$acc_page_id) {
-					$wicket_acc_page = get_page_by_path($endpoint, OBJECT, 'wicket_acc');
-				}
+					$wicket_acc_page = get_post($acc_page_id);
 
-				if ($wicket_acc_page) {
-					echo apply_filters('the_content', $wicket_acc_page->post_content);
+					if ($wicket_acc_page) {
+						echo apply_filters('the_content', $wicket_acc_page->post_content);
+					}
 				}
 
 				do_action("woocommerce_account_{$endpoint}_endpoint");
