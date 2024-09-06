@@ -1,3 +1,9 @@
+.wicket-acc {
+	.wp-block-wicket-banner {
+		max-width: 100% !important;
+	}
+}
+
 .wicket_acc-template-default {
 	.wicket-acc-container {
 		display: flex;
