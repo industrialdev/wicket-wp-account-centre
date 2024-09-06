@@ -12,15 +12,6 @@ defined('ABSPATH') || exit;
  */
 class Router extends WicketAcc
 {
-	private array $acc_pages_map = [
-		'edit-profile'                   => 'Edit Profile',
-		'events'                         => 'My Events',
-		'jobs'                           => 'My Jobs',
-		'job-post'                       => 'Post a Job',
-		'change-password'                => 'Change Password',
-		'organization-management'        => 'Organization Management',
-	];
-
 	private $acc_page_id_cache = null;
 	private $acc_slug_cache    = null;
 	private $acc_url_cache     = null;
@@ -30,19 +21,16 @@ class Router extends WicketAcc
 	 */
 	public function __construct()
 	{
-		// DEBUG ONLY
-		//flush_rewrite_rules();
+		// DEBUG ONLY, check environment
+		if (defined('WP_ENV') && WP_ENV === 'development') {
+			flush_rewrite_rules();
+		}
 
 		add_action('admin_init', [$this, 'init_all_pages']);
-		add_action('admin_init', [$this, 'maybe_create_main_acc_page']);
 		add_action('init', [$this, 'acc_custom_rewrite_rules'], 10, 0);
-		add_action('template_redirect', [$this, 'redirect_myaccount_to_acc']);
 		add_filter('post_type_link', [$this, 'acc_remove_cpt_slug'], 10, 2);
 		add_action('parse_request', [$this, 'handle_acc_request'], 1);
-		add_filter('redirect_canonical', [$this, 'prevent_acc_redirect'], 10, 2);
-		add_action('admin_init', [$this, 'register_acc_slug_for_translation'], 11);
-		add_action('template_redirect', [$this, 'handle_acc_url_redirects'], 1);
-		add_action('template_redirect', [$this, 'redirect_woocommerce_endpoints']);
+		add_filter('wpml_ls_language_url', [$this, 'fix_wpml_language_switcher_url'], 10, 2);
 	}
 
 	/**
@@ -100,7 +88,6 @@ class Router extends WicketAcc
 		// Let's ensure our setting option doesn't have a page defined yet
 		if (get_field('acc_page_' . $slug, 'option')) {
 			$page_id = $this->get_page_id_by_slug($slug);
-			$this->set_post_type($page_id);
 
 			return $this->get_page_id_by_slug($slug);
 		}
@@ -108,7 +95,6 @@ class Router extends WicketAcc
 		$page_id = $this->get_page_id_by_slug($slug);
 
 		if ($page_id) {
-			$this->set_post_type($page_id);
 			update_field('acc_page_' . $slug, $page_id, 'option');
 
 			return $page_id;
@@ -171,33 +157,6 @@ class Router extends WicketAcc
 	}
 
 	/**
-	 * Set post_type of post/page to 'wicket_acc'
-	 *
-	 * @param string $post_id Post ID
-	 *
-	 * @return bool
-	 */
-	public function set_post_type($post_id)
-	{
-		$post_type = get_post_type($post_id);
-
-		if ($post_type == 'page' || $post_type == 'post') {
-			// Set post type to 'wicket_acc'
-			wp_update_post(
-				[
-					'ID'          => $post_id,
-					'post_type'   => 'wicket_acc',
-					'post_status' => 'publish',
-				]
-			);
-
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
 	 * Get ACC page ID by slug
 	 *
 	 * @param string $slug
@@ -235,6 +194,8 @@ class Router extends WicketAcc
 		foreach ($this->acc_pages_map as $slug => $name) {
 			$this->create_page($slug, $name);
 		}
+
+		$this->maybe_create_main_acc_page();
 	}
 
 	/**
@@ -259,20 +220,6 @@ class Router extends WicketAcc
 			// Get page slug
 			$woo_my_account_page_slug = get_post($woo_my_account_page_id)->post_name;
 
-			// Check if slug don't end with '-woo'
-			if (!str_ends_with($woo_my_account_page_slug, '-woo')) {
-				global $wpdb;
-
-				// SQL query to rename page slug to {slug}-woo. We want to avoid WP triggering a redirect to the new slug.
-				$wpdb->update($wpdb->posts, ['post_name' => $set_slug . '-woo'], ['ID' => $woo_my_account_page_id]);
-
-				// Delete meta _wp_old_slug
-				delete_post_meta($woo_my_account_page_id, '_wp_old_slug');
-
-				// Flush rewrite rules
-				flush_rewrite_rules();
-			}
-
 			// Do we have translations for this page?
 			if (function_exists('wpml_get_active_languages_filter')) {
 				global $wpdb;
@@ -286,7 +233,7 @@ class Router extends WicketAcc
 						$translated_page_id = apply_filters('wpml_object_id', $woo_my_account_page_id, 'page', false, $language_code);
 
 						if ($translated_page_id) {
-							$wpdb->update($wpdb->posts, ['post_name' => $set_slug . '-woo'], ['ID' => $translated_page_id]);
+							$wpdb->update($wpdb->posts, ['post_name' => $set_slug], ['ID' => $translated_page_id]);
 
 							delete_post_meta($translated_page_id, '_wp_old_slug');
 
@@ -333,54 +280,58 @@ class Router extends WicketAcc
 		}
 
 		$wc_endpoints = WC()->query->get_query_vars();
-
-		if (defined('ICL_SITEPRESS_VERSION')) {
-			$languages = apply_filters('wpml_active_languages', null, 'orderby=id&order=desc');
-
-			foreach ($languages as $lang_code => $language) {
-				$acc_slug = $this->get_translated_acc_slug($lang_code);
-
-				add_rewrite_rule(
-					"^{$lang_code}/{$acc_slug}/?$",
-					"index.php?post_type=wicket_acc&pagename={$acc_slug}&lang={$lang_code}",
-					'top'
-				);
-				add_rewrite_rule(
-					"^{$lang_code}/{$acc_slug}/([^/]+)/?$",
-					"index.php?post_type=wicket_acc&pagename=\$matches[1]&lang={$lang_code}",
-					'top'
-				);
-
-				foreach ($wc_endpoints as $key => $value) {
-					add_rewrite_rule(
-						"^{$lang_code}/{$acc_slug}/{$value}(/(.*))?/?$",
-						"index.php?post_type=wicket_acc&pagename={$acc_slug}&{$key}=\$matches[2]&lang={$lang_code}",
-						'top'
-					);
-				}
-			}
-		}
-
-		// Add rules for the default language or when WPML is not active
 		$default_acc_slug = $this->get_translated_acc_slug();
-		add_rewrite_rule(
-			"^{$default_acc_slug}/?$",
-			"index.php?post_type=wicket_acc&pagename={$default_acc_slug}",
-			'top'
-		);
-		add_rewrite_rule(
-			"^{$default_acc_slug}/([^/]+)/?$",
-			"index.php?post_type=wicket_acc&pagename=\$matches[1]",
-			'top'
-		);
 
-		foreach ($wc_endpoints as $key => $value) {
+		// Get all wicket_acc posts
+		$wicket_acc_posts = get_posts([
+			'post_type' => 'wicket_acc',
+			'post_status' => 'publish',
+			'numberposts' => -1,
+		]);
+
+		$add_rules = function ($lang_code = '') use ($wc_endpoints, $default_acc_slug, $wicket_acc_posts) {
+			$acc_slug = $lang_code ? $this->get_translated_acc_slug($lang_code) : $default_acc_slug;
+			$lang_prefix = $lang_code ? $lang_code . '/' : '';
+
+			// Add rule for the main account page
 			add_rewrite_rule(
-				"^{$default_acc_slug}/{$value}(/(.*))?/?$",
-				"index.php?post_type=wicket_acc&pagename={$default_acc_slug}&{$key}=\$matches[2]",
+				"^{$lang_prefix}{$acc_slug}/?$",
+				"index.php?post_type=wicket_acc&pagename={$acc_slug}" . ($lang_code ? "&lang={$lang_code}" : ""),
 				'top'
 			);
+
+			// Add rules for each wicket_acc post
+			foreach ($wicket_acc_posts as $post) {
+				$post_slug = $post->post_name;
+				add_rewrite_rule(
+					"^{$lang_prefix}{$acc_slug}/{$post_slug}/?$",
+					"index.php?post_type=wicket_acc&pagename={$post_slug}" . ($lang_code ? "&lang={$lang_code}" : ""),
+					'top'
+				);
+
+				// Register each wicket_acc post slug as a WooCommerce endpoint
+				add_rewrite_endpoint($post_slug, EP_ROOT | EP_PAGES);
+			}
+
+			// Add rules for WooCommerce endpoints
+			foreach ($wc_endpoints as $key => $value) {
+				add_rewrite_rule(
+					"^{$lang_prefix}{$acc_slug}/{$value}(/(.*))?/?$",
+					"index.php?post_type=wicket_acc&pagename={$acc_slug}&{$key}=\$matches[2]" . ($lang_code ? "&lang={$lang_code}" : ""),
+					'top'
+				);
+			}
+		};
+
+		if (defined('ICL_SITEPRESS_VERSION')) {
+			$current_language = apply_filters('wpml_current_language', null);
+			$add_rules($current_language);
+		} else {
+			$add_rules();
 		}
+
+		// Flush rewrite rules to ensure new endpoints are registered
+		flush_rewrite_rules();
 	}
 
 	/**
@@ -418,34 +369,6 @@ class Router extends WicketAcc
 	}
 
 	/**
-	 * Redirect WooCommerce My Account page to Wicket Account Centre
-	 */
-	public function redirect_myaccount_to_acc()
-	{
-		if (is_admin()) {
-			return;
-		}
-
-		// Check if we're on the WooCommerce My Account page
-		if (is_page(wc_get_page_id('myaccount'))) {
-			// Check if there's a WooCommerce endpoint in the URL
-			$current_endpoint = WC()->query->get_current_endpoint();
-
-			// Don't redirect if there's a WooCommerce endpoint
-			if ($current_endpoint) {
-				return;
-			}
-
-			// Construct the redirect URL
-			$redirect_url = $this->get_acc_url();
-
-			// Perform the redirect
-			wp_safe_redirect($redirect_url);
-			exit;
-		}
-	}
-
-	/**
 	 * Remove CPT slug from permalink
 	 *
 	 * @param string $post_link The permalink of the post
@@ -464,6 +387,10 @@ class Router extends WicketAcc
 
 	/**
 	 * Handle ACC request
+	 *
+	 * @param WP $wp
+	 *
+	 * @return void
 	 */
 	public function handle_acc_request($wp)
 	{
@@ -483,9 +410,8 @@ class Router extends WicketAcc
 		}
 
 		$acc_slug = $this->get_translated_acc_slug($lang_code);
-		$acc_slug_woo = $acc_slug . '-woo';
 
-		if (isset($path_parts[0]) && ($path_parts[0] === $acc_slug || $path_parts[0] === $acc_slug_woo)) {
+		if (isset($path_parts[0]) && $path_parts[0] === $acc_slug) {
 			$slug = isset($path_parts[1]) && $path_parts[1] !== '' ? $path_parts[1] : $acc_slug;
 
 			// Check WooCommerce endpoints
@@ -505,6 +431,18 @@ class Router extends WicketAcc
 
 				// Set the page_id to the WooCommerce My Account page
 				$wp->query_vars['page_id'] = wc_get_page_id('myaccount');
+
+				// Use our custom template
+				$template = $this->get_wicket_acc_template();
+				if ($template) {
+					add_filter('template_include', function () use ($template) {
+						return $template;
+					});
+				}
+
+				// Replace WooCommerce account navigation with custom sidebar
+				remove_action('woocommerce_account_navigation', 'woocommerce_account_navigation', 10);
+				add_action('woocommerce_account_navigation', [$this, 'acc_navigation'], 10);
 
 				// Prevent further redirects
 				add_filter('redirect_canonical', '__return_false');
@@ -536,6 +474,15 @@ class Router extends WicketAcc
 				if (!empty($wicket_acc_post)) {
 					$page_id = $wicket_acc_post[0]->ID;
 					$post_type = 'wicket_acc';
+
+					// Check for custom template
+					$template = $this->get_wicket_acc_template();
+					if ($template) {
+						// Use the custom template
+						add_filter('template_include', function () use ($template) {
+							return $template;
+						});
+					}
 				} else {
 					$post_type = get_post_type($page_id);
 				}
@@ -546,6 +493,10 @@ class Router extends WicketAcc
 				set_query_var('wicket_acc', $slug);
 				set_query_var('page_id', $page_id);
 
+				// Replace WooCommerce account navigation with custom sidebar
+				remove_action('woocommerce_account_navigation', 'woocommerce_account_navigation', 10);
+				add_action('woocommerce_account_navigation', [$this, 'acc_navigation'], 10);
+
 				// Prevent further redirects
 				add_filter('redirect_canonical', '__return_false');
 
@@ -555,102 +506,6 @@ class Router extends WicketAcc
 
 		// If we reach here, it means we couldn't find a matching page
 		// We'll let WordPress handle the 404 error
-	}
-
-	/**
-	 * Prevent default WordPress redirect for ACC pages
-	 */
-	public function prevent_acc_redirect($redirect_url, $requested_url)
-	{
-		if (is_admin()) {
-			return $redirect_url;
-		}
-
-		$acc_slug = $this->get_acc_slug();
-
-		if (str_contains($requested_url, $acc_slug)) {
-			// Check if there's a WooCommerce endpoint in the URL
-			$current_endpoint = WC()->query->get_current_endpoint();
-
-			if ($current_endpoint) {
-				return false; // Prevent redirect for WooCommerce endpoints
-			}
-
-			// Allow WordPress to handle trailing slashes
-			return $redirect_url;
-		}
-
-		return $redirect_url;
-	}
-
-	/**
-	 * Register 'wicket_acc' slug for translation
-	 */
-	public function register_acc_slug_for_translation()
-	{
-		if (!is_admin()) {
-			return;
-		}
-
-		if (function_exists('wpml_register_single_string')) {
-			$acc_slug = $this->get_acc_slug();
-			wpml_register_single_string('WordPress', 'URL slug: wicket_acc', $acc_slug);
-
-			// Also register the string for WPML String Translation
-			do_action('wpml_register_string', $acc_slug, 'URL slug: wicket_acc', 'WordPress', 'URL slug', 1);
-		}
-	}
-
-	/**
-	 * Handle ACC URL redirects
-	 */
-	public function handle_acc_url_redirects()
-	{
-		if (is_admin() || wp_doing_ajax() || wp_is_json_request() || (defined('REST_REQUEST') && REST_REQUEST) || !get_option('permalink_structure')) {
-			return;
-		}
-
-		$request_uri = $_SERVER['REQUEST_URI'];
-
-		if ($request_uri === '/' || strpos($request_uri, '?') !== false || pathinfo($request_uri, PATHINFO_EXTENSION)) {
-			return;
-		}
-
-		$path_parts = explode('/', trim($request_uri, '/'));
-
-		$lang_code = $this->get_language_code($path_parts);
-		$acc_slug  = $this->get_translated_acc_slug($lang_code);
-
-		$this->handle_trailing_slash($request_uri);
-		$this->handle_duplicate_acc_slugs($path_parts, $lang_code, $acc_slug);
-	}
-
-	private function get_language_code(&$path_parts)
-	{
-		if (function_exists('wpml_get_active_languages_filter')) {
-			$active_languages = apply_filters('wpml_active_languages', null, 'skip_missing=0&orderby=code');
-			if (isset($active_languages[$path_parts[0]])) {
-				return array_shift($path_parts);
-			}
-		}
-		return '';
-	}
-
-	private function handle_trailing_slash($request_uri)
-	{
-		if (substr($request_uri, -1) !== '/') {
-			wp_safe_redirect(trailingslashit($request_uri), 301);
-			exit;
-		}
-	}
-
-	private function handle_duplicate_acc_slugs($path_parts, $lang_code, $acc_slug)
-	{
-		if (count($path_parts) >= 2 && $path_parts[0] === $acc_slug && $path_parts[1] === $acc_slug) {
-			$redirect_url = '/' . ($lang_code ? $lang_code . '/' : '') . $acc_slug . '/';
-			wp_safe_redirect($redirect_url, 301);
-			exit;
-		}
 	}
 
 	/**
@@ -672,7 +527,7 @@ class Router extends WicketAcc
 
 		$query_vars = $wc_query->get_query_vars();
 		foreach ($query_vars as $key => $value) {
-			if ($value === $slug || $value === $slug . '-woo') {
+			if ($value === $slug) {
 				return $key;
 			}
 		}
@@ -695,33 +550,92 @@ class Router extends WicketAcc
 			return $url;
 		}
 
-		$acc_slug     = $this->get_acc_slug();
-		$acc_slug_woo = $acc_slug . '-woo';
+		$acc_slug = $this->get_acc_slug();
+		$current_lang = apply_filters('wpml_current_language', null);
+		$default_lang = apply_filters('wpml_default_language', null);
 
-		if (strpos($url, $acc_slug_woo) !== false) {
-			$url = str_replace($acc_slug_woo, $acc_slug, $url);
+		if ($current_lang !== $default_lang) {
+			$translated_acc_slug = $this->get_translated_acc_slug($current_lang);
+			$url = str_replace("/$acc_slug/", "/$translated_acc_slug/", $url);
 		}
+
+		// Remove duplicate slugs
+		$url_parts = parse_url($url);
+		$path = isset($url_parts['path']) ? $url_parts['path'] : '';
+		$path_segments = array_filter(explode('/', $path));
+		$unique_segments = array_unique($path_segments);
+		$new_path = '/' . implode('/', $unique_segments);
+
+		$url = str_replace($url_parts['path'], $new_path, $url);
 
 		return $url;
 	}
 
-	/**
-	 * Redirect WooCommerce endpoints to the ACC
-	 */
-	public function redirect_woocommerce_endpoints()
+	private function get_wicket_acc_template()
 	{
-		if (is_admin()) {
-			return;
+		$user_template = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/page-wicket_acc.php';
+		$plugin_template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/page-wicket_acc.php';
+
+		if (file_exists($user_template)) {
+			return $user_template;
+		} elseif (file_exists($plugin_template)) {
+			return $plugin_template;
 		}
 
-		$acc_slug     = $this->get_acc_slug();
-		$acc_slug_woo = $acc_slug . '-woo';
-		$current_url  = $_SERVER['REQUEST_URI'];
+		return false;
+	}
 
-		if (strpos($current_url, $acc_slug_woo) !== false) {
-			$new_url = str_replace($acc_slug_woo, $acc_slug, $current_url);
-			wp_safe_redirect($new_url);
-			exit;
+	private function get_wicket_acc_sidebar_template()
+	{
+		$user_template   = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/sidebar.php';
+		$plugin_template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/sidebar.php';
+
+		if (file_exists($user_template)) {
+			return $user_template;
+		} elseif (file_exists($plugin_template)) {
+			return $plugin_template;
 		}
+
+		return false;
+	}
+
+	public function acc_navigation()
+	{
+		$sidebar_template = $this->get_wicket_acc_sidebar_template();
+		if ($sidebar_template) {
+			include $sidebar_template;
+		}
+	}
+
+	public function fix_wpml_language_switcher_url($url, $lang_code)
+	{
+		$current_lang = apply_filters('wpml_current_language', null);
+		$default_lang = apply_filters('wpml_default_language', null);
+
+		// Handle both string and array inputs for $lang_code
+		$target_lang = is_array($lang_code) ? $lang_code['code'] : $lang_code;
+
+		$current_acc_slug = $this->get_translated_acc_slug($current_lang);
+		$target_acc_slug = $this->get_translated_acc_slug($target_lang);
+
+		// Replace the current ACC slug with the target language ACC slug
+		$url = str_replace("/$current_acc_slug/", "/$target_acc_slug/", $url);
+
+		// Remove any duplicate occurrences of the ACC slug
+		$url_parts = parse_url($url);
+		$path = isset($url_parts['path']) ? $url_parts['path'] : '';
+		$path_segments = array_filter(explode('/', $path));
+		$unique_segments = array_values(array_unique($path_segments));
+		$new_path = '/' . implode('/', $unique_segments);
+
+		// Reconstruct the URL with the new path
+		$scheme = isset($url_parts['scheme']) ? $url_parts['scheme'] . '://' : '';
+		$host = isset($url_parts['host']) ? $url_parts['host'] : '';
+		$query = isset($url_parts['query']) ? '?' . $url_parts['query'] : '';
+		$fragment = isset($url_parts['fragment']) ? '#' . $url_parts['fragment'] : '';
+
+		$new_url = trailingslashit($scheme . $host . $new_path . $query . $fragment);
+
+		return $new_url;
 	}
 }

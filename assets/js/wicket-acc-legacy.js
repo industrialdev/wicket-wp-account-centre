@@ -2,18 +2,6 @@ jQuery(document).ready(function ($) {
 
 	'use strict';
 
-	var readURL = function (input) {
-		if (input.files && input.files[0]) {
-			var reader = new FileReader();
-
-			reader.onload = function (e) {
-				$('.profile-pic').attr('src', e.target.result);
-			}
-
-			reader.readAsDataURL(input.files[0]);
-		}
-	}
-
 	$('li.group_endpoint').each(function () {
 
 		if ($(this).find('.nav-selected').length > 0) {

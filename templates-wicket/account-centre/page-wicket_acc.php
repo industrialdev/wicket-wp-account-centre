@@ -13,6 +13,7 @@ defined('ABSPATH') || exit;
 get_header();
 
 $wrapper_classes     = [];
+$wrapper_classes[]   = 'wicket-acc';
 $wrapper_classes[]   = 'wicket-acc-page wicket-acc-postid-' . get_the_ID();
 $wrapper_classes[]   = 'wicket-acc-container';
 $wrapper_classes[]   = 'woocommerce-wicket--container';
@@ -47,7 +48,7 @@ if ($display_publish_date) {
 
 <div class="alignfull wp-block-wicket-banner">
 	<?php get_component('banner', [
-		'title'            => 'Member Portal',
+		'title'            => __('Account Centre', 'wicket-acc'),
 		'intro'            => __('Welcome to the Member Portal. Here you can manage your account, view your membership details and more.', 'wicket-acc'),
 		'show_date'        => false,
 		'text_alignment'   => 'left',
@@ -65,7 +66,37 @@ if ($display_publish_date) {
 	?>
 
 	<div class="woocommerce-wicket--account-centre wicket-acc-page-acc">
-		<?php the_content(); ?>
+		<?php
+		if (!is_wc_endpoint_url()) {
+			// ACC page
+			if (have_posts()) {
+				while (have_posts()) :
+					the_post();
+					the_content();
+				endwhile;
+			} else {
+				echo '<p>' . __('Sorry, no ACC page found.', 'wicket-acc') . '</p>';
+			}
+		} else {
+			// WooCommerce endpoint
+			$endpoint = WC()->query->get_current_endpoint();
+			if ($endpoint) {
+				// Get a wicket_acc page from ACC Option
+				$acc_page_id     = get_field('acc_page_' . $endpoint, 'option');
+				$wicket_acc_page = get_post($acc_page_id);
+
+				if (!$acc_page_id) {
+					$wicket_acc_page = get_page_by_path($endpoint, OBJECT, 'wicket_acc');
+				}
+
+				if ($wicket_acc_page) {
+					echo apply_filters('the_content', $wicket_acc_page->post_content);
+				}
+
+				do_action("woocommerce_account_{$endpoint}_endpoint");
+			}
+		}
+		?>
 	</div>
 
 	<?php

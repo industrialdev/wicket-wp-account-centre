@@ -56,7 +56,7 @@ define('WICKET_ACC_SLUG', 'account-centre'); // We take care of multi-language s
  */
 class WicketAcc
 {
-	public $acc_slugs = [
+	protected $acc_slugs = [
 		'en'    => 'account-centre',
 		'en_CA' => 'account-centre',
 		'en_US' => 'account-center',
@@ -64,12 +64,33 @@ class WicketAcc
 		'es'    => 'mi-cuenta',
 	];
 
-	public $acc_names = [
+	protected $acc_names = [
 		'en'    => 'Account Centre',
 		'en_CA' => 'Account Centre',
 		'en_US' => 'Account Center',
 		'fr'    => 'Mon Compte',
 		'es'    => 'Mi Cuenta',
+	];
+
+	protected array $acc_pages_map = [
+		'edit-profile'                   => 'Edit Profile',
+		'events'                         => 'My Events',
+		'jobs'                           => 'My Jobs',
+		'job-post'                       => 'Post a Job',
+		'change-password'                => 'Change Password',
+		'organization-management'        => 'Organization Management',
+		// WooCommerce endpoints https://developer.woocommerce.com/docs/woocommerce-endpoints/
+		//'order-pay'                      => 'Order Pay',
+		//'order-received'                 => 'Order Received',
+		'add-payment-method'             => 'Add Payment Method',
+		'set-default-payment-method'     => 'Set Default Payment Method',
+		'orders'                         => 'Orders',
+		'view-order'                     => 'View Order',
+		'downloads'                      => 'Downloads',
+		'edit-account'                   => 'Edit Account',
+		'edit-address'                   => 'Edit Address',
+		'payment-methods'                => 'Payment Methods',
+		//'customer-logout'                => 'Logout',
 	];
 
 	/**
@@ -90,6 +111,7 @@ class WicketAcc
 
 		if (is_admin()) {
 			new AdminSettings();
+			new AdminMenuEditor();
 		}
 
 		new MdpApi();
@@ -97,17 +119,12 @@ class WicketAcc
 		new Blocks();
 		new Helpers();
 		new Registers();
+		new Profile();
+		new Assets();
 
 		// Conditionally load these classes
-		if (!is_admin() || (isset($_GET['post_type']) && $_GET['post_type'] !== 'wicket_acc')) {
-			new Front();
-			new Profile();
+		if (!is_admin()) {
 			new Language();
-		}
-
-		// Only on admin
-		if (is_admin()) {
-			new AdminMenuEditor();
 		}
 
 		if (class_exists('WooCommerce')) {
@@ -134,11 +151,11 @@ class WicketAcc
 			'classes/class-wicket-acc-woocommerce.php',
 			'classes/class-wicket-acc-registers.php',
 			'classes/class-wicket-acc-blocks.php',
-			'classes/class-wicket-acc-front.php',
 			'classes/class-wicket-acc-profile.php',
 			'classes/class-wicket-acc-router.php',
 			'classes/class-wicket-acc-helpers.php',
 			'classes/class-wicket-acc-helpers-router.php',
+			'classes/class-wicket-acc-assets.php',
 		];
 
 		$includes_global = [
