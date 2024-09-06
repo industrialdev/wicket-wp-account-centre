@@ -59,7 +59,9 @@ $global_banner_page_id = WACC()->get_global_banner_page_id();
 if ($global_banner_page_id) {
 	$global_banner_page = get_post($global_banner_page_id);
 	if ($global_banner_page) {
+		echo '<div class="alignfull wp-block-wicket-banner">';
 		echo apply_filters('the_content', $global_banner_page->post_content);
+		echo '</div>';
 	}
 } else {
 ?>
