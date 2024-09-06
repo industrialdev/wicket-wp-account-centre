@@ -94,7 +94,7 @@ if (!empty($acc_spelling)) {
 				$acc_page_id     = get_field('acc_page_' . $endpoint, 'option');
 				if ($acc_page_id) {
 					// Do we have a translated page for this ID?
-					$translated_page_id = apply_filters('wpml_object_id', $acc_page_id, 'wicket_acc', false, 'en');
+					$translated_page_id = apply_filters('wpml_object_id', $acc_page_id, 'wicket_acc', false, get_locale());
 					if ($translated_page_id) {
 						$acc_page_id = $translated_page_id;
 					}
