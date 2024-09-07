@@ -31,9 +31,7 @@ defined('ABSPATH') || exit;
  * On "Connect this post?" UNCHECK "Make FR the original language..." and click Assign.
  * Done.
  *
- * 5. Fix WP nav menu links for ACC navigation. Mind the new slug.
- *
- * 6. If you need to translate my-account CPT slug, use WPML directly:
+ * 5. If you need to translate my-account CPT slug, use WPML directly:
  * https://wpml.org/documentation/getting-started-guide/translating-page-slugs/
  */
 class Router extends WicketAcc
@@ -288,11 +286,93 @@ class Router extends WicketAcc
 			delete_field('acc_global-banner', 'option');
 		}
 
+		// Update WP nav menus
+		$this->update_nav_menus();
+
 		// Flush rewrite rules, because we've changed the CPT slug
 		flush_rewrite_rules();
 
+		// Empty caches
+		wp_cache_flush();
+
 		// Save an option to track that we've changed the CPT to my-account
 		update_option('wicket_acc_cpt_changed_to_my_account', true);
+	}
+
+	/**
+	 * Update WP nav menus
+	 *
+	 * @return void
+	 */
+	private function update_nav_menus()
+	{
+		$menus = wp_get_nav_menus();
+
+		foreach ($menus as $menu) {
+			$menu_items = wp_get_nav_menu_items($menu->term_id);
+			$menu_items_by_id = array();
+
+			foreach ($menu_items as $item) {
+				$menu_items_by_id[$item->ID] = $item;
+			}
+
+			$old_url_parts = [
+				'/account-centre',
+				'/account-center',
+				'/mon-compte',
+				'/mi-cuenta'
+			];
+
+			foreach ($menu_items as $item) {
+				$updated = false;
+
+				// Update URL
+				foreach ($old_url_parts as $url_part) {
+					if (strpos($item->url, $url_part) !== false) {
+						$item->url = str_replace($url_part, '/my-account', $item->url);
+						$updated = true;
+					}
+				}
+
+				// Update object and type
+				if ($item->object === 'wicket_acc') {
+					$item->object = 'my-account';
+					$updated = true;
+				}
+
+				if ($item->type === 'post_type' && $item->object === 'my-account') {
+					$post_id = url_to_postid($item->url);
+					if ($post_id) {
+						$item->object_id = $post_id;
+						$updated = true;
+					}
+				}
+
+				// Preserve parent-child relationship
+				$menu_item_parent = intval($item->menu_item_parent);
+				if ($menu_item_parent > 0 && isset($menu_items_by_id[$menu_item_parent])) {
+					$parent_item = $menu_items_by_id[$menu_item_parent];
+					if ($parent_item->object === 'wicket_acc') {
+						$item->menu_item_parent = $parent_item->ID;
+					}
+				}
+
+				if ($updated) {
+					wp_update_nav_menu_item($menu->term_id, $item->ID, [
+						'menu-item-title'     => $item->title,
+						'menu-item-object'    => $item->object,
+						'menu-item-object-id' => $item->object_id,
+						'menu-item-type'      => $item->type,
+						'menu-item-url'       => $item->url,
+						'menu-item-status'    => 'publish',
+						'menu-item-parent-id' => $item->menu_item_parent,
+					]);
+				}
+			}
+
+			// Refresh menu cache
+			wp_cache_delete("wp_get_nav_menu_items_{$menu->term_id}", 'nav_menu_items');
+		}
 	}
 
 	/**
