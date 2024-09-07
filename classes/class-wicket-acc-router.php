@@ -8,17 +8,33 @@ defined('ABSPATH') || exit;
 /**
  * Router Class
  * Get ACC pages, IDs, slugs, and data needed to jump between them.
- * Also implements hexbit/router library.
  *
- * To do manually:
+ * Migration to 1.3.x or greater, from 1.2.x or lower.
+ * Manual steps:
  *
- * Set my-account as Translatable
- * https://localhost/wp/wp-admin/admin.php?page=tm/menu/settings
+ * 1. Make sure ACF json files are updated and synced. Mind "wicket_acc" definitions inside them. They nshould be "my-account" now.
  *
- * https://wpml.org/forums/topic/changing-post-types-but-preserve-translations/
+ * 2. Set my-account as Translatable
+ * admin.php?page=tm/menu/settings
+ *
+ * 3. WPML Troubleshooting, do:
  * admin.php?page=sitepress-multilingual-cms%2Fmenu%2Ftroubleshooting.php
+ * 		Set Language Information
+ * 		Fix terms count
+ * 		Fix post type assignments for translation
+ * Then flush rewrite rules (save WP Permalinks)
  *
- * And re-link EN pages with FR pages.
+ * 4. Re-link FR pages to their EN counterparts. One by one.
+ * Edit a FR page. Sidebar, change Language to FR, confirm and save.
+ * Now click the link "Connect with translations".
+ * Find the correct EN page, select it and click "Ok".
+ * On "Connect this post?" UNCHECK "Make FR the original language..." and click Assign.
+ * Done.
+ *
+ * 5. Fix WP nav menu links for ACC navigation. Mind the new slug.
+ *
+ * 6. If you need to translate my-account CPT slug, use WPML directly:
+ * https://wpml.org/documentation/getting-started-guide/translating-page-slugs/
  */
 class Router extends WicketAcc
 {
