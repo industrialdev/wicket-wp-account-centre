@@ -49,12 +49,6 @@ if ($acc_display_publish_date) {
 	echo "<p class='mt-3 mb-4'><strong>" . __('Published:', 'wicket') . ' ' . get_the_date('d-m-Y') . "</strong></p>";
 	echo '</div>';
 }
-
-if (!empty($acc_spelling)) {
-	$acc_spelling = $acc_spelling['label'];
-} else {
-	$acc_spelling = __('Account Centre', 'wicket-acc');
-}
 ?>
 
 <?php
