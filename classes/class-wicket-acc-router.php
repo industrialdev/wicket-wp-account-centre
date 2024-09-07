@@ -317,17 +317,16 @@ class Router extends WicketAcc
 			}
 
 			$old_url_parts = [
-				'/account-centre',
-				'/account-center',
-				'/mon-compte',
-				'/mi-cuenta'
+				'EN' => '/account-centre',
+				'FR' => '/mon-compte',
+				'ES' => '/mi-cuenta'
 			];
 
 			foreach ($menu_items as $item) {
 				$updated = false;
 
 				// Update URL
-				foreach ($old_url_parts as $url_part) {
+				foreach ($old_url_parts as $lang => $url_part) {
 					if (strpos($item->url, $url_part) !== false) {
 						$item->url = str_replace($url_part, '/my-account', $item->url);
 						$updated = true;
@@ -335,8 +334,9 @@ class Router extends WicketAcc
 				}
 
 				// Update object and type
-				if ($item->object === 'wicket_acc') {
+				if ($item->object === 'wicket_acc' || $item->object === 'page') {
 					$item->object = 'my-account';
+					$item->type = 'post_type';
 					$updated = true;
 				}
 
@@ -345,6 +345,13 @@ class Router extends WicketAcc
 					if ($post_id) {
 						$item->object_id = $post_id;
 						$updated = true;
+					} else {
+						// If we can't find the post ID, create a new page
+						$new_page_id = $this->create_page(basename($item->url), $item->title);
+						if ($new_page_id) {
+							$item->object_id = $new_page_id;
+							$updated = true;
+						}
 					}
 				}
 
@@ -352,13 +359,13 @@ class Router extends WicketAcc
 				$menu_item_parent = intval($item->menu_item_parent);
 				if ($menu_item_parent > 0 && isset($menu_items_by_id[$menu_item_parent])) {
 					$parent_item = $menu_items_by_id[$menu_item_parent];
-					if ($parent_item->object === 'wicket_acc') {
+					if ($parent_item->object === 'wicket_acc' || $parent_item->object === 'page') {
 						$item->menu_item_parent = $parent_item->ID;
 					}
 				}
 
 				if ($updated) {
-					wp_update_nav_menu_item($menu->term_id, $item->ID, [
+					$menu_item_data = [
 						'menu-item-title'     => $item->title,
 						'menu-item-object'    => $item->object,
 						'menu-item-object-id' => $item->object_id,
@@ -366,7 +373,24 @@ class Router extends WicketAcc
 						'menu-item-url'       => $item->url,
 						'menu-item-status'    => 'publish',
 						'menu-item-parent-id' => $item->menu_item_parent,
-					]);
+					];
+
+					// Update the menu item
+					wp_update_nav_menu_item($menu->term_id, $item->ID, $menu_item_data);
+
+					// Update WPML translation if necessary
+					if (defined('ICL_SITEPRESS_VERSION')) {
+						$trid = apply_filters('wpml_element_trid', null, $item->ID, 'post_nav_menu_item');
+						$translations = apply_filters('wpml_get_element_translations', null, $trid, 'post_nav_menu_item');
+
+						$current_language = apply_filters('wpml_current_language', null);
+
+						foreach ($translations as $lang => $translation) {
+							if ($lang !== $current_language) {
+								wp_update_nav_menu_item($menu->term_id, $translation->element_id, $menu_item_data);
+							}
+						}
+					}
 				}
 			}
 
