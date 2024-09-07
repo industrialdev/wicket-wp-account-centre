@@ -26,19 +26,19 @@ class Front extends WicketAcc
 	 */
 	public function __construct()
 	{
-		add_action('wp_enqueue_scripts', [$this, 'front_assets']);
-		add_action('init', [$this, 'add_endpoints_and_content'], 2050); // High priority for WPML compatibility
-		add_filter('woocommerce_get_query_vars', [$this, 'custom_query_vars'], 1);
-		add_filter('woocommerce_account_menu_items', [$this, 'custom_my_account_menu_items'], 2050); // High priority for WPML compatibility
+		//add_action('wp_enqueue_scripts', [$this, 'front_assets']);
+		//add_action('init', [$this, 'add_endpoints_and_content'], 1750); // High priority for WPML compatibility
+		//add_filter('woocommerce_get_query_vars', [$this, 'custom_query_vars'], 1);
+		//add_filter('woocommerce_account_menu_items', [$this, 'custom_my_account_menu_items'], 1750); // High priority for WPML compatibility
 
-		// Intercept templates for WP CPT: wicket_acc
-		add_filter('template_include', [$this, 'intercept_cpt_template'], 99);
+		// Intercept templates for WP CPT: my-account
+		//add_filter('template_include', [$this, 'intercept_cpt_template'], 99);
 
 		// Intercept templates for WC
-		add_action('woocommerce_locate_template', [$this, 'intercept_wc_template'], 10, 3);
+		//add_action('woocommerce_locate_template', [$this, 'intercept_wc_template'], 10, 3);
 
-		add_filter('the_title', [$this, 'custom_endpoint_titles'], 10, 2);
-		add_filter('the_title', [$this, 'core_endpoint_titles'], 10, 2);
+		//add_filter('the_title', [$this, 'custom_endpoint_titles'], 10, 2);
+		//add_filter('the_title', [$this, 'core_endpoint_titles'], 10, 2);
 	}
 
 	/**
@@ -67,7 +67,7 @@ class Front extends WicketAcc
 	{
 		if ($this->cached_endpoints === null) {
 			$this->cached_endpoints = get_posts([
-				'post_type'      => 'wicket_acc',
+				'post_type'      => 'my-account',
 				'posts_per_page' => -1,
 				'orderby'        => 'menu_order',
 				'order'          => 'ASC',
@@ -124,7 +124,7 @@ class Front extends WicketAcc
 			} elseif (is_wc_endpoint_url('payment-methods')) {
 				$title = __("My Payment Methods", 'wicket-acc');
 			} elseif (!is_wc_endpoint_url() && is_account_page()) {
-				$title = __("My Account Centre", 'wicket-acc');
+				$title = __("Account Centre", 'wicket-acc');
 			}
 		}
 
@@ -377,7 +377,7 @@ class Front extends WicketAcc
 	}
 
 	/**
-	 * Intercept single templates for CPT: wicket_acc
+	 * Intercept single templates for CPT: my-account
 	 *
 	 * @param string $single Default template file path.
 	 *
@@ -387,8 +387,8 @@ class Front extends WicketAcc
 	{
 		global $post;
 
-		// Check if we're on a single wicket_acc post or if the current request is for the account centre
-		if (is_singular('wicket_acc') || $this->is_acc_request()) {
+		// Check if we're on a single my-account post or if the current request is for the account centre
+		if (is_singular('my-account') || $this->is_acc_request()) {
 			// WooCommerce endpoint being loaded?
 			if (is_wc_endpoint_url()) {
 				return $single;
@@ -408,7 +408,7 @@ class Front extends WicketAcc
 			}
 		}
 
-		// Return the default template if not a wicket_acc post or if neither custom template exists
+		// Return the default template if not a my-account post or if neither custom template exists
 		return $single;
 	}
 

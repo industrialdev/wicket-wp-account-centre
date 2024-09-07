@@ -9,7 +9,7 @@ namespace WicketAcc;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Customize WooCommerce my account features to build the Wicket Account Centre. Expands it with additional blocks and pages.
- * Version:           1.2.20
+ * Version:           1.3.0
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -80,7 +80,7 @@ class WicketAcc
 		'job-post'                       => 'Post a Job',
 		'change-password'                => 'Change Password',
 		'organization-management'        => 'Organization Management',
-		'acc_global-banner'              => 'Global Banner',
+		'acc_global-headerbanner'        => 'Global Header-Banner',
 		// WooCommerce endpoints https://developer.woocommerce.com/docs/woocommerce-endpoints/
 		//'order-pay'                      => 'Order Pay',
 		//'order-received'                 => 'Order Received',

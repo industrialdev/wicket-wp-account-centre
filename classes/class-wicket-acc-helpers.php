@@ -110,14 +110,36 @@ class Helpers extends WicketAcc
 
 	/**
 	 * Get global banner page ID
-	 * from slug: acc_global-banner
-	 * CPT: wicket_acc
+	 * from slug: acc_global-headerbanner
+	 * CPT: my-account
 	 *
 	 * @return int
 	 */
-	public function get_global_banner_page_id()
+	public function get_global_headerbanner_page_id()
 	{
-		$page = get_page_by_path('acc_global-banner', OBJECT, 'wicket_acc');
+		$page = get_page_by_path('acc_global-headerbanner', OBJECT, 'my-account');
 		return $page->ID;
+	}
+
+	/**
+	 * Get Wicket ACC sidebar template
+	 *
+	 * @return string
+	 */
+	public function render_acc_sidebar()
+	{
+		$user_template    = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/sidebar.php';
+		$plugin_template  = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/sidebar.php';
+		$sidebar_template = false;
+
+		if (file_exists($user_template)) {
+			$sidebar_template = $user_template;
+		} elseif (file_exists($plugin_template)) {
+			$sidebar_template = $plugin_template;
+		}
+
+		if ($sidebar_template) {
+			include_once $sidebar_template;
+		}
 	}
 }

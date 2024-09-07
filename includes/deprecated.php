@@ -459,7 +459,7 @@ function wicket_ac_memberships_get_page_link_data($membership)
 function wicket_acc_alter_wp_job_manager_pages($output, $parsed_args, $pages)
 {
 	if (in_array($parsed_args['name'], ['job_manager_submit_job_form_page_id', 'job_manager_job_dashboard_page_id', 'job_manager_jobs_page_id', 'job_manager_terms_and_conditions_page_id',])) {
-		$parsed_args['post_type'] = ['wicket_acc', 'page'];
+		$parsed_args['post_type'] = ['my-account', 'page'];
 		$output = wp_job_dropdown_pages($parsed_args);
 		return $output;
 	} else {

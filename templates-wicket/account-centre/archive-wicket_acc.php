@@ -31,18 +31,8 @@ $acc_sidebar_location      = get_field('acc_sidebar_location', 'option');
 $acc_spelling              = get_field('acc_localization', 'option');
 $acc_display_breadcrumb    = false;
 $acc_display_publish_date  = false;
-$is_wc_endpoint            = false;
 $acc_global_headerbanner_page_id = WACC()->get_global_headerbanner_page_id();
 $acc_global_headerbanner_status  = get_field('acc_global-headerbanner', 'option');
-
-// WooCommerce endpoints
-$wc_endpoints = WC()->query->get_query_vars();
-$current_url  = $_SERVER['REQUEST_URI'];
-$wc_endpoint  = basename(rtrim($current_url, '/'));
-
-if (in_array($wc_endpoint, $wc_endpoints)) {
-	$is_wc_endpoint = true;
-}
 
 if (empty($acc_sidebar_location)) {
 	$acc_sidebar_location = 'right';
@@ -88,17 +78,15 @@ if ($acc_global_headerbanner_page_id && $acc_global_headerbanner_status) {
 
 	<div class="woocommerce-wicket--account-centre wicket-acc-page wicket-acc-page-acc">
 		<?php
-		// ACC page
-		if (have_posts()) {
-			while (have_posts()) :
-				the_post();
-				the_content();
-			endwhile;
-		}
-
-		if ($is_wc_endpoint) {
-			// Run the WooCommerce endpoint action
-			do_action("woocommerce_account_{$wc_endpoint}_endpoint");
+		// Load contents from ACC Dashboard
+		$acc_dashboard_id = get_field('acc_page_dashboard', 'option');
+		if ($acc_dashboard_id) {
+			$acc_dashboard = get_post($acc_dashboard_id);
+			if ($acc_dashboard) {
+				echo apply_filters('the_content', $acc_dashboard->post_content);
+			}
+		} else {
+			echo '<p>' . __('Sorry, no ACC page found.', 'wicket-acc') . '</p>';
 		}
 		?>
 	</div>

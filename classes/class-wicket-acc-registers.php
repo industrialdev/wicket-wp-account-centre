@@ -61,25 +61,23 @@ class Registers extends WicketAcc
 			'query_var'           => true,
 			'rewrite'             => true,
 			'capability_type'     => 'post',
-			'has_archive'         => false,
+			'has_archive'         => true,
 			'hierarchical'        => false,
 			'menu_position'       => 30,
 			'menu_icon'           => WICKET_ACC_URL . '/assets/images/wicket-logo-20-white.svg',
-			'rewrite'             => [
-				'slug'            => 'wicket_acc',
-				'with_front'      => true,
-			],
+			'rewrite'             => true,
 			'supports'            => [
 				'title',
 				'page-attributes',
 				'editor',
 				'revisions',
+				'thumbnail',
 			],
 			'show_in_rest'        => true,
 		];
 
 		// Registering your Custom Post Type.
-		register_post_type('wicket_acc', $args);
+		register_post_type('my-account', $args);
 	}
 
 	/**

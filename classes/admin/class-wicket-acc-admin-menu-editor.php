@@ -40,7 +40,7 @@ class AdminMenuEditor extends WicketAcc
 	public function nav_menu_meta_box()
 	{
 		$posts = get_posts([
-			'post_type'      => 'wicket_acc',
+			'post_type'      => 'my-account',
 			'posts_per_page' => -1,
 			'orderby'        => 'title',
 			'order'          => 'ASC',
@@ -59,7 +59,7 @@ class AdminMenuEditor extends WicketAcc
 								<input type="checkbox" class="menu-item-checkbox" name="menu-item[<?php echo esc_attr($i); ?>][menu-item-object-id]" value="<?php echo esc_attr($post->ID); ?>" /> <?php echo esc_html($post->post_title); ?>
 							</label>
 							<input type="hidden" class="menu-item-type" name="menu-item[<?php echo esc_attr($i); ?>][menu-item-type]" value="post_type" />
-							<input type="hidden" class="menu-item-object" name="menu-item[<?php echo esc_attr($i); ?>][menu-item-object]" value="wicket_acc" />
+							<input type="hidden" class="menu-item-object" name="menu-item[<?php echo esc_attr($i); ?>][menu-item-object]" value="my-account" />
 							<input type="hidden" class="menu-item-title" name="menu-item[<?php echo esc_attr($i); ?>][menu-item-title]" value="<?php echo esc_attr($post->post_title); ?>" />
 						</li>
 					<?php

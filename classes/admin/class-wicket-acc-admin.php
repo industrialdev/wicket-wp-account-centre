@@ -53,7 +53,7 @@ class AdminSettings extends WicketAcc
 			acf_add_options_sub_page([
 				'page_title'  => 'ACC Options',
 				'menu_title'  => 'ACC Options',
-				'parent_slug' => 'edit.php?post_type=wicket_acc',
+				'parent_slug' => 'edit.php?post_type=my-account',
 				'capability'  => 'manage_options',
 				'menu_slug'   => 'wicket_acc_options',
 				'redirect'    => false,
@@ -63,21 +63,21 @@ class AdminSettings extends WicketAcc
 	}
 
 	/**
-	 * Register submenu pages for wicket_acc CPT
+	 * Register submenu pages for my-account CPT
 	 */
 	public function admin_register_submenu_pages()
 	{
 		// Shortcut: global banner page
-		if (get_field('acc_global_banner', 'option') === true) {
-			$global_banner_page = get_page_by_path('acc_global-banner', OBJECT, 'wicket_acc');
+		if (get_field('acc_global-headerbanner', 'option')) {
+			$global_headerbanner_page = get_page_by_path('acc_global-headerbanner', OBJECT, 'my-account');
 
-			if ($global_banner_page) {
-				$edit_link = get_edit_post_link($global_banner_page->ID);
+			if ($global_headerbanner_page) {
+				$edit_link = get_edit_post_link($global_headerbanner_page->ID);
 
 				add_submenu_page(
-					'edit.php?post_type=wicket_acc',
-					'Global Banner',
-					'Global Banner',
+					'edit.php?post_type=my-account',
+					'Global Header Banner',
+					'Global Header Banner',
 					'manage_options',
 					$edit_link,
 					null,
@@ -88,7 +88,7 @@ class AdminSettings extends WicketAcc
 
 		// Shortcut: Menu Editor
 		add_submenu_page(
-			'edit.php?post_type=wicket_acc',
+			'edit.php?post_type=my-account',
 			'Menu Editor',
 				'Menu Editor',
 			'manage_options',
@@ -99,7 +99,7 @@ class AdminSettings extends WicketAcc
 
 		// Shortcut: WooCommerce Endpoints
 		add_submenu_page(
-			'edit.php?post_type=wicket_acc',
+			'edit.php?post_type=my-account',
 			'WC Endpoints',
 			'WC Endpoints',
 			'manage_options',
@@ -171,7 +171,7 @@ class AdminSettings extends WicketAcc
 	{
 		global $pagenow, $post_type;
 
-		if (is_admin() && $pagenow == 'edit.php' && $post_type == 'wicket_acc' && !isset($_GET['post_status'])) {
+		if (is_admin() && $pagenow == 'edit.php' && $post_type == 'my-account' && !isset($_GET['post_status'])) {
 			$acc_slugs = $this->get_acc_slugs();
 			$query->set('post__not_in', $acc_slugs);
 		}
@@ -183,7 +183,7 @@ class AdminSettings extends WicketAcc
 		return $wpdb->get_col(
 			$wpdb->prepare(
 				"SELECT ID FROM $wpdb->posts WHERE post_type = %s AND post_name LIKE %s",
-				'wicket_acc',
+				'my-account',
 				'acc_%'
 			)
 		);
@@ -191,7 +191,7 @@ class AdminSettings extends WicketAcc
 
 	public function adjust_post_counts($counts, $type, $perm)
 	{
-		if ($type !== 'wicket_acc' || !is_admin()) {
+		if ($type !== 'my-account' || !is_admin()) {
 			return $counts;
 		}
 

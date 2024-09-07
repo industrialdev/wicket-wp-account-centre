@@ -2,6 +2,18 @@
 	.wp-block-wicket-banner {
 		max-width: 100% !important;
 	}
+
+	.wicket-acc-page {
+		width: 100%;
+	}
+}
+
+@media all and (max-width: 1030px) {
+	.wicket-acc {
+		.wicket-acc-page {
+			padding: 0 var(--wicket-acc-padding-md);
+		}
+	}
 }
 
 .wicket_acc-template-default {
