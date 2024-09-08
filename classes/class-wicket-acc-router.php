@@ -307,88 +307,66 @@ class Router extends WicketAcc
 	private function update_nav_menus()
 	{
 		$menus = wp_get_nav_menus();
+		$languages = apply_filters('wpml_active_languages', null, 'skip_missing=0&orderby=code');
 
 		foreach ($menus as $menu) {
 			$menu_items = wp_get_nav_menu_items($menu->term_id);
-			$menu_items_by_id = array();
 
 			foreach ($menu_items as $item) {
-				$menu_items_by_id[$item->ID] = $item;
-			}
+				$trid = apply_filters('wpml_element_trid', null, $item->ID, 'post_nav_menu_item');
+				$translations = apply_filters('wpml_get_element_translations', null, $trid, 'post_nav_menu_item');
 
-			$old_url_parts = [
-				'EN' => '/account-centre',
-				'FR' => '/mon-compte',
-				'ES' => '/mi-cuenta'
-			];
+				foreach ($languages as $lang_code => $language_info) {
+					$translated_item_id = isset($translations[$lang_code]) ? $translations[$lang_code]->element_id : null;
 
-			foreach ($menu_items as $item) {
-				$updated = false;
+					if ($translated_item_id) {
+						$translated_item = get_post($translated_item_id);
+						$updated = false;
 
-				// Update URL
-				foreach ($old_url_parts as $lang => $url_part) {
-					if (strpos($item->url, $url_part) !== false) {
-						$item->url = str_replace($url_part, '/my-account', $item->url);
-						$updated = true;
-					}
-				}
+						// Update URL
+						$old_url_parts = [
+							'EN' => '/account-centre',
+							'FR' => '/mon-compte',
+							'ES' => '/mi-cuenta'
+						];
 
-				// Update object and type
-				if ($item->object === 'wicket_acc' || $item->object === 'page') {
-					$item->object = 'my-account';
-					$item->type = 'post_type';
-					$updated = true;
-				}
-
-				if ($item->type === 'post_type' && $item->object === 'my-account') {
-					$post_id = url_to_postid($item->url);
-					if ($post_id) {
-						$item->object_id = $post_id;
-						$updated = true;
-					} else {
-						// If we can't find the post ID, create a new page
-						$new_page_id = $this->create_page(basename($item->url), $item->title);
-						if ($new_page_id) {
-							$item->object_id = $new_page_id;
-							$updated = true;
-						}
-					}
-				}
-
-				// Preserve parent-child relationship
-				$menu_item_parent = intval($item->menu_item_parent);
-				if ($menu_item_parent > 0 && isset($menu_items_by_id[$menu_item_parent])) {
-					$parent_item = $menu_items_by_id[$menu_item_parent];
-					if ($parent_item->object === 'wicket_acc' || $parent_item->object === 'page') {
-						$item->menu_item_parent = $parent_item->ID;
-					}
-				}
-
-				if ($updated) {
-					$menu_item_data = [
-						'menu-item-title'     => $item->title,
-						'menu-item-object'    => $item->object,
-						'menu-item-object-id' => $item->object_id,
-						'menu-item-type'      => $item->type,
-						'menu-item-url'       => $item->url,
-						'menu-item-status'    => 'publish',
-						'menu-item-parent-id' => $item->menu_item_parent,
-					];
-
-					// Update the menu item
-					wp_update_nav_menu_item($menu->term_id, $item->ID, $menu_item_data);
-
-					// Update WPML translation if necessary
-					if (defined('ICL_SITEPRESS_VERSION')) {
-						$trid = apply_filters('wpml_element_trid', null, $item->ID, 'post_nav_menu_item');
-						$translations = apply_filters('wpml_get_element_translations', null, $trid, 'post_nav_menu_item');
-
-						$current_language = apply_filters('wpml_current_language', null);
-
-						foreach ($translations as $lang => $translation) {
-							if ($lang !== $current_language) {
-								wp_update_nav_menu_item($menu->term_id, $translation->element_id, $menu_item_data);
+						foreach ($old_url_parts as $url_part) {
+							if (strpos($translated_item->url, $url_part) !== false) {
+								$translated_item->url = str_replace($url_part, '/my-account', $translated_item->url);
+								$updated = true;
 							}
+						}
+
+						// Always update object and type
+						$translated_item->object = 'my-account';
+						$translated_item->type = 'post_type';
+						$updated = true;
+
+						// Update object_id
+						$post_id = url_to_postid($translated_item->url);
+						if ($post_id) {
+							$translated_item->object_id = $post_id;
+						} else {
+							// If we can't find the post ID, create a new page
+							$new_page_id = $this->create_page(basename($translated_item->url), $translated_item->post_title);
+							if ($new_page_id) {
+								$translated_item->object_id = $new_page_id;
+							}
+						}
+
+						if ($updated) {
+							$menu_item_data = [
+								'menu-item-title'     => $translated_item->post_title,
+								'menu-item-object'    => $translated_item->object,
+								'menu-item-object-id' => $translated_item->object_id,
+								'menu-item-type'      => $translated_item->type,
+								'menu-item-url'       => $translated_item->url,
+								'menu-item-status'    => 'publish',
+								'menu-item-parent-id' => $translated_item->menu_item_parent,
+							];
+
+							// Update the menu item
+							wp_update_nav_menu_item($menu->term_id, $translated_item_id, $menu_item_data);
 						}
 					}
 				}
@@ -495,11 +473,21 @@ class Router extends WicketAcc
 		return $template;
 	}
 
+	/**
+	 * Check if current page is WooCommerce my-account page
+	 *
+	 * @return bool
+	 */
 	public function is_woocommerce_myaccount_page()
 	{
 		return function_exists('is_account_page') && is_account_page();
 	}
 
+	/**
+	 * Redirect from /wc-account/ to /my-account/
+	 *
+	 * @return void
+	 */
 	public function redirect_woocommerce_myaccount()
 	{
 		if ($this->is_woocommerce_myaccount_page()) {
