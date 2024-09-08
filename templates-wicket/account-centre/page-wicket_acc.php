@@ -3,11 +3,11 @@
 defined('ABSPATH') || exit;
 
 /**
- * Template Name: ACC Default Template
+ * ACC pages template.
  *
- * This is the default template for the Wicket Account Centre pages.
+ * This is the default template used for pages created inside Wicket Account Centre CPT (except the index page).
  *
- * This template can be overridden by copying it to yourtheme/templates-wicket/account-centre/page-wicket_acc.php.
+ * This template can be overridden (at theme level) by copying it to yourtheme/templates-wicket/account-centre/page-wicket_acc.php.
  */
 
 get_header();

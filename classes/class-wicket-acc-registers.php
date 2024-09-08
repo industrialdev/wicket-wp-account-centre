@@ -76,8 +76,13 @@ class Registers extends WicketAcc
 			'show_in_rest'        => true,
 		];
 
-		// Registering your Custom Post Type.
+		// Register ACC CPT
 		register_post_type('my-account', $args);
+
+		// If we haven't migrated to my-account, temporarily show the old CPT
+		if (!get_option('wicket_acc_cpt_changed_to_my_account')) {
+			register_post_type('wicket_acc', $args);
+		}
 	}
 
 	/**

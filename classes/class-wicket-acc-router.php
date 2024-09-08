@@ -12,26 +12,37 @@ defined('ABSPATH') || exit;
  * Migration to 1.3.x or greater, from 1.2.x or lower.
  * Manual steps:
  *
- * 1. Make sure ACF json files are updated and synced. Mind "wicket_acc" definitions inside them. They nshould be "my-account" now.
+ * 1. Update this plugin on target site. Reload the ACC Options page.
  *
- * 2. Set my-account as Translatable
- * admin.php?page=tm/menu/settings
+ * 2. Make sure ACF json files are updated and synced. Check for "wicket_acc" definitions inside them. They should be "my-account" now.
  *
- * 3. WPML Troubleshooting, do:
- * admin.php?page=sitepress-multilingual-cms%2Fmenu%2Ftroubleshooting.php
- * 		Set Language Information
- * 		Fix terms count
- * 		Fix post type assignments for translation
- * Then flush rewrite rules (save WP Permalinks)
+ * 3. On WPML Settings, set "my-account" CPT as Translatable.
+ * /wp-admin/admin.php?page=tm/menu/settings
  *
- * 4. Re-link FR pages to their EN counterparts. One by one.
- * Edit a FR page. Sidebar, change Language to FR, confirm and save.
- * Now click the link "Connect with translations".
- * Find the correct EN page, select it and click "Ok".
- * On "Connect this post?" UNCHECK "Make FR the original language..." and click Assign.
+ * 4. Load the secret migration URL on target site, at wp-admin/:
+ * /wp-admin/?migrate_to_my_account=1_3
+ *
+ * 5. WPML Troubleshooting, do:
+ * /wp-admin/admin.php?page=sitepress-multilingual-cms%2Fmenu%2Ftroubleshooting.php
+ * 		> Set Language Information
+ * 		> Fix terms count
+ * 		> Fix post type assignments for translation
+ *
+ * 6. Flush rewrite rules (save WP Permalinks options).
+ *
+ * 7. On new "my-account" CPT, edit every FR page, one by one, and change their lang from EN to FR. Yes: EN to FR.
+ * /wp-admin/edit.php?post_type=my-account
+ * 	Language of this page: FR
+ * 	Confirm on modal. Wait for reload.
+ * 	Connect with translation, search for the correct EN page. Confirm.
+ * 	On modal, UNCHECK "make FR the original language..." and click Assign.
+ *
+ * 8. Ammend every menu items with wrong URLs, from /account-centre/ to /my-account/
+ * /wp-admin/nav-menus.php
+ *
  * Done.
  *
- * 5. If you need to translate my-account CPT slug, use WPML directly:
+ * If you need to translate my-account CPT slug, use WPML directly:
  * https://wpml.org/documentation/getting-started-guide/translating-page-slugs/
  */
 class Router extends WicketAcc
@@ -42,6 +53,8 @@ class Router extends WicketAcc
 
 	/**
 	 * Constructor
+	 *
+	 * @return void
 	 */
 	public function __construct()
 	{
@@ -229,6 +242,11 @@ class Router extends WicketAcc
 			return;
 		}
 
+		// Run this only when we manually add a secret query string to the URL
+		if (!isset($_GET['migrate_to_my_account']) || $_GET['migrate_to_my_account'] !== '1_3') {
+			return;
+		}
+
 		// Get all posts with old CPT slug
 		$args = [
 			'post_type'      => 'wicket_acc',
@@ -251,7 +269,7 @@ class Router extends WicketAcc
 			// Change page slug to wc-account
 			wp_update_post(
 				[
-					'ID' => $woo_my_account_page_id,
+					'ID'        => $woo_my_account_page_id,
 					'post_name' => 'wc-account',
 				]
 			);
@@ -274,7 +292,7 @@ class Router extends WicketAcc
 			// Rename post slug
 			wp_update_post(
 				[
-					'ID' => $acc_old_headerbanner,
+					'ID'        => $acc_old_headerbanner,
 					'post_name' => 'acc_global-headerbanner',
 				]
 			);
@@ -282,12 +300,9 @@ class Router extends WicketAcc
 			// Update new ACF field
 			update_field('acc_global-headerbanner', $acc_old_headerbanner, 'option');
 
-			// Delete ACF field
+			// Delete old ACF field
 			delete_field('acc_global-banner', 'option');
 		}
-
-		// Update WP nav menus
-		$this->update_nav_menus();
 
 		// Flush rewrite rules, because we've changed the CPT slug
 		flush_rewrite_rules();
@@ -297,84 +312,9 @@ class Router extends WicketAcc
 
 		// Save an option to track that we've changed the CPT to my-account
 		update_option('wicket_acc_cpt_changed_to_my_account', true);
-	}
 
-	/**
-	 * Update WP nav menus
-	 *
-	 * @return void
-	 */
-	private function update_nav_menus()
-	{
-		$menus = wp_get_nav_menus();
-		$languages = apply_filters('wpml_active_languages', null, 'skip_missing=0&orderby=code');
-
-		foreach ($menus as $menu) {
-			$menu_items = wp_get_nav_menu_items($menu->term_id);
-
-			foreach ($menu_items as $item) {
-				$trid = apply_filters('wpml_element_trid', null, $item->ID, 'post_nav_menu_item');
-				$translations = apply_filters('wpml_get_element_translations', null, $trid, 'post_nav_menu_item');
-
-				foreach ($languages as $lang_code => $language_info) {
-					$translated_item_id = isset($translations[$lang_code]) ? $translations[$lang_code]->element_id : null;
-
-					if ($translated_item_id) {
-						$translated_item = get_post($translated_item_id);
-						$updated = false;
-
-						// Update URL
-						$old_url_parts = [
-							'EN' => '/account-centre',
-							'FR' => '/mon-compte',
-							'ES' => '/mi-cuenta'
-						];
-
-						foreach ($old_url_parts as $url_part) {
-							if (strpos($translated_item->url, $url_part) !== false) {
-								$translated_item->url = str_replace($url_part, '/my-account', $translated_item->url);
-								$updated = true;
-							}
-						}
-
-						// Always update object and type
-						$translated_item->object = 'my-account';
-						$translated_item->type = 'post_type';
-						$updated = true;
-
-						// Update object_id
-						$post_id = url_to_postid($translated_item->url);
-						if ($post_id) {
-							$translated_item->object_id = $post_id;
-						} else {
-							// If we can't find the post ID, create a new page
-							$new_page_id = $this->create_page(basename($translated_item->url), $translated_item->post_title);
-							if ($new_page_id) {
-								$translated_item->object_id = $new_page_id;
-							}
-						}
-
-						if ($updated) {
-							$menu_item_data = [
-								'menu-item-title'     => $translated_item->post_title,
-								'menu-item-object'    => $translated_item->object,
-								'menu-item-object-id' => $translated_item->object_id,
-								'menu-item-type'      => $translated_item->type,
-								'menu-item-url'       => $translated_item->url,
-								'menu-item-status'    => 'publish',
-								'menu-item-parent-id' => $translated_item->menu_item_parent,
-							];
-
-							// Update the menu item
-							wp_update_nav_menu_item($menu->term_id, $translated_item_id, $menu_item_data);
-						}
-					}
-				}
-			}
-
-			// Refresh menu cache
-			wp_cache_delete("wp_get_nav_menu_items_{$menu->term_id}", 'nav_menu_items');
-		}
+		// Show a message to the user
+		wp_die('Migration to my-account completed. Continue with the next step.');
 	}
 
 	/**
@@ -460,8 +400,8 @@ class Router extends WicketAcc
 	public function custom_archive_template($template)
 	{
 		if (is_post_type_archive('my-account')) {
-			$user_template = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/archive-wicket_acc.php';
-			$plugin_template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/archive-wicket_acc.php';
+			$user_template = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/dashboard-wicket_acc.php';
+			$plugin_template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/dashboard-wicket_acc.php';
 
 			if (file_exists($user_template)) {
 				return $user_template;
