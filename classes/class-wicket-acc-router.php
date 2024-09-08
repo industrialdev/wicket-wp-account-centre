@@ -14,31 +14,28 @@ defined('ABSPATH') || exit;
  *
  * 1. Update this plugin on target site. You will see a duplicated Account Centre CPT available. It's fine, don't panic.
  *
- * 2. Make sure ACF json files are updated and synced.
- * /wp-admin/edit.php?post_type=acf-field-group&post_status=sync
- *
- * 3. On WPML Settings, set "my-account" CPT as Translatable.
+ * 2. On WPML Settings, set "my-account" CPT as Translatable.
  * /wp-admin/admin.php?page=tm/menu/settings
  *
- * 4. Load the secret migration URL on target site, at wp-admin/:
+ * 3. Load the secret migration URL on target site, at wp-admin/:
  * /wp-admin/?migrate_to_my_account=1_3
  *
- * 5. WPML Troubleshooting, do:
+ * 4. WPML Troubleshooting, do:
  * /wp-admin/admin.php?page=sitepress-multilingual-cms%2Fmenu%2Ftroubleshooting.php
  * 		> Set Language Information
  * 		> Fix terms count
  * 		> Fix post type assignments for translation
  *
- * 6. Flush rewrite rules (save WP Permalinks Settings).
+ * 5. Flush rewrite rules (save WP Permalinks Settings).
  *
- * 7. On new "my-account" CPT, edit every FR page, one by one, and change their lang from EN to FR. Yes: EN to FR.
+ * 6. On new "my-account" CPT, edit every FR page that shows as it was an EN page, one by one, and change their lang from EN to FR. Yes: EN to FR.
  * /wp-admin/edit.php?post_type=my-account
  * 	Language of this page: FR
  * 	Confirm on modal. Wait for reload.
  * 	Connect with translation, search for the correct EN page. Confirm.
  * 	On modal, UNCHECK "make FR the original language..." and click Assign.
  *
- * 8. Ammend every menu items with wrong URLs, from /account-centre/ to /my-account/
+ * 7. Ammend every menu items with wrong URLs, from /account-centre/ to /my-account/
  * /wp-admin/nav-menus.php
  *
  * Done.
@@ -444,7 +441,36 @@ class Router extends WicketAcc
 		if (str_contains($_SERVER['REQUEST_URI'], 'wc-account')) {
 			// Check if the URL contains URLs like: /wc-account/org, /wc-account/organization/, /wc-account/organization-management/, etc. Anything after /wc-account/ that begins with "org"
 			if (!preg_match('#^/wc-account/org#', $_SERVER['REQUEST_URI'])) {
-				wp_safe_redirect($acc_dashboard_url);
+				// Redirect to the new URL. Keep sub-folders (like /wc-account/orders/) and query params, also past POST data if any.
+				$new_url = $acc_dashboard_url;
+
+				// Keep sub-folders
+				$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+				$subfolder = str_replace('/wc-account', '',
+						$path
+					);
+				if ($subfolder) {
+					$new_url = rtrim($new_url, '/') . $subfolder;
+				}
+
+				// Keep query parameters
+				$query = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY);
+				if ($query) {
+					$new_url .= '?' . $query;
+				}
+
+				// Redirect with POST data if any
+				if ($_POST) {
+					echo '<form id="redirect_form" method="post" action="' . esc_url($new_url) . '">';
+					foreach ($_POST as $key => $value) {
+						echo '<input type="hidden" name="' . esc_attr($key) . '" value="' . esc_attr($value) . '">';
+					}
+					echo '</form>';
+					echo '<script>document.getElementById("redirect_form").submit();</script>';
+				} else {
+					wp_safe_redirect($new_url);
+				}
+
 				exit;
 			}
 		}

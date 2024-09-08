@@ -118,6 +118,16 @@ class Helpers extends WicketAcc
 	public function get_global_headerbanner_page_id()
 	{
 		$page = get_page_by_path('acc_global-headerbanner', OBJECT, 'my-account');
+
+		// If WPML is installed, get the translated page ID instead
+		if (defined('ICL_SITEPRESS_VERSION')) {
+			global $sitepress;
+
+			$lang_code = $sitepress->get_current_language();
+
+			$page = $sitepress->get_object_id_by_slug('acc_global-headerbanner', 'my-account', false, $lang_code);
+		}
+
 		return $page->ID;
 	}
 

@@ -68,29 +68,29 @@ class AdminSettings extends WicketAcc
 	public function admin_register_submenu_pages()
 	{
 		// Shortcut: global banner page
-		if (get_field('acc_global-headerbanner', 'option')) {
-			$global_headerbanner_page = get_page_by_path('acc_global-headerbanner', OBJECT, 'my-account');
+		$acc_global_headerbanner = get_field('acc_global-headerbanner', 'option');
 
-			if ($global_headerbanner_page) {
-				$edit_link = get_edit_post_link($global_headerbanner_page->ID);
+		if ($acc_global_headerbanner) {
+			$acc_global_headerbanner_page = get_page_by_path('acc_global-headerbanner', OBJECT, 'my-account');
 
-				add_submenu_page(
-					'edit.php?post_type=my-account',
-					'Global Header Banner',
-					'Global Header Banner',
-					'manage_options',
-					$edit_link,
-					null,
-					10
-				);
-			}
+			$edit_link = get_edit_post_link($acc_global_headerbanner_page->ID);
+
+			add_submenu_page(
+				'edit.php?post_type=my-account',
+				'Global Header Banner',
+				'Global Header Banner',
+				'manage_options',
+				$edit_link,
+				null,
+				10
+			);
 		}
 
 		// Shortcut: Menu Editor
 		add_submenu_page(
 			'edit.php?post_type=my-account',
 			'Menu Editor',
-				'Menu Editor',
+			'Menu Editor',
 			'manage_options',
 			admin_url('nav-menus.php'),
 			null,
@@ -167,19 +167,31 @@ class AdminSettings extends WicketAcc
 		return $field;
 	}
 
+	/**
+	 * Filter the ACC posts query to hide acc_ pages.
+	 *
+	 * @param object $query The WP_Query object.
+	 */
 	public function filter_acc_posts($query)
 	{
 		global $pagenow, $post_type;
 
 		if (is_admin() && $pagenow == 'edit.php' && $post_type == 'my-account' && !isset($_GET['post_status'])) {
-			$acc_slugs = $this->get_acc_slugs();
+			$acc_slugs = $this->get_acc_hidden_ids();
 			$query->set('post__not_in', $acc_slugs);
 		}
 	}
 
-	private function get_acc_slugs()
+	/**
+	 * Retrieve the IDs of the hidden ACC pages.
+	 * The ones that start with 'acc_' are hidden.
+	 *
+	 * @return array
+	 */
+	private function get_acc_hidden_ids()
 	{
 		global $wpdb;
+
 		return $wpdb->get_col(
 			$wpdb->prepare(
 				"SELECT ID FROM $wpdb->posts WHERE post_type = %s AND post_name LIKE %s",
@@ -189,6 +201,15 @@ class AdminSettings extends WicketAcc
 		);
 	}
 
+	/**
+	 * Adjust the post counts for the ACC pages.
+	 *
+	 * @param object $counts The post counts object.
+	 * @param string $type The post type.
+	 * @param string $perm The post status.
+	 *
+	 * @return object The adjusted post counts object.
+	 */
 	public function adjust_post_counts($counts, $type, $perm)
 	{
 		if ($type !== 'my-account' || !is_admin()) {
@@ -196,7 +217,7 @@ class AdminSettings extends WicketAcc
 		}
 
 		global $wpdb;
-		$acc_slugs = $this->get_acc_slugs();
+		$acc_slugs = $this->get_acc_hidden_ids();
 
 		foreach ($counts as $status => $count) {
 			$adjusted_count = $wpdb->get_var($wpdb->prepare(
