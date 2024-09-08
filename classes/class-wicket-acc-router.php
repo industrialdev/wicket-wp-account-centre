@@ -64,7 +64,7 @@ class Router extends WicketAcc
 		add_action('admin_init', [$this, 'init_all_pages']);
 		add_action('admin_init', [$this, 'maybe_migrate_to_my_account']);
 		add_action('init', [$this, 'acc_pages_template']);
-		//add_filter('archive_template', [$this, 'custom_archive_template']);
+		add_filter('archive_template', [$this, 'custom_archive_template']);
 		add_action('plugins_loaded', [$this, 'redirect_acc_old_slugs']);
 	}
 
@@ -411,14 +411,20 @@ class Router extends WicketAcc
 	public function custom_archive_template($template)
 	{
 		if (is_post_type_archive('my-account')) {
-			$user_template = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/dashboard-wicket_acc.php';
+			$acc_dashboard_id  = get_option('options_acc_page_dashboard');
+			$acc_dashboard_url = get_permalink($acc_dashboard_id);
+
+			wp_safe_redirect($acc_dashboard_url);
+			exit;
+
+			/*$user_template = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/dashboard-wicket_acc.php';
 			$plugin_template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/dashboard-wicket_acc.php';
 
 			if (file_exists($user_template)) {
 				return $user_template;
 			} elseif (file_exists($plugin_template)) {
 				return $plugin_template;
-			}
+			}*/
 		}
 
 		return $template;
@@ -484,21 +490,6 @@ class Router extends WicketAcc
 		// If requested URL contains any of the old slugs,
 		foreach ($old_slugs as $old_slug) {
 			if (str_contains($_SERVER['REQUEST_URI'], $old_slug)) {
-				wp_safe_redirect($acc_dashboard_url);
-				exit;
-			}
-		}
-
-		// User requesting /my-account, /mon-compte, etc. without a trailing slash or any other sub-folder?
-		$archive_index_slugs = [
-			'/my-account',
-			'/mon-compte',
-			'/mi-cuenta',
-		];
-
-		foreach ($archive_index_slugs as $archive_index_slug) {
-			// Must be an exact match, because we don't want to redirect /my-account/sub-pages to /my-account/
-			if ($_SERVER['REQUEST_URI'] === $archive_index_slug) {
 				wp_safe_redirect($acc_dashboard_url);
 				exit;
 			}
