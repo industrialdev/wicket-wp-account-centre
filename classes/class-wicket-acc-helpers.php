@@ -125,7 +125,11 @@ class Helpers extends WicketAcc
 
 			$lang_code = $sitepress->get_current_language();
 
-			$page = $sitepress->get_object_id_by_slug('acc_global-headerbanner', 'my-account', false, $lang_code);
+			$page_id = $sitepress->get_object_id($page->ID, 'my-account', true, $lang_code);
+
+			if ($page_id) {
+				return $page_id;
+			}
 		}
 
 		return $page->ID;
