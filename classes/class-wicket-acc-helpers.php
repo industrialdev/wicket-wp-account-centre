@@ -122,21 +122,10 @@ class Helpers extends WicketAcc
 
 		// If WPML is installed, get the translated page ID instead
 		if (defined('ICL_SITEPRESS_VERSION')) {
-			global $sitepress;
+			$page_id_translation = apply_filters('wpml_object_id', $page_id, 'my-account', true);
 
-			// Current language
-			$current_language = $sitepress->get_current_language();
-
-			$args = [
-				'post_type'      => 'my-account',
-				'name'           => 'acc_global-headerbanner-' . $current_language,
-				'posts_per_page' => 1,
-			];
-
-			$page = get_posts($args);
-
-			if ($page) {
-				$page_id = $page[0]->ID;
+			if ($page_id_translation) {
+				$page_id = $page_id_translation;
 			}
 		}
 
