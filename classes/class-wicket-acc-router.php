@@ -12,9 +12,10 @@ defined('ABSPATH') || exit;
  * Migration to 1.3.x or greater, from 1.2.x or lower.
  * Manual steps:
  *
- * 1. Update this plugin on target site. Reload the ACC Options page.
+ * 1. Update this plugin on target site.
  *
- * 2. Make sure ACF json files are updated and synced. Check for "wicket_acc" definitions inside them. They should be "my-account" now.
+ * 2. Make sure ACF json files are updated and synced.
+ * /wp-admin/edit.php?post_type=acf-field-group&post_status=sync
  *
  * 3. On WPML Settings, set "my-account" CPT as Translatable.
  * /wp-admin/admin.php?page=tm/menu/settings
@@ -28,7 +29,7 @@ defined('ABSPATH') || exit;
  * 		> Fix terms count
  * 		> Fix post type assignments for translation
  *
- * 6. Flush rewrite rules (save WP Permalinks options).
+ * 6. Flush rewrite rules (save WP Permalinks Settings).
  *
  * 7. On new "my-account" CPT, edit every FR page, one by one, and change their lang from EN to FR. Yes: EN to FR.
  * /wp-admin/edit.php?post_type=my-account
@@ -64,10 +65,10 @@ class Router extends WicketAcc
 		}
 
 		add_action('admin_init', [$this, 'init_all_pages']);
-		add_action('admin_init', [$this, 'maybe_migrate_to_my_account'], 1750);
+		add_action('admin_init', [$this, 'maybe_migrate_to_my_account']);
 		add_action('init', [$this, 'acc_pages_template']);
-		add_filter('archive_template', [$this, 'custom_archive_template'], 1750);
-		add_action('template_redirect', [$this, 'redirect_woocommerce_myaccount']);
+		//add_filter('archive_template', [$this, 'custom_archive_template']);
+		add_action('plugins_loaded', [$this, 'redirect_acc_old_slugs']);
 	}
 
 	/**
@@ -266,13 +267,29 @@ class Router extends WicketAcc
 		$woo_my_account_page_id = wc_get_page_id('myaccount');
 
 		if ($woo_my_account_page_id > 0) {
-			// Change page slug to wc-account
-			wp_update_post(
-				[
-					'ID'        => $woo_my_account_page_id,
-					'post_name' => 'wc-account',
-				]
+			global $wpdb;
+
+			// Change page slug to wc-account and title to "WC Account"
+			$query = $wpdb->prepare(
+				"UPDATE $wpdb->posts SET post_name = 'wc-account', post_title = 'WC Account' WHERE ID = %d",
+				$woo_my_account_page_id
 			);
+
+			$wpdb->query($query);
+
+			// Delete old slug meta
+			delete_post_meta($woo_my_account_page_id, '_wp_old_slug');
+			delete_post_meta($woo_my_account_page_id, '_wp_old_date');
+
+			// Remove any reference to "my-account" from WooCommerce
+			delete_option('_woocommerce_myaccount_page_id');
+			delete_option('_woocommerce_myaccount_page_slug');
+			delete_option('_woocommerce_myaccount_page_title');
+
+			// Set the new page as the WooCommerce my-account page
+			update_option('_woocommerce_myaccount_page_id', $woo_my_account_page_id);
+			update_option('_woocommerce_myaccount_page_slug', 'wc-account');
+			update_option('_woocommerce_myaccount_page_title', 'WC Account');
 		}
 
 		// Migrate ACF field value from acc_page_account-centre to acc_page_dashboard
@@ -326,12 +343,9 @@ class Router extends WicketAcc
 	 */
 	private function update_post_type($post_id)
 	{
-		wp_update_post(
-			[
-				'ID' => $post_id,
-				'post_type' => 'my-account',
-			]
-		);
+		global $wpdb;
+
+		$wpdb->update($wpdb->posts, ['post_type' => 'my-account'], ['ID' => $post_id]);
 	}
 
 	/**
@@ -414,27 +428,39 @@ class Router extends WicketAcc
 	}
 
 	/**
-	 * Check if current page is WooCommerce my-account page
-	 *
-	 * @return bool
+	 * Redirect old slugs to /my-account/
 	 */
-	public function is_woocommerce_myaccount_page()
+	public function redirect_acc_old_slugs()
 	{
-		return function_exists('is_account_page') && is_account_page();
-	}
+		// Only if we already migrated to my-account
+		if (!get_option('wicket_acc_cpt_changed_to_my_account')) {
+			return;
+		}
 
-	/**
-	 * Redirect from /wc-account/ to /my-account/
-	 *
-	 * @return void
-	 */
-	public function redirect_woocommerce_myaccount()
-	{
-		if ($this->is_woocommerce_myaccount_page()) {
-			$current_url = add_query_arg(null, null);
-			$new_url = str_replace('/wc-account/', '/my-account/', $current_url);
-			wp_safe_redirect($new_url);
-			exit;
+		$acc_dashboard_id  = get_option('options_acc_page_dashboard');
+		$acc_dashboard_url = get_permalink($acc_dashboard_id);
+
+		// WooCommerce account page
+		if (str_contains($_SERVER['REQUEST_URI'], 'wc-account')) {
+			// Check if the URL contains URLs like: /wc-account/org, /wc-account/organization/, /wc-account/organization-management/, etc. Anything after /wc-account/ that begins with "org"
+			if (!preg_match('#^/wc-account/org#', $_SERVER['REQUEST_URI'])) {
+				wp_safe_redirect($acc_dashboard_url);
+				exit;
+			}
+		}
+
+		// Get old slugs
+		$old_slugs = [
+			'/account-centre',
+			'/account-center',
+		];
+
+		// If requested URL contains any of the old slugs,
+		foreach ($old_slugs as $old_slug) {
+			if (str_contains($_SERVER['REQUEST_URI'], $old_slug)) {
+				wp_safe_redirect($acc_dashboard_url);
+				exit;
+			}
 		}
 	}
 }
