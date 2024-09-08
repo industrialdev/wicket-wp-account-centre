@@ -488,5 +488,20 @@ class Router extends WicketAcc
 				exit;
 			}
 		}
+
+		// User requesting /my-account, /mon-compte, etc. without a trailing slash or any other sub-folder?
+		$archive_index_slugs = [
+			'/my-account',
+			'/mon-compte',
+			'/mi-cuenta',
+		];
+
+		foreach ($archive_index_slugs as $archive_index_slug) {
+			// Must be an exact match, because we don't want to redirect /my-account/sub-pages to /my-account/
+			if ($_SERVER['REQUEST_URI'] === $archive_index_slug) {
+				wp_safe_redirect($acc_dashboard_url);
+				exit;
+			}
+		}
 	}
 }

@@ -120,15 +120,6 @@ class Helpers extends WicketAcc
 		$page    = get_page_by_path('acc_global-headerbanner', OBJECT, 'my-account');
 		$page_id = $page->ID;
 
-		// If WPML is installed, get the translated page ID instead
-		if (defined('ICL_SITEPRESS_VERSION')) {
-			$page_id_translation = apply_filters('wpml_object_id', $page_id, 'my-account', true);
-
-			if ($page_id_translation) {
-				$page_id = $page_id_translation;
-			}
-		}
-
 		return $page_id;
 	}
 
