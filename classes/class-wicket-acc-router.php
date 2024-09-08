@@ -215,7 +215,7 @@ class Router extends WicketAcc
 			return;
 		}
 
-		$set_slug = WACC()->get_slug();
+		$set_slug = 'dashboard';
 		$set_name = WACC()->get_name();
 
 		// Empty?
