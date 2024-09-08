@@ -12,7 +12,7 @@ defined('ABSPATH') || exit;
  * Migration to 1.3.x or greater, from 1.2.x or lower.
  * Manual steps:
  *
- * 1. Update this plugin on target site.
+ * 1. Update this plugin on target site. You will see a duplicated Account Centre CPT available. It's fine, don't panic.
  *
  * 2. Make sure ACF json files are updated and synced.
  * /wp-admin/edit.php?post_type=acf-field-group&post_status=sync
