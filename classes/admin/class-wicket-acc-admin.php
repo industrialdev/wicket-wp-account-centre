@@ -25,8 +25,6 @@ class AdminSettings extends WicketAcc
 		add_action('acf/options_page/save', [$this, 'acc_options_save'], 10, 2);
 		//add_filter('acf/load_field', [$this, 'acf_field_description_centre_spelling']);
 		add_action('admin_menu', [$this, 'admin_register_submenu_pages']);
-		add_action('pre_get_posts', [$this, 'filter_acc_posts']);
-		add_filter('wp_count_posts', [$this, 'adjust_post_counts'], 10, 3);
 	}
 
 	/**
@@ -172,68 +170,5 @@ class AdminSettings extends WicketAcc
 		}
 
 		return $field;
-	}
-
-	/**
-	 * Filter the ACC posts query to hide acc_ pages.
-	 *
-	 * @param object $query The WP_Query object.
-	 */
-	public function filter_acc_posts($query)
-	{
-		global $pagenow, $post_type;
-
-		if (is_admin() && $pagenow == 'edit.php' && $post_type == 'my-account' && !isset($_GET['post_status'])) {
-			$acc_slugs = $this->get_acc_hidden_ids();
-			$query->set('post__not_in', $acc_slugs);
-		}
-	}
-
-	/**
-	 * Retrieve the IDs of the hidden ACC pages.
-	 * The ones that start with 'acc_' are hidden.
-	 *
-	 * @return array
-	 */
-	private function get_acc_hidden_ids()
-	{
-		global $wpdb;
-
-		return $wpdb->get_col(
-			$wpdb->prepare(
-				"SELECT ID FROM $wpdb->posts WHERE post_type = %s AND post_name LIKE %s",
-				'my-account',
-				'acc_%'
-			)
-		);
-	}
-
-	/**
-	 * Adjust the post counts for the ACC pages.
-	 *
-	 * @param object $counts The post counts object.
-	 * @param string $type The post type.
-	 * @param string $perm The post status.
-	 *
-	 * @return object The adjusted post counts object.
-	 */
-	public function adjust_post_counts($counts, $type, $perm)
-	{
-		if ($type !== 'my-account' || !is_admin()) {
-			return $counts;
-		}
-
-		global $wpdb;
-		$acc_slugs = $this->get_acc_hidden_ids();
-
-		foreach ($counts as $status => $count) {
-			$adjusted_count = $wpdb->get_var($wpdb->prepare(
-				"SELECT COUNT(*) FROM $wpdb->posts WHERE post_type = %s AND post_status = %s AND ID NOT IN (" . implode(',', array_fill(0, count($acc_slugs), '%d')) . ")",
-				array_merge([$type, $status], $acc_slugs)
-			));
-			$counts->$status = $adjusted_count;
-		}
-
-		return $counts;
 	}
 }
