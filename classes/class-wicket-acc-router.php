@@ -408,15 +408,14 @@ class Router extends WicketAcc
 			$acc_dashboard_url  = home_url(trailingslashit(WACC()->get_slug() . '/' . $acc_dashboard_post->post_name));
 		}
 
-		// Ensure we're using pretty urls
+		// Ensure we're remove the slash for the comparison
 		$acc_dashboard_url = untrailingslashit($acc_dashboard_url);
-
-		$current_url     = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-		$acc_index_slugs = array_map('trailingslashit', $this->acc_index_slugs);
+		$current_url       = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+		$acc_index_slugs   = array_map('trailingslashit', $this->acc_index_slugs);
 
 		foreach ($acc_index_slugs as $slug) {
 			if ($current_url === '/' . $slug) {
-				wp_safe_redirect($acc_dashboard_url);
+				wp_safe_redirect(trailingslashit($acc_dashboard_url));
 				exit;
 			}
 		}
