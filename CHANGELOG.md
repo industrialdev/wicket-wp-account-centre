@@ -2,7 +2,7 @@
 Previously known as My Account Page Editor
 
 # 1.3.10 / 2024-09-08
-- Re-worked the entire ACC "router" logic. Now it follows a more standard WordPress routing approach, without use of custom rewrite rules, introducing less bugs, and preventing conflicts with other plugins, like WPML. Also: it's more efficient. Speedier.
+- Re-worked the entire ACC "router" logic. Again. Forget about 1.2.x changes. Now it follows a more standard WordPress routing approach, without use of custom rewrite rules or replacing URLs on the fly, introducing less bugs, and preventing conflicts with other plugins, like WPML. Also: it's more efficient. Speedier.
 
 # 1.2.20 / 2024-09-04
 - Revamped the entire /account-centre/ rewrites from before, that were only hijacking parts of the WooCommerce my-account page. Now the new implementation does not interfere with WordPress rewrite rules. This was causing issues with 3rd party plugins, like WPML, that simply broke because they weren't able to determine the proper URL for a page.
