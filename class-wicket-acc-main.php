@@ -56,20 +56,10 @@ define('WICKET_ACC_SLUG', 'account-centre'); // We take care of multi-language s
  */
 class WicketAcc
 {
-	protected $acc_slugs = [
-		'en'    => 'account-centre',
-		'en_CA' => 'account-centre',
-		'en_US' => 'account-center',
-		'fr'    => 'mon-compte',
-		'es'    => 'mi-cuenta',
-	];
-
-	protected $acc_names = [
-		'en'    => 'Account Centre',
-		'en_CA' => 'Account Centre',
-		'en_US' => 'Account Center',
-		'fr'    => 'Mon Compte',
-		'es'    => 'Mi Cuenta',
+	protected $acc_index_slugs = [
+		'en' => 'my-account',
+		'fr' => 'mon-compte',
+		'es' => 'mi-cuenta',
 	];
 
 	protected array $acc_pages_map = [

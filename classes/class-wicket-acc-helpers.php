@@ -28,6 +28,16 @@ class Helpers extends WicketAcc
 	}
 
 	/**
+	 * Check if user is logged in
+	 *
+	 * @return bool
+	 */
+	public function is_user_logged_in()
+	{
+		return is_user_logged_in();
+	}
+
+	/**
 	 * Get ACC slug localization option
 	 *
 	 * account-centre
@@ -50,8 +60,8 @@ class Helpers extends WicketAcc
 			global $sitepress;
 			$current_language = $sitepress->get_current_language();
 
-			if (isset($this->acc_slugs[$current_language])) {
-				return $this->acc_slugs[$current_language];
+			if (isset($this->acc_index_slugs[$current_language])) {
+				return $this->acc_index_slugs[$current_language];
 			}
 		}
 

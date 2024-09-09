@@ -14,13 +14,13 @@ defined('ABSPATH') || exit;
  *
  * 1. Update this plugin on target site. You will see a duplicated Account Centre CPT available. It's fine, don't panic.
  *
- * 2. On WPML Settings, set "my-account" CPT as Translatable.
+ * 2. If WPML is not in use, you can skip this step. If WPML is being used, go to WPML Settings, set "my-account" CPT as Translatable.
  * /wp-admin/admin.php?page=tm/menu/settings
  *
  * 3. Load the secret migration URL on target site, at wp-admin/:
  * /wp-admin/?migrate_to_my_account=1_3
  *
- * 4. WPML Troubleshooting, do:
+ * 4. If WPML is not in use, you can skip this step. If WPML is being used, do WPML Troubleshooting at:
  * /wp-admin/admin.php?page=sitepress-multilingual-cms%2Fmenu%2Ftroubleshooting.php
  * 		> Set Language Information
  * 		> Fix terms count
@@ -28,12 +28,12 @@ defined('ABSPATH') || exit;
  *
  * 5. Flush rewrite rules (save WP Permalinks Settings).
  *
- * 6. On new "my-account" CPT, edit every FR page that shows as it was an EN page, one by one, and change their lang from EN to FR. Yes: EN to FR.
+ * 6. If WPML is not in use, you can skip this step. If WPML is being used, go to the new "my-account" CPT, edit every FR page that shows as it was an EN page, one by one, and change their lang from EN to FR. Yes: EN to FR.
  * /wp-admin/edit.php?post_type=my-account
- * 	Language of this page: FR
- * 	Confirm on modal. Wait for reload.
- * 	Connect with translation, search for the correct EN page. Confirm.
- * 	On modal, UNCHECK "make FR the original language..." and click Assign.
+ * 		> Language of this page: FR
+ * 		> Confirm on modal. Wait for reload.
+ * 		> Connect with translation, search for the correct EN page. Confirm.
+ * 		> On modal, UNCHECK "make FR the original language..." and click Assign.
  *
  * 7. Ammend every menu items with wrong URLs, from /account-centre/ to /my-account/
  * /wp-admin/nav-menus.php
