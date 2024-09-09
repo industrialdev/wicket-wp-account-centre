@@ -50,8 +50,13 @@ class Block_Welcome extends WicketAcc
 		$image_url           = get_avatar_url($current_user->ID, ['size' => '300']);
 		$active_memberships  = wicket_get_active_memberships($iso_code);
 
-		// We can't query with /account-centre or /account-center, because that URL part was injected by ACC plugin
-		$editprofile_page_slug = str_replace(['/account-centre', '/account-center', '/mon-compte'], '', $edit_profile_button['url']);
+		if (empty($edit_profile_button) || !is_array($edit_profile_button)) {
+			$edit_profile_button = [];
+			$edit_profile_button['url'] = 'my-account';
+		}
+
+		// We can't query with $acc_index_slugs, because that URL part was injected by ACC plugin
+		$editprofile_page_slug = str_replace($this->acc_index_slugs, '', $edit_profile_button['url']);
 		$editprofile_page      = get_page_by_path($editprofile_page_slug, OBJECT, 'my-account');
 		$editprofile_page_link = get_permalink($editprofile_page->ID);
 ?>

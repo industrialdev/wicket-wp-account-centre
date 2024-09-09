@@ -64,8 +64,8 @@ class Router extends WicketAcc
 		add_action('admin_init', [$this, 'init_all_pages']);
 		add_action('admin_init', [$this, 'maybe_migrate_to_my_account']);
 		add_action('init', [$this, 'acc_pages_template']);
-		add_filter('archive_template', [$this, 'custom_archive_template']);
 		add_action('plugins_loaded', [$this, 'redirect_acc_old_slugs']);
+		add_action('plugins_loaded', [$this, 'redirect_acc_archive_to_dashboard']);
 	}
 
 	/**
@@ -294,6 +294,9 @@ class Router extends WicketAcc
 
 		if ($acc_page_account_centre_id) {
 			update_field('acc_page_dashboard', $acc_page_account_centre_id, 'option');
+
+			// Change the slug of the index page to: dashboard
+			$wpdb->update($wpdb->posts, ['post_name' => 'dashboard'], ['ID' => $acc_page_account_centre_id]);
 		}
 
 		// Delete old ACF field
@@ -304,12 +307,7 @@ class Router extends WicketAcc
 
 		if ($acc_old_headerbanner) {
 			// Rename post slug
-			wp_update_post(
-				[
-					'ID'        => $acc_old_headerbanner,
-					'post_name' => 'acc_global-headerbanner',
-				]
-			);
+			$wpdb->update($wpdb->posts, ['post_name' => 'acc_global-headerbanner'], ['ID' => $acc_old_headerbanner]);
 
 			// Update new ACF field
 			update_field('acc_global-headerbanner', $acc_old_headerbanner, 'option');
@@ -343,22 +341,6 @@ class Router extends WicketAcc
 		global $wpdb;
 
 		$wpdb->update($wpdb->posts, ['post_type' => 'my-account'], ['ID' => $post_id]);
-	}
-
-	/**
-	 * Adjust language switcher URLs
-	 *
-	 * @param array $languages
-	 *
-	 * @return array
-	 */
-	public function adjust_language_switcher_urls($languages)
-	{
-		foreach ($languages as $lang_code => &$language) {
-			$translated_page_id = apply_filters('wpml_object_id', $this->get_acc_page_id(), 'page', true, $lang_code);
-			$language['url'] = get_permalink($translated_page_id);
-		}
-		return $languages;
 	}
 
 	/**
@@ -402,32 +384,42 @@ class Router extends WicketAcc
 	}
 
 	/**
-	 * Custom archive template for my-account CPT
+	 * Redirect /my-account/ archive to /my-account/dashboard/
 	 *
-	 * @param string $template
-	 *
-	 * @return string
+	 * @return void
 	 */
-	public function custom_archive_template($template)
+	public function redirect_acc_archive_to_dashboard()
 	{
-		if (is_post_type_archive('my-account')) {
-			$acc_dashboard_id  = get_option('options_acc_page_dashboard');
-			$acc_dashboard_url = get_permalink($acc_dashboard_id);
-
-			wp_safe_redirect($acc_dashboard_url);
-			exit;
-
-			/*$user_template = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/dashboard-wicket_acc.php';
-			$plugin_template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/dashboard-wicket_acc.php';
-
-			if (file_exists($user_template)) {
-				return $user_template;
-			} elseif (file_exists($plugin_template)) {
-				return $plugin_template;
-			}*/
+		if (is_admin()) {
+			return;
 		}
 
-		return $template;
+		// Only if we already migrated to my-account
+		if (!get_option('wicket_acc_cpt_changed_to_my_account')) {
+			return;
+		}
+
+		$acc_dashboard_id   = get_option('options_acc_page_dashboard');
+		$acc_dashboard_url  = get_permalink($acc_dashboard_id);
+
+		// Do we got a pretty url? check if URL doesn't end with a slash
+		if (substr($acc_dashboard_url, -1) !== '/') {
+			$acc_dashboard_post = get_post($acc_dashboard_id);
+			$acc_dashboard_url  = home_url(trailingslashit(WACC()->get_slug() . '/' . $acc_dashboard_post->post_name));
+		}
+
+		// Ensure we're using pretty urls
+		$acc_dashboard_url = untrailingslashit($acc_dashboard_url);
+
+		$current_url     = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+		$acc_index_slugs = array_map('trailingslashit', $this->acc_index_slugs);
+
+		foreach ($acc_index_slugs as $slug) {
+			if ($current_url === '/' . $slug) {
+				wp_safe_redirect($acc_dashboard_url);
+				exit;
+			}
+		}
 	}
 
 	/**

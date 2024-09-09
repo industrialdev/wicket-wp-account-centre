@@ -28,20 +28,7 @@ class Helpers extends WicketAcc
 	}
 
 	/**
-	 * Check if user is logged in
-	 *
-	 * @return bool
-	 */
-	public function is_user_logged_in()
-	{
-		return is_user_logged_in();
-	}
-
-	/**
 	 * Get ACC slug localization option
-	 *
-	 * account-centre
-	 * account-center
 	 *
 	 * Option from Base Plugin Settings
 	 *
@@ -49,12 +36,6 @@ class Helpers extends WicketAcc
 	 */
 	public function get_slug()
 	{
-		$locale = get_field('ac_localization', 'option');
-
-		if (!isset($locale) || empty($locale)) {
-			return WICKET_ACC_SLUG;
-		}
-
 		// WPML enabled?
 		if (function_exists('icl_get_languages')) {
 			global $sitepress;
@@ -65,7 +46,7 @@ class Helpers extends WicketAcc
 			}
 		}
 
-		return $locale['value'];
+		return $this->acc_index_slugs['en'];
 	}
 
 	/**
