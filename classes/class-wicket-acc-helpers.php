@@ -120,6 +120,11 @@ class Helpers extends WicketAcc
 		$page    = get_page_by_path('acc_global-headerbanner', OBJECT, 'my-account');
 		$page_id = $page->ID;
 
+		// Is WPML enabled?
+		if (function_exists('icl_get_languages')) {
+			$page_id = apply_filters('wpml_object_id', $page_id, 'my-account', true, $this->get_language());
+		}
+
 		return $page_id;
 	}
 

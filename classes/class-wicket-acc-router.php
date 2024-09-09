@@ -452,9 +452,11 @@ class Router extends WicketAcc
 
 				// Keep sub-folders
 				$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-				$subfolder = str_replace('/wc-account', '',
-						$path
-					);
+				$subfolder = str_replace(
+					'/wc-account',
+					'',
+					$path
+				);
 				if ($subfolder) {
 					$new_url = rtrim($new_url, '/') . $subfolder;
 				}

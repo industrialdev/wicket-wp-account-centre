@@ -73,12 +73,19 @@ class AdminSettings extends WicketAcc
 		if ($acc_global_headerbanner) {
 			$acc_global_headerbanner_page = get_page_by_path('acc_global-headerbanner', OBJECT, 'my-account');
 
-			$edit_link = get_edit_post_link($acc_global_headerbanner_page->ID);
+			$page_id = absint($acc_global_headerbanner_page->ID);
+
+			// Is WPML enabled?
+			if (function_exists('icl_get_languages')) {
+				$page_id = apply_filters('wpml_object_id', $page_id, 'my-account', true, WACC()->get_language());
+			}
+
+			$edit_link = get_edit_post_link($page_id);
 
 			add_submenu_page(
 				'edit.php?post_type=my-account',
-				'Global Header Banner',
-				'Global Header Banner',
+				'Global Header',
+				'Global Header',
 				'manage_options',
 				$edit_link,
 				null,

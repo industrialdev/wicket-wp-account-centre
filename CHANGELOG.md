@@ -1,7 +1,7 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
-# 1.3.8 / 2024-09-08
+# 1.3.9 / 2024-09-08
 - Re-worked the entire ACC "router" logic. Now it follows a more standard WordPress routing approach, without use of custom rewrite rules, introducing less bugs, and preventing conflicts with other plugins, like WPML. Also: it's more efficient. Speedier.
 
 # 1.2.20 / 2024-09-04
