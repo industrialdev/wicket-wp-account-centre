@@ -140,4 +140,21 @@ class Helpers extends WicketAcc
 			include_once $sidebar_template;
 		}
 	}
+
+	/**
+	 * Get create account page URL
+	 *
+	 * @return string
+	 */
+	public function get_create_account_page_url()
+	{
+		$url = get_permalink(get_page_by_path('create-account', OBJECT, 'page'));
+
+		// Not exists?
+		if (empty($url)) {
+			return home_url();
+		}
+
+		return $url;
+	}
 }
