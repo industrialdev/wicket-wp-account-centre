@@ -69,15 +69,17 @@ class Blocks extends WicketAcc
 		$registry = WP_Block_Type_Registry::get_instance();
 
 		foreach ($blocks as $block) {
-			if (file_exists(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/block.json')) {
-				// Check if $block already registered
-				if ($registry->get_registered('wicket-ac/' . $block)) {
-					continue;
-				}
+			$block_name = 'wicket-ac/' . $block;
 
+			// Check if block is already registered
+			if ($registry->get_registered($block_name)) {
+				continue;
+			}
+
+			if (file_exists(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/block.json')) {
 				register_block_type(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/block.json');
 
-				// TODO: When registering a block using block.json, the block style and script are automatically registered. We shouldn't need to do it manually. Test it!
+				// When registering a block using block.json, the block style and script are automatically registered. We shouldn't need to do it manually. Test it!
 
 				// Register block style
 				/*if (file_exists(WICKET_ACC_PATH . 'includes/blocks/' . $block . '/block-styles.css')) {
@@ -181,11 +183,11 @@ class Blocks extends WicketAcc
 		$template_name = sanitize_title($template_name);
 
 		// Assume template is in child theme
-		$template_path = WICKET_ACC_USER_TEMPLATE_PATH 	. 'blocks/' . WICKET_ACC_SLUG . '/' . $template_name . '.php';
+		$template_path = WICKET_ACC_USER_TEMPLATE_PATH 	. 'blocks/' . WICKET_ACC_DIR_SLUG . '/' . $template_name . '.php';
 
 		if (!file_exists($template_path)) {
 			// If not found, check if template is in plugin folder
-			$template_path = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'blocks/' . WICKET_ACC_SLUG . '/' . $template_name . '.php';
+			$template_path = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'blocks/' . WICKET_ACC_DIR_SLUG . '/' . $template_name . '.php';
 		}
 
 		if (!file_exists($template_path)) {

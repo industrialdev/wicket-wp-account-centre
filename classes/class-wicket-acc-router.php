@@ -14,13 +14,13 @@ defined('ABSPATH') || exit;
  *
  * 1. Update this plugin on target site. You will see a duplicated Account Centre CPT available. It's fine, don't panic.
  *
- * 2. If WPML is not in use, you can skip this step. If WPML is being used, go to WPML Settings, set "my-account" CPT as Translatable.
+ * 2. [If WPML is not in use, you can skip this step] If WPML is being used, go to WPML Settings, set "my-account" CPT as Translatable.
  * /wp-admin/admin.php?page=tm/menu/settings
  *
  * 3. Load the secret migration URL on target site, at wp-admin/:
  * /wp-admin/?migrate_to_my_account=1_3
  *
- * 4. If WPML is not in use, you can skip this step. If WPML is being used, do WPML Troubleshooting at:
+ * 4. [If WPML is not in use, you can skip this step] If WPML is being used, do WPML Troubleshooting at:
  * /wp-admin/admin.php?page=sitepress-multilingual-cms%2Fmenu%2Ftroubleshooting.php
  * 		> Set Language Information
  * 		> Fix terms count
@@ -28,7 +28,7 @@ defined('ABSPATH') || exit;
  *
  * 5. Flush rewrite rules (save WP Permalinks Settings).
  *
- * 6. If WPML is not in use, you can skip this step. If WPML is being used, go to the new "my-account" CPT, edit every FR page that shows as it was an EN page, one by one, and change their lang from EN to FR. Yes: EN to FR.
+ * 6. [If WPML is not in use, you can skip this step] If WPML is being used, go to the new "my-account" CPT, edit every FR page that shows as it was an EN page, one by one, and change their lang from EN to FR. Yes: EN to FR.
  * /wp-admin/edit.php?post_type=my-account
  * 		> Language of this page: FR
  * 		> Confirm on modal. Wait for reload.
@@ -40,7 +40,7 @@ defined('ABSPATH') || exit;
  *
  * Done.
  *
- * If you need to translate my-account CPT slug, use WPML directly:
+ * If you need to translate my-account CPT slug for other languages, use WPML directly:
  * https://wpml.org/documentation/getting-started-guide/translating-page-slugs/
  */
 class Router extends WicketAcc
@@ -64,8 +64,8 @@ class Router extends WicketAcc
 		add_action('admin_init', [$this, 'init_all_pages']);
 		add_action('admin_init', [$this, 'maybe_migrate_to_my_account']);
 		add_action('init', [$this, 'acc_pages_template']);
+		add_filter('archive_template', [$this, 'custom_archive_template']);
 		add_action('plugins_loaded', [$this, 'redirect_acc_old_slugs']);
-		add_action('plugins_loaded', [$this, 'redirect_acc_archive_to_dashboard']);
 	}
 
 	/**
@@ -93,20 +93,6 @@ class Router extends WicketAcc
 			$this->acc_slug_cache = get_post($acc_page_id)->post_name;
 		}
 		return $this->acc_slug_cache;
-	}
-
-	/**
-	 * Get ACC Page URL
-	 *
-	 * @return string
-	 */
-	public function get_acc_url()
-	{
-		if ($this->acc_url_cache === null) {
-			$acc_page_id = $this->get_acc_page_id();
-			$this->acc_url_cache = get_permalink($acc_page_id);
-		}
-		return $this->acc_url_cache;
 	}
 
 	/**
@@ -383,42 +369,27 @@ class Router extends WicketAcc
 		});
 	}
 
+
 	/**
-	 * Redirect /my-account/ archive to /my-account/dashboard/
+	 * Custom archive template for my-account CPT
 	 *
-	 * @return void
+	 * NOTE: we used to redirect users earlier, at template_redirect. But, WP complains on some server configurations, that you can't access is_post_type_archive function before the main query is run. So, to avoid issues with those sites, we're using a custom archive template and redirecting users over there.
+	 *
+	 * @param string $template
+	 *
+	 * @return string
 	 */
-	public function redirect_acc_archive_to_dashboard()
+	public function custom_archive_template($template)
 	{
-		if (is_admin()) {
-			return;
-		}
+		if (is_post_type_archive('my-account')) {
+			$fixed_template = WICKET_ACC_PATH . 'includes/archive-acc.php';
 
-		// Only if we already migrated to my-account
-		if (!get_option('wicket_acc_cpt_changed_to_my_account')) {
-			return;
-		}
-
-		$acc_dashboard_id   = get_option('options_acc_page_dashboard');
-		$acc_dashboard_url  = get_permalink($acc_dashboard_id);
-
-		// Do we got a pretty url? check if URL doesn't end with a slash
-		if (substr($acc_dashboard_url, -1) !== '/') {
-			$acc_dashboard_post = get_post($acc_dashboard_id);
-			$acc_dashboard_url  = home_url(trailingslashit(WACC()->get_slug() . '/' . $acc_dashboard_post->post_name));
-		}
-
-		// Ensure we're remove the slash for the comparison
-		$acc_dashboard_url = untrailingslashit($acc_dashboard_url);
-		$current_url       = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-		$acc_index_slugs   = array_map('trailingslashit', $this->acc_index_slugs);
-
-		foreach ($acc_index_slugs as $slug) {
-			if ($current_url === '/' . $slug) {
-				wp_safe_redirect(trailingslashit($acc_dashboard_url));
-				exit;
+			if (file_exists($fixed_template)) {
+				return $fixed_template;
 			}
 		}
+
+		return $template;
 	}
 
 	/**
