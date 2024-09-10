@@ -302,7 +302,7 @@ class Router extends WicketAcc
 		}
 
 		// Flush rewrite rules, because we've changed the CPT slug
-		flush_rewrite_rules();
+		flush_rewrite_rules(false);
 
 		// Empty caches
 		wp_cache_flush();

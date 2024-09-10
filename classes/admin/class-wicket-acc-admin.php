@@ -25,6 +25,7 @@ class AdminSettings extends WicketAcc
 		add_action('acf/options_page/save', [$this, 'acc_options_save'], 10, 2);
 		//add_filter('acf/load_field', [$this, 'acf_field_description_centre_spelling']);
 		add_action('admin_menu', [$this, 'admin_register_submenu_pages']);
+		add_action('admin_init', [$this, 'tweak_wc_myaccount_page']);
 	}
 
 	/**
@@ -32,6 +33,7 @@ class AdminSettings extends WicketAcc
 	 */
 	public function acc_admin_assets()
 	{
+		// Only on the backend
 		if (!is_admin()) {
 			return;
 		}
@@ -45,6 +47,11 @@ class AdminSettings extends WicketAcc
 	 */
 	public function admin_register_options_page()
 	{
+		// Only on the backend
+		if (!is_admin()) {
+			return;
+		}
+
 		// Check function exists.
 		if (function_exists('acf_add_options_sub_page')) {
 			// Add sub page under custom post type
@@ -65,6 +72,11 @@ class AdminSettings extends WicketAcc
 	 */
 	public function admin_register_submenu_pages()
 	{
+		// Only on the backend
+		if (!is_admin()) {
+			return;
+		}
+
 		// Shortcut: global banner page
 		$acc_global_headerbanner = get_field('acc_global-headerbanner', 'option');
 
@@ -120,6 +132,7 @@ class AdminSettings extends WicketAcc
 	 */
 	public function acf_json_folder_permissions()
 	{
+		// Only on the backend
 		if (!is_admin()) {
 			return;
 		}
@@ -136,6 +149,11 @@ class AdminSettings extends WicketAcc
 	 */
 	public function acc_options_save($post_id, $menu_slug)
 	{
+		// Only on the backend
+		if (!is_admin()) {
+			return;
+		}
+
 		if ($menu_slug !== 'wicket_acc_options') {
 			return;
 		}
@@ -153,6 +171,11 @@ class AdminSettings extends WicketAcc
 	 */
 	public function acf_field_description_centre_spelling($field)
 	{
+		// Only on the backend
+		if (!is_admin()) {
+			return $field;
+		}
+
 		// Check if it's the correct field by comparing the field name and parent
 		if ($field['name'] == 'ac_localization' && $field['parent'] == 'group_66a9987e2539f') {
 			// Get current meta value for ac_localization from the options page
@@ -170,5 +193,65 @@ class AdminSettings extends WicketAcc
 		}
 
 		return $field;
+	}
+
+	/**
+	 * Tweak WooCommerce my-account page for working with Wicket Account Centre
+	 *
+	 * @return void
+	 */
+	public function tweak_wc_myaccount_page() {
+		// Only on the backend
+		if (!is_admin()) {
+			return;
+		}
+
+		// Detect if we don't have a CPT: wicket_acc
+		if (!get_post_type_object('wicket_acc')) {
+			return;
+		}
+
+		// Check if we've already changed the CPT to my-account
+		if (get_option('wicket_acc_cpt_changed_to_my_account')) {
+			return;
+		}
+
+		// Get current WooCommerce "myaccount" page ID
+		$woo_my_account_page_id = wc_get_page_id('myaccount');
+
+		if ($woo_my_account_page_id > 0) {
+			global $wpdb;
+
+			// Change page slug to wc-account and title to "WC Account"
+			$query = $wpdb->prepare(
+				"UPDATE $wpdb->posts SET post_name = 'wc-account', post_title = 'WC Account' WHERE ID = %d",
+				$woo_my_account_page_id
+			);
+
+			$wpdb->query($query);
+
+			// Delete old slug meta
+			delete_post_meta($woo_my_account_page_id, '_wp_old_slug');
+			delete_post_meta($woo_my_account_page_id, '_wp_old_date');
+
+			// Remove any reference to "my-account" from WooCommerce
+			delete_option('_woocommerce_myaccount_page_id');
+			delete_option('_woocommerce_myaccount_page_slug');
+			delete_option('_woocommerce_myaccount_page_title');
+
+			// Set the new page as the WooCommerce my-account page
+			update_option('_woocommerce_myaccount_page_id', $woo_my_account_page_id);
+			update_option('_woocommerce_myaccount_page_slug', 'wc-account');
+			update_option('_woocommerce_myaccount_page_title', 'WC Account');
+
+			// Flush rewrite rules, because we've changed the CPT slug
+			flush_rewrite_rules(false);
+
+			// Empty caches
+			wp_cache_flush();
+
+			// Save an option to track that we've changed the CPT to my-account
+			update_option('wicket_acc_cpt_changed_to_my_account', true);
+		}
 	}
 }
