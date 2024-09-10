@@ -336,8 +336,8 @@ class Router extends WicketAcc
 	 */
 	private function get_wicket_acc_template()
 	{
-		$user_template = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/page-wicket_acc.php';
-		$plugin_template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/page-wicket_acc.php';
+		$user_template = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/page-acc.php';
+		$plugin_template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/page-acc.php';
 
 		if (file_exists($user_template)) {
 			return $user_template;

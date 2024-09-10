@@ -7,7 +7,7 @@ defined('ABSPATH') || exit;
  *
  * This is the default template used for pages created inside Wicket Account Centre CPT.
  *
- * This template can be overridden (at theme level) by copying it to yourtheme/templates-wicket/account-centre/page-wicket_acc.php.
+ * This template can be overridden (at theme level) by copying it to yourtheme/templates-wicket/account-centre/page-acc.php.
  */
 
 get_header();

@@ -49,7 +49,7 @@ if ($acc_lang != 'en') {
 }
 
 // TODO: make it overridable
-$acc_template_dir = WICKET_ACC_PLUGIN_TEMPLATE_PATH . WICKET_ACC_DIR_SLUG . '/';
+$acc_template_dir = WICKET_ACC_PLUGIN_TEMPLATE_PATH . WICKET_ACC_TEMPLATES_FOLDER . '/';
 
 // Init router
 add_action("init", function () {
