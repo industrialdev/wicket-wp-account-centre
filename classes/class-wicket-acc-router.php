@@ -406,40 +406,9 @@ class Router extends WicketAcc
 
 		// WooCommerce account page
 		if (str_contains($_SERVER['REQUEST_URI'], 'wc-account')) {
-			// Check if the URL contains URLs like: /wc-account/org, /wc-account/organization/, /wc-account/organization-management/, etc. Anything after /wc-account/ that begins with "org"
-			if (!preg_match('#^/wc-account/org#', $_SERVER['REQUEST_URI'])) {
-				// Redirect to the new URL. Keep sub-folders (like /wc-account/orders/) and query params, also past POST data if any.
-				$new_url = $acc_dashboard_url;
-
-				// Keep sub-folders
-				$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-				$subfolder = str_replace(
-					'/wc-account',
-					'',
-					$path
-				);
-				if ($subfolder) {
-					$new_url = rtrim($new_url, '/') . $subfolder;
-				}
-
-				// Keep query parameters
-				$query = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY);
-				if ($query) {
-					$new_url .= '?' . $query;
-				}
-
-				// Redirect with POST data if any
-				if ($_POST) {
-					echo '<form id="redirect_form" method="post" action="' . esc_url($new_url) . '">';
-					foreach ($_POST as $key => $value) {
-						echo '<input type="hidden" name="' . esc_attr($key) . '" value="' . esc_attr($value) . '">';
-					}
-					echo '</form>';
-					echo '<script>document.getElementById("redirect_form").submit();</script>';
-				} else {
-					wp_safe_redirect($new_url);
-				}
-
+			// Redirect user when is on WC index page only
+			if ($_SERVER['REQUEST_URI'] === '/wc-account/') {
+				wp_safe_redirect($acc_dashboard_url);
 				exit;
 			}
 		}
