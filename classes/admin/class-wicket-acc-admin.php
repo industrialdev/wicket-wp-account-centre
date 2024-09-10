@@ -206,8 +206,8 @@ class AdminSettings extends WicketAcc
 			return;
 		}
 
-		// Detect if we don't have a CPT: wicket_acc
-		if (!get_post_type_object('wicket_acc')) {
+		// If we have a CPT wicket_acc registered, then we are in the old plugin version. Let's exit.
+		if (get_post_type_object('wicket_acc')) {
 			return;
 		}
 
