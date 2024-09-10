@@ -79,7 +79,7 @@ class Registers extends WicketAcc
 		// Register ACC CPT
 		register_post_type('my-account', $args);
 
-		// If we haven't migrated to my-account, temporarily show the old CPT
+		// If we already migrated to my-account, don't register the old CPT
 		if (!get_option('wicket_acc_cpt_changed_to_my_account')) {
 			register_post_type('wicket_acc', $args);
 		}

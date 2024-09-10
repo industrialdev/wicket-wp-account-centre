@@ -206,11 +206,6 @@ class AdminSettings extends WicketAcc
 			return;
 		}
 
-		// If we have a CPT wicket_acc registered, then we are in the old plugin version. Let's exit.
-		if (get_post_type_object('wicket_acc')) {
-			return;
-		}
-
 		// Check if we've already changed the CPT to my-account
 		if (get_option('wicket_acc_cpt_changed_to_my_account')) {
 			return;
