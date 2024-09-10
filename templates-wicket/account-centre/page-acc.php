@@ -11,7 +11,7 @@ defined('ABSPATH') || exit;
  */
 
 // No guests
-if(!is_user_logged_in()) {
+if (!is_user_logged_in()) {
 	$return_url = WACC()->get_create_account_page_url();
 	wp_redirect($return_url);
 	exit;

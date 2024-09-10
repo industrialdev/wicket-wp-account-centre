@@ -47,7 +47,6 @@ class Router extends WicketAcc
 {
 	private $acc_page_id_cache = null;
 	private $acc_slug_cache    = null;
-	private $acc_url_cache     = null;
 
 	/**
 	 * Constructor
