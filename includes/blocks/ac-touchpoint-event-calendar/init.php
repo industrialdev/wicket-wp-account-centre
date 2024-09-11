@@ -78,7 +78,7 @@ class Block_TouchpointEventCalendar extends WicketAcc
 
 		// Get query vars
 		$display     = isset($_REQUEST['show']) ? sanitize_text_field($_REQUEST['show']) : 'upcoming';
-		$num_results = isset($_REQUEST['num_results']) ? absint($_REQUEST['num_results']) : 5;
+		$num_results = isset($_REQUEST['num_results']) ? absint($_REQUEST['num_results']) : $num_results;
 
 		if (empty($display)) {
 			$display = 'upcoming';
@@ -201,7 +201,11 @@ class Block_TouchpointEventCalendar extends WicketAcc
 
 				WACC()->Blocks->render_template('touchpoint-tec-card', $args);
 			}
-		//endif;
+			//endif;
+
+			if ($counter == $num_results) {
+				break;
+			}
 		endforeach;
 
 		// Show more like pagination, to load more data in the same page (if there are more than $num_results)
