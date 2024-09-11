@@ -48,7 +48,7 @@ class WooCommerce extends WicketAcc
 	private function get_woocommerce_endpoints()
 	{
 		$query_vars = WC()->query->get_query_vars();
-		$endpoints = array();
+		$endpoints  = [];
 
 		foreach ($query_vars as $key => $value) {
 			// Endpoints are typically strings, not empty
@@ -72,7 +72,7 @@ class WooCommerce extends WicketAcc
 		// Get all current WC endpoints
 		$endpoints = $this->get_woocommerce_endpoints();
 
-		if(empty($endpoints) || !is_array($endpoints)) {
+		if (empty($endpoints) || !is_array($endpoints)) {
 			return false;
 		}
 
@@ -100,7 +100,7 @@ class WooCommerce extends WicketAcc
 			// Add the rest of the requested URL to the page URL. Remove everything from endpoint to the beginning of the URL. Included the endpoint itself.
 			$end_position = strpos($wp->request, $endpoint);
 
-			if($end_position !== false) {
+			if ($end_position !== false) {
 				$query_string = substr($wp->request, $end_position + strlen($endpoint));
 
 				// Remove leading slash if present
