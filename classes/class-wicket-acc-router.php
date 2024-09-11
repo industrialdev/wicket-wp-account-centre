@@ -12,31 +12,9 @@ defined('ABSPATH') || exit;
  * Migration to 1.3.x or greater, from 1.2.x or lower.
  * Manual steps:
  *
- * 1. Update this plugin on target site. You will see a duplicated Account Centre CPT available. It's fine, don't panic.
+ * 1. Open wp-admin at the target site being updated. Reload it if you are already there.
  *
- * 2. [If WPML is not in use, you can skip this step] If WPML is being used, go to WPML Settings, set "my-account" CPT as Translatable.
- * /wp-admin/admin.php?page=tm/menu/settings
- *
- * 3. Load the secret migration URL on target site, at wp-admin/:
- * /wp-admin/?migrate_to_my_account=1_3
- *
- * 4. [If WPML is not in use, you can skip this step] If WPML is being used, do WPML Troubleshooting at:
- * /wp-admin/admin.php?page=sitepress-multilingual-cms%2Fmenu%2Ftroubleshooting.php
- * 		> Set Language Information
- * 		> Fix terms count
- * 		> Fix post type assignments for translation
- *
- * 5. Flush rewrite rules (save WP Permalinks Settings).
- *
- * 6. [If WPML is not in use, you can skip this step] If WPML is being used, go to the new "my-account" CPT, edit every FR page that shows as it was an EN page, one by one, and change their lang from EN to FR. Yes: EN to FR.
- * /wp-admin/edit.php?post_type=my-account
- * 		> Language of this page: FR
- * 		> Confirm on modal. Wait for reload.
- * 		> Connect with translation, search for the correct EN page. Confirm.
- * 		> On modal, UNCHECK "make FR the original language..." and click Assign.
- *
- * 7. Ammend every menu items with wrong URLs, from /account-centre/ to /my-account/
- * /wp-admin/nav-menus.php
+ * 2. Follow on-screen instructions. They will be only be shown once.
  *
  * Done.
  *
@@ -61,7 +39,6 @@ class Router extends WicketAcc
 		}
 
 		add_action('admin_init', [$this, 'init_all_pages']);
-		add_action('admin_init', [$this, 'maybe_migrate_to_my_account']);
 		add_action('init', [$this, 'acc_pages_template']);
 		add_filter('archive_template', [$this, 'custom_archive_template']);
 		add_action('plugins_loaded', [$this, 'redirect_acc_old_slugs']);
@@ -210,122 +187,6 @@ class Router extends WicketAcc
 
 		// Save option to track that we've created the page
 		update_option('wicket_acc_created_dashboard_page', true);
-	}
-
-	/**
-	 * Detects if there's at least one page on the DB with CPT wicket_acc (pre 2024-09-07)
-	 * If there're one or more, change the CPT to my-account
-	 *
-	 * @return void
-	 */
-	public function maybe_migrate_to_my_account()
-	{
-		// Check if we've already changed the CPT to my-account
-		if (get_option('wicket_acc_cpt_changed_to_my_account')) {
-			return;
-		}
-
-		// Run this only when we manually add a secret query string to the URL
-		if (!isset($_GET['migrate_to_my_account']) || $_GET['migrate_to_my_account'] !== '1_3') {
-			return;
-		}
-
-		// Get all posts with old CPT slug
-		$args = [
-			'post_type'      => 'wicket_acc',
-			'post_status'    => 'any',
-			'posts_per_page' => -1,
-		];
-
-		$posts = get_posts($args);
-
-		if ($posts) {
-			foreach ($posts as $post) {
-				$this->update_post_type($post->ID);
-			}
-		}
-
-		// Get current WooCommerce "myaccount" page ID
-		$woo_my_account_page_id = wc_get_page_id('myaccount');
-
-		if ($woo_my_account_page_id > 0) {
-			global $wpdb;
-
-			// Change page slug to wc-account and title to "WC Account"
-			$query = $wpdb->prepare(
-				"UPDATE $wpdb->posts SET post_name = 'wc-account', post_title = 'WC Account' WHERE ID = %d",
-				$woo_my_account_page_id
-			);
-
-			$wpdb->query($query);
-
-			// Delete old slug meta
-			delete_post_meta($woo_my_account_page_id, '_wp_old_slug');
-			delete_post_meta($woo_my_account_page_id, '_wp_old_date');
-
-			// Remove any reference to "my-account" from WooCommerce
-			delete_option('_woocommerce_myaccount_page_id');
-			delete_option('_woocommerce_myaccount_page_slug');
-			delete_option('_woocommerce_myaccount_page_title');
-
-			// Set the new page as the WooCommerce my-account page
-			update_option('_woocommerce_myaccount_page_id', $woo_my_account_page_id);
-			update_option('_woocommerce_myaccount_page_slug', 'wc-account');
-			update_option('_woocommerce_myaccount_page_title', 'WC Account');
-		}
-
-		// Migrate ACF field value from acc_page_account-centre to acc_page_dashboard
-		$acc_page_account_centre_id = get_field('acc_page_account-centre', 'option');
-
-		if ($acc_page_account_centre_id) {
-			update_field('acc_page_dashboard', $acc_page_account_centre_id, 'option');
-
-			// Change the slug of the index page to: dashboard
-			$wpdb->update($wpdb->posts, ['post_name' => 'dashboard'], ['ID' => $acc_page_account_centre_id]);
-		}
-
-		// Delete old ACF field
-		delete_field('acc_page_account-centre', 'option');
-
-		// Rename Global Banner page slug to acc_global-headerbanner
-		$acc_old_headerbanner = get_field('acc_global-banner', 'option');
-
-		if ($acc_old_headerbanner) {
-			// Rename post slug
-			$wpdb->update($wpdb->posts, ['post_name' => 'acc_global-headerbanner'], ['ID' => $acc_old_headerbanner]);
-
-			// Update new ACF field
-			update_field('acc_global-headerbanner', $acc_old_headerbanner, 'option');
-
-			// Delete old ACF field
-			delete_field('acc_global-banner', 'option');
-		}
-
-		// Flush rewrite rules, because we've changed the CPT slug
-		flush_rewrite_rules(false);
-
-		// Empty caches
-		wp_cache_flush();
-
-		// Save an option to track that we've changed the CPT to my-account
-		update_option('wicket_acc_cpt_changed_to_my_account', true);
-
-		// Show a message to the user
-		wp_die('Migration to my-account completed. Continue with the next step.');
-	}
-
-	/**
-	 * Set post type to my-account
-	 *
-	 * @param int $post_id
-	 *
-	 * @return void
-	 */
-	private function update_post_type($post_id)
-	{
-		global $wpdb;
-
-		$wpdb->update($wpdb->posts, ['post_type' => 'my-account'], ['ID' => $post_id]);
 	}
 
 	/**
