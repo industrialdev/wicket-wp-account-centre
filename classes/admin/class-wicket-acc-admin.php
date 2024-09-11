@@ -209,8 +209,8 @@ class AdminSettings extends WicketAcc
 
 		// migrate_to_my_account=1_3
 
-		// Check if we've already changed the CPT to my-account
-		if (get_option('wicket_acc_cpt_changed_to_my_account') && (isset($_GET['migrate_to_my_account']) && $_GET['migrate_to_my_account'] != '1_3')) {
+		// Check if we've already changed the CPT to my-account, and if we are not forcing the migration, then exit
+		if (get_option('wicket_acc_cpt_changed_to_my_account')) {
 			return;
 		}
 
