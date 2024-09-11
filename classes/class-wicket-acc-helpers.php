@@ -157,4 +157,14 @@ class Helpers extends WicketAcc
 
 		return $url;
 	}
+
+	/**
+	 * Checks if WooCommerce is active
+	 *
+	 * @return bool
+	 */
+	public function is_woocommerce_active()
+	{
+		return class_exists('WooCommerce');
+	}
 }
