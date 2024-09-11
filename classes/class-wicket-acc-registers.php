@@ -80,7 +80,7 @@ class Registers extends WicketAcc
 		register_post_type('my-account', $args);
 
 		// If we already migrated to my-account, don't register the old CPT
-		if (!get_option('wicket_acc_cpt_changed_to_my_account')) {
+		if (!get_option('wicket_acc_cpt_changed_to_my_account') || (isset($_GET['migrate_to_my_account']) && $_GET['migrate_to_my_account'] === '1_3')) {
 			register_post_type('wicket_acc', $args);
 		}
 	}
