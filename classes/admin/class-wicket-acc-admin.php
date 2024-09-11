@@ -207,17 +207,18 @@ class AdminSettings extends WicketAcc
 			return;
 		}
 
-		// migrate_to_my_account=1_3
-
-		// Check if we've already changed the CPT to my-account, and if we are not forcing the migration, then exit
+		// Check if we've already changed the CPT to my-account
 		if (get_option('wicket_acc_cpt_changed_to_my_account')) {
-			return;
+			// Check if the query parameter 'migrate_to_my_account' is not set or not equal to '1_3'
+			if (!isset($_GET['migrate_to_my_account']) || $_GET['migrate_to_my_account'] !== '1_3') {
+				return;
+			}
 		}
 
 		global $wpdb;
 
 		// Do we still have a CPT wicket_acc?
-		if (!get_post_type_object('wicket_acc')) {
+		if (get_post_type_object('wicket_acc')) {
 			// Can we query the DB for posts with old CPT slug and change it?
 			$wpdb->query("UPDATE $wpdb->posts SET post_type = 'my-account' WHERE post_type = 'wicket_acc'");
 		}
