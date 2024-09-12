@@ -22,10 +22,8 @@ class WooCommerce extends WicketAcc
 	 */
 	public function __construct()
 	{
-		// HPOS compatibility for WooCommerce
 		add_action('before_woocommerce_init', [$this, 'HPOS_Compatibility']);
-		// Filter URLs to catch WooCommerce endpoints
-		add_action('template_redirect', [$this, 'catch_wc_endpoint_request']);
+		add_filter('woocommerce_locate_template', [$this, 'override_woocommerce_template'], 10, 3);
 	}
 
 	/**
@@ -61,62 +59,29 @@ class WooCommerce extends WicketAcc
 	}
 
 	/**
-	 * Filter requests and check if we are inside a WooCommerce endpoint
+	 * Override WooCommerce templates
 	 *
-	 * @return bool
+	 * @param string $template
+	 * @param string $template_name
+	 * @param string $template_path
+	 *
+	 * @return string
 	 */
-	public function catch_wc_endpoint_request()
+	public function override_woocommerce_template($template, $template_name, $template_path)
 	{
-		global $wp;
+		if ($template_name === 'myaccount/my-account.php') {
+			$plugin_template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/page-wc.php';
+			$user_template   = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/page-wc.php';
 
-		// Get all current WC endpoints
-		$endpoints = $this->get_woocommerce_endpoints();
-
-		if (empty($endpoints) || !is_array($endpoints)) {
-			return false;
-		}
-
-		// If the URL is not the base WC myaccount page, we're not in a WC endpoint
-		$wc_myaccount_page_id = wc_get_page_id('myaccount');
-
-		// Get wc_myaccount_page_id page slug
-		$wc_myaccount_page_slug = get_page_uri($wc_myaccount_page_id);
-
-		// Does the current URL match the wc_myaccount_page_slug?
-		if (!str_contains($wp->request, $wc_myaccount_page_slug)) {
-			return false;
-		}
-
-		// Catch the endpoint name
-		$endpoint = WC()->query->get_current_endpoint();
-
-		// Check if we have a page to catch this endpoint
-		$maybe_page_id = get_field('acc_page_' . $endpoint, 'option');
-
-		if ($maybe_page_id) {
-			// Get this page URL, and pass everything from the WC endpoint to it
-			$acc_page_url = get_permalink($maybe_page_id);
-
-			// Add the rest of the requested URL to the page URL. Remove everything from endpoint to the beginning of the URL. Included the endpoint itself.
-			$end_position = strpos($wp->request, $endpoint);
-
-			if ($end_position !== false) {
-				$query_string = substr($wp->request, $end_position + strlen($endpoint));
-
-				// Remove leading slash if present
-				$query_string = ltrim($query_string, '/');
-
-				// Add the query string to the page URL
-				if (!empty($query_string)) {
-					$acc_page_url = trailingslashit(trailingslashit($acc_page_url) . $query_string);
-				}
+			if (file_exists($user_template)) {
+				return $user_template;
 			}
 
-			// Redirect to the page
-			wp_safe_redirect($acc_page_url);
-			exit;
+			if (file_exists($plugin_template)) {
+				return $plugin_template;
+			}
 		}
 
-		return false;
+		return $template;
 	}
 }
