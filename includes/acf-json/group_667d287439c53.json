@@ -117,7 +117,7 @@
             "label": "Override \"see past events\" link",
             "name": "override_past_events_link",
             "aria-label": "",
-            "type": "url",
+            "type": "text",
             "instructions": "Optional.",
             "required": 0,
             "conditional_logic": 0,
@@ -128,7 +128,10 @@
             },
             "wpml_cf_preferences": 1,
             "default_value": "",
-            "placeholder": ""
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
         },
         {
             "key": "field_66d5f53780b4d",
@@ -172,7 +175,7 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 0,
+            "wpml_cf_preferences": 1,
             "message": "",
             "default_value": 1,
             "ui_on_text": "",
@@ -204,5 +207,5 @@
     "description": "",
     "show_in_rest": 0,
     "acfml_field_group_mode": "translation",
-    "modified": 1725298539
+    "modified": 1726167262
 }
