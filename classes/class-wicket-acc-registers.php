@@ -24,6 +24,8 @@ class Registers extends WicketAcc
 	{
 		add_action('init', [$this, 'register_post_type']);
 		add_action('init', [$this, 'register_nav_menu']); // In case we need to check for logged in user/role. See https://wordpress.stackexchange.com/questions/217351/on-which-hook-should-i-be-calling-register-nav-menus
+		add_filter('theme_page_templates', [$this, 'register_acc_page_template'], 10, 3);
+		add_filter('template_include', [$this, 'load_acc_page_template'], 10, 1);
 	}
 
 	/**
@@ -99,5 +101,50 @@ class Registers extends WicketAcc
 		register_nav_menus([
 			'wicket-acc-nav-secondary' => esc_html__('Account Centre Secondary Menu', 'wicket-acc'),
 		]);
+	}
+
+	/**
+	 * Register ACC page template
+	 * Shows ACC page as selectable page template in the page editor
+	 *
+	 * @param array $page_templates
+	 * @param string $theme
+	 * @param WP_Post $post
+	 *
+	 * @return array
+	 */
+	public function register_acc_page_template($page_templates, $theme, $post)
+	{
+		$template_path = WICKET_ACC_PLUGIN_TEMPLATE_PATH . '/account-centre/page-acc.php';
+
+		if (file_exists($template_path)) {
+			$page_templates['plugins/wicket-wp-account-centre/templates-wicket/account-centre/page-acc.php'] = __('ACC Page', 'wicket-child');
+		}
+
+		return $page_templates;
+	}
+
+	/**
+	 * Load ACC page template
+	 * Loads the ACC page template
+	 *
+	 * @param string $template
+	 *
+	 * @return string
+	 */
+	public function load_acc_page_template($template)
+	{
+		$requested_slug     = get_page_template_slug();
+		$requested_basename = basename($requested_slug);
+
+		if ($requested_basename === 'page-acc.php') {
+			$template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/page-acc.php';
+
+			if (file_exists($template)) {
+				return $template;
+			}
+		}
+
+		return $template;
 	}
 }

@@ -3,6 +3,8 @@
 defined('ABSPATH') || exit;
 
 /**
+ * Template Name: ACC page
+ *
  * ACC pages template.
  *
  * This is the default template used for pages created inside Wicket Account Centre CPT.
