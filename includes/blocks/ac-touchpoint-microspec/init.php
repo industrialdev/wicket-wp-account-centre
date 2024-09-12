@@ -287,7 +287,7 @@ class Block_TouchpointMicroSpec extends Blocks
 						<i class="fas fa-spinner fa-spin"></i>
 					</div>
 
-					<button type="submit" class="show-more flex items-center font-bold text-color-dark-100 my-4" x-show="!loading">
+					<button type="submit" class="button button-primary show-more flex items-center font-bold text-color-dark-100 my-4" x-show="!loading">
 						<span class="arrow mr-2">&#9660;</span>
 						<span class="text"><?php esc_html_e('Show More', 'wicket-acc'); ?></span>
 					</button>
