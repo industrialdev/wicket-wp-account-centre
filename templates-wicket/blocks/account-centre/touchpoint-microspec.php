@@ -62,13 +62,14 @@ if (!empty($override_past_events_link)) {
 <section <?php echo $attrs; ?>>
 	<div class="container events_<?php echo $display; ?>">
 		<div class="header flex flex-col mb-6">
-			<?php if (!empty($title)) : ?>
-				<h2 class="wicket-acc-touchpoint-tec__title mb-4 w-full"><?php echo esc_html($title); ?></h2>
-			<?php endif; ?>
 
 			<div class="flex flex-col md:flex-row md:justify-between items-center md:items-center w-full">
 				<?php if ($display == 'upcoming' && !$single_event) : ?>
-					<h3 class="font-bold mb-2 md:mb-0 md:text-left text-center lg:text-left w-full md:w-auto"><?php esc_html_e('Upcoming Registered Events', 'wicket-acc'); ?></h3>
+					<?php if (!empty($title)) : ?>
+						<h3 class="wicket-acc-touchpoint-tec__title font-bold mb-2 md:mb-0 md:text-left text-center lg:text-left w-full md:w-auto"><?php echo esc_html($title); ?></h3>
+					<?php else: ?>
+						<h3 class="font-bold mb-2 md:mb-0 md:text-left text-center lg:text-left w-full md:w-auto"><?php esc_html_e('Upcoming Registered Events', 'wicket-acc'); ?></h3>
+					<?php endif; ?>
 					<a href="<?php echo $switch_link_past; ?>" class="past-link font-bold text-center md:text-right w-full md:w-auto"><?php esc_html_e($past_events_link_text, 'wicket-acc'); ?></a>
 				<?php elseif ($display == 'past' && !$single_event) : ?>
 					<h3 class="font-bold mb-2 md:mb-0 md:text-left text-center w-full md:w-auto"><?php esc_html_e('Past Registered Events', 'wicket-acc'); ?></h3>
