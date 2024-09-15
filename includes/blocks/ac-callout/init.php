@@ -133,7 +133,7 @@ class Block_Callout extends WicketAcc
 								continue;
 							} else if (!empty($membership['membership']['next_tier'])) {
 								#echo '<pre>'; var_dump( $membership['membership']['next_tier'] ); echo '</pre>';
-								$links = wicket_ac_memberships_get_product_link_data($membership);
+								$links = wicket_ac_memberships_get_product_link_data($membership, $renewal_type);
 							} else if (!empty($membership['membership']['form_page'])) {
 								#echo '<pre>'; var_dump( $membership['membership']['form_page'] ); echo '</pre>';
 								$links = wicket_ac_memberships_get_page_link_data($membership);

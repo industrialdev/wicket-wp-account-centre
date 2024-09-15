@@ -398,18 +398,18 @@ function wicket_ac_maybe_add_multiple_products_to_cart()
 }
 add_action('wp_loaded', 'wicket_ac_maybe_add_multiple_products_to_cart', 15);
 
-function wicket_ac_memberships_get_product_link_data($membership)
+function wicket_ac_memberships_get_product_link_data($membership, $renewal_type)
 {
 	$late_fee_product_id = '';
 	$membership_post_id  = $membership['membership']['ID'];
 	$next_tier           = $membership['membership']['next_tier'];
-	$button_label        = $membership['callout']['button_label'];
 
 	if (!empty($membership['late_fee_product_id']) && $membership['late_fee_product_id'] > 0) {
 		$late_fee_product_id = ',' . $membership['late_fee_product_id'];
 	}
 
 	foreach ($next_tier['product_data'] as $product_data) {
+    $button_label = $membership['callout']['button_label'];
 		if (
 			!empty($membership['membership']['meta']['org_seats'])
 			&& $membership['membership']['meta']['org_seats'] > 0
@@ -417,26 +417,61 @@ function wicket_ac_memberships_get_product_link_data($membership)
 		) {
 			continue;
 		}
-		$product = wc_get_product($product_data['variation_id']);
-		if (empty($product)) {
-			$product = wc_get_product($product_data['product_id']);
-		}
+    if(!empty($next_tier['next_subscription_id'])) {
+      $current_subscription = wcs_get_subscription($next_tier['next_subscription_id']);
+      if($renewal_type == 'grace_period') {
+        //get the order created by subscription and add late fee product and return link to it
+        $renewal_orders = $current_subscription->get_related_orders('renewal');
+        foreach ($renewal_orders as $order_id) {
+          $the_order = wc_get_order($order_id);
+          break;
+        }
+        if(!empty($the_order) && !empty($membership['late_fee_product_id'])) {
+          $product_exists = false;
+          foreach ($the_order->get_items() as $item_id => $item) {
+              if ($item->get_product_id() == $membership['late_fee_product_id']) {
+                  $product_exists = true;
+                  break;
+              }
+          }
+          if(empty($product_exists)) {
+            $the_order->add_product(wc_get_product($membership['late_fee_product_id']), 1);
+            $the_order->calculate_totals();
+            $the_order->save();
+          }  
+        }
+        $link_url = $the_order->get_checkout_payment_url();
+      } else if($renewal_type == 'early_renewal') {
+        //use subscription method to get early renewal checkout link
+        $link_url = wcs_get_early_renewal_url($current_subscription); 
+      }
+      $specific_renewal_product = true;
+    } else {
+      $product = wc_get_product($product_data['variation_id']);
+      if (empty($product)) {
+        $product = wc_get_product($product_data['product_id']);
+      }
+      $button_label .= ' (' . $product->get_name() . ')';
+      $product_id = $product->get_id();
+      $link_url = '/cart/?membership_post_id_renew=' .  $membership_post_id . '&add-to-cart=' . $product_id . $late_fee_product_id . '&quantity=1';
+    }
 		$link['link'] = [
 			'title' => $button_label,
-			'url' => '/cart/?membership_post_id_renew=' .  $membership_post_id . '&add-to-cart=' . $product->get_id() . $late_fee_product_id . '&quantity=1'
+			'url' => $link_url
 		];
 		$links[] = $link;
+    if(!empty($specific_renewal_product)) {
+      break;
+    }
 	}
 	return $links;
 }
 
 function wicket_ac_memberships_get_page_link_data($membership)
 {
-	$membership_post_id = $membership['membership']['ID'];
+  $url = $membership['membership']['form_page']['permalink'] . '?membership_post_id_renew=' . $membership['membership']['ID'];
 	if (!empty($membership['late_fee_product_id'])) {
-		$url = '/?page_id=' . $membership['membership']['form_page']['page_id'] . '&membership_post_id_renew=' .  $membership_post_id . 'add-to-cart=' . $membership['late_fee_product_id'];
-	} else {
-		$url = $membership['membership']['form_page']['permalink'] . '?membership_post_id_renew=' . $membership['membership']['ID'];
+		 $url .= '&late_fee_product_id=' . $membership['late_fee_product_id'];
 	}
 	$button_label = $membership['callout']['button_label'];
 	$link['link'] = [
