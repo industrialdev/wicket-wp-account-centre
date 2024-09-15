@@ -1,6 +1,9 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
+# 1.3.37 / 2024-09-14
+- Renewals can use WC subscription now coming from membership plugin callout
+
 # 1.3.36 / 2024-09-08
 - Re-worked the entire ACC "router" logic. Again. Forget about 1.2.x changes. Now it follows a more standard WordPress routing approach, without use of custom rewrite rules or replacing URLs on the fly, introducing less bugs, and preventing conflicts with other plugins, like WPML. Also: it's more efficient. Speedier.
 - Fixed several Warnings. Some of them caused Fatal Errors on some site/server configurations.
