@@ -1,8 +1,9 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
-# 1.3.37 / 2024-09-14
+# 1.3.38 / 2024-09-16
 - Renewals can use WC subscription now coming from membership plugin callout
+- Because we can't control other plugins doing wrong usage of PHP headers in conjunction with WordPress, we are now checking if headers have been sent before redirecting the user. If they have, we'll use a meta refresh redirect instead. If they have not, the usual wp_safe_redirect() is still in use. Not the most elegant solution, but it works for now, until we can find a better way to do this.
 
 # 1.3.36 / 2024-09-08
 - Re-worked the entire ACC "router" logic. Again. Forget about 1.2.x changes. Now it follows a more standard WordPress routing approach, without use of custom rewrite rules or replacing URLs on the fly, introducing less bugs, and preventing conflicts with other plugins, like WPML. Also: it's more efficient. Speedier.

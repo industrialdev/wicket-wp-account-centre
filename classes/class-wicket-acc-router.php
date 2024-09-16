@@ -269,7 +269,13 @@ class Router extends WicketAcc
 		if (str_contains($_SERVER['REQUEST_URI'], 'wc-account')) {
 			// Redirect user when is on WC index page only
 			if ($_SERVER['REQUEST_URI'] === '/wc-account/') {
-				wp_safe_redirect($acc_dashboard_url);
+				if (headers_sent()) {
+					// Any other more elegant way to do this?
+					echo '<meta http-equiv="refresh" content="0;url=' . $acc_dashboard_url . '" />';
+					echo '<script>window.location.href="' . $acc_dashboard_url . '";</script>';
+				} else {
+					wp_safe_redirect($acc_dashboard_url);
+				}
 				exit;
 			}
 		}
@@ -283,7 +289,13 @@ class Router extends WicketAcc
 		// If requested URL contains any of the old slugs,
 		foreach ($old_slugs as $old_slug) {
 			if (str_contains($_SERVER['REQUEST_URI'], $old_slug)) {
-				wp_safe_redirect($acc_dashboard_url);
+				if (headers_sent()) {
+					// Any other more elegant way to do this?
+					echo '<meta http-equiv="refresh" content="0;url=' . $acc_dashboard_url . '" />';
+					echo '<script>window.location.href="' . $acc_dashboard_url . '";</script>';
+				} else {
+					wp_safe_redirect($acc_dashboard_url);
+				}
 				exit;
 			}
 		}
