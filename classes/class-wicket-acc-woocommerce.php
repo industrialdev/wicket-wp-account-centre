@@ -39,26 +39,6 @@ class WooCommerce extends WicketAcc
 	}
 
 	/**
-	 * Get all current WC endpoints
-	 *
-	 * @return array
-	 */
-	private function get_woocommerce_endpoints()
-	{
-		$query_vars = WC()->query->get_query_vars();
-		$endpoints  = [];
-
-		foreach ($query_vars as $key => $value) {
-			// Endpoints are typically strings, not empty
-			if (is_string($value) && !empty($value)) {
-				$endpoints[$key] = $value;
-			}
-		}
-
-		return $endpoints;
-	}
-
-	/**
 	 * Override WooCommerce templates
 	 *
 	 * @param string $template
@@ -69,6 +49,10 @@ class WooCommerce extends WicketAcc
 	 */
 	public function override_woocommerce_template($template, $template_name, $template_path)
 	{
+		if(is_admin()) {
+			return $template;
+		}
+
 		if ($template_name === 'myaccount/my-account.php') {
 			$plugin_template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/page-wc.php';
 			$user_template   = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/page-wc.php';

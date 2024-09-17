@@ -154,6 +154,11 @@ class Router extends WicketAcc
 	 */
 	public function init_all_pages()
 	{
+		// Check if we've already created the main page
+		if (get_option('wicket_acc_created_dashboard_page')) {
+			return;
+		}
+
 		// Create all other pages
 		foreach ($this->acc_pages_map as $slug => $name) {
 			$this->create_page($slug, $name);
@@ -215,8 +220,16 @@ class Router extends WicketAcc
 	 */
 	public function acc_pages_template()
 	{
+		if(is_admin()) {
+			return;
+		}
+
 		add_filter('single_template', function ($single_template) {
 			global $post;
+
+			if(is_admin()) {
+				return $single_template;
+			}
 
 			if ($post->post_type == 'my-account') {
 				$template = $this->get_wicket_acc_template();
@@ -241,6 +254,10 @@ class Router extends WicketAcc
 	 */
 	public function custom_archive_template($template)
 	{
+		if(is_admin()) {
+			return $template;
+		}
+
 		if (is_post_type_archive('my-account')) {
 			$fixed_template = WICKET_ACC_PATH . 'includes/archive-acc.php';
 
@@ -257,6 +274,10 @@ class Router extends WicketAcc
 	 */
 	public function redirect_acc_old_slugs()
 	{
+		if(is_admin()) {
+			return;
+		}
+
 		// Only if we already migrated to my-account
 		if (!get_option('wicket_acc_cpt_changed_to_my_account')) {
 			return;
