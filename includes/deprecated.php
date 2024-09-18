@@ -116,7 +116,7 @@ function wicket_get_active_memberships_relationship()
 		}
 	}
 
-	$person_type = str_replace("-", " ", $person_type);
+	$person_type = str_replace( [ "-", "_"], " ", $person_type);
 	$org_info['relationship'] = ucwords($person_type);
 
 	return $org_info;
