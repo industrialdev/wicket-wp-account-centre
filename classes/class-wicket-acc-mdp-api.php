@@ -312,6 +312,32 @@ class MdpApi
 	}
 
 	/**
+	 * Get single organization membership by UUID
+	 *
+	 * @param string $uuid
+	 *
+	 * @return array|false
+	 */
+	public function get_organization_membership_by_uuid($uuid = '')
+	{
+		if ( empty( $uuid ) ) {
+			return false;
+		}
+
+		$client = $this->init_client();
+
+		try {
+			$organization_membership = $client->get("organization_memberships/$uuid");
+		} catch (Exception $e) {
+			$errors = json_decode($e->getResponse()->getBody())->errors;
+
+			return false;
+		}
+
+		return $organization_membership;
+	}
+
+	/**
 	 * Get organization memberships
 	 *
 	 * @param string $org_uuid Organization UUID

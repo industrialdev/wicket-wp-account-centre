@@ -87,14 +87,15 @@ class Block_Welcome extends WicketAcc
 									<strong><?php echo __('Membership Type:', 'wicket-acc'); ?></strong> <?php echo $membership['name']; ?>
 								</p>
 
-								<?php if ($membership['type'] == 'organization') :
-									$org_info = wicket_get_active_memberships_relationship();
+								<?php
+									if ($membership['type'] == 'organization') :
+										$org_main_info = WACC()->MdpApi->get_organization_membership_by_uuid( $membership['organization_membership_id'] );
+										$org_uuid = $org_main_info['data']['relationships']['organization']['data']['id'];
 
-									// Humanize the relationship name
-									$humanized_relationship = ucwords( str_replace([ '_' ], ' ', $org_info['relationship']) );
-								?>
+										$org_info = wicket_get_active_memberships_relationship( $org_uuid );
+									?>
 									<p class="mb-0 wicket-welcome-member-org">
-										<strong><?php echo $humanized_relationship; ?> &ndash; <?php echo $org_info['name']; ?></strong>
+										<strong><?php echo $org_info['relationship']; ?> &ndash; <?php echo $org_info['name']; ?></strong>
 									</p>
 								<?php endif; ?>
 

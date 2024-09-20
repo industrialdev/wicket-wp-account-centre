@@ -49,6 +49,10 @@ function wicket_get_active_memberships($iso_code = 'en')
 				'type'                => $membership_tier['attributes']['type']
 			];
 
+			if ( isset( $entry['relationships']['organization_membership']['data']['id'] ) ) {
+				$entry_summary['organization_membership_id'] = $entry['relationships']['organization_membership']['data']['id'];
+			}
+
 			$membership_summary[] = $entry_summary;
 		}
 	}
@@ -91,7 +95,7 @@ function woo_get_active_memberships()
  *
  * @return array $memberships relationship
  */
-function wicket_get_active_memberships_relationship()
+function wicket_get_active_memberships_relationship( $org_uuid )
 {
 	$person_type        = '';
 	$wicket_memberships = wicket_get_current_person_memberships();
@@ -101,8 +105,14 @@ function wicket_get_active_memberships_relationship()
 	if ($wicket_memberships) {
 		foreach ($wicket_memberships['included'] as $included) {
 			if ($included['type'] !== 'organizations') continue;
-			$org_uuid = (isset($included['id'])) ? $included['id'] : '';
-			$org_connections = wicket_get_org_connections_by_id($org_uuid);
+
+			$included_org_uuid = (isset($included['id'])) ? $included['id'] : '';
+
+			if ( $org_uuid !== $included_org_uuid ) {
+				continue;
+			}
+
+			$org_connections = wicket_get_org_connections_by_id($included_org_uuid);
 			$org_info['name'] = (isset($included['attributes']['legal_name'])) ? $included['attributes']['legal_name'] : '';
 
 			if ($org_connections) {
@@ -116,7 +126,7 @@ function wicket_get_active_memberships_relationship()
 		}
 	}
 
-	$person_type = str_replace( [ "-", "_"], " ", $person_type);
+	$person_type = str_replace( [ "-", "_" ], " ", $person_type);
 	$org_info['relationship'] = ucwords($person_type);
 
 	return $org_info;
