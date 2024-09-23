@@ -1,11 +1,12 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
-# 1.3.45 / 2024-09-23
-- Add a renewal callout filter for next tier products
+# 1.3.46 / 2024-09-23
+- Add a renewal callout filter for next tier products.
+- Avoid cache when displaying user's profile picture on Profile Picture Block.
 
 # 1.3.38 / 2024-09-16
-- Renewals can use WC subscription now coming from membership plugin callout
+- Renewals can use WC subscription now coming from membership plugin callout.
 - Because we can't control other plugins doing wrong usage of PHP headers in conjunction with WordPress, we are now checking if headers have been sent before redirecting the user. If they have, we'll use a meta refresh redirect instead. If they have not, the usual wp_safe_redirect() is still in use. Not the most elegant solution, but it works for now, until we can find a better way to do this.
 
 # 1.3.36 / 2024-09-08

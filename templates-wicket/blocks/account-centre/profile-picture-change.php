@@ -18,7 +18,7 @@ defined('ABSPATH') || exit;
 		<?php esc_html_e('Profile Image', 'wicket-acc'); ?>
 	</h2>
 	<div class="profile-image">
-		<img src="<?php echo $args['pp_url']; ?>" alt="<?php esc_html_e('Profile Image', 'wicket-acc'); ?>" class="profile-image-img">
+		<img src="<?php echo $args['pp_url']; ?>?<?php echo time(); ?>" alt="<?php esc_html_e('Profile Image', 'wicket-acc'); ?>" class="profile-image-img">
 		<?php if ($args['is_custom']) : ?>
 			<form name="wicket-acc-profile-picture-remove-form" method="post">
 				<input type="hidden" name="user_id" value="<?php echo get_current_user_id(); ?>">
