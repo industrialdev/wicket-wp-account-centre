@@ -16,6 +16,8 @@ defined('ABSPATH') || exit;
  * Thank you.
  */
 
+//@formatter:off
+
 /**
  * Returns active memberships from wicket API
  *
@@ -626,6 +628,7 @@ function wicket_acc_get_avatar($user, $args = [])
 	return apply_filters('wicket/acc/get_avatar', $pp_profile_picture);
 }
 
+//@formatter:on
 /**
  * MARK: PLEASE READ.
  *
