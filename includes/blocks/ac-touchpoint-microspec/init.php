@@ -187,15 +187,6 @@ class Block_TouchpointMicroSpec extends Blocks
 		// Total results
 		$total_results = count($touchpoint_data);
 
-		// Ajax request?
-		if ($ajax === false) {
-?>
-			<p class="data-quantity text-base md:col-span-<?php echo $config['use_x_columns']; ?>">
-				<?php _e('Results:', 'wicket-acc'); ?> <?php echo $total_results; ?>
-			</p>
-		<?php
-		}
-
 		$counter = 0;
 
 		foreach ($touchpoint_data as $tp) :

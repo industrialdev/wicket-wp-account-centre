@@ -82,6 +82,16 @@ if (!empty($override_past_events_link)) {
 			</div>
 		</div>
 
+		<?php
+		// Ajax request?
+		if ($ajax === false) {
+			echo '<div class="data-quantity text-left mb-3">';
+			_e('Results:', 'wicket-acc');
+			echo $total_results;
+			echo '</div>';
+		}
+		?>
+
 		<div class="events-list grid gap-4 sm:grid-cols-1 md:grid-cols-<?php echo $use_x_columns; ?> lg:grid-cols-<?php echo $use_x_columns; ?>">
 			<?php
 			if ($single_event) {
