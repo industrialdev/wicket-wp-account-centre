@@ -1,7 +1,7 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
-# 1.3.46 / 2024-09-23
+# 1.3.47 / 2024-09-23
 - Add a renewal callout filter for next tier products.
 - Avoid cache when displaying user's profile picture on Profile Picture Block.
 
