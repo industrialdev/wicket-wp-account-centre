@@ -408,6 +408,36 @@ function wicket_ac_maybe_add_multiple_products_to_cart()
 }
 add_action('wp_loaded', 'wicket_ac_maybe_add_multiple_products_to_cart', 15);
 
+
+  /**
+   *  Example of a Next Tier[product_data] filter that can be added to the child theme 
+   */
+
+  /*
+  function wicket_admin_filter_products($next_tier) {
+    $product_data = $next_tier['product_data'];
+    $next_product_id = $next_tier['next_product_id'];
+    $product_type_id = 'variation_id'; // 'product_id'
+    $renewal_products = [1219];
+    foreach($product_data as $product) {
+      if(! in_array($product[$product_type_id], $renewal_products)) {
+        continue;
+      }
+      $return_products[] = $product;
+    }
+    $next_tier['product_data'] = $return_products;
+    return $next_tier;
+  }
+  add_filter( "wicket_renewal_filter_product_data", 'wicket_admin_filter_products', 15);
+  */
+
+/**
+ * Returns productlinks for renewal callouts based on the next tier's products assigned
+ * 
+ * @param mixed $membership
+ * @param mixed $renewal_type
+ * @return string[][][]
+ */
 function wicket_ac_memberships_get_product_link_data($membership, $renewal_type)
 {
 	$late_fee_product_id = '';
@@ -418,6 +448,8 @@ function wicket_ac_memberships_get_product_link_data($membership, $renewal_type)
 		$late_fee_product_id = ',' . $membership['late_fee_product_id'];
 	}
 
+  $next_tier = apply_filters("wicket_renewal_filter_product_data", $next_tier);
+
 	foreach ($next_tier['product_data'] as $product_data) {
 		$button_label = $membership['callout']['button_label'];
 		if (
@@ -427,7 +459,8 @@ function wicket_ac_memberships_get_product_link_data($membership, $renewal_type)
 		) {
 			continue;
 		}
-		if(!empty($next_tier['next_subscription_id'])) {
+    //currently disabled use of subscription renewal flow 
+		if(0 && !empty($next_tier['next_subscription_id'])) {
 			$current_subscription = wcs_get_subscription($next_tier['next_subscription_id']);
 			if($renewal_type == 'grace_period') {
 				//get the order created by subscription and add late fee product and return link to it
