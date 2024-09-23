@@ -178,7 +178,7 @@ class Block_TouchpointEventCalendar extends WicketAcc
 		}
 
 		// Config defaults
-		if(empty($config)) {
+		if (empty($config)) {
 			$config['show_view_more_events'] = true;
 			$config['use_x_columns']         = 1;
 		}
@@ -192,8 +192,8 @@ class Block_TouchpointEventCalendar extends WicketAcc
 		// Ajax request?
 		if ($ajax === false) {
 ?>
-			<p class="data-quantity text-base">
-				<?php echo ucfirst($display_type) . " Data: " . $total_results; ?>
+			<p class="data-quantity text-base md:col-span-<?php echo $config['use_x_columns']; ?>">
+				<?php _e('Results:', 'wicket-acc'); ?> <?php echo $total_results; ?>
 			</p>
 		<?php
 		}
