@@ -136,8 +136,10 @@ class Registers extends WicketAcc
 	{
 		$requested_slug     = get_page_template_slug();
 		$requested_basename = basename($requested_slug);
+		
+		$template_basename = basename($template);
 
-		if ($requested_basename === 'page-acc.php') {
+		if ($requested_basename === 'page-acc.php' && $template_basename !== 'search.php') {
 			$template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/page-acc.php';
 
 			if (file_exists($template)) {
