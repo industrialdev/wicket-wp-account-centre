@@ -127,6 +127,7 @@ class Block_TouchpointEventCalendar extends WicketAcc
 			'override_past_events_link_text' => $override_past_events_link_text,
 			'show_view_more_events'          => $show_view_more_events,
 			'use_x_columns'                  => $use_x_columns,
+			'is_ajax_request'                => false,
 			'is_preview'                     => $this->is_preview
 		];
 

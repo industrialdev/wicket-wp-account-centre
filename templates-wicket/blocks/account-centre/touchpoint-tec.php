@@ -37,6 +37,7 @@ $override_past_events_link_text = $args['override_past_events_link_text'];
 $past_events_link_text          = __('See Past Registered Events →', 'wicket-acc');
 $show_view_more_events          = $args['show_view_more_events'];
 $use_x_columns                  = absint($args['use_x_columns']);
+$is_ajax_request                = $args['is_ajax_request'];
 // @formatter:on
 
 // Process event data from URL
@@ -84,7 +85,7 @@ if (!empty($override_past_events_link)) {
 
 		<?php
 		// Ajax request?
-		if ($ajax === false) {
+		if ($is_ajax_request === false) {
 			echo '<div class="data-quantity text-left mb-3">';
 			_e('Results:', 'wicket-acc');
 			echo $total_results;
