@@ -60,7 +60,7 @@
         },
         {
             "key": "field_667d28e686293",
-            "label": "Number of Results to Show",
+            "label": "Touchpoints per page",
             "name": "num_results",
             "aria-label": "",
             "type": "select",
@@ -72,6 +72,7 @@
                 "class": "",
                 "id": ""
             },
+            "wpml_cf_preferences": 1,
             "choices": {
                 "5": "5",
                 "10": "10"
@@ -82,8 +83,30 @@
             "allow_null": 0,
             "ui": 0,
             "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_66f1afc84572a",
+            "label": "Columns",
+            "name": "use_x_columns",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "How many columns do you want to use for touchpoints results. 1 will yield a list view.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 1,
+            "default_value": 1,
+            "min": 1,
+            "max": 6,
             "placeholder": "",
-            "wpml_cf_preferences": 1
+            "step": 1,
+            "prepend": "",
+            "append": ""
         },
         {
             "key": "field_667d2c9dbd449",
@@ -126,7 +149,7 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 1,
+            "wpml_cf_preferences": 2,
             "default_value": "",
             "maxlength": "",
             "placeholder": "",
@@ -207,5 +230,5 @@
     "description": "",
     "show_in_rest": 0,
     "acfml_field_group_mode": "translation",
-    "modified": 1726167262
+    "modified": 1727115279
 }

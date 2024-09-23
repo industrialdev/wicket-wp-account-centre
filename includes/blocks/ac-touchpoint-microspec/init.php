@@ -59,6 +59,7 @@ class Block_TouchpointMicroSpec extends Blocks
 		$override_past_events_link      = get_field('override_past_events_link');
 		$override_past_events_link_text = get_field('override_past_events_link_text');
 		$show_view_more_events          = get_field('show_view_more_events');
+		$use_x_columns                  = get_field('use_x_columns');
 
 		$total_results     = 0;
 		$counter           = 0;
@@ -123,6 +124,7 @@ class Block_TouchpointMicroSpec extends Blocks
 			'override_past_events_link'      => $override_past_events_link,
 			'override_past_events_link_text' => $override_past_events_link_text,
 			'show_view_more_events'          => $show_view_more_events,
+			'use_x_columns'                  => $use_x_columns,
 			'is_preview'                     => $this->is_preview
 		];
 
@@ -159,11 +161,11 @@ class Block_TouchpointMicroSpec extends Blocks
 	 * @param string $display Touchpoint display type: upcoming, past, all
 	 * @param int $num_results Number of results to display
 	 * @param bool $ajax Is ajax request?
-	 * @param bool $show_view_more_events Show view more events?
+	 * @param array $config show_view_more_events(bool), use_x_columns(int)
 	 *
 	 * @return void
 	 */
-	public static function display_touchpoints($touchpoint_data = [], $display_type = 'upcoming', $num_results = 5, $ajax = false, $show_view_more_events = true)
+	public static function display_touchpoints($touchpoint_data = [], $display_type = 'upcoming', $num_results = 5, $ajax = false, $config = [])
 	{
 		// No data
 		if (empty($touchpoint_data)) {
@@ -171,6 +173,12 @@ class Block_TouchpointMicroSpec extends Blocks
 			_e('You do not have any ' . $display_type . ' data at this time.', 'wicket-acc');
 			echo '</p>';
 			return;
+		}
+
+		// Config defaults
+		if (empty($config)) {
+			$config['show_view_more_events'] = true;
+			$config['use_x_columns']         = 1;
 		}
 
 		// Filter data by type
@@ -207,7 +215,7 @@ class Block_TouchpointMicroSpec extends Blocks
 		endforeach;
 
 		// Show more like pagination, to load more data in the same page (if there are more than $num_results)
-		if ($counter == $num_results && $ajax === false && $show_view_more_events) {
+		if ($counter == $num_results && $ajax === false && $config['show_view_more_events']) {
 			self::load_more_results($touchpoint_data, $num_results, $total_results, $counter, $display_type);
 		}
 	}

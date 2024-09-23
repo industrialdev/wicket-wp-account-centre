@@ -36,6 +36,7 @@ $override_past_events_link      = $args['override_past_events_link'];
 $override_past_events_link_text = $args['override_past_events_link_text'];
 $past_events_link_text          = __('See Past Registered Events →', 'wicket-acc');
 $show_view_more_events          = $args['show_view_more_events'];
+$use_x_columns                  = absint($args['use_x_columns']);
 // @formatter:on
 
 // Process event data from URL
@@ -81,7 +82,7 @@ if (!empty($override_past_events_link)) {
 			</div>
 		</div>
 
-		<div class="events-list grid gap-4">
+		<div class="events-list grid gap-4 sm:grid-cols-1 md:grid-cols-<?php echo $use_x_columns; ?> lg:grid-cols-<?php echo $use_x_columns; ?>">
 			<?php
 			if ($single_event) {
 				$args = [
