@@ -36,6 +36,8 @@ $acc_display_publish_date  = false;
 $is_wc_endpoint            = false;
 $acc_global_headerbanner_page_id = WACC()->get_global_headerbanner_page_id();
 $acc_global_headerbanner_status  = get_field('acc_global-headerbanner', 'option');
+$current_page_id           = get_the_ID();
+$default_language          = wpml_get_default_language();
 
 // WooCommerce endpoints
 $wc_endpoints = WC()->query->get_query_vars();
@@ -44,6 +46,28 @@ $wc_endpoint  = basename(rtrim($current_url, '/'));
 
 if (in_array($wc_endpoint, $wc_endpoints)) {
 	$is_wc_endpoint = true;
+}
+
+// WPML enabled?
+if (defined('ICL_SITEPRESS_VERSION')) {
+	// Not in default language
+	if ($default_language !== ICL_LANGUAGE_CODE) {
+		// We are in a translation, get the current page translation parent
+		$original_page_id = apply_filters(
+			'wpml_object_id',
+			$current_page_id,
+			'my-account',
+			true,
+			$default_language
+		);
+
+		// Get the correct WC endpoint slug
+		$wc_endpoint = get_post($original_page_id)->post_name;
+
+		if (in_array($wc_endpoint, $wc_endpoints)) {
+			$is_wc_endpoint = true;
+		}
+	}
 }
 
 if (empty($acc_sidebar_location)) {
