@@ -24,6 +24,7 @@ class WooCommerce extends WicketAcc
 	{
 		add_action('before_woocommerce_init', [$this, 'HPOS_Compatibility']);
 		add_filter('woocommerce_locate_template', [$this, 'override_woocommerce_template'], 10, 3);
+		add_action('init', [$this, 'wc_remove_order_again_button']);
 	}
 
 	/**
@@ -49,7 +50,7 @@ class WooCommerce extends WicketAcc
 	 */
 	public function override_woocommerce_template($template, $template_name, $template_path)
 	{
-		if(is_admin()) {
+		if (is_admin()) {
 			return $template;
 		}
 
@@ -67,5 +68,15 @@ class WooCommerce extends WicketAcc
 		}
 
 		return $template;
+	}
+
+	/**
+	 * Remove "order again" button from orders and order table inside WooCommerce my account
+	 *
+	 * @return void
+	 */
+	public function wc_remove_order_again_button()
+	{
+		remove_action('woocommerce_order_details_after_order_table', 'woocommerce_order_again_button');
 	}
 }

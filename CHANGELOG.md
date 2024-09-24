@@ -1,10 +1,11 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
-# 1.3.50 / 2024-09-23
+# 1.3.51 / 2024-09-23
 - Add a renewal callout filter for next tier products.
 - Avoid cache when displaying user's profile picture on Profile Picture Block.
 - Touchpoints Blocks (Calendar and MicroSpec) now have a column view configuration. Default 1, to display results as list.
+- Remove "order again" button from WooCommerce order history.
 
 # 1.3.38 / 2024-09-16
 - Renewals can use WC subscription now coming from membership plugin callout.
