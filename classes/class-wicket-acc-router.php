@@ -41,7 +41,7 @@ class Router extends WicketAcc
 		add_action('admin_init', [$this, 'init_all_pages']);
 		add_action('init', [$this, 'acc_pages_template']);
 		add_filter('archive_template', [$this, 'custom_archive_template']);
-		add_action('plugins_loaded', [$this, 'redirect_acc_old_slugs']);
+		add_action('plugins_loaded', [$this, 'acc_redirects']);
 	}
 
 	/**
@@ -220,14 +220,14 @@ class Router extends WicketAcc
 	 */
 	public function acc_pages_template()
 	{
-		if(is_admin()) {
+		if (is_admin()) {
 			return;
 		}
 
 		add_filter('single_template', function ($single_template) {
 			global $post;
 
-			if(is_admin()) {
+			if (is_admin()) {
 				return $single_template;
 			}
 
@@ -254,7 +254,7 @@ class Router extends WicketAcc
 	 */
 	public function custom_archive_template($template)
 	{
-		if(is_admin()) {
+		if (is_admin()) {
 			return $template;
 		}
 
@@ -270,11 +270,14 @@ class Router extends WicketAcc
 	}
 
 	/**
-	 * Redirect old slugs to /my-account/
+	 * Redirects for ACC
+	 * 1. /wc-account/ index only to /my-account/dashboard/
+	 * 2. Old acc slugs (account-centre) to new slugs (my-account)
+	 * 3. WooCommerce critical endpoints out from ACC
 	 */
-	public function redirect_acc_old_slugs()
+	public function acc_redirects()
 	{
-		if(is_admin()) {
+		if (is_admin()) {
 			return;
 		}
 
@@ -286,10 +289,13 @@ class Router extends WicketAcc
 		$acc_dashboard_id  = get_option('options_acc_page_dashboard');
 		$acc_dashboard_url = get_permalink($acc_dashboard_id);
 
-		// WooCommerce account page
-		if (str_contains($_SERVER['REQUEST_URI'], 'wc-account')) {
+		$wc_page_id   = wc_get_page_id('myaccount');
+		$wc_page_slug = get_post($wc_page_id)->post_name;
+
+		// WooCommerce account page index only
+		if (str_contains($_SERVER['REQUEST_URI'], $wc_page_slug)) {
 			// Redirect user when is on WC index page only
-			if ($_SERVER['REQUEST_URI'] === '/wc-account/') {
+			if ($_SERVER['REQUEST_URI'] === '/' . $wc_page_slug . '/') {
 				if (headers_sent()) {
 					// Any other more elegant way to do this?
 					echo '<meta http-equiv="refresh" content="0;url=' . $acc_dashboard_url . '" />';
@@ -301,14 +307,14 @@ class Router extends WicketAcc
 			}
 		}
 
-		// Get old slugs
-		$old_slugs = [
+		// Redirect old ACC slugs
+		$acc_old_slugs = [
 			'/account-centre',
 			'/account-center',
 		];
 
-		// If requested URL contains any of the old slugs,
-		foreach ($old_slugs as $old_slug) {
+		foreach ($acc_old_slugs as $old_slug) {
+			// If requested URL contains any of the old slugs,
 			if (str_contains($_SERVER['REQUEST_URI'], $old_slug)) {
 				if (headers_sent()) {
 					// Any other more elegant way to do this?
@@ -316,6 +322,35 @@ class Router extends WicketAcc
 					echo '<script>window.location.href="' . $acc_dashboard_url . '";</script>';
 				} else {
 					wp_safe_redirect($acc_dashboard_url);
+				}
+				exit;
+			}
+		}
+
+		// Redirect (some) WC endpoints
+		// There're some WC endpoints that need to be loaded from WC directly, and can't be easily replaced with my-account posts.
+		$wc_forced_endpoints = [
+			'add-payment-method',
+		];
+
+		foreach ($wc_forced_endpoints as $endpoint) {
+			// Are we already inside any WC endpoint?
+			if (str_contains($_SERVER['REQUEST_URI'], $wc_page_slug)) {
+				// We don't want an endless loop
+				break;
+			}
+
+			// If requested URL contains a critical WC endpoint
+			if (str_contains($_SERVER['REQUEST_URI'], $endpoint)) {
+				// Get the "Add Payment Method" URL
+				$wc_endpoint_url = home_url(wc_get_endpoint_url($endpoint, '', $wc_page_slug));
+
+				if (headers_sent()) {
+					// Any other more elegant way to do this?
+					echo '<meta http-equiv="refresh" content="0;url=' . $wc_endpoint_url . '" />';
+					echo '<script>window.location.href="' . $wc_endpoint_url . '";</script>';
+				} else {
+					wp_safe_redirect($wc_endpoint_url);
 				}
 				exit;
 			}

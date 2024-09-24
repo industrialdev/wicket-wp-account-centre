@@ -25,6 +25,7 @@ class WooCommerce extends WicketAcc
 		add_action('before_woocommerce_init', [$this, 'HPOS_Compatibility']);
 		add_filter('woocommerce_locate_template', [$this, 'override_woocommerce_template'], 10, 3);
 		add_action('init', [$this, 'wc_remove_order_again_button']);
+		add_action('wicket_header_end', [$this, 'wc_add_acc_banner'], PHP_INT_MAX);
 	}
 
 	/**
@@ -78,5 +79,41 @@ class WooCommerce extends WicketAcc
 	public function wc_remove_order_again_button()
 	{
 		remove_action('woocommerce_order_details_after_order_table', 'woocommerce_order_again_button');
+	}
+
+	/**
+	 * Adds the global header banner to the WooCommerce my account navigation.
+	 *
+	 * Will only add the banner if the 'acc_global-headerbanner' option is enabled.
+	 *
+	 * @return void
+	 */
+	public function wc_add_acc_banner()
+	{
+		$acc_banner_enabled = get_field('acc_global-headerbanner', 'option');
+
+		if (!$acc_banner_enabled) {
+			return;
+		}
+
+		// Only on WooCommerce myaccount pages
+		if (!is_account_page()) {
+			return;
+		}
+
+		$acc_global_headerbanner_page_id = WACC()->get_global_headerbanner_page_id();
+		$acc_global_banner_page          = get_post($acc_global_headerbanner_page_id);
+
+		// What happened here?
+		if (empty($acc_global_banner_page)) {
+			return;
+		}
+
+		// Banner content
+		$acc_global_banner_content = '<div class="wicket-acc alignfull wp-block-wicket-banner">';
+		$acc_global_banner_content .= apply_filters('the_content', $acc_global_banner_page->post_content);
+		$acc_global_banner_content .= '</div>';
+
+		echo $acc_global_banner_content;
 	}
 }
