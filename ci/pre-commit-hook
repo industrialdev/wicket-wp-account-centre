@@ -7,6 +7,12 @@ PROJECT_ROOT="$HOOKS_DIR/../../"
 # Navigate to the project root directory
 cd "$PROJECT_ROOT"
 
+# Check if PHP-CS-Fixer is installed
+if [ ! -f ./vendor/bin/php-cs-fixer ]; then
+    echo "Error: PHP-CS-Fixer is not installed. Please run 'composer install' to install it."
+    exit 1
+fi
+
 # Run PHP-CS-Fixer
 php ./vendor/bin/php-cs-fixer fix
 
