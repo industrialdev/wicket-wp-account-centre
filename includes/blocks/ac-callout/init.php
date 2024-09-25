@@ -107,12 +107,12 @@ class Block_Callout extends WicketAcc
 				} else {
 					$membership_renewals = (new \Wicket_Memberships\Membership_Controller)->get_membership_callouts();
 					#echo '<pre>'; var_dump( $membership_renewals );exit;
-					if (!empty($_ENV['WICKET_MEMBERSHIPS_DEBUG_MODE'])) {
+					if (!empty($_ENV['WICKET_MEMBERSHIPS_DEBUG_RENEW'])) {
 						echo '<p>For testing callouts add <pre>?wicket_wp_membership_debug_days=123</pre> to see what callouts would appear in 123 days.</p><br><br>';
 					}
 					foreach ($membership_renewals as $renewal_type => $renewal_data) {
 						foreach ($renewal_data as $membership) {
-							if (!empty($_ENV['WICKET_MEMBERSHIPS_DEBUG_MODE']) && $renewal_type == 'debug') {
+							if (!empty($_ENV['WICKET_MEMBERSHIPS_DEBUG_ACC']) && $renewal_type == 'debug') {
 								echo '<pre style="font-size:10px;">';
 								echo 'DEBUG:<br>';
 								echo "Renewal Type: {$renewal_type}<br>";
@@ -140,7 +140,7 @@ class Block_Callout extends WicketAcc
 							}
 							$title = $membership['callout']['header'];
 							$description = $membership['callout']['content'];
-							if (!empty($_ENV['WICKET_MEMBERSHIPS_DEBUG_MODE'])) {
+							if (!empty($_ENV['WICKET_MEMBERSHIPS_DEBUG_ACC'])) {
 								echo '<pre style="font-size:10px;">';
 								echo 'DEBUG:<br>';
 								echo "Renewal Type: {$renewal_type}<br>";

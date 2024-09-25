@@ -518,6 +518,9 @@ function wicket_ac_memberships_get_page_link_data($membership)
 	if (!empty($membership['late_fee_product_id'])) {
 		$url .= '&late_fee_product_id=' . $membership['late_fee_product_id'];
 	}
+  if (!empty($_ENV['WICKET_MEMBERSHIPS_DEBUG_RENEW'])) {
+    $url .='&process_renewal=1';
+  }
 	$button_label = $membership['callout']['button_label'];
 	$link['link'] = [
 		'title' => $button_label,
