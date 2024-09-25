@@ -1,7 +1,7 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
-# 1.4.2 / 2024-09-25
+# 1.4.3 / 2024-09-25
 - Enforcing PSR-12 and PER standards from [PHP-FIG](https://www.php-fig.org/).
 - Fixed an issue with Touchpoint blocks not displaying the correct number of total results.
 
