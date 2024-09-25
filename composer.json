@@ -26,12 +26,14 @@
         "post-install-cmd": [
             "chmod +x ci/install-hooks.sh",
             "bash ci/install-hooks.sh",
-            "chmod +x .git/hooks/pre-commit"
+            "chmod +x .git/hooks/pre-commit",
+            "if [ \"$COMPOSER_DEV_MODE\" = \"0\" ]; then rm -rf ./ci; fi"
         ],
         "post-update-cmd": [
             "chmod +x ci/install-hooks.sh",
             "bash ci/install-hooks.sh",
-            "chmod +x .git/hooks/pre-commit"
+            "chmod +x .git/hooks/pre-commit",
+            "if [ \"$COMPOSER_DEV_MODE\" = \"0\" ]; then rm -rf ./ci; fi"
         ]
     }
 }
