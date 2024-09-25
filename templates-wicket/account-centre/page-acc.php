@@ -37,7 +37,10 @@ $is_wc_endpoint            = false;
 $acc_global_headerbanner_page_id = WACC()->get_global_headerbanner_page_id();
 $acc_global_headerbanner_status  = get_field('acc_global-headerbanner', 'option');
 $current_page_id           = get_the_ID();
-$default_language          = wpml_get_default_language();
+$default_language          = 'en';
+if(function_exists('wpml_get_default_language')) {
+    $default_language = wpml_get_default_language();
+}
 
 // WooCommerce endpoints
 $wc_endpoints = WC()->query->get_query_vars();
