@@ -1,6 +1,9 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
+# 1.4.0 / 2024-09-25
+- Enforcing PSR-12 and PER standards from [PHP-FIG](https://www.php-fig.org/).
+
 # 1.3.56 / 2024-09-23
 - Add a renewal callout filter for next tier products and debug changes.
 - Avoid cache when displaying user's profile picture on Profile Picture Block.

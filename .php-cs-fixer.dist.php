@@ -6,24 +6,24 @@
  */
 
 $finder = (new PhpCsFixer\Finder())
-	->in(__DIR__)
-	->exclude([
-			'node_modules',
-			'vendor',
-			'assets',
-			'ci',
-			'languages',
-		])
-	->notName([
-		'.php-cs-fixer.dist.php',
-	]);
+    ->in(__DIR__)
+    ->exclude([
+            'node_modules',
+            'vendor',
+            'assets',
+            'ci',
+            'languages',
+        ])
+    ->notName([
+        'composer.lock',
+    ]);
 
 return (new PhpCsFixer\Config())
-	->setRules([
-		'@PSR12'            => true,
-		'@PER-CS'           => true,
-		'@PHP81Migration'   => true,
-		'array_syntax'      => ['syntax' => 'short'],   // Enforce short array syntax
-		'no_unused_imports' => true,                    // Remove unused imports
-	])
-	->setFinder($finder);
+    ->setRules([
+        '@PSR12'            => true,
+        '@PER-CS'           => true,
+        '@PHP81Migration'   => true,
+        'array_syntax'      => ['syntax' => 'short'],   // Enforce short array syntax
+        'no_unused_imports' => true,                    // Remove unused imports
+    ])
+    ->setFinder($finder);
