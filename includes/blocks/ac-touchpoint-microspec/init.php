@@ -36,7 +36,7 @@ class Block_TouchpointMicroSpec extends Blocks
         $close = 0;
         $attrs = $this->is_preview ? ' ' : get_block_wrapper_attributes(
             [
-                'class' => 'wicket-acc-block wicket-acc-block-touchpoints-microspec wicket-ac-touchpoint-microspec max-w-5xl mx-auto my-8 p-6'
+                'class' => 'wicket-acc-block wicket-acc-block-touchpoints-microspec wicket-ac-touchpoint-microspec max-w-5xl mx-auto my-8 p-6',
             ]
         );
 
@@ -71,7 +71,7 @@ class Block_TouchpointMicroSpec extends Blocks
             $registered_action = [
                 "rsvp_to_event",
                 "registered_for_an_event",
-                "attended_an_event"
+                "attended_an_event",
             ];
         }
 
@@ -87,7 +87,7 @@ class Block_TouchpointMicroSpec extends Blocks
         $valid_display = [
             'upcoming',
             'past',
-            'all'
+            'all',
         ];
 
         if (!in_array($display, $valid_display)) {
@@ -100,7 +100,7 @@ class Block_TouchpointMicroSpec extends Blocks
         $switch_link   = add_query_arg(
             [
                 'show'        => $display_other,
-                'num_results' => $num_results
+                'num_results' => $num_results,
             ],
             remove_query_arg('show')
         );
@@ -126,7 +126,7 @@ class Block_TouchpointMicroSpec extends Blocks
             'show_view_more_events'          => $show_view_more_events,
             'use_x_columns'                  => $use_x_columns,
             'is_ajax_request'                => false,
-            'is_preview'                     => $this->is_preview
+            'is_preview'                     => $this->is_preview,
         ];
 
         // Render block
@@ -207,16 +207,16 @@ class Block_TouchpointMicroSpec extends Blocks
         endforeach;
 
         // Dirty hack to update the number of results
-?>
+        ?>
         <script>
             document.getElementById('total_results').innerHTML = '<?php echo $total_results; ?>';
         </script>
         <?php
 
-        // Show more like pagination, to load more data in the same page (if there are more than $num_results)
-        if ($counter == $num_results && $ajax === false && $config['show_view_more_events']) {
-            self::load_more_results($touchpoint_data, $num_results, $total_results, $counter, $display_type);
-        }
+                // Show more like pagination, to load more data in the same page (if there are more than $num_results)
+                if ($counter == $num_results && $ajax === false && $config['show_view_more_events']) {
+                    self::load_more_results($touchpoint_data, $num_results, $total_results, $counter, $display_type);
+                }
     }
 
     /**

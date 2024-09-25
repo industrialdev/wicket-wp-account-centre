@@ -92,7 +92,7 @@ if (!empty($override_past_events_link)) {
             if ($single_event) {
                 $args = [
                     'tp'                    => $event_data,
-                    'show_view_more_events' => $show_view_more_events
+                    'show_view_more_events' => $show_view_more_events,
                 ];
 
                 WACC()->Blocks->render_template('touchpoint-tec-card', $args);
@@ -110,7 +110,7 @@ if (!empty($override_past_events_link)) {
                     $close++;
                 }
             }
-            ?>
+?>
         </div>
     </div>
 </section>

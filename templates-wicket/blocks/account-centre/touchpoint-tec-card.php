@@ -29,7 +29,7 @@ if (isset($tp['attributes']['data']['location']) && $tp['attributes']['data']['l
         <?php if (isset($tp['attributes']['data']['BadgeType']) && $tp['attributes']['data']['BadgeType']) : ?>
             <p class="text-sm font-bold mb-2 event-type">
                 <?php echo $tp['attributes']['data']['BadgeType'];
-                ?>
+            ?>
             </p>
         <?php endif; ?>
         <?php if (isset($tp['attributes']['data']['url']) && $tp['attributes']['data']['url']) : ?>
