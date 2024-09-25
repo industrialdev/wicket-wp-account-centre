@@ -9,7 +9,7 @@ namespace WicketAcc;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Customize WooCommerce my account features to build the Wicket Account Centre. Expands it with additional blocks and pages.
- * Version:           1.4.4
+ * Version:           1.4.5
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -32,7 +32,7 @@ if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get
         deactivate_plugins(__FILE__);
 
         $wicket_acc_plugin_check = '<div id="message" class="error">
-						<p><strong>Wicket Account Centre plugin is inactive.</strong> The <a href="https://wordpress.org/extend/plugins/woocommerce/">WooCommerce plugin</a> must be active for this plugin to be used. Please install &amp; activate WooCommerce »</p></div>';
+        <p><strong>Wicket Account Centre plugin is inactive.</strong> The <a href="https://wordpress.org/extend/plugins/woocommerce/">WooCommerce plugin</a> must be active for this plugin to be used. Please install &amp; activate WooCommerce »</p></div>';
 
         echo wp_kses_post($wicket_acc_plugin_check);
     }

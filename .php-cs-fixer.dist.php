@@ -8,12 +8,12 @@
 $finder = (new PhpCsFixer\Finder())
     ->in(__DIR__)
     ->exclude([
-            'node_modules',
-            'vendor',
-            'assets',
-            'ci',
-            'languages',
-        ])
+        'node_modules',
+        'vendor',
+        'assets',
+        '.ci',
+        'languages',
+    ])
     ->notName([
         'composer.lock',
     ]);
