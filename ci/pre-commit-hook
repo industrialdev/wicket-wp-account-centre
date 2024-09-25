@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Get the directory of the script and navigate to the root of the project
+HOOKS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_ROOT="$HOOKS_DIR/../../"
+
+# Navigate to the project root directory
+cd "$PROJECT_ROOT"
+
+# Run PHP-CS-Fixer
+php ./vendor/bin/php-cs-fixer fix
+
+if [ $? -ne 0 ]; then
+    echo "PHP-CS-Fixer found issues. Please fix them before committing."
+    exit 1
+fi
