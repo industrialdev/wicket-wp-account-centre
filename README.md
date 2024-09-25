@@ -23,8 +23,9 @@ Go to the plugin path and run `composer install`.
 
 Make sure `wicket-wp-account-centre/includes/acf-json` is writable in your system by Docker (whatever user/group is being used to run it). This is needed to write the ACF field groups json files (when they are updated) and version control them.
 
+### Day to day work
 
-
+Just work and have fun :)
 
 ## Features
 
