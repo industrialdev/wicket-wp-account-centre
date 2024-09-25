@@ -8,21 +8,21 @@ This official Wicket plugin includes the Account Centre blocks and pages for Woo
 
 ### Requirements
 
-- WSL2 on Windows. Linux/macOS with Bash 5.x or greater (ZSH is compatible too). On macOS, make sure you have Bash up to date (even if using ZSH). Use [Homebrew](https://formulae.brew.sh/formula/bash) to update it.
+- WSL2 on Windows, or Linux/macOS with Bash 5.x or greater (ZSH is also compatible). On macOS, ensure Bash is up to date, even if you're using ZSH. Use [Homebrew](https://formulae.brew.sh/formula/bash) to update Bash if needed.
 - [Composer](https://getcomposer.org/).
-- [EditorConfig](https://editorconfig.org/) in your code editor.
-- (Optional) [PHP Intelephense](https://intelephense.com/) in your code editor. This way, you can auto-format your code as you save a file. Also it has some [useful features](https://github.com/bmewburn/intelephense-docs/blob/master/features.md) that you might like. Check the [Installation Docs](https://github.com/bmewburn/intelephense-docs/blob/master/installation.md) for more details.
-- (Optional) [PHP-CS-Fixer](https://marketplace.visualstudio.com/items?itemName=higoka.php-cs-fixer) extension for VSCode. So PHP-CS-Fixer can run every time you save a file. Require PHP-CS-Fixer to be [installed globally (see instructions)](https://cs.symfony.com/doc/installation.html).
+- [EditorConfig](https://editorconfig.org/) installed in your code editor.
+- (Optional) [PHP-CS-Fixer](https://marketplace.visualstudio.com/items?itemName=higoka.php-cs-fixer) extension for VSCode, or the equivalent for your editor of choice (e.g., [Sublime Text](https://packagecontrol.io/packages/PHP%20CS%20Fixer)). PHP-CS-Fixer must be [installed globally on your machine (see instructions)](https://cs.symfony.com/doc/installation.html). Having this extension installed allows PHP-CS-Fixer to run on file save, so your code is formatted automatically without needing to wait for a git commit to trigger the formatting.
+- (Optional) [PHP Intelephense](https://intelephense.com/) in your code editor. Similar to PHP-CS-Fixer, but with [additional useful features](https://github.com/bmewburn/intelephense-docs/blob/master/features.md) that you may find helpful. Check the [Installation Docs](https://github.com/bmewburn/intelephense-docs/blob/master/installation.md) for more details. Do not use both extensions to format your code; choose only one to perform this task.
 
 ### Setup local dev environment
 
 Clone the repository locally.
 
-It's highly recommended that you clone this repository into an already configured instance of Wicket's [WordPress Baseline](https://github.com/industrialdev/wordpress-baseline), so you can work on this plugin live using Docker.
+It’s highly recommended that you clone this repository into an already configured instance of Wicket’s [WordPress Baseline](https://github.com/industrialdev/wordpress-baseline), so you can work on this plugin live using Docker.
 
 Go to the plugin path and run `composer install`.
 
-Make sure `wicket-wp-account-centre/includes/acf-json` is writable in your system by Docker (whatever user/group is being used to run it). This is needed to write the ACF field groups json files (when they are updated) and version control them.
+Ensure that `wicket-wp-account-centre/includes/acf-json` is writable by Docker on your system (for the user/group that Docker is using). This is necessary to write the ACF field groups JSON files (when they are updated) and version control them.
 
 ### Day to day work
 
@@ -32,22 +32,22 @@ Just work and have fun :)
 
 ### ACC Pages
 
-Inside Account Centre menu in WP, you can create multiple pages that will be available inside the ACC custom post type.
+Inside the Account Centre menu in WP, you can create multiple pages that will be available within the ACC custom post type.
 
-ACC will create the default pages for you and map them in ACC Options. You can change that mapping at any time.
+ACC will create the default pages for you and map them in ACC Options. You can change this mapping at any time.
 
 ### ACC Blocks
 
 There are unique Wicket Blocks available for the Account Centre pages (or any WP page) that are used to manage and display user/MDP data.
 
-1. ACC Welcome Block: display the user's active memberships.
-2. ACC Additional Info: display the user's additional information fields.
-3. ACC Individual Profile: update the user's profile information.
-4. ACC Organization Profile: update an organization profile owned by user.
-5. ACC Callout Block Become a Member: prompt the user to obtain a membership.
-6. ACC Invididual Profile: prompt the user to complete their profile information.
-7. ACC Membership Renewal: prompt the user to renew their membership(s).
-8. ACC Profile Picture Change: allow the user to update their profile picture.
-9. ACC Touchpoints MicroSpec: display a list of events (from MicroSpec) and their data.
-10. ACC Touchpoints TEC: display a list of events (from The Events Calendar) and their data.
-11. ACC Organization Management: display a list of organizations (from the Organization Management plugin) and their members. Allows to manage memberships.
+1. ACC Welcome Block: displays the user's active memberships.
+2. ACC Additional Info: displays the user's additional information fields.
+3. ACC Individual Profile: updates the user's profile information.
+4. ACC Organization Profile: updates an organization profile owned by the user.
+5. ACC Callout Block Become a Member: prompts the user to obtain a membership.
+6. ACC Individual Profile: prompts the user to complete their profile information.
+7. ACC Membership Renewal: prompts the user to renew their membership(s).
+8. ACC Profile Picture Change: allows the user to update their profile picture.
+9. ACC Touchpoints MicroSpec: displays a list of events (from MicroSpec) and their data.
+10. ACC Touchpoints TEC: displays a list of events (from The Events Calendar) and their data.
+11. ACC Organization Management: displays a list of organizations (from the Organization Management plugin) and their members. Allows users to manage memberships.
