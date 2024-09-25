@@ -6,7 +6,7 @@ This official Wicket plugin includes the Account Centre blocks and pages for Woo
 
 ## Development
 
-### Requeriments
+### Requirements
 
 - WSL2 on Windows. Linux/macOS with Bash 5.x or greater (ZSH is compatible too). On macOS, make sure you have Bash up to date (even if using ZSH). Use [Homebrew](https://formulae.brew.sh/formula/bash) to update it.
 - [Composer](https://getcomposer.org/).
