@@ -36,7 +36,7 @@ class Block_TouchpointEventCalendar extends WicketAcc
         $close = 0;
         $attrs = get_block_wrapper_attributes(
             [
-                'class' => 'wicket-acc-block wicket-acc-block-touchpoints-tec flex flex-col gap-8',
+                'class' => 'wicket-acc-block wicket-acc-block-touchpoints-tec flex flex-col gap-8'
             ]
         );
 
@@ -73,7 +73,7 @@ class Block_TouchpointEventCalendar extends WicketAcc
             $registered_action = [
                 "rsvp_to_event",
                 "registered_for_an_event",
-                "attended_an_event",
+                "attended_an_event"
             ];
         }
 
@@ -89,7 +89,7 @@ class Block_TouchpointEventCalendar extends WicketAcc
         $valid_display = [
             'upcoming',
             'past',
-            'all',
+            'all'
         ];
 
         if (!in_array($display, $valid_display)) {
@@ -102,7 +102,7 @@ class Block_TouchpointEventCalendar extends WicketAcc
         $switch_link   = add_query_arg(
             [
                 'show'        => $display_other,
-                'num_results' => $num_results,
+                'num_results' => $num_results
             ],
             remove_query_arg('show')
         );
@@ -128,7 +128,7 @@ class Block_TouchpointEventCalendar extends WicketAcc
             'show_view_more_events'          => $show_view_more_events,
             'use_x_columns'                  => $use_x_columns,
             'is_ajax_request'                => false,
-            'is_preview'                     => $this->is_preview,
+            'is_preview'                     => $this->is_preview
         ];
 
         // Render block
@@ -208,6 +208,13 @@ class Block_TouchpointEventCalendar extends WicketAcc
             }
         endforeach;
 
+        // Dirty hack to update the number of results
+?>
+        <script>
+            document.getElementById('total_results').innerHTML = '<?php echo $total_results; ?>';
+        </script>
+        <?php
+
         // Show more like pagination, to load more data in the same page (if there are more than $num_results)
         if ($counter == $num_results && $ajax === false && $config['show_view_more_events']) {
             self::load_more_results($touchpoint_data, $num_results, $total_results, $counter, $display_type);
@@ -271,65 +278,65 @@ class Block_TouchpointEventCalendar extends WicketAcc
         $counter       = absint($counter);
         ?>
 
-		<div x-data="ajaxFormHandler()">
-			<div class="wicket-ac-touchpoint__tec-results container">
-				<div class="events-list grid gap-6" x-html="responseMessage"></div>
-			</div>
+        <div x-data="ajaxFormHandler()">
+            <div class="wicket-ac-touchpoint__tec-results container">
+                <div class="events-list grid gap-6" x-html="responseMessage"></div>
+            </div>
 
-			<div class="flex justify-center items-center">
-				<form action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>" method="post" @submit.prevent="submitForm">
-					<input type="hidden" name="action" value="wicket_ac_touchpoint_tec_results">
-					<input type="hidden" name="num_results" value="<?php echo $num_results; ?>">
-					<input type="hidden" name="total_results" value="<?php echo $total_results; ?>">
-					<input type="hidden" name="type" value="<?php echo $display_type; ?>">
-					<input type="hidden" name="counter" value="<?php echo $counter; ?>">
-					<?php wp_nonce_field('wicket_ac_touchpoint_tec_results'); ?>
+            <div class="flex justify-center items-center">
+                <form action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>" method="post" @submit.prevent="submitForm">
+                    <input type="hidden" name="action" value="wicket_ac_touchpoint_tec_results">
+                    <input type="hidden" name="num_results" value="<?php echo $num_results; ?>">
+                    <input type="hidden" name="total_results" value="<?php echo $total_results; ?>">
+                    <input type="hidden" name="type" value="<?php echo $display_type; ?>">
+                    <input type="hidden" name="counter" value="<?php echo $counter; ?>">
+                    <?php wp_nonce_field('wicket_ac_touchpoint_tec_results'); ?>
 
-					<div x-show="loading" class="wicket-ac-touchpoint__loader flex justify-center items-center self-center">
-						<i class="fas fa-spinner fa-spin"></i>
-					</div>
+                    <div x-show="loading" class="wicket-ac-touchpoint__loader flex justify-center items-center self-center">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
 
-					<button type="submit" class="button button-primary show-more flex items-center font-bold text-color-dark-100 my-4" x-show="!loading">
-						<span class="arrow mr-2">&#9660;</span>
-						<span class="text"><?php esc_html_e('Show More', 'wicket-acc'); ?></span>
-					</button>
-				</form>
-			</div>
+                    <button type="submit" class="button button-primary show-more flex items-center font-bold text-color-dark-100 my-4" x-show="!loading">
+                        <span class="arrow mr-2">&#9660;</span>
+                        <span class="text"><?php esc_html_e('Show More', 'wicket-acc'); ?></span>
+                    </button>
+                </form>
+            </div>
 
-			<script>
-				function ajaxFormHandler() {
-					return {
-						loading: false,
-						responseMessage: '',
-						submitForm(event) {
-							this.loading = true;
-							const formData = new FormData(event.target);
+            <script>
+                function ajaxFormHandler() {
+                    return {
+                        loading: false,
+                        responseMessage: '',
+                        submitForm(event) {
+                            this.loading = true;
+                            const formData = new FormData(event.target);
 
-							console.log(formData);
-							console.log(woocommerce_params.ajax_url);
+                            console.log(formData);
+                            console.log(woocommerce_params.ajax_url);
 
-							fetch(woocommerce_params.ajax_url, {
-									method: 'POST',
-									body: formData
-								})
-								.then(response => response.text())
-								.then(data => {
-									this.loading = false;
-									if (data) {
-										this.responseMessage = data;
-									} else {
-										this.responseMessage = '<?php esc_html_e('An error occurred. No data.', 'wicket-acc'); ?>';
-									}
-								})
-								.catch(error => {
-									this.loading = false;
-									this.responseMessage = '<?php esc_html_e('An error occurred. Failed.', 'wicket-acc'); ?>';
-								});
-						}
-					};
-				}
-			</script>
-		</div>
+                            fetch(woocommerce_params.ajax_url, {
+                                    method: 'POST',
+                                    body: formData
+                                })
+                                .then(response => response.text())
+                                .then(data => {
+                                    this.loading = false;
+                                    if (data) {
+                                        this.responseMessage = data;
+                                    } else {
+                                        this.responseMessage = '<?php esc_html_e('An error occurred. No data.', 'wicket-acc'); ?>';
+                                    }
+                                })
+                                .catch(error => {
+                                    this.loading = false;
+                                    this.responseMessage = '<?php esc_html_e('An error occurred. Failed.', 'wicket-acc'); ?>';
+                                });
+                        }
+                    };
+                }
+            </script>
+        </div>
 <?php
     }
 }

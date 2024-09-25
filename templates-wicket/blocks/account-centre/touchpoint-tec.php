@@ -34,7 +34,7 @@ $is_preview                     = $args['is_preview'];
 $close                          = $args['close'];
 $override_past_events_link      = $args['override_past_events_link'];
 $override_past_events_link_text = $args['override_past_events_link_text'];
-$past_events_link_text          = __('See Past Registered Events →', 'wicket-acc');
+$past_events_link_text          = __('See Past Registered Events', 'wicket-acc');
 $show_view_more_events          = $args['show_view_more_events'];
 $use_x_columns                  = absint($args['use_x_columns']);
 $is_ajax_request                = $args['is_ajax_request'];
@@ -62,61 +62,55 @@ if (!empty($override_past_events_link)) {
 }
 ?>
 <section <?php echo $attrs; ?>>
-	<div class="container events_<?php echo $display; ?>">
-		<div class="header flex flex-col mb-6">
+    <div class="container events_<?php echo $display; ?>">
+        <div class="header flex flex-col mb-6">
 
-			<div class="flex flex-col md:flex-row md:justify-between items-center md:items-center w-full">
-				<?php if ($display == 'upcoming' && !$single_event) : ?>
-					<?php if (!empty($title)) : ?>
-						<h3 class="wicket-acc-touchpoint-tec__title font-bold mb-4 md:mb-0 md:text-left text-center lg:text-left w-full md:w-auto text-base"><?php echo esc_html($title); ?></h3>
-					<?php else: ?>
-						<h3 class="font-bold mb-4 md:mb-0 md:text-left text-center lg:text-left w-full md:w-auto text-base"><?php esc_html_e('Upcoming Registered Events', 'wicket-acc'); ?></h3>
-					<?php endif; ?>
-					<a href="<?php echo $switch_link_past; ?>" class="past-link font-bold text-center md:text-right w-full md:w-auto text-base mb-4"><?php esc_html_e($past_events_link_text, 'wicket-acc'); ?></a>
-				<?php elseif ($display == 'past' && !$single_event) : ?>
-					<h3 class="font-bold mb-4 md:mb-0 md:text-left text-center w-full md:w-auto text-base"><?php esc_html_e('Past Registered Events', 'wicket-acc'); ?></h3>
-					<a href="<?php echo $switch_link; ?>" class="upcoming-link font-bold text-center md:text-right w-full md:w-auto mb-4 text-base"><?php esc_html_e('See Upcoming Registered Events →', 'wicket-acc'); ?></a>
-				<?php elseif ($single_event) : ?>
-					<h3 class="text-2xl font-bold mb-4 md:mb-0 md:text-left text-center w-full md:w-auto text-base"><?php esc_html_e('Event Details', 'wicket-acc'); ?></h3>
-					<a href="javascript:history.back()" class="back-link font-bold text-center md:text-right w-full md:w-auto"><?php esc_html_e('Go Back ←', 'wicket-acc'); ?></a>
-				<?php endif; ?>
-			</div>
-		</div>
+            <div class="flex flex-col md:flex-row md:justify-between items-center md:items-center w-full">
+                <?php if ($display == 'upcoming' && !$single_event) : ?>
+                    <?php if (!empty($title)) : ?>
+                        <h3 class="font-bold mb-4 md:mb-0 md:text-left text-center lg:text-left w-full md:w-auto text-2xl text-dark-100"><?php echo esc_html($title); ?></h3>
+                    <?php else: ?>
+                        <h3 class="font-bold mb-4 md:mb-0 md:text-left text-center lg:text-left w-full md:w-auto text-2xl text-dark-100"><?php esc_html_e('Upcoming Registered Events', 'wicket-acc'); ?></h3>
+                    <?php endif; ?>
+                    <a href="<?php echo $switch_link_past; ?>" class="past-link font-bold text-center md:text-right w-full md:w-auto text-base mb-4"><?php esc_html_e($past_events_link_text, 'wicket-acc'); ?></a>
+                <?php elseif ($display == 'past' && !$single_event) : ?>
+                    <h3 class="font-bold mb-4 md:mb-0 md:text-left text-center w-full md:w-auto text-base"><?php esc_html_e('Past Registered Events', 'wicket-acc'); ?></h3>
+                    <a href="<?php echo $switch_link; ?>" class="upcoming-link font-bold text-center md:text-right w-full md:w-auto mb-4 text-base"><?php esc_html_e('See Upcoming Registered Events', 'wicket-acc'); ?></a>
+                <?php elseif ($single_event) : ?>
+                    <h3 class="text-2xl font-bold mb-4 md:mb-0 md:text-left text-center w-full md:w-auto text-base"><?php esc_html_e('Event Details', 'wicket-acc'); ?></h3>
+                    <a href="javascript:history.back()" class="back-link font-bold text-center md:text-right w-full md:w-auto"><?php esc_html_e('Go Back ←', 'wicket-acc'); ?></a>
+                <?php endif; ?>
+            </div>
+        </div>
 
-		<?php
-        // Ajax request?
-        if ($is_ajax_request === false) {
-            echo '<div class="data-quantity text-left mb-3">';
-            _e('Results:', 'wicket-acc');
-            echo $total_results;
-            echo '</div>';
-        }
-?>
+        <div class="data-quantity text-left mb-3 text-lg">
+            Results: <span id="total_results"><?php echo $total_results; ?></span>
+        </div>
 
-		<div class="events-list grid gap-4 sm:grid-cols-1 md:grid-cols-<?php echo $use_x_columns; ?> lg:grid-cols-<?php echo $use_x_columns; ?>">
-			<?php
-    if ($single_event) {
-        $args = [
-            'tp'                    => $event_data,
-            'show_view_more_events' => $show_view_more_events,
-        ];
+        <div class="events-list grid gap-4 sm:grid-cols-1 md:grid-cols-<?php echo $use_x_columns; ?> lg:grid-cols-<?php echo $use_x_columns; ?>">
+            <?php
+            if ($single_event) {
+                $args = [
+                    'tp'                    => $event_data,
+                    'show_view_more_events' => $show_view_more_events
+                ];
 
-        WACC()->Blocks->render_template('touchpoint-tec-card', $args);
-    } else {
+                WACC()->Blocks->render_template('touchpoint-tec-card', $args);
+            } else {
 
-        if ($display == 'upcoming' || $display == 'all') {
-            Block_TouchpointEventCalendar::display_touchpoints($touchpoints_results['data'], 'upcoming', $num_results, false, $show_view_more_events);
+                if ($display == 'upcoming' || $display == 'all') {
+                    Block_TouchpointEventCalendar::display_touchpoints($touchpoints_results['data'], 'upcoming', $num_results, false, $show_view_more_events);
 
-            $close++;
-        }
+                    $close++;
+                }
 
-        if ($display == 'past' || $display == 'all') {
-            Block_TouchpointEventCalendar::display_touchpoints($touchpoints_results['data'], 'past', $num_results, false, $show_view_more_events);
+                if ($display == 'past' || $display == 'all') {
+                    Block_TouchpointEventCalendar::display_touchpoints($touchpoints_results['data'], 'past', $num_results, false, $show_view_more_events);
 
-            $close++;
-        }
-    }
-?>
-		</div>
-	</div>
+                    $close++;
+                }
+            }
+            ?>
+        </div>
+    </div>
 </section>
