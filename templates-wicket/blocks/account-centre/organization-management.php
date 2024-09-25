@@ -40,12 +40,12 @@ defined('ABSPATH') || exit;
 	<hr aria-hidden="true">
 
 	<?php
-	if (empty($args['organization_memberships'])) {
-	?>
+    if (empty($args['organization_memberships'])) {
+        ?>
 		<p><?php _e('No memberships found', 'wicket'); ?></p>
 	<?php
-	}
-	?>
+    }
+?>
 
 
 	echo "<table class='team_assignment_table mb-5'>";
@@ -101,8 +101,8 @@ defined('ABSPATH') || exit;
 	?>
 
 	<?php
-	if ($org_uuid) {
-	?>
+if ($org_uuid) {
+    ?>
 		echo "<h2 class='primary_link_color'>" . __('Choose an Organization:', 'wicket') . "</h2>";
 		echo "<ul>";
 			// lookup org details based on UUID found on the role
@@ -116,11 +116,11 @@ defined('ABSPATH') || exit;
 			}
 			echo '</ul>';
 	<?php
-	} else {
-	?>
+} else {
+    ?>
 		<p><?php _e('You currently have no organizations to manage members for.', 'wicket'); ?></p>
 	<?php
-	}
-	?>
+}
+?>
 
 </section>

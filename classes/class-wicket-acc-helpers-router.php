@@ -10,79 +10,79 @@ defined('ABSPATH') || exit;
  */
 class MethodRouter
 {
-	private $instances = [];
-	private $helpersInstance;
+    private $instances = [];
+    private $helpersInstance;
 
-	/**
-	 * Constructor
-	 */
-	public function __construct()
-	{
-		// Register all class instances except Helpers
-		$this->instances = [
-			'MdpApi'       => new MdpApi(),
-			'Profile'      => new Profile(),
-			'Blocks'       => new Blocks(),
-		];
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        // Register all class instances except Helpers
+        $this->instances = [
+            'MdpApi'       => new MdpApi(),
+            'Profile'      => new Profile(),
+            'Blocks'       => new Blocks(),
+        ];
 
-		// Store Helpers instance separately
-		$this->helpersInstance = new Helpers();
-	}
+        // Store Helpers instance separately
+        $this->helpersInstance = new Helpers();
+    }
 
-	/**
-	 * Get the instance of a class
-	 *
-	 * @param string $name
-	 *
-	 * @return object
-	 * @throws \Exception
-	 */
-	public function __get($name)
-	{
-		if (isset($this->instances[$name])) {
-			return $this->instances[$name];
-		}
+    /**
+     * Get the instance of a class
+     *
+     * @param string $name
+     *
+     * @return object
+     * @throws \Exception
+     */
+    public function __get($name)
+    {
+        if (isset($this->instances[$name])) {
+            return $this->instances[$name];
+        }
 
-		throw new \Exception("Class instance $name does not exist.");
-	}
+        throw new \Exception("Class instance $name does not exist.");
+    }
 
-	/**
-	 * Call magic method for class instances
-	 *
-	 * @param string $name
-	 * @param array $arguments
-	 *
-	 * @return object|mixed
-	 * @throws \Exception
-	 */
-	public function __call($name, $arguments)
-	{
-		// Handle Helpers class methods directly
-		if (method_exists($this->helpersInstance, $name)) {
-			return call_user_func_array([$this->helpersInstance, $name], $arguments);
-		}
+    /**
+     * Call magic method for class instances
+     *
+     * @param string $name
+     * @param array $arguments
+     *
+     * @return object|mixed
+     * @throws \Exception
+     */
+    public function __call($name, $arguments)
+    {
+        // Handle Helpers class methods directly
+        if (method_exists($this->helpersInstance, $name)) {
+            return call_user_func_array([$this->helpersInstance, $name], $arguments);
+        }
 
-		// Handle dynamic class instance call
-		if (isset($this->instances[$name])) {
-			return $this->instances[$name];
-		}
+        // Handle dynamic class instance call
+        if (isset($this->instances[$name])) {
+            return $this->instances[$name];
+        }
 
-		//throw new \Exception("Method or class instance $name does not exist.");
-		throw new \Exception("Method or class instance '$name' does not exist. Available instances: " . implode(", ", array_keys($this->instances)));
-	}
+        //throw new \Exception("Method or class instance $name does not exist.");
+        throw new \Exception("Method or class instance '$name' does not exist. Available instances: " . implode(", ", array_keys($this->instances)));
+    }
 
-	/**
-	 * Static call magic method for Helpers
-	 *
-	 * @param string $name
-	 * @param array $arguments
-	 *
-	 * @return mixed
-	 * @throws \Exception
-	 */
-	public static function __callStatic($name, $arguments)
-	{
-		$router = new self();
-		return $router->__call($name, $arguments);
-	}
+    /**
+     * Static call magic method for Helpers
+     *
+     * @param string $name
+     * @param array $arguments
+     *
+     * @return mixed
+     * @throws \Exception
+     */
+    public static function __callStatic($name, $arguments)
+    {
+        $router = new self();
+        return $router->__call($name, $arguments);
+    }
 }

@@ -46,19 +46,19 @@ $event_id     = isset($_REQUEST['event-id']) ? sanitize_text_field($_REQUEST['ev
 $event_data   = isset($_REQUEST['event-data']) ? sanitize_text_field($_REQUEST['event-data']) : '';
 
 if (!empty($event_id) && !empty($event_data)) {
-	$event_data = json_decode(base64_decode($event_data), true);
+    $event_data = json_decode(base64_decode($event_data), true);
 
-	if (!empty($event_data)) {
-		$event_data['id'] = $event_id;
-	}
+    if (!empty($event_data)) {
+        $event_data['id'] = $event_id;
+    }
 
-	$single_event = true;
+    $single_event = true;
 }
 
 // If override_past_events_link is not empty, use it
 if (!empty($override_past_events_link)) {
-	$switch_link_past      = $override_past_events_link;
-	$past_events_link_text = $override_past_events_link_text;
+    $switch_link_past      = $override_past_events_link;
+    $past_events_link_text = $override_past_events_link_text;
 }
 ?>
 <section <?php echo $attrs; ?>>
@@ -84,39 +84,39 @@ if (!empty($override_past_events_link)) {
 		</div>
 
 		<?php
-		// Ajax request?
-		if ($is_ajax_request === false) {
-			echo '<div class="data-quantity text-left mb-3">';
-			_e('Results:', 'wicket-acc');
-			echo $total_results;
-			echo '</div>';
-		}
-		?>
+        // Ajax request?
+        if ($is_ajax_request === false) {
+            echo '<div class="data-quantity text-left mb-3">';
+            _e('Results:', 'wicket-acc');
+            echo $total_results;
+            echo '</div>';
+        }
+?>
 
 		<div class="events-list grid gap-4 grid-cols-<?php echo $use_x_columns; ?> md:grid-cols-<?php echo $use_x_columns; ?> lg:grid-cols-<?php echo $use_x_columns; ?>">
 			<?php
-			if ($single_event) {
-				$args = [
-					'tp'                    => $event_data,
-					'show_view_more_events' => $show_view_more_events
-				];
+    if ($single_event) {
+        $args = [
+            'tp'                    => $event_data,
+            'show_view_more_events' => $show_view_more_events,
+        ];
 
-				WACC()->Blocks->render_template('touchpoint-microspec-card', $args);
-			} else {
+        WACC()->Blocks->render_template('touchpoint-microspec-card', $args);
+    } else {
 
-				if ($display == 'upcoming' || $display == 'all') {
-					Block_TouchpointMicroSpec::display_touchpoints($touchpoints_results['data'], 'upcoming', $num_results, false, $show_view_more_events);
+        if ($display == 'upcoming' || $display == 'all') {
+            Block_TouchpointMicroSpec::display_touchpoints($touchpoints_results['data'], 'upcoming', $num_results, false, $show_view_more_events);
 
-					$close++;
-				}
+            $close++;
+        }
 
-				if ($display == 'past' || $display == 'all') {
-					Block_TouchpointMicroSpec::display_touchpoints($touchpoints_results['data'], 'past', $num_results, false, $show_view_more_events);
+        if ($display == 'past' || $display == 'all') {
+            Block_TouchpointMicroSpec::display_touchpoints($touchpoints_results['data'], 'past', $num_results, false, $show_view_more_events);
 
-					$close++;
-				}
-			}
-			?>
+            $close++;
+        }
+    }
+?>
 		</div>
 	</div>
 </section>

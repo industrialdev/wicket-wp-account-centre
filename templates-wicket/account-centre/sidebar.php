@@ -24,41 +24,41 @@ do_action('woocommerce_before_account_navigation');
 	<div class="hidden lg:block myaccount-nav">
 		<div class="myaccount-nav__container">
 			<?php if ($nav_heading) :
-				$myaccount_page = get_option('woocommerce_myaccount_page_id');
-			?>
+			    $myaccount_page = get_option('woocommerce_myaccount_page_id');
+			    ?>
 				<h2 class="myaccount-nav-heading"><a
 						href="<?php echo get_permalink($myaccount_page); ?>"><?php echo $nav_heading; ?></a></h2>
 			<?php endif; ?>
 			<?php
-			wp_nav_menu([
-				'container'      => false,
-				'theme_location' => 'wicket-acc-nav',
-				'depth'          => 3,
-				'menu_id'        => 'wicket-acc-menu',
-				'menu_class'     => 'wicket-acc-menu',
-				'walker'         => new wicket_acc_menu_walker(),
-			]);
-			?>
+			    wp_nav_menu([
+			        'container'      => false,
+			        'theme_location' => 'wicket-acc-nav',
+			        'depth'          => 3,
+			        'menu_id'        => 'wicket-acc-menu',
+			        'menu_class'     => 'wicket-acc-menu',
+			        'walker'         => new wicket_acc_menu_walker(),
+			    ]);
+    ?>
 		</div>
 
 		<?php if (has_nav_menu('wicket-acc-nav-secondary')) : ?>
 			<div class="myaccount-nav__container">
 				<?php if ($nav_heading_two) :
-					$myaccount_page = get_option('woocommerce_myaccount_page_id');
-				?>
+				    $myaccount_page = get_option('woocommerce_myaccount_page_id');
+				    ?>
 					<h2 class="myaccount-nav-heading"><a
 							href="<?php echo get_permalink($myaccount_page); ?>"><?php echo $nav_heading_two; ?></a></h2>
 				<?php endif; ?>
 				<?php
-				wp_nav_menu([
-					'container'      => false,
-					'theme_location' => 'wicket-acc-nav-secondary',
-					'depth'          => 3,
-					'menu_id'        => 'wicket-acc-menu-two',
-					'menu_class'     => 'wicket-acc-menu-two',
-					'walker'         => new wicket_acc_menu_walker(),
-				]);
-				?>
+				    wp_nav_menu([
+				        'container'      => false,
+				        'theme_location' => 'wicket-acc-nav-secondary',
+				        'depth'          => 3,
+				        'menu_id'        => 'wicket-acc-menu-two',
+				        'menu_class'     => 'wicket-acc-menu-two',
+				        'walker'         => new wicket_acc_menu_walker(),
+				    ]);
+		    ?>
 			</div>
 		<?php endif; ?>
 	</div>
@@ -67,15 +67,15 @@ do_action('woocommerce_before_account_navigation');
 		<div id="dropdown-my-account-menu" class="dropdown__content dropdown__content--nav"
 			aria-labelledby="dropdown-control-my-account-menu" aria-expanded="false" role="region" style="display:none">
 			<?php
-			wp_nav_menu([
-				'container'      => false,
-				'theme_location' => 'wicket-acc-nav',
-				'depth'          => 3,
-				'menu_id'        => 'wicket-acc-menu-mobile',
-				'menu_class'     => 'wicket-acc-menu-mobile',
-				'walker'         => new wicket_acc_menu_mobile_walker(),
-			]);
-			?>
+            wp_nav_menu([
+		    'container'      => false,
+		    'theme_location' => 'wicket-acc-nav',
+		    'depth'          => 3,
+		    'menu_id'        => 'wicket-acc-menu-mobile',
+		    'menu_class'     => 'wicket-acc-menu-mobile',
+		    'walker'         => new wicket_acc_menu_mobile_walker(),
+            ]);
+    ?>
 		</div>
 		<a href="#" id="dropdown-control-my-account-menu" class="dropdown__button dropdown__toggle dropdown__toggle--nav"
 			aria-controls="dropdown-my-account-menu" aria-expanded="false"><?php echo $nav_heading; ?> <i class="fal fa-plus"
@@ -84,15 +84,15 @@ do_action('woocommerce_before_account_navigation');
 			<div id="dropdown-my-account-menu-two" class="dropdown__content dropdown__content--nav"
 				aria-labelledby="dropdown-control-my-account-menu" aria-expanded="false" role="region" style="display:none">
 				<?php
-				wp_nav_menu([
-					'container'      => false,
-					'theme_location' => 'wicket-acc-nav-secondary',
-					'depth'          => 3,
-					'menu_id'        => 'wicket-acc-menu-mobile-two',
-					'menu_class'     => 'wicket-acc-menu-mobile-two',
-					'walker'         => new wicket_acc_menu_mobile_walker(),
-				]);
-				?>
+        wp_nav_menu([
+            'container'      => false,
+            'theme_location' => 'wicket-acc-nav-secondary',
+            'depth'          => 3,
+            'menu_id'        => 'wicket-acc-menu-mobile-two',
+            'menu_class'     => 'wicket-acc-menu-mobile-two',
+            'walker'         => new wicket_acc_menu_mobile_walker(),
+        ]);
+		    ?>
 			</div>
 			<a href="#" id="dropdown-control-my-account-menu" class="dropdown__button dropdown__toggle dropdown__toggle--nav"
 				aria-controls="dropdown-my-account-menu-two" aria-expanded="false">

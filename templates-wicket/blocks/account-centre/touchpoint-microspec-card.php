@@ -16,12 +16,12 @@ $event_data = urlencode(base64_encode(json_encode($tp)));
 $location   = false;
 
 if (isset($tp['attributes']['data']['location']) && $tp['attributes']['data']['location']) {
-	$location = $tp['attributes']['data']['location'];
+    $location = $tp['attributes']['data']['location'];
 
-	// Check if location contains NO letters. If so, set to false
-	if (!preg_match('/[a-zA-Z]/', $location)) {
-		$location = false;
-	}
+    // Check if location contains NO letters. If so, set to false
+    if (!preg_match('/[a-zA-Z]/', $location)) {
+        $location = false;
+    }
 }
 ?>
 <div class="event-card my-4 p-4 border border-gray-200 rounded-md shadow-md" data-uuid="<?php echo $tp['id']; ?>">
@@ -29,7 +29,7 @@ if (isset($tp['attributes']['data']['location']) && $tp['attributes']['data']['l
 		<?php if (isset($tp['attributes']['data']['BadgeType']) && $tp['attributes']['data']['BadgeType']) : ?>
 			<p class="text-sm font-bold mb-2 event-type">
 				<?php echo $tp['attributes']['data']['BadgeType'];
-				?>
+		    ?>
 			</p>
 		<?php endif; ?>
 		<?php if (isset($tp['attributes']['data']['url']) && $tp['attributes']['data']['url']) : ?>

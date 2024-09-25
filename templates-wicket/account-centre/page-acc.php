@@ -15,16 +15,16 @@ defined('ABSPATH') || exit;
 get_header();
 
 $wrapper_classes = [
-	'wicket-acc',
-	'wicket-acc-page',
-	'wicket-acc-postid-' . get_the_ID(),
-	'wicket-acc-container',
-	'woocommerce-wicket--container',
+    'wicket-acc',
+    'wicket-acc-page',
+    'wicket-acc-postid-' . get_the_ID(),
+    'wicket-acc-container',
+    'woocommerce-wicket--container',
 ];
 
 $dev_wrapper_classes = get_field('page_wrapper_class');
 if (!empty($dev_wrapper_classes)) {
-	$wrapper_classes[] = $dev_wrapper_classes;
+    $wrapper_classes[] = $dev_wrapper_classes;
 }
 
 // ACC Options
@@ -45,90 +45,90 @@ $current_url  = $_SERVER['REQUEST_URI'];
 $wc_endpoint  = basename(rtrim($current_url, '/'));
 
 if (in_array($wc_endpoint, $wc_endpoints)) {
-	$is_wc_endpoint = true;
+    $is_wc_endpoint = true;
 }
 
 // WPML enabled?
 if (defined('ICL_SITEPRESS_VERSION')) {
-	// Not in default language
-	if ($default_language !== ICL_LANGUAGE_CODE) {
-		// We are in a translation, get the current page translation parent
-		$original_page_id = apply_filters(
-			'wpml_object_id',
-			$current_page_id,
-			'my-account',
-			true,
-			$default_language
-		);
+    // Not in default language
+    if ($default_language !== ICL_LANGUAGE_CODE) {
+        // We are in a translation, get the current page translation parent
+        $original_page_id = apply_filters(
+            'wpml_object_id',
+            $current_page_id,
+            'my-account',
+            true,
+            $default_language
+        );
 
-		// Get the correct WC endpoint slug
-		$wc_endpoint = get_post($original_page_id)->post_name;
+        // Get the correct WC endpoint slug
+        $wc_endpoint = get_post($original_page_id)->post_name;
 
-		if (in_array($wc_endpoint, $wc_endpoints)) {
-			$is_wc_endpoint = true;
-		}
-	}
+        if (in_array($wc_endpoint, $wc_endpoints)) {
+            $is_wc_endpoint = true;
+        }
+    }
 }
 
 if (empty($acc_sidebar_location)) {
-	$acc_sidebar_location = 'right';
+    $acc_sidebar_location = 'right';
 }
 
 if ($acc_display_breadcrumb) {
-	echo '<div class="wp-block-breadcrumbs">'; // Having the `wp-block-` prefix will help align it with the other Blocks
-	get_component('breadcrumbs', []);
-	echo '</div>';
+    echo '<div class="wp-block-breadcrumbs">'; // Having the `wp-block-` prefix will help align it with the other Blocks
+    get_component('breadcrumbs', []);
+    echo '</div>';
 }
 
 if ($acc_display_publish_date) {
-	echo '<div class="wp-block-published-date">'; // Having the `wp-block-` prefix will help align it with the other Blocks
-	echo "<p class='mt-3 mb-4'><strong>" . __('Published:', 'wicket') . ' ' . get_the_date('d-m-Y') . "</strong></p>";
-	echo '</div>';
+    echo '<div class="wp-block-published-date">'; // Having the `wp-block-` prefix will help align it with the other Blocks
+    echo "<p class='mt-3 mb-4'><strong>" . __('Published:', 'wicket') . ' ' . get_the_date('d-m-Y') . "</strong></p>";
+    echo '</div>';
 }
 ?>
 
 <?php
 // Check if we have a global banner page
 if ($acc_global_headerbanner_page_id && $acc_global_headerbanner_status) {
-	$global_banner_page = get_post($acc_global_headerbanner_page_id);
-	if ($global_banner_page) {
-		echo '<div class="wicket-acc alignfull wp-block-wicket-banner">';
-		echo apply_filters('the_content', $global_banner_page->post_content);
-		echo '</div>';
-	}
+    $global_banner_page = get_post($acc_global_headerbanner_page_id);
+    if ($global_banner_page) {
+        echo '<div class="wicket-acc alignfull wp-block-wicket-banner">';
+        echo apply_filters('the_content', $global_banner_page->post_content);
+        echo '</div>';
+    }
 }
 ?>
 
 <div class="<?php echo implode(' ', $wrapper_classes) ?>">
 	<?php
-	if ('left' === $acc_sidebar_location) {
-		WACC()->render_acc_sidebar();
-	}
-	?>
+    if ('left' === $acc_sidebar_location) {
+        WACC()->render_acc_sidebar();
+    }
+?>
 
 	<div class="woocommerce-wicket--account-centre wicket-acc-page wicket-acc-page-acc">
 		<?php
-		// ACC page
-		if (have_posts()) {
-			while (have_posts()) :
-				the_post();
-				the_content();
-			endwhile;
-		}
+    // ACC page
+    if (have_posts()) {
+        while (have_posts()) :
+            the_post();
+            the_content();
+        endwhile;
+    }
 
-		if ($is_wc_endpoint) {
-			// Run the WooCommerce endpoint action
-			do_action("woocommerce_account_{$wc_endpoint}_endpoint");
-		}
-		?>
+if ($is_wc_endpoint) {
+    // Run the WooCommerce endpoint action
+    do_action("woocommerce_account_{$wc_endpoint}_endpoint");
+}
+?>
 	</div>
 
 	<?php
-	if ('right' === $acc_sidebar_location) {
-		// Get the Wicket ACC sidebar template
-		WACC()->render_acc_sidebar();
-	}
-	?>
+    if ('right' === $acc_sidebar_location) {
+        // Get the Wicket ACC sidebar template
+        WACC()->render_acc_sidebar();
+    }
+?>
 </div>
 
 <?php

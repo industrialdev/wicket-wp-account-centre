@@ -11,27 +11,27 @@ defined('ABSPATH') || exit;
  **/
 class Block_ManagePreferences extends WicketAcc
 {
-	/**
-	 * Constructor
-	 */
-	public function __construct(
-		protected array $block     = [],
-		protected bool $is_preview = false,
-	) {
-		$this->block      = $block;
-		$this->is_preview = $is_preview;
+    /**
+     * Constructor
+     */
+    public function __construct(
+        protected array $block     = [],
+        protected bool $is_preview = false,
+    ) {
+        $this->block      = $block;
+        $this->is_preview = $is_preview;
 
-		// Display the block
-		$this->init_block();
-	}
-	/**
-	 * Init block
-	 *
-	 * @return void
-	 */
-	protected function init_block()
-	{
-		$wicket_settings = get_wicket_settings(); ?>
+        // Display the block
+        $this->init_block();
+    }
+    /**
+     * Init block
+     *
+     * @return void
+     */
+    protected function init_block()
+    {
+        $wicket_settings = get_wicket_settings(); ?>
 
 		<script type="text/javascript">
 			window.Wicket = function(doc, tag, id, script) {
@@ -73,5 +73,5 @@ class Block_ManagePreferences extends WicketAcc
 			})()
 		</script>
 <?php
-	}
+    }
 }

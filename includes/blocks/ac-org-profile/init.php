@@ -10,74 +10,74 @@ defined('ABSPATH') || exit;
  **/
 class Block_OrgProfile extends WicketAcc
 {
-	/**
-	 * Constructor
-	 */
-	public function __construct(
-		protected array $block     = [],
-		protected bool $is_preview = false,
-		protected int|string|null|bool $hide_additional_info = 0,
-	) {
-		$this->block      = $block;
-		$this->is_preview = $is_preview;
+    /**
+     * Constructor
+     */
+    public function __construct(
+        protected array $block     = [],
+        protected bool $is_preview = false,
+        protected int|string|null|bool $hide_additional_info = 0,
+    ) {
+        $this->block      = $block;
+        $this->is_preview = $is_preview;
 
-		$this->hide_additional_info = get_field('hide_additional_info');
+        $this->hide_additional_info = get_field('hide_additional_info');
 
-		// Display the block
-		$this->init_block();
-	}
+        // Display the block
+        $this->init_block();
+    }
 
-	/**
-	 * Init block
-	 *
-	 * @return void
-	 */
-	function init_block($block = [])
-	{
-		global $wp;
+    /**
+     * Init block
+     *
+     * @return void
+     */
+    public function init_block($block = [])
+    {
+        global $wp;
 
-		$lang = defined('ICL_LANGUAGE_CODE') ? ICL_LANGUAGE_CODE : 'en';
+        $lang = defined('ICL_LANGUAGE_CODE') ? ICL_LANGUAGE_CODE : 'en';
 
-		/**------------------------------------------------------------------
-		 * Decide whether we are loading an ORG from the URL
-		 * or looking up all associated orgs to person
-		 * if there's more than 1, we list them for the user to choose
-		 * which org they want to see
-	------------------------------------------------------------------*/
-		$org_id = (isset($_GET['org_id'])) ? $_GET['org_id'] : '';
-		$client = wicket_api_client();
-		$person = wicket_current_person();
+        /**------------------------------------------------------------------
+         * Decide whether we are loading an ORG from the URL
+         * or looking up all associated orgs to person
+         * if there's more than 1, we list them for the user to choose
+         * which org they want to see
+    ------------------------------------------------------------------*/
+        $org_id = (isset($_GET['org_id'])) ? $_GET['org_id'] : '';
+        $client = wicket_api_client();
+        $person = wicket_current_person();
 
-		if ($org_id) {
-			$org = wicket_get_organization($org_id);
-		} else {
-			$org_ids = [];
-			// figure out orgs I should see
-			// this association to the org is set on each role. The actual role types we look at might change depending on the project
-			foreach ($person->included() as $person_included) {
-				if (isset($person_included['attributes']['name'])) {
-					if ($person_included['type'] == 'roles' && (stristr($person_included['attributes']['name'], 'org_editor'))) {
-						if (isset($person_included['relationships']['resource']['data']['id']) && $person_included['relationships']['resource']['data']['type'] == 'organizations') {
-							$org_ids[] = $person_included['relationships']['resource']['data']['id'];
-						}
-					}
-				}
-			}
+        if ($org_id) {
+            $org = wicket_get_organization($org_id);
+        } else {
+            $org_ids = [];
+            // figure out orgs I should see
+            // this association to the org is set on each role. The actual role types we look at might change depending on the project
+            foreach ($person->included() as $person_included) {
+                if (isset($person_included['attributes']['name'])) {
+                    if ($person_included['type'] == 'roles' && (stristr($person_included['attributes']['name'], 'org_editor'))) {
+                        if (isset($person_included['relationships']['resource']['data']['id']) && $person_included['relationships']['resource']['data']['type'] == 'organizations') {
+                            $org_ids[] = $person_included['relationships']['resource']['data']['id'];
+                        }
+                    }
+                }
+            }
 
-			$org_ids = array_unique($org_ids);
+            $org_ids = array_unique($org_ids);
 
-			// if they only have 1 org, set org ID to the first value
-			// else we build a list of their orgs below to choose from
-			if (count($org_ids) == 1) {
-				$org_id = $org_ids[0];
-				$org = wicket_get_organization($org_id);
-			}
-		}
+            // if they only have 1 org, set org ID to the first value
+            // else we build a list of their orgs below to choose from
+            if (count($org_ids) == 1) {
+                $org_id = $org_ids[0];
+                $org = wicket_get_organization($org_id);
+            }
+        }
 
-		if ($org_id) {
-			$wicket_settings = get_wicket_settings();
-			$access_token = wicket_get_access_token(wicket_current_person_uuid(), $org_id);
-?>
+        if ($org_id) {
+            $wicket_settings = get_wicket_settings();
+            $access_token = wicket_get_access_token(wicket_current_person_uuid(), $org_id);
+            ?>
 
 			<div class="wicket-section" role="complementary">
 				<h2><?php _e('Profile', 'wicket-acc'); ?></h2>
@@ -155,22 +155,22 @@ class Block_OrgProfile extends WicketAcc
 				</script>
 			<?php endif; ?>
 <?php
-		} elseif ($org_ids) {
-			// If no Org ID, then show selection of orgs.
-			echo "<h2>" . __('Choose an Organization:', 'wicket-acc') . "</h2>";
-			echo "<ul>";
-			// lookup org details based on UUID found on the role
-			foreach ($org_ids as $org_uuid) {
-				$organization = $client->get("organizations/$org_uuid");
-				echo "<li>";
-				echo "<a href='" . home_url(add_query_arg(array(), $wp->request)) . "?org_id=$org_uuid'>";
-				echo $organization['data']['attributes']['legal_name_' . $lang];
-				echo "</a>";
-				echo "</li>";
-			}
-			echo '</ul>';
-		} else {
-			echo "<p>" . __('You currently have no organizations to manage information for.', 'wicket-acc') . "</p>";
-		}
-	}
+        } elseif ($org_ids) {
+            // If no Org ID, then show selection of orgs.
+            echo "<h2>" . __('Choose an Organization:', 'wicket-acc') . "</h2>";
+            echo "<ul>";
+            // lookup org details based on UUID found on the role
+            foreach ($org_ids as $org_uuid) {
+                $organization = $client->get("organizations/$org_uuid");
+                echo "<li>";
+                echo "<a href='" . home_url(add_query_arg([], $wp->request)) . "?org_id=$org_uuid'>";
+                echo $organization['data']['attributes']['legal_name_' . $lang];
+                echo "</a>";
+                echo "</li>";
+            }
+            echo '</ul>';
+        } else {
+            echo "<p>" . __('You currently have no organizations to manage information for.', 'wicket-acc') . "</p>";
+        }
+    }
 }

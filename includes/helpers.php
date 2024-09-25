@@ -13,13 +13,13 @@ defined('ABSPATH') || exit;
  */
 function WACC()
 {
-	static $instance = null;
+    static $instance = null;
 
-	if ($instance === null) {
-		$instance = new MethodRouter();
-	}
+    if ($instance === null) {
+        $instance = new MethodRouter();
+    }
 
-	return $instance;
+    return $instance;
 }
 
 /**
