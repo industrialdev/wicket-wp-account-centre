@@ -1,8 +1,9 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
-# 1.5.0 / 2024-09-26
+# 1.5.1 / 2024-09-26
 - Introducing a local compilation step to have Tailwind CSS structure and layout classes available at the plugin level. There's no need to modify different themes or whitelist Tailwind classes for them to work. This prevents missing Tailwind classes across different Wicket theme versions used in production.
+- Added a new WC endpoint to the list of preferred endpoints to be loaded from WC directly, to fix an issue reported by Melissa.
 
 # 1.4.5 / 2024-09-25
 - Enforcing PSR-12 and PER standards from [PHP-FIG](https://www.php-fig.org/).

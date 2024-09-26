@@ -329,11 +329,7 @@ class Router extends WicketAcc
 
         // Redirect (some) WC endpoints
         // There're some WC endpoints that need to be loaded from WC directly, and can't be easily replaced with my-account posts.
-        $wc_forced_endpoints = [
-            'add-payment-method',
-        ];
-
-        foreach ($wc_forced_endpoints as $endpoint) {
+        foreach ($this->acc_prefer_wc_endpoints as $endpoint) {
             // Are we already inside any WC endpoint?
             if (str_contains($_SERVER['REQUEST_URI'], $wc_page_slug)) {
                 // We don't want an endless loop
