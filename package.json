@@ -1,7 +1,7 @@
 {
   "name": "wicket-wp-account-centre",
   "author": "Wicket Inc.",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "Wicket Account Centre for WordPress",
   "main": "index.js",
   "type": "module",
