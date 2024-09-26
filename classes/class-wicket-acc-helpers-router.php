@@ -23,6 +23,7 @@ class MethodRouter
             'MdpApi'       => new MdpApi(),
             'Profile'      => new Profile(),
             'Blocks'       => new Blocks(),
+            'User'         => new User(),
         ];
 
         // Store Helpers instance separately
