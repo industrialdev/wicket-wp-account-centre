@@ -12,7 +12,6 @@ This official Wicket plugin includes the Account Centre blocks and pages for Woo
 - [Composer](https://getcomposer.org/).
 - [EditorConfig](https://editorconfig.org/) installed in your code editor.
 - (Optional) [PHP-CS-Fixer](https://marketplace.visualstudio.com/items?itemName=higoka.php-cs-fixer) extension for VSCode, or the equivalent for your editor of choice (e.g., [Sublime Text](https://packagecontrol.io/packages/PHP%20CS%20Fixer)). PHP-CS-Fixer must be [installed globally on your machine (see instructions)](https://cs.symfony.com/doc/installation.html). Having this extension installed allows PHP-CS-Fixer to run on file save, so your code is formatted automatically without needing to wait for a git commit to trigger the formatting.
-- (Optional) [PHP Intelephense](https://intelephense.com/) in your code editor. Similar to PHP-CS-Fixer, but with [additional useful features](https://github.com/bmewburn/intelephense-docs/blob/master/features.md) that you may find helpful. Check the [Installation Docs](https://github.com/bmewburn/intelephense-docs/blob/master/installation.md) for more details. Do not use both extensions to format your code; choose only one to perform this task.
 
 ### Setup local dev environment
 
