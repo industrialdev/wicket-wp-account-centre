@@ -1,0 +1,37 @@
+{
+  "name": "wicket-wp-account-centre",
+  "author": "Wicket Inc.",
+  "version": "1.5.0",
+  "description": "Wicket Account Centre for WordPress",
+  "main": "index.js",
+  "type": "module",
+  "keywords": [
+    "account centre",
+    "account center",
+    "account",
+    "centre",
+    "center",
+    "wicket",
+    "wordpress"
+  ],
+  "license": "GPL-2.0-or-later",
+  "devDependencies": {
+    "@types/postcss-import": "^14.0.3",
+    "autoprefixer": "^10.4.20",
+    "glob": "^11.0.0",
+    "postcss": "^8.4.47",
+    "postcss-import": "^16.1.0",
+    "tailwindcss": "^3.4.13",
+    "vite": "^5.4.8"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "version-bump": "node -e \"const pkg = require('./package.json'); const currentVersion = pkg.version; console.log('Current version ' + currentVersion); const readline = require('readline').createInterface({ input: process.stdin, output: process.stdout }); readline.question('Enter new version (semver): ', (newVersion) => { pkg.version = newVersion; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2)); const fs = require('fs'); const files = ['composer.json', 'README.txt', 'class-wicket-acc-main.php']; const regex = new RegExp(currentVersion + '(?!\\d)', 'gm'); for (const file of files) { let data = fs.readFileSync(file, 'utf8'); data = data.replace(regex, newVersion); fs.writeFileSync(file, data, 'utf8'); } readline.close(); console.log('Bumped from ' + currentVersion + ' to ' + newVersion); console.log('Version updated successfully!'); });\""
+  },
+  "volta": {
+    "node": "22.9.0"
+  }
+}

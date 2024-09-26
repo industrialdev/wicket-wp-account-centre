@@ -20,13 +20,26 @@ Clone the repository locally.
 
 It’s highly recommended that you clone this repository into an already configured instance of Wicket’s [WordPress Baseline](https://github.com/industrialdev/wordpress-baseline), so you can work on this plugin live using Docker.
 
-Go to the plugin path and run `composer install`.
+Go to the plugin path and run:
+
+```
+npm install
+composer install
+```
 
 Ensure that `wicket-wp-account-centre/includes/acf-json` is writable by Docker on your system (for the user/group that Docker is using). This is necessary to write the ACF field groups JSON files (when they are updated) and version control them.
 
 ### Day to day work
 
-Just work and have fun :)
+Do your work and have fun :)
+
+If you touched any file inside the `/src/` folder, run `npm run build` to rebuild the plugin static assets.
+
+When tested and ready, put your relevant changes into the `CHANGELOG.md` file. Use a new version number or update a previous one already present in the file. Your choice.
+
+Then bump the plugin version number running `npm run version-bump`
+
+Commit and push.
 
 ## Features
 

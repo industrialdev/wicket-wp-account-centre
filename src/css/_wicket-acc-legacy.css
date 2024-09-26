@@ -1,0 +1,731 @@
+/**
+ * Wicket ACC Blocks
+ * Legacy styles. Don't add anything here.
+ */
+
+.woocommerce {
+	.container {
+		display: flex;
+		justify-content: space-between;
+		flex-flow: row wrap;
+	}
+}
+
+/* MQ: breakpoint-mobile */
+@media all and (max-width: 1023px) {
+	.woocommerce {
+		.container {
+			flex-flow: column wrap;
+			max-width: 100%;
+
+			.woocommerce-MyAccount-content {
+				width: 100%;
+				padding: 0 var(--wicket-acc-padding-md);
+			}
+		}
+	}
+}
+
+.woocommerce-wicket--container {
+	width: 100%;
+	max-width: var(--wp--style--global--content-size);
+	margin-inline: auto;
+	margin-left: auto;
+	margin-right: auto;
+	display: flex;
+	justify-content: space-between;
+	flex-flow: row wrap;
+}
+
+/*.woocommerce-wicket--account-centre,
+.myaccount-nav {
+	width: 100%;
+}*/
+
+@media all and (min-width: 1020px) {
+	.woocommerce-wicket--account-centre {
+		max-width: 70%;
+	}
+
+	.myaccount-nav {
+		width: 25%;
+	}
+
+	.wicket-acc-menu {
+		margin-bottom: 40px !important;
+	}
+}
+
+button.wicket_acc_btn {
+	margin-left: 3px;
+}
+
+.icon-r {
+	margin-right: 8px;
+}
+
+/* The Popup (background) */
+.wicket_acc_pp_opt {
+
+	display: none;
+	/*Hidden by default */
+
+	position: relative;
+	/* Stay in place */
+
+	z-index: 1;
+	/* Sit on top */
+
+	/*padding-top: 100px;  Location of the box */
+
+	overflow: auto;
+	/* Enable scroll if needed */
+
+	background-color: rgb(0, 0, 0);
+	/* Fallback color */
+
+	background-color: rgba(0, 0, 0, 0.1);
+	/* Black w/ opacity */
+
+	width: 60%;
+
+	margin-left: 20%;
+
+
+}
+
+.wicket_acc_pp_opt_close {
+
+	display: none;
+	/*Hidden by default */
+
+	position: relative;
+	/* Stay in place */
+
+	z-index: 1;
+	/* Sit on top */
+
+	/*padding-top: 100px;  Location of the box */
+
+	overflow: auto;
+	/* Enable scroll if needed */
+
+	background-color: rgb(0, 0, 0);
+	/* Fallback color */
+
+	background-color: rgba(0, 0, 0, 0.1);
+	/* Black w/ opacity */
+
+	width: 60%;
+
+	margin-left: 20%;
+
+	margin-top: -20%;
+
+}
+
+
+
+.wicket_acc_profile_Pic {
+	position: relative;
+}
+
+.wicket_acc_upload_button {
+	position: absolute;
+	padding: 2px;
+	bottom: 1px;
+	left: 1px;
+}
+
+.wicket_acc_remove_button {
+	position: absolute;
+	background-color: transparent;
+	color: #6d6d6d;
+	top: -5px;
+	left: 1px;
+	opacity: 70%;
+}
+
+.wicket_acc_remove_button:hover {
+	opacity: 100%;
+}
+
+.wicket_acc_remove_button:hover,
+.wicket_acc_upload_button:hover {
+	transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+	color: #999;
+}
+
+.wicket_acc_upload_image {
+	display: none;
+}
+
+.wicket_acc_pp_opt_remove {
+	display: none;
+	/*Hidden by default */
+	position: relative;
+	/* Stay in place */
+	z-index: 1;
+	/* Sit on top */
+	/*padding-top: 100px;  Location of the box */
+	left: 0;
+	top: 0;
+	overflow: auto;
+	/* Enable scroll if needed */
+	/*background-color: rgb(0,0,0);  Fallback color */
+	/*background-color: rgba(0,0,0,0.4);  Black w/ opacity */
+	width: 60%;
+	margin-left: 33%;
+	margin-top: -47px;
+}
+
+
+/* Popup Content */
+
+form.woocommerce-EditAccountForm input.wicket_acc_pp_opt_content,
+a.wicket_acc_pp_opt_content {
+	/*background-color: #fefefe;*/
+	/*padding: 20px; */
+	border: 1px solid #888;
+	/*width: 95%;*/
+	margin-left: 20%;
+}
+
+/* The Close Button */
+
+.wicket_acc_pp_opt_close .close {
+	color: #aaaaaa;
+	font-size: 28px;
+	font-weight: bold;
+	/*position: absolute;*/
+	margin-left: 95.5%;
+}
+
+.wicket_acc_pp_opt_close .close:hover,
+
+.wicket_acc_pp_opt_close .close:focus {
+	color: #000;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.wicket_acc_file_upload {
+	display: none;
+}
+
+li ul {
+	margin-left: 0.8em !important;
+}
+
+.woocommerce-MyAccount-navigation ul li.group_endpoint ul {
+	display: none;
+}
+
+.myaccount-nav h2.myaccount-nav-heading {
+	font-size: 1.2em;
+	margin: 0 0 10px;
+}
+
+.myaccount-nav ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.myaccount-nav ul li {
+	display: block;
+	margin: 5px 0px;
+	border-bottom: 1px solid #e0e0e0;
+}
+
+.myaccount-nav ul li.nav-selected>a:first-of-type,
+.myaccount-nav .menu-item.current-menu-item>a:first-of-type {
+	text-decoration: none !important;
+	font-size: 14px;
+	line-height: 24px;
+	display: block;
+	font-style: normal;
+	padding: 10px 5px;
+	font-weight: 600;
+	text-transform: capitalize;
+	box-shadow: none;
+	position: relative;
+}
+
+.myaccount-nav ul li a,
+.myaccount-nav ul li .nav__menu-link {
+	text-decoration: none !important;
+	font-size: 14px;
+	line-height: 24px;
+	display: block;
+	font-style: normal;
+	font-weight: 400;
+	padding: 10px 5px;
+	text-transform: capitalize;
+	box-shadow: none;
+	position: relative;
+	width: 100%;
+	text-align: left;
+}
+
+.myaccount-nav ul li .nav__menu-link {
+	font-weight: bold;
+}
+
+.myaccount-nav ul li a:hover,
+.myaccount-nav ul li a:active,
+.myaccount-nav ul li a:focus,
+.myaccount-nav ul li .nav__menu-link:hover,
+.myaccount-nav ul li .nav__menu-link:active,
+.myaccount-nav ul li .nav__menu-link:focus {
+	text-decoration: underline !important;
+}
+
+.myaccount-nav ul li a.group_endpoint_a {
+	font-weight: 700 !important;
+}
+
+.myaccount-nav ul li ul {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.myaccount-nav ul li .nav__submenu {
+	display: none;
+}
+
+.myaccount-nav ul li ul li {
+	border-bottom: 0 none;
+}
+
+.myaccount-nav ul li ul li a {
+	padding: 5px;
+}
+
+.myaccount-nav ul>li .dropdown__toggle--menu i {
+	position: absolute;
+	right: 5px;
+	top: 15px;
+}
+
+.myaccount-nav ul>li .dropdown__toggle--menu.open i {
+	-webkit-transform: rotate(-180deg);
+	-moz-transform: rotate(-180deg);
+	-ms-transform: rotate(-180deg);
+	-o-transform: rotate(-180deg);
+	transform: rotate(-180deg);
+}
+
+@media screen and (max-width: 991px) {
+	.myaccount-nav ul>li .dropdown__toggle--menu i {
+		font-size: 20px;
+		top: 10px;
+	}
+}
+
+.edit-link {
+	margin-left: 5px;
+}
+
+.my-account .large-3,
+.my-account .dashboard-links {
+	display: none;
+}
+
+.my-account .large-9,
+#content-area #left-area {
+	width: 100% !important;
+	max-width: 100% !important;
+	-ms-flex-preferred-size: 100% !important;
+	flex-basis: 100% !important;
+	padding: 0px !important;
+}
+
+#main-content .container:before {
+	content: "";
+	position: absolute;
+	top: 0;
+	height: 100%;
+	width: 0px;
+	background-color: transparent;
+	display: none;
+}
+
+.cursor-auto {
+	cursor: auto;
+}
+
+.cursor-pointer {
+	cursor: pointer;
+}
+
+/**
+ * Wicket ACC Grid
+ * Grid styles for Wicket ACC Blocks
+ *
+ * based on Chota CSS
+ * docs: https: //jenil.github.io/chota/#grid
+ */
+.container {
+  /*max-width: var(--wicket-grid-maxWidth);*/
+  /*margin: 0 auto;*/
+  /*width: 96%;*/
+  /*padding: 0 calc(var(--wicket-grid-gutter) / 2);*/
+}
+
+.row {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  margin-left: calc(var(--wicket-grid-gutter) / -2);
+  margin-right: calc(var(--wicket-grid-gutter) / -2);
+}
+
+.row.reverse {
+  flex-direction: row-reverse;
+}
+
+.col {
+  flex: 1;
+}
+
+.col,
+[class*=" col-"],
+[class^="col-"] {
+  margin: 0 calc(var(--wicket-grid-gutter) / 2) calc(var(--wicket-grid-gutter) / 2);
+}
+
+.col-1 {
+  flex: 0 0 calc((100% / (12/1)) - var(--wicket-grid-gutter));
+  max-width: calc((100% / (12/1)) - var(--wicket-grid-gutter));
+}
+
+.col-2 {
+  flex: 0 0 calc((100% / (12/2)) - var(--wicket-grid-gutter));
+  max-width: calc((100% / (12/2)) - var(--wicket-grid-gutter));
+}
+
+.col-3 {
+  flex: 0 0 calc((100% / (12/3)) - var(--wicket-grid-gutter));
+  max-width: calc((100% / (12/3)) - var(--wicket-grid-gutter));
+}
+
+.col-4 {
+  flex: 0 0 calc((100% / (12/4)) - var(--wicket-grid-gutter));
+  max-width: calc((100% / (12/4)) - var(--wicket-grid-gutter));
+}
+
+.col-5 {
+  flex: 0 0 calc((100% / (12/5)) - var(--wicket-grid-gutter));
+  max-width: calc((100% / (12/5)) - var(--wicket-grid-gutter));
+}
+
+.col-6 {
+  flex: 0 0 calc((100% / (12/6)) - var(--wicket-grid-gutter));
+  max-width: calc((100% / (12/6)) - var(--wicket-grid-gutter));
+}
+
+.col-7 {
+  flex: 0 0 calc((100% / (12/7)) - var(--wicket-grid-gutter));
+  max-width: calc((100% / (12/7)) - var(--wicket-grid-gutter));
+}
+
+.col-8 {
+  flex: 0 0 calc((100% / (12/8)) - var(--wicket-grid-gutter));
+  max-width: calc((100% / (12/8)) - var(--wicket-grid-gutter));
+}
+
+.col-9 {
+  flex: 0 0 calc((100% / (12/9)) - var(--wicket-grid-gutter));
+  max-width: calc((100% / (12/9)) - var(--wicket-grid-gutter));
+}
+
+.col-10 {
+  flex: 0 0 calc((100% / (12/10)) - var(--wicket-grid-gutter));
+  max-width: calc((100% / (12/10)) - var(--wicket-grid-gutter));
+}
+
+.col-11 {
+  flex: 0 0 calc((100% / (12/11)) - var(--wicket-grid-gutter));
+  max-width: calc((100% / (12/11)) - var(--wicket-grid-gutter));
+}
+
+.col-12 {
+  flex: 0 0 calc((100% / (12/12)) - var(--wicket-grid-gutter));
+  max-width: calc((100% / (12/12)) - var(--wicket-grid-gutter));
+}
+
+@media screen and (max-width: 599px) {
+  .container {
+    width: 100%;
+  }
+
+  .col,
+  [class*="col-"],
+  [class^="col-"] {
+    flex: 0 1 100%;
+    max-width: 100%;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .col-1-md {
+    flex: 0 0 calc((100% / (12/1)) - var(--wicket-grid-gutter));
+    max-width: calc((100% / (12/1)) - var(--wicket-grid-gutter));
+  }
+
+  .col-2-md {
+    flex: 0 0 calc((100% / (12/2)) - var(--wicket-grid-gutter));
+    max-width: calc((100% / (12/2)) - var(--wicket-grid-gutter));
+  }
+
+  .col-3-md {
+    flex: 0 0 calc((100% / (12/3)) - var(--wicket-grid-gutter));
+    max-width: calc((100% / (12/3)) - var(--wicket-grid-gutter));
+  }
+
+  .col-4-md {
+    flex: 0 0 calc((100% / (12/4)) - var(--wicket-grid-gutter));
+    max-width: calc((100% / (12/4)) - var(--wicket-grid-gutter));
+  }
+
+  .col-5-md {
+    flex: 0 0 calc((100% / (12/5)) - var(--wicket-grid-gutter));
+    max-width: calc((100% / (12/5)) - var(--wicket-grid-gutter));
+  }
+
+  .col-6-md {
+    flex: 0 0 calc((100% / (12/6)) - var(--wicket-grid-gutter));
+    max-width: calc((100% / (12/6)) - var(--wicket-grid-gutter));
+  }
+
+  .col-7-md {
+    flex: 0 0 calc((100% / (12/7)) - var(--wicket-grid-gutter));
+    max-width: calc((100% / (12/7)) - var(--wicket-grid-gutter));
+  }
+
+  .col-8-md {
+    flex: 0 0 calc((100% / (12/8)) - var(--wicket-grid-gutter));
+    max-width: calc((100% / (12/8)) - var(--wicket-grid-gutter));
+  }
+
+  .col-9-md {
+    flex: 0 0 calc((100% / (12/9)) - var(--wicket-grid-gutter));
+    max-width: calc((100% / (12/9)) - var(--wicket-grid-gutter));
+  }
+
+  .col-10-md {
+    flex: 0 0 calc((100% / (12/10)) - var(--wicket-grid-gutter));
+    max-width: calc((100% / (12/10)) - var(--wicket-grid-gutter));
+  }
+
+  .col-11-md {
+    flex: 0 0 calc((100% / (12/11)) - var(--wicket-grid-gutter));
+    max-width: calc((100% / (12/11)) - var(--wicket-grid-gutter));
+  }
+
+  .col-12-md {
+    flex: 0 0 calc((100% / (12/12)) - var(--wicket-grid-gutter));
+    max-width: calc((100% / (12/12)) - var(--wicket-grid-gutter));
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .col-1-lg {
+    flex: 0 0 calc((100% / (12/1)) - var(--wicket-grid-gutter));
+    max-width: calc((100% / (12/1)) - var(--wicket-grid-gutter));
+  }
+
+  .col-2-lg {
+    flex: 0 0 calc((100% / (12/2)) - var(--wicket-grid-gutter));
+    max-width: calc((100% / (12/2)) - var(--wicket-grid-gutter));
+  }
+
+  .col-3-lg {
+    flex: 0 0 calc((100% / (12/3)) - var(--wicket-grid-gutter));
+    max-width: calc((100% / (12/3)) - var(--wicket-grid-gutter));
+  }
+
+  .col-4-lg {
+    flex: 0 0 calc((100% / (12/4)) - var(--wicket-grid-gutter));
+    max-width: calc((100% / (12/4)) - var(--wicket-grid-gutter));
+  }
+
+  .col-5-lg {
+    flex: 0 0 calc((100% / (12/5)) - var(--wicket-grid-gutter));
+    max-width: calc((100% / (12/5)) - var(--wicket-grid-gutter));
+  }
+
+  .col-6-lg {
+    flex: 0 0 calc((100% / (12/6)) - var(--wicket-grid-gutter));
+    max-width: calc((100% / (12/6)) - var(--wicket-grid-gutter));
+  }
+
+  .col-7-lg {
+    flex: 0 0 calc((100% / (12/7)) - var(--wicket-grid-gutter));
+    max-width: calc((100% / (12/7)) - var(--wicket-grid-gutter));
+  }
+
+  .col-8-lg {
+    flex: 0 0 calc((100% / (12/8)) - var(--wicket-grid-gutter));
+    max-width: calc((100% / (12/8)) - var(--wicket-grid-gutter));
+  }
+
+  .col-9-lg {
+    flex: 0 0 calc((100% / (12/9)) - var(--wicket-grid-gutter));
+    max-width: calc((100% / (12/9)) - var(--wicket-grid-gutter));
+  }
+
+  .col-10-lg {
+    flex: 0 0 calc((100% / (12/10)) - var(--wicket-grid-gutter));
+    max-width: calc((100% / (12/10)) - var(--wicket-grid-gutter));
+  }
+
+  .col-11-lg {
+    flex: 0 0 calc((100% / (12/11)) - var(--wicket-grid-gutter));
+    max-width: calc((100% / (12/11)) - var(--wicket-grid-gutter));
+  }
+
+  .col-12-lg {
+    flex: 0 0 calc((100% / (12/12)) - var(--wicket-grid-gutter));
+    max-width: calc((100% / (12/12)) - var(--wicket-grid-gutter));
+  }
+}
+
+/**
+ * Utils
+ */
+
+.pull-left {
+  float: left !important;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-justify {
+  text-align: justify;
+}
+
+.text-uppercase {
+  text-transform: uppercase;
+}
+
+.text-lowercase {
+  text-transform: lowercase;
+}
+
+.text-capitalize {
+  text-transform: capitalize;
+}
+
+.is-full-screen {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.is-full-width {
+  width: 100% !important;
+}
+
+.is-full-height {
+  height: 100% !important;
+}
+
+.is-vertical-align {
+  display: flex;
+  align-items: center;
+}
+
+.is-horizontal-align {
+  display: flex;
+  justify-content: center;
+}
+
+.is-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.is-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.is-left {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.is-fixed {
+  position: fixed;
+  width: 100%;
+}
+
+.is-paddingless {
+  padding: 0 !important;
+}
+
+.is-marginless {
+  margin: 0 !important;
+}
+
+.is-pointer {
+  cursor: pointer !important;
+}
+
+.is-rounded {
+  border-radius: 100%;
+}
+
+.clearfix {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.is-hidden {
+  display: none !important;
+}
+
+@media screen and (max-width: 599px) {
+  .hide-xs {
+    display: none !important;
+  }
+}
+
+@media screen and (min-width: 600px) and (max-width: 899px) {
+  .hide-sm {
+    display: none !important;
+  }
+}
+
+@media screen and (min-width: 900px) and (max-width: 1199px) {
+  .hide-md {
+    display: none !important;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .hide-lg {
+    display: none !important;
+  }
+}
+
+@media print {
+  .hide-pr {
+    display: none !important;
+  }
+}

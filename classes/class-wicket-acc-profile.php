@@ -117,7 +117,7 @@ class Profile extends WicketAcc
 
         // Still no image? Return the default svg
         if (empty($pp_profile_picture)) {
-            $pp_profile_picture = WICKET_ACC_URL . '/assets/images/profile-picture-default.svg';
+            $pp_profile_picture = WICKET_ACC_URL . '/dist/assets/images/profile-picture-default.svg';
         }
 
         return $pp_profile_picture;
@@ -132,7 +132,7 @@ class Profile extends WicketAcc
      */
     public function is_custom_profile_picture($pp_profile_picture)
     {
-        $pp_profile_picture_plugin   = WICKET_ACC_URL . '/assets/images/profile-picture-default.svg';
+        $pp_profile_picture_plugin   = WICKET_ACC_URL . '/dist/assets/images/profile-picture-default.svg';
         $pp_profile_picture_override = get_field('acc_profile_picture_default', 'option');
 
         // Check if $pp_profile_picture is one of the two

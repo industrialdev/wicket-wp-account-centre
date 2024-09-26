@@ -10,8 +10,9 @@ $finder = (new PhpCsFixer\Finder())
     ->exclude([
         'node_modules',
         'vendor',
-        'assets',
         '.ci',
+        'src',
+        'dist',
         'languages',
     ])
     ->notName([
