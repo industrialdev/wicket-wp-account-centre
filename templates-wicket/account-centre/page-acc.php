@@ -46,9 +46,11 @@ if (function_exists('wpml_get_default_language')) {
 $wc_endpoints = WC()->query->get_query_vars();
 $current_url  = $_SERVER['REQUEST_URI'];
 $wc_endpoint  = basename(rtrim($current_url, '/'));
+$wc_wrapper_class = '';
 
 if (in_array($wc_endpoint, $wc_endpoints)) {
-    $is_wc_endpoint = true;
+    $is_wc_endpoint   = true;
+    $wc_wrapper_class = 'woocommerce';
 }
 
 // WPML enabled?
@@ -109,7 +111,7 @@ if ($acc_global_headerbanner_page_id && $acc_global_headerbanner_status) {
     }
 ?>
 
-    <div class="woocommerce woocommerce-wicket--account-centre wicket-acc-page wicket-acc-page-acc">
+    <div class="woocommerce-wicket--account-centre wicket-acc-page wicket-acc-page-acc <?php echo $wc_wrapper_class; ?>">
         <?php
     // ACC page
     if (have_posts()) {
