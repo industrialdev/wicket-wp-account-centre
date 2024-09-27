@@ -57,7 +57,7 @@ class Block_BaseBlock extends WicketAcc
         }
 
         // Get user profile picture
-        $wicket_slug = WACC()->get_slug();
+        $wicket_slug = WACC()->getAccSlug();
 
         $args = [];
 

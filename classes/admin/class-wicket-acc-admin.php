@@ -87,7 +87,7 @@ class AdminSettings extends WicketAcc
 
             // Is WPML enabled?
             if (function_exists('icl_get_languages')) {
-                $page_id = apply_filters('wpml_object_id', $page_id, 'my-account', true, WACC()->get_language());
+                $page_id = apply_filters('wpml_object_id', $page_id, 'my-account', true, WACC()->getLanguage());
             }
 
             $edit_link = get_edit_post_link($page_id);

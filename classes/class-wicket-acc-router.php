@@ -180,7 +180,7 @@ class Router extends WicketAcc
         }
 
         $set_slug = 'dashboard';
-        $set_name = WACC()->get_name();
+        $set_name = WACC()->getAccName();
 
         // Empty?
         if (empty($set_slug) || empty($set_name)) {

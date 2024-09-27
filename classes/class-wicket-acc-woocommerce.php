@@ -101,7 +101,7 @@ class WooCommerce extends WicketAcc
             return;
         }
 
-        $acc_global_headerbanner_page_id = WACC()->get_global_headerbanner_page_id();
+        $acc_global_headerbanner_page_id = WACC()->getGlobalHeaderBannerPageId();
         $acc_global_banner_page          = get_post($acc_global_headerbanner_page_id);
 
         // What happened here?

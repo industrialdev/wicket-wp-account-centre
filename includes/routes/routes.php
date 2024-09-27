@@ -18,8 +18,8 @@ if (is_admin()) {
 }
 
 // ACC page slug
-$acc_slug = WACC()->get_slug();
-$acc_name = WACC()->get_name();
+$acc_slug = WACC()->getAccSlug();
+$acc_name = WACC()->getAccName();
 
 // ACC page slug map for main supported languages
 $acc_slug_map_languages = [

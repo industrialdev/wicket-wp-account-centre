@@ -18,11 +18,11 @@ class Helpers extends WicketAcc
      * Get current person (MDP)
      *
      * Example:
-     * $person = WACC()->get_current_person();
+     * $person = WACC()->getCurrentPerson();
      *
      * @return object $person
      */
-    public function get_current_person()
+    public function getCurrentPerson()
     {
         return wicket_current_person();
     }
@@ -34,7 +34,7 @@ class Helpers extends WicketAcc
      *
      * @return string
      */
-    public function get_slug()
+    public function getAccSlug()
     {
         // WPML enabled?
         if (function_exists('icl_get_languages')) {
@@ -59,7 +59,7 @@ class Helpers extends WicketAcc
      *
      * @return string
      */
-    public function get_name()
+    public function getAccName()
     {
         $locale = get_field('ac_localization', 'option');
 
@@ -86,7 +86,7 @@ class Helpers extends WicketAcc
      *
      * @return string
      */
-    public function get_language()
+    public function getLanguage()
     {
         global $sitepress;
 
@@ -106,14 +106,14 @@ class Helpers extends WicketAcc
      *
      * @return int
      */
-    public function get_global_headerbanner_page_id()
+    public function getGlobalHeaderBannerPageId()
     {
         $page    = get_page_by_path('acc_global-headerbanner', OBJECT, 'my-account');
         $page_id = $page->ID;
 
         // Is WPML enabled?
         if (function_exists('icl_get_languages')) {
-            $page_id = apply_filters('wpml_object_id', $page_id, 'my-account', true, $this->get_language());
+            $page_id = apply_filters('wpml_object_id', $page_id, 'my-account', true, $this->getLanguage());
         }
 
         return $page_id;
@@ -124,7 +124,7 @@ class Helpers extends WicketAcc
      *
      * @return string
      */
-    public function render_acc_sidebar()
+    public function renderAccSidebar()
     {
         $user_template    = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/sidebar.php';
         $plugin_template  = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/sidebar.php';
@@ -146,7 +146,7 @@ class Helpers extends WicketAcc
      *
      * @return string
      */
-    public function get_create_account_page_url()
+    public function getCreateAccountPageURL()
     {
         $url = get_permalink(get_page_by_path('create-account', OBJECT, 'page'));
 
@@ -163,7 +163,7 @@ class Helpers extends WicketAcc
      *
      * @return bool
      */
-    public function is_woocommerce_active()
+    public function isWooCommerceActive()
     {
         return class_exists('WooCommerce');
     }

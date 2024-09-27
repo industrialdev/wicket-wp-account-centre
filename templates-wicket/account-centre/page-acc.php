@@ -34,11 +34,11 @@ $acc_spelling              = get_field('acc_localization', 'option');
 $acc_display_breadcrumb    = false;
 $acc_display_publish_date  = false;
 $is_wc_endpoint            = false;
-$acc_global_headerbanner_page_id = WACC()->get_global_headerbanner_page_id();
+$acc_global_headerbanner_page_id = WACC()->getGlobalHeaderBannerPageId();
 $acc_global_headerbanner_status  = get_field('acc_global-headerbanner', 'option');
 $current_page_id           = get_the_ID();
 $default_language          = 'en';
-if(function_exists('wpml_get_default_language')) {
+if (function_exists('wpml_get_default_language')) {
     $default_language = wpml_get_default_language();
 }
 
@@ -103,14 +103,14 @@ if ($acc_global_headerbanner_page_id && $acc_global_headerbanner_status) {
 ?>
 
 <div class="<?php echo implode(' ', $wrapper_classes) ?>">
-	<?php
+    <?php
     if ('left' === $acc_sidebar_location) {
-        WACC()->render_acc_sidebar();
+        WACC()->renderAccSidebar();
     }
 ?>
 
-	<div class="woocommerce-wicket--account-centre wicket-acc-page wicket-acc-page-acc">
-		<?php
+    <div class="woocommerce-wicket--account-centre wicket-acc-page wicket-acc-page-acc">
+        <?php
     // ACC page
     if (have_posts()) {
         while (have_posts()) :
@@ -124,12 +124,12 @@ if ($is_wc_endpoint) {
     do_action("woocommerce_account_{$wc_endpoint}_endpoint");
 }
 ?>
-	</div>
+    </div>
 
-	<?php
+    <?php
     if ('right' === $acc_sidebar_location) {
         // Get the Wicket ACC sidebar template
-        WACC()->render_acc_sidebar();
+        WACC()->renderAccSidebar();
     }
 ?>
 </div>

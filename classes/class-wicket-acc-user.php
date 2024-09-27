@@ -30,7 +30,7 @@ class User extends WicketAcc
      *
      * @return int|false User ID or false on error
      */
-    public function create_user($username, $password, $email = '')
+    public function createUser($username, $password, $email = '')
     {
         // Do we receive data?
         if (empty($username) || empty($password)) {
@@ -38,7 +38,7 @@ class User extends WicketAcc
         }
 
         // User already exist?
-        $this->user_id = $this->user_exists($username);
+        $this->user_id = $this->userExists($username);
 
         if ($this->user_id) {
             return $this->user_id;
@@ -64,7 +64,7 @@ class User extends WicketAcc
      *
      * @return int|false User ID or false
      */
-    public function user_exists($username_or_email)
+    public function userExists($username_or_email)
     {
         // Email or not?
         if (filter_var($username_or_email, FILTER_VALIDATE_EMAIL)) {
