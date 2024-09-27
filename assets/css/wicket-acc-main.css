@@ -3,12 +3,9 @@
  * Base styles for Wicket ACC
  */
 
+@import "_bootstrap-grid.min.css";
 @import "_wicket-acc-variables.css";
 @import "_wicket-acc-blocks-global.css";
 @import "_wicket-acc-legacy.css";
 @import "_wicket-acc-pages.css";
 @import "_wicket-acc-navigation.css";
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;

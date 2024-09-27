@@ -22,7 +22,6 @@ It’s highly recommended that you clone this repository into an already configu
 Go to the plugin path and run:
 
 ```
-npm install
 composer install
 ```
 
@@ -32,11 +31,9 @@ Ensure that `wicket-wp-account-centre/includes/acf-json` is writable by Docker o
 
 Do your work and have fun :)
 
-If you touched any file inside the `/src/` folder, run `npm run build` to rebuild the plugin static assets.
-
 When tested and ready, put your relevant changes into the `CHANGELOG.md` file. Use a new version number or update a previous one already present in the file. Your choice.
 
-Then bump the plugin version number running `npm run version-bump`
+Then bump the plugin version number running `composer version-bump`
 
 Commit and push.
 

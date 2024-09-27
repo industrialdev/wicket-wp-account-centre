@@ -66,7 +66,7 @@ class Registers extends WicketAcc
             'has_archive'         => true,
             'hierarchical'        => true,
             'menu_position'       => 30,
-            'menu_icon'           => WICKET_ACC_URL . '/dist/assets/images/wicket-logo-20-white.svg',
+            'menu_icon'           => WICKET_ACC_URL . '/assets/images/wicket-logo-20-white.svg',
             'rewrite'             => true,
             'supports'            => [
                 'title',
