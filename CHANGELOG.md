@@ -1,10 +1,11 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
-# 1.5.5 / 2024-09-26
+# 1.5.6 / 2024-09-26
 - Introducing a local compilation step to have Tailwind CSS structure and layout classes available at the plugin level. There's no need to modify different themes or whitelist Tailwind classes for them to work. This prevents missing Tailwind classes across different Wicket theme versions used in production.
 - Added a new WC endpoint to the list of preferred endpoints to be loaded from WC directly, to fix an issue reported by Melissa.
 - Fixed an issue with Payment Methods endpoint not working correctly when used with WPML.
+- Selective loading of WooCommerce wrapper class, to avoid breaking ACC Dashboard.
 - Removed the build step. chef-KISS.
 
 # 1.4.5 / 2024-09-25
