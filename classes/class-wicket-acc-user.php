@@ -17,9 +17,7 @@ class User extends WicketAcc
     /**
      * Constructor.
      */
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     /**
      * Create a WordPress User
