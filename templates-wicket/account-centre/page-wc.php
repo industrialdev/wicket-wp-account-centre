@@ -13,7 +13,7 @@ if (empty($acc_sidebar_location)) {
 }
 ?>
 
-<div class="woocommerce-wicket--container wicket-acc wicket-acc-page wicket-acc-woocommerce wicket-acc-container">
+<div class="woocommerce woocommerce-wicket--container wicket-acc wicket-acc-page wicket-acc-woocommerce wicket-acc-container">
     <?php
     if ('left' === $acc_sidebar_location) {
         WACC()->renderAccSidebar();

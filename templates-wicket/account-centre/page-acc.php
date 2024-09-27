@@ -109,7 +109,7 @@ if ($acc_global_headerbanner_page_id && $acc_global_headerbanner_status) {
     }
 ?>
 
-    <div class="woocommerce-wicket--account-centre wicket-acc-page wicket-acc-page-acc">
+    <div class="woocommerce woocommerce-wicket--account-centre wicket-acc-page wicket-acc-page-acc">
         <?php
     // ACC page
     if (have_posts()) {

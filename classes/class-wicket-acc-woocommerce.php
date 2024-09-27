@@ -55,6 +55,7 @@ class WooCommerce extends WicketAcc
             return $template;
         }
 
+        // WC myaccount to ACC dashboard
         if ($template_name === 'myaccount/my-account.php') {
             $plugin_template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/page-wc.php';
             $user_template   = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/page-wc.php';
@@ -65,6 +66,30 @@ class WooCommerce extends WicketAcc
 
             if (file_exists($plugin_template)) {
                 return $plugin_template;
+            }
+        }
+
+        // Determine the endpoint name from $template_name (ex: myaccount/payment-methods.php = payment-methods)
+        $wc_endpoint = explode('/', $template_name);
+        $wc_endpoint = end($wc_endpoint);
+        $wc_endpoint = explode('.', $wc_endpoint);
+        // grab the first element of the array
+        $wc_endpoint = array_shift($wc_endpoint);
+
+        // If we are seeing a WC endpoint from $acc_prefer_wc_endpoints
+        if (in_array($wc_endpoint, $this->acc_prefer_wc_endpoints)) {
+            // Only on WooCommerce pages
+            if (!is_account_page()) {
+                return $template;
+            }
+
+            // We need to load the content of the post with slug $wc_endpoint from CPT my-account
+            $acc_post_id = get_field('acc_page_' . $wc_endpoint, 'option');
+
+            if ($acc_post_id) {
+                // Get post content and display it
+                $acc_post_content = get_post($acc_post_id)->post_content;
+                echo $acc_post_content;
             }
         }
 

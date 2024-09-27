@@ -279,35 +279,6 @@
             "bidirectional_target": []
         },
         {
-            "key": "field_66a999e49010e",
-            "label": "Page: Job View",
-            "name": "acc_page_job-view",
-            "aria-label": "",
-            "type": "post_object",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "wpml_cf_preferences": 3,
-            "post_type": [
-                "my-account"
-            ],
-            "post_status": [
-                "publish"
-            ],
-            "taxonomy": "",
-            "return_format": "id",
-            "multiple": 0,
-            "allow_null": 0,
-            "bidirectional": 0,
-            "ui": 1,
-            "bidirectional_target": []
-        },
-        {
             "key": "field_66a99a0904834",
             "label": "Page: Post a Job",
             "name": "acc_page_job-post",
@@ -427,35 +398,6 @@
             "key": "field_66ddf7a4273a9",
             "label": "WC Page: View Order",
             "name": "acc_page_view-order",
-            "aria-label": "",
-            "type": "post_object",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "wpml_cf_preferences": 3,
-            "post_type": [
-                "my-account"
-            ],
-            "post_status": [
-                "publish"
-            ],
-            "taxonomy": "",
-            "return_format": "id",
-            "multiple": 0,
-            "allow_null": 0,
-            "bidirectional": 0,
-            "ui": 1,
-            "bidirectional_target": []
-        },
-        {
-            "key": "field_66a99a8ac8418",
-            "label": "WC Page: Purchase History",
-            "name": "acc_page_purchase-history",
             "aria-label": "",
             "type": "post_object",
             "instructions": "",
@@ -616,6 +558,6 @@
     "active": true,
     "description": "Main options for ACC plugin",
     "show_in_rest": 0,
-    "acfml_field_group_mode": "translation",
-    "modified": 1725892572
+    "acfml_field_group_mode": "localization",
+    "modified": 1727453426
 }

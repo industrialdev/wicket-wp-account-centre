@@ -115,7 +115,8 @@ class AdminSettings extends WicketAcc
         );
 
         // Shortcut: WooCommerce Endpoints
-        add_submenu_page(
+        // We shouldn't let implementators change this. Why? because of the issues this causes when used with WPML.
+        /*add_submenu_page(
             'edit.php?post_type=my-account',
             'WC Endpoints',
             'WC Endpoints',
@@ -123,7 +124,7 @@ class AdminSettings extends WicketAcc
             admin_url('admin.php?page=wc-settings&tab=advanced'),
             null,
             12
-        );
+        );*/
     }
 
     /**

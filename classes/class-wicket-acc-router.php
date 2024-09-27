@@ -286,16 +286,38 @@ class Router extends WicketAcc
             return;
         }
 
+        // WPML compatibility
+        if (defined('ICL_SITEPRESS_VERSION')) {
+            global $sitepress;
+            $current_lang = $sitepress->get_current_language();
+        } else {
+            $current_lang = 'en';
+        }
+
         $acc_dashboard_id  = get_option('options_acc_page_dashboard');
         $acc_dashboard_url = get_permalink($acc_dashboard_id);
 
         $wc_page_id   = wc_get_page_id('myaccount');
         $wc_page_slug = get_post($wc_page_id)->post_name;
 
+        if ($current_lang !== 'en') {
+            $wc_page_slug = $this->acc_wc_index_slugs[$current_lang];
+        }
+
+        $server_request_uri = $_SERVER['REQUEST_URI'];
+
+        // WPML compatibility
+        if (defined('ICL_SITEPRESS_VERSION')) {
+            if ($current_lang !== 'en') {
+                // Adjust $server_request_uri to remove lang code
+                $server_request_uri = str_replace('/' . $current_lang . '/', '/', $server_request_uri);
+            }
+        }
+
         // WooCommerce account page index only
-        if (str_contains($_SERVER['REQUEST_URI'], $wc_page_slug)) {
+        if (str_contains($server_request_uri, $wc_page_slug)) {
             // Redirect user when is on WC index page only
-            if ($_SERVER['REQUEST_URI'] === '/' . $wc_page_slug . '/') {
+            if ($server_request_uri === '/' . $wc_page_slug . '/') {
                 if (headers_sent()) {
                     // Any other more elegant way to do this?
                     echo '<meta http-equiv="refresh" content="0;url=' . $acc_dashboard_url . '" />';
@@ -315,7 +337,7 @@ class Router extends WicketAcc
 
         foreach ($acc_old_slugs as $old_slug) {
             // If requested URL contains any of the old slugs,
-            if (str_contains($_SERVER['REQUEST_URI'], $old_slug)) {
+            if (str_contains($server_request_uri, $old_slug)) {
                 if (headers_sent()) {
                     // Any other more elegant way to do this?
                     echo '<meta http-equiv="refresh" content="0;url=' . $acc_dashboard_url . '" />';
@@ -329,26 +351,42 @@ class Router extends WicketAcc
 
         // Redirect (some) WC endpoints
         // There're some WC endpoints that need to be loaded from WC directly, and can't be easily replaced with my-account posts.
-        foreach ($this->acc_prefer_wc_endpoints as $endpoint) {
-            // Are we already inside any WC endpoint?
-            if (str_contains($_SERVER['REQUEST_URI'], $wc_page_slug)) {
-                // We don't want an endless loop
-                break;
+        if (is_array($this->acc_prefer_wc_endpoints) && !empty($this->acc_prefer_wc_endpoints)) {
+            // Determine if $server_request_uri is loading a WC endpoint, match with acc_wc_endpoints
+
+            // Our WC endpoint is the last part of the url. Example for https://localhost/fr/mon-compte/modes-de-paiement/ = modes-de-paiement
+            $current_url = home_url(add_query_arg(null, null));
+            $current_url = rtrim($current_url, '/');
+            $wc_endpoint = basename($current_url);
+
+            if ($current_lang !== 'en') {
+                // Find the correct WC endpoint slug
+                foreach ($this->acc_wc_endpoints as $endpoint_key => $translations) {
+                    if (isset($translations[$current_lang]) && $translations[$current_lang] === $wc_endpoint) {
+                        $wc_endpoint = $translations['en'];
+                        break;
+                    }
+                }
             }
 
-            // If requested URL contains a critical WC endpoint
-            if (str_contains($_SERVER['REQUEST_URI'], $endpoint)) {
-                // Get the "Add Payment Method" URL
-                $wc_endpoint_url = home_url(wc_get_endpoint_url($endpoint, '', $wc_page_slug));
+            // Now $wc_endpoint contains the English version of the endpoint
 
-                if (headers_sent()) {
-                    // Any other more elegant way to do this?
-                    echo '<meta http-equiv="refresh" content="0;url=' . $wc_endpoint_url . '" />';
-                    echo '<script>window.location.href="' . $wc_endpoint_url . '";</script>';
-                } else {
-                    wp_safe_redirect($wc_endpoint_url);
+            // Check if this endpoint is in the preferred WC endpoints
+            if (in_array($wc_endpoint, $this->acc_prefer_wc_endpoints)) {
+                // Are we already inside any WC endpoint?
+                if (!str_contains($server_request_uri, $wc_page_slug)) {
+                    // Get the WC endpoint URL
+                    $wc_endpoint_url = home_url(wc_get_endpoint_url($wc_endpoint, '', $wc_page_slug));
+
+                    if (headers_sent()) {
+                        echo '<meta http-equiv="refresh" content="0;url=' . esc_url($wc_endpoint_url) . '" />';
+                        echo '<script>window.location.href="' . esc_url($wc_endpoint_url) . '";</script>';
+                    } else {
+                        wp_safe_redirect($wc_endpoint_url);
+                    }
+
+                    exit;
                 }
-                exit;
             }
         }
     }

@@ -9,7 +9,7 @@ namespace WicketAcc;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Customize WooCommerce my account features to build the Wicket Account Centre. Expands it with additional blocks and pages.
- * Version:           1.5.3
+ * Version:           1.5.4
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -56,10 +56,16 @@ define('WICKET_ACC_TEMPLATES_FOLDER', 'account-centre');
  */
 class WicketAcc
 {
-    protected $acc_index_slugs = [
+    protected array $acc_index_slugs = [
         'en'    => 'my-account',
         'fr'    => 'mon-compte',
         'es'    => 'mi-cuenta',
+    ];
+
+    protected array $acc_wc_index_slugs = [
+        'en'    => 'wc-account',
+        'fr'    => 'wc-compte',
+        'es'    => 'wc-cuenta',
     ];
 
     protected array $acc_pages_map = [
@@ -85,6 +91,69 @@ class WicketAcc
         //'customer-logout'                => 'Logout',
         // WooCommerce subscription endpoints
         'subscriptions'                  => 'Subscriptions',
+    ];
+
+    protected array $acc_wc_endpoints = [
+        'order-pay' => [
+            'en' => 'order-pay',
+            'fr' => 'ordre-paiement',
+            'es' => 'orden-pago',
+        ],
+        'order-received' => [
+            'en' => 'order-received',
+            'fr' => 'ordre-recibida',
+            'es' => 'orden-recibida',
+        ],
+        'add-payment-method' => [
+            'en' => 'add-payment-method',
+            'fr' => 'ajouter-mode-paiement',
+            'es' => 'agregar-medio-pago',
+        ],
+        'set-default-payment-method' => [
+            'en' => 'set-default-payment-method',
+            'fr' => 'definir-mode-paiement-defaut',
+            'es' => 'establecer-medio-pago-principal',
+        ],
+        'orders' => [
+            'en' => 'orders',
+            'fr' => 'commandes',
+            'es' => 'ordenes',
+        ],
+        'view-order' => [
+            'en' => 'view-order',
+            'fr' => 'afficher-commande',
+            'es' => 'ver-orden',
+        ],
+        'downloads' => [
+            'en' => 'downloads',
+            'fr' => 'telechargements',
+            'es' => 'descargas',
+        ],
+        'edit-account' => [
+            'en' => 'edit-account',
+            'fr' => 'editer-compte',
+            'es' => 'editar-cuenta',
+        ],
+        'edit-address' => [
+            'en' => 'edit-address',
+            'fr' => 'editer-adresse',
+            'es' => 'editar-dirección',
+        ],
+        'payment-methods' => [
+            'en' => 'payment-methods',
+            'fr' => 'modes-de-paiement',
+            'es' => 'medios-de-pago',
+        ],
+        'customer-logout' => [
+            'en' => 'customer-logout',
+            'fr' => 'deconnexion',
+            'es' => 'cerrar-sesion',
+        ],
+        'subscriptions' => [
+            'en' => 'subscriptions',
+            'fr' => 'souscriptions',
+            'es' => 'suscripciones',
+        ],
     ];
 
     protected array $acc_prefer_wc_endpoints = [
