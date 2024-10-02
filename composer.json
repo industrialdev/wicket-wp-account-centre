@@ -26,16 +26,10 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "chmod +x .ci/install-hooks.sh",
-            "bash .ci/install-hooks.sh",
-            "chmod +x .git/hooks/pre-commit",
             "if [ \"$COMPOSER_DEV_MODE\" = \"0\" ]; then rm -rf ./.ci; fi",
             "cp vendor/twbs/bootstrap/dist/css/bootstrap-grid.min.css assets/css/_bootstrap-grid.min.css"
         ],
         "post-update-cmd": [
-            "chmod +x .ci/install-hooks.sh",
-            "bash .ci/install-hooks.sh",
-            "chmod +x .git/hooks/pre-commit",
             "if [ \"$COMPOSER_DEV_MODE\" = \"0\" ]; then rm -rf ./.ci; fi",
             "cp vendor/twbs/bootstrap/dist/css/bootstrap-grid.min.css assets/css/_bootstrap-grid.min.css"
         ],
