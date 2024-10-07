@@ -1,7 +1,7 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
-# 1.5.8 / 2024-10-02 
+# 1.5.10 / 2024-10-02
 - Added On-Hold Order Pending Callout
 
 # 1.5.6 / 2024-09-26
