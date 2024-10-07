@@ -26,6 +26,9 @@ class WooCommerce extends WicketAcc
         add_filter('woocommerce_locate_template', [$this, 'override_woocommerce_template'], 10, 3);
         add_action('init', [$this, 'wc_remove_order_again_button']);
         add_action('wicket_header_end', [$this, 'wc_add_acc_banner'], PHP_INT_MAX);
+        add_filter( 'woocommerce_cart_tax_totals', [$this, 'remove_cart_tax_totals'] );
+        add_filter( 'woocommerce_calculated_total', [$this, 'exclude_tax_cart_total'] );
+        add_filter( 'woocommerce_subscriptions_calculated_total', [$this, 'exclude_tax_cart_total'] );
     }
 
     /**
@@ -140,5 +143,41 @@ class WooCommerce extends WicketAcc
         $acc_global_banner_content .= '</div>';
 
         echo $acc_global_banner_content;
+    }
+
+    /**
+     * Removes the tax totals from the cart page.
+     *
+     * @param array $tax_totals An associative array of tax rates to totals.
+     * @param object $instance The WC_Tax object.
+     *
+     * @return array Empty array.
+     */
+    public function remove_cart_tax_totals( $tax_totals, $instance ) {
+        if(!is_cart()) {
+            return $tax_totals;
+        }
+
+        $tax_totals = [];
+
+        return $tax_totals;
+    }
+
+    /**
+     * Removes the tax totals from the cart totals.
+     *
+     * @param int $total The total.
+     * @param object $instance The WC_Tax object.
+     *
+     * @return int The total without tax.
+     */
+    public function exclude_tax_cart_total( $total, $instance ) {
+        if(!is_cart()) {
+            return $total;
+        }
+
+        $total = round( WC()->cart->cart_contents_total + WC()->cart->shipping_total + WC()->cart->fee_total, WC()->cart->dp );
+
+        return $total;
     }
 }
