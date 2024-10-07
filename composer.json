@@ -1,7 +1,7 @@
 {
     "name": "industrialdev/wicket-wp-account-centre",
     "description": "Wicket's Account Centre for WordPress",
-    "version": "1.5.10",
+    "version": "1.5.11",
     "keywords": [
         "wordpress",
         "wicket",
@@ -21,7 +21,10 @@
         "php": ">=8.1.0"
     },
     "require-dev": {
-        "twbs/bootstrap": "^5.3"
+        "twbs/bootstrap": "^5.3",
+        "pestphp/pest": "^3.3",
+        "10up/wp_mock": "^0.4.2",
+        "mockery/mockery": "^1.6"
     },
     "scripts": {
         "post-install-cmd": [
@@ -33,5 +36,10 @@
             "cp vendor/twbs/bootstrap/dist/css/bootstrap-grid.min.css assets/css/_bootstrap-grid.min.css"
         ],
         "version-bump": "read -p \"Enter new version (semver): \" NEW_VERSION; CURRENT_VERSION=$(grep -oP '(?<=\"version\": \")[^\"]*' composer.json); for file in composer.json README.txt class-wicket-acc-main.php; do sed -i \"s/$CURRENT_VERSION/$NEW_VERSION/g\" $file; done; echo \"Bumped from $CURRENT_VERSION to $NEW_VERSION\"; echo \"Version updated successfully!\""
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
     }
 }
