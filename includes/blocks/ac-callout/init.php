@@ -34,18 +34,18 @@ class Block_Callout extends WicketAcc
      */
     protected function init_block()
     {
-        $block_logic 			= get_field('block_logic');
-        $renewal_period 	= get_field('renewal_period');
+        $block_logic             = get_field('block_logic');
+        $renewal_period     = get_field('renewal_period');
         $mandatory_fields = get_field('select_profile_mandatory_fields');
-        $title       			= get_field('ac_callout_title');
-        $description 			= get_field('ac_callout_description');
-        $links       			= get_field('ac_callout_links');
-        $memberships 			= wicket_get_active_memberships();
-        $woo_memberships	= woo_get_active_memberships();
+        $title                   = get_field('ac_callout_title');
+        $description             = get_field('ac_callout_description');
+        $links                   = get_field('ac_callout_links');
+        $memberships             = wicket_get_active_memberships();
+        $woo_memberships    = woo_get_active_memberships();
         $classes          = [];
 
         if ($this->is_preview) {
-            if($block_logic == '') {
+            if ($block_logic == '') {
                 $block_logic == 'not-set';
             }
             $args = [
@@ -64,74 +64,74 @@ class Block_Callout extends WicketAcc
             case 'become_member':
                 /**
                  * Special Case needed to display a Pending Callout when no membership exists but order created
-                 * Check for Order status 'on-hold' with a Subscription Product in 'membership' Category 
+                 * Check for Order status 'on-hold' with a Subscription Product in 'membership' Category
                  * If found we will display the Pending Callout for the Product's assigned Tier
                  * Use filter to add product_cat you want to look for
                  * apply_filters("wicket_renewal_filter_product_data", function() { return ['memberships']}, 10, 1);
                  */
-                $orders = wc_get_orders(['type' => 'shop_order', 'status' => 'wc-on-hold', 'limit' => -1, 'customer' => get_current_user_id() ]);
+                $orders = wc_get_orders(['type' => 'shop_order', 'status' => 'wc-on-hold', 'limit' => -1, 'customer' => get_current_user_id()]);
                 $membership_cats = ['membership'];
                 $membership_cats = apply_filters("wicket_renewal_filter_product_data", $membership_cats);
 
                 foreach ($orders as $order) {
-                  foreach ($order->get_items() as $item) {
-                    if (class_exists( 'WC_Subscriptions_Product' ) && \WC_Subscriptions_Product::is_subscription( $item->get_product_id())) {
-                      $terms = get_the_terms($item->get_product_id(), 'product_cat');
-                      if(empty($terms) || ! array_intersect($membership_cats, wp_list_pluck($terms, 'slug'))) {
-                        continue; //if it is not a membership product check the next one
-                      }
-                      $iso_code = '';
-                      if ( defined( 'ICL_SITEPRESS_VERSION' ) ) {
-                        $iso_code = apply_filters( 'wpml_current_language', null );
-                        if( empty( $iso_code )) {
-                          $locale = get_locale();
-                          $iso_code = substr($locale, 0, 2);
+                    foreach ($order->get_items() as $item) {
+                        if (class_exists('WC_Subscriptions_Product') && \WC_Subscriptions_Product::is_subscription($item->get_product_id())) {
+                            $terms = get_the_terms($item->get_product_id(), 'product_cat');
+                            if (empty($terms) || ! array_intersect($membership_cats, wp_list_pluck($terms, 'slug'))) {
+                                continue; //if it is not a membership product check the next one
+                            }
+                            $iso_code = '';
+                            if (defined('ICL_SITEPRESS_VERSION')) {
+                                $iso_code = apply_filters('wpml_current_language', null);
+                                if (empty($iso_code)) {
+                                    $locale = get_locale();
+                                    $iso_code = substr($locale, 0, 2);
+                                }
+                            }
+                            $Tier = \Wicket_Memberships\Membership_Tier::get_tier_by_product_id($item->get_product_id());
+                            if (empty($Tier)) {
+                                continue;
+                            }
+                            $links = [];
+                            $title = $Tier->get_approval_callout_header($iso_code);
+                            $description = $Tier->get_approval_callout_content($iso_code) . '<!-- on-hold-order_id: ' . $order->ID . ' //-->';
+                            $link['link'] = [
+                                'title' => $Tier->get_approval_callout_button_label($iso_code),
+                                'url' => 'mailto: ' . $Tier->get_approval_email() . '?subject=' . __('Re: Pending Membership Request', 'wicket-memberships')
+                            ];
+                            $links[] = $link;
+                            /**
+                             * We are returning early here.
+                             */
+                            $attrs = get_block_wrapper_attributes(array('class' => 'callout-' . $block_logic . ' callout-pending_approval'));
+                            echo '<div ' . $attrs . '>';
+                            get_component('card-call-out', [
+                                'title'       => $title,
+                                'description' => $description,
+                                'links'       => $links,
+                                'style'       => '',
+                            ]);
+                            echo '</div>';
+                            //return; //skipping to show all the orders currently on-hold
                         }
-                      }
-                      $Tier = \Wicket_Memberships\Membership_Tier::get_tier_by_product_id( $item->get_product_id() );
-                      if(empty($Tier)) {
-                        continue;
-                      }
-                      $links = [];
-                      $title = $Tier->get_approval_callout_header($iso_code);
-                      $description = $Tier->get_approval_callout_content($iso_code) .'<!-- on-hold-order_id: '.$order->ID.' //-->';
-                      $link['link'] = [
-                        'title' => $Tier->get_approval_callout_button_label($iso_code),
-                        'url' => 'mailto: ' . $Tier->get_approval_email() . '?subject=' . __( 'Re: Pending Membership Request', 'wicket-memberships')
-                      ];
-                      $links[] = $link;
-                      /**
-                       * We are returning early here.
-                       */
-                      $attrs = get_block_wrapper_attributes(array('class' => 'callout-' . $block_logic . ' callout-pending_approval'));
-                      echo '<div ' . $attrs . '>';
-                      get_component('card-call-out', [
-                        'title'       => $title,
-                        'description' => $description,
-                        'links'       => $links,
-                        'style'       => '',
-                      ]);
-                      echo '</div>';
-                      //return; //skipping to show all the orders currently on-hold
                     }
-                  }
                 }
 
                 if (!class_exists('\Wicket_Memberships\Wicket_Memberships')) {
                     $show_block = (!$memberships && !$woo_memberships) ? true : false;
                 } else {
-                    if(class_exists('\Wicket_Memberships\Membership_Controller')) {
+                    if (class_exists('\Wicket_Memberships\Membership_Controller')) {
                         /**
                          * Check for an existing membership record that has not been approved yet to show the pending callout.
                          */
                         $renewal_type = 'pending_approval';
                         $membership_renewals = (new \Wicket_Memberships\Membership_Controller())->get_membership_callouts();
                         #$membership_renewals[$renewal_type] = '';
-                        if(!empty($membership_renewals[$renewal_type])) {
-                            foreach($membership_renewals[$renewal_type] as $renewal_data) {
+                        if (!empty($membership_renewals[$renewal_type])) {
+                            foreach ($membership_renewals[$renewal_type] as $renewal_data) {
                                 $links = [];
                                 $title = $renewal_data['callout']['header'];
-                                $description = $renewal_data['callout']['content'] .'<!-- pending-approval-order_id: '.$renewal_data['membership']['meta']['membership_parent_order_id'].' //-->';
+                                $description = $renewal_data['callout']['content'] . '<!-- pending-approval-order_id: ' . $renewal_data['membership']['meta']['membership_parent_order_id'] . ' //-->';
                                 $link['link'] = [
                                     'title' => $renewal_data['callout']['button_label'],
                                     'url' => 'mailto: ' . $renewal_data['callout']['email'],
@@ -212,13 +212,13 @@ class Block_Callout extends WicketAcc
                                 echo '</pre>';
                             }
                             /**
-                            * We are returning early here.
-                            */
+                             * We are returning early here.
+                             */
                             $attrs = get_block_wrapper_attributes(['class' => 'callout-' . $block_logic . ' callout-' . $renewal_type]);
                             echo '<div ' . $attrs . '>';
                             get_component('card-call-out', [
                                 'title'       => $title,
-                                'description' => $description .'<!-- renewal-order_id: '.$membership['membership']['meta']['membership_parent_order_id'].' //-->',
+                                'description' => $description . '<!-- renewal-order_id: ' . $membership['membership']['meta']['membership_parent_order_id'] . ' //-->',
                                 'links'       => $links,
                                 'style'       => '',
                             ]);

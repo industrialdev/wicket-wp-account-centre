@@ -75,6 +75,7 @@ class Registers extends WicketAcc
                 'revisions',
                 'thumbnail',
             ],
+            'show_in_nav_menus'   => true,
             'show_in_rest'        => true,
         ];
 
