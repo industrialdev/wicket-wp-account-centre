@@ -26,9 +26,12 @@ fi
 if [[ `uname -s` == 'Darwin' ]]; then
     # macOS
     ./.ci/php-macos "$PHP_CS_FIXER" fix
-else
+elif [[ `uname -s` == 'Linux' ]]; then
     # Linux
     ./.ci/php-linux "$PHP_CS_FIXER" fix
+elif [[ `uname -s` == 'MINGW64_NT-10.0' ]]; then
+    # Windows
+    ./.ci/php.exe "$PHP_CS_FIXER" fix
 fi
 
 if [ $? -ne 0 ]; then
