@@ -22,13 +22,25 @@ class WooCommerce extends WicketAcc
      */
     public function __construct()
     {
+        // HPOS compatibility
         add_action('before_woocommerce_init', [$this, 'HPOS_Compatibility']);
+
+        // Override templates
         add_filter('woocommerce_locate_template', [$this, 'override_woocommerce_template'], 10, 3);
+
+        // Remove order again button
         add_action('init', [$this, 'wc_remove_order_again_button']);
+
+        // Add global header banner as ACC pages
         add_action('wicket_header_end', [$this, 'wc_add_acc_banner'], PHP_INT_MAX);
-        add_filter( 'woocommerce_cart_tax_totals', [$this, 'remove_cart_tax_totals'] );
-        add_filter( 'woocommerce_calculated_total', [$this, 'exclude_tax_cart_total'] );
-        add_filter( 'woocommerce_subscriptions_calculated_total', [$this, 'exclude_tax_cart_total'] );
+
+        // Remove tax totals
+        add_filter('woocommerce_cart_tax_totals', [$this, 'remove_cart_tax_totals']);
+        add_filter('woocommerce_calculated_total', [$this, 'exclude_tax_cart_total']);
+        add_filter('woocommerce_subscriptions_calculated_total', [$this, 'exclude_tax_cart_total']);
+
+        // Mark order as completed when it is paid
+        add_action('woocommerce_payment_complete_order_status_processing', [$this, 'mark_order_as_completed']);
     }
 
     /**
@@ -153,8 +165,9 @@ class WooCommerce extends WicketAcc
      *
      * @return array Empty array.
      */
-    public function remove_cart_tax_totals( $tax_totals, $instance ) {
-        if(!is_cart()) {
+    public function remove_cart_tax_totals($tax_totals, $instance)
+    {
+        if (!is_cart()) {
             return $tax_totals;
         }
 
@@ -171,13 +184,36 @@ class WooCommerce extends WicketAcc
      *
      * @return int The total without tax.
      */
-    public function exclude_tax_cart_total( $total, $instance ) {
-        if(!is_cart()) {
+    public function exclude_tax_cart_total($total, $instance)
+    {
+        if (!is_cart()) {
             return $total;
         }
 
-        $total = round( WC()->cart->cart_contents_total + WC()->cart->shipping_total + WC()->cart->fee_total, WC()->cart->dp );
+        $total = round(WC()->cart->cart_contents_total + WC()->cart->shipping_total + WC()->cart->fee_total, WC()->cart->dp);
 
         return $total;
+    }
+
+    /**
+     * Automatically mark an order as "completed" when it is paid.
+     *
+     * @param int $order_id The order ID.
+     *
+     * @return void
+     */
+    public function mark_order_as_completed($order_id)
+    {
+        // Check if ACF:acc_wc_auto_complete_orders option is enabled
+        if (!get_field('acc_wc_auto_complete_orders', 'option')) {
+            return;
+        }
+
+        $order = wc_get_order($order_id);
+
+        // Order successfully paid?
+        if ($order->has_status('processing') && $order->is_paid()) {
+            $order->update_status('completed');
+        }
     }
 }
