@@ -97,13 +97,13 @@ class Block_Callout extends WicketAcc
                             $description = $Tier->get_approval_callout_content($iso_code) . '<!-- on-hold-order_id: ' . $order->ID . ' //-->';
                             $link['link'] = [
                                 'title' => $Tier->get_approval_callout_button_label($iso_code),
-                                'url' => 'mailto: ' . $Tier->get_approval_email() . '?subject=' . __('Re: Pending Membership Request', 'wicket-memberships')
+                                'url' => 'mailto: ' . $Tier->get_approval_email() . '?subject=' . __('Re: Pending Membership Request', 'wicket-memberships'),
                             ];
                             $links[] = $link;
                             /**
                              * We are returning early here.
                              */
-                            $attrs = get_block_wrapper_attributes(array('class' => 'callout-' . $block_logic . ' callout-pending_approval'));
+                            $attrs = get_block_wrapper_attributes(['class' => 'callout-' . $block_logic . ' callout-pending_approval']);
                             echo '<div ' . $attrs . '>';
                             get_component('card-call-out', [
                                 'title'       => $title,

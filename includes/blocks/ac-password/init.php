@@ -168,13 +168,13 @@ class Block_Password extends WicketAcc
 					<label class="form__label" for="password"><?php _e('New password', 'wicket-acc') ?>
 						<span class="required">*</span>
 						<?php
-                        if ($password_form_has_errors) {
-                            foreach ($_SESSION['wicket_password_form_errors'] as $key => $error) {
-                                if (isset($error->meta->field) && $error->meta->field == 'user.password') {
-                                    $password_err = true;
-                                }
-                            }
-                        }
+					    if ($password_form_has_errors) {
+					        foreach ($_SESSION['wicket_password_form_errors'] as $key => $error) {
+					            if (isset($error->meta->field) && $error->meta->field == 'user.password') {
+					                $password_err = true;
+					            }
+					        }
+					    }
         ?>
 					</label>
 					<p class='small-text'><?php _e('Minimum of 8 characters', 'wicket-acc') ?></p>
@@ -207,10 +207,10 @@ class Block_Password extends WicketAcc
 
 				<?php
                     get_component('button', [
-        'variant'   => 'primary',
-        'type'      => 'submit',
-        'classes'   => ['wicket_update_password--1'],
-        'label'     => __('Change password', 'wicket-acc'),
+                        'variant'   => 'primary',
+                        'type'      => 'submit',
+                        'classes'   => ['wicket_update_password--1'],
+                        'label'     => __('Change password', 'wicket-acc'),
                     ]);
         ?>
 

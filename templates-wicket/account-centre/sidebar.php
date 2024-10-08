@@ -67,14 +67,14 @@ do_action('woocommerce_before_account_navigation');
 		<div id="dropdown-my-account-menu" class="dropdown__content dropdown__content--nav"
 			aria-labelledby="dropdown-control-my-account-menu" aria-expanded="false" role="region" style="display:none">
 			<?php
-            wp_nav_menu([
-		    'container'      => false,
-		    'theme_location' => 'wicket-acc-nav',
-		    'depth'          => 3,
-		    'menu_id'        => 'wicket-acc-menu-mobile',
-		    'menu_class'     => 'wicket-acc-menu-mobile',
-		    'walker'         => new wicket_acc_menu_mobile_walker(),
-            ]);
+		    wp_nav_menu([
+		        'container'      => false,
+		        'theme_location' => 'wicket-acc-nav',
+		        'depth'          => 3,
+		        'menu_id'        => 'wicket-acc-menu-mobile',
+		        'menu_class'     => 'wicket-acc-menu-mobile',
+		        'walker'         => new wicket_acc_menu_mobile_walker(),
+		    ]);
     ?>
 		</div>
 		<a href="#" id="dropdown-control-my-account-menu" class="dropdown__button dropdown__toggle dropdown__toggle--nav"
