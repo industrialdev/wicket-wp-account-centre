@@ -35,7 +35,7 @@ class WooCommerce extends WicketAcc
         add_action('wicket_header_end', [$this, 'wc_add_acc_banner'], PHP_INT_MAX);
 
         // Remove tax totals
-        add_filter('woocommerce_cart_tax_totals', [$this, 'remove_cart_tax_totals']);
+        add_filter('woocommerce_cart_tax_totals', [$this, 'remove_cart_tax_totals'], 10, 2);
         add_filter('woocommerce_calculated_total', [$this, 'exclude_tax_cart_total'], 10, 2);
         add_filter('woocommerce_subscriptions_calculated_total', [$this, 'exclude_tax_cart_total']);
 
