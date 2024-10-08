@@ -1,7 +1,7 @@
 {
     "name": "industrialdev/wicket-wp-account-centre",
     "description": "Wicket's Account Centre for WordPress",
-    "version": "1.5.12",
+    "version": "1.5.13",
     "keywords": [
         "wordpress",
         "wicket",
@@ -35,7 +35,7 @@
             "if [ \"$COMPOSER_DEV_MODE\" = \"0\" ]; then rm -rf ./.ci; fi",
             "cp vendor/twbs/bootstrap/dist/css/bootstrap-grid.min.css assets/css/_bootstrap-grid.min.css"
         ],
-        "version-bump": "read -p \"Enter new version (semver): \" NEW_VERSION; CURRENT_VERSION=$(grep -oP '(?<=\"version\": \")[^\"]*' composer.json); for file in composer.json README.txt class-wicket-acc-main.php; do sed -i \"s/$CURRENT_VERSION/$NEW_VERSION/g\" $file; done; echo \"Bumped from $CURRENT_VERSION to $NEW_VERSION\"; echo \"Version updated successfully!\""
+        "version-bump": "CURRENT_VERSION=$(grep -oP '(?<=\"version\": \")[^\"]*' composer.json); echo \"Current version: $CURRENT_VERSION\"; read -p \"Enter new version (semver): \" NEW_VERSION; for file in composer.json README.txt class-wicket-acc-main.php; do sed -i \"s/$CURRENT_VERSION/$NEW_VERSION/g\" $file; done; echo \"Bumped from $CURRENT_VERSION to $NEW_VERSION\"; echo \"Version updated successfully!\""
     },
     "config": {
         "allow-plugins": {

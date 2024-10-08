@@ -36,7 +36,7 @@ class WooCommerce extends WicketAcc
 
         // Remove tax totals
         add_filter('woocommerce_cart_tax_totals', [$this, 'remove_cart_tax_totals']);
-        add_filter('woocommerce_calculated_total', [$this, 'exclude_tax_cart_total']);
+        add_filter('woocommerce_calculated_total', [$this, 'exclude_tax_cart_total'], 10, 2);
         add_filter('woocommerce_subscriptions_calculated_total', [$this, 'exclude_tax_cart_total']);
 
         // Mark order as completed when it is paid
