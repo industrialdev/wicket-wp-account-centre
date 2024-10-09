@@ -167,7 +167,7 @@ class WooCommerce extends WicketAcc
      *
      * @return array Empty array.
      */
-    public function remove_cart_tax_totals($tax_totals, $instance)
+    public function remove_cart_tax_totals($tax_totals, $instance = null)
     {
         if (!is_cart()) {
             return $tax_totals;
@@ -186,7 +186,7 @@ class WooCommerce extends WicketAcc
      *
      * @return int The total without tax.
      */
-    public function exclude_tax_cart_total($total, $instance)
+    public function exclude_tax_cart_total($total, $instance = null)
     {
         if (!is_cart()) {
             return $total;
