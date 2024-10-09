@@ -46,11 +46,13 @@ class WooCommerce extends WicketAcc
     /**
      * HPOS compatibility for WooCommerce
      *
+     * @link https://developer.woocommerce.com/docs/hpos-extension-recipe-book/
+     *
      * @return void
      */
     public function HPOS_Compatibility()
     {
-        if (class_exists('\Automattic\WooCommerce\Utilities\FeaturesUtil')) {
+        if (class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class)) {
             \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true);
         }
     }

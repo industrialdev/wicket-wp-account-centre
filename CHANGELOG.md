@@ -1,9 +1,11 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
-# 1.5.14 / 2024-10-08
+# 1.5.15 / 2024-10-08
 - New option to automatically set successfully paid orders on WooCommerce as "completed". Disabled by default.
 - Added code to hide Tax row on cart.
+- Fixed WC HPOS compatibility.
+- Fixed admin notice when WC is disabled.
 
 # 1.5.10 / 2024-10-02
 - Added On-Hold Order Pending Callout
