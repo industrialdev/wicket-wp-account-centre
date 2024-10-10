@@ -20,7 +20,8 @@
             "maxlength": "",
             "placeholder": "",
             "prepend": "",
-            "append": ""
+            "append": "",
+            "wpml_cf_preferences": 2
         },
         {
             "key": "field_6622add626c40",
@@ -40,7 +41,8 @@
             "tabs": "all",
             "toolbar": "basic",
             "media_upload": 0,
-            "delay": 0
+            "delay": 0,
+            "wpml_cf_preferences": 2
         },
         {
             "key": "field_661697296fca1",
@@ -67,7 +69,8 @@
             "allow_null": 0,
             "ui": 0,
             "ajax": 0,
-            "placeholder": ""
+            "placeholder": "",
+            "wpml_cf_preferences": 1
         },
         {
             "key": "field_6616a4d13fc3d",
@@ -97,7 +100,8 @@
             "placeholder": "",
             "step": "",
             "prepend": "",
-            "append": ""
+            "append": "",
+            "wpml_cf_preferences": 1
         },
         {
             "key": "field_66183e96ea017",
@@ -137,7 +141,8 @@
             "layout": "vertical",
             "toggle": 0,
             "save_custom": 0,
-            "custom_choice_button_text": "Add new choice"
+            "custom_choice_button_text": "Add new choice",
+            "wpml_cf_preferences": 1
         },
         {
             "key": "field_6622adf926c41",
@@ -160,6 +165,7 @@
             "collapsed": "",
             "button_label": "Add Row",
             "rows_per_page": 20,
+            "wpml_cf_preferences": 1,
             "sub_fields": [
                 {
                     "key": "field_6622aea226c42",
@@ -176,7 +182,8 @@
                         "id": ""
                     },
                     "return_format": "array",
-                    "parent_repeater": "field_6622adf926c41"
+                    "parent_repeater": "field_6622adf926c41",
+                    "wpml_cf_preferences": 1
                 },
                 {
                     "key": "field_6622aeba26c43",
@@ -203,7 +210,8 @@
                     "ui": 0,
                     "ajax": 0,
                     "placeholder": "",
-                    "parent_repeater": "field_6622adf926c41"
+                    "parent_repeater": "field_6622adf926c41",
+                    "wpml_cf_preferences": 1
                 }
             ]
         }
@@ -226,6 +234,6 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "acfml_field_group_mode": "advanced",
-    "modified": 1722458271
+    "acfml_field_group_mode": "localization",
+    "modified": 1728572325
 }

@@ -365,6 +365,7 @@
                     },
                     "wpml_cf_preferences": 1,
                     "layout": "block",
+                    "parent_repeater": "field_6626b7107f2e4",
                     "sub_fields": [
                         {
                             "key": "field_66be0f7e8fef0",
@@ -404,8 +405,7 @@
                             "return_format": "Y-m-d",
                             "first_day": 1
                         }
-                    ],
-                    "parent_repeater": "field_6626b7107f2e4"
+                    ]
                 }
             ]
         }
@@ -428,6 +428,6 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "acfml_field_group_mode": "translation",
-    "modified": 1723736169
+    "acfml_field_group_mode": "localization",
+    "modified": 1728572321
 }

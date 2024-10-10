@@ -16,7 +16,7 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 1,
+            "wpml_cf_preferences": 3,
             "placement": "top",
             "endpoint": 1,
             "selected": 0
@@ -35,7 +35,7 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 1,
+            "wpml_cf_preferences": 3,
             "choices": {
                 "account-centre": "Account Centre",
                 "account-center": "Account Center"
@@ -61,7 +61,7 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 1,
+            "wpml_cf_preferences": 3,
             "choices": {
                 "left": "Left",
                 "right": "Right"
@@ -87,7 +87,7 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 1,
+            "wpml_cf_preferences": 3,
             "default_value": 1,
             "min": 1,
             "max": 7,
@@ -110,7 +110,7 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 1,
+            "wpml_cf_preferences": 3,
             "return_format": "url",
             "library": "all",
             "min_width": "",
@@ -121,6 +121,27 @@
             "max_size": 1,
             "mime_types": "jpg, jpeg, png, webp, gif",
             "preview_size": "medium"
+        },
+        {
+            "key": "field_66dc9440d4a58",
+            "label": "Global header banner",
+            "name": "acc_global-headerbanner",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "If enabled, a new item will be shown on ACC admin menu. Page content from that item, will be used as a global \"header banner\" on all ACC pages on the front.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 3,
+            "message": "",
+            "default_value": 0,
+            "ui_on_text": "",
+            "ui_off_text": "",
+            "ui": 1
         },
         {
             "key": "field_66a99ac81a2fe",
@@ -136,15 +157,15 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 1,
+            "wpml_cf_preferences": 3,
             "placement": "top",
             "endpoint": 0,
             "selected": 0
         },
         {
             "key": "field_66a998a3f98b9",
-            "label": "Page: Account Centre",
-            "name": "acc_page_account-centre",
+            "label": "Page: Account Centre Dashboard",
+            "name": "acc_page_dashboard",
             "aria-label": "",
             "type": "post_object",
             "instructions": "",
@@ -155,9 +176,9 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 1,
+            "wpml_cf_preferences": 3,
             "post_type": [
-                "wicket_acc"
+                "my-account"
             ],
             "post_status": [
                 "publish"
@@ -184,9 +205,9 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 1,
+            "wpml_cf_preferences": 3,
             "post_type": [
-                "wicket_acc"
+                "my-account"
             ],
             "post_status": [
                 "publish"
@@ -213,9 +234,9 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 1,
+            "wpml_cf_preferences": 3,
             "post_type": [
-                "wicket_acc"
+                "my-account"
             ],
             "post_status": [
                 "publish"
@@ -242,9 +263,9 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 1,
+            "wpml_cf_preferences": 3,
             "post_type": [
-                "wicket_acc"
+                "my-account"
             ],
             "post_status": [
                 "publish"
@@ -271,38 +292,9 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 1,
+            "wpml_cf_preferences": 3,
             "post_type": [
-                "wicket_acc"
-            ],
-            "post_status": [
-                "publish"
-            ],
-            "taxonomy": "",
-            "return_format": "id",
-            "multiple": 0,
-            "allow_null": 0,
-            "bidirectional": 0,
-            "ui": 1,
-            "bidirectional_target": []
-        },
-        {
-            "key": "field_66a999e49010e",
-            "label": "Page: Job View",
-            "name": "acc_page_job-view",
-            "aria-label": "",
-            "type": "post_object",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "wpml_cf_preferences": 1,
-            "post_type": [
-                "wicket_acc"
+                "my-account"
             ],
             "post_status": [
                 "publish"
@@ -329,9 +321,9 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 1,
+            "wpml_cf_preferences": 3,
             "post_type": [
-                "wicket_acc"
+                "my-account"
             ],
             "post_status": [
                 "publish"
@@ -358,9 +350,9 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 1,
+            "wpml_cf_preferences": 3,
             "post_type": [
-                "wicket_acc"
+                "my-account"
             ],
             "post_status": [
                 "publish"
@@ -387,9 +379,9 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 1,
+            "wpml_cf_preferences": 3,
             "post_type": [
-                "wicket_acc"
+                "my-account"
             ],
             "post_status": [
                 "publish"
@@ -416,9 +408,9 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 1,
+            "wpml_cf_preferences": 3,
             "post_type": [
-                "wicket_acc"
+                "my-account"
             ],
             "post_status": [
                 "publish"
@@ -445,9 +437,9 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 1,
+            "wpml_cf_preferences": 3,
             "post_type": [
-                "wicket_acc"
+                "my-account"
             ],
             "post_status": [
                 "publish"
@@ -474,9 +466,9 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 1,
+            "wpml_cf_preferences": 3,
             "post_type": [
-                "wicket_acc"
+                "my-account"
             ],
             "post_status": [
                 "publish"
@@ -490,7 +482,7 @@
             "bidirectional_target": []
         },
         {
-            "key": "field_67054b0aa5388",
+            "key": "field_6707e91a74a6c",
             "label": "WooCommerce",
             "name": "",
             "aria-label": "",
@@ -503,18 +495,18 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 1,
+            "wpml_cf_preferences": 3,
             "placement": "top",
             "endpoint": 0,
             "selected": 0
         },
         {
-            "key": "field_67054b1fa5389",
-            "label": "Auto \"complete\" orders",
+            "key": "field_6707e92d74a6d",
+            "label": "Auto complete orders",
             "name": "acc_wc_auto_complete_orders",
             "aria-label": "",
             "type": "true_false",
-            "instructions": "When activated, WooCommerce orders will skip the \"processing\" status and, after they are successfully paid, will be automatically marked as \"completed\".",
+            "instructions": "If enabled, a new item will be shown on ACC admin menu. Page content from that item, will be used as a global \"header banner\" on all ACC pages on the front.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -522,7 +514,28 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 0,
+            "wpml_cf_preferences": 3,
+            "message": "",
+            "default_value": 0,
+            "ui_on_text": "",
+            "ui_off_text": "",
+            "ui": 1
+        },
+        {
+            "key": "field_6707e9d274a6e",
+            "label": "Auto complete orders (copy)",
+            "name": "acc_wc_auto_complete_orders_copy",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "When activated, WooCommerce orders (successfully paid) will skip the \"processing\" status and will be automatically marked as \"completed\".",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 3,
             "message": "",
             "default_value": 0,
             "ui_on_text": "",
@@ -548,6 +561,6 @@
     "active": true,
     "description": "Main options for ACC plugin",
     "show_in_rest": 0,
-    "acfml_field_group_mode": "translation",
-    "modified": 1728400261
+    "acfml_field_group_mode": "localization",
+    "modified": 1728574070
 }

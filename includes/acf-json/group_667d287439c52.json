@@ -56,7 +56,7 @@
             "save_custom": 0,
             "toggle": 0,
             "custom_choice_button_text": "Add new choice",
-            "wpml_cf_preferences": 1
+            "wpml_cf_preferences": 3
         },
         {
             "key": "field_667d28e686292",
@@ -72,33 +72,10 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 1,
+            "wpml_cf_preferences": 3,
             "default_value": 5,
             "min": 1,
             "max": 20,
-            "placeholder": "",
-            "step": 1,
-            "prepend": "",
-            "append": ""
-        },
-        {
-            "key": "field_66f1af66b4687",
-            "label": "Columns",
-            "name": "use_x_columns",
-            "aria-label": "",
-            "type": "number",
-            "instructions": "How many columns do you want to use for touchpoints results. 1 will yield a list view.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "wpml_cf_preferences": 1,
-            "default_value": 1,
-            "min": 1,
-            "max": 6,
             "placeholder": "",
             "step": 1,
             "prepend": "",
@@ -129,7 +106,30 @@
             "other_choice": 0,
             "layout": "vertical",
             "save_other_choice": 0,
-            "wpml_cf_preferences": 1
+            "wpml_cf_preferences": 3
+        },
+        {
+            "key": "field_6707edea5953a",
+            "label": "Columns",
+            "name": "use_x_columns",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "How many columns do you want to use for touchpoints results. 1 will yield a list view.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 3,
+            "default_value": 1,
+            "min": 1,
+            "max": 6,
+            "placeholder": "",
+            "step": 1,
+            "prepend": "",
+            "append": ""
         },
         {
             "key": "field_66d5f1ff9cb86",
@@ -138,14 +138,14 @@
             "aria-label": "",
             "type": "text",
             "instructions": "Optional.",
-            "required": 0,
+            "required": false,
             "conditional_logic": 0,
             "wrapper": {
                 "width": "",
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 2,
+            "wpml_cf_preferences": 3,
             "default_value": "",
             "maxlength": "",
             "placeholder": "",
@@ -194,7 +194,7 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 1,
+            "wpml_cf_preferences": 3,
             "message": "",
             "default_value": 1,
             "ui_on_text": "",
@@ -220,6 +220,6 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "acfml_field_group_mode": "translation",
-    "modified": 1727115280
+    "acfml_field_group_mode": "localization",
+    "modified": 1728572992
 }

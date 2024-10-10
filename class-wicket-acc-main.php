@@ -30,7 +30,7 @@ if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get
         // Deactivate this plugin.
         deactivate_plugins(__FILE__);
 
-        $wicket_acc_plugin_check = '<div id="message" class="error">
+        $wicket_acc_plugin_check = '<div id="message" class="error">class-wicket-acc-main.php
         <p><strong>Wicket Account Centre plugin is inactive.</strong> The <a href="https://wordpress.org/extend/plugins/woocommerce/">WooCommerce plugin</a> must be active for this plugin to be used. Please install &amp; activate WooCommerce »</p></div>';
 
         echo wp_kses_post($wicket_acc_plugin_check);
