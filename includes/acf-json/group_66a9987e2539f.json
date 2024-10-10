@@ -520,27 +520,6 @@
             "ui_on_text": "",
             "ui_off_text": "",
             "ui": 1
-        },
-        {
-            "key": "field_6707e9d274a6e",
-            "label": "Auto complete orders (copy)",
-            "name": "acc_wc_auto_complete_orders_copy",
-            "aria-label": "",
-            "type": "true_false",
-            "instructions": "When activated, WooCommerce orders (successfully paid) will skip the \"processing\" status and will be automatically marked as \"completed\".",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "wpml_cf_preferences": 3,
-            "message": "",
-            "default_value": 0,
-            "ui_on_text": "",
-            "ui_off_text": "",
-            "ui": 1
         }
     ],
     "location": [
@@ -562,5 +541,5 @@
     "description": "Main options for ACC plugin",
     "show_in_rest": 0,
     "acfml_field_group_mode": "localization",
-    "modified": 1728574070
+    "modified": 1728574071
 }
