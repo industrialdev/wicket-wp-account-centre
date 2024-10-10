@@ -480,46 +480,6 @@
             "bidirectional": 0,
             "ui": 1,
             "bidirectional_target": []
-        },
-        {
-            "key": "field_6707e91a74a6c",
-            "label": "WooCommerce",
-            "name": "",
-            "aria-label": "",
-            "type": "tab",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "wpml_cf_preferences": 3,
-            "placement": "top",
-            "endpoint": 0,
-            "selected": 0
-        },
-        {
-            "key": "field_6707e92d74a6d",
-            "label": "Auto complete orders",
-            "name": "acc_wc_auto_complete_orders",
-            "aria-label": "",
-            "type": "true_false",
-            "instructions": "If enabled, a new item will be shown on ACC admin menu. Page content from that item, will be used as a global \"header banner\" on all ACC pages on the front.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "wpml_cf_preferences": 3,
-            "message": "",
-            "default_value": 0,
-            "ui_on_text": "",
-            "ui_off_text": "",
-            "ui": 1
         }
     ],
     "location": [
