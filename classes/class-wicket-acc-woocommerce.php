@@ -40,7 +40,7 @@ class WooCommerce extends WicketAcc
         add_filter('woocommerce_subscriptions_calculated_total', [$this, 'exclude_tax_cart_total']);
 
         // Mark order as completed when it is paid
-        add_action('woocommerce_payment_complete_order_status_processing', [$this, 'mark_order_as_completed']);
+        //add_action('woocommerce_payment_complete_order_status_processing', [$this, 'mark_order_as_completed']);
     }
 
     /**
