@@ -112,7 +112,7 @@ class Block_Callout extends WicketAcc
                                 'style'       => '',
                             ]);
                             echo '</div>';
-                            //return; //skipping to show all the orders currently on-hold
+                            return; //skipping  this will show all the order / products currently on-hold
                         }
                     }
                 }
