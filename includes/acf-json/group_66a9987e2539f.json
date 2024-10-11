@@ -367,7 +367,7 @@
         },
         {
             "key": "field_66ddf7e0fa185",
-            "label": "WC Page: Subscriptions",
+            "label": "Page: Subscriptions",
             "name": "acc_page_subscriptions",
             "aria-label": "",
             "type": "post_object",
