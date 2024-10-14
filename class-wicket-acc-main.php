@@ -161,9 +161,7 @@ class WicketAcc
     /**
      * Constructor
      */
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     /**
      * Run
@@ -186,6 +184,7 @@ class WicketAcc
         new Helpers();
         new Registers();
         new Profile();
+        new OrgManagement();
         new Assets();
         new WooCommerce();
         new User();
@@ -217,6 +216,7 @@ class WicketAcc
             'classes/class-wicket-acc-user.php',
             'classes/class-wicket-acc-router.php',
             'classes/class-wicket-acc-woocommerce.php',
+            'classes/class-wicket-acc-org-management.php',
             'classes/class-wicket-acc-helpers.php',
             'classes/class-wicket-acc-helpers-router.php',
             'classes/class-wicket-acc-assets.php',
@@ -262,9 +262,7 @@ class WicketAcc
     /**
      * Plugin activation
      */
-    public function plugin_activated()
-    {
-    }
+    public function plugin_activated() {}
 } // end Class.
 
 // Initialize the plugin

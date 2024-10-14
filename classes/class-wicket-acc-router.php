@@ -197,12 +197,21 @@ class Router extends WicketAcc
     /**
      * Get Wicket ACC template
      *
+     * @param int $post_id Post ID
+     *
      * @return string|false
      */
-    private function get_wicket_acc_template()
+    private function get_wicket_acc_template($post_id = null)
     {
-        $user_template = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/page-acc.php';
+        $user_template   = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/page-acc.php';
         $plugin_template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/page-acc.php';
+
+        if ($post_id && $this->is_orgmanagement_page($post_id)) {
+            $acc_orgman_page = $this->orgman_page_requested($post_id);
+
+            $user_template   = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/org-management/acc-orgman-' . $acc_orgman_page . '.php';
+            $plugin_template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/org-management/acc-orgman-' . $acc_orgman_page . '.php';
+        }
 
         if (file_exists($user_template)) {
             return $user_template;
@@ -211,6 +220,49 @@ class Router extends WicketAcc
         }
 
         return false;
+    }
+
+    /**
+     * Checks if we are on the Organization Management page
+     *
+     * Note: This function checks the existence of the custom fields for Organization Management
+     *       pages, which are set in the Wicket ACC settings.
+     *
+     * @param int $post_id Post ID
+     *
+     * @return string|false
+     */
+    private function is_orgmanagement_page($post_id)
+    {
+        $orgManagementIndex   = get_field('acc_page_orgman-index', 'option');
+        $orgManagementProfile = get_field('acc_page_orgman-profile', 'option');
+        $orgManagementMembers = get_field('acc_page_orgman-members', 'option');
+        $orgManagementRoster  = get_field('acc_page_orgman-roster', 'option');
+
+        // Is any of the options above, the ID we received?
+        if ($post_id == $orgManagementIndex) {
+            return 'index';
+        } elseif ($post_id == $orgManagementProfile) {
+            return 'profile';
+        } elseif ($post_id == $orgManagementRoster) {
+            return 'roster';
+        } elseif ($post_id == $orgManagementMembers) {
+            return 'members';
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns the "slug" of the Organization Management page requested, by is_orgmanagement_page() method
+     *
+     * @param int $post_id Post ID
+     *
+     * @return bool
+     */
+    private function orgman_page_requested($post_id)
+    {
+        return $this->is_orgmanagement_page($post_id);
     }
 
     /**
@@ -232,7 +284,8 @@ class Router extends WicketAcc
             }
 
             if ($post->post_type == 'my-account') {
-                $template = $this->get_wicket_acc_template();
+                $template = $this->get_wicket_acc_template($post->ID);
+
                 if ($template) {
                     return $template;
                 }

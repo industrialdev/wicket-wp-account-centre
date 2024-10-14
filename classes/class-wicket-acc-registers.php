@@ -72,6 +72,7 @@ class Registers extends WicketAcc
                 'title',
                 'page-attributes',
                 'editor',
+                'custom-fields',
                 'revisions',
                 'thumbnail',
             ],
