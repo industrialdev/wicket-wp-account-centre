@@ -207,18 +207,18 @@ $display_publish_date = get_field('display_publish_date');
             get_component('breadcrumbs', []);
             echo '</div>';
         }
-        if ($display_publish_date) {
-            echo '<div class="wp-block-published-date">';
-            echo "<p class='mt-3 mb-4'><strong>" . __('Published:', 'wicket') . ' ' . get_the_date('d-m-Y') . "</strong></p>";
-            echo '</div>';
-        }
-        ?>
+    if ($display_publish_date) {
+        echo '<div class="wp-block-published-date">';
+        echo "<p class='mt-3 mb-4'><strong>" . __('Published:', 'wicket') . ' ' . get_the_date('d-m-Y') . "</strong></p>";
+        echo '</div>';
+    }
+    ?>
 
         <main
             class="<?php echo implode(' ', $wrapper_classes) ?> container mb-8"
             id="main-content">
             <?php //include(locate_template('template-parts/header/account-centre-banner.php', false, false));
-            ?>
+        ?>
 
             <section id="content" class="woocommerce-wicket--container section page-default">
 
@@ -228,7 +228,7 @@ $display_publish_date = get_field('display_publish_date');
                         <?php if ($org_id) : ?>
 
                             <?php
-                            $org_info = $OrgManagement->get_organization_info_extended($org_id, $lang);
+                        $org_info = $OrgManagement->get_organization_info_extended($org_id, $lang);
 
                             if (!$org_info) {
                                 wp_die(__('Organization info not found', 'wicket'));
@@ -302,7 +302,7 @@ $display_publish_date = get_field('display_publish_date');
                                                 $person_uuid         = $roster_member['relationships']['person']['data']['id'];
                                                 $person              = wicket_get_person_by_id($person_uuid);
                                                 $person_membership_uuid = $roster_member['id'];
-                                            ?>
+                                                ?>
                                                 <tr>
                                                     <td><?php echo $person->given_name ?>
                                                     </td>
@@ -324,9 +324,9 @@ $display_publish_date = get_field('display_publish_date');
                                                             <input type="hidden" name='action' value='remove_from_roster'>
 
                                                             <?php
-                                                            // Unassign url
-                                                            $unassign_url = home_url(add_query_arg([], $wp->request)) . '/?org_id=' . $org_id . '&person_uuid=' . $person_uuid . '&connection_id=' . $roster_member['id'] . '&action=remove_from_roster';
-                                                            ?>
+                                                                // Unassign url
+                                                                $unassign_url = home_url(add_query_arg([], $wp->request)) . '/?org_id=' . $org_id . '&person_uuid=' . $person_uuid . '&connection_id=' . $roster_member['id'] . '&action=remove_from_roster';
+                                                ?>
 
                                                             <a class='primary_link_color underline_link'
                                                                 href='<?php echo $unassign_url ?>'><?php _e('Remove Employee', 'wicket') ?></a>
@@ -382,7 +382,7 @@ $display_publish_date = get_field('display_publish_date');
                                 // this is because we want the person who originally paid for the team to see any additions to it on renewal
                                 //if ($team_post->get_owner_id() == wp_get_current_user()->ID) :
                                 if ($team_owner_id == wp_get_current_user()->ID) :
-                                ?>
+                                    ?>
                                     <!-- <div class="col-lg-6 mb-3">
               <a href="<?php echo $lang == 'fr' ? '/fr' : '' ?>/account-centre/organization/purchase-membership-seats"
 					class='fw-bold'><?php _e('Purchase more membership seats', 'wicket') ?></a>

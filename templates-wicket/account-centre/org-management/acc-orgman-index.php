@@ -105,18 +105,18 @@ $display_publish_date = get_field('display_publish_date');
             get_component('breadcrumbs', []);
             echo '</div>';
         }
-        if ($display_publish_date) {
-            echo '<div class="wp-block-published-date">';
-            echo "<p class='mt-3 mb-4'><strong>" . __('Published:', 'wicket') . ' ' . get_the_date('d-m-Y') . "</strong></p>";
-            echo '</div>';
-        }
-        ?>
+    if ($display_publish_date) {
+        echo '<div class="wp-block-published-date">';
+        echo "<p class='mt-3 mb-4'><strong>" . __('Published:', 'wicket') . ' ' . get_the_date('d-m-Y') . "</strong></p>";
+        echo '</div>';
+    }
+    ?>
 
         <main
             class="<?php echo implode(' ', $wrapper_classes) ?> container mb-8"
             id="main-content">
             <?php //include(locate_template('template-parts/header/account-centre-banner.php', false, false));
-            ?>
+        ?>
 
             <section id="content" class="woocommerce-wicket--container section page-default">
 
@@ -124,12 +124,12 @@ $display_publish_date = get_field('display_publish_date');
                     <div class="columns large-8">
 
                         <?php
-                        if ($org_id) :
-                            $org_info = $OrgManagement->get_organization_info_extended($org_id, $lang);
+                    if ($org_id) :
+                        $org_info = $OrgManagement->get_organization_info_extended($org_id, $lang);
 
-                            if (!$org_info) {
-                                wp_die(__('Organization info not found', 'wicket'));
-                            }
+                        if (!$org_info) {
+                            wp_die(__('Organization info not found', 'wicket'));
+                        }
                         ?>
                             <div class="wicket-welcome-block bg-light-010 rounded-100 p-4 mb-4">
                                 <h2 class='organization_name heading-lg font-weight:400 dark-100'>
@@ -169,66 +169,66 @@ $display_publish_date = get_field('display_publish_date');
                                 // get the teams in Woo assigned to this org
                                 $org_memberships = wicket_get_org_memberships($org_id);
 
-                                echo "<table class='org_management_table mb-5'>";
-                                echo "<thead>";
-                                echo "<th>&nbsp;</th>";
-                                echo "<th>" . __('Number of Assigned People', 'wicket') . "</th>";
-                                echo "<th></th>";
-                                echo "</thead>";
-                                foreach ($org_memberships as $org_mship) {
-                                    //var_dump($org_mship);
-                                    //die();
+                        echo "<table class='org_management_table mb-5'>";
+                        echo "<thead>";
+                        echo "<th>&nbsp;</th>";
+                        echo "<th>" . __('Number of Assigned People', 'wicket') . "</th>";
+                        echo "<th></th>";
+                        echo "</thead>";
+                        foreach ($org_memberships as $org_mship) {
+                            //var_dump($org_mship);
+                            //die();
 
-                                    $org_mship_uuid     = $org_mship['membership']['id'];
-                                    $membership_uuid    = $org_mship['membership']['id'];
-                                    $included_uuid      = $org_mship['included']['id'];
+                            $org_mship_uuid     = $org_mship['membership']['id'];
+                            $membership_uuid    = $org_mship['membership']['id'];
+                            $included_uuid      = $org_mship['included']['id'];
 
-                                    $active_assignments = $org_mship['membership']['attributes']['active_assignments_count'];
-                                    $max_assignments    = $org_mship['membership']['attributes']['max_assignments'];
-                                    $max_assignments ??= __('Unlimited', 'wicket');
-                                    $starts_at          = $org_mship['membership']['attributes']['starts_at'];
-                                    $ends_at            = $org_mship['membership']['attributes']['ends_at'];
+                            $active_assignments = $org_mship['membership']['attributes']['active_assignments_count'];
+                            $max_assignments    = $org_mship['membership']['attributes']['max_assignments'];
+                            $max_assignments ??= __('Unlimited', 'wicket');
+                            $starts_at          = $org_mship['membership']['attributes']['starts_at'];
+                            $ends_at            = $org_mship['membership']['attributes']['ends_at'];
 
-                                    echo "<tr>";
-                                    echo "<td>";
-                                    echo "<strong>" . $org_mship['included']['attributes']['name_' . $lang] . "</strong>";
-                                    $date = date('F j, Y', strtotime($ends_at));
-                                    $expiry = $ends_at != '' ? __('Expires') . ' ' . $date : '';
-                                    echo "<br>" . $expiry;
-                                    echo "</td>";
-                                    echo "<td class='fw-bold'>";
-                                    echo $active_assignments . ' / ' . $max_assignments . " " . __('Seats', 'wicket');
-                                    echo "</td>";
-                                    echo "<td>";
+                            echo "<tr>";
+                            echo "<td>";
+                            echo "<strong>" . $org_mship['included']['attributes']['name_' . $lang] . "</strong>";
+                            $date = date('F j, Y', strtotime($ends_at));
+                            $expiry = $ends_at != '' ? __('Expires') . ' ' . $date : '';
+                            echo "<br>" . $expiry;
+                            echo "</td>";
+                            echo "<td class='fw-bold'>";
+                            echo $active_assignments . ' / ' . $max_assignments . " " . __('Seats', 'wicket');
+                            echo "</td>";
+                            echo "<td>";
 
-                                    // Proper get link: organization-members
-                                    $org_members_url = untrailingslashit(get_permalink(get_page_by_path($parent_page_slug . '/organization-members')));
+                            // Proper get link: organization-members
+                            $org_members_url = untrailingslashit(get_permalink(get_page_by_path($parent_page_slug . '/organization-members')));
 
-                                    // Link: organization-roster
-                                    $org_roster_url = untrailingslashit(get_permalink(get_page_by_path($parent_page_slug . '/organization-roster')));
+                            // Link: organization-roster
+                            $org_roster_url = untrailingslashit(get_permalink(get_page_by_path($parent_page_slug . '/organization-roster')));
 
-                                    // Link: organization-editor
-                                    $org_editor_url = untrailingslashit(get_permalink(get_page_by_path($parent_page_slug . '/organization-editor')));
+                            // Link: organization-editor
+                            $org_editor_url = untrailingslashit(get_permalink(get_page_by_path($parent_page_slug . '/organization-editor')));
 
-                                    if ($OrgManagement->role_check(['administrator', 'membership_manager'])) {
-                                        echo "<a class='primary_link_color underline_link' href='$org_members_url/?org_id=$org_id&membership_id=$membership_uuid&included_id=$included_uuid'>" . __('Manage Members', 'wicket') . "</a>";
-                                    }
+                            if ($OrgManagement->role_check(['administrator', 'membership_manager'])) {
+                                echo "<a class='primary_link_color underline_link' href='$org_members_url/?org_id=$org_id&membership_id=$membership_uuid&included_id=$included_uuid'>" . __('Manage Members', 'wicket') . "</a>";
+                            }
 
-                                    /*if ($OrgManagement->role_check(['administrator', 'membership_owner', 'membership_manager'])) {
+                            /*if ($OrgManagement->role_check(['administrator', 'membership_owner', 'membership_manager'])) {
                     echo '<br/>';
                     echo "<a class='primary_link_color underline_link' href='$org_roster_url/?org_id=$org_id'>" . __('Manage Employees', 'wicket') . "</a>";
                 }*/
 
-                                    if ($OrgManagement->role_check(['administrator', 'org_editor'])) {
-                                        echo '<br/>';
-                                        echo "<a class='primary_link_color underline_link' href='$org_editor_url/?org_id=$org_id'>" . __('Edit Organization', 'wicket') . "</a>";
-                                    }
+                            if ($OrgManagement->role_check(['administrator', 'org_editor'])) {
+                                echo '<br/>';
+                                echo "<a class='primary_link_color underline_link' href='$org_editor_url/?org_id=$org_id'>" . __('Edit Organization', 'wicket') . "</a>";
+                            }
 
-                                    echo "</td>";
-                                    echo "</tr>";
-                                }
-                                echo "</table>";
-                                ?>
+                            echo "</td>";
+                            echo "</tr>";
+                        }
+                        echo "</table>";
+                        ?>
                             </div>
                         <?php else : ?>
 
@@ -247,14 +247,14 @@ $display_publish_date = get_field('display_publish_date');
                                 }
                                 echo '</ul>';
                             } else {
-                            ?>
+                                ?>
                                 <p><?php echo esc_html__('You currently have no organizations to manage members for.', 'wicket'); ?>
                                 </p>
                         <?php
                             }
 
                         endif;
-                        ?>
+    ?>
                     </div>
                 </div>
 

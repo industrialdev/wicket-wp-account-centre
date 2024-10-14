@@ -105,18 +105,18 @@ $display_publish_date = get_field('display_publish_date');
             get_component('breadcrumbs', []);
             echo '</div>';
         }
-        if ($display_publish_date) {
-            echo '<div class="wp-block-published-date">';
-            echo "<p class='mt-3 mb-4'><strong>" . __('Published:', 'wicket') . ' ' . get_the_date('d-m-Y') . "</strong></p>";
-            echo '</div>';
-        }
-        ?>
+    if ($display_publish_date) {
+        echo '<div class="wp-block-published-date">';
+        echo "<p class='mt-3 mb-4'><strong>" . __('Published:', 'wicket') . ' ' . get_the_date('d-m-Y') . "</strong></p>";
+        echo '</div>';
+    }
+    ?>
 
         <main
             class="<?php echo implode(' ', $wrapper_classes) ?> container mb-8"
             id="main-content">
             <?php //include(locate_template('template-parts/header/account-centre-banner.php', false, false));
-            ?>
+        ?>
 
             <section id="content" class="woocommerce-wicket--container section page-default">
 
@@ -126,7 +126,7 @@ $display_publish_date = get_field('display_publish_date');
                         <?php if ($org_id) : ?>
 
                             <?php
-                            $wicket_settings = get_wicket_settings();
+                        $wicket_settings = get_wicket_settings();
                             $access_token = wicket_get_access_token(wicket_current_person_uuid(), $org_id);
                             ?>
 

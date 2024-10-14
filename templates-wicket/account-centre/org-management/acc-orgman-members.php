@@ -158,18 +158,18 @@ $display_publish_date = get_field('display_publish_date');
             get_component('breadcrumbs', []);
             echo '</div>';
         }
-        if ($display_publish_date) {
-            echo '<div class="wp-block-published-date">';
-            echo "<p class='mt-3 mb-4'><strong>" . __('Published:', 'wicket') . ' ' . get_the_date('d-m-Y') . "</strong></p>";
-            echo '</div>';
-        }
-        ?>
+    if ($display_publish_date) {
+        echo '<div class="wp-block-published-date">';
+        echo "<p class='mt-3 mb-4'><strong>" . __('Published:', 'wicket') . ' ' . get_the_date('d-m-Y') . "</strong></p>";
+        echo '</div>';
+    }
+    ?>
 
         <main
             class="<?php echo implode(' ', $wrapper_classes) ?> container mb-8"
             id="main-content">
             <?php //include(locate_template('template-parts/header/account-centre-banner.php', false, false));
-            ?>
+        ?>
 
             <section id="content" class="woocommerce-wicket--container section page-default">
 
@@ -187,7 +187,7 @@ $display_publish_date = get_field('display_publish_date');
                         <?php if ($org_id) : ?>
 
                             <?php
-                            $org_info = $OrgManagement->get_organization_info_extended($org_id, $lang);
+                        $org_info = $OrgManagement->get_organization_info_extended($org_id, $lang);
 
                             if (!$org_info) {
                                 wp_die(__('Organization info not found', 'wicket'));
@@ -229,8 +229,8 @@ $display_publish_date = get_field('display_publish_date');
                                 </div>
                                 <?php
                                 $max_assignments ??= __('Unlimited', 'wicket');
-                                echo $active_assignments . ' / ' . $max_assignments;
-                                ?>
+                            echo $active_assignments . ' / ' . $max_assignments;
+                            ?>
                             </div>
 
                             <div class="assigned-people wicket-welcome-block py-2 px-4">
@@ -238,9 +238,9 @@ $display_publish_date = get_field('display_publish_date');
                                     <?php _e('Number of Assigned People', 'wicket') ?>
                                 </div>
                                 <?php
-                                $max_assignments ??= __('Unlimited', 'wicket');
-                                echo $active_assignments . '/' . $max_assignments;
-                                ?>
+                            $max_assignments ??= __('Unlimited', 'wicket');
+                            echo $active_assignments . '/' . $max_assignments;
+                            ?>
                             </div>
 
                             <?php if (isset($message)) : ?>
@@ -279,66 +279,66 @@ $display_publish_date = get_field('display_publish_date');
                                         </thead>
                                         <tbody>
                                             <?php
-                                            foreach ($team_members as $team_member) :
-                                                $person_uuid            = $team_member['relationships']['person']['data']['id'];
-                                                $person                 = $OrgManagement->get_person_by_id($person_uuid);
-                                                $users_roles            = $OrgManagement->get_org_roles_person($person_uuid, $org_id);
-                                                $person_membership_uuid = $team_member['id'];
+                                        foreach ($team_members as $team_member) :
+                                            $person_uuid            = $team_member['relationships']['person']['data']['id'];
+                                            $person                 = $OrgManagement->get_person_by_id($person_uuid);
+                                            $users_roles            = $OrgManagement->get_org_roles_person($person_uuid, $org_id);
+                                            $person_membership_uuid = $team_member['id'];
 
-                                                // Current roles
-                                                $person_current_roles = $person->role_names;
-                                                // Critical: remove 'user' role from results
-                                                $person_current_roles = array_diff($person_current_roles, ['user']);
+                                            // Current roles
+                                            $person_current_roles = $person->role_names;
+                                            // Critical: remove 'user' role from results
+                                            $person_current_roles = array_diff($person_current_roles, ['user']);
 
-                                                // Convert variable to something we can use in the form as hidden input
-                                                $person_current_roles = implode(',', $person_current_roles);
+                                            // Convert variable to something we can use in the form as hidden input
+                                            $person_current_roles = implode(',', $person_current_roles);
 
-                                                // Let's deal with the relationship
-                                                $person_relationship = $OrgManagement->get_person_connections_by_id($person_uuid);
+                                            // Let's deal with the relationship
+                                            $person_relationship = $OrgManagement->get_person_connections_by_id($person_uuid);
 
-                                                /*
+                                            /*
                               $person_relationship['data] is an array with unknow  number of elements, [0], [1], etc. See response example above.
 
                               We need to find the one that has relationships>organization>data>id == $org_id
                               */
-                                                $filtered_data = array_filter($person_relationship['data'], function ($element) use ($org_id) {
-                                                    return isset($element['relationships']['organization']['data']['id']) &&
-                                                        $element['relationships']['organization']['data']['id'] === $org_id;
-                                                });
+                                            $filtered_data = array_filter($person_relationship['data'], function ($element) use ($org_id) {
+                                                return isset($element['relationships']['organization']['data']['id']) &&
+                                                    $element['relationships']['organization']['data']['id'] === $org_id;
+                                            });
 
-                                                // array_filter preserves the keys, reset the keys
-                                                $filtered_data = array_values($filtered_data);
+                                            // array_filter preserves the keys, reset the keys
+                                            $filtered_data = array_values($filtered_data);
 
-                                                // Assign our data
-                                                if (!empty($filtered_data)) {
-                                                    $person_relationship_slug = $filtered_data[0]['attributes']['type'] ?? null;
-                                                    $person_connection_id     = $filtered_data[0]['attributes']['uuid'] ?? null;
-                                                    $person_relationship_name = ucwords(str_replace('_', ' ', $person_relationship_slug));
-                                                } else {
-                                                    // Handle the case where no matching organization ID was found
-                                                    $person_relationship_slug = 'not_set';
-                                                    $person_connection_id     = null;
-                                                    $person_relationship_name = __('Not set', 'wicket');
+                                            // Assign our data
+                                            if (!empty($filtered_data)) {
+                                                $person_relationship_slug = $filtered_data[0]['attributes']['type'] ?? null;
+                                                $person_connection_id     = $filtered_data[0]['attributes']['uuid'] ?? null;
+                                                $person_relationship_name = ucwords(str_replace('_', ' ', $person_relationship_slug));
+                                            } else {
+                                                // Handle the case where no matching organization ID was found
+                                                $person_relationship_slug = 'not_set';
+                                                $person_connection_id     = null;
+                                                $person_relationship_name = __('Not set', 'wicket');
+                                            }
+
+                                            $person_membership_end_date = $team_member['attributes']['ends_at'];
+                                            $flag_membership_expired    = false;
+                                            $today_date                 = date('Y-m-d');
+
+                                            if ($person_membership_end_date) {
+                                                $person_membership_end_date = date('Y-m-d', strtotime($person_membership_end_date));
+
+                                                // Check if membership has expired
+                                                if ($person_membership_end_date <= $today_date) {
+                                                    $flag_membership_expired = true;
                                                 }
+                                            } else {
+                                                $person_membership_end_date = '';
+                                            }
 
-                                                $person_membership_end_date = $team_member['attributes']['ends_at'];
-                                                $flag_membership_expired    = false;
-                                                $today_date                 = date('Y-m-d');
-
-                                                if ($person_membership_end_date) {
-                                                    $person_membership_end_date = date('Y-m-d', strtotime($person_membership_end_date));
-
-                                                    // Check if membership has expired
-                                                    if ($person_membership_end_date <= $today_date) {
-                                                        $flag_membership_expired = true;
-                                                    }
-                                                } else {
-                                                    $person_membership_end_date = '';
-                                                }
-
-                                                if ($flag_membership_expired === true) {
-                                                    continue;
-                                                }
+                                            if ($flag_membership_expired === true) {
+                                                continue;
+                                            }
                                             ?>
                                                 <tr>
                                                     <td style="vertical-align: top;" class="orgman_member_name">
@@ -373,30 +373,30 @@ $display_publish_date = get_field('display_publish_date');
 
                                                             <?php
                                                             if ($flag_membership_expired === false) :
-                                                            ?>
+                                                                ?>
                                                                 <select name="role[]" aria-label='users role' multiple="multiple" size="2">
                                                                     <?php
-                                                                    if (isset($dropdown_roles) && is_array($dropdown_roles)) {
-                                                                        foreach ($dropdown_roles as $dropdown_key => $dropdown_label) {
-                                                                            // Skip 'member' role
-                                                                            if ($dropdown_key == 'member') {
-                                                                                continue;
-                                                                            }
-                                                                    ?>
+                                                                        if (isset($dropdown_roles) && is_array($dropdown_roles)) {
+                                                                            foreach ($dropdown_roles as $dropdown_key => $dropdown_label) {
+                                                                                // Skip 'member' role
+                                                                                if ($dropdown_key == 'member') {
+                                                                                    continue;
+                                                                                }
+                                                                                ?>
                                                                             <option
                                                                                 value="<?php echo $dropdown_key ?>"
                                                                                 <?php
-                                                                                // We have to loop through the roles and see if the current role is in the array
-                                                                                foreach ($person->role_names as $role) {
-                                                                                    if ($role == $dropdown_key) {
-                                                                                        echo 'selected';
-                                                                                    }
-                                                                                }
+                                                                                            // We have to loop through the roles and see if the current role is in the array
+                                                                                            foreach ($person->role_names as $role) {
+                                                                                                if ($role == $dropdown_key) {
+                                                                                                    echo 'selected';
+                                                                                                }
+                                                                                            }
                                                                                 ?>><?php echo $dropdown_label ?>
                                                                             </option>
                                                                     <?php
-                                                                        }
-                                                                    } ?>
+                                                                            }
+                                                                        } ?>
                                                                 </select>
                                                             <?php else: ?>
                                                                 <p class="text-xs text-info">
@@ -411,23 +411,23 @@ $display_publish_date = get_field('display_publish_date');
 
                                                             $person_relationship_slug_encoded = base64_encode(urlencode($person_relationship_slug));
 
-                                                            $email_base64 = base64_encode(urlencode($person->primary_email_address));
+                                            $email_base64 = base64_encode(urlencode($person->primary_email_address));
 
-                                                            $unassign_url = home_url(add_query_arg([], $wp->request)) . '/?org_id=' . $org_id . '&membership_id=' . $membership_id . '&included_id=' . $included_id . '&person_membership_uuid=' . $person_membership_uuid . '&unassign_person_uuid=' . $person_uuid . '&person_relationship=' . $person_relationship_slug_encoded . '&person_connection_id=' . $person_connection_id . '&email=' . $email_base64;
-                                                            ?>
+                                            $unassign_url = home_url(add_query_arg([], $wp->request)) . '/?org_id=' . $org_id . '&membership_id=' . $membership_id . '&included_id=' . $included_id . '&person_membership_uuid=' . $person_membership_uuid . '&unassign_person_uuid=' . $person_uuid . '&person_relationship=' . $person_relationship_slug_encoded . '&person_connection_id=' . $person_connection_id . '&email=' . $email_base64;
+                                            ?>
 
                                                             <button
                                                                 class='primary_link_color underline_link action_save_permissions clear-both'><?php _e('Save Permissions', 'wicket') ?></button>
 
                                                             <?php
-                                                            // If user has membership_owner role, don't show the remove member link
-                                                            if (!in_array('membership_owner', $person->role_names)) :
-                                                            ?>
+                                            // If user has membership_owner role, don't show the remove member link
+                                            if (!in_array('membership_owner', $person->role_names)) :
+                                                ?>
                                                                 <br />
                                                                 <a class='primary_link_color underline_link action_remove_member clear-both'
                                                                     href='<?php echo $unassign_url ?>'><?php _e('Remove Member', 'wicket') ?></a>
                                                             <?php endif;
-                                                            ?>
+                                            ?>
 
                                                             <div class="clear-both"></div>
                                                         </form>
