@@ -214,7 +214,7 @@ class Router extends WicketAcc
             // Every site need to use their own, that why we won't load templates from plugin
             if (!file_exists($user_template)) {
                 $error_message = __('<p>Organization Management templates were not found. Please install them in your active theme to use Organization Management.</p>', 'wicket');
-                $error_message .= '<p>You can download the zip file from: ./templates-wicket/account-centre/org-management/</p>';
+                $error_message .= '<p>You can retrieve the zip file from: ./templates-wicket/account-centre/org-management/</p>';
                 $error_message .= '<p>Recreate the same directory structure in your active theme: ./templates-wicket/account-centre/org-management/</p>';
                 $error_message .= '<p>Unzip the file into that directory. The structure should look like this:</p>';
                 $error_message .= '<ul><li>./templates-wicket/account-centre/org-management/acc-orgman-index.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-members.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-profile.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-roster.php</li></ul>';
