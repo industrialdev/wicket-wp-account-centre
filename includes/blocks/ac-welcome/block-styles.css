@@ -3,29 +3,33 @@
 	--status-inactive-color: var(--status-inactive, #7B7F83);
 
 	display: flex;
-	padding: 1rem;
+	padding: var(--space-250, 1rem);
 	margin: 1rem;
-	border: 1px solid var(--wicket-acc-border-color-light);
-	border-radius: 1rem;
+	border: 1px solid var(--bg-accent-light, var(--wicket-acc-border-color-light));
+	border-radius: var(--card-accent-corner-radius, 1rem);
 	font-family: var(--wicket-acc-font-family-montserrat);
+
+	&.wicket-acc-block-welcome--v2 {
+		background-color: var(--bg-accent-light);
+	}
 
 	.wicket-welcome-avatar img {
 		display: inline-block;
 		border-radius: 100%;
 		width: 100%;
 		max-width: 135px !important;
-		border: 3px solid white;
+		border: var(--border-md, 3px) solid white;
 	}
 
 	.wicket-welcome-label {
-		font-weight: var(--wicket-acc-font-weight-bold);
-		font-size: var(--wicket-acc-font-size-lg);
+		font-weight: var(--wicket-acc-font-weight-bold); 
+		font-size: var(--wicket-acc-font-size-lg, var(--wp--preset--font-size--heading-xs));
 		margin-bottom: var(--wicket-acc-margin-sm);
 	}
 
 	.wicket-welcome-name {
 		font-weight: var(--wicket-acc-font-weight-normal);
-		font-size: var(--wicket-acc-font-size-xxxl);
+		font-size: var(--wicket-acc-font-size-xxxl, var(--wp--preset--font-size--heading-lg));
 	}
 
 	.wicket-welcome-content {
@@ -45,7 +49,7 @@
 		font-size: var(--wicket-acc-font-size-14);
 	}
 
-	.wicket-welcome-edit-profile-button {
+	&:not(.wicket-acc-block-welcome--v2) .wicket-welcome-edit-profile-button {
 		a {
 			display: block;
 			font-size: var(--wicket-acc-font-size-md);
@@ -55,7 +59,7 @@
 
 	.wicket-welcome-member-since,
 	.wicket-welcome-renewal {
-		font-size: 14px;
+		font-size: var(--body-sm-font-size, 14px);
 	}
 
 	.wicket-welcome-member-active {
