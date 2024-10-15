@@ -210,7 +210,11 @@ class Router extends WicketAcc
             $acc_orgman_page = $this->orgman_page_requested($post_id);
 
             $user_template   = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/org-management/acc-orgman-' . $acc_orgman_page . '.php';
-            $plugin_template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/org-management/acc-orgman-' . $acc_orgman_page . '.php';
+            //$plugin_template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/org-management/acc-orgman-' . $acc_orgman_page . '.php';
+
+            if (!file_exists($user_template)) {
+                wp_die(__('Organization Management templates not found. Please, install them into your theme to use Organization Management.', 'wicket'));
+            }
         }
 
         if (file_exists($user_template)) {
