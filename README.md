@@ -11,7 +11,11 @@ This official Wicket plugin includes the Account Centre blocks and pages for Woo
 - WSL2 on Windows, or Linux/macOS with Bash 5.x or greater (ZSH is also compatible). On macOS, ensure Bash is up to date, even if you're using ZSH. Use [Homebrew](https://formulae.brew.sh/formula/bash) to update Bash if needed.
 - [Composer](https://getcomposer.org/).
 - [EditorConfig](https://editorconfig.org/) installed in your code editor.
-- (Optional) [PHP-CS-Fixer](https://marketplace.visualstudio.com/items?itemName=higoka.php-cs-fixer) extension for VSCode, or the equivalent for your editor of choice (e.g., [Sublime Text](https://packagecontrol.io/packages/PHP%20CS%20Fixer)). PHP-CS-Fixer must be [installed globally on your machine (see instructions)](https://cs.symfony.com/doc/installation.html). Having this extension installed allows PHP-CS-Fixer to run on file save, so your code is formatted automatically without needing to wait for a git commit to trigger the formatting.
+- (Optional) [PHP CS Fixer](https://marketplace.visualstudio.com/items?itemName=junstyle.php-cs-fixer) extension for VSCode, or the equivalent for your editor of choice (e.g., [Sublime Text](https://packagecontrol.io/packages/PHP%20CS%20Fixer)). Having this extension installed allows PHP-CS-Fixer to run on file save, so your code is formatted automatically without needing to wait for a git commit to trigger the formatting.
+
+Repository contains pre-compiled PHP binaries for Windows, Linux, and macOS, so devs can use PHP-CS-Fixer without having to install PHP in their own machine. Binaries provided by [static-php-cli](https://static-php.dev/).
+
+You can run the command `composer php-format` from the root of the repository to run PHP-CS-Fixer with the embedded PHP binary.
 
 ### Setup local dev environment
 

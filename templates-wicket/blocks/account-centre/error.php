@@ -15,11 +15,12 @@ defined('ABSPATH') || exit;
 
 // Not set?
 if (!isset($args['block_name']) || !isset($args['block_slug']) || !isset($args['block_error'])) {
-	$args = [
-		'block_name'   => __('No name', 'wicket-acc'),
-		'block_slug'   => 'wicket-acc-error-block',
-		'block_error'  => __('Forgot something?:', 'wicket-acc'),
-	];
+    $args = [
+        'block_name'   => __('No name', 'wicket-acc'),
+        'block_slug'   => 'wicket-acc-error-block',
+        'block_error'  => __('Forgot something?:', 'wicket-acc'),
+    ];
+}
 ?>
 <style type="text/css">
 	.wicket-acc-block-error {

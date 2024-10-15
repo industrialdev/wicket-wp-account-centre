@@ -1,7 +1,12 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
-# 1.5.8 / 2024-10-02 
+# 1.5.23 / 2024-10-08
+- Added code to hide Tax row on cart.
+- Fixed WC HPOS compatibility.
+- Fixed admin notice when WC is disabled.
+
+# 1.5.10 / 2024-10-02
 - Added On-Hold Order Pending Callout
 
 # 1.5.6 / 2024-09-26

@@ -72,9 +72,11 @@ class Registers extends WicketAcc
                 'title',
                 'page-attributes',
                 'editor',
+                'custom-fields',
                 'revisions',
                 'thumbnail',
             ],
+            'show_in_nav_menus'   => true,
             'show_in_rest'        => true,
         ];
 

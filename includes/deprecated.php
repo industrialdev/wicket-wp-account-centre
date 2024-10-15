@@ -248,6 +248,10 @@ class wicket_acc_menu_walker extends Walker_Nav_Menu
         $target             = $item->target;
         $this->current_item = $item;
 
+        if (!empty($classes)) {
+            $classes[] = 'nav__menu-item';
+        }
+
         $output .= "<li class='" . implode(" ", $classes) . "'>";
 
         // if item has children, replace a link for a button toggle
@@ -319,6 +323,10 @@ class wicket_acc_menu_mobile_walker extends Walker_Nav_Menu
         $classes            = $item->classes;
         $target             = $item->target;
         $this->current_item = $item;
+
+        if (!empty($classes)) {
+            $classes[] = 'nav__menu-item';
+        }
 
         $output .= "<li class='" . implode(" ", $classes) . "'>";
 

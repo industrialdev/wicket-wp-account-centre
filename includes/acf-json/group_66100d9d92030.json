@@ -20,7 +20,8 @@
             "default_value": 0,
             "ui_on_text": "",
             "ui_off_text": "",
-            "ui": 1
+            "ui": 1,
+            "wpml_cf_preferences": 3
         },
         {
             "key": "field_662a9bd181d60",
@@ -44,7 +45,7 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 0,
+            "wpml_cf_preferences": 3,
             "return_format": "array"
         },
         {
@@ -65,7 +66,8 @@
             "default_value": 0,
             "ui_on_text": "",
             "ui_off_text": "",
-            "ui": 1
+            "ui": 1,
+            "wpml_cf_preferences": 3
         },
         {
             "key": "field_6613e7dc4c412",
@@ -85,7 +87,8 @@
             "default_value": 0,
             "ui_on_text": "",
             "ui_off_text": "",
-            "ui": 1
+            "ui": 1,
+            "wpml_cf_preferences": 3
         },
         {
             "key": "field_66ad00c245a65",
@@ -101,7 +104,7 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 0,
+            "wpml_cf_preferences": 3,
             "message": "",
             "default_value": 0,
             "ui_on_text": "",
@@ -127,6 +130,6 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "acfml_field_group_mode": "advanced",
-    "modified": 1727184654
+    "acfml_field_group_mode": "localization",
+    "modified": 1728572760
 }

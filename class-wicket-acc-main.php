@@ -9,7 +9,7 @@ namespace WicketAcc;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Customize WooCommerce my account features to build the Wicket Account Centre. Expands it with additional blocks and pages.
- * Version:           1.5.9
+ * Version:           1.5.23
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -26,18 +26,15 @@ if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get
     /**
      * Show Required Plugin Notice
      */
-    function wicket_acc_admin_notice()
-    {
+    add_action('admin_notices', function () {
         // Deactivate this plugin.
         deactivate_plugins(__FILE__);
 
-        $wicket_acc_plugin_check = '<div id="message" class="error">
+        $wicket_acc_plugin_check = '<div id="message" class="error">class-wicket-acc-main.php
         <p><strong>Wicket Account Centre plugin is inactive.</strong> The <a href="https://wordpress.org/extend/plugins/woocommerce/">WooCommerce plugin</a> must be active for this plugin to be used. Please install &amp; activate WooCommerce »</p></div>';
 
         echo wp_kses_post($wicket_acc_plugin_check);
-    }
-
-    add_action('admin_notices', 'wicket_acc_admin_notice');
+    });
 }
 
 // Constants
@@ -187,6 +184,7 @@ class WicketAcc
         new Helpers();
         new Registers();
         new Profile();
+        new OrgManagement();
         new Assets();
         new WooCommerce();
         new User();
@@ -218,6 +216,7 @@ class WicketAcc
             'classes/class-wicket-acc-user.php',
             'classes/class-wicket-acc-router.php',
             'classes/class-wicket-acc-woocommerce.php',
+            'classes/class-wicket-acc-org-management.php',
             'classes/class-wicket-acc-helpers.php',
             'classes/class-wicket-acc-helpers-router.php',
             'classes/class-wicket-acc-assets.php',

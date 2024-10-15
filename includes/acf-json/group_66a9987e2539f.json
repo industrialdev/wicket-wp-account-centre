@@ -27,7 +27,7 @@
             "name": "ac_localization",
             "aria-label": "",
             "type": "radio",
-            "instructions": "Which word to use on the spelling of Centre\/Center.",
+            "instructions": "For EN only. Which word to use on the spelling of Centre\/Center.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -124,11 +124,11 @@
         },
         {
             "key": "field_66dc9440d4a58",
-            "label": "Global header",
+            "label": "Global sub-header",
             "name": "acc_global-headerbanner",
             "aria-label": "",
             "type": "true_false",
-            "instructions": "If enabled, a new item will be shown on ACC admin menu. Page content from that item, will be used as a global \"header banner\" on all ACC pages on the front.",
+            "instructions": "If enabled, a new item will be shown on ACC admin menu. Page content from that item, will be used as a global \"sub-header\" on all ACC pages on the front.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -145,7 +145,7 @@
         },
         {
             "key": "field_66a99ac81a2fe",
-            "label": "Page Mapping",
+            "label": "ACC Pages",
             "name": "",
             "aria-label": "",
             "type": "tab",
@@ -164,7 +164,7 @@
         },
         {
             "key": "field_66a998a3f98b9",
-            "label": "Page: ACC Dashboard",
+            "label": "Page: Account Centre Dashboard",
             "name": "acc_page_dashboard",
             "aria-label": "",
             "type": "post_object",
@@ -250,6 +250,35 @@
             "bidirectional_target": []
         },
         {
+            "key": "field_66a99949d6c79",
+            "label": "Page: Past Events",
+            "name": "acc_page_events-past",
+            "aria-label": "",
+            "type": "post_object",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 3,
+            "post_type": [
+                "my-account"
+            ],
+            "post_status": [
+                "publish"
+            ],
+            "taxonomy": "",
+            "return_format": "id",
+            "multiple": 0,
+            "allow_null": 0,
+            "bidirectional": 0,
+            "ui": 1,
+            "bidirectional_target": []
+        },
+        {
             "key": "field_66a9996d23739",
             "label": "Page: Jobs",
             "name": "acc_page_jobs",
@@ -282,6 +311,122 @@
             "key": "field_66a99a0904834",
             "label": "Page: Post a Job",
             "name": "acc_page_job-post",
+            "aria-label": "",
+            "type": "post_object",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 3,
+            "post_type": [
+                "my-account"
+            ],
+            "post_status": [
+                "publish"
+            ],
+            "taxonomy": "",
+            "return_format": "id",
+            "multiple": 0,
+            "allow_null": 0,
+            "bidirectional": 0,
+            "ui": 1,
+            "bidirectional_target": []
+        },
+        {
+            "key": "field_66a99a27ebba1",
+            "label": "Page: Payments Methods",
+            "name": "acc_page_payments-methods",
+            "aria-label": "",
+            "type": "post_object",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 3,
+            "post_type": [
+                "my-account"
+            ],
+            "post_status": [
+                "publish"
+            ],
+            "taxonomy": "",
+            "return_format": "id",
+            "multiple": 0,
+            "allow_null": 0,
+            "bidirectional": 0,
+            "ui": 1,
+            "bidirectional_target": []
+        },
+        {
+            "key": "field_66ddf7e0fa185",
+            "label": "Page: Subscriptions",
+            "name": "acc_page_subscriptions",
+            "aria-label": "",
+            "type": "post_object",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 3,
+            "post_type": [
+                "my-account"
+            ],
+            "post_status": [
+                "publish"
+            ],
+            "taxonomy": "",
+            "return_format": "id",
+            "multiple": 0,
+            "allow_null": 0,
+            "bidirectional": 0,
+            "ui": 1,
+            "bidirectional_target": []
+        },
+        {
+            "key": "field_66a99a6fde66c",
+            "label": "Page: Membership History",
+            "name": "acc_page_membership-history",
+            "aria-label": "",
+            "type": "post_object",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 3,
+            "post_type": [
+                "my-account"
+            ],
+            "post_status": [
+                "publish"
+            ],
+            "taxonomy": "",
+            "return_format": "id",
+            "multiple": 0,
+            "allow_null": 0,
+            "bidirectional": 0,
+            "ui": 1,
+            "bidirectional_target": []
+        },
+        {
+            "key": "field_66a99a8ac8418",
+            "label": "Page: Purchase History",
+            "name": "acc_page_purchase-history",
             "aria-label": "",
             "type": "post_object",
             "instructions": "",
@@ -364,180 +509,6 @@
             "bidirectional": 0,
             "ui": 1,
             "bidirectional_target": []
-        },
-        {
-            "key": "field_66ddf745291f8",
-            "label": "WC Page: Orders",
-            "name": "acc_page_orders",
-            "aria-label": "",
-            "type": "post_object",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "wpml_cf_preferences": 3,
-            "post_type": [
-                "my-account"
-            ],
-            "post_status": [
-                "publish"
-            ],
-            "taxonomy": "",
-            "return_format": "id",
-            "multiple": 0,
-            "allow_null": 0,
-            "bidirectional": 0,
-            "ui": 1,
-            "bidirectional_target": []
-        },
-        {
-            "key": "field_66ddf7a4273a9",
-            "label": "WC Page: View Order",
-            "name": "acc_page_view-order",
-            "aria-label": "",
-            "type": "post_object",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "wpml_cf_preferences": 3,
-            "post_type": [
-                "my-account"
-            ],
-            "post_status": [
-                "publish"
-            ],
-            "taxonomy": "",
-            "return_format": "id",
-            "multiple": 0,
-            "allow_null": 0,
-            "bidirectional": 0,
-            "ui": 1,
-            "bidirectional_target": []
-        },
-        {
-            "key": "field_66a99a27ebba1",
-            "label": "WC Page: Payments Methods",
-            "name": "acc_page_payments-methods",
-            "aria-label": "",
-            "type": "post_object",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "wpml_cf_preferences": 3,
-            "post_type": [
-                "my-account"
-            ],
-            "post_status": [
-                "publish"
-            ],
-            "taxonomy": "",
-            "return_format": "id",
-            "multiple": 0,
-            "allow_null": 0,
-            "bidirectional": 0,
-            "ui": 1,
-            "bidirectional_target": []
-        },
-        {
-            "key": "field_66a99a6fde66c",
-            "label": "WC Page: Membership History",
-            "name": "acc_page_membership-history",
-            "aria-label": "",
-            "type": "post_object",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "wpml_cf_preferences": 3,
-            "post_type": [
-                "my-account"
-            ],
-            "post_status": [
-                "publish"
-            ],
-            "taxonomy": "",
-            "return_format": "id",
-            "multiple": 0,
-            "allow_null": 0,
-            "bidirectional": 0,
-            "ui": 1,
-            "bidirectional_target": []
-        },
-        {
-            "key": "field_66ddf7e0fa185",
-            "label": "WC Page: Subscriptions",
-            "name": "acc_page_subscriptions",
-            "aria-label": "",
-            "type": "post_object",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "wpml_cf_preferences": 3,
-            "post_type": [
-                "my-account"
-            ],
-            "post_status": [
-                "publish"
-            ],
-            "taxonomy": "",
-            "return_format": "id",
-            "multiple": 0,
-            "allow_null": 0,
-            "bidirectional": 0,
-            "ui": 1,
-            "bidirectional_target": []
-        },
-        {
-            "key": "field_66ddf7ba66589",
-            "label": "WC Page: Downloads",
-            "name": "acc_page_downloads",
-            "aria-label": "",
-            "type": "post_object",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "wpml_cf_preferences": 3,
-            "post_type": [
-                "my-account"
-            ],
-            "post_status": [
-                "publish"
-            ],
-            "taxonomy": "",
-            "return_format": "id",
-            "multiple": 0,
-            "allow_null": 0,
-            "bidirectional": 0,
-            "ui": 1,
-            "bidirectional_target": []
         }
     ],
     "location": [
@@ -559,5 +530,5 @@
     "description": "Main options for ACC plugin",
     "show_in_rest": 0,
     "acfml_field_group_mode": "localization",
-    "modified": 1727453426
+    "modified": 1728574072
 }
