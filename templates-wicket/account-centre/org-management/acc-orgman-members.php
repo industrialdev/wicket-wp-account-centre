@@ -24,7 +24,7 @@ $OrgManagement->page_role_check(
 /**
  * Get initial data
  */
-$client            = wicket_api_client();
+$$client           = WACC()->MdpApi->init_client();
 $org_id            = $_POST['org_id'] ?? $_GET['org_id'];
 $membership_id     = $_REQUEST['membership_id'] ?? '';
 $included_id       = $_REQUEST['included_id'] ?? '';

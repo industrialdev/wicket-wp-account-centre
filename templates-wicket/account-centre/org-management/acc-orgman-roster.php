@@ -22,7 +22,7 @@ $OrgManagement->page_role_check(
     ]
 );
 
-$client        = wicket_api_client();
+$client        = WACC()->MdpApi->init_client();
 $org_id        = $_POST['org_id'] ?? $_GET['org_id'];
 $lang          = defined('ICL_LANGUAGE_CODE') ? ICL_LANGUAGE_CODE : 'en';
 $team_owner_id = '';

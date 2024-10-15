@@ -21,7 +21,7 @@ $OrgManagement->page_role_check(
     ]
 );
 
-$client = wicket_api_client();
+$client = WACC()->MdpApi->init_client();
 $person = $OrgManagement->get_current_person();
 $lang   = defined('ICL_LANGUAGE_CODE') ? ICL_LANGUAGE_CODE : 'en';
 
