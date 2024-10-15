@@ -17,11 +17,44 @@ class OrgManagement extends WicketAcc
 {
     private $org_uuid        = '';
     private $org_parent_uuid = '';
+    private $org_slugs       = [
+        'index',
+        'members',
+        'profile',
+        'roster',
+    ];
 
     /**
      * Constructor.
      */
     public function __construct() {}
+
+    /**
+     * Get an Org Management page URL, by slug
+     *
+     * @param string $slug The page slug
+     *
+     * @return string The URL
+     */
+    public function get_orgman_page_url($slug = '')
+    {
+        if (empty($slug)) {
+            return home_url();
+        }
+
+        // Valid slug?
+        if (!in_array($slug, $this->org_slugs)) {
+            return home_url();
+        }
+
+        $page_id = get_field('acc_page_orgman-' . sanitize_text_field($slug), 'option');
+
+        if (empty($page_id)) {
+            return home_url();
+        }
+
+        return get_permalink($page_id);
+    }
 
     /**
      * Add or update a person to the membership

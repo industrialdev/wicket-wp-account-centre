@@ -142,6 +142,26 @@ class Helpers extends WicketAcc
     }
 
     /**
+     * Render the global sub header template
+     *
+     * @return void
+     */
+    public function renderGlobalSubHeader()
+    {
+        $acc_global_headerbanner_page_id = WACC()->getGlobalHeaderBannerPageId();
+        $acc_global_headerbanner_status  = get_field('acc_global-headerbanner', 'option');
+
+        if ($acc_global_headerbanner_page_id && $acc_global_headerbanner_status) {
+            $global_banner_page = get_post($acc_global_headerbanner_page_id);
+            if ($global_banner_page) {
+                echo '<div class="wicket-acc wicker-acc-subheader alignfull wp-block-wicket-banner">';
+                echo apply_filters('the_content', $global_banner_page->post_content);
+                echo '</div>';
+            }
+        }
+    }
+
+    /**
      * Get create account page URL
      *
      * @return string
