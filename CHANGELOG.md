@@ -1,6 +1,9 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
+# 1.5.25 / 2024-10-15
+- Integrated Organization Management methods into ACC. Pages can be controled from the backend, just like any other ACC page.
+
 # 1.5.24 / 2024-10-08
 - Added code to hide Tax row on cart.
 - Fixed WC HPOS compatibility.
