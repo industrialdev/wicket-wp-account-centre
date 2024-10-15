@@ -187,3 +187,21 @@
 		}
 	}
 }
+
+.wicket-acc-profile-picture--v2.wicket-acc-profile-picture__success,
+.wicket-acc-profile-picture--v2.wicket-acc-profile-picture__error,
+.wicket-acc-profile-picture--v2 .file-alert {
+	padding: var(--space-250);
+	border-radius: var(--alerts-corner-radius);
+	border: 0;
+	border-left: var(--border-alert) solid var(--state-success);
+	background-color: var(--state-success-light);
+	margin-bottom: var(--space-250);
+	font-size: var(--body-sm-font-size);
+	font-weight: bold;
+}
+
+.wicket-acc-profile-picture--v2.wicket-acc-profile-picture__error {
+	border-left: var(--border-alert) solid var(--state-error);
+	background-color: var(--state-error-light);
+}
