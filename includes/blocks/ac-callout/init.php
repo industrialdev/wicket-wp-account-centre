@@ -100,8 +100,8 @@ class Block_Callout extends WicketAcc
                                 'title' => $button_label,
                                 'url' => 'mailto: ' . $Tier->get_approval_email() . '?subject=' . __('Re: Pending Membership Request', 'wicket-memberships'),
                             ];
-                            if(!empty( $button_label ) && $button_label != ' ') {
-                              $links[] = $link;
+                            if(!empty($button_label) && $button_label != ' ') {
+                                $links[] = $link;
                             }
                             /**
                              * We are returning early here.
@@ -136,11 +136,11 @@ class Block_Callout extends WicketAcc
                                 $title = $renewal_data['callout']['header'];
                                 $description = $renewal_data['callout']['content'] . '<!-- pending-approval-order_id: ' . $renewal_data['membership']['meta']['membership_parent_order_id'] . ' //-->';
                                 if(!empty($renewal_data['callout']['button_label']) && $renewal_data['callout']['button_label'] != ' ') {
-                                  $link['link'] = [
-                                    'title' => $renewal_data['callout']['button_label'],
-                                    'url' => 'mailto: ' . $renewal_data['callout']['email'],
-                                  ];
-                                  $links[] = $link;
+                                    $link['link'] = [
+                                        'title' => $renewal_data['callout']['button_label'],
+                                        'url' => 'mailto: ' . $renewal_data['callout']['email'],
+                                    ];
+                                    $links[] = $link;
                                 }
                                 /**
                                  * We are returning early here.
