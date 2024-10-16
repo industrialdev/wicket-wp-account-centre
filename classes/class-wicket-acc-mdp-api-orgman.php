@@ -1302,4 +1302,27 @@ class OrgManagement extends WicketAcc
 
         return $found;
     }
+
+    public function redirect_or_die($data = [])
+    {
+        if (empty($data)) {
+            wp_die(__('No data provided', 'wicket-acc'));
+        }
+
+        if (isset($response['error']) && $response['error'] === true) {
+            wp_die($response['message']);
+        }
+
+        // Redirect
+        global $wp;
+
+        $url_redirect  = home_url(add_query_arg([], $wp->request));
+        $org_id        = isset($_REQUEST['org_id']) ? sanitize_text_field($_REQUEST['org_id']) : '';
+        $membership_id = isset($_REQUEST['membership_id']) ? sanitize_text_field($_REQUEST['membership_id']) : '';
+        $included_id   = isset($_REQUEST['included_id']) ? sanitize_text_field($_REQUEST['included_id']) : '';
+
+        header("Location: $url_redirect?org_id=$org_id&membership_id=$membership_id&included_id=$included_id&success");
+
+        die();
+    }
 }
