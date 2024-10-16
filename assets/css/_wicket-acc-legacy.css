@@ -4,37 +4,36 @@
  */
 
 .woocommerce {
-	.container {
-		display: flex;
-		justify-content: space-between;
-		flex-flow: row wrap;
-	}
+  .container {
+    justify-content: space-between;
+      flex-flow: row wrap;
+    }
 }
 
 /* MQ: breakpoint-mobile */
 @media all and (max-width: 1023px) {
-	.woocommerce {
-		.container {
-			flex-flow: column wrap;
-			max-width: 100%;
+  .woocommerce {
+      .container {
+        flex-flow: column wrap;
+        max-width: 100%;
 
-			.woocommerce-MyAccount-content {
-				width: 100%;
-				padding: 0 var(--wicket-acc-padding-md);
-			}
-		}
-	}
+      .woocommerce-MyAccount-content {
+          width: 100%;
+          padding: 0 var(--wicket-acc-padding-md);
+        }
+      }
+      }
 }
 
 .woocommerce-wicket--container {
-	width: 100%;
-	max-width: var(--wp--style--global--content-size);
-	margin-inline: auto;
-	margin-left: auto;
-	margin-right: auto;
-	display: flex;
-	justify-content: space-between;
-	flex-flow: row wrap;
+  width: 100%;
+    max-width: var(--wp--style--global--content-size);
+    margin-inline: auto;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    justify-content: space-between;
+    flex-flow: row wrap;
 }
 
 /*.woocommerce-wicket--account-centre,
@@ -43,140 +42,140 @@
 }*/
 
 @media all and (min-width: 1020px) {
-	.woocommerce-wicket--account-centre {
-		max-width: 70%;
-	}
+  .woocommerce-wicket--account-centre {
+      max-width: 70%;
+    }
 
-	.myaccount-nav {
-		width: 25%;
-	}
+    .myaccount-nav {
+      width: 25%;
+    }
 
-	.wicket-acc-menu {
-		margin-bottom: 40px !important;
-	}
+    .wicket-acc-menu {
+      margin-bottom: 40px !important;
+    }
 }
 
 button.wicket_acc_btn {
-	margin-left: 3px;
+  margin-left: 3px;
 }
 
 .icon-r {
-	margin-right: 8px;
+  margin-right: 8px;
 }
 
 /* The Popup (background) */
 .wicket_acc_pp_opt {
 
-	display: none;
-	/*Hidden by default */
+  display: none;
+    /*Hidden by default */
 
-	position: relative;
-	/* Stay in place */
+  position: relative;
+    /* Stay in place */
 
-	z-index: 1;
-	/* Sit on top */
+  z-index: 1;
+    /* Sit on top */
 
-	/*padding-top: 100px;  Location of the box */
+  /*padding-top: 100px;  Location of the box */
 
-	overflow: auto;
-	/* Enable scroll if needed */
+  overflow: auto;
+    /* Enable scroll if needed */
 
-	background-color: rgb(0, 0, 0);
-	/* Fallback color */
+  background-color: rgb(0, 0, 0);
+    /* Fallback color */
 
-	background-color: rgba(0, 0, 0, 0.1);
-	/* Black w/ opacity */
+  background-color: rgba(0, 0, 0, 0.1);
+    /* Black w/ opacity */
 
-	width: 60%;
+  width: 60%;
 
-	margin-left: 20%;
+  margin-left: 20%;
 
 
 }
 
 .wicket_acc_pp_opt_close {
 
-	display: none;
-	/*Hidden by default */
+  display: none;
+    /*Hidden by default */
 
-	position: relative;
-	/* Stay in place */
+  position: relative;
+    /* Stay in place */
 
-	z-index: 1;
-	/* Sit on top */
+  z-index: 1;
+    /* Sit on top */
 
-	/*padding-top: 100px;  Location of the box */
+  /*padding-top: 100px;  Location of the box */
 
-	overflow: auto;
-	/* Enable scroll if needed */
+  overflow: auto;
+    /* Enable scroll if needed */
 
-	background-color: rgb(0, 0, 0);
-	/* Fallback color */
+  background-color: rgb(0, 0, 0);
+    /* Fallback color */
 
-	background-color: rgba(0, 0, 0, 0.1);
-	/* Black w/ opacity */
+  background-color: rgba(0, 0, 0, 0.1);
+    /* Black w/ opacity */
 
-	width: 60%;
+  width: 60%;
 
-	margin-left: 20%;
+  margin-left: 20%;
 
-	margin-top: -20%;
+  margin-top: -20%;
 
 }
 
 
 
 .wicket_acc_profile_Pic {
-	position: relative;
+  position: relative;
 }
 
 .wicket_acc_upload_button {
-	position: absolute;
-	padding: 2px;
-	bottom: 1px;
-	left: 1px;
+  position: absolute;
+    padding: 2px;
+    bottom: 1px;
+    left: 1px;
 }
 
 .wicket_acc_remove_button {
-	position: absolute;
-	background-color: transparent;
-	color: #6d6d6d;
-	top: -5px;
-	left: 1px;
-	opacity: 70%;
+  position: absolute;
+    background-color: transparent;
+    color: #6d6d6d;
+    top: -5px;
+    left: 1px;
+    opacity: 70%;
 }
 
 .wicket_acc_remove_button:hover {
-	opacity: 100%;
+  opacity: 100%;
 }
 
 .wicket_acc_remove_button:hover,
 .wicket_acc_upload_button:hover {
-	transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
-	color: #999;
+  transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+    color: #999;
 }
 
 .wicket_acc_upload_image {
-	display: none;
+  display: none;
 }
 
 .wicket_acc_pp_opt_remove {
-	display: none;
-	/*Hidden by default */
-	position: relative;
-	/* Stay in place */
-	z-index: 1;
-	/* Sit on top */
-	/*padding-top: 100px;  Location of the box */
-	left: 0;
-	top: 0;
-	overflow: auto;
-	/* Enable scroll if needed */
-	/*background-color: rgb(0,0,0);  Fallback color */
-	/*background-color: rgba(0,0,0,0.4);  Black w/ opacity */
-	width: 60%;
-	margin-left: 33%;
-	margin-top: -47px;
+  display: none;
+    /*Hidden by default */
+    position: relative;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    /*padding-top: 100px;  Location of the box */
+    left: 0;
+    top: 0;
+    overflow: auto;
+    /* Enable scroll if needed */
+    /*background-color: rgb(0,0,0);  Fallback color */
+    /*background-color: rgba(0,0,0,0.4);  Black w/ opacity */
+    width: 60%;
+    margin-left: 33%;
+    margin-top: -47px;
 }
 
 
@@ -184,92 +183,92 @@ button.wicket_acc_btn {
 
 form.woocommerce-EditAccountForm input.wicket_acc_pp_opt_content,
 a.wicket_acc_pp_opt_content {
-	/*background-color: #fefefe;*/
-	/*padding: 20px; */
-	border: 1px solid #888;
-	/*width: 95%;*/
-	margin-left: 20%;
+  /*background-color: #fefefe;*/
+    /*padding: 20px; */
+    border: 1px solid #888;
+    /*width: 95%;*/
+    margin-left: 20%;
 }
 
 /* The Close Button */
 
 .wicket_acc_pp_opt_close .close {
-	color: #aaaaaa;
-	font-size: 28px;
-	font-weight: bold;
-	/*position: absolute;*/
-	margin-left: 95.5%;
+  color: #aaaaaa;
+    font-size: 28px;
+    font-weight: bold;
+    /*position: absolute;*/
+    margin-left: 95.5%;
 }
 
 .wicket_acc_pp_opt_close .close:hover,
 
 .wicket_acc_pp_opt_close .close:focus {
-	color: #000;
-	text-decoration: none;
-	cursor: pointer;
+  color: #000;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .wicket_acc_file_upload {
-	display: none;
+  display: none;
 }
 
 li ul {
-	margin-left: 0.8em !important;
+  margin-left: 0.8em !important;
 }
 
 .woocommerce-MyAccount-navigation ul li.group_endpoint ul {
-	display: none;
+  display: none;
 }
 
 .myaccount-nav h2.myaccount-nav-heading {
-	font-size: 1.2em;
-	margin: 0 0 10px;
+  font-size: 1.2em;
+    margin: 0 0 10px;
 }
 
 .myaccount-nav ul {
-	margin: 0;
-	padding: 0;
-	list-style: none;
+  margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
 .myaccount-nav ul li {
-	display: block;
-	margin: 5px 0px;
-	border-bottom: 1px solid #e0e0e0;
+  display: block;
+    margin: 5px 0px;
+    border-bottom: 1px solid #e0e0e0;
 }
 
 .myaccount-nav ul li.nav-selected>a:first-of-type,
 .myaccount-nav .menu-item.current-menu-item>a:first-of-type {
-	text-decoration: none !important;
-	font-size: 14px;
-	line-height: 24px;
-	display: block;
-	font-style: normal;
-	padding: 10px 5px;
-	font-weight: 600;
-	text-transform: capitalize;
-	box-shadow: none;
-	position: relative;
+  text-decoration: none !important;
+    font-size: 14px;
+    line-height: 24px;
+    display: block;
+    font-style: normal;
+    padding: 10px 5px;
+    font-weight: 600;
+    text-transform: capitalize;
+    box-shadow: none;
+    position: relative;
 }
 
 .myaccount-nav ul li a,
 .myaccount-nav ul li .nav__menu-link {
-	text-decoration: none !important;
-	font-size: 14px;
-	line-height: 24px;
-	display: block;
-	font-style: normal;
-	font-weight: 400;
-	padding: 10px 5px;
-	text-transform: capitalize;
-	box-shadow: none;
-	position: relative;
-	width: 100%;
-	text-align: left;
+  text-decoration: none !important;
+    font-size: 14px;
+    line-height: 24px;
+    display: block;
+    font-style: normal;
+    font-weight: 400;
+    padding: 10px 5px;
+    text-transform: capitalize;
+    box-shadow: none;
+    position: relative;
+    width: 100%;
+    text-align: left;
 }
 
 .myaccount-nav ul li .nav__menu-link {
-	font-weight: bold;
+  font-weight: bold;
 }
 
 .myaccount-nav ul li a:hover,
@@ -278,85 +277,85 @@ li ul {
 .myaccount-nav ul li .nav__menu-link:hover,
 .myaccount-nav ul li .nav__menu-link:active,
 .myaccount-nav ul li .nav__menu-link:focus {
-	text-decoration: underline !important;
+  text-decoration: underline !important;
 }
 
 .myaccount-nav ul li a.group_endpoint_a {
-	font-weight: 700 !important;
+  font-weight: 700 !important;
 }
 
 .myaccount-nav ul li ul {
-	margin-top: 0;
-	margin-bottom: 0;
+  margin-top: 0;
+    margin-bottom: 0;
 }
 
 .myaccount-nav ul li .nav__submenu {
-	display: none;
+  display: none;
 }
 
 .myaccount-nav ul li ul li {
-	border-bottom: 0 none;
+  border-bottom: 0 none;
 }
 
 .myaccount-nav ul li ul li a {
-	padding: 5px;
+  padding: 5px;
 }
 
 .myaccount-nav ul>li .dropdown__toggle--menu i {
-	position: absolute;
-	right: 5px;
-	top: 15px;
+  position: absolute;
+    right: 5px;
+    top: 15px;
 }
 
 .myaccount-nav ul>li .dropdown__toggle--menu.open i {
-	-webkit-transform: rotate(-180deg);
-	-moz-transform: rotate(-180deg);
-	-ms-transform: rotate(-180deg);
-	-o-transform: rotate(-180deg);
-	transform: rotate(-180deg);
+  -webkit-transform: rotate(-180deg);
+    -moz-transform: rotate(-180deg);
+    -ms-transform: rotate(-180deg);
+    -o-transform: rotate(-180deg);
+    transform: rotate(-180deg);
 }
 
 @media screen and (max-width: 991px) {
-	.myaccount-nav ul>li .dropdown__toggle--menu i {
-		font-size: 20px;
-		top: 10px;
-	}
+  .myaccount-nav ul>li .dropdown__toggle--menu i {
+      font-size: 20px;
+      top: 10px;
+    }
 }
 
 .edit-link {
-	margin-left: 5px;
+  margin-left: 5px;
 }
 
 .my-account .large-3,
 .my-account .dashboard-links {
-	display: none;
+  display: none;
 }
 
 .my-account .large-9,
 #content-area #left-area {
-	width: 100% !important;
-	max-width: 100% !important;
-	-ms-flex-preferred-size: 100% !important;
-	flex-basis: 100% !important;
-	padding: 0px !important;
+  width: 100% !important;
+    max-width: 100% !important;
+    -ms-flex-preferred-size: 100% !important;
+    flex-basis: 100% !important;
+    padding: 0px !important;
 }
 
 #main-content .container:before {
-	content: "";
-	position: absolute;
-	top: 0;
-	height: 100%;
-	width: 0px;
-	background-color: transparent;
-	display: none;
+  content: "";
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 0px;
+    background-color: transparent;
+    display: none;
 }
 
 .cursor-auto {
-	cursor: auto;
+  cursor: auto;
 }
 
 .cursor-pointer {
-	cursor: pointer;
+  cursor: pointer;
 }
 
 /**
