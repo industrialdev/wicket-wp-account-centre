@@ -1330,4 +1330,25 @@ class OrgManagement extends WicketAcc
 
         die();
     }
+
+    /**
+     * Assigns a person to an organization membership.
+     *
+     * @param int|string $person_id The ID of the person to assign.
+     * @param int|string $included_id The ID of the included person to assign.
+     * @param int|string $org_membership_id The ID of the organization membership to assign to.
+     * @param array $org_membership The organization membership to assign to.
+     *
+     * @return array The response from the MDP API.
+     */
+    public function assign_person_to_org_membership($person_id = null, $included_id = null, $org_membership_id = null, $org_membership = null)
+    {
+        if (empty($person_id) || empty($included_id) || empty($org_membership_id) || empty($org_membership)) {
+            return false;
+        }
+
+        $response = wicket_assign_person_to_org_membership($person_id, $included_id, $org_membership_id, $org_membership);
+
+        return $response;
+    }
 }
