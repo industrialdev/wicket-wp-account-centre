@@ -36,6 +36,9 @@ class MdpApi
             $client = new Client($app_key = '', $wicket_settings['jwt'], $wicket_settings['api_endpoint']);
 
             $client->authorize($wicket_settings['person_id']);
+
+            // Test the endpoint to make sure the API is working
+            $client->get($wicket_settings['api_endpoint']);
         } catch (Exception $e) {
             return false;
         }

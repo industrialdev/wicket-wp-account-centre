@@ -17,7 +17,7 @@ class OrgManagement extends WicketAcc
 {
     private $org_uuid        = '';
     private $org_parent_uuid = '';
-    private $org_slugs       = [
+    private $org_pages_slugs = [
         'index',
         'members',
         'profile',
@@ -43,7 +43,7 @@ class OrgManagement extends WicketAcc
         }
 
         // Valid slug?
-        if (!in_array($slug, $this->org_slugs)) {
+        if (!in_array($slug, $this->org_pages_slugs)) {
             return home_url();
         }
 
@@ -572,7 +572,7 @@ class OrgManagement extends WicketAcc
             return false;
         }
 
-        $client = wicket_api_client();
+        $client = WACC()->MdpApi->init_client();
         $person = $client->get('/people?filter[emails_primary_eq]=true&filter[emails_address_eq]=' . urlencode($email));
 
         // Return the first person if found
@@ -1071,16 +1071,18 @@ class OrgManagement extends WicketAcc
 
     /**
      * Creates a new person using the given name, last name and email.
+     * If the person already exists (by email), the existing ID is returned.
      *
-     * @param string $name     The person name.
-     * @param string $last_name The person last name.
-     * @param string $email    The person email.
+     * @param string $first_name The person name.
+     * @param string $last_name  The person last name.
+     * @param string $email      The person email.
+     * @param array  $extras     An array with extra data to be saved in the person.
      *
-     * @return string|false The person ID or false if the creation fails.
+     * @return string|false Person ID, false if the creation fails.
      */
-    public function create_person($name, $last_name, $email)
+    public function create_person($first_name, $last_name, $email, $extras = [])
     {
-        if (!$name || !$last_name || !$email) {
+        if (!$first_name || !$last_name || !$email) {
             return false;
         }
 
@@ -1089,12 +1091,217 @@ class OrgManagement extends WicketAcc
             return false;
         }
 
-        $person = wicket_create_person(trim($name), trim($last_name), trim($email));
+        // Does the person already exist?
+        $person = $this->get_person_by_email($email);
+
+        if (!$person) {
+            $person = wicket_create_person(trim($first_name), trim($last_name), trim($email));
+        }
 
         if (!$person) {
             return false;
         }
 
-        return $person['data']['id'];
+        $person_id = isset($person['id']) ? $person['id'] : $person['data']['id'];
+
+        // Add extra data
+        if (!empty($extras)) {
+            $update_response = $this->update_person_profile_data($person_id, $extras);
+
+            var_dump($update_response, '<br><br>');
+        }
+
+        return $person_id;
+    }
+
+    /**
+     * Updates a person's profile data.
+     *
+     * Given a person UUID and an array of data to be updated,
+     * this function sends a PATCH request to the Wicket API
+     * to update the person's profile data.
+     *
+     * @param string $person_id The person UUID.
+     * @param array  $data      An array of data to be updated.
+     *
+     * @return array|false The response from the Wicket API, false if the update fails.
+     */
+    public function update_person_profile_data($person_id, $data = [])
+    {
+        if (empty($person_id) || empty($data)) {
+            return false;
+        }
+
+        $client = WACC()->MdpApi->init_client();
+
+        /**
+         * Payload to mimic:
+         *
+         * {"data":{"type":"people","id":"0eaa4b70-9922-4195-a67f-cc16d8e86037","attributes":{"given_name":"First03","additional_name":null,"family_name":"Last03","suffix":null,"honorific_suffix":null,"preferred_pronoun":null,"job_title":"CEO","job_level":"director"}}}
+         *
+         * Send as PATCH to /people/{UUID}
+         */
+
+        $data = [
+            'data' => [
+                'type'       => 'people',
+                'id'         => $person_id,
+                'attributes' => $data
+            ]
+        ];
+
+        try {
+            $response = $client->patch("/people/$person_id", ['json' => $data]);
+        } catch (Exception $e) {
+            $response = new \WP_Error('wicket_api_error', $e->getMessage());
+        }
+
+        return $response;
+    }
+
+    /**
+     * Retrieves all job levels from MDP.
+     *
+     * @return array An associative array where the key is the job level slug and the value is an array with 'slug' and 'name' keys.
+     */
+    public function get_job_levels()
+    {
+        $client = WACC()->MdpApi->init_client();
+
+        $job_levels_resource_types = $client->get('/resource_types?filter[entity_type_code_eq]=shared_job_level');
+        $job_levels = [];
+
+        foreach ($job_levels_resource_types['data'] as $resource_type) {
+            $job_levels[$resource_type['attributes']['slug']] = [
+                'slug' => $resource_type['attributes']['slug'],
+                'name' => $resource_type['attributes']['name']
+            ];
+        }
+
+        return $job_levels;
+    }
+
+    /**
+     * Create a new connection in the API.
+     *
+     * @param array $payload The new connection properties.
+     *
+     * @return bool|array true on success,
+     */
+    public function create_connection($payload)
+    {
+        $client = WACC()->MdpApi->init_client();
+
+        try {
+            $client->post('connections', ['json' => $payload]);
+
+            return true;
+        } catch (\Exception $e) {
+            $errors = json_decode($e->getResponse()->getBody())->errors;
+            echo "<pre>";
+            print_r($e->getMessage());
+            echo "</pre>";
+
+            echo "<pre>";
+            print_r($errors);
+            echo "</pre>";
+
+            $response = [
+                'error'   => true,
+                'message' => $errors[0]->detail,
+            ];
+
+            return $response;
+        }
+
+        return false;
+    }
+
+    /**
+     * Builds a payload for creating a new connection of a given type between a person and an org.
+     *
+     * @param string $person_id The UUID of the person to connect to the org.
+     * @param string $org_id The UUID of the org to connect the person to.
+     * @param string $connection_type The type of connection to create. Ex: person_to_organization, organization_to_person, etc.
+     *
+     * @return array The payload for creating a new connection.
+     */
+    public function build_connection_payload($person_id = null, $org_id = null, $connection_type = null, $type = null)
+    {
+        $payload = [
+            'data' => [
+                'type'          => 'connections',
+                'attributes'    => [
+                    'connection_type' => $connection_type,
+                    'type'            => $type,
+                    'starts_at' => date("Y-m-d"),
+                ],
+                'relationships' => [
+                    'organization' => [
+                        'data' => [
+                            'id'   => $org_id,
+                            'type' => 'organizations',
+                        ],
+                    ],
+                    'person'       => [
+                        'data' => [
+                            'id'   => $person_id,
+                            'type' => 'people',
+                        ],
+                    ],
+                    'from'         => [
+                        'data' => [
+                            'id'   => $person_id,
+                            'type' => 'people',
+                        ],
+                    ],
+                    'to'           => [
+                        'data' => [
+                            'id'   => $org_id,
+                            'type' => 'organizations',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        return $payload;
+    }
+
+    /**
+     * Returns a list of connection types for a person to an organization.
+     *
+     * @return array
+     */
+    public function get_person_to_organizations_connection_types_list()
+    {
+        $client = WACC()->MdpApi->init_client();
+
+        $resource_types = $client->resource_types->all();
+        $resource_types = collect($resource_types);
+        $found          = $resource_types->filter(function ($item) {
+            return $item->resource_type == 'connection_person_to_organizations';
+        });
+
+        return $found;
+    }
+
+
+    /**
+     * Returns resource list of person types.
+     *
+     * @return array
+     */
+    public function get_person_types_list()
+    {
+        $client = WACC()->MdpApi->init_client();
+
+        $resource_types = $client->resource_types->all();
+        $resource_types = collect($resource_types);
+        $found          = $resource_types->filter(function ($item) {
+            return $item->resource_type == 'shared_person_type';
+        });
+
+        return $found;
     }
 }
