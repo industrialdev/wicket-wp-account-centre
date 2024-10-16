@@ -1102,7 +1102,7 @@ class OrgManagement extends WicketAcc
             return false;
         }
 
-        $person_id = isset($person['id']) ? $person['id'] : $person['data']['id'];
+        $person_id = $person['id'] ?? $person['data']['id'];
 
         // Add extra data
         if (!empty($extras)) {
@@ -1146,8 +1146,8 @@ class OrgManagement extends WicketAcc
             'data' => [
                 'type'       => 'people',
                 'id'         => $person_id,
-                'attributes' => $data
-            ]
+                'attributes' => $data,
+            ],
         ];
 
         try {
@@ -1174,7 +1174,7 @@ class OrgManagement extends WicketAcc
         foreach ($job_levels_resource_types['data'] as $resource_type) {
             $job_levels[$resource_type['attributes']['slug']] = [
                 'slug' => $resource_type['attributes']['slug'],
-                'name' => $resource_type['attributes']['name']
+                'name' => $resource_type['attributes']['name'],
             ];
         }
 
