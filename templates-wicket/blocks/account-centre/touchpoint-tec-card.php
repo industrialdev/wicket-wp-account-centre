@@ -24,7 +24,9 @@ if (isset($tp['attributes']['data']['location']) && $tp['attributes']['data']['l
     }
 }
 ?>
-<div class="event-card my-4 p-4 border border-gray-200 rounded-md shadow-md" data-uuid="<?php echo $tp['id']; ?>">
+
+<div class="event-card <?php echo defined( 'WICKET_WP_THEME_V2' ) ? '' : 'my-4 p-4 border border-gray-200 rounded-md shadow-md' ?>"
+    data-uuid="<?php echo $tp['id']; ?>">
     <a href="<?php $tp['attributes']['data']['url']; ?>" class="event-card-link">
         <?php if (isset($tp['attributes']['data']['BadgeType']) && $tp['attributes']['data']['BadgeType']) : ?>
             <p class="text-sm font-bold mb-2 event-type">
@@ -35,7 +37,7 @@ if (isset($tp['attributes']['data']['location']) && $tp['attributes']['data']['l
         <?php if (isset($tp['attributes']['data']['url']) && $tp['attributes']['data']['url']) : ?>
             <a href="<?php echo $tp['attributes']['data']['url']; ?>" class="event-card-link">
             <?php endif; ?>
-            <h3 class="text-lg font-bold mb-2 event-name">
+            <h3 class="<?php echo defined( 'WICKET_WP_THEME_V2' ) ? '' : 'text-lg font-bold mb-2' ?> event-name">
                 <?php echo $tp['attributes']['data']['event_title']; ?>
             </h3>
             <?php if (isset($tp['attributes']['data']['url']) && $tp['attributes']['data']['url']) : ?>

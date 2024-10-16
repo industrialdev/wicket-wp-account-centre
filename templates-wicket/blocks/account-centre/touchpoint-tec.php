@@ -68,11 +68,11 @@ if (!empty($override_past_events_link)) {
             <div class="flex flex-col md:flex-row md:justify-between items-center md:items-center w-full">
                 <?php if ($display == 'upcoming' && !$single_event) : ?>
                     <?php if (!empty($title)) : ?>
-                        <h3 class="font-bold mb-4 md:mb-0 md:text-left text-center lg:text-left w-full md:w-auto text-2xl text-dark-100"><?php echo esc_html($title); ?></h3>
+                        <h3 class="font-bold md:text-left text-center lg:text-left w-full md:w-auto <?php echo defined( 'WICKET_WP_THEME_V2' ) ? 'event-section-title' : 'text-2xl text-dark-100 mb-4 md:mb-0' ?>"><?php echo esc_html($title); ?></h3>
                     <?php else: ?>
-                        <h3 class="font-bold mb-4 md:mb-0 md:text-left text-center lg:text-left w-full md:w-auto text-2xl text-dark-100"><?php esc_html_e('Upcoming Registered Events', 'wicket-acc'); ?></h3>
+                        <h3 class="font-bold md:text-left text-center lg:text-left w-full md:w-auto <?php echo defined( 'WICKET_WP_THEME_V2' ) ? 'event-section-title' : 'text-2xl text-dark-100 mb-4 md:mb-0' ?>"><?php esc_html_e('Upcoming Registered Events', 'wicket-acc'); ?></h3>
                     <?php endif; ?>
-                    <a href="<?php echo $switch_link_past; ?>" class="past-link font-bold text-center md:text-right w-full md:w-auto text-base mb-4"><?php esc_html_e($past_events_link_text, 'wicket-acc'); ?></a>
+                    <a href="<?php echo $switch_link_past; ?>" class="past-link text-center md:text-right w-full md:w-auto <?php echo defined( 'WICKET_WP_THEME_V2' ) ? '' : 'text-base mb-4 font-bold' ?>"><?php esc_html_e($past_events_link_text, 'wicket-acc'); ?></a>
                 <?php elseif ($display == 'past' && !$single_event) : ?>
                     <h3 class="font-bold mb-4 md:mb-0 md:text-left text-center w-full md:w-auto text-base"><?php esc_html_e('Past Registered Events', 'wicket-acc'); ?></h3>
                     <a href="<?php echo $switch_link; ?>" class="upcoming-link font-bold text-center md:text-right w-full md:w-auto mb-4 text-base"><?php esc_html_e('See Upcoming Registered Events', 'wicket-acc'); ?></a>
