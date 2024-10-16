@@ -11,8 +11,9 @@ $finder = PhpCsFixer\Finder::create()
     ->exclude([
         '.ci',
         'node_modules',
-    'vendor',
+        'vendor',
         'languages',
+        'dist',
     ])
     ->notName([
         'composer.lock',

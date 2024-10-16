@@ -20,10 +20,11 @@ class MethodRouter
     {
         // Register all class instances except Helpers
         $this->instances = [
-            'MdpApi'       => new MdpApi(),
-            'Profile'      => new Profile(),
-            'Blocks'       => new Blocks(),
-            'User'         => new User(),
+            'MdpApi'        => new MdpApi(),
+            'OrgManagement' => new OrgManagement(),
+            'Profile'       => new Profile(),
+            'Blocks'        => new Blocks(),
+            'User'          => new User(),
         ];
 
         // Store Helpers instance separately

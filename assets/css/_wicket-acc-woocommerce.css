@@ -1,0 +1,21 @@
+.wicket-acc {
+  .my_account_subscriptions {
+    .subscription-id {
+      .nobr {
+        display: none !important;
+      }
+
+      &:lang(en-US)::after {
+        content: 'Membership';
+      }
+
+      &:lang(fr-FR)::after {
+        content: 'Abonnement';
+      }
+
+      &:lang(es-ES)::after {
+        content: 'Membresia';
+      }
+    }
+  }
+}
