@@ -359,7 +359,7 @@ class OrgManagement extends WicketAcc
 
         // Remove all roles
         foreach ($allowed_roles as $dropdown_key => $dropdown_label) {
-            var_dump(wicket_remove_role($unassign_person_uuid, $dropdown_key));
+            wicket_remove_role($unassign_person_uuid, $dropdown_key);
         }
 
         // From WP too
@@ -1107,8 +1107,6 @@ class OrgManagement extends WicketAcc
         // Add extra data
         if (!empty($extras)) {
             $update_response = $this->update_person_profile_data($person_id, $extras);
-
-            var_dump($update_response, '<br><br>');
         }
 
         return $person_id;
