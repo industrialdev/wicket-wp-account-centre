@@ -1308,9 +1308,9 @@ class OrgManagement extends WicketAcc
      *
      * @param array $data The data to pass to the redirect page.
      */
-    public function redirect_or_die($data = [])
+    public function redirect_or_die($response = [])
     {
-        if (empty($data)) {
+        if (empty($response)) {
             wp_die(__('No data provided', 'wicket-acc'));
         }
 
