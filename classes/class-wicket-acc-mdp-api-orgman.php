@@ -1303,6 +1303,11 @@ class OrgManagement extends WicketAcc
         return $found;
     }
 
+    /**
+     * Redirects to the referrer page with the given data, or dies if data is empty or has an error.
+     *
+     * @param array $data The data to pass to the redirect page.
+     */
     public function redirect_or_die($data = [])
     {
         if (empty($data)) {
