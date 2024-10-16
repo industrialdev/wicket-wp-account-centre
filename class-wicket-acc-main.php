@@ -9,7 +9,7 @@ namespace WicketAcc;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Customize WooCommerce my account features to build the Wicket Account Centre. Expands it with additional blocks and pages.
- * Version:           1.5.31
+ * Version:           1.5.32
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -182,7 +182,6 @@ class WicketAcc
         }
 
         new MdpApi();
-        new OrgManagement();
         new Router();
         new Blocks();
         new Helpers();
@@ -213,7 +212,6 @@ class WicketAcc
         $include_classes = [
             'classes/class-wicket-acc-language.php',
             'classes/class-wicket-acc-mdp-api.php',
-            'classes/class-wicket-acc-mdp-api-orgman.php',
             'classes/class-wicket-acc-registers.php',
             'classes/class-wicket-acc-blocks.php',
             'classes/class-wicket-acc-profile.php',
