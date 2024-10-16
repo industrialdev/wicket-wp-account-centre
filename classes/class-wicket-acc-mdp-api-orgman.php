@@ -1347,7 +1347,7 @@ class OrgManagement extends WicketAcc
             return false;
         }
 
-        $response = wicket_assign_person_to_org_membership((string)$person_id, (string)$included_id, (string)$org_membership_id, (array)$org_membership);
+        $response = wicket_assign_person_to_org_membership((string) $person_id, (string) $included_id, (string) $org_membership_id, (array) $org_membership);
 
         return $response;
     }
