@@ -41,9 +41,10 @@
 }
 
 @media all and (min-width: 1020px) {
-  .woocommerce-wicket--account-centre {
-    max-width: 70%;
-
+  .wicket-acc {
+    .woocommerce-wicket--account-centre {
+      max-width: 70%;
+    }
 
     .myaccount-nav {
       width: 25%;
