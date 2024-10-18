@@ -1,8 +1,8 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
-# 1.5.27 / 2024-10-15
-- Integrated Organization Management methods into ACC. Pages can be controled from the backend, just like any other ACC page.
+# 1.5.32 / 2024-10-15
+- Integrated Organization Management pages into ACC. Pages can be controled from the backend, just like any other ACC page.
 - Translate "subscription" to "membership" with CSS in ACC membership history table. WPML compatible.
 
 # 1.5.24 / 2024-10-08

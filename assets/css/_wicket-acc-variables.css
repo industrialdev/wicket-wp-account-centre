@@ -4,8 +4,10 @@
  */
 
 :root {
-  --wicket-grid-maxWidth: 120rem; /* 1200px */
-  --wicket-grid-gutter: 0.125rem; /* 2px */
+  --wicket-grid-maxWidth: 120rem;
+    /* 1200px */
+    --wicket-grid-gutter: 0.125rem;
+    /* 2px */
 
   --wicket-acc-container-width: 1280px;
   --wicket-acc-breakpoint-mobile: 1023px;
@@ -18,64 +20,124 @@
   --wicket-acc-border-color-light: #D3D4D6;
   --wicket-acc-border-color-dark: #1d2327;
 
-  --wicket-acc-border-radius-sm: 0.125rem; /* 2px */
-  --wicket-acc-border-radius-2: 0.125rem; /* 2px */
-  --wicket-acc-border-radius-md: 0.25rem; /* 4px */
-  --wicket-acc-border-radius-4: 0.25rem; /* 4px */
-  --wicket-acc-border-radius-lg: 0.5rem; /* 8px */
-  --wicket-acc-border-radius-8: 0.5rem; /* 8px */
+  --wicket-acc-alert: #cce8f4;
+    --wicket-acc-alert-info: #cce8f4;
+    --wicket-acc-alert-error: #ebc8c4;
+    --wicket-acc-alert-success: #def2d6;
+    --wicket-acc-alert-warning: #f8f3d6;
 
-  --wicket-acc-padding-xxxs: 0.125rem; /* 2px */
-  --wicket-acc-padding-xxs: 0.25rem; /* 4px */
-  --wicket-acc-padding-xs: 0.5rem; /* 8px */
-  --wicket-acc-padding: 1rem; /* 16px */
-  --wicket-acc-padding-16: 1rem; /* 16px */
-  --wicket-acc-padding-sm: 0.5rem; /* 8px */
-  --wicket-acc-padding-8: 0.5rem; /* 8px */
-  --wicket-acc-padding-md: 1rem; /* 16px */
-  --wicket-acc-padding-16: 1rem; /* 16px */
-  --wicket-acc-padding-lg: 1.5rem; /* 24px */
-  --wicket-acc-padding-24: 1.5rem; /* 24px */
+  --wicket-acc-border-radius-sm: 0.125rem;
+    /* 2px */
+    --wicket-acc-border-radius-2: 0.125rem;
+    /* 2px */
+    --wicket-acc-border-radius-md: 0.25rem;
+    /* 4px */
+    --wicket-acc-border-radius-4: 0.25rem;
+    /* 4px */
+    --wicket-acc-border-radius-lg: 0.5rem;
+    /* 8px */
+    --wicket-acc-border-radius-8: 0.5rem;
+    /* 8px */
 
-  --wicket-acc-margin-xxxs: 0.125rem; /* 2px */
-  --wicket-acc-margin-xxs: 0.25rem; /* 4px */
-  --wicket-acc-margin-xs: 0.5rem; /* 8px */
-  --wicket-acc-margin: 1rem; /* 16px */
-  --wicket-acc-margin-sm: 0.5rem; /* 8px */
-  --wicket-acc-margin-8: 0.5rem; /* 8px */
-  --wicket-acc-margin-md: 1rem; /* 16px */
-  --wicket-acc-margin-16: 1rem; /* 16px */
-  --wicket-acc-margin-lg: 1.5rem; /* 24px */
-  --wicket-acc-margin-24: 1.5rem; /* 24px */
+  --wicket-acc-padding-xxxs: 0.125rem;
+    /* 2px */
+    --wicket-acc-padding-xxs: 0.25rem;
+    /* 4px */
+    --wicket-acc-padding-xs: 0.5rem;
+    /* 8px */
+    --wicket-acc-padding: 1rem;
+    /* 16px */
+    --wicket-acc-padding-16: 1rem;
+    /* 16px */
+    --wicket-acc-padding-sm: 0.5rem;
+    /* 8px */
+    --wicket-acc-padding-8: 0.5rem;
+    /* 8px */
+    --wicket-acc-padding-md: 1rem;
+    /* 16px */
+    --wicket-acc-padding-16: 1rem;
+    /* 16px */
+    --wicket-acc-padding-lg: 1.5rem;
+    /* 24px */
+    --wicket-acc-padding-24: 1.5rem;
+    /* 24px */
+  
+    --wicket-acc-margin-xxxs: 0.125rem;
+    /* 2px */
+    --wicket-acc-margin-xxs: 0.25rem;
+    /* 4px */
+    --wicket-acc-margin-xs: 0.5rem;
+    /* 8px */
+    --wicket-acc-margin: 1rem;
+    /* 16px */
+    --wicket-acc-margin-sm: 0.5rem;
+    /* 8px */
+    --wicket-acc-margin-8: 0.5rem;
+    /* 8px */
+    --wicket-acc-margin-md: 1rem;
+    /* 16px */
+    --wicket-acc-margin-16: 1rem;
+    /* 16px */
+    --wicket-acc-margin-lg: 1.5rem;
+    /* 24px */
+    --wicket-acc-margin-24: 1.5rem;
+    /* 24px */
 
-  --wicket-acc-font-size: 1rem; /* 16px */
-  --wicket-acc-font-size-sm: 0.75rem; /* 12px */
-  --wicket-acc-font-size-12: 0.75rem; /* 12px */
-  --wicket-acc-font-size-14: 0.875rem; /* 14px */
-  --wicket-acc-font-size-md: 1rem; /* 16px */
-  --wicket-acc-font-size-16: 1rem; /* 16px */
-  --wicket-acc-font-size-lg: 1.25rem; /* 20px */
-  --wicket-acc-font-size-20: 1.25rem; /* 20px */
-  --wicket-acc-font-size-xl: 1.5rem; /* 24px */
-  --wicket-acc-font-size-24: 1.5rem; /* 24px */
-  --wicket-acc-font-size-xxl: 1.75rem; /* 28px */
-  --wicket-acc-font-size-28: 1.75rem; /* 28px */
-  --wicket-acc-font-size-xxxl: 2rem; /* 32px */
-  --wicket-acc-font-size-32: 2rem; /* 32px */
+  --wicket-acc-font-size: 1rem;
+    /* 16px */
+    --wicket-acc-font-size-sm: 0.75rem;
+    /* 12px */
+    --wicket-acc-font-size-12: 0.75rem;
+    /* 12px */
+    --wicket-acc-font-size-14: 0.875rem;
+    /* 14px */
+    --wicket-acc-font-size-md: 1rem;
+    /* 16px */
+    --wicket-acc-font-size-16: 1rem;
+    /* 16px */
+    --wicket-acc-font-size-lg: 1.25rem;
+    /* 20px */
+    --wicket-acc-font-size-20: 1.25rem;
+    /* 20px */
+    --wicket-acc-font-size-xl: 1.5rem;
+    /* 24px */
+    --wicket-acc-font-size-24: 1.5rem;
+    /* 24px */
+    --wicket-acc-font-size-xxl: 1.75rem;
+    /* 28px */
+    --wicket-acc-font-size-28: 1.75rem;
+    /* 28px */
+    --wicket-acc-font-size-xxxl: 2rem;
+    /* 32px */
+    --wicket-acc-font-size-32: 2rem;
+    /* 32px */
 
-  --wicket-acc-line-height: 1.5; /* 24px */
-  --wicket-acc-line-height-sm: 1.25; /* 20px */
-  --wicket-acc-line-height-20: 1.25; /* 20px */
-  --wicket-acc-line-height-md: 1.5; /* 24px */
-  --wicket-acc-line-height-24: 1.5; /* 24px */
-  --wicket-acc-line-height-lg: 1.75; /* 28px */
-  --wicket-acc-line-height-28: 1.75; /* 28px */
-  --wicket-acc-line-height-xl: 2; /* 32px */
-  --wicket-acc-line-height-32: 2; /* 32px */
-  --wicket-acc-line-height-xxl: 2.25; /* 36px */
-  --wicket-acc-line-height-36: 2.25; /* 36px */
-  --wicket-acc-line-height-xxxl: 2.5; /* 40px */
-  --wicket-acc-line-height-40: 2.5; /* 40px */
+  --wicket-acc-line-height: 1.5;
+    /* 24px */
+    --wicket-acc-line-height-sm: 1.25;
+    /* 20px */
+    --wicket-acc-line-height-20: 1.25;
+    /* 20px */
+    --wicket-acc-line-height-md: 1.5;
+    /* 24px */
+    --wicket-acc-line-height-24: 1.5;
+    /* 24px */
+    --wicket-acc-line-height-lg: 1.75;
+    /* 28px */
+    --wicket-acc-line-height-28: 1.75;
+    /* 28px */
+    --wicket-acc-line-height-xl: 2;
+    /* 32px */
+    --wicket-acc-line-height-32: 2;
+    /* 32px */
+    --wicket-acc-line-height-xxl: 2.25;
+    /* 36px */
+    --wicket-acc-line-height-36: 2.25;
+    /* 36px */
+    --wicket-acc-line-height-xxxl: 2.5;
+    /* 40px */
+    --wicket-acc-line-height-40: 2.5;
+    /* 40px */
 
   --wicket-acc-font-weight-light: 300;
   --wicket-acc-font-weight-300: 300;

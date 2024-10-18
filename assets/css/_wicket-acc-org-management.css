@@ -1,371 +1,388 @@
 .acc-organization-management {
 
-    .manage-members-title {
-        font-weight: 700;
+  .manage-members-title {
+      font-weight: 700;
     }
 
     .organization_name {
-        font-weight: 400;
+      font-weight: 400;
     }
 
     .bulk_upload_callout {
-        border-radius: 12px 12px 0 0;
-        padding: 25px;
+      border-radius: 12px 12px 0 0;
+      padding: 25px;
 
-        p {
-            margin: 0;
-        }
+    p {
+        margin: 0;
+      }
     }
 
     .bulk_upload_cta {
-        padding: 20px;
-        border-radius: 0 0 12px 12px;
-        font-size: 22px;
-        font-weight: bold;
+      padding: 20px;
+      border-radius: 0 0 12px 12px;
+      font-size: 22px;
+      font-weight: bold;
 
-        p {
-            margin: 0;
-        }
+    p {
+        margin: 0;
+      }
 
         i.far {
-            font-size: 30px;
-            margin-right: 15px;
+          font-size: 30px;
+          margin-right: 15px;
         }
 
         a {
-            float: right;
-            font-size: 20px;
+          float: right;
+          font-size: 20px;
 
-            &:hover {
-                text-decoration: underline;
-            }
+      &:hover {
+          text-decoration: underline;
+        }
 
             i {
-                margin-left: 10px;
+              margin-left: 10px;
             }
 
             @media(max-width:500px) {
-                float: none;
-                display: block;
-                margin-top: 20px;
+              float: none;
+              display: block;
+              margin-top: 20px;
             }
-        }
-    }
+            }
+            }
 
     table {
-        border-collapse: separate;
-        border-spacing: 0;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-weight: bold;
+
+    button {
         font-weight: bold;
+        cursor: pointer;
 
-        button {
-            font-weight: bold;
-            cursor: pointer;
-
-            &:hover,
-            &:focus {
-                text-decoration: none !important;
-            }
+      &:hover,
+        &:focus {
+          text-decoration: none !important;
         }
+      }
 
         td:nth-child(1) {
-            a {}
+          a {}
         }
 
         tr th,
         tr td {
-            border-bottom: 1px solid;
-            padding: 10px;
+          border-bottom: 1px solid;
+          padding: 10px;
         }
 
         tbody tr:nth-child(even) {
-            background: none !important;
+          background: none !important;
         }
 
         th {
-            padding: 10px;
+          padding: 10px;
 
-            &:first-child {
-                border-left: 1px solid;
-            }
+      &:first-child {
+          border-left: 1px solid;
+        }
 
             &:last-child {
-                border-right: 1px solid;
+              border-right: 1px solid;
             }
+            }
+
+        tr th:first-child,
+        tr td:first-child {
+          border-left: 1px solid;
         }
 
         tr th:first-child,
         tr td:first-child {
-            border-left: 1px solid;
-        }
-
-        tr th:first-child,
-        tr td:first-child {
-            border-left: 1px solid;
+          border-left: 1px solid;
         }
 
         tr th:last-child,
         tr td:last-child {
-            border-right: 1px solid;
+          border-right: 1px solid;
         }
 
         tr th:last-child,
         tr td:last-child {
-            border-right: 1px solid;
+          border-right: 1px solid;
         }
 
         tr th {
-            text-align: left;
-            border-top: solid 1px;
-            padding: 20px !important;
+          text-align: left;
+          border-top: solid 1px;
+          padding: 20px !important;
         }
 
         tr:first-child th:first-child {
-            border-top-left-radius: 12px;
+          border-top-left-radius: 12px;
         }
 
         tr:first-child th:last-child {
-            border-top-right-radius: 12px;
+          border-top-right-radius: 12px;
         }
 
         tr:last-child td:first-child {
-            border-bottom-left-radius: 12px;
+          border-bottom-left-radius: 12px;
         }
 
         tr:last-child td:last-child {
-            border-bottom-right-radius: 12px;
+          border-bottom-right-radius: 12px;
         }
 
         a {
 
-            &:hover,
-            &:active,
-            &:focus {
-                text-decoration: none;
-            }
+      &:hover,
+        &:active,
+        &:focus {
+          text-decoration: none;
         }
+      }
 
         td.email_address {
-            word-break: break-all;
+          word-break: break-all;
         }
-    }
+        }
 
     .billing_contact_box {
-        padding: 5px 10px;
-        display: inline-block;
-        width: auto;
-        margin-bottom: 10px;
-        font-size: 16px;
+      padding: 5px 10px;
+      display: inline-block;
+      width: auto;
+      margin-bottom: 10px;
+      font-size: 16px;
     }
 
-    .black_header {
-    }
+    .black_header {}
 
     .action_save_permissions {
-        float: left;
+      float: left;
     }
 
     .action_remove_member {
-        float: right;
+      float: right;
     }
 
     .add_new_person_membership_form {
 
-        /* Label styling */
-        .form__label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
+    /* Label styling */
+      .form__label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
 
         /* Input and select element styling */
         .form__input {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            box-sizing: border-box;
-            border: 1px solid;
-            border-radius: 4px;
+          width: 100%;
+          padding: 8px;
+          margin-bottom: 15px;
+          box-sizing: border-box;
+          border: 1px solid;
+          border-radius: 4px;
         }
 
         /* Button styling */
         .button--primary {
-            border: 2px solid;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            display: block;
+          border: 2px solid;
+          padding: 10px 15px;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 16px;
+          display: block;
         }
 
         .button--primary:hover {
-            border: 2px solid;
+          border: 2px solid;
         }
 
         /* Small text styling below inputs */
         small {
-            display: block;
-            margin-top: -10px;
-            margin-bottom: 10px;
+          display: block;
+          margin-top: -10px;
+          margin-bottom: 10px;
         }
-    }
+        }
 
     table.org_management_table {
-        th,
-        td {
-            text-align: left !important;
-        }
+
+    th,
+      td {
+        text-align: left !important;
+      }
     }
 
     table.team_assignment_table {
-        display: flex;
-        flex-direction: column;
+      display: flex;
+      flex-direction: column;
 
-        thead {
-            flex: 0 0 auto;
-        }
+    thead {
+        flex: 0 0 auto;
+      }
 
         tbody {
-            flex: 1 1 auto;
-            display: block;
-            overflow-y: auto;
-            max-height: 675px;
+          flex: 1 1 auto;
+          display: block;
+          overflow-y: auto;
+          max-height: 675px;
         }
 
         tr {
-            width: 100%;
-            display: table;
-            table-layout: fixed;
+          width: 100%;
+          display: table;
+          table-layout: fixed;
         }
 
         th,
         td {
-            text-align: left !important;
+          text-align: left !important;
         }
 
         th:first-child,
         td:first-child {
-            width: 55%;
+          width: 55%;
         }
 
         @media(max-width: 768px) {
 
-            th:first-child,
-            td:first-child {
-                width: 100%;
-            }
+      th:first-child,
+        td:first-child {
+          width: 100%;
         }
+      }
 
         .orgman_member_name {
-            vertical-align: top;
-            font-weight: 400;
+          vertical-align: top;
+          font-weight: 400;
 
-            .email_address {
-                font-weight: 400;
+      .email_address {
+          font-weight: 400;
 
-                /* Hover state */
-                &:hover {
-                    text-decoration: underline;
-                }
-            }
+        /* Hover state */
+          &:hover {
+            text-decoration: underline;
+          }
+        }
         }
 
         .role {
-            font-weight: 400;
+          font-weight: 400;
         }
 
         .action_save_permissions,
         .action_remove_member {
-            font-weight: 700;
+          font-weight: 700;
 
-            &:hover {
-                text-decoration: underline !important;
-            }
+      &:hover {
+          text-decoration: underline !important;
         }
-    }
+      }
+      }
 
     .table-responsive {
 
-        /* https: //codepen.io/AllThingsSmitty/pen/MyqmdM */
-        table {
-            border-collapse: inherit;
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            table-layout: fixed;
-        }
+    /* https: //codepen.io/AllThingsSmitty/pen/MyqmdM */
+      table {
+        border-collapse: inherit;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        table-layout: fixed;
+      }
 
         table caption {
-            font-size: 1.5em;
-            margin: .5em 0 .75em;
+          font-size: 1.5em;
+          margin: .5em 0 .75em;
         }
 
-        table tbody tr {
-            border: 1px solid;
-        }
+        table tbody tr {}
 
         table th,
         table td {
-            padding: .625em;
-            text-align: center;
+          padding: .625em;
+          text-align: center;
         }
 
         table th:first-child,
         table td:first-child {
-            text-align: left;
+          text-align: left;
         }
 
         table th {
-            /*font-size: .85em;
+          /*font-size: .85em;
       letter-spacing: .1em;
       text-transform: uppercase;*/
-        }
 
-        @media screen and (max-width: 768px) {
-            table {
-                border: 0;
-            }
 
-            tablecaption {
-            }
+      @media screen and (max-width: 768px) {
+          table {
+            border: 0;
+          }
 
-            table thead {
-                border: none;
-                clip: rect(0 0 0 0);
-                height: 1px;
-                margin: -1px;
-                overflow: hidden;
-                padding: 0;
-                position: absolute;
-                width: 1px;
-            }
+                tablecaption {}
 
-            table tr {
-                border-bottom: 3px solid;
-                display: block;
-                margin-bottom: .625em;
-            }
+                table thead {
+                  border: none;
+                  clip: rect(0 0 0 0);
+                  height: 1px;
+                  margin: -1px;
+                  overflow: hidden;
+                  padding: 0;
+                  position: absolute;
+                  width: 1px;
+                }
 
-            table td {
-                border-bottom: 1px solid;
-                display: block;
-                text-align: left;
-            }
+                table tr {
+                  border-bottom: 3px solid;
+                  display: block;
+                  margin-bottom: .625em;
+                }
 
-            table td::before {
-                /*
+                table td {
+                  border-bottom: 1px solid;
+                  display: block;
+                  text-align: left;
+                }
+
+                table td::before {
+                  /*
     * aria-label has no advantage, it won't be read inside a table
     content: attr(aria-label);
     */
-                content: attr(data-label);
-                float: left;
-                font-weight: bold;
-                text-transform: uppercase;
-            }
+          content: attr(data-label);
+            float: left;
+            font-weight: bold;
+            text-transform: uppercase;
+          }
 
-            table td:last-child {
-                border-bottom: 0;
-            }
-        }
+                table td:last-child {
+                  border-bottom: 0;
+                }
+                }
     }
+.alert {
+  background-color: var(--wicket-acc-alert);
+  color: var(--wicket-acc-border-color-dark);
 }
+
+.alert-success {
+  background-color: var(--wicket-acc-alert-success);
+}
+
+.alert-info {
+  background-color: var(--wicket-acc-alert-info);
+}
+
+.alert-error {
+  background-color: var(--wicket-acc-alert-error);
+}
+
+.alert-warning {
+  background-color: var(--wicket-acc-alert-warning);
+}
+    }

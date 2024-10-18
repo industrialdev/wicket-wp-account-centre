@@ -1,71 +1,71 @@
 .myaccount-nav-mobile {
-	background-color: var(--wicket-acc-bg-color-light);
-	border-top: 1px solid var(--wicket-acc-border-color-light);
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	padding: var(--wicket-acc-padding-sm);
-	z-index: var(--wicket-acc-z-index-dropdown);
-	width: 100%;
+  background-color: var(--wicket-acc-bg-color-light);
+    border-top: 1px solid var(--wicket-acc-border-color-light);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    padding: var(--wicket-acc-padding-sm);
+    z-index: var(--wicket-acc-z-index-dropdown);
+    width: 100%;
 
-	#dropdown-my-account-menu {
-		padding: var(--wicket-acc-padding-sm);
-	}
+  #dropdown-my-account-menu {
+      padding: var(--wicket-acc-padding-sm);
+    }
 
-	.dropdown__toggle--nav {
-		display: block;
-		position: relative;
-		color: var(--wicket-acc-text-color-light);
-		text-transform: uppercase;
-		font-weight: var(--wicket-acc-font-weight-bold);
-		padding-top: 1.65rem;
-		padding-bottom: 1.65rem;
-		padding-right: 0.5rem;
-		padding-left: 0.5rem;
-		border-top: 1px solid var(--wicket-acc-border-color-light);
-		text-decoration: none;
+    .dropdown__toggle--nav {
+      display: block;
+      position: relative;
+      color: var(--wicket-acc-text-color-light);
+      text-transform: uppercase;
+      font-weight: var(--wicket-acc-font-weight-bold);
+      padding-top: 1.65rem;
+      padding-bottom: 1.65rem;
+      padding-right: 0.5rem;
+      padding-left: 0.5rem;
+      border-top: 1px solid var(--wicket-acc-border-color-light);
+      text-decoration: none;
 
-		i {
-			position: absolute;
-			top: 1.85rem;
-			right: 10px;
-		}
+    i {
+        position: absolute;
+        top: 1.85rem;
+        right: 10px;
+      }
 
-		&.open i {
-			transform: rotate(-45deg);
-			color: #333;
-		}
-	}
+        &.open i {
+          transform: rotate(-45deg);
+          color: #333;
+        }
+        }
 
-	.nav__contextual {
-		padding: 1.2rem 0.5rem;
+    .nav__contextual {
+      padding: 1.2rem 0.5rem;
 
-		h2 {
-			display: none;
-		}
+    h2 {
+        display: none;
+      }
 
-		ul > li:first-of-type {
-			border-top: 0 none;
-		}
-	}
+        ul>li:first-of-type {
+          border-top: 0 none;
+        }
+        }
 }
 
 .wicket_acc_sub_list {
-	display: none;
-	margin: -5px 0px 10px !important;
-	padding: 0;
+  display: none;
+    margin: -5px 0px 10px !important;
+    padding: 0;
 
-	li {
-		display: block !important;
-		margin: 0px 0px !important;
-		border-bottom: none !important;
-	}
+  li {
+      display: block !important;
+      margin: 0px 0px !important;
+      border-bottom: none !important;
+    }
 
-	a {
-		padding: 3px 6px 3px 13px !important;
-	}
+    a {
+      padding: 3px 6px 3px 13px !important;
+    }
 }
 
 .nav-selected {
-	background: whitesmoke;
+  background: whitesmoke;
 }
