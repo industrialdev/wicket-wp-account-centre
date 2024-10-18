@@ -23,33 +23,58 @@ if (isset($tp['attributes']['data']['location']) && $tp['attributes']['data']['l
         $location = false;
     }
 }
+
+// Convert $tp['attributes']['data']['start_date']
+$start_date       = explode(' ', $tp['attributes']['data']['start_date']);
+$start_date_day   = date('j', strtotime($tp['attributes']['data']['start_date']));
+$start_date_month = date('M', strtotime($tp['attributes']['data']['start_date']));
+$start_date_full  = date('m-d-Y', strtotime($tp['attributes']['data']['start_date']));
+
+// Convert $tp['attributes']['data']['end_date']
+$end_date       = explode(' ', $tp['attributes']['data']['end_date']);
+$end_date_day   = date('j', strtotime($tp['attributes']['data']['end_date']));
+$end_date_month = date('M', strtotime($tp['attributes']['data']['end_date']));
+$end_date_full  = date('m-d-Y', strtotime($tp['attributes']['data']['end_date']));
 ?>
 
-<div class="event-card <?php echo defined( 'WICKET_WP_THEME_V2' ) ? '' : 'my-4 p-4 border border-gray-200 rounded-md shadow-md' ?>"
+<div class="event-card <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'my-0 p-4 border border-gray-200 gap-4 rounded-md shadow-md flex flex-col md:flex-row' ?>"
     data-uuid="<?php echo $tp['id']; ?>">
-    <a href="<?php $tp['attributes']['data']['url']; ?>" class="event-card-link">
+    <div class="event-date-box <?php echo defined( 'WICKET_WP_THEME_V2' ) ? '' : 'bg-primary-100 text-white w-[58px] h-[64px] p-[10px_10px] rounded-[var(--corner-radiusradius-050)] flex flex-col items-center justify-between gap-[8px]' ?>">
+        <div class="flex flex-col items-center">
+            <div class="<?php echo defined( 'WICKET_WP_THEME_V2' ) ? 'event-date-box-month' : 'text-sm font-bold' ?>">
+                <?php echo $start_date_month; ?>
+            </div>
+            <div class="<?php echo defined( 'WICKET_WP_THEME_V2' ) ? 'event-date-box-day' : 'text-xl font-bold' ?>">
+                <?php echo $start_date_day; ?>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex-auto md:w-auto event-content-wrap">
         <?php if (isset($tp['attributes']['data']['BadgeType']) && $tp['attributes']['data']['BadgeType']) : ?>
-            <p class="text-sm font-bold mb-2 event-type">
-                <?php echo $tp['attributes']['data']['BadgeType'];
-            ?>
-            </p>
+            <div class="event-type <?php echo defined( 'WICKET_WP_THEME_V2' ) ? '' : 'text-sm font-bold mb-2' ?>">
+                <?php echo $tp['attributes']['data']['BadgeType']; ?>
+            </div>
         <?php endif; ?>
         <?php if (isset($tp['attributes']['data']['url']) && $tp['attributes']['data']['url']) : ?>
             <a href="<?php echo $tp['attributes']['data']['url']; ?>" class="event-card-link">
             <?php endif; ?>
-            <h3 class="<?php echo defined( 'WICKET_WP_THEME_V2' ) ? '' : 'text-lg font-bold mb-2' ?> event-name">
+            <h3 class="event-name <?php echo defined( 'WICKET_WP_THEME_V2' ) ? '' : 'text-lg font-bold mb-2' ?>">
                 <?php echo $tp['attributes']['data']['event_title']; ?>
             </h3>
             <?php if (isset($tp['attributes']['data']['url']) && $tp['attributes']['data']['url']) : ?>
             </a>
         <?php endif; ?>
-        <p class="text-sm mb-2 event-date">
-            <?php echo date('M', strtotime($tp['attributes']['data']['start_date'])) . '-' . date('j', strtotime($tp['attributes']['data']['start_date'])) . '-' . date('Y', strtotime($tp['attributes']['data']['start_date'])) . ' | ' . date('g:i a', strtotime($tp['attributes']['data']['start_date'])) . ' - ' . date('g:i a', strtotime($tp['attributes']['data']['end_date'])); ?>
+        <p class="event-date <?php echo defined( 'WICKET_WP_THEME_V2' ) ? '' : 'text-sm' ?>">
+            <strong><?php _e('Date:', 'wicket-acc'); ?></strong> <?php echo $start_date_full; ?> - <?php echo $end_date_full; ?>
+        </p>
+        <p class="event-time <?php echo defined( 'WICKET_WP_THEME_V2' ) ? '' : 'text-sm' ?>">
+            <strong><?php _e('Time:', 'wicket-acc'); ?></strong> <?php echo date('g:i a', strtotime($tp['attributes']['data']['start_date'])) . ' - ' . date('g:i a', strtotime($tp['attributes']['data']['end_date'])); ?>
         </p>
         <?php if ($location) : ?>
-            <p class="text-sm event-location">
+            <p class="event-location <?php echo defined( 'WICKET_WP_THEME_V2' ) ? '' : 'text-sm' ?>">
                 <strong><?php _e('Location:', 'wicket-acc'); ?></strong> <?php echo $tp['attributes']['data']['location']; ?>
             </p>
         <?php endif; ?>
-    </a>
+    </div>
 </div>

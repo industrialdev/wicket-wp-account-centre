@@ -1,4 +1,5 @@
-.wicket-acc-block-touchpoints-tec {
+/* Theme v2 styles */
+body.wicket-theme-v2 .wicket-acc-block-touchpoints-tec {
 	max-width: var(--layout-content);
 	margin: var(--space-100) auto;
 	padding: var(--space-200);
@@ -29,30 +30,74 @@
 		background-color: var(--bg-card);
 		padding: var(--spacing-200);
 		filter: drop-shadow(var(--elevation-4));
-	}
+		display: flex;
+		align-items: flex-start;
+		gap: var(--spacing-200);
 
-	.event-card-link {
-		text-decoration: none !important;
-		font-size: var(--heading-xs-font-size);
-		line-height: var(--heading-xs-line-height);
-		font-weight: var(--heading-xs-font-weight-md);
-	}
+		@media screen and (max-width: 767px) {
+			flex-direction: column;
+		}
 
-	.event-card p,
-	.event-card h3 {
-		margin-bottom: var(--space-300);
-	}
+		p, h3 {
+			margin-bottom: var(--space-300);
+		}
 
-	.event-type {
-		font-size: var(--label-sm-font-size);
-		font-weight: bold;
-	}
+		.event-type {
+			text-transform: uppercase;
+			font-size: var(--font-size-label-md);
+			color: var(--text-accent);
+			margin-bottom: 10px;
+			font-weight: bold;
+		}
+	
+		.event-name {
+			font-size: var(--heading-xs-font-size);
+			color: var(--text-content);
+			font-weight: bold;
+			margin-bottom: var(--space-300);
+		}
+	
+		.event-date-box {
+			background-color: var(--bg-accent-dark);
+			color: var(--text-content-reversed);
+			border-radius: var(--label-corner-radius);
+			aspect-ratio: 1/1;
+			font-size: 1.25rem;
+			line-height: 1.2;
+			width: 58px;
+			padding: 10px;
+		}
+	
+		.event-date-box-month {
+			font-size: .875rem;
+			font-weight: bold;
+		}
+		
+		.event-date-box-day {
+			font-size: 1.25rem;
+			font-weight: bold;
+		}
 
-	.event-name {
-		font-size: var(--body-md-font-size);
-		font-weight: bold;
-		margin-bottom: var(--space-300);
-		line-height: var(--body-md-line-height);
+		.event-card-link {
+			text-decoration: none;
+			font-size: var(--heading-xs-font-size);
+			line-height: var(--heading-xs-line-height);
+			font-weight: var(--heading-xs-font-weight-md);
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+
+		.event-date { margin-bottom: 0; }
+		
+		.event-time {}
+
+		.event-content-wrap {
+			> *:last-child {
+				margin-bottom: 0;
+			}
+		}
 	}
 
 	.event-section-title {
@@ -72,17 +117,8 @@
 		}
 	}
 
-	.event-details,
-	.event-location {
-		font-size: var(--label-sm-font-size);
-	}
-
-	.event-location strong {
-		font-weight: bold;
-	}
-
 	.show-more {
-		color: var(--color-dark-100);
+		/* color: var(--color-dark-100); */
 
 		.arrow {
 			text-decoration: none;
@@ -96,41 +132,4 @@
 			text-decoration: underline;
 		}
 	}
-
-	/* Responsive styles */
-	/* @media (min-width: 640px) {
-		.wicket-ac-touchpoint-tec {
-			padding: var(--spacing-300);
-		}
-
-		.event-card {
-			padding: var(--spacing-300);
-		}
-
-		.header h2 {
-			font-size: var(--font-size-heading-lg);
-		}
-
-		.header .upcoming-link {
-			font-size: var(--font-size-body-lg);
-		}
-	} */
-
-	/* @media (min-width: 768px) {
-		.wicket-ac-touchpoint-tec {
-			padding: var(--spacing-400);
-		}
-
-		.event-card {
-			padding: var(--spacing-400);
-		}
-
-		.header h2 {
-			font-size: var(--font-size-heading-xl);
-		}
-
-		.header .upcoming-link {
-			font-size: var(--font-size-body-lg);
-		}
-	} */
 }
