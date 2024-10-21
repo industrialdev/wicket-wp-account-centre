@@ -170,21 +170,22 @@ class Block_Callout extends WicketAcc
                 } else {
                     $membership_renewals = (new \Wicket_Memberships\Membership_Controller())->get_membership_callouts();
                     if($membership_renewals['membership_exists']) {
-                      $hide_existing_classes = ['.acc_hide_mship_any'];
-                      foreach($membership_renewals['membership_exists'] as $hide_tier) {
-                        $hide_existing_classes[] = '.acc_hide_mship_' . $hide_tier;
-                      }
-                      add_action('wp_footer', 
-                        function() use ($hide_existing_classes) {
-                          echo '<style id="acc-hide-classes" type="text/css">'. implode(', ', $hide_existing_classes) .' { display: none; }</style>';
+                        $hide_existing_classes = ['.acc_hide_mship_any'];
+                        foreach($membership_renewals['membership_exists'] as $hide_tier) {
+                            $hide_existing_classes[] = '.acc_hide_mship_' . $hide_tier;
                         }
-                      );          
+                        add_action(
+                            'wp_footer',
+                            function () use ($hide_existing_classes) {
+                                echo '<style id="acc-hide-classes" type="text/css">' . implode(', ', $hide_existing_classes) . ' { display: none; }</style>';
+                            }
+                        );
                     }
-                  $membership_renewals['membership_exists'] = [];
+                    $membership_renewals['membership_exists'] = [];
                     foreach ($membership_renewals as $renewal_type => $renewal_data) {
                         foreach ($renewal_data as $membership) {
                             if (!empty($_ENV['WICKET_MEMBERSHIPS_DEBUG_ACC']) && $renewal_type == 'debug') {
-                                if( $membership['membership']['ends_in_days'] > 0 ) {
+                                if($membership['membership']['ends_in_days'] > 0) {
                                     echo '<pre style="font-size:10px;">';
                                     echo 'DEBUG:<br>';
                                     echo "Renewal Type: {$renewal_type}<br>";
@@ -241,19 +242,19 @@ class Block_Callout extends WicketAcc
                         }
                     }
                     if (!empty($_ENV['WICKET_MEMBERSHIPS_DEBUG_ACC'])) {
-                      $args = array(
-                        'post_type' => 'wicket_mship_tier',
-                        'post_status' => 'publish',
-                        'posts_per_page' => -1,
-                      );
-                      $tiers = new \WP_Query( $args );
-                      foreach( $tiers->posts as $tier ) {
-                        $tier_hide_classes[] = '.acc_hide_mship_' . str_replace( [' ','-',','], '', strToLower($tier->post_title));
-                      }
-                      echo '<div style="padding: 8px;border: solid 2px #ccc; border-radius: 5px;"><p>For testing callouts add <code style="background-color:#ccc;font-size:10pt;"> ?wicket_wp_membership_debug_days=123 </code>&nbsp;to see what callouts would appear in 123 days.</p>';
-                      echo '<p>You can add the following classes:&nbsp;<code style="background-color:#ccc;font-size:10pt;"> .acc_hide_mship_any, ' . implode( ', ', $tier_hide_classes ) . ' </code>&nbsp;to any element on this page to hide when an active or delayed status membership exists for the user.</p></div>';
-                  }
-                  return;
+                        $args = [
+                            'post_type' => 'wicket_mship_tier',
+                            'post_status' => 'publish',
+                            'posts_per_page' => -1,
+                        ];
+                        $tiers = new \WP_Query($args);
+                        foreach($tiers->posts as $tier) {
+                            $tier_hide_classes[] = '.acc_hide_mship_' . str_replace([' ','-',','], '', strToLower($tier->post_title));
+                        }
+                        echo '<div style="padding: 8px;border: solid 2px #ccc; border-radius: 5px;"><p>For testing callouts add <code style="background-color:#ccc;font-size:10pt;"> ?wicket_wp_membership_debug_days=123 </code>&nbsp;to see what callouts would appear in 123 days.</p>';
+                        echo '<p>You can add the following classes:&nbsp;<code style="background-color:#ccc;font-size:10pt;"> .acc_hide_mship_any, ' . implode(', ', $tier_hide_classes) . ' </code>&nbsp;to any element on this page to hide when an active or delayed status membership exists for the user.</p></div>';
+                    }
+                    return;
                 }
                 break;
 
