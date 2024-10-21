@@ -1,7 +1,7 @@
 .acc-organization-management {
 
   .manage-members-title {
-      font-weight: 700;
+    font-weight: 700;
     }
 
     .organization_name {
@@ -13,9 +13,9 @@
       padding: 25px;
 
     p {
-        margin: 0;
+      margin: 0;
       }
-    }
+      }
 
     .bulk_upload_cta {
       padding: 20px;
@@ -24,7 +24,7 @@
       font-weight: bold;
 
     p {
-        margin: 0;
+      margin: 0;
       }
 
         i.far {
@@ -37,7 +37,7 @@
           font-size: 20px;
 
       &:hover {
-          text-decoration: underline;
+        text-decoration: underline;
         }
 
             i {
@@ -58,11 +58,11 @@
       font-weight: bold;
 
     button {
-        font-weight: bold;
+      font-weight: bold;
         cursor: pointer;
 
       &:hover,
-        &:focus {
+      &:focus {
           text-decoration: none !important;
         }
       }
@@ -85,7 +85,7 @@
           padding: 10px;
 
       &:first-child {
-          border-left: 1px solid;
+        border-left: 1px solid;
         }
 
             &:last-child {
@@ -138,7 +138,7 @@
         a {
 
       &:hover,
-        &:active,
+      &:active,
         &:focus {
           text-decoration: none;
         }
@@ -170,7 +170,7 @@
     .add_new_person_membership_form {
 
     /* Label styling */
-      .form__label {
+    .form__label {
         display: block;
         margin-bottom: 5px;
         font-weight: bold;
@@ -190,12 +190,11 @@
         .button--primary {
           border: 2px solid;
           padding: 10px 15px;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-          font-size: 16px;
-          display: block;
-        }
+      border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        display: block;
+      }
 
         .button--primary:hover {
           border: 2px solid;
@@ -212,7 +211,7 @@
     table.org_management_table {
 
     th,
-      td {
+    td {
         text-align: left !important;
       }
     }
@@ -222,7 +221,7 @@
       flex-direction: column;
 
     thead {
-        flex: 0 0 auto;
+      flex: 0 0 auto;
       }
 
         tbody {
@@ -251,7 +250,7 @@
         @media(max-width: 768px) {
 
       th:first-child,
-        td:first-child {
+      td:first-child {
           width: 100%;
         }
       }
@@ -261,10 +260,10 @@
           font-weight: 400;
 
       .email_address {
-          font-weight: 400;
+        font-weight: 400;
 
         /* Hover state */
-          &:hover {
+        &:hover {
             text-decoration: underline;
           }
         }
@@ -279,15 +278,15 @@
           font-weight: 700;
 
       &:hover {
-          text-decoration: underline !important;
+        text-decoration: underline !important;
         }
-      }
-      }
+        }
+        }
 
     .table-responsive {
 
     /* https: //codepen.io/AllThingsSmitty/pen/MyqmdM */
-      table {
+    table {
         border-collapse: inherit;
         margin: 0;
         padding: 0;
@@ -320,7 +319,7 @@
 
 
       @media screen and (max-width: 768px) {
-          table {
+        table {
             border: 0;
           }
 
@@ -355,7 +354,7 @@
     content: attr(aria-label);
     */
           content: attr(data-label);
-            float: left;
+          float: left;
             font-weight: bold;
             text-transform: uppercase;
           }
@@ -365,24 +364,25 @@
                 }
                 }
     }
-.alert {
-  background-color: var(--wicket-acc-alert);
-  color: var(--wicket-acc-border-color-dark);
-}
+    }
+    .alert {
+      background-color: var(--wicket-acc-alert);
+      color: var(--wicket-acc-border-color-dark);
+    }
 
-.alert-success {
-  background-color: var(--wicket-acc-alert-success);
-}
+    .alert-success {
+      background-color: var(--wicket-acc-alert-success);
+    }
 
-.alert-info {
-  background-color: var(--wicket-acc-alert-info);
-}
+    .alert-info {
+      background-color: var(--wicket-acc-alert-info);
+    }
 
-.alert-error {
-  background-color: var(--wicket-acc-alert-error);
-}
+    .alert-error {
+      background-color: var(--wicket-acc-alert-error);
+    }
 
-.alert-warning {
-  background-color: var(--wicket-acc-alert-warning);
-}
+    .alert-warning {
+      background-color: var(--wicket-acc-alert-warning);
+    }
     }

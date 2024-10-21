@@ -2,7 +2,7 @@
 Previously known as My Account Page Editor
 
 # 1.5.38 / 2024-10-18
-- available classes to hide elements based on existing memberships
+- Available classes to hide elements based on existing memberships
 
 # 1.5.32 / 2024-10-15
 - Integrated Organization Management pages into ACC. Pages can be controled from the backend, just like any other ACC page.
