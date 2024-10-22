@@ -1,7 +1,8 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
-# 1.5.38 / 2024-10-18
+# 1.5.40 / 2024-10-18
+- Added Organization Management Child Organizations page.
 - Available classes to hide elements based on existing memberships
 
 # 1.5.32 / 2024-10-15
