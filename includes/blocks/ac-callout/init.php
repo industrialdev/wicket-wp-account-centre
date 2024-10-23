@@ -164,8 +164,9 @@ class Block_Callout extends WicketAcc
 
             case 'renewal':
                 if (!class_exists('\Wicket_Memberships\Wicket_Memberships')) {
-                    $membership_to_renew = is_renewal_period($memberships, $renewal_period);
-                    $membership_to_renew = (!$membership_to_renew) ? is_renewal_period($woo_memberships, $renewal_period) : $membership_to_renew;
+                    //$membership_to_renew = is_renewal_period($memberships, $renewal_period);
+                    //$membership_to_renew = (!$membership_to_renew) ? is_renewal_period($woo_memberships, $renewal_period) : $membership_to_renew;
+                    $membership_to_renew = is_renewal_period( $woo_memberships, $renewal_period );
                     $show_block = ($membership_to_renew) ? true : false;
                 } else {
                     $membership_renewals = (new \Wicket_Memberships\Membership_Controller())->get_membership_callouts();
