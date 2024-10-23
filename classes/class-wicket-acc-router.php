@@ -218,8 +218,9 @@ class Router extends WicketAcc
                 $error_message .= '<p>Recreate the same directory structure in your active theme: ./templates-wicket/account-centre/org-management/</p>';
                 $error_message .= '<p>Unzip the file into that directory. The structure should look like this:</p>';
                 $error_message .= '<ul>';
-                $error_message .= '<li>./templates-wicket/account-centre/org-management/acc-orgman-index.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-members.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-profile.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-roster.php</li>
-                <li>./templates-wicket/account-centre/org-management/acc-orgman-childorgs.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-childorgs-addnew.php</li>';
+                $error_message .=
+                '<li>./templates-wicket/account-centre/org-management/acc-orgman-index.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-members.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-profile.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-roster.php</li>
+                <li>./templates-wicket/account-centre/org-management/acc-orgman-childorgs.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-childorgs-add-new.php</li>';
                 $error_message .= '</ul>';
                 $error_message .= '<p>You can now use Organization Management.</p>';
                 $error_message .= '<p>Feel free to modify these templates in your active theme to meet the client\'s needs.</p>';
@@ -254,7 +255,7 @@ class Router extends WicketAcc
         $orgManagementMembers         = get_field('acc_page_orgman-members', 'option');
         $orgManagementRoster          = get_field('acc_page_orgman-roster', 'option');
         $orgManagementChildOrgs       = get_field('acc_page_orgman-childorgs', 'option');
-        $orgManagementChildOrgsAddNew = get_field('acc_page_orgman-childorgs-addnew', 'option');
+        $orgManagementChildOrgsAddNew = get_field('acc_page_orgman-childorgs-add-new', 'option');
 
         switch ($post_id) {
             case $orgManagementIndex:
@@ -268,7 +269,7 @@ class Router extends WicketAcc
             case $orgManagementChildOrgs:
                 return 'childorgs';
             case $orgManagementChildOrgsAddNew:
-                return 'childorgs-addnew';
+                return 'childorgs-add-new';
         }
 
         return false;
