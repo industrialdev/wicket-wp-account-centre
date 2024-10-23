@@ -625,6 +625,35 @@
             "bidirectional": 0,
             "ui": 1,
             "bidirectional_target": []
+        },
+        {
+            "key": "field_670e5c28d8c60",
+            "label": "Page: Organization Management Child Orgs Add New",
+            "name": "acc_page_orgman-childorgs-addnew",
+            "aria-label": "",
+            "type": "post_object",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 3,
+            "post_type": [
+                "my-account"
+            ],
+            "post_status": [
+                "publish"
+            ],
+            "taxonomy": "",
+            "return_format": "id",
+            "multiple": 0,
+            "allow_null": 0,
+            "bidirectional": 0,
+            "ui": 1,
+            "bidirectional_target": []
         }
     ],
     "location": [
@@ -646,5 +675,5 @@
     "description": "Main options for ACC plugin",
     "show_in_rest": 0,
     "acfml_field_group_mode": "localization",
-    "modified": 1728994352
+    "modified": 1728994353
 }
