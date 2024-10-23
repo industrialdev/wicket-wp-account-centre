@@ -11,6 +11,7 @@
   .alert {
     border-left: solid var(--border-alert, 4px);
     padding: var(--space-250, 20px 15px);
+    border-radius: var(--alerts-corner-radius, 0px);
 
     &.alert-danger {
       border-color: var(--wicket-ac-danger-100);
