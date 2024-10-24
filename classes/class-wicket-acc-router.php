@@ -211,9 +211,6 @@ class Router extends WicketAcc
 
             $user_template   = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/org-management/acc-orgman-' . $acc_orgman_page . '.php';
 
-            // Filter to allow devs to override the template
-            $user_template = apply_filters('wicket/acc/orgman/load_template', $user_template, $post_id, $acc_orgman_page);
-
             // Every site need to use their own, that why we won't load templates from plugin
             if (!file_exists($user_template)) {
                 $error_message = __('<p>Organization Management templates were not found. Please install them in your active theme to use Organization Management.</p>', 'wicket');
