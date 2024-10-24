@@ -159,8 +159,11 @@ class Router extends WicketAcc
             return;
         }
 
+        // Filter acc_pages_map against acc_pages_map_auto_create. Remove any page that doesn't exist in acc_pages_map_auto_create
+        $pagesToCreate = array_intersect_key($this->acc_pages_map, array_flip($this->acc_pages_map_auto_create));
+
         // Create all other pages
-        foreach ($this->acc_pages_map as $slug => $name) {
+        foreach ($pagesToCreate as $slug => $name) {
             $this->create_page($slug, $name);
         }
 

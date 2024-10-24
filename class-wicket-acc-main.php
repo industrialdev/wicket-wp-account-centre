@@ -9,7 +9,7 @@ namespace WicketAcc;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Customize WooCommerce my account features to build the Wicket Account Centre. Expands it with additional blocks and pages.
- * Version:           1.5.58
+ * Version:           1.5.59
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -91,6 +91,23 @@ class WicketAcc
         //'customer-logout'                => 'Logout',
         // WooCommerce subscription endpoints
         'subscriptions'                  => 'Subscriptions',
+    ];
+
+    protected array $acc_pages_map_auto_create = [
+        'edit-profile',
+        'change-password',
+        'organization-management',
+        'organization-profile',
+        'organization-members',
+        'organization-roster',
+        'acc_global-headerbanner',
+        'add-payment-method',
+        'set-default-payment-method',
+        'orders',
+        'view-order',
+        'downloads',
+        'payment-methods',
+        'subscriptions',
     ];
 
     protected array $acc_wc_endpoints = [
