@@ -211,6 +211,9 @@ class Router extends WicketAcc
 
             $user_template   = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/org-management/acc-orgman-' . $acc_orgman_page . '.php';
 
+            // Filter to allow devs to override the template
+            $user_template = apply_filters('wicket/acc/orgman/load_template', $user_template, $post_id, $acc_orgman_page);
+
             // Every site need to use their own, that why we won't load templates from plugin
             if (!file_exists($user_template)) {
                 $error_message = __('<p>Organization Management templates were not found. Please install them in your active theme to use Organization Management.</p>', 'wicket');
@@ -219,8 +222,7 @@ class Router extends WicketAcc
                 $error_message .= '<p>Unzip the file into that directory. The structure should look like this:</p>';
                 $error_message .= '<ul>';
                 $error_message .=
-                '<li>./templates-wicket/account-centre/org-management/acc-orgman-index.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-members.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-profile.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-roster.php</li>
-                <li>./templates-wicket/account-centre/org-management/acc-orgman-childorgs.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-childorgs-add-new.php</li>';
+                '<li>./templates-wicket/account-centre/org-management/acc-orgman-index.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-members.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-profile.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-roster.php</li>';
                 $error_message .= '</ul>';
                 $error_message .= '<p>You can now use Organization Management.</p>';
                 $error_message .= '<p>Feel free to modify these templates in your active theme to meet the client\'s needs.</p>';
@@ -254,8 +256,6 @@ class Router extends WicketAcc
         $orgManagementProfile         = get_field('acc_page_orgman-profile', 'option');
         $orgManagementMembers         = get_field('acc_page_orgman-members', 'option');
         $orgManagementRoster          = get_field('acc_page_orgman-roster', 'option');
-        $orgManagementChildOrgs       = get_field('acc_page_orgman-childorgs', 'option');
-        $orgManagementChildOrgsAddNew = get_field('acc_page_orgman-childorgs-add-new', 'option');
 
         switch ($post_id) {
             case $orgManagementIndex:
@@ -266,10 +266,13 @@ class Router extends WicketAcc
                 return 'roster';
             case $orgManagementMembers:
                 return 'members';
-            case $orgManagementChildOrgs:
-                return 'childorgs';
-            case $orgManagementChildOrgsAddNew:
-                return 'childorgs-add-new';
+        }
+
+        // Filterable flag to allow devs to override the template. Default to false.
+        $is_acc_template = apply_filters('wicket/acc/orgman/is_orgmanagement_page', false, $post_id);
+
+        if ($is_acc_template) {
+            return $is_acc_template;
         }
 
         return false;
@@ -284,6 +287,10 @@ class Router extends WicketAcc
      */
     private function orgman_page_requested($post_id)
     {
+        if (!$post_id) {
+            return false;
+        }
+
         return $this->is_orgmanagement_page($post_id);
     }
 
