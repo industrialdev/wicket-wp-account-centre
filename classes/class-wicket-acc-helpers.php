@@ -199,6 +199,16 @@ class Helpers extends WicketAcc
     }
 
     /**
+     * Get theme URL. Prioritize child theme
+     *
+     * @return string
+     */
+    public function getThemeURL()
+    {
+        return trailingslashit(get_stylesheet_directory_uri());
+    }
+
+    /**
      * Get user templates path. Prioritize child theme
      *
      * @return string
@@ -209,12 +219,32 @@ class Helpers extends WicketAcc
     }
 
     /**
+     * Get user templates URL. Prioritize child theme
+     *
+     * @return string
+     */
+    public function getUserTemplatesURL()
+    {
+        return trailingslashit(get_stylesheet_directory_uri() . '/templates-wicket');
+    }
+
+    /**
      * Get user partials templates path. Prioritize child theme
      *
      * @return string
      */
-    public function getUserHtmxTemplatesPath()
+    public function getUserTemplatesPartialsPath()
     {
         return trailingslashit(get_stylesheet_directory() . '/templates-partials');
+    }
+
+    /**
+     * Get user partials templates URL. Prioritize child theme
+     *
+     * @return string
+     */
+    public function getUserTemplatesPartialsURL()
+    {
+        return trailingslashit(get_stylesheet_directory_uri() . '/templates-partials');
     }
 }
