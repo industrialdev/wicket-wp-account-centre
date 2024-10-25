@@ -42,6 +42,7 @@ class Router extends WicketAcc
         add_action('init', [$this, 'acc_pages_template']);
         add_filter('archive_template', [$this, 'custom_archive_template']);
         add_action('plugins_loaded', [$this, 'acc_redirects']);
+        add_action('template_redirect', [$this, 'loadTemplatePartialFromTheme']);
     }
 
     /**
@@ -470,6 +471,54 @@ class Router extends WicketAcc
                     exit;
                 }
             }
+        }
+    }
+
+    /**
+     * Detect if it's a template-partials request
+     *
+     * @return bool
+     */
+    public function isTemplatePartialsRequest()
+    {
+        return str_contains($_SERVER['REQUEST_URI'], '/templates-wicket/partials');
+    }
+
+    /**
+     * Load a template partial
+     *
+     * @return void
+     */
+    public function loadTemplatePartialFromTheme()
+    {
+        // Not a partial request
+        if (!$this->isTemplatePartialsRequest()) {
+            return;
+        }
+
+        // Parse the URL
+        $urlParts = parse_url($_SERVER['REQUEST_URI']);
+
+        // Find the position of 'templates-partials' in the path
+        $pos = strpos($urlParts['path'], 'templates-wicket/partials');
+
+        // No 'templates-partials' in the path
+        if ($pos === false) {
+            return;
+        }
+
+        // Extract everything after 'templates-partials/'
+        $partial      = substr($urlParts['path'], $pos + strlen('templates-wicket/partials/'));
+        $partialsPath = WACC()->getUserPartialsPath();
+
+        if (file_exists($partialsPath . $partial . '.htmx.php')) {
+            http_response_code(200);
+            require_once $partialsPath . $partial . '.htmx.php';
+            exit;
+        } else {
+            http_response_code(404);
+            wp_die(__('Template partial not found.', 'wicket'));
+            exit;
         }
     }
 }

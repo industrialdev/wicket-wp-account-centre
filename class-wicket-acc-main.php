@@ -9,7 +9,7 @@ namespace WicketAcc;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Customize WooCommerce my account features to build the Wicket Account Centre. Expands it with additional blocks and pages.
- * Version:           1.5.62
+ * Version:           1.5.63
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -45,7 +45,9 @@ define('WICKET_ACC_BASENAME', plugin_basename(__FILE__));
 define('WICKET_ACC_UPLOADS_PATH', wp_get_upload_dir()['basedir'] . '/wicket-account-center/');
 define('WICKET_ACC_UPLOADS_URL', wp_get_upload_dir()['baseurl'] . '/wicket-account-center/');
 define('WICKET_ACC_PLUGIN_TEMPLATE_PATH', WICKET_ACC_PATH . 'templates-wicket/');
+define('WICKET_ACC_PLUGIN_TEMPLATE_URL', WICKET_ACC_URL . 'templates-wicket/');
 define('WICKET_ACC_USER_TEMPLATE_PATH', get_stylesheet_directory() . '/templates-wicket/');
+define('WICKET_ACC_USER_TEMPLATE_URL', get_stylesheet_directory_uri() . '/templates-wicket/');
 define('WICKET_ACC_TEMPLATES_FOLDER', 'account-centre');
 
 /**

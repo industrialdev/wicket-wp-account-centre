@@ -215,7 +215,7 @@ class Helpers extends WicketAcc
      */
     public function getUserTemplatesPath()
     {
-        return trailingslashit(get_stylesheet_directory() . '/templates-wicket');
+        return trailingslashit(WICKET_ACC_USER_TEMPLATE_PATH);
     }
 
     /**
@@ -225,7 +225,7 @@ class Helpers extends WicketAcc
      */
     public function getUserTemplatesURL()
     {
-        return trailingslashit(get_stylesheet_directory_uri() . '/templates-wicket');
+        return trailingslashit(WICKET_ACC_USER_TEMPLATE_URL);
     }
 
     /**
@@ -233,9 +233,9 @@ class Helpers extends WicketAcc
      *
      * @return string
      */
-    public function getUserTemplatesPartialsPath()
+    public function getUserPartialsPath()
     {
-        return trailingslashit(get_stylesheet_directory() . '/templates-partials');
+        return trailingslashit($this->getUserTemplatesPath() . 'partials');
     }
 
     /**
@@ -243,18 +243,8 @@ class Helpers extends WicketAcc
      *
      * @return string
      */
-    public function getUserTemplatesPartialsURL()
+    public function getUserPartialsURL()
     {
-        return trailingslashit(get_stylesheet_directory_uri() . '/templates-partials');
-    }
-
-    /**
-     * Load template partial. Prioritize child theme
-     *
-     * @return string
-     */
-    public function loadTemplatePartial($partial)
-    {
-        require_once $this->getUserTemplatesPartialsPath() . $partial . '.htmx.php';
+        return trailingslashit($this->getUserTemplatesURL() . 'partials');
     }
 }
