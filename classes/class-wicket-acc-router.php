@@ -42,7 +42,7 @@ class Router extends WicketAcc
         add_action('init', [$this, 'acc_pages_template']);
         add_filter('archive_template', [$this, 'custom_archive_template']);
         add_action('plugins_loaded', [$this, 'acc_redirects']);
-        add_action('template_redirect', [$this, 'loadTemplatePartialFromTheme']);
+        add_action('plugins_loaded', [$this, 'loadTemplatePartialFromTheme'], 1);
     }
 
     /**
@@ -223,7 +223,7 @@ class Router extends WicketAcc
                 $error_message .= '<p>Unzip the file into that directory. The structure should look like this:</p>';
                 $error_message .= '<ul>';
                 $error_message .=
-                '<li>./templates-wicket/account-centre/org-management/acc-orgman-index.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-members.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-profile.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-roster.php</li>';
+                    '<li>./templates-wicket/account-centre/org-management/acc-orgman-index.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-members.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-profile.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-roster.php</li>';
                 $error_message .= '</ul>';
                 $error_message .= '<p>You can now use Organization Management.</p>';
                 $error_message .= '<p>Feel free to modify these templates in your active theme to meet the client\'s needs.</p>';
@@ -486,6 +486,8 @@ class Router extends WicketAcc
 
     /**
      * Load a template partial
+     *
+     * Like: https://localhost/app/themes/wicket-child/templates-wicket/partials/account-centre/org-management/subsidiaries-xls-upload
      *
      * @return void
      */
