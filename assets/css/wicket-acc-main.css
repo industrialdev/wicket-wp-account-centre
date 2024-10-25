@@ -5,6 +5,7 @@
 
 @import "_bootstrap-grid.min.css";
 @import "_wicket-acc-variables.css";
+@import "_wicket-acc-animations.css";
 @import "_wicket-acc-blocks-global.css";
 @import "_wicket-acc-legacy.css";
 @import "_wicket-acc-pages.css";
