@@ -1,7 +1,7 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
-# 1.5.60 / 2024-10-18
+# 1.5.62 / 2024-10-18
 - Available classes to hide elements based on existing memberships.
 - Avoid loading assets when we are not viewing an ACC related page.
 

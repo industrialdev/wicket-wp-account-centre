@@ -247,4 +247,14 @@ class Helpers extends WicketAcc
     {
         return trailingslashit(get_stylesheet_directory_uri() . '/templates-partials');
     }
+
+    /**
+     * Load template partial. Prioritize child theme
+     *
+     * @return string
+     */
+    public function loadTemplatePartial($partial)
+    {
+        require_once $this->getUserTemplatesPartialsPath() . $partial . '.htmx.php';
+    }
 }
