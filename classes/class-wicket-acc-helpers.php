@@ -187,4 +187,34 @@ class Helpers extends WicketAcc
     {
         return class_exists('WooCommerce');
     }
+
+    /**
+     * Get theme path. Prioritize child theme
+     *
+     * @return string
+     */
+    public function getThemePath()
+    {
+        return trailingslashit(get_stylesheet_directory());
+    }
+
+    /**
+     * Get user templates path. Prioritize child theme
+     *
+     * @return string
+     */
+    public function getUserTemplatesPath()
+    {
+        return trailingslashit(get_stylesheet_directory() . '/templates-wicket');
+    }
+
+    /**
+     * Get user partials templates path. Prioritize child theme
+     *
+     * @return string
+     */
+    public function getUserHtmxTemplatesPath()
+    {
+        return trailingslashit(get_stylesheet_directory() . '/templates-partials');
+    }
 }

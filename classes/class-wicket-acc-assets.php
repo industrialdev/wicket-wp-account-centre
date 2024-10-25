@@ -42,8 +42,24 @@ class Assets extends WicketAcc
      */
     public function enqueue_frontend_assets()
     {
+        global $post;
+
+        // Only on pages related to Wicket Account Centre
+        if (!($post->post_type === 'my-account' ||
+        str_starts_with($post->post_name, 'organization') ||
+        is_woocommerce() ||
+            is_account_page() ||
+            is_wc_endpoint_url())) {
+            return;
+        }
+
         wp_enqueue_style('wicket-acc-frontend-styles', WICKET_ACC_URL . 'assets/css/wicket-acc-main.css', [], WICKET_ACC_VERSION);
         wp_enqueue_script('wicket-acc-frontend-scripts', WICKET_ACC_URL . 'assets/js/wicket-acc-main.js', [], WICKET_ACC_VERSION, true);
         wp_enqueue_script('wicket-acc-frontend-legacy-scripts', WICKET_ACC_URL . 'assets/js/wicket-acc-legacy.js', [], WICKET_ACC_VERSION, true);
+        // https://unpkg.com/htmx.org@2
+        wp_enqueue_script('htmx', 'https://unpkg.com/htmx.org@2', [], WICKET_ACC_VERSION, true);
+        wp_enqueue_script('htmx-preload', 'https://unpkg.com/htmx-ext-preload@2', ['htmx'], WICKET_ACC_VERSION, true);
+        wp_enqueue_script('htmx-alpinemorph', 'https://unpkg.com/htmx-ext-alpine-morph@2', ['htmx'], WICKET_ACC_VERSION, true);
+        wp_enqueue_script('htmx-removeme', 'https://unpkg.com/htmx-ext-remove-me@2', ['htmx'], WICKET_ACC_VERSION, true);
     }
 }
