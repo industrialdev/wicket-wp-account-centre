@@ -24,20 +24,25 @@ defined('ABSPATH') || exit;
 				<input type="hidden" name="user_id" value="<?php echo get_current_user_id(); ?>">
 				<input type="hidden" name="action" value="wicket-acc-profile-picture-remove-form">
 				<?php wp_nonce_field('wicket-acc-profile-picture-remove-form', 'nonce'); ?>
-				<button type="submit" class="remove-image circle-x" title="<?php esc_html_e('Remove Image', 'wicket-acc'); ?>">x</button>
+
+				<?php if ( defined( 'WICKET_WP_THEME_V2' ) ) : ?>
+					<button type="submit" class="remove-image circle-x" title="<?php esc_html_e('Remove Image', 'wicket-acc'); ?>">
+						<i class="fa-regular fa-circle-xmark"></i>
+						<i class="fa-solid fa-circle-xmark"></i>
+					</button>
+				<?php else: ?>
+					<button type="submit" class="remove-image circle-x" title="<?php esc_html_e('Remove Image', 'wicket-acc'); ?>">x</button>					
+				<?php endif; ?>
 			</form>
 		<?php endif; ?>
 	</div>
 	<form name="wicket-acc-profile-picture-form" method="post" enctype="multipart/form-data">
-		<label for="profile-image" class="sr-only">
-			<?php esc_html_e('Choose File', 'wicket-acc'); ?>
-		</label>
-		<input type="file" id="profile-image" name="profile-image" class="sr-only" accept="image/png, image/gif, image/jpeg">
 		<div class="guidance text-sm">
 			<?php esc_html_e('Upload a profile picture to personalize your profile. The image will be cropped to a square.', 'wicket-acc'); ?>
 			<?php esc_html_e('Max upload size:', 'wicket-acc'); ?> <?php echo $args['pp_max_size']; ?> <?php esc_html_e('MB', 'wicket-acc'); ?>
 		</div>
 		<div class="buttons">
+			<input type="file" id="profile-image" name="profile-image" class="sr-only" accept="image/png, image/gif, image/jpeg">
 			<label for="profile-image" class="btn choose-file">
 				<?php esc_html_e('Choose File', 'wicket-acc'); ?>
 			</label>

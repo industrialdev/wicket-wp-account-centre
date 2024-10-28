@@ -4,7 +4,7 @@
 	--wicket-ac-white: #ffffff;
 	--wicket-ac-gray: #f3f4f6;
 	--wicket-ac-dark-gray: #374151;
-	--wicket-ac-border-color: #d1d5db;
+	--wicket-ac-border-color:  var(--border-light, #d1d5db);
 	--wicket-ac-primary: #1f2937;
 	--wicket-ac-hover-primary: #111827;
 }
@@ -13,7 +13,7 @@
 	background-color: var(--bg-light-neutral, var(--wicket-ac-white));
 	padding: var(--space-250, 24px) !important;
 	border-radius: var(--card-accent-corner-radius, 8px);
-	border: var(--border-call-out, 1px) solid var(--wicket-ac-border-color, var(--border-light));
+	border: var(--border-call-out, 1px) solid var(--wicket-ac-border-color);
 	max-width: 600px;
 	width: 100%;
 	text-align: center;
@@ -137,11 +137,47 @@
 		&:hover {
 			background-color: var(--bg-interactive);
 			color: var(--text-button-label-reversed);
-			text-decoration-line: underline;
+			text-decoration: underline;
 		}
 	}
 
-	&.wicket-acc-profile-picture--v2  .update-image {
+	&.wicket-acc-profile-picture--v2 input#profile-image:focus + label {
+		background-color: var(--highlight-dark);
+		color: var(--text-button-label-reversed);
+		text-decoration: underline;
+	}
+
+	&.wicket-acc-profile-picture--v2 .circle-x {
+		position: absolute;
+		top: 8px;
+		right: 8px;
+		width: auto;
+		height: auto;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background-color: var(--bg-white);
+		filter: drop-shadow(var(--elevation-4));
+		color: var(--interactive);
+		cursor: pointer;
+		border: 0;
+		font-size: 22px;
+
+		.fa-solid {
+			display: none;
+		}
+
+		&:hover, &:focus {
+			.fa-regular {
+				display: none;
+			}
+			.fa-solid {
+				display: inline;
+			}
+		}
+	}
+	
+	&.wicket-acc-profile-picture--v2 .update-image {
 		border-radius: var(--interactive-corner-radius-md);
 		border-style: solid;
 		padding: var(--space-200);
@@ -158,6 +194,20 @@
 			background-color: rgba(0, 0, 0, 0);
 			color: var(--text-button-label);
 			text-decoration-line: underline;
+		}
+		
+		&:focus {
+			border-color: var(--border-interactive);
+			background-color: var(--highlight-light);
+			color: var(--text-button-label);
+			text-decoration-line: underline;
+		}
+
+		&:disabled {
+			background-color: var(--bg-disabled);
+			color: var(--text-disabled);
+			border-color: var(--border-disabled);
+			pointer-events: none;
 		}
 	}
 
