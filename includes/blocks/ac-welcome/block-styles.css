@@ -11,6 +11,18 @@
 
 	&.wicket-acc-block-welcome--v2 {
 		background-color: var(--bg-accent-light);
+		padding: var(--space-250);
+		gap: var(--space-300);
+
+		@media screen and (max-width: 991px) {
+			flex-direction: column;
+		}
+	}
+
+	&.wicket-acc-block-welcome--v2 .wicket-welcome-avatar {
+		@media screen and (max-width: 991px) {
+			display: none;
+		}
 	}
 
 	.wicket-welcome-avatar img {
@@ -23,13 +35,33 @@
 
 	.wicket-welcome-label {
 		font-weight: var(--wicket-acc-font-weight-bold); 
-		font-size: var(--wicket-acc-font-size-lg, var(--wp--preset--font-size--heading-xs));
+		font-size: var(--wicket-acc-font-size-lg);
+		margin-bottom: var(--wicket-acc-margin-sm);
+	}
+
+	&.wicket-acc-block-welcome--v2 .wicket-welcome-label {
+		font-weight: var(--heading-xs-font-weight-sm);
+		font-size: var(--heading-xs-font-size);
+		line-height: var(--heading-xs-line-height);
 		margin-bottom: var(--wicket-acc-margin-sm);
 	}
 
 	.wicket-welcome-name {
 		font-weight: var(--wicket-acc-font-weight-normal);
 		font-size: var(--wicket-acc-font-size-xxxl, var(--wp--preset--font-size--heading-lg));
+	}
+
+	&.wicket-acc-block-welcome--v2 .wicket-welcome-name {
+		font-weight: var(--heading-lg-font-weight-sm);
+		font-size: var(--heading-lg-font-size);
+		line-height: var(--heading-lg-line-height);
+		margin-bottom: 0.5rem;
+	}
+
+	&.wicket-acc-block-welcome--v2 .wicket-welcome-member-type {
+		font-weight: var(--body-md-font-weight);
+    line-height: var(--body-md-line-height);
+		font-size: var(--body-md-font-size);
 	}
 
 	.wicket-welcome-content {
@@ -43,6 +75,14 @@
 		/*width: 100%;
 		justify-content: space-between;
 		padding: 0 var(--wicket-acc-padding-16);*/
+	}
+
+	&.wicket-acc-block-welcome--v2 .wicket-welcome-content-container {
+		padding: 0;
+
+		@media screen and (max-width: 991px) {
+			gap: var(--space-300);
+		}
 	}
 
 	.wicket-welcome-member-mdp-id {
@@ -67,6 +107,16 @@
 		padding-left: 20px;
 		font-size: 14px;
 		margin-bottom: var(--wicket-acc-margin-md) !important;
+	}
+
+	&.wicket-acc-block-welcome--v2 .wicket-welcome-member-mdp-id,
+	&.wicket-acc-block-welcome--v2 .wicket-welcome-member-active,
+	&.wicket-acc-block-welcome--v2 .wicket-welcome-renewal,
+	&.wicket-acc-block-welcome--v2 .wicket-welcome-member-since
+	{
+		font-size: var(--body-sm-font-size);
+    font-weight: var(--body-sm-font-weight);
+    line-height: var(--body-sm-line-height);
 	}
 
 	.wicket-welcome-member-active::after {
