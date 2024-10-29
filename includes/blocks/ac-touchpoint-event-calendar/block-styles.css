@@ -104,6 +104,10 @@ body.wicket-theme-v2 .wicket-acc-block-touchpoints-tec {
 		font-size: var(--heading-sm-font-size);
 	}
 
+	.event-section-container {
+		gap: var(--spacing-300);
+	}
+
 	.past-link {
 		font-size: var(--heading-sm-font-size);
 		color: var(--interactive);
