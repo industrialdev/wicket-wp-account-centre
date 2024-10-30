@@ -237,12 +237,14 @@
     text-align: left;
   }
 
-
-  .myaccount-nav ul li .nav__menu-link {
-    color: var(--nav-contextual-link-lvl-1, inherit);
+  .myaccount-nav ul > li.current-menu-item > a,
+  .myaccount-nav ul > li > a:focus {
+    margin-bottom: var(--space-050, 0);
   }
 
-  .myaccount-nav ul li .nav__menu-link {
+  .myaccount-nav ul > li > .nav__menu-link,
+  .myaccount-nav ul > li.nav__menu-item > a {
+    color: var(--nav-contextual-link-lvl-1, inherit);
     font-weight: bold;
   }
 
