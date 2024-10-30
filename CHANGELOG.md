@@ -1,6 +1,11 @@
 # Wicket Account Centre Changelog
 Previously known as My Account Page Editor
 
+# 1.5.64 / 2024-10-18
+- Available classes to hide elements based on existing memberships.
+- Avoid loading assets when we are not viewing an ACC related page.
+- Helper to load template parts from child theme templates.
+
 # 1.5.32 / 2024-10-15
 - Integrated Organization Management pages into ACC. Pages can be controled from the backend, just like any other ACC page.
 - Translate "subscription" to "membership" with CSS in ACC membership history table. WPML compatible.

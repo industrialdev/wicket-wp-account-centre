@@ -159,8 +159,11 @@ class Router extends WicketAcc
             return;
         }
 
+        // Filter acc_pages_map against acc_pages_map_auto_create. Remove any page that doesn't exist in acc_pages_map_auto_create
+        $pagesToCreate = array_intersect_key($this->acc_pages_map, array_flip($this->acc_pages_map_auto_create));
+
         // Create all other pages
-        foreach ($this->acc_pages_map as $slug => $name) {
+        foreach ($pagesToCreate as $slug => $name) {
             $this->create_page($slug, $name);
         }
 
@@ -217,7 +220,10 @@ class Router extends WicketAcc
                 $error_message .= '<p>You can retrieve the zip file from: ./templates-wicket/account-centre/org-management/</p>';
                 $error_message .= '<p>Recreate the same directory structure in your active theme: ./templates-wicket/account-centre/org-management/</p>';
                 $error_message .= '<p>Unzip the file into that directory. The structure should look like this:</p>';
-                $error_message .= '<ul><li>./templates-wicket/account-centre/org-management/acc-orgman-index.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-members.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-profile.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-roster.php</li></ul>';
+                $error_message .= '<ul>';
+                $error_message .=
+                    '<li>./templates-wicket/account-centre/org-management/acc-orgman-index.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-members.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-profile.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-roster.php</li>';
+                $error_message .= '</ul>';
                 $error_message .= '<p>You can now use Organization Management.</p>';
                 $error_message .= '<p>Feel free to modify these templates in your active theme to meet the client\'s needs.</p>';
 
@@ -246,20 +252,27 @@ class Router extends WicketAcc
      */
     private function is_orgmanagement_page($post_id)
     {
-        $orgManagementIndex   = get_field('acc_page_orgman-index', 'option');
-        $orgManagementProfile = get_field('acc_page_orgman-profile', 'option');
-        $orgManagementMembers = get_field('acc_page_orgman-members', 'option');
-        $orgManagementRoster  = get_field('acc_page_orgman-roster', 'option');
+        $orgManagementIndex           = get_field('acc_page_orgman-index', 'option');
+        $orgManagementProfile         = get_field('acc_page_orgman-profile', 'option');
+        $orgManagementMembers         = get_field('acc_page_orgman-members', 'option');
+        $orgManagementRoster          = get_field('acc_page_orgman-roster', 'option');
 
-        // Is any of the options above, the ID we received?
-        if ($post_id == $orgManagementIndex) {
-            return 'index';
-        } elseif ($post_id == $orgManagementProfile) {
-            return 'profile';
-        } elseif ($post_id == $orgManagementRoster) {
-            return 'roster';
-        } elseif ($post_id == $orgManagementMembers) {
-            return 'members';
+        switch ($post_id) {
+            case $orgManagementIndex:
+                return 'index';
+            case $orgManagementProfile:
+                return 'profile';
+            case $orgManagementRoster:
+                return 'roster';
+            case $orgManagementMembers:
+                return 'members';
+        }
+
+        // Filterable flag to allow devs to override the template. Default to false.
+        $is_acc_template = apply_filters('wicket/acc/orgman/is_orgmanagement_page', false, $post_id);
+
+        if ($is_acc_template) {
+            return $is_acc_template;
         }
 
         return false;
@@ -274,6 +287,10 @@ class Router extends WicketAcc
      */
     private function orgman_page_requested($post_id)
     {
+        if (!$post_id) {
+            return false;
+        }
+
         return $this->is_orgmanagement_page($post_id);
     }
 
