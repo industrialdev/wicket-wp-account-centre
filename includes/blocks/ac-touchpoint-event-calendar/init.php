@@ -216,7 +216,11 @@ class Block_TouchpointEventCalendar extends WicketAcc
         // Dirty hack to update the number of results
         ?>
         <script>
-            document.getElementById('total_results').innerHTML = '<?php echo $total_results; ?>';
+            let totalElementsElement = document.getElementById('total_results');
+            
+            if ( totalElementsElement !== null ) {
+                totalElementsElement.innerHTML = '<?php echo $total_results; ?>';
+            }
         </script>
         <?php
 

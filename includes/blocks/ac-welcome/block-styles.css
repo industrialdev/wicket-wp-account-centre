@@ -13,10 +13,6 @@
 		background-color: var(--bg-accent-light);
 		padding: var(--space-250);
 		gap: var(--space-300);
-
-		@media screen and (max-width: 991px) {
-			flex-direction: column;
-		}
 	}
 
 	&.wicket-acc-block-welcome--v2 .wicket-welcome-avatar {
@@ -80,8 +76,9 @@
 	&.wicket-acc-block-welcome--v2 .wicket-welcome-content-container {
 		padding: 0;
 
-		@media screen and (max-width: 991px) {
+		@media screen and (max-width: 1200px) {
 			gap: var(--space-300);
+			flex-direction: column;
 		}
 	}
 
