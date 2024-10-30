@@ -218,8 +218,8 @@
     position: relative;
   }
 
-  .myaccount-nav ul li a,
-  .myaccount-nav ul li .nav__menu-link {
+  .myaccount-nav__container > ul li a,
+  .myaccount-nav__container > ul li .nav__menu-link {
     text-decoration: none !important;
     color: var(--nav-contextual-sublink, inherit);
     font-size: var(--body-md-font-size, 14px);
@@ -237,13 +237,13 @@
     text-align: left;
   }
 
-  .myaccount-nav ul > li.current-menu-item > a,
-  .myaccount-nav ul > li > a:focus {
+  .myaccount-nav__container > ul > li.current-menu-item > a,
+  .myaccount-nav__container > ul > li > a:focus {
     margin-bottom: var(--space-050, 0);
   }
 
-  .myaccount-nav ul > li > .nav__menu-link,
-  .myaccount-nav ul > li.nav__menu-item > a {
+  .myaccount-nav__container > ul > li > .nav__menu-link,
+  .myaccount-nav__container > ul > li.nav__menu-item > a {
     color: var(--nav-contextual-link-lvl-1, inherit);
     font-weight: bold;
   }
