@@ -75,7 +75,7 @@
 
 .wicket-acc--v2 {
   .myaccount-nav-mobile {
-    background-color: var(--bg-light);
+    background-color: white;
     border-top: var(--border-sm) solid var(--border-light);
     position: fixed;
     bottom: 0;
@@ -94,12 +94,11 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      color: var(--text-content);
+      color: var(--nav-contextual-title);
       text-transform: uppercase;
-      font-size: var(--label-md-font-size, 1.2em);
-      color: var(--nav-contextual-title, inherit);
-      font-weight: var(--label-md-font-weight, 400);
-      line-height: var(--label-md-line-height, normal);
+      font-size: var(--label-md-font-size);
+      font-weight: var(--label-md-font-weight);
+      line-height: var(--label-md-line-height);
       text-decoration: none;
   
       i {
