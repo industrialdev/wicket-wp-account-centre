@@ -1,5 +1,7 @@
-.myaccount-nav-mobile {
-  background-color: var(--wicket-acc-bg-color-light);
+.wicket-acc:not(.wicket-acc--v2) {
+  /* Legacy styles here */
+  .myaccount-nav-mobile {
+    background-color: var(--wicket-acc-bg-color-light);
     border-top: 1px solid var(--wicket-acc-border-color-light);
     position: fixed;
     bottom: 0;
@@ -7,11 +9,11 @@
     padding: var(--wicket-acc-padding-sm);
     z-index: var(--wicket-acc-z-index-dropdown);
     width: 100%;
-
-  #dropdown-my-account-menu {
+  
+    #dropdown-my-account-menu {
       padding: var(--wicket-acc-padding-sm);
     }
-
+  
     .dropdown__toggle--nav {
       display: block;
       position: relative;
@@ -24,48 +26,149 @@
       padding-left: 0.5rem;
       border-top: 1px solid var(--wicket-acc-border-color-light);
       text-decoration: none;
-
-    i {
+  
+      i {
         position: absolute;
         top: 1.85rem;
         right: 10px;
       }
-
-        &.open i {
-          transform: rotate(-45deg);
-          color: #333;
-        }
-        }
-
+  
+      &.open i {
+        transform: rotate(-45deg);
+        color: #333;
+      }
+    }
+  
     .nav__contextual {
       padding: 1.2rem 0.5rem;
-
-    h2 {
+  
+      h2 {
         display: none;
       }
-
-        ul>li:first-of-type {
-          border-top: 0 none;
-        }
-        }
-}
-
-.wicket_acc_sub_list {
-  display: none;
+  
+      ul>li:first-of-type {
+        border-top: 0 none;
+      }
+    }
+  }
+  
+  .wicket_acc_sub_list {
+    display: none;
     margin: -5px 0px 10px !important;
     padding: 0;
-
-  li {
+  
+    li {
       display: block !important;
       margin: 0px 0px !important;
       border-bottom: none !important;
     }
-
+  
     a {
       padding: 3px 6px 3px 13px !important;
     }
+  }
+  
+  .nav-selected {
+    background: whitesmoke;
+  }
 }
 
-.nav-selected {
-  background: whitesmoke;
+.wicket-acc--v2 {
+  .myaccount-nav-mobile {
+    background-color: var(--bg-light);
+    border-top: var(--border-sm) solid var(--border-light);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    padding: var(--space-250);
+    z-index: var(--wicket-acc-z-index-dropdown);
+    width: 100%;
+  
+    #dropdown-my-account-menu {
+      padding-bottom: var(--space-150);
+    }
+  
+    .dropdown__toggle--nav {
+      display: block;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-content);
+      text-transform: uppercase;
+      font-size: var(--label-md-font-size, 1.2em);
+      color: var(--nav-contextual-title, inherit);
+      font-weight: var(--label-md-font-weight, 400);
+      line-height: var(--label-md-line-height, normal);
+      text-decoration: none;
+  
+      i {
+        color: var(--interactive);
+      }
+  
+      &.open i {
+        transform: rotate(-45deg);
+      }
+    }
+  
+    .nav__contextual {
+      padding: 1.2rem 0.5rem;
+  
+      h2 {
+        display: none;
+      }
+  
+      ul>li:first-of-type {
+        border-top: 0 none;
+      }
+    }
+  }
+  
+  .wicket_acc_sub_list {
+    display: none;
+    margin: -5px 0px 10px !important;
+    padding: 0;
+  
+    li {
+      display: block !important;
+      margin: 0px 0px !important;
+      border-bottom: none !important;
+    }
+  
+    a {
+      padding: 3px 6px 3px 13px !important;
+    }
+  }
+  
+  .nav-selected {
+    background: whitesmoke;
+  }
+
+  ul.wicket-acc-menu-mobile {
+    > li {
+      
+      a, button {
+        text-decoration: none !important;
+        color: var(--nav-contextual-sublink);
+        font-size: var(--body-md-font-size);
+        font-weight: var(--body-md-font-weight);
+        line-height: var(--body-md-line-height);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-style: normal;
+        padding: var(--space-100);
+        text-transform: capitalize;
+        box-shadow: none;
+        position: relative;
+        width: 100%;
+        text-align: left;
+      }
+
+      > a, > button {
+        color: var(--nav-contextual-link-lvl-1);
+        font-weight: bold;
+      }
+    }
+  }
 }

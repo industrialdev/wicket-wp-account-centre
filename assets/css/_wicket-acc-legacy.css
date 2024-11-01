@@ -40,7 +40,7 @@
   flex-flow: row wrap;
 }
 
-@media all and (min-width: 1020px) {
+@media all and (min-width: 1024px) {
   .wicket-acc {
     .woocommerce-wicket--account-centre {
       max-width: 70%;

@@ -22,6 +22,10 @@ $wrapper_classes = [
     'woocommerce-wicket--container',
 ];
 
+if ( defined('WICKET_WP_THEME_V2') ) {
+    $wrapper_classes[] = 'wicket-acc--v2';
+}
+
 $dev_wrapper_classes = get_field('page_wrapper_class');
 if (!empty($dev_wrapper_classes)) {
     $wrapper_classes[] = $dev_wrapper_classes;
