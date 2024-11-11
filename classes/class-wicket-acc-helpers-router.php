@@ -20,10 +20,11 @@ class MethodRouter
     {
         // Register all class instances except Helpers
         $this->instances = [
-            'MdpApi'        => new MdpApi(),
-            'Profile'       => new Profile(),
-            'Blocks'        => new Blocks(),
-            'User'          => new User(),
+            'MdpApi'                => new MdpApi(),
+            'Profile'               => new Profile(),
+            'Organization_Profile'  => new Organization_Profile(),
+            'Blocks'                => new Blocks(),
+            'User'                  => new User(),
         ];
 
         // Store Helpers instance separately
@@ -38,7 +39,7 @@ class MethodRouter
      * @return object
      * @throws \Exception
      */
-    public function __get($name)
+    public function __get($name): Blocks|MdpApi|Organization_Profile|Profile|User
     {
         if (isset($this->instances[$name])) {
             return $this->instances[$name];

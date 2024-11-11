@@ -206,6 +206,7 @@ class WicketAcc
         new Helpers();
         new Registers();
         new Profile();
+        new Organization_Profile();
         new Assets();
         new WooCommerce();
         new User();
@@ -234,6 +235,7 @@ class WicketAcc
             'classes/class-wicket-acc-registers.php',
             'classes/class-wicket-acc-blocks.php',
             'classes/class-wicket-acc-profile.php',
+            'classes/class-wicket-acc-org-profile.php',
             'classes/class-wicket-acc-user.php',
             'classes/class-wicket-acc-router.php',
             'classes/class-wicket-acc-woocommerce.php',

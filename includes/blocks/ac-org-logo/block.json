@@ -1,0 +1,32 @@
+{
+	"name": "wicket-ac/ac-org-logo",
+	"title": "ACC Change Profile Picture - Org",
+	"description": "Wicket block for changing the organization logo",
+	"style": "file:./block-styles.css",
+	"category": "wicket-account-center",
+	"icon": "",
+	"apiVersion": 2,
+	"keywords": [
+		"account-center",
+		"organization",
+		"picture",
+		"wicket"
+	],
+	"acf": {
+		"mode": "preview",
+		"renderTemplate": "render.php"
+	},
+	"styles": [],
+	"supports": {
+		"align": false,
+		"anchor": false,
+		"alignContent": false,
+		"color": {
+			"text": false,
+			"background": false,
+			"link": false
+		},
+		"alignText": true,
+		"fullHeight": false
+	}
+}
