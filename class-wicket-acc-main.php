@@ -206,7 +206,7 @@ class WicketAcc
         new Helpers();
         new Registers();
         new Profile();
-        new Organization_Profile();
+        new OrganizationProfile();
         new Assets();
         new WooCommerce();
         new User();

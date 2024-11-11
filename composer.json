@@ -39,7 +39,7 @@
             "if [[ `uname -s` == 'Darwin' ]]; then ./.ci/install-hooks.sh; elif [[ `uname -s` == 'Linux' ]]; then ./.ci/install-hooks.sh; else ./.ci/install-hooks.bat; fi"
         ],
         "version-bump": "CURRENT_VERSION=$(grep -oP '(?<=\"version\": \")[^\"]*' composer.json); echo \"Current version: $CURRENT_VERSION\"; read -p \"Enter new version (semver): \" NEW_VERSION; for file in composer.json README.txt class-wicket-acc-main.php; do sed -i \"s/$CURRENT_VERSION/$NEW_VERSION/g\" $file; done; echo \"Bumped from $CURRENT_VERSION to $NEW_VERSION\"; echo \"Version updated successfully!\"",
-        "php-format": "if [[ `uname -s` == 'Darwin' ]]; then ./.ci/php-macos ./.ci/php-cs-fixer.phar fix; elif [[ `uname -s` == 'Linux' ]]; then ./.ci/php-linux ./.ci/php-cs-fixer.phar fix; else ./.ci/php.exe ./.ci/php-cs-fixer.phar fix; fi"
+        "cs:fix": "if [[ `uname -s` == 'Darwin' ]]; then ./.ci/php-macos ./.ci/php-cs-fixer.phar fix; elif [[ `uname -s` == 'Linux' ]]; then ./.ci/php-linux ./.ci/php-cs-fixer.phar fix; else ./.ci/php.exe ./.ci/php-cs-fixer.phar fix; fi"
     },
     "config": {
         "allow-plugins": {

@@ -192,7 +192,7 @@ class Block_TouchpointEventCalendar extends WicketAcc
 
         get_component('card-call-out', [
             'title' => __('You have no upcoming events', 'wicket-acc'),
-            'style' => 'secondary'
+            'style' => 'secondary',
         ]);
 
         $counter = 0;

@@ -63,7 +63,7 @@ class Block_Welcome extends WicketAcc
         }
         ?>
 
-		<div class="wicket-acc-block wicket-acc-block-welcome wp-block-wicket-acc-callout row <?php echo defined( 'WICKET_WP_THEME_V2' ) ? 'wicket-acc-block-welcome--v2' : 'bg-light-010' ?>">
+		<div class="wicket-acc-block wicket-acc-block-welcome wp-block-wicket-acc-callout row <?php echo defined('WICKET_WP_THEME_V2') ? 'wicket-acc-block-welcome--v2' : 'bg-light-010' ?>">
 			<div class="wicket-welcome-avatar col-2">
 				<?php if ($image_url) {
 				    echo '<img src="' . $image_url . '" alt="' . $person->given_name . " " . $person->family_name . __(' Profile Image', 'wicket-acc') . '" />';
@@ -132,14 +132,14 @@ class Block_Welcome extends WicketAcc
 				<?php if ($edit_profile && isset($editprofile_page_link) && isset($editprofile_page_title)) {
 				    ?>
 					<div class="wicket-welcome-edit-profile-button col-3 text-right">
-						<?php get_component( 'button', [
-								'variant'     => 'secondary',
-								'a_tag'       => true,
-								'classes'     => [ 'whitespace-nowrap' ],
-								'label'       => $editprofile_page_title,
-								'prefix_icon' => 'fa-regular fa-pen-to-square',
-								'link'        => $editprofile_page_link
-							] ) ?>
+						<?php get_component('button', [
+						    'variant'     => 'secondary',
+						    'a_tag'       => true,
+						    'classes'     => [ 'whitespace-nowrap' ],
+						    'label'       => $editprofile_page_title,
+						    'prefix_icon' => 'fa-regular fa-pen-to-square',
+						    'link'        => $editprofile_page_link,
+						]) ?>
 					</div>
 				<?php } ?>
 			</div>

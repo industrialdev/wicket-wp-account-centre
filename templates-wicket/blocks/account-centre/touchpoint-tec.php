@@ -65,26 +65,26 @@ if (!empty($override_past_events_link)) {
     <div class="container events_<?php echo $display; ?>">
         <div class="header flex flex-col mb-6">
 
-            <div class="flex flex-col md:flex-row md:justify-between items-center md:items-center w-full <?php echo defined( 'WICKET_WP_THEME_V2' ) ? 'event-section-container' : '' ?>">
+            <div class="flex flex-col md:flex-row md:justify-between items-center md:items-center w-full <?php echo defined('WICKET_WP_THEME_V2') ? 'event-section-container' : '' ?>">
                 <?php if ($display == 'upcoming' && !$single_event) : ?>
                     <?php if (!empty($title)) : ?>
-                        <h3 class="font-bold md:text-left lg:text-left <?php echo defined( 'WICKET_WP_THEME_V2' ) ? 'event-section-title' : 'text-center text-2xl text-dark-100 mb-4 md:mb-0 w-full md:w-auto' ?>"><?php echo esc_html($title); ?></h3>
+                        <h3 class="font-bold md:text-left lg:text-left <?php echo defined('WICKET_WP_THEME_V2') ? 'event-section-title' : 'text-center text-2xl text-dark-100 mb-4 md:mb-0 w-full md:w-auto' ?>"><?php echo esc_html($title); ?></h3>
                     <?php else: ?>
-                        <h3 class="font-bold md:text-left lg:text-left <?php echo defined( 'WICKET_WP_THEME_V2' ) ? 'event-section-title' : 'text-center text-2xl text-dark-100 mb-4 md:mb-0 w-full md:w-auto' ?>"><?php esc_html_e('Upcoming Registered Events', 'wicket-acc'); ?></h3>
+                        <h3 class="font-bold md:text-left lg:text-left <?php echo defined('WICKET_WP_THEME_V2') ? 'event-section-title' : 'text-center text-2xl text-dark-100 mb-4 md:mb-0 w-full md:w-auto' ?>"><?php esc_html_e('Upcoming Registered Events', 'wicket-acc'); ?></h3>
                     <?php endif; ?>
-                    <a href="<?php echo $switch_link_past; ?>" class="past-link text-center md:text-right  <?php echo defined( 'WICKET_WP_THEME_V2' ) ? '' : 'text-base mb-4 font-bold w-full md:w-auto' ?>"><?php esc_html_e($past_events_link_text, 'wicket-acc'); ?></a>
+                    <a href="<?php echo $switch_link_past; ?>" class="past-link text-center md:text-right  <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-base mb-4 font-bold w-full md:w-auto' ?>"><?php esc_html_e($past_events_link_text, 'wicket-acc'); ?></a>
                 <?php elseif ($display == 'past' && !$single_event) : ?>
-                    <h3 class="font-bold mb-4 md:mb-0 md:text-left text-center text-base <?php echo defined( 'WICKET_WP_THEME_V2' ) ? '' : 'w-full md:w-auto' ?>"><?php esc_html_e('Past Registered Events', 'wicket-acc'); ?></h3>
-                    <a href="<?php echo $switch_link; ?>" class="upcoming-link font-bold text-center md:text-right mb-4 text-base <?php echo defined( 'WICKET_WP_THEME_V2' ) ? '' : 'w-full md:w-auto' ?>"><?php esc_html_e('See Upcoming Registered Events', 'wicket-acc'); ?></a>
+                    <h3 class="font-bold mb-4 md:mb-0 md:text-left text-center text-base <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'w-full md:w-auto' ?>"><?php esc_html_e('Past Registered Events', 'wicket-acc'); ?></h3>
+                    <a href="<?php echo $switch_link; ?>" class="upcoming-link font-bold text-center md:text-right mb-4 text-base <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'w-full md:w-auto' ?>"><?php esc_html_e('See Upcoming Registered Events', 'wicket-acc'); ?></a>
                 <?php elseif ($single_event) : ?>
-                    <h3 class="text-2xl font-bold mb-4 md:mb-0 md:text-left text-center text-base <?php echo defined( 'WICKET_WP_THEME_V2' ) ? '' : 'w-full md:w-auto' ?>"><?php esc_html_e('Event Details', 'wicket-acc'); ?></h3>
-                    <a href="javascript:history.back()" class="back-link font-bold text-center md:text-right <?php echo defined( 'WICKET_WP_THEME_V2' ) ? '' : 'w-full md:w-auto' ?>"><?php esc_html_e('Go Back ←', 'wicket-acc'); ?></a>
+                    <h3 class="text-2xl font-bold mb-4 md:mb-0 md:text-left text-center text-base <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'w-full md:w-auto' ?>"><?php esc_html_e('Event Details', 'wicket-acc'); ?></h3>
+                    <a href="javascript:history.back()" class="back-link font-bold text-center md:text-right <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'w-full md:w-auto' ?>"><?php esc_html_e('Go Back ←', 'wicket-acc'); ?></a>
                 <?php endif; ?>
             </div>
         </div>
 
-        <?php if ( defined( 'WICKET_WP_THEME_V2' ) ) : ?>
-            <?php // ?>
+        <?php if (defined('WICKET_WP_THEME_V2')) : ?>
+            <?php //?>
         <?php else: ?>
             <div class="data-quantity text-left mb-3 text-lg">
                 Results: <span id="total_results"><?php echo $total_results; ?></span>

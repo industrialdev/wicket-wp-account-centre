@@ -22,7 +22,7 @@ $wrapper_classes = [
     'woocommerce-wicket--container',
 ];
 
-if ( defined('WICKET_WP_THEME_V2') ) {
+if (defined('WICKET_WP_THEME_V2')) {
     $wrapper_classes[] = 'wicket-acc--v2';
 }
 

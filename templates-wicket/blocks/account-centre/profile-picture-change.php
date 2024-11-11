@@ -13,7 +13,7 @@ defined('ABSPATH') || exit;
  * pp_max_size - Max upload size in MB
  */
 ?>
-<section class="container wicket-acc-profile-picture <?php echo defined( 'WICKET_WP_THEME_V2' ) ? 'wicket-acc-profile-picture--v2' : '' ?>">
+<section class="container wicket-acc-profile-picture <?php echo defined('WICKET_WP_THEME_V2') ? 'wicket-acc-profile-picture--v2' : '' ?>">
 	<h2>
 		<?php esc_html_e('Profile Image', 'wicket-acc'); ?>
 	</h2>
@@ -25,7 +25,7 @@ defined('ABSPATH') || exit;
 				<input type="hidden" name="action" value="wicket-acc-profile-picture-remove-form">
 				<?php wp_nonce_field('wicket-acc-profile-picture-remove-form', 'nonce'); ?>
 
-				<?php if ( defined( 'WICKET_WP_THEME_V2' ) ) : ?>
+				<?php if (defined('WICKET_WP_THEME_V2')) : ?>
 					<button type="submit" class="remove-image circle-x" title="<?php esc_html_e('Remove Image', 'wicket-acc'); ?>">
 						<i class="fa-regular fa-circle-xmark"></i>
 						<i class="fa-solid fa-circle-xmark"></i>

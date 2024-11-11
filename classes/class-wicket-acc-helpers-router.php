@@ -22,7 +22,7 @@ class MethodRouter
         $this->instances = [
             'MdpApi'                => new MdpApi(),
             'Profile'               => new Profile(),
-            'Organization_Profile'  => new Organization_Profile(),
+            'OrganizationProfile'   => new OrganizationProfile(),
             'Blocks'                => new Blocks(),
             'User'                  => new User(),
         ];
@@ -39,7 +39,7 @@ class MethodRouter
      * @return object
      * @throws \Exception
      */
-    public function __get($name): Blocks|MdpApi|Organization_Profile|Profile|User
+    public function __get($name): Blocks|MdpApi|OrganizationProfile|Profile|User
     {
         if (isset($this->instances[$name])) {
             return $this->instances[$name];
