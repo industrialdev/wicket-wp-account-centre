@@ -1,0 +1,55 @@
+{
+    "name": "industrialdev/wicket-wp-account-centre",
+    "description": "Wicket's Account Centre for WordPress",
+    "version": "1.5.71",
+    "keywords": [
+        "wordpress",
+        "wicket",
+        "account",
+        "centre"
+    ],
+    "license": "GPL-2.0-or-later",
+    "homepage": "https://wicket.io",
+    "authors": [
+        {
+            "name": "Wicket Inc.",
+            "homepage": "https://wicket.io"
+        }
+    ],
+    "type": "wordpress-plugin",
+    "require": {
+        "php": ">=8.1.0"
+    },
+    "require-dev": {
+        "twbs/bootstrap": "^5.3",
+        "pestphp/pest": "^3.3",
+        "10up/wp_mock": "^0.4.2",
+        "mockery/mockery": "^1.6",
+        "friendsofphp/php-cs-fixer": "^3.64"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "@php -r \"if (getenv('COMPOSER_DEV_MODE') === '0') { system('rm -rf ./.ci'); }\"",
+            "@php -r \"copy('vendor/twbs/bootstrap/dist/css/bootstrap-grid.min.css', 'assets/css/_bootstrap-grid.min.css');\"",
+            "@php -r \"if (PHP_OS_FAMILY === 'Darwin' || PHP_OS_FAMILY === 'Linux') { system('./.ci/install-hooks.sh'); } else { system('./.ci/install-hooks.bat'); }\""
+        ],
+        "post-update-cmd": [
+            "@php -r \"if (getenv('COMPOSER_DEV_MODE') === '0') { system('rm -rf ./.ci'); }\"",
+            "@php -r \"copy('vendor/twbs/bootstrap/dist/css/bootstrap-grid.min.css', 'assets/css/_bootstrap-grid.min.css');\"",
+            "@php -r \"if (PHP_OS_FAMILY === 'Darwin' || PHP_OS_FAMILY === 'Linux') { system('./.ci/install-hooks.sh'); } else { system('./.ci/install-hooks.bat'); }\""
+        ],
+        "version-bump": [
+            "@php ./.ci/version-bump.php",
+            "@cs:fix"
+        ],
+        "cs:fix": "@php -r \"system(PHP_OS_FAMILY === 'Windows' ? './.ci/php.exe ./.ci/php-cs-fixer.phar fix' : (PHP_OS_FAMILY === 'Darwin' ? './.ci/php-macos ./.ci/php-cs-fixer.phar fix' : './.ci/php-linux ./.ci/php-cs-fixer.phar fix'));\""
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        },
+        "platform": {
+            "php": "8.2.0"
+        }
+    }
+}
