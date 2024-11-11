@@ -258,7 +258,7 @@ class wicket_acc_menu_walker extends Walker_Nav_Menu
         if (in_array('menu-item-has-children', $classes) && $depth == 0) {
             $this->submenu_order = 0;
             $output .= "<button id='dropdown-{$item->ID}-control' class='nav__menu-link dropdown__toggle--menu' aria-expanded='false' aria-controls='dropdown-{$item->ID}'>";
-            $output .= $title;
+            $output .= "<span>{$title}</span>";
         } elseif (isset($permalink)) {
             if ($target == '_blank') {
                 $output .= '<a  target="_blank" rel="noopener" href="' . $permalink . '">' . $title;
@@ -334,7 +334,7 @@ class wicket_acc_menu_mobile_walker extends Walker_Nav_Menu
         if (in_array('menu-item-has-children', $classes) && $depth == 0) {
             $this->submenu_order = 0;
             $output .= "<button id='mobile-dropdown-{$item->ID}-control' class='nav__menu-link dropdown__toggle--menu' aria-expanded='false' aria-controls='mobile-dropdown-{$item->ID}'>";
-            $output .= $title;
+            $output .= "<span>{$title}</span>";
         } elseif (isset($permalink)) {
             if ($target == '_blank') {
                 $output .= '<a  target="_blank" rel="noopener" href="' . $permalink . '">' . $title;

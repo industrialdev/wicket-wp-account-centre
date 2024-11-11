@@ -40,7 +40,7 @@
   flex-flow: row wrap;
 }
 
-@media all and (min-width: 1020px) {
+@media all and (min-width: 1024px) {
   .wicket-acc {
     .woocommerce-wicket--account-centre {
       max-width: 70%;
@@ -166,7 +166,7 @@
   }
 
   li ul {
-    margin-left: 0.8em !important;
+    margin-left: var(--space-200, 0.8em) !important;
   }
 
   .woocommerce-MyAccount-navigation ul li.group_endpoint ul {
@@ -174,8 +174,23 @@
   }
 
   .myaccount-nav h2.myaccount-nav-heading {
-    font-size: 1.2em;
-    margin: 0 0 10px;
+    margin-bottom: var(--space-200, 10px);
+    padding-left: var(--space-075, 0px);
+    padding-right: var(--space-075, 0px);
+    font-size: var(--label-md-font-size, 1.2em);
+    color: var(--nav-contextual-title, inherit);
+    font-weight: var(--label-md-font-weight, 400);
+    text-transform: uppercase;
+    line-height: var(--label-md-line-height, normal);
+    
+    a {
+      color: var(--nav-contextual-title, inherit);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   }
 
   .myaccount-nav ul {
@@ -186,33 +201,44 @@
 
   .myaccount-nav ul li {
     display: block;
-    margin: 5px 0px;
-    border-bottom: 1px solid #e0e0e0;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: var(--space-050, 5px);
+    margin-bottom: var(--space-050, 5px);
+    border-bottom: var(--border-sm, 1px) solid var(--border-light);
   }
 
+  .myaccount-nav .menu-item.current-menu-item>a:first-of-type,
   .myaccount-nav ul li.nav-selected>a:first-of-type,
-  .myaccount-nav .menu-item.current-menu-item>a:first-of-type {
+  .myaccount-nav .menu-item>a:first-of-type:focus,
+  .myaccount-nav ul li>a:first-of-type:focus {
+    border-radius: var(--interactive-corner-radius-md, initial);
     text-decoration: none !important;
-    font-size: 14px;
-    line-height: 24px;
+    font-size: var(--body-md-font-size, 14px);
+    font-weight: bold;
+    line-height: var(--body-md-line-height, 24px);
+    background-color: var(--highlight-light, transparent);
+    color: var(--highlight-dark, inherit);
     display: block;
     font-style: normal;
-    padding: 10px 5px;
-    font-weight: 600;
+    padding: var(--space-100, 10px 5px);
     text-transform: capitalize;
     box-shadow: none;
     position: relative;
   }
 
-  .myaccount-nav ul li a,
-  .myaccount-nav ul li .nav__menu-link {
+  .myaccount-nav__container > ul li a,
+  .myaccount-nav__container > ul li .nav__menu-link {
     text-decoration: none !important;
-    font-size: 14px;
-    line-height: 24px;
-    display: block;
+    color: var(--nav-contextual-sublink, inherit);
+    font-size: var(--body-md-font-size, 14px);
+    font-weight: var(--body-md-font-weight, 400);
+    line-height: var(--body-md-line-height, 24px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     font-style: normal;
-    font-weight: 400;
-    padding: 10px 5px;
+    padding: var(--space-100, 10px 5px);
     text-transform: capitalize;
     box-shadow: none;
     position: relative;
@@ -220,16 +246,23 @@
     text-align: left;
   }
 
-  .myaccount-nav ul li .nav__menu-link {
+  .myaccount-nav__container > ul > li.current-menu-item > a,
+  .myaccount-nav__container > ul > li > a:focus {
+    margin-bottom: var(--space-050, 0);
+  }
+
+  .myaccount-nav__container > ul > li > .nav__menu-link,
+  .myaccount-nav__container > ul > li.nav__menu-item > a {
+    color: var(--nav-contextual-link-lvl-1, inherit);
     font-weight: bold;
   }
 
   .myaccount-nav ul li a:hover,
   .myaccount-nav ul li a:active,
   .myaccount-nav ul li a:focus,
-  .myaccount-nav ul li .nav__menu-link:hover,
-  .myaccount-nav ul li .nav__menu-link:active,
-  .myaccount-nav ul li .nav__menu-link:focus {
+  .myaccount-nav ul li .nav__menu-link:hover span,
+  .myaccount-nav ul li .nav__menu-link:active span,
+  .myaccount-nav ul li .nav__menu-link:focus span {
     text-decoration: underline !important;
   }
 
@@ -251,14 +284,11 @@
   }
 
   .myaccount-nav ul li ul li a {
-    padding: 5px;
+    padding: var(--space-100, 5px);
   }
 
-  .myaccount-nav ul>li .dropdown__toggle--menu i {
-    position: absolute;
-    right: 5px;
-    top: 15px;
-  }
+  /* .myaccount-nav ul>li .dropdown__toggle--menu i {
+  } */
 
   .myaccount-nav ul>li .dropdown__toggle--menu.open i {
     -webkit-transform: rotate(-180deg);

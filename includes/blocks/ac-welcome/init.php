@@ -63,7 +63,7 @@ class Block_Welcome extends WicketAcc
         }
         ?>
 
-		<div class="wicket-acc-block wicket-acc-block-welcome wp-block-wicket-acc-callout bg-light-010 row">
+		<div class="wicket-acc-block wicket-acc-block-welcome wp-block-wicket-acc-callout row <?php echo defined( 'WICKET_WP_THEME_V2' ) ? 'wicket-acc-block-welcome--v2' : 'bg-light-010' ?>">
 			<div class="wicket-welcome-avatar col-2">
 				<?php if ($image_url) {
 				    echo '<img src="' . $image_url . '" alt="' . $person->given_name . " " . $person->family_name . __(' Profile Image', 'wicket-acc') . '" />';
@@ -102,7 +102,6 @@ class Block_Welcome extends WicketAcc
 								<?php endif; ?>
 
 								<p class="mt-0 mb-2 wicket-welcome-member-active flex items-center space-x-2">
-									<span class="green-circle inline-block w-3 h-3 mr-1 bg-green-500 rounded-full"></span>
 									<span class="text-gray-700"><?php echo __('Active Member', 'wicket-acc'); ?></span>
 								</p>
 
@@ -133,7 +132,14 @@ class Block_Welcome extends WicketAcc
 				<?php if ($edit_profile && isset($editprofile_page_link) && isset($editprofile_page_title)) {
 				    ?>
 					<div class="wicket-welcome-edit-profile-button col-3 text-right">
-						<a href="<?php echo $editprofile_page_link; ?>" class="button button--secondary text-center"><i class="fa-regular fa-pen-to-square icon-r" aria-hidden="true"></i><?php echo $editprofile_page_title; ?></a>
+						<?php get_component( 'button', [
+								'variant'     => 'secondary',
+								'a_tag'       => true,
+								'classes'     => [ 'whitespace-nowrap' ],
+								'label'       => $editprofile_page_title,
+								'prefix_icon' => 'fa-regular fa-pen-to-square',
+								'link'        => $editprofile_page_link
+							] ) ?>
 					</div>
 				<?php } ?>
 			</div>

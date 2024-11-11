@@ -190,6 +190,11 @@ class Block_TouchpointEventCalendar extends WicketAcc
         // Total results
         $total_results = count($touchpoint_data);
 
+        get_component('card-call-out', [
+            'title' => __('You have no upcoming events', 'wicket-acc'),
+            'style' => 'secondary'
+        ]);
+
         $counter = 0;
 
         foreach ($touchpoint_data as $tp) :
@@ -211,7 +216,11 @@ class Block_TouchpointEventCalendar extends WicketAcc
         // Dirty hack to update the number of results
         ?>
         <script>
-            document.getElementById('total_results').innerHTML = '<?php echo $total_results; ?>';
+            let totalElementsElement = document.getElementById('total_results');
+            
+            if ( totalElementsElement !== null ) {
+                totalElementsElement.innerHTML = '<?php echo $total_results; ?>';
+            }
         </script>
         <?php
 
