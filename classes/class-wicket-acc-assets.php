@@ -45,11 +45,15 @@ class Assets extends WicketAcc
         global $post;
 
         // Only on pages related to Wicket Account Centre
-        if (!($post->post_type === 'my-account' ||
-        str_starts_with($post->post_name, 'organization') ||
-        is_woocommerce() ||
+        if (!(
+            (isset($post) && $post instanceof \WP_Post && (
+                $post->post_type === 'my-account' ||
+                str_starts_with($post->post_name, 'organization')
+            )) ||
+            is_woocommerce() ||
             is_account_page() ||
-            is_wc_endpoint_url())) {
+            is_wc_endpoint_url()
+        )) {
             return;
         }
 
