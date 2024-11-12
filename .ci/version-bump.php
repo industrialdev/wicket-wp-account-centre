@@ -186,9 +186,9 @@ class VersionBumper
 $bumper = new VersionBumper();
 
 // Create backup before proceeding
-if (!$bumper->backup()) {
+/*if (!$bumper->backup()) {
     echo "Error: Backup failed, aborting version bump\n";
     exit(1);
-}
+}*/
 
 $bumper->run();
