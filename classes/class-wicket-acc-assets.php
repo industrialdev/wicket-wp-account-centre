@@ -44,6 +44,12 @@ class Assets extends WicketAcc
     {
         global $post;
 
+        // Empty $post?
+        if (empty($post)) {
+            // Get post data
+            $post = get_queried_object();
+        }
+
         // Only on pages related to Wicket Account Centre
         if (!(
             (isset($post) && $post instanceof \WP_Post && (
