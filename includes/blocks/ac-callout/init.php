@@ -80,6 +80,12 @@ class Block_Callout extends WicketAcc
                             if (empty($terms) || ! array_intersect($membership_cats, wp_list_pluck($terms, 'slug'))) {
                                 continue; //if it is not a membership product check the next one
                             }
+                            $Tier = \Wicket_Memberships\Membership_Tier::get_tier_by_product_id($item->get_product_id());
+                            //if this is not a pending tier skip it since they just have a membership on hold
+                            $tier_approval_required = $Tier->is_approval_required();
+                            if (empty($Tier) || empty($tier_approval_required)) {
+                                continue;
+                            }
                             $iso_code = '';
                             if (defined('ICL_SITEPRESS_VERSION')) {
                                 $iso_code = apply_filters('wpml_current_language', null);
@@ -87,10 +93,6 @@ class Block_Callout extends WicketAcc
                                     $locale = get_locale();
                                     $iso_code = substr($locale, 0, 2);
                                 }
-                            }
-                            $Tier = \Wicket_Memberships\Membership_Tier::get_tier_by_product_id($item->get_product_id());
-                            if (empty($Tier)) {
-                                continue;
                             }
                             $links = [];
                             $title = $Tier->get_approval_callout_header($iso_code);
