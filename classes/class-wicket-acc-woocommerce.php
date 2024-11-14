@@ -22,9 +22,6 @@ class WooCommerce extends WicketAcc
      */
     public function __construct()
     {
-        // HPOS compatibility
-        add_action('before_woocommerce_init', [$this, 'HPOS_Compatibility']);
-
         // Override templates
         add_filter('woocommerce_locate_template', [$this, 'override_woocommerce_template'], 10, 3);
 
@@ -41,20 +38,6 @@ class WooCommerce extends WicketAcc
 
         // Mark order as completed when it is paid
         //add_action('woocommerce_payment_complete_order_status_processing', [$this, 'mark_order_as_completed']);
-    }
-
-    /**
-     * HPOS compatibility for WooCommerce
-     *
-     * @link https://developer.woocommerce.com/docs/hpos-extension-recipe-book/
-     *
-     * @return void
-     */
-    public function HPOS_Compatibility()
-    {
-        if (class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class)) {
-            \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true);
-        }
     }
 
     /**
