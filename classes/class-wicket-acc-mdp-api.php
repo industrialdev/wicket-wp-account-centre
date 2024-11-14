@@ -66,18 +66,18 @@ class MdpApi
 
         switch ($environment) {
             case 'prod':
-                $settings['api_endpoint'] = wicket_get_option('wicket_admin_settings_prod_api_endpoint');
-                $settings['jwt'] = wicket_get_option('wicket_admin_settings_prod_secret_key');
-                $settings['person_id'] = wicket_get_option('wicket_admin_settings_prod_person_id');
-                $settings['parent_org'] = wicket_get_option('wicket_admin_settings_prod_parent_org');
-                $settings['wicket_admin'] = wicket_get_option('wicket_admin_settings_prod_wicket_admin');
+                $settings['api_endpoint'] = \wicket_get_option('wicket_admin_settings_prod_api_endpoint');
+                $settings['jwt']          = \wicket_get_option('wicket_admin_settings_prod_secret_key');
+                $settings['person_id']    = \wicket_get_option('wicket_admin_settings_prod_person_id');
+                $settings['parent_org']   = \wicket_get_option('wicket_admin_settings_prod_parent_org');
+                $settings['wicket_admin'] = \wicket_get_option('wicket_admin_settings_prod_wicket_admin');
                 break;
             case 'stage':
-                $settings['api_endpoint'] = wicket_get_option('wicket_admin_settings_stage_api_endpoint');
-                $settings['jwt'] = wicket_get_option('wicket_admin_settings_stage_secret_key');
-                $settings['person_id'] = wicket_get_option('wicket_admin_settings_stage_person_id');
-                $settings['parent_org'] = wicket_get_option('wicket_admin_settings_stage_parent_org');
-                $settings['wicket_admin'] = wicket_get_option('wicket_admin_settings_stage_wicket_admin');
+                $settings['api_endpoint'] = \wicket_get_option('wicket_admin_settings_stage_api_endpoint');
+                $settings['jwt']          = \wicket_get_option('wicket_admin_settings_stage_secret_key');
+                $settings['person_id']    = \wicket_get_option('wicket_admin_settings_stage_person_id');
+                $settings['parent_org']   = \wicket_get_option('wicket_admin_settings_stage_parent_org');
+                $settings['wicket_admin'] = \wicket_get_option('wicket_admin_settings_stage_wicket_admin');
                 break;
         }
 
