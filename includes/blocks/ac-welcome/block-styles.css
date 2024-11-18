@@ -39,6 +39,7 @@
 		font-weight: var(--heading-xs-font-weight-sm);
 		font-size: var(--heading-xs-font-size);
 		line-height: var(--heading-xs-line-height);
+    font-family: var(--heading-xs-font-family);
 		margin-bottom: var(--wicket-acc-margin-sm);
 	}
 
@@ -51,6 +52,7 @@
 		font-weight: var(--heading-lg-font-weight-sm);
 		font-size: var(--heading-lg-font-size);
 		line-height: var(--heading-lg-line-height);
+    font-family: var(--heading-lg-font-family);
 		margin-bottom: 0.5rem;
 	}
 
@@ -58,6 +60,7 @@
 		font-weight: var(--body-md-font-weight);
     line-height: var(--body-md-line-height);
 		font-size: var(--body-md-font-size);
+    font-family: var(--body-md-font-family);
 	}
 
 	.wicket-welcome-content {
@@ -114,6 +117,7 @@
 		font-size: var(--body-sm-font-size);
     font-weight: var(--body-sm-font-weight);
     line-height: var(--body-sm-line-height);
+    font-family: var(--body-sm-font-family);
 	}
 
 	.wicket-welcome-member-active::after {
