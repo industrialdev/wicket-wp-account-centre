@@ -102,6 +102,13 @@ body.wicket-theme-v2 .wicket-acc-block-touchpoints-tec {
 
 	.event-section-title {
 		font-size: var(--heading-sm-font-size);
+    line-height: var(--heading-sm-line-height);
+    font-weight: var(--heading-sm-font-weight-md);
+    font-family: var(--heading-sm-font-family);
+
+    @media screen and (max-width: 767px) {
+      font-weight: var(--heading-xs-font-weight-sm);
+    }
 	}
 
 	.event-section-container {

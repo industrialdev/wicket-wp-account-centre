@@ -68,9 +68,9 @@ if (!empty($override_past_events_link)) {
             <div class="flex flex-col md:flex-row md:justify-between items-center md:items-center w-full <?php echo defined('WICKET_WP_THEME_V2') ? 'event-section-container' : '' ?>">
                 <?php if ($display == 'upcoming' && !$single_event) : ?>
                     <?php if (!empty($title)) : ?>
-                        <h3 class="font-bold md:text-left lg:text-left <?php echo defined('WICKET_WP_THEME_V2') ? 'event-section-title' : 'text-center text-2xl text-dark-100 mb-4 md:mb-0 w-full md:w-auto' ?>"><?php echo esc_html($title); ?></h3>
+                        <h3 class="text-center md:text-left lg:text-left <?php echo defined('WICKET_WP_THEME_V2') ? 'event-section-title' : 'font-bold text-2xl text-dark-100 mb-4 md:mb-0 w-full md:w-auto' ?>"><?php echo esc_html($title); ?></h3>
                     <?php else: ?>
-                        <h3 class="font-bold md:text-left lg:text-left <?php echo defined('WICKET_WP_THEME_V2') ? 'event-section-title' : 'text-center text-2xl text-dark-100 mb-4 md:mb-0 w-full md:w-auto' ?>"><?php esc_html_e('Upcoming Registered Events', 'wicket-acc'); ?></h3>
+                        <h3 class="text-center md:text-left lg:text-left <?php echo defined('WICKET_WP_THEME_V2') ? 'event-section-title' : 'font-bold text-2xl text-dark-100 mb-4 md:mb-0 w-full md:w-auto' ?>"><?php esc_html_e('Upcoming Registered Events', 'wicket-acc'); ?></h3>
                     <?php endif; ?>
                     <a href="<?php echo $switch_link_past; ?>" class="past-link text-center md:text-right  <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-base mb-4 font-bold w-full md:w-auto' ?>"><?php esc_html_e($past_events_link_text, 'wicket-acc'); ?></a>
                 <?php elseif ($display == 'past' && !$single_event) : ?>
