@@ -183,7 +183,9 @@ class WicketAcc
     /**
      * Constructor
      */
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     /**
      * Run
@@ -195,6 +197,8 @@ class WicketAcc
         register_activation_hook(__FILE__, [$this, 'plugin_activated']);
 
         $this->includes();
+
+        ray('Wicket\'s Account Centre');
 
         if (is_admin()) {
             new AdminSettings();
@@ -284,7 +288,9 @@ class WicketAcc
     /**
      * Plugin activation
      */
-    public function plugin_activated() {}
+    public function plugin_activated()
+    {
+    }
 } // end Class.
 
 // Initialize the plugin

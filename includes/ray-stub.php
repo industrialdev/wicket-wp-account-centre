@@ -11,7 +11,7 @@ defined('ABSPATH') || exit;
 if (!function_exists('ray')) {
     function ray($variable = null)
     {
-        return new class {
+        return new class () {
             public function __call($name, $arguments)
             {
                 // Handle all dynamic method calls
