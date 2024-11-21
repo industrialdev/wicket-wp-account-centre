@@ -97,6 +97,15 @@
 		}
 	}
 
+	&.wicket-acc-block-welcome--v2 .wicket-welcome-edit-profile-button {
+    text-align: right;
+    min-width: 260px;
+
+    @media screen and (max-width: 767px) {
+      text-align: left;
+    }
+	}
+
 	.wicket-welcome-member-since,
 	.wicket-welcome-renewal {
 		font-size: var(--body-sm-font-size, 14px);
