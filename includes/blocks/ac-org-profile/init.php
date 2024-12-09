@@ -101,7 +101,7 @@ class Block_OrgProfile extends WicketAcc
 		return w
 	}(document, "script", "wicket-widgets",
 		"<?php echo $wicket_settings['wicket_admin'] ?>/dist/widgets.js"
-		);
+	);
 </script>
 
 <script>
@@ -159,22 +159,8 @@ class Block_OrgProfile extends WicketAcc
 </script>
 <?php endif; ?>
 <?php
-        } elseif ($org_ids) {
-            // If no Org ID, then show selection of orgs.
-            echo "<h2>" . __('Choose an Organization:', 'wicket-acc') . "</h2>";
-            echo "<ul>";
-            // lookup org details based on UUID found on the role
-            foreach ($org_ids as $org_uuid) {
-                $organization = $client->get("organizations/$org_uuid");
-                echo "<li>";
-                echo "<a href='" . home_url(add_query_arg([], $wp->request)) . "?org_id=$org_uuid'>";
-                echo $organization['data']['attributes']['legal_name_' . $lang];
-                echo "</a>";
-                echo "</li>";
-            }
-            echo '</ul>';
         } else {
-            echo "<p>" . __('You currently have no organizations to manage information for.', 'wicket-acc') . "</p>";
+            echo "<!--" . __('You currently have no organizations to manage information for.', 'wicket-acc') . "-->";
         }
     }
 }
