@@ -79,81 +79,85 @@ class Block_OrgProfile extends WicketAcc
             $access_token = wicket_get_access_token(wicket_current_person_uuid(), $org_id);
             ?>
 
-			<div class="wicket-section" role="complementary">
-				<h2><?php _e('Profile', 'wicket-acc'); ?></h2>
-				<div id="profile"></div>
-			</div>
+<div class="wicket-section" role="complementary">
+	<h2><?php _e('Profile', 'wicket-acc'); ?>
+	</h2>
+	<div id="profile"></div>
+</div>
 
-			<script>
-				window.Wicket = function(doc, tag, id, script) {
-					var w = window.Wicket || {};
-					if (doc.getElementById(id)) return w;
-					var ref = doc.getElementsByTagName(tag)[0];
-					var js = doc.createElement(tag);
-					js.id = id;
-					js.src = script;
-					ref.parentNode.insertBefore(js, ref);
-					w._q = [];
-					w.ready = function(f) {
-						w._q.push(f)
-					};
-					return w
-				}(document, "script", "wicket-widgets", "<?php echo $wicket_settings['wicket_admin'] ?>/dist/widgets.js");
-			</script>
+<script>
+	window.Wicket = function(doc, tag, id, script) {
+		var w = window.Wicket || {};
+		if (doc.getElementById(id)) return w;
+		var ref = doc.getElementsByTagName(tag)[0];
+		var js = doc.createElement(tag);
+		js.id = id;
+		js.src = script;
+		ref.parentNode.insertBefore(js, ref);
+		w._q = [];
+		w.ready = function(f) {
+			w._q.push(f)
+		};
+		return w
+	}(document, "script", "wicket-widgets",
+		"<?php echo $wicket_settings['wicket_admin'] ?>/dist/widgets.js"
+		);
+</script>
 
-			<script>
-				(function() {
-					Wicket.ready(function() {
-						var widgetRoot = document.getElementById('profile');
+<script>
+	(function() {
+		Wicket.ready(function() {
+			var widgetRoot = document.getElementById('profile');
 
-						Wicket.widgets.editOrganizationProfile({
-							rootEl: widgetRoot,
-							apiRoot: '<?php echo $wicket_settings['api_endpoint'] ?>',
-							accessToken: '<?php echo $access_token ?>',
-							orgId: '<?php echo $org_id ?>',
-							lang: "<?php echo $lang; ?>"
-						}).then(function(widget) {
-							widget.listen(widget.eventTypes.SAVE_SUCCESS, function(payload) {
+			Wicket.widgets.editOrganizationProfile({
+				rootEl: widgetRoot,
+				apiRoot: '<?php echo $wicket_settings['api_endpoint'] ?>',
+				accessToken: '<?php echo $access_token ?>',
+				orgId: '<?php echo $org_id ?>',
+				lang: "<?php echo $lang; ?>"
+			}).then(function(widget) {
+				widget.listen(widget.eventTypes.SAVE_SUCCESS, function(payload) {
 
-							});
-						});
-					});
-				})()
-			</script>
+				});
+			});
+		});
+	})()
+</script>
 
-			<?php if ($this->hide_additional_info == 0) : ?>
-				<div class="wicket-section" role="complementary">
-					<h2><?php _e('Additional Info', 'wicket-acc'); ?></h2>
-					<div id="additional_info"></div>
-				</div>
+<?php if ($this->hide_additional_info == 0) : ?>
+<div class="wicket-section" role="complementary">
+	<h2><?php _e('Additional Info', 'wicket-acc'); ?>
+	</h2>
+	<div id="additional_info"></div>
+</div>
 
-				<script>
-					(function() {
-						Wicket.ready(function() {
-							var widgetRoot = document.getElementById('additional_info');
+<script>
+	(function() {
+		Wicket.ready(function() {
+			var widgetRoot = document.getElementById('additional_info');
 
-							Wicket.widgets.editAdditionalInfo({
-								loadIcons: true,
-								rootEl: widgetRoot,
-								apiRoot: '<?php echo $wicket_settings['api_endpoint'] ?>',
-								accessToken: '<?php echo $access_token ?>',
-								resource: {
-									type: "organizations",
-									id: '<?php echo $org_id ?>'
-								},
-								lang: "<?php echo $lang; ?>",
-								// schemas: [ // If schemas are not provided, the widget defaults to show all schemas.
+			Wicket.widgets.editAdditionalInfo({
+				loadIcons: true,
+				rootEl: widgetRoot,
+				apiRoot: '<?php echo $wicket_settings['api_endpoint'] ?>',
+				accessToken: '<?php echo $access_token ?>',
+				resource: {
+					type: "organizations",
+					id: '<?php echo $org_id ?>'
+				},
+				lang: "<?php echo $lang; ?>",
+				// schemas: [ // If schemas are not provided, the widget defaults to show all schemas.
 
-								// ]
-							}).then(function(widget) {
-								widget.listen(widget.eventTypes.SAVE_SUCCESS, function(payload) {
+				// ]
+			}).then(function(widget) {
+				widget.listen(widget.eventTypes.SAVE_SUCCESS, function(payload) {
 
-								});
-							});
-						});
-					})()
-				</script>
-			<?php endif; ?>
+				});
+			});
+		});
+	})()
+</script>
+<?php endif; ?>
 <?php
         } elseif ($org_ids) {
             // If no Org ID, then show selection of orgs.
@@ -174,3 +178,4 @@ class Block_OrgProfile extends WicketAcc
         }
     }
 }
+?>
