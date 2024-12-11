@@ -1,0 +1,14 @@
+body.wicket-theme-v2 {
+
+  /* Remove horizontal padding for bootstrap container class */
+  .container,
+  .container-fluid,
+  .container-lg,
+  .container-md,
+  .container-sm,
+  .container-xl,
+  .container-xxl {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
