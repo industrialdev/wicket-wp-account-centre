@@ -2,12 +2,10 @@
 
 namespace WicketAcc\Blocks\TouchpointMicrospec;
 
-use WicketAcc\Blocks;
-
 // No direct access
 defined('ABSPATH') || exit;
 
-class ajax extends Blocks\Block_TouchpointMicroSpec
+class ajax extends init
 {
     /**
      * Constructor.

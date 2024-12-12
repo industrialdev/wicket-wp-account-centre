@@ -2,7 +2,7 @@
 
 namespace WicketAcc\Blocks\TouchpointEventCalendar;
 
-use WicketAcc\WicketAcc;
+use WicketAcc\Blocks;
 
 // No direct access
 defined('ABSPATH') || exit;
@@ -10,7 +10,7 @@ defined('ABSPATH') || exit;
 /**
  * Wicket Touchpoint Event Calendar Block.
  **/
-class init extends WicketAcc
+class init extends Blocks
 {
     /**
      * Constructor.
@@ -219,7 +219,7 @@ class init extends WicketAcc
         ?>
         <script>
             let totalElementsElement = document.getElementById('total_results');
-            
+
             if ( totalElementsElement !== null ) {
                 totalElementsElement.innerHTML = '<?php echo $total_results; ?>';
             }
