@@ -6,7 +6,8 @@ class VersionBumper
     private string $currentVersion;
     private array $filesToUpdate = [
         'composer.json',
-        'class-wicket-acc-main.php',
+        'class-wicket-acc-main.php', // Wicket's Account Center plugin
+        'style.css' // Wicket's Theme
     ];
 
     /**
@@ -93,15 +94,52 @@ class VersionBumper
             return false;
         }
 
+        // Handle different file types
+        $extension = pathinfo($filePath, PATHINFO_EXTENSION);
         $pattern = preg_quote($this->currentVersion, '/');
-        $newContent = preg_replace("/$pattern/", $newVersion, $content);
+        $updated = false;
+
+        switch ($extension) {
+            case 'css':
+                // For CSS files, look for Version: X.X.X pattern
+                $pattern = '/Version:\s*' . $pattern . '/i';
+                $newContent = preg_replace($pattern, 'Version: ' . $newVersion, $content, -1, $count);
+                $updated = $count > 0;
+                break;
+            case 'json':
+                // For JSON files, look for "version": "X.X.X" pattern
+                $pattern = '/"version":\s*"' . $pattern . '"/';
+                $newContent = preg_replace($pattern, '"version": "' . $newVersion . '"', $content, -1, $count);
+                $updated = $count > 0;
+                break;
+            case 'php':
+                // Try both patterns for PHP files
+                // Pattern 1: Version: X.X.X with possible multiple spaces
+                $pattern1 = '/Version:\s+' . $pattern . '/';
+                $newContent = preg_replace($pattern1, 'Version:           ' . $newVersion, $content, -1, $count1);
+                
+                if ($count1 === 0) {
+                    // Pattern 2: Direct version number (fallback)
+                    $pattern2 = '/' . $pattern . '/';
+                    $newContent = preg_replace($pattern2, $newVersion, $content, -1, $count2);
+                    $updated = $count2 > 0;
+                } else {
+                    $updated = true;
+                }
+                break;
+            default:
+                // For other files, do direct version replacement
+                $pattern = '/' . $pattern . '/';
+                $newContent = preg_replace($pattern, $newVersion, $content, -1, $count);
+                $updated = $count > 0;
+        }
 
         if ($newContent === null) {
             echo "Error: Pattern replacement failed in {$filePath}\n";
             return false;
         }
 
-        if ($content === $newContent) {
+        if (!$updated) {
             echo "Warning: No version string found in {$filePath}\n";
             return false;
         }
