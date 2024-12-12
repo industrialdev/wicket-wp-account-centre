@@ -2,7 +2,7 @@
 
 namespace WicketAcc\Blocks\OrgLogo;
 
-use WicketAcc\WicketAcc;
+use WicketAcc\Blocks;
 
 // No direct access
 defined('ABSPATH') || exit;
@@ -11,7 +11,7 @@ defined('ABSPATH') || exit;
  * Wicket Organization Profile Picture Block.
  *
  **/
-class init extends WicketAcc
+class init extends Blocks
 {
     /**
      * Constructor.
