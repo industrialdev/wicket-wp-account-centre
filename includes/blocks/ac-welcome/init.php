@@ -60,7 +60,7 @@ class init extends WicketAcc
             $editprofile_page_link = $edit_profile_button_link['url'];
             $editprofile_page_title = $edit_profile_button_link['title'];
         }
-?>
+        ?>
 
         <div class="wicket-acc-block wicket-acc-block-welcome wp-block-wicket-acc-callout row <?php echo defined('WICKET_WP_THEME_V2') ? 'wicket-acc-block-welcome--v2' : 'bg-light-010' ?>">
             <div class="wicket-welcome-avatar col-2">
@@ -103,7 +103,7 @@ class init extends WicketAcc
                                 continue;
                             }
                             $seen_memberships[$membership_key] = true;
-                    ?>
+                            ?>
                             <div class="my-0 wicket-welcome-memberships">
                                 <p class="mb-0 wicket-welcome-member-type">
                                     <strong><?php echo __('Membership Type:', 'wicket-acc'); ?></strong>
@@ -111,12 +111,12 @@ class init extends WicketAcc
                                 </p>
 
                                 <?php
-                                if ($membership['type'] == 'organization') :
-                                    $org_main_info = WACC()->MdpApi->get_organization_membership_by_uuid($membership['organization_membership_id']);
-                                    $org_uuid = $org_main_info['data']['relationships']['organization']['data']['id'];
+                                        if ($membership['type'] == 'organization') :
+                                            $org_main_info = WACC()->MdpApi->get_organization_membership_by_uuid($membership['organization_membership_id']);
+                                            $org_uuid = $org_main_info['data']['relationships']['organization']['data']['id'];
 
-                                    $org_info = wicket_get_active_memberships_relationship($org_uuid);
-                                ?>
+                                            $org_info = wicket_get_active_memberships_relationship($org_uuid);
+                                            ?>
                                     <p class="mb-0 wicket-welcome-member-org">
                                         <strong><?php echo $org_info['relationship']; ?>
                                             &ndash;
@@ -153,19 +153,19 @@ class init extends WicketAcc
                     <?php
                         }
                     }
-                    ?>
+        ?>
                 </div>
                 <?php if ($edit_profile && isset($editprofile_page_link) && isset($editprofile_page_title)) {
-                ?>
+                    ?>
                     <div class="wicket-welcome-edit-profile-button col-3 text-right">
                         <?php get_component('button', [
-                            'variant'     => 'secondary',
-                            'a_tag'       => true,
-                            'classes'     => ['whitespace-nowrap'],
-                            'label'       => $editprofile_page_title,
-                            'prefix_icon' => 'fa-regular fa-pen-to-square',
-                            'link'        => $editprofile_page_link,
-                        ]) ?>
+                                'variant'     => 'secondary',
+                                'a_tag'       => true,
+                                'classes'     => ['whitespace-nowrap'],
+                                'label'       => $editprofile_page_title,
+                                'prefix_icon' => 'fa-regular fa-pen-to-square',
+                                'link'        => $editprofile_page_link,
+                            ]) ?>
                     </div>
                 <?php } ?>
             </div>
