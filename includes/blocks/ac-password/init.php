@@ -2,8 +2,8 @@
 
 namespace WicketAcc\Blocks\Password;
 
-use WicketAcc\WicketAcc;
 use Exception;
+use WicketAcc\WicketAcc;
 
 // No direct access
 defined('ABSPATH') || exit;

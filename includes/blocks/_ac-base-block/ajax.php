@@ -2,8 +2,6 @@
 
 namespace WicketAcc\Blocks\BaseBlock;
 
-use WicketAcc\WicketAcc;
-
 // No direct access
 defined('ABSPATH') || exit;
 
