@@ -1,6 +1,8 @@
 <?php
 
-namespace WicketAcc;
+namespace WicketAcc\Blocks\ProfilePicture;
+
+use WicketAcc\WicketAcc;
 
 // No direct access
 defined('ABSPATH') || exit;

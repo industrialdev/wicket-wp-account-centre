@@ -1,8 +1,8 @@
 <?php
 
-namespace WicketAcc;
+namespace WicketAcc\Blocks\Welcome;
 
 /*
  * Wicket Welcome Block
  **/
-new Block_Welcome($block = [], $is_preview);
+new init($block = [], $is_preview);

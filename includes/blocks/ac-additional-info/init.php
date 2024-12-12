@@ -1,6 +1,8 @@
 <?php
 
-namespace WicketAcc;
+namespace WicketAcc\Blocks\AdditionalInfo;
+
+use WicketAcc\WicketAcc;
 
 // No direct access
 defined('ABSPATH') || exit;

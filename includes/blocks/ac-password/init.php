@@ -1,7 +1,8 @@
 <?php
 
-namespace WicketAcc;
+namespace WicketAcc\Blocks\Password;
 
+use WicketAcc\WicketAcc;
 use Exception;
 
 // No direct access

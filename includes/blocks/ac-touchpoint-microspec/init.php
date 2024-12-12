@@ -1,6 +1,8 @@
 <?php
 
-namespace WicketAcc;
+namespace WicketAcc\Blocks\TouchpointMicrospec;
+
+use WicketAcc\Blocks;
 
 // No direct access
 defined('ABSPATH') || exit;

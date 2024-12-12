@@ -1,8 +1,8 @@
 <?php
 
-namespace WicketAcc;
+namespace WicketAcc\Blocks\BaseBlock;
 
 /*
- * Wicket Block: Base Block
+ * Wicket Base Block
  **/
-new Block_BaseBlock($block = [], $is_preview);
+new init($block = [], $is_preview);

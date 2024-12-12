@@ -1,8 +1,8 @@
 <?php
 
-namespace WicketAcc;
+namespace WicketAcc\Blocks\TouchpointMicrospec;
 
 /*
- * Wicket Touchpoint MicroSpec Block
+ * Wicket Touchpoint Microspec Block
  **/
-new Block_TouchpointMicroSpec($block = [], $is_preview);
+new init($block = [], $is_preview);

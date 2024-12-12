@@ -1,8 +1,8 @@
 <?php
 
-namespace WicketAcc;
+namespace WicketAcc\Blocks\OrgLogo;
 
 /*
- * Wicket Organization Logo Change Block
+ * Wicket Organization Logo Block
  **/
-new Block_OrgLogoChange($block = [], $is_preview);
+new init($block = [], $is_preview);

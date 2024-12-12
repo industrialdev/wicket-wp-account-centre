@@ -1,8 +1,8 @@
 <?php
 
-namespace WicketAcc;
+namespace WicketAcc\Blocks\IndividualProfile;
 
 /*
- * Wicket Profile Block
+ * Wicket Individual Profile Block
  **/
-new Block_Profile($block = [], $is_preview);
+new init($block = [], $is_preview);

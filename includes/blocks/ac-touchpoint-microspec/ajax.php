@@ -1,11 +1,13 @@
 <?php
 
-namespace WicketAcc;
+namespace WicketAcc\Blocks\TouchpointMicrospec;
+
+use WicketAcc\Blocks;
 
 // No direct access
 defined('ABSPATH') || exit;
 
-class ajax extends Block_TouchpointMicroSpec
+class ajax extends Blocks\Block_TouchpointMicroSpec
 {
     /**
      * Constructor.
@@ -72,4 +74,4 @@ class ajax extends Block_TouchpointMicroSpec
     }
 }
 
-new BlockAjax_TouchpointMicroSpec();
+new ajax();

@@ -1,11 +1,13 @@
 <?php
 
-namespace WicketAcc;
+namespace WicketAcc\Blocks\TouchpointEventCalendar;
+
+use WicketAcc\WicketAcc;
 
 // No direct access
 defined('ABSPATH') || exit;
 
-class ajax extends Block_TouchpointEventCalendar
+class ajax extends init
 {
     /**
      * Constructor.
@@ -72,4 +74,4 @@ class ajax extends Block_TouchpointEventCalendar
     }
 }
 
-new BlockAjax_TouchpointEventCalendar();
+new ajax();

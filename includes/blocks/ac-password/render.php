@@ -1,8 +1,8 @@
 <?php
 
-namespace WicketAcc;
+namespace WicketAcc\Blocks\Password;
 
 /*
  * Wicket Password Block
  **/
-new Block_Password($block = [], $is_preview);
+new init($block = [], $is_preview);
