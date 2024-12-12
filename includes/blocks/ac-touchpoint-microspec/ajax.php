@@ -5,10 +5,10 @@ namespace WicketAcc;
 // No direct access
 defined('ABSPATH') || exit;
 
-class BlockAjax_TouchpointMicroSpec extends Block_TouchpointMicroSpec
+class ajax extends Block_TouchpointMicroSpec
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -18,7 +18,7 @@ class BlockAjax_TouchpointMicroSpec extends Block_TouchpointMicroSpec
     }
 
     /**
-     * Ajax load more results
+     * Ajax load more results.
      *
      * @return void
      */
@@ -40,10 +40,10 @@ class BlockAjax_TouchpointMicroSpec extends Block_TouchpointMicroSpec
         }
 
         // Retrieve form data
-        $num_results   = absint($_POST['num_results']);
+        $num_results = absint($_POST['num_results']);
         $total_results = absint($_POST['total_results']);
-        $counter       = absint($_POST['counter']);
-        $display_type  = sanitize_text_field($_POST['type']);
+        $counter = absint($_POST['counter']);
+        $display_type = sanitize_text_field($_POST['type']);
 
         $touchpoints_results = $this->get_touchpoints_results('MicroSpec');
 

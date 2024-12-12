@@ -6,52 +6,52 @@ namespace WicketAcc;
 defined('ABSPATH') || exit;
 
 /**
- * Wicket Callout Block
+ * Wicket Callout Block.
  *
  **/
-class Block_Callout extends WicketAcc
+class init extends WicketAcc
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct(
-        protected array $block     = [],
+        protected array $block = [],
         protected bool $is_preview = false,
         protected ?Blocks $blocks = null,
     ) {
-        $this->block      = $block;
+        $this->block = $block;
         $this->is_preview = $is_preview;
-        $this->blocks     = $blocks ?? new Blocks();
+        $this->blocks = $blocks ?? new Blocks();
 
         // Display the block
         $this->init_block();
     }
 
     /**
-     * Init block
+     * Init block.
      *
      * @return void
      */
     protected function init_block()
     {
-        $block_logic             = get_field('block_logic');
-        $renewal_period     = get_field('renewal_period');
+        $block_logic = get_field('block_logic');
+        $renewal_period = get_field('renewal_period');
         $mandatory_fields = get_field('select_profile_mandatory_fields');
-        $title                   = get_field('ac_callout_title');
-        $description             = get_field('ac_callout_description');
-        $links                   = get_field('ac_callout_links');
-        $memberships             = wicket_get_active_memberships();
-        $woo_memberships    = woo_get_active_memberships();
-        $classes          = [];
+        $title = get_field('ac_callout_title');
+        $description = get_field('ac_callout_description');
+        $links = get_field('ac_callout_links');
+        $memberships = wicket_get_active_memberships();
+        $woo_memberships = woo_get_active_memberships();
+        $classes = [];
 
         if ($this->is_preview) {
             if ($block_logic == '') {
                 $block_logic == 'not-set';
             }
             $args = [
-                'block_name'          => 'Membership Block',
-                'block_description'   => 'This block displays Membership Callouts [ ' . $block_logic . ' ]',
-                'block_slug'          => 'wicket-ac-memberships',
+                'block_name'        => 'Membership Block',
+                'block_description' => 'This block displays Membership Callouts [ ' . $block_logic . ' ]',
+                'block_slug'        => 'wicket-ac-memberships',
             ];
 
             $this->blocks->render_template('preview', $args);
@@ -67,17 +67,17 @@ class Block_Callout extends WicketAcc
                  * Check for Order status 'on-hold' with a Subscription Product in 'membership' Category
                  * If found we will display the Pending Callout for the Product's assigned Tier
                  * Use filter to add product_cat you want to look for
-                 * apply_filters("wicket_renewal_filter_product_data", function() { return ['memberships']}, 10, 1);
+                 * apply_filters("wicket_renewal_filter_product_data", function() { return ['memberships']}, 10, 1);.
                  */
                 $orders = wc_get_orders(['type' => 'shop_order', 'status' => 'wc-on-hold', 'limit' => -1, 'customer' => get_current_user_id()]);
                 $membership_cats = ['membership'];
-                $membership_cats = apply_filters("wicket_renewal_filter_product_data", $membership_cats);
+                $membership_cats = apply_filters('wicket_renewal_filter_product_data', $membership_cats);
 
                 foreach ($orders as $order) {
                     foreach ($order->get_items() as $item) {
                         if (class_exists('WC_Subscriptions_Product') && \WC_Subscriptions_Product::is_subscription($item->get_product_id())) {
                             $terms = get_the_terms($item->get_product_id(), 'product_cat');
-                            if (empty($terms) || ! array_intersect($membership_cats, wp_list_pluck($terms, 'slug'))) {
+                            if (empty($terms) || !array_intersect($membership_cats, wp_list_pluck($terms, 'slug'))) {
                                 continue; //if it is not a membership product check the next one
                             }
                             $Tier = \Wicket_Memberships\Membership_Tier::get_tier_by_product_id($item->get_product_id());
@@ -100,7 +100,7 @@ class Block_Callout extends WicketAcc
                             $button_label = $Tier->get_approval_callout_button_label($iso_code);
                             $link['link'] = [
                                 'title' => $button_label,
-                                'url' => 'mailto: ' . $Tier->get_approval_email() . '?subject=' . __('Re: Pending Membership Request', 'wicket-memberships'),
+                                'url'   => 'mailto: ' . $Tier->get_approval_email() . '?subject=' . __('Re: Pending Membership Request', 'wicket-memberships'),
                             ];
                             if(!empty($button_label) && $button_label != ' ') {
                                 $links[] = $link;
@@ -117,6 +117,7 @@ class Block_Callout extends WicketAcc
                                 'style'       => '',
                             ]);
                             echo '</div>';
+
                             return; //skipping  this will show all the order / products currently on-hold
                         }
                     }
@@ -131,7 +132,7 @@ class Block_Callout extends WicketAcc
                          */
                         $renewal_type = 'pending_approval';
                         $membership_renewals = (new \Wicket_Memberships\Membership_Controller())->get_membership_callouts();
-                        #$membership_renewals[$renewal_type] = '';
+                        //$membership_renewals[$renewal_type] = '';
                         if (!empty($membership_renewals[$renewal_type])) {
                             foreach ($membership_renewals[$renewal_type] as $renewal_data) {
                                 $links = [];
@@ -140,7 +141,7 @@ class Block_Callout extends WicketAcc
                                 if(!empty($renewal_data['callout']['button_label']) && $renewal_data['callout']['button_label'] != ' ') {
                                     $link['link'] = [
                                         'title' => $renewal_data['callout']['button_label'],
-                                        'url' => 'mailto: ' . $renewal_data['callout']['email'],
+                                        'url'   => 'mailto: ' . $renewal_data['callout']['email'],
                                     ];
                                     $links[] = $link;
                                 }
@@ -157,6 +158,7 @@ class Block_Callout extends WicketAcc
                                 ]);
                                 echo '</div>';
                             }
+
                             return;
                         }
                         $show_block = (!$memberships) ? true : false;
@@ -204,15 +206,15 @@ class Block_Callout extends WicketAcc
                                 continue;
                             }
                             unset($links);
-                            #echo '<pre>'; var_dump( $membership ); echo '</pre>';
+                            //echo '<pre>'; var_dump( $membership ); echo '</pre>';
                             if ($membership['membership']['meta']['membership_status'] == 'pending') {
                                 //this status is convered in the Become a Member block
                                 continue;
                             } elseif (!empty($membership['membership']['next_tier'])) {
-                                #echo '<pre>'; var_dump( $membership['membership']['next_tier'] ); echo '</pre>';
+                                //echo '<pre>'; var_dump( $membership['membership']['next_tier'] ); echo '</pre>';
                                 $links = wicket_ac_memberships_get_product_link_data($membership, $renewal_type);
                             } elseif (!empty($membership['membership']['form_page'])) {
-                                #echo '<pre>'; var_dump( $membership['membership']['form_page'] ); echo '</pre>';
+                                //echo '<pre>'; var_dump( $membership['membership']['form_page'] ); echo '</pre>';
                                 $links = wicket_ac_memberships_get_page_link_data($membership);
                             }
                             $title = $membership['callout']['header'];
@@ -246,17 +248,18 @@ class Block_Callout extends WicketAcc
                     }
                     if (!empty($_ENV['WICKET_MEMBERSHIPS_DEBUG_ACC'])) {
                         $args = [
-                            'post_type' => 'wicket_mship_tier',
-                            'post_status' => 'publish',
+                            'post_type'      => 'wicket_mship_tier',
+                            'post_status'    => 'publish',
                             'posts_per_page' => -1,
                         ];
                         $tiers = new \WP_Query($args);
                         foreach($tiers->posts as $tier) {
-                            $tier_hide_classes[] = '.acc_hide_mship_' . str_replace([' ','-',','], '', strToLower($tier->post_title));
+                            $tier_hide_classes[] = '.acc_hide_mship_' . str_replace([' ', '-', ','], '', strtolower($tier->post_title));
                         }
                         echo '<div style="padding: 8px;border: solid 2px #ccc; border-radius: 5px;"><p>For testing callouts add <code style="background-color:#ccc;font-size:10pt;"> ?wicket_wp_membership_debug_days=123 </code>&nbsp;to see what callouts would appear in 123 days.</p>';
                         echo '<p>You can add the following classes:&nbsp;<code style="background-color:#ccc;font-size:10pt;"> .acc_hide_mship_any, ' . implode(', ', $tier_hide_classes) . ' </code>&nbsp;to any element on this page to hide when an active or delayed status membership exists for the user.</p></div>';
                     }
+
                     return;
                 }
                 break;

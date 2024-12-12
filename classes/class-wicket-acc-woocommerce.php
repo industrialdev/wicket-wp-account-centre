@@ -7,18 +7,16 @@ defined('ABSPATH') || exit;
 
 /**
  * Wicket Account Centre
- * WooCommerce
- *
- * @package Wicket
+ * WooCommerce.
  */
 
 /**
- * WooCommerce Class
+ * WooCommerce Class.
  */
 class WooCommerce extends WicketAcc
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -41,7 +39,7 @@ class WooCommerce extends WicketAcc
     }
 
     /**
-     * Override WooCommerce templates
+     * Override WooCommerce templates.
      *
      * @param string $template
      * @param string $template_name
@@ -58,7 +56,7 @@ class WooCommerce extends WicketAcc
         // WC myaccount to ACC dashboard
         if ($template_name === 'myaccount/my-account.php') {
             $plugin_template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/page-wc.php';
-            $user_template   = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/page-wc.php';
+            $user_template = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/page-wc.php';
 
             if (file_exists($user_template)) {
                 return $user_template;
@@ -97,7 +95,7 @@ class WooCommerce extends WicketAcc
     }
 
     /**
-     * Remove "order again" button from orders and order table inside WooCommerce my account
+     * Remove "order again" button from orders and order table inside WooCommerce my account.
      *
      * @return void
      */
@@ -127,7 +125,7 @@ class WooCommerce extends WicketAcc
         }
 
         $acc_global_headerbanner_page_id = WACC()->getGlobalHeaderBannerPageId();
-        $acc_global_banner_page          = get_post($acc_global_headerbanner_page_id);
+        $acc_global_banner_page = get_post($acc_global_headerbanner_page_id);
 
         // What happened here?
         if (empty($acc_global_banner_page)) {

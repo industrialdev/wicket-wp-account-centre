@@ -6,28 +6,28 @@ namespace WicketAcc;
 defined('ABSPATH') || exit;
 
 /**
- * Wicket Touchpoint Event Calendar Block
+ * Wicket Touchpoint Event Calendar Block.
  **/
-class Block_TouchpointEventCalendar extends WicketAcc
+class init extends WicketAcc
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct(
-        protected array $block     = [],
+        protected array $block = [],
         protected bool $is_preview = false,
         protected ?Blocks $blocks = null,
     ) {
-        $this->block      = $block;
+        $this->block = $block;
         $this->is_preview = $is_preview;
-        $this->blocks     = $blocks ?? new Blocks();
+        $this->blocks = $blocks ?? new Blocks();
 
         // Display the block
         $this->init_block();
     }
 
     /**
-     * Init block
+     * Init block.
      *
      * @return void
      */
@@ -42,9 +42,9 @@ class Block_TouchpointEventCalendar extends WicketAcc
 
         if ($this->is_preview) {
             $args = [
-                'block_name'          => 'Touchpoints TEC',
-                'block_description'   => 'This block displays registered data for The Events Calendar on the front-end.',
-                'block_slug'          => 'wicket-ac-touchpoint-tec',
+                'block_name'        => 'Touchpoints TEC',
+                'block_description' => 'This block displays registered data for The Events Calendar on the front-end.',
+                'block_slug'        => 'wicket-ac-touchpoint-tec',
             ];
 
             $this->blocks->render_template('preview', $args);
@@ -54,31 +54,31 @@ class Block_TouchpointEventCalendar extends WicketAcc
 
         echo '<section ' . $attrs . '>';
 
-        $title                          = get_field('title');
-        $display                        = get_field('default_display');
-        $registered_action              = get_field('registered_action');
-        $num_results                    = get_field('page_results');
-        $override_past_events_link      = get_field('override_past_events_link');
+        $title = get_field('title');
+        $display = get_field('default_display');
+        $registered_action = get_field('registered_action');
+        $num_results = get_field('page_results');
+        $override_past_events_link = get_field('override_past_events_link');
         $override_past_events_link_text = get_field('override_past_events_link_text');
-        $show_view_more_events          = get_field('show_view_more_events');
-        $use_x_columns                  = get_field('use_x_columns');
+        $show_view_more_events = get_field('show_view_more_events');
+        $use_x_columns = get_field('use_x_columns');
 
-        $total_results     = 0;
-        $counter           = 0;
-        $display_type      = 'upcoming';
+        $total_results = 0;
+        $counter = 0;
+        $display_type = 'upcoming';
 
         $touchpoints_results = $this->get_touchpoints_results('Events Calendar');
 
         if (empty($registered_action)) {
             $registered_action = [
-                "rsvp_to_event",
-                "registered_for_an_event",
-                "attended_an_event",
+                'rsvp_to_event',
+                'registered_for_an_event',
+                'attended_an_event',
             ];
         }
 
         // Get query vars
-        $display     = isset($_REQUEST['show']) ? sanitize_text_field($_REQUEST['show']) : 'upcoming';
+        $display = isset($_REQUEST['show']) ? sanitize_text_field($_REQUEST['show']) : 'upcoming';
         $num_results = isset($_REQUEST['num_results']) ? absint($_REQUEST['num_results']) : $num_results;
 
         if (empty($display)) {
@@ -99,7 +99,7 @@ class Block_TouchpointEventCalendar extends WicketAcc
         // Switch link
         $display_other = $display == 'upcoming' ? 'past' : 'upcoming';
 
-        $switch_link   = add_query_arg(
+        $switch_link = add_query_arg(
             [
                 'show'        => $display_other,
                 'num_results' => $num_results,
@@ -134,11 +134,10 @@ class Block_TouchpointEventCalendar extends WicketAcc
         // Render block
         WACC()->Blocks->render_template('touchpoint-tec', $args);
 
-        return;
     }
 
     /**
-     * Get touchpoints results
+     * Get touchpoints results.
      *
      * $service_id - Touchpoint service id
      *
@@ -152,13 +151,13 @@ class Block_TouchpointEventCalendar extends WicketAcc
 
         // Debug with person: 9e0093fb-6df8-4da3-bf62-e6c135c1e4b0
         $touchpoint_service = WACC()->MdpApi->create_touchpoint_service_id($service_id);
-        $touchpoints        = WACC()->MdpApi->get_current_user_touchpoints($touchpoint_service);
+        $touchpoints = WACC()->MdpApi->get_current_user_touchpoints($touchpoint_service);
 
         return $touchpoints;
     }
 
     /**
-     * Display the touchpoints
+     * Display the touchpoints.
      *
      * @param array $touchpoint_data Touchpoint data
      * @param string $display Touchpoint display type: upcoming, past, all
@@ -175,13 +174,14 @@ class Block_TouchpointEventCalendar extends WicketAcc
             echo '<p class="no-data">';
             _e('You do not have any ' . $display_type . ' data at this time.', 'wicket-acc');
             echo '</p>';
+
             return;
         }
 
         // Config defaults
         if (empty($config)) {
             $config['show_view_more_events'] = true;
-            $config['use_x_columns']         = 1;
+            $config['use_x_columns'] = 1;
         }
 
         // Filter data by type
@@ -231,7 +231,7 @@ class Block_TouchpointEventCalendar extends WicketAcc
     }
 
     /**
-     * Filter touchpoint data
+     * Filter touchpoint data.
      *
      * @param array $touchpoint_data Touchpoint data
      * @param string $display_type Touchpoint display type: upcoming, past, all
@@ -262,6 +262,7 @@ class Block_TouchpointEventCalendar extends WicketAcc
                     return $display_type == 'past';
                 }
             }
+
             return false;
         });
 
@@ -269,7 +270,7 @@ class Block_TouchpointEventCalendar extends WicketAcc
     }
 
     /**
-     * Load more results
+     * Load more results.
      *
      * @param array $touchpoint_data Touchpoint data
      * @param int $num_results Number of results to display
@@ -282,9 +283,9 @@ class Block_TouchpointEventCalendar extends WicketAcc
     public static function load_more_results($touchpoint_data = [], $num_results = 5, $total_results = 0, $counter = 0, $display_type = 'upcoming')
     {
         // Sanitize
-        $num_results   = absint($num_results);
+        $num_results = absint($num_results);
         $total_results = absint($total_results);
-        $counter       = absint($counter);
+        $counter = absint($counter);
         ?>
 
         <div x-data="ajaxFormHandler()">

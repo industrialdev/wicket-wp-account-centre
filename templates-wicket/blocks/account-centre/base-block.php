@@ -5,7 +5,7 @@ namespace WicketAcc;
 // No direct access
 defined('ABSPATH') || exit;
 
-/**
+/*
  * Available $args[] variables:
  *
  * deliver - Deliver description

@@ -6,7 +6,7 @@ namespace WicketAcc;
 defined('ABSPATH') || exit;
 
 /**
- * User class for Wicket Account Centre
+ * User class for Wicket Account Centre.
  *
  * For interaction between MDP and WP users.
  */
@@ -20,7 +20,7 @@ class User extends WicketAcc
     public function __construct() {}
 
     /**
-     * Create a WordPress User
+     * Create a WordPress User.
      *
      * @param string $username MDP UUID
      * @param string $password password
@@ -56,7 +56,7 @@ class User extends WicketAcc
     /**
      * Check if an user exists, by username or email
      * Username in our case, is MDP UUID
-     * Return user ID if exists, false if not
+     * Return user ID if exists, false if not.
      *
      * @param string $username_or_email MDP UUID or email
      *

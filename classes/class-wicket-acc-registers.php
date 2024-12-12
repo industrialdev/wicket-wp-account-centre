@@ -7,18 +7,16 @@ defined('ABSPATH') || exit;
 
 /**
  * Wicket Account Centre
- * Post Types
- *
- * @package Wicket
+ * Post Types.
  */
 
 /**
- * Registers Class
+ * Registers Class.
  */
 class Registers extends WicketAcc
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -29,7 +27,7 @@ class Registers extends WicketAcc
     }
 
     /**
-     * Register Post Type
+     * Register Post Type.
      */
     public function register_post_type()
     {
@@ -76,8 +74,8 @@ class Registers extends WicketAcc
                 'revisions',
                 'thumbnail',
             ],
-            'show_in_nav_menus'   => true,
-            'show_in_rest'        => true,
+            'show_in_nav_menus' => true,
+            'show_in_rest'      => true,
         ];
 
         // Register ACC CPT
@@ -90,7 +88,7 @@ class Registers extends WicketAcc
     }
 
     /**
-     * Register Custom Navigation Menu
+     * Register Custom Navigation Menu.
      */
     public function register_nav_menu()
     {
@@ -107,7 +105,7 @@ class Registers extends WicketAcc
 
     /**
      * Register ACC page template
-     * Shows ACC page as selectable page template in the page editor
+     * Shows ACC page as selectable page template in the page editor.
      *
      * @param array $page_templates
      * @param string $theme
@@ -128,7 +126,7 @@ class Registers extends WicketAcc
 
     /**
      * Load ACC page template
-     * Loads the ACC page template
+     * Loads the ACC page template.
      *
      * @param string $template
      *
@@ -136,7 +134,7 @@ class Registers extends WicketAcc
      */
     public function load_acc_page_template($template)
     {
-        $requested_slug     = get_page_template_slug();
+        $requested_slug = get_page_template_slug();
         $requested_basename = basename($requested_slug);
 
         $template_basename = basename($template);

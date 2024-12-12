@@ -6,38 +6,38 @@ namespace WicketAcc;
 defined('ABSPATH') || exit;
 
 /**
- * Wicket Profile Picture Block
+ * Wicket Profile Picture Block.
  *
  **/
-class Block_ProfilePictureChange extends WicketAcc
+class init extends WicketAcc
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct(
-        protected array $block                = [],
-        protected bool $is_preview            = false,
+        protected array $block = [],
+        protected bool $is_preview = false,
         protected ?Blocks $blocks = null,
-        protected int $pp_max_size            = 0,
-        protected string $pp_uploads_path     = '',
-        protected string $pp_uploads_url      = '',
-        protected array $pp_extensions        = []
+        protected int $pp_max_size = 0,
+        protected string $pp_uploads_path = '',
+        protected string $pp_uploads_url = '',
+        protected array $pp_extensions = []
     ) {
-        $this->block        = $block;
-        $this->is_preview   = $is_preview;
-        $this->blocks       = $blocks ?? new Blocks();
+        $this->block = $block;
+        $this->is_preview = $is_preview;
+        $this->blocks = $blocks ?? new Blocks();
 
-        $this->pp_max_size     = absint(get_field('acc_profile_picture_size', 'option'));  // in MB
+        $this->pp_max_size = absint(get_field('acc_profile_picture_size', 'option'));  // in MB
         $this->pp_uploads_path = WICKET_ACC_UPLOADS_PATH . 'profile-pictures/';
-        $this->pp_uploads_url  = WICKET_ACC_UPLOADS_URL . 'profile-pictures/';
-        $this->pp_extensions   = ['jpg', 'jpeg', 'png', 'gif'];
+        $this->pp_uploads_url = WICKET_ACC_UPLOADS_URL . 'profile-pictures/';
+        $this->pp_extensions = ['jpg', 'jpeg', 'png', 'gif'];
 
         // Display the block
         $this->display_block();
     }
 
     /**
-     * Display the block
+     * Display the block.
      *
      * @return void
      */
@@ -45,7 +45,7 @@ class Block_ProfilePictureChange extends WicketAcc
     {
         // Process the form
         $process_form = $this->process_form();
-        $remove_form  = $this->remove_form();
+        $remove_form = $this->remove_form();
 
         if ($process_form === false) {
             $this->blocks->render_template('profile-picture-change_error');
@@ -57,7 +57,7 @@ class Block_ProfilePictureChange extends WicketAcc
 
         // Get user profile picture
         $pp_profile_picture = WACC()->Profile->get_profile_picture();
-        $pp_is_custom       = WACC()->Profile->is_custom_profile_picture($pp_profile_picture);
+        $pp_is_custom = WACC()->Profile->is_custom_profile_picture($pp_profile_picture);
 
         $args = [
             'is_custom'   => $pp_is_custom,
@@ -70,7 +70,7 @@ class Block_ProfilePictureChange extends WicketAcc
     }
 
     /**
-     * Process the form and save the profile picture
+     * Process the form and save the profile picture.
      *
      * @return bool
      */
@@ -126,7 +126,7 @@ class Block_ProfilePictureChange extends WicketAcc
         }
 
         // No matter whats the file name, rename it to {user_id}.{extension}
-        $_FILES['profile-image']['name']      = $user_id . '.' . $file_extension;
+        $_FILES['profile-image']['name'] = $user_id . '.' . $file_extension;
         $_FILES['profile-image']['full_path'] = $user_id . '.' . $file_extension;
 
         // Create subfolder if it doesn't exist
@@ -162,7 +162,7 @@ class Block_ProfilePictureChange extends WicketAcc
     }
 
     /**
-     * Process the remove form and delete the profile picture
+     * Process the remove form and delete the profile picture.
      *
      * @return bool
      */
@@ -200,7 +200,7 @@ class Block_ProfilePictureChange extends WicketAcc
     }
 
     /**
-     * Crop square from the center of an image file
+     * Crop square from the center of an image file.
      *
      * @param string $src_file    Path to the source image file.
      * @param string $destination_file    Path to save the cropped image.
@@ -227,7 +227,7 @@ class Block_ProfilePictureChange extends WicketAcc
         }
 
         if (!function_exists('wp_crop_image')) {
-            include(ABSPATH . 'wp-admin/includes/image.php');
+            include ABSPATH . 'wp-admin/includes/image.php';
         }
 
         // Crop the image using wp_crop_image

@@ -6,16 +6,16 @@ namespace WicketAcc;
 defined('ABSPATH') || exit;
 
 /**
- * Admin file for Wicket Account Centre
+ * Admin file for Wicket Account Centre.
  */
 
 /**
- * Admin class of module
+ * Admin class of module.
  */
 class AdminSettings extends WicketAcc
 {
     /**
-     * Constructor of class
+     * Constructor of class.
      */
     public function __construct()
     {
@@ -43,7 +43,7 @@ class AdminSettings extends WicketAcc
     }
 
     /**
-     * Register options page for ACF
+     * Register options page for ACF.
      */
     public function admin_register_options_page()
     {
@@ -68,7 +68,7 @@ class AdminSettings extends WicketAcc
     }
 
     /**
-     * Register submenu pages for my-account CPT
+     * Register submenu pages for my-account CPT.
      */
     public function admin_register_submenu_pages()
     {
@@ -197,7 +197,7 @@ class AdminSettings extends WicketAcc
     }
 
     /**
-     * Migrate ACC to 1.3 with new CPT my-account
+     * Migrate ACC to 1.3 with new CPT my-account.
      *
      * @return void
      */

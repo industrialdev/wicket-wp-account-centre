@@ -6,16 +6,16 @@ namespace WicketAcc;
 defined('ABSPATH') || exit;
 
 /**
- * Admin file for Wicket Account Centre
+ * Admin file for Wicket Account Centre.
  */
 
 /**
- * Admin class of module
+ * Admin class of module.
  */
 class AdminSettings extends WicketAcc
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -23,7 +23,7 @@ class AdminSettings extends WicketAcc
     }
 
     /**
-     * Check if ./ci/ folder exists at plugin path
+     * Check if ./ci/ folder exists at plugin path.
      */
     public function does_folder_exists()
     {
@@ -35,7 +35,7 @@ class AdminSettings extends WicketAcc
     }
 
     /**
-     * If ./ci/ folder exists at plugin path, delete it
+     * If ./ci/ folder exists at plugin path, delete it.
      */
     public function delete_ci_folder()
     {
@@ -45,7 +45,7 @@ class AdminSettings extends WicketAcc
     }
 
     /**
-     * Delete folder recursively
+     * Delete folder recursively.
      */
     public function delete_folder_recursive($folderPath)
     {

@@ -5,10 +5,10 @@ namespace WicketAcc;
 // No direct access
 defined('ABSPATH') || exit;
 
-class BlockAjax_TouchpointEventCalendar extends Block_TouchpointEventCalendar
+class ajax extends Block_TouchpointEventCalendar
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -18,7 +18,7 @@ class BlockAjax_TouchpointEventCalendar extends Block_TouchpointEventCalendar
     }
 
     /**
-     * Ajax load more results
+     * Ajax load more results.
      *
      * @return void
      */
@@ -40,10 +40,10 @@ class BlockAjax_TouchpointEventCalendar extends Block_TouchpointEventCalendar
         }
 
         // Retrieve form data
-        $num_results   = absint($_POST['num_results']);
+        $num_results = absint($_POST['num_results']);
         $total_results = absint($_POST['total_results']);
-        $counter       = absint($_POST['counter']);
-        $display_type  = sanitize_text_field($_POST['type']);
+        $counter = absint($_POST['counter']);
+        $display_type = sanitize_text_field($_POST['type']);
 
         $touchpoints_results = $this->get_touchpoints_results('Events Calendar');
 

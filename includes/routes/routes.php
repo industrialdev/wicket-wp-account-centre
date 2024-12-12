@@ -52,11 +52,11 @@ if ($acc_lang != 'en') {
 $acc_template_dir = WICKET_ACC_PLUGIN_TEMPLATE_PATH . WICKET_ACC_TEMPLATES_FOLDER . '/';
 
 // Init router
-add_action("init", function () {
+add_action('init', function () {
     Router::init();
 });
 
-/**
+/*
  * Routes for ACC
  *
  * See: https://github.com/smarteist/wordpress-router

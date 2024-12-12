@@ -7,7 +7,7 @@ defined('ABSPATH') || exit;
 
 /**
  * Assets Class
- * Handles enqueuing and printing assets
+ * Handles enqueuing and printing assets.
  */
 class Assets extends WicketAcc
 {
@@ -23,7 +23,7 @@ class Assets extends WicketAcc
     }
 
     /**
-     * Enqueue admin assets (CSS & JS)
+     * Enqueue admin assets (CSS & JS).
      *
      * @return void
      */
@@ -34,7 +34,7 @@ class Assets extends WicketAcc
     }
 
     /**
-     * Enqueue frontend assets (CSS & JS)
+     * Enqueue frontend assets (CSS & JS).
      *
      * Enqueues main frontend CSS & JS files, legacy JS file, and WooCommerce assets.
      *
@@ -53,12 +53,8 @@ class Assets extends WicketAcc
         // Only on pages related to Wicket Account Centre
         if (!(
             (isset($post) && $post instanceof \WP_Post && (
-                $post->post_type === 'my-account' ||
-                str_starts_with($post->post_name, 'organization')
-            )) ||
-            is_woocommerce() ||
-            is_account_page() ||
-            is_wc_endpoint_url()
+                $post->post_type === 'my-account' || str_starts_with($post->post_name, 'organization')
+            )) || is_woocommerce() || is_account_page() || is_wc_endpoint_url()
         )) {
             return;
         }

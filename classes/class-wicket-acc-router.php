@@ -24,10 +24,10 @@ defined('ABSPATH') || exit;
 class Router extends WicketAcc
 {
     private $acc_page_id_cache = null;
-    private $acc_slug_cache    = null;
+    private $acc_slug_cache = null;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @return void
      */
@@ -45,7 +45,7 @@ class Router extends WicketAcc
     }
 
     /**
-     * Get ACC page ID
+     * Get ACC page ID.
      *
      * @return int
      */
@@ -54,11 +54,12 @@ class Router extends WicketAcc
         if ($this->acc_page_id_cache === null) {
             $this->acc_page_id_cache = get_field('acc_page_dashboard', 'option');
         }
+
         return $this->acc_page_id_cache;
     }
 
     /**
-     * Get ACC page Slug
+     * Get ACC page Slug.
      *
      * @return string
      */
@@ -68,6 +69,7 @@ class Router extends WicketAcc
             $acc_page_id = $this->get_acc_page_id();
             $this->acc_slug_cache = get_post($acc_page_id)->post_name;
         }
+
         return $this->acc_slug_cache;
     }
 
@@ -121,7 +123,7 @@ class Router extends WicketAcc
     }
 
     /**
-     * Get ACC page ID by slug
+     * Get ACC page ID by slug.
      *
      * @param string $slug
      *
@@ -148,7 +150,7 @@ class Router extends WicketAcc
 
     /**
      * Create all ACC pages
-     * Run only once
+     * Run only once.
      *
      * @return void
      */
@@ -171,7 +173,7 @@ class Router extends WicketAcc
     }
 
     /**
-     * Maybe create ACC page
+     * Maybe create ACC page.
      *
      * return void
      */
@@ -198,7 +200,7 @@ class Router extends WicketAcc
     }
 
     /**
-     * Get Wicket ACC template
+     * Get Wicket ACC template.
      *
      * @param int $post_id Post ID
      *
@@ -206,13 +208,13 @@ class Router extends WicketAcc
      */
     private function get_wicket_acc_template($post_id = null)
     {
-        $user_template   = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/page-acc.php';
+        $user_template = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/page-acc.php';
         $plugin_template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/page-acc.php';
 
         if ($post_id && $this->is_orgmanagement_page($post_id)) {
             $acc_orgman_page = $this->orgman_page_requested($post_id);
 
-            $user_template   = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/org-management/acc-orgman-' . $acc_orgman_page . '.php';
+            $user_template = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/org-management/acc-orgman-' . $acc_orgman_page . '.php';
 
             // Every site need to use their own, that why we won't load templates from plugin
             if (!file_exists($user_template)) {
@@ -221,8 +223,7 @@ class Router extends WicketAcc
                 $error_message .= '<p>Recreate the same directory structure in your active theme: ./templates-wicket/account-centre/org-management/</p>';
                 $error_message .= '<p>Unzip the file into that directory. The structure should look like this:</p>';
                 $error_message .= '<ul>';
-                $error_message .=
-                    '<li>./templates-wicket/account-centre/org-management/acc-orgman-index.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-members.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-profile.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-roster.php</li>';
+                $error_message .= '<li>./templates-wicket/account-centre/org-management/acc-orgman-index.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-members.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-profile.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-roster.php</li>';
                 $error_message .= '</ul>';
                 $error_message .= '<p>You can now use Organization Management.</p>';
                 $error_message .= '<p>Feel free to modify these templates in your active theme to meet the client\'s needs.</p>';
@@ -241,7 +242,7 @@ class Router extends WicketAcc
     }
 
     /**
-     * Checks if we are on the Organization Management page
+     * Checks if we are on the Organization Management page.
      *
      * Note: This function checks the existence of the custom fields for Organization Management
      *       pages, which are set in the Wicket ACC settings.
@@ -252,10 +253,10 @@ class Router extends WicketAcc
      */
     private function is_orgmanagement_page($post_id)
     {
-        $orgManagementIndex           = get_field('acc_page_orgman-index', 'option');
-        $orgManagementProfile         = get_field('acc_page_orgman-profile', 'option');
-        $orgManagementMembers         = get_field('acc_page_orgman-members', 'option');
-        $orgManagementRoster          = get_field('acc_page_orgman-roster', 'option');
+        $orgManagementIndex = get_field('acc_page_orgman-index', 'option');
+        $orgManagementProfile = get_field('acc_page_orgman-profile', 'option');
+        $orgManagementMembers = get_field('acc_page_orgman-members', 'option');
+        $orgManagementRoster = get_field('acc_page_orgman-roster', 'option');
 
         switch ($post_id) {
             case $orgManagementIndex:
@@ -279,7 +280,7 @@ class Router extends WicketAcc
     }
 
     /**
-     * Returns the "slug" of the Organization Management page requested, by is_orgmanagement_page() method
+     * Returns the "slug" of the Organization Management page requested, by is_orgmanagement_page() method.
      *
      * @param int $post_id Post ID
      *
@@ -295,7 +296,7 @@ class Router extends WicketAcc
     }
 
     /**
-     * Make all ACC CPT my-account pages, always load the template from get_wicket_acc_template() method
+     * Make all ACC CPT my-account pages, always load the template from get_wicket_acc_template() method.
      *
      * @return void
      */
@@ -324,9 +325,8 @@ class Router extends WicketAcc
         });
     }
 
-
     /**
-     * Custom archive template for my-account CPT
+     * Custom archive template for my-account CPT.
      *
      * NOTE: we used to redirect users earlier, at template_redirect. But, WP complains on some server configurations, that you can't access is_post_type_archive function before the main query is run. So, to avoid issues with those sites, we're using a custom archive template and redirecting users over there.
      *
@@ -355,7 +355,7 @@ class Router extends WicketAcc
      * Redirects for ACC
      * 1. /wc-account/ index only to /my-account/dashboard/
      * 2. Old acc slugs (account-centre) to new slugs (my-account)
-     * 3. WooCommerce critical endpoints out from ACC
+     * 3. WooCommerce critical endpoints out from ACC.
      */
     public function acc_redirects()
     {
@@ -376,10 +376,10 @@ class Router extends WicketAcc
             $current_lang = 'en';
         }
 
-        $acc_dashboard_id  = get_option('options_acc_page_dashboard');
+        $acc_dashboard_id = get_option('options_acc_page_dashboard');
         $acc_dashboard_url = get_permalink($acc_dashboard_id);
 
-        $wc_page_id   = wc_get_page_id('myaccount');
+        $wc_page_id = wc_get_page_id('myaccount');
         $wc_page_slug = get_post($wc_page_id)->post_name;
 
         if ($current_lang !== 'en') {

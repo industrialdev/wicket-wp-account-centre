@@ -5,10 +5,10 @@ namespace WicketAcc;
 // No direct access
 defined('ABSPATH') || exit;
 
-class BlockAjax_BaseBlock extends Block_BaseBlock
+class ajax extends Block_BaseBlock
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -18,7 +18,7 @@ class BlockAjax_BaseBlock extends Block_BaseBlock
     }
 
     /**
-     * Ajax load more results
+     * Ajax load more results.
      *
      * @return void
      */
@@ -40,8 +40,8 @@ class BlockAjax_BaseBlock extends Block_BaseBlock
         }
 
         // Retrieve form data
-        $variable     = absint($_POST['variable']);
-        $other_field  = sanitize_text_field($_POST['other_field']);
+        $variable = absint($_POST['variable']);
+        $other_field = sanitize_text_field($_POST['other_field']);
 
         // We will get $this->display_touchpoints results and return it as html
         // Ideally, we should return the results as json, but... i don't know if Wicket has any standar way to render json results on the front-end

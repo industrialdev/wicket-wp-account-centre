@@ -20,30 +20,30 @@ defined('ABSPATH') || exit;
  */
 
 // @formatter:off
-$attrs                          = $args['attrs'];
-$title                          = $args['title'];
-$display                        = $args['display'];
-$num_results                    = $args['num_results'];
-$total_results                  = $args['total_results'];
-$counter                        = $args['counter'];
-$display_type                   = $args['display_type'];
-$switch_link                    = $args['switch_link'];
-$switch_link_past               = $args['switch_link'];
-$touchpoints_results            = $args['touchpoints_results'];
-$is_preview                     = $args['is_preview'];
-$close                          = $args['close'];
-$override_past_events_link      = $args['override_past_events_link'];
+$attrs = $args['attrs'];
+$title = $args['title'];
+$display = $args['display'];
+$num_results = $args['num_results'];
+$total_results = $args['total_results'];
+$counter = $args['counter'];
+$display_type = $args['display_type'];
+$switch_link = $args['switch_link'];
+$switch_link_past = $args['switch_link'];
+$touchpoints_results = $args['touchpoints_results'];
+$is_preview = $args['is_preview'];
+$close = $args['close'];
+$override_past_events_link = $args['override_past_events_link'];
 $override_past_events_link_text = $args['override_past_events_link_text'];
-$past_events_link_text          = __('See Past Registered Events', 'wicket-acc');
-$show_view_more_events          = $args['show_view_more_events'];
-$use_x_columns                  = absint($args['use_x_columns']);
-$is_ajax_request                = $args['is_ajax_request'];
+$past_events_link_text = __('See Past Registered Events', 'wicket-acc');
+$show_view_more_events = $args['show_view_more_events'];
+$use_x_columns = absint($args['use_x_columns']);
+$is_ajax_request = $args['is_ajax_request'];
 // @formatter:on
 
 // Process event data from URL
 $single_event = false;
-$event_id     = isset($_REQUEST['event-id']) ? sanitize_text_field($_REQUEST['event-id']) : '';
-$event_data   = isset($_REQUEST['event-data']) ? sanitize_text_field($_REQUEST['event-data']) : '';
+$event_id = isset($_REQUEST['event-id']) ? sanitize_text_field($_REQUEST['event-id']) : '';
+$event_data = isset($_REQUEST['event-data']) ? sanitize_text_field($_REQUEST['event-data']) : '';
 
 if (!empty($event_id) && !empty($event_data)) {
     $event_data = json_decode(base64_decode($event_data), true);
@@ -57,7 +57,7 @@ if (!empty($event_id) && !empty($event_data)) {
 
 // If override_past_events_link is not empty, use it
 if (!empty($override_past_events_link)) {
-    $switch_link_past      = $override_past_events_link;
+    $switch_link_past = $override_past_events_link;
     $past_events_link_text = $override_past_events_link_text;
 }
 ?>

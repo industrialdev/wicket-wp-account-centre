@@ -7,7 +7,7 @@ use WicketAcc\MethodRouter;
 defined('ABSPATH') || exit;
 
 /**
- * Magic wrapper Class for WACC() helpers
+ * Magic wrapper Class for WACC() helpers.
  *
  * @return object
  */
@@ -22,7 +22,7 @@ function WACC()
     return $instance;
 }
 
-/**
+/*
  *
  * DO NOT ADD MORE HELPERS HERE
  *

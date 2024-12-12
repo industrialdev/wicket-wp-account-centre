@@ -10,15 +10,14 @@ defined('ABSPATH') || exit;
  *
  * organization_logo_url - Organization logo URL
  */
-
 $org_id = $_GET['org_id'] ?? '';
 
-if (! $org_id) {
+if (!$org_id) {
     return;
 }
 
 $organization_logo_url = $args['organization_logo_url'] ?? '';
-$max_upload_size       = $args['max_upload_size'] ?? '';
+$max_upload_size = $args['max_upload_size'] ?? '';
 
 ?>
 <section class="container wicket-acc-org-logo-change">

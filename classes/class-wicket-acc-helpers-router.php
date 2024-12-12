@@ -6,7 +6,7 @@ namespace WicketAcc;
 defined('ABSPATH') || exit;
 
 /**
- * Magic wrapper Class for WACC() helpers
+ * Magic wrapper Class for WACC() helpers.
  */
 class MethodRouter
 {
@@ -14,17 +14,17 @@ class MethodRouter
     private $helpersInstance;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
         // Register all class instances except Helpers
         $this->instances = [
-            'MdpApi'                => new MdpApi(),
-            'Profile'               => new Profile(),
-            'OrganizationProfile'   => new OrganizationProfile(),
-            'Blocks'                => new Blocks(),
-            'User'                  => new User(),
+            'MdpApi'              => new MdpApi(),
+            'Profile'             => new Profile(),
+            'OrganizationProfile' => new OrganizationProfile(),
+            'Blocks'              => new Blocks(),
+            'User'                => new User(),
         ];
 
         // Store Helpers instance separately
@@ -32,7 +32,7 @@ class MethodRouter
     }
 
     /**
-     * Get the instance of a class
+     * Get the instance of a class.
      *
      * @param string $name
      *
@@ -49,7 +49,7 @@ class MethodRouter
     }
 
     /**
-     * Call magic method for class instances
+     * Call magic method for class instances.
      *
      * @param string $name
      * @param array $arguments
@@ -70,11 +70,11 @@ class MethodRouter
         }
 
         //throw new \Exception("Method or class instance $name does not exist.");
-        throw new \Exception("Method or class instance '$name' does not exist. Available instances: " . implode(", ", array_keys($this->instances)));
+        throw new \Exception("Method or class instance '$name' does not exist. Available instances: " . implode(', ', array_keys($this->instances)));
     }
 
     /**
-     * Static call magic method for Helpers
+     * Static call magic method for Helpers.
      *
      * @param string $name
      * @param array $arguments
@@ -85,6 +85,7 @@ class MethodRouter
     public static function __callStatic($name, $arguments)
     {
         $router = new self();
+
         return $router->__call($name, $arguments);
     }
 }

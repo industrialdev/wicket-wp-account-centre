@@ -2,7 +2,7 @@
 
 namespace WicketAcc;
 
-/**
+/*
  * @package  wicket-account-centre
  * @author  Wicket Inc.
  *
@@ -23,7 +23,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')), true)) {
-    /**
+    /*
      * Show Required Plugin Notice
      */
     add_action('admin_notices', function () {
@@ -51,48 +51,48 @@ define('WICKET_ACC_USER_TEMPLATE_URL', get_stylesheet_directory_uri() . '/templa
 define('WICKET_ACC_TEMPLATES_FOLDER', 'account-centre');
 
 /**
- * The main Wicket Account Centre class
+ * The main Wicket Account Centre class.
  */
 class WicketAcc
 {
     protected array $acc_index_slugs = [
-        'en'    => 'my-account',
-        'fr'    => 'mon-compte',
-        'es'    => 'mi-cuenta',
+        'en' => 'my-account',
+        'fr' => 'mon-compte',
+        'es' => 'mi-cuenta',
     ];
 
     protected array $acc_wc_index_slugs = [
-        'en'    => 'wc-account',
-        'fr'    => 'wc-compte',
-        'es'    => 'wc-cuenta',
+        'en' => 'wc-account',
+        'fr' => 'wc-compte',
+        'es' => 'wc-cuenta',
     ];
 
     protected array $acc_pages_map = [
         // Wicket pages
-        'edit-profile'                   => 'Edit Profile',
-        'events'                         => 'My Events',
-        'jobs'                           => 'My Jobs',
-        'job-post'                       => 'Post a Job',
-        'change-password'                => 'Change Password',
-        'organization-management'        => 'Organization Management',
-        'organization-profile'           => 'Organization Profile',
-        'organization-members'           => 'Organization Members',
-        'organization-roster'            => 'Organization Roster',
-        'acc_global-headerbanner'        => 'Global Header-Banner',
+        'edit-profile'            => 'Edit Profile',
+        'events'                  => 'My Events',
+        'jobs'                    => 'My Jobs',
+        'job-post'                => 'Post a Job',
+        'change-password'         => 'Change Password',
+        'organization-management' => 'Organization Management',
+        'organization-profile'    => 'Organization Profile',
+        'organization-members'    => 'Organization Members',
+        'organization-roster'     => 'Organization Roster',
+        'acc_global-headerbanner' => 'Global Header-Banner',
         // WooCommerce endpoints https://developer.woocommerce.com/docs/woocommerce-endpoints/
         //'order-pay'                      => 'Order Pay',
         //'order-received'                 => 'Order Received',
-        'add-payment-method'             => 'Add Payment Method',
-        'set-default-payment-method'     => 'Set Default Payment Method',
-        'orders'                         => 'Orders',
-        'view-order'                     => 'View Order',
-        'downloads'                      => 'Downloads',
-        'edit-account'                   => 'Edit Account',
-        'edit-address'                   => 'Edit Address',
-        'payment-methods'                => 'Payment Methods',
+        'add-payment-method'         => 'Add Payment Method',
+        'set-default-payment-method' => 'Set Default Payment Method',
+        'orders'                     => 'Orders',
+        'view-order'                 => 'View Order',
+        'downloads'                  => 'Downloads',
+        'edit-account'               => 'Edit Account',
+        'edit-address'               => 'Edit Address',
+        'payment-methods'            => 'Payment Methods',
         //'customer-logout'                => 'Logout',
         // WooCommerce subscription endpoints
-        'subscriptions'                  => 'Subscriptions',
+        'subscriptions' => 'Subscriptions',
     ];
 
     protected array $acc_pages_map_auto_create = [
@@ -181,12 +181,12 @@ class WicketAcc
     ];
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct() {}
 
     /**
-     * Run
+     * Run.
      */
     public function run()
     {
@@ -220,7 +220,7 @@ class WicketAcc
     }
 
     /**
-     * Plugin includes
+     * Plugin includes.
      *
      * @return void
      */
@@ -284,7 +284,7 @@ class WicketAcc
     }
 
     /**
-     * Plugin activation
+     * Plugin activation.
      */
     public function plugin_activated() {}
 } // end Class.

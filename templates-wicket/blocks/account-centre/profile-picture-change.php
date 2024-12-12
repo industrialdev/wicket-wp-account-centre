@@ -5,7 +5,7 @@ namespace WicketAcc;
 // No direct access
 defined('ABSPATH') || exit;
 
-/**
+/*
  * Available $args[] variables:
  *
  * is_custom - true if the profile picture URL is custom, false if it is the default

@@ -20,25 +20,24 @@ defined('ABSPATH') || exit;
 //@formatter:off
 
 /**
- * Returns active memberships from wicket API
+ * Returns active memberships from wicket API.
  *
  * @param string $iso_code (Optional) ISO code for the language: en, fr, es, etc.
  *
  * @return array $memberships slug and id
  */
-
 function wicket_get_active_memberships($iso_code = 'en')
 {
-    $all_summaries      = [];
+    $all_summaries = [];
     $membership_summary = [];
 
     $plan_lookup_slugs = [];
-    $plan_lookup_ids   = [];
+    $plan_lookup_ids = [];
 
     $wicket_memberships = wicket_get_current_person_memberships();
 
     if ($wicket_memberships) {
-        $helper = new \Wicket\ResponseHelper($wicket_memberships);
+        $helper = new Wicket\ResponseHelper($wicket_memberships);
 
         foreach ($helper->data as $entry) {
             $membership_tier = $helper->getIncludedRelationship($entry, 'membership');
@@ -68,7 +67,7 @@ function wicket_get_active_memberships($iso_code = 'en')
 }
 
 /**
- * Returns active memberships from WooCommerce
+ * Returns active memberships from WooCommerce.
  *
  * @return array $memberships slug and id
  */
@@ -98,16 +97,16 @@ function woo_get_active_memberships()
 }
 
 /**
- * Returns active memberships relationship from wicket API
+ * Returns active memberships relationship from wicket API.
  *
  * @return array $memberships relationship
  */
 function wicket_get_active_memberships_relationship($org_uuid)
 {
-    $person_type        = '';
+    $person_type = '';
     $wicket_memberships = wicket_get_current_person_memberships();
-    $person_uuid        = wicket_current_person_uuid();
-    $org_info           = [];
+    $person_uuid = wicket_current_person_uuid();
+    $org_info = [];
 
     if ($wicket_memberships) {
         foreach ($wicket_memberships['included'] as $included) {
@@ -135,7 +134,7 @@ function wicket_get_active_memberships_relationship($org_uuid)
         }
     }
 
-    $person_type = str_replace(["-", "_"], " ", $person_type);
+    $person_type = str_replace(['-', '_'], ' ', $person_type);
     $org_info['relationship'] = ucwords($person_type);
 
     return $org_info;
@@ -160,9 +159,8 @@ function is_renewal_period($memberships, $renewal_period)
 
 function wicket_profile_widget_validation($fields = [])
 {
-    $person  = wicket_current_person();
+    $person = wicket_current_person();
     $results = [];
-
 
     if ($fields && $person) {
         foreach ($fields as $field) {
@@ -182,7 +180,7 @@ function wicket_profile_widget_validation($fields = [])
 }
 
 /**
- * Validates the addresses of the person
+ * Validates the addresses of the person.
  *
  * @param object $person Person object
  *
@@ -190,11 +188,11 @@ function wicket_profile_widget_validation($fields = [])
  */
 function wicket_validation_addresses($person)
 {
-    $addresses    = [];
+    $addresses = [];
     $country_name = '';
-    $city         = '';
-    $address1     = '';
-    $zip_code     = '';
+    $city = '';
+    $address1 = '';
+    $zip_code = '';
 
     if ($person) {
         if ($person->relationship('addresses')) {
@@ -210,15 +208,14 @@ function wicket_validation_addresses($person)
         if ($addresses) {
             foreach ($addresses as $address) {
                 if ($address['attributes']['primary'] == 1) {
-                    $country_name = $address['attributes']["country_name"];
-                    $city = $address['attributes']["city"];
-                    $address1 = $address['attributes']["address1"];
-                    $zip_code = ($country_name == 'United States' || $country_name == 'Canada') ? $address['attributes']["zip_code"] : 'pass';
+                    $country_name = $address['attributes']['country_name'];
+                    $city = $address['attributes']['city'];
+                    $address1 = $address['attributes']['address1'];
+                    $zip_code = ($country_name == 'United States' || $country_name == 'Canada') ? $address['attributes']['zip_code'] : 'pass';
                 }
             }
         }
     }
-
 
     if ($country_name && $city && $address1 && $zip_code) {
         return true;
@@ -228,7 +225,7 @@ function wicket_validation_addresses($person)
 }
 
 /**
- * Menu walker for the wicket ACC menu
+ * Menu walker for the wicket ACC menu.
  *
  * @return void
  */
@@ -240,19 +237,19 @@ class wicket_acc_menu_walker extends Walker_Nav_Menu
 
     public function start_el(&$output, $item, $depth = 0, $args = [], $id = 0)
     {
-        $object             = $item->object;
-        $type               = $item->type;
-        $title              = $item->title;
-        $permalink          = $item->url;
-        $classes            = $item->classes;
-        $target             = $item->target;
+        $object = $item->object;
+        $type = $item->type;
+        $title = $item->title;
+        $permalink = $item->url;
+        $classes = $item->classes;
+        $target = $item->target;
         $this->current_item = $item;
 
         if (!empty($classes)) {
             $classes[] = 'nav__menu-item';
         }
 
-        $output .= "<li class='" . implode(" ", $classes) . "'>";
+        $output .= "<li class='" . implode(' ', $classes) . "'>";
 
         // if item has children, replace a link for a button toggle
         if (in_array('menu-item-has-children', $classes) && $depth == 0) {
@@ -304,7 +301,7 @@ class wicket_acc_menu_walker extends Walker_Nav_Menu
 }
 
 /**
- * Menu walker (mobile) for the wicket ACC menu
+ * Menu walker (mobile) for the wicket ACC menu.
  *
  * @return void
  */
@@ -316,19 +313,19 @@ class wicket_acc_menu_mobile_walker extends Walker_Nav_Menu
 
     public function start_el(&$output, $item, $depth = 0, $args = [], $id = 0)
     {
-        $object             = $item->object;
-        $type               = $item->type;
-        $title              = $item->title;
-        $permalink          = $item->url;
-        $classes            = $item->classes;
-        $target             = $item->target;
+        $object = $item->object;
+        $type = $item->type;
+        $title = $item->title;
+        $permalink = $item->url;
+        $classes = $item->classes;
+        $target = $item->target;
         $this->current_item = $item;
 
         if (!empty($classes)) {
             $classes[] = 'nav__menu-item';
         }
 
-        $output .= "<li class='" . implode(" ", $classes) . "'>";
+        $output .= "<li class='" . implode(' ', $classes) . "'>";
 
         // if item has children, replace a link for a button toggle
         if (in_array('menu-item-has-children', $classes) && $depth == 0) {
@@ -380,7 +377,7 @@ class wicket_acc_menu_mobile_walker extends Walker_Nav_Menu
 }
 
 /**
- * Add multiple products to cart
+ * Add multiple products to cart.
  *
  * @return void
  */
@@ -392,13 +389,14 @@ function wicket_ac_maybe_add_multiple_products_to_cart()
     remove_action('wp_loaded', ['WC_Form_Handler', 'add_to_cart_action'], 20);
 
     $product_ids = explode(',', $_REQUEST['add-to-cart']);
-    $count       = count($product_ids);
-    $number      = 0;
+    $count = count($product_ids);
+    $number = 0;
     $url = get_permalink($_REQUEST['page_id']);
 
     foreach ($product_ids as $product_id) {
         if (++$number === $count) {
             $_REQUEST['add-to-cart'] = $product_id;
+
             return WC_Form_Handler::add_to_cart_action($url);
         }
 
@@ -425,9 +423,8 @@ function wicket_ac_maybe_add_multiple_products_to_cart()
 }
 add_action('wp_loaded', 'wicket_ac_maybe_add_multiple_products_to_cart', 15);
 
-
 /**
- *  Example of a Next Tier[product_data] filter that can be added to the child theme
+ *  Example of a Next Tier[product_data] filter that can be added to the child theme.
  */
 
 /*
@@ -449,7 +446,7 @@ add_action('wp_loaded', 'wicket_ac_maybe_add_multiple_products_to_cart', 15);
   */
 
 /**
- * Returns productlinks for renewal callouts based on the next tier's products assigned
+ * Returns productlinks for renewal callouts based on the next tier's products assigned.
  *
  * @param mixed $membership
  * @param mixed $renewal_type
@@ -458,14 +455,14 @@ add_action('wp_loaded', 'wicket_ac_maybe_add_multiple_products_to_cart', 15);
 function wicket_ac_memberships_get_product_link_data($membership, $renewal_type)
 {
     $late_fee_product_id = '';
-    $membership_post_id  = $membership['membership']['ID'];
-    $next_tier           = $membership['membership']['next_tier'];
+    $membership_post_id = $membership['membership']['ID'];
+    $next_tier = $membership['membership']['next_tier'];
 
     if (!empty($membership['late_fee_product_id']) && $membership['late_fee_product_id'] > 0) {
         $late_fee_product_id = ',' . $membership['late_fee_product_id'];
     }
 
-    $next_tier = apply_filters("wicket_renewal_filter_product_data", $next_tier);
+    $next_tier = apply_filters('wicket_renewal_filter_product_data', $next_tier);
 
     foreach ($next_tier['product_data'] as $product_data) {
         $button_label = $membership['callout']['button_label'];
@@ -517,13 +514,14 @@ function wicket_ac_memberships_get_product_link_data($membership, $renewal_type)
         }
         $link['link'] = [
             'title' => $button_label,
-            'url' => $link_url,
+            'url'   => $link_url,
         ];
         $links[] = $link;
         if (!empty($specific_renewal_product)) {
             break;
         }
     }
+
     return $links;
 }
 
@@ -539,14 +537,15 @@ function wicket_ac_memberships_get_page_link_data($membership)
     $button_label = $membership['callout']['button_label'];
     $link['link'] = [
         'title' => $button_label,
-        'url' => $url,
+        'url'   => $url,
     ];
     $links[] = $link;
+
     return $links;
 }
 
 /**
- * Alter the 'pages' admin settings to provide the wicket ACC pages along with normal pages
+ * Alter the 'pages' admin settings to provide the wicket ACC pages along with normal pages.
  *
  * @param string $output
  * @param array $parsed_args
@@ -556,9 +555,10 @@ function wicket_ac_memberships_get_page_link_data($membership)
  */
 function wicket_acc_alter_wp_job_manager_pages($output, $parsed_args, $pages)
 {
-    if (in_array($parsed_args['name'], ['job_manager_submit_job_form_page_id', 'job_manager_job_dashboard_page_id', 'job_manager_jobs_page_id', 'job_manager_terms_and_conditions_page_id',])) {
+    if (in_array($parsed_args['name'], ['job_manager_submit_job_form_page_id', 'job_manager_job_dashboard_page_id', 'job_manager_jobs_page_id', 'job_manager_terms_and_conditions_page_id'])) {
         $parsed_args['post_type'] = ['my-account', 'page'];
         $output = wp_job_dropdown_pages($parsed_args);
+
         return $output;
     } else {
         return $output;
@@ -566,7 +566,7 @@ function wicket_acc_alter_wp_job_manager_pages($output, $parsed_args, $pages)
 }
 
 /**
- * Dropdown pages for the wicket ACC Job Manager
+ * Dropdown pages for the wicket ACC Job Manager.
  *
  * @param array $parsed_args
  *
@@ -574,7 +574,7 @@ function wicket_acc_alter_wp_job_manager_pages($output, $parsed_args, $pages)
  */
 function wp_job_dropdown_pages($parsed_args = '')
 {
-    $pages  = get_posts(['post_type' => $parsed_args['post_type'], 'numberposts' => -1]);
+    $pages = get_posts(['post_type' => $parsed_args['post_type'], 'numberposts' => -1]);
     $output = '';
 
     if (!empty($pages)) {
@@ -594,7 +594,7 @@ function wp_job_dropdown_pages($parsed_args = '')
 
 /**
  * Get user profile picture
- * To pull in as wp_user profile image
+ * To pull in as wp_user profile image.
  *
  * @param mixed $user WP_User object, user ID or email
  * @param array $args (Optional)
@@ -603,10 +603,10 @@ function wp_job_dropdown_pages($parsed_args = '')
  */
 function wicket_acc_get_avatar($user, $args = [])
 {
-    $extensions       = ['jpg', 'jpeg', 'png', 'gif'];
-    $uploads_dir      = wp_get_upload_dir();
-    $uploads_url      = $uploads_dir['baseurl'] . '/wicket-profile-pictures';
-    $default_avatar   = WICKET_ACC_URL . '/dist/assets/images/profile-picture-default.svg';
+    $extensions = ['jpg', 'jpeg', 'png', 'gif'];
+    $uploads_dir = wp_get_upload_dir();
+    $uploads_url = $uploads_dir['baseurl'] . '/wicket-profile-pictures';
+    $default_avatar = WICKET_ACC_URL . '/dist/assets/images/profile-picture-default.svg';
 
     // Get the user ID
     if (is_numeric($user)) {
@@ -647,7 +647,7 @@ function wicket_acc_get_avatar($user, $args = [])
 }
 
 //@formatter:on
-/**
+/*
  * MARK: PLEASE READ.
  *
  * Don't add any new functions to this file.

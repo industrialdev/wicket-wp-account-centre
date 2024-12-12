@@ -6,18 +6,18 @@ namespace WicketAcc;
 defined('ABSPATH') || exit;
 
 /**
- * Wicket Additional Info Block
+ * Wicket Additional Info Block.
  **/
-class Block_AdditionalInfo extends WicketAcc
+class init extends WicketAcc
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct(
-        protected array $block     = [],
+        protected array $block = [],
         protected bool $is_preview = false,
     ) {
-        $this->block      = $block;
+        $this->block = $block;
         $this->is_preview = $is_preview;
 
         // Display the block
@@ -25,20 +25,19 @@ class Block_AdditionalInfo extends WicketAcc
     }
 
     /**
-     * Init block
+     * Init block.
      *
      * @return void
      */
     protected function init_block()
     {
-        $wicket_settings   = get_wicket_settings();
-        $person_id         = wicket_current_person_uuid();
-        $environment       = wicket_get_option('wicket_admin_settings_environment');
-        $acf_ai_schema     = get_field('additional_info_schema');
+        $wicket_settings = get_wicket_settings();
+        $person_id = wicket_current_person_uuid();
+        $environment = wicket_get_option('wicket_admin_settings_environment');
+        $acf_ai_schema = get_field('additional_info_schema');
         $acf_resource_type = get_field('additional_info_resource_type');
-        $acf_org_uuid      = get_field('additional_info_organization_uuid') ?? '';
-        $acf_use_slugs     = get_field('additional_info_use_slugs_instead_of_schema_ids');
-
+        $acf_org_uuid = get_field('additional_info_organization_uuid') ?? '';
+        $acf_use_slugs = get_field('additional_info_use_slugs_instead_of_schema_ids');
 
         if (!$person_id) {
             return;
@@ -77,7 +76,7 @@ class Block_AdditionalInfo extends WicketAcc
 
             // Build array based on slug vs ID
             if ($acf_use_slugs) {
-                $schema_slug   = $ai_to_add['schema_slug'] ?? '';
+                $schema_slug = $ai_to_add['schema_slug'] ?? '';
                 $resource_slug = $ai_to_add['schema_override_resource_slug'] ?? '';
 
                 if (empty($schema_slug)) {
@@ -88,18 +87,18 @@ class Block_AdditionalInfo extends WicketAcc
                 if ($date_range_conditional_in_use) {
                     if ($date_range_conditional_is_active && !empty($resource_slug) && $ai_to_add['schema_use_override']) {
                         $schemas_and_overrides[] = [
-                            'slug'             => $schema_slug,
-                            'resourceSlug'     => $resource_slug,
-                            'showAsRequired'   => $ai_to_add['show_as_required'] ?? false,
+                            'slug'           => $schema_slug,
+                            'resourceSlug'   => $resource_slug,
+                            'showAsRequired' => $ai_to_add['show_as_required'] ?? false,
                         ];
                         $ai_added = true;
                     }
                 } else {
                     if (!empty($resource_slug) && $ai_to_add['schema_use_override']) {
                         $schemas_and_overrides[] = [
-                            'slug'             => $schema_slug,
-                            'resourceSlug'     => $resource_slug,
-                            'showAsRequired'   => $ai_to_add['show_as_required'] ?? false,
+                            'slug'           => $schema_slug,
+                            'resourceSlug'   => $resource_slug,
+                            'showAsRequired' => $ai_to_add['show_as_required'] ?? false,
                         ];
                         $ai_added = true;
                     }
@@ -107,8 +106,8 @@ class Block_AdditionalInfo extends WicketAcc
 
                 if (!$ai_added) {
                     $schemas_and_overrides[] = [
-                        'slug'             => $schema_slug,
-                        'showAsRequired'   => $ai_to_add['show_as_required'] ?? false,
+                        'slug'           => $schema_slug,
+                        'showAsRequired' => $ai_to_add['show_as_required'] ?? false,
                     ];
                 }
             } else {
@@ -164,10 +163,10 @@ class Block_AdditionalInfo extends WicketAcc
         }
 
         get_component('widget-additional-info', [
-            'classes'                          => [],
-            'resource_type'                    => $acf_resource_type,
-            'org_uuid'												 => $acf_org_uuid,
-            'schemas_and_overrides'            => $schemas_and_overrides,
+            'classes'               => [],
+            'resource_type'         => $acf_resource_type,
+            'org_uuid'              => $acf_org_uuid,
+            'schemas_and_overrides' => $schemas_and_overrides,
         ]);
     }
 }

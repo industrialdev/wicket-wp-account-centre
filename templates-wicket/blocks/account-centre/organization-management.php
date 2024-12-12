@@ -5,7 +5,7 @@ namespace WicketAcc;
 // No direct access
 defined('ABSPATH') || exit;
 
-/**
+/*
  * Available $args[] variables:
  *
  * organization_id - Organization UUID

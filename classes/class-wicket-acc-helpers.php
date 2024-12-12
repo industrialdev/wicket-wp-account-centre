@@ -6,16 +6,14 @@ namespace WicketAcc;
 defined('ABSPATH') || exit;
 
 /**
- * Helpers file of Module
+ * Helpers file of Module.
  *
- * @package  wicket-account-centre
  * @version  1.0.0
  */
-
 class Helpers extends WicketAcc
 {
     /**
-     * Get current person (MDP)
+     * Get current person (MDP).
      *
      * Example:
      * $person = WACC()->getCurrentPerson();
@@ -28,7 +26,7 @@ class Helpers extends WicketAcc
     }
 
     /**
-     * Get ACC slug localization option
+     * Get ACC slug localization option.
      *
      * Option from Base Plugin Settings
      *
@@ -50,7 +48,7 @@ class Helpers extends WicketAcc
     }
 
     /**
-     * Get ACC name localization option
+     * Get ACC name localization option.
      *
      * Account Centre
      * Account Center
@@ -82,7 +80,7 @@ class Helpers extends WicketAcc
 
     /**
      * Get language
-     * If WPML is not installed, return 'en'
+     * If WPML is not installed, return 'en'.
      *
      * @return string
      */
@@ -102,13 +100,13 @@ class Helpers extends WicketAcc
     /**
      * Get global banner page ID
      * from slug: acc_global-headerbanner
-     * CPT: my-account
+     * CPT: my-account.
      *
      * @return int
      */
     public function getGlobalHeaderBannerPageId()
     {
-        $page    = get_page_by_path('acc_global-headerbanner', OBJECT, 'my-account');
+        $page = get_page_by_path('acc_global-headerbanner', OBJECT, 'my-account');
         $page_id = $page->ID;
 
         // Is WPML enabled?
@@ -120,14 +118,14 @@ class Helpers extends WicketAcc
     }
 
     /**
-     * Get Wicket ACC sidebar template
+     * Get Wicket ACC sidebar template.
      *
      * @return string
      */
     public function renderAccSidebar()
     {
-        $user_template    = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/sidebar.php';
-        $plugin_template  = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/sidebar.php';
+        $user_template = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/sidebar.php';
+        $plugin_template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/sidebar.php';
         $sidebar_template = false;
 
         if (file_exists($user_template)) {
@@ -142,14 +140,14 @@ class Helpers extends WicketAcc
     }
 
     /**
-     * Render the global sub header template
+     * Render the global sub header template.
      *
      * @return void
      */
     public function renderGlobalSubHeader()
     {
         $acc_global_headerbanner_page_id = WACC()->getGlobalHeaderBannerPageId();
-        $acc_global_headerbanner_status  = get_field('acc_global-headerbanner', 'option');
+        $acc_global_headerbanner_status = get_field('acc_global-headerbanner', 'option');
 
         if ($acc_global_headerbanner_page_id && $acc_global_headerbanner_status) {
             $global_banner_page = get_post($acc_global_headerbanner_page_id);
@@ -162,7 +160,7 @@ class Helpers extends WicketAcc
     }
 
     /**
-     * Get create account page URL
+     * Get create account page URL.
      *
      * @return string
      */
@@ -179,7 +177,7 @@ class Helpers extends WicketAcc
     }
 
     /**
-     * Checks if WooCommerce is active
+     * Checks if WooCommerce is active.
      *
      * @return bool
      */
@@ -189,7 +187,7 @@ class Helpers extends WicketAcc
     }
 
     /**
-     * Get theme path. Prioritize child theme
+     * Get theme path. Prioritize child theme.
      *
      * @return string
      */
@@ -199,7 +197,7 @@ class Helpers extends WicketAcc
     }
 
     /**
-     * Get theme URL. Prioritize child theme
+     * Get theme URL. Prioritize child theme.
      *
      * @return string
      */

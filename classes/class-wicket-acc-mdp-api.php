@@ -10,19 +10,17 @@ defined('ABSPATH') || exit;
 
 /**
  * Class MdpApi
- * To retrieve data from the MDP API
- *
- * @package WicketAcc
+ * To retrieve data from the MDP API.
  */
 class MdpApi
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct() {}
 
     /**
-     * Initialize the API client
+     * Initialize the API client.
      */
     public function init_client()
     {
@@ -47,7 +45,7 @@ class MdpApi
     }
 
     /**
-     * Get option
+     * Get option.
      */
     public function get_option($key, $default = null)
     {
@@ -57,26 +55,26 @@ class MdpApi
     }
 
     /**
-     * Get Wicket MDP settings
+     * Get Wicket MDP settings.
      */
     public function mdp_get_settings($environment = null)
     {
-        $settings    = [];
+        $settings = [];
         $environment = $this->get_option('wicket_admin_settings_environment');
 
         switch ($environment) {
             case 'prod':
                 $settings['api_endpoint'] = \wicket_get_option('wicket_admin_settings_prod_api_endpoint');
-                $settings['jwt']          = \wicket_get_option('wicket_admin_settings_prod_secret_key');
-                $settings['person_id']    = \wicket_get_option('wicket_admin_settings_prod_person_id');
-                $settings['parent_org']   = \wicket_get_option('wicket_admin_settings_prod_parent_org');
+                $settings['jwt'] = \wicket_get_option('wicket_admin_settings_prod_secret_key');
+                $settings['person_id'] = \wicket_get_option('wicket_admin_settings_prod_person_id');
+                $settings['parent_org'] = \wicket_get_option('wicket_admin_settings_prod_parent_org');
                 $settings['wicket_admin'] = \wicket_get_option('wicket_admin_settings_prod_wicket_admin');
                 break;
             case 'stage':
                 $settings['api_endpoint'] = \wicket_get_option('wicket_admin_settings_stage_api_endpoint');
-                $settings['jwt']          = \wicket_get_option('wicket_admin_settings_stage_secret_key');
-                $settings['person_id']    = \wicket_get_option('wicket_admin_settings_stage_person_id');
-                $settings['parent_org']   = \wicket_get_option('wicket_admin_settings_stage_parent_org');
+                $settings['jwt'] = \wicket_get_option('wicket_admin_settings_stage_secret_key');
+                $settings['person_id'] = \wicket_get_option('wicket_admin_settings_stage_person_id');
+                $settings['parent_org'] = \wicket_get_option('wicket_admin_settings_stage_parent_org');
                 $settings['wicket_admin'] = \wicket_get_option('wicket_admin_settings_stage_wicket_admin');
                 break;
         }
@@ -85,7 +83,7 @@ class MdpApi
     }
 
     /**
-     * Get current person UUID
+     * Get current person UUID.
      */
     public function get_current_person_uuid()
     {
@@ -100,7 +98,7 @@ class MdpApi
     }
 
     /**
-     * Get current person
+     * Get current person.
      */
     public function get_current_person()
     {
@@ -124,7 +122,7 @@ class MdpApi
     }
 
     /**
-     * Get organization info
+     * Get organization info.
      *
      * @param string $org_uuid Organization UUID
      * @param string $lang Optional. Default is 'en'. Can be: en, fr, es.
@@ -139,16 +137,16 @@ class MdpApi
         }
 
         // Empty defaults
-        $org_parent_name    = '';
-        $org_parent_uuid    = '';
-        $org_type           = '';
+        $org_parent_name = '';
+        $org_parent_uuid = '';
+        $org_type = '';
         $org_type_nice_name = '';
-        $org_address        = [];
-        $org_phone          = [];
-        $org_email          = [];
+        $org_address = [];
+        $org_phone = [];
+        $org_email = [];
 
         // Get the organization
-        $organization    = WACC()->MdpApi()->get_organization_by_uuid($org_uuid);
+        $organization = WACC()->MdpApi()->get_organization_by_uuid($org_uuid);
         $org_parent_uuid = $org_info['data']['relationships']['parent_organization']['data']['id'] ?? '';
 
         if (!empty($org_parent_uuid)) {
@@ -176,7 +174,7 @@ class MdpApi
         $org_status = $organization['data']['attributes']['status'] ?? '';
 
         // Organization address
-        $client   = $this->init_client();
+        $client = $this->init_client();
         $response = $client->get("organizations/$org_uuid/addresses");
 
         if (isset($response['data']) && !empty($response['data'])) {
@@ -215,7 +213,7 @@ class MdpApi
     }
 
     /**
-     * Get current user's touchpoints
+     * Get current user's touchpoints.
      *
      * @param string $service_id
      * @param string $person_id Optional. If not provided, the current person ID will be used. Use this to debug with a specific person.
@@ -224,7 +222,7 @@ class MdpApi
      */
     public function get_current_user_touchpoints($service_id, $person_id = null)
     {
-        $client    = $this->init_client();
+        $client = $this->init_client();
         $person_id ??= $this->get_current_person_uuid();
 
         try {
@@ -269,14 +267,14 @@ class MdpApi
 
         // if no existing service, create one and return service ID
         $payload['data']['attributes'] = [
-            'name' => $service_name,
-            'description' => $service_description,
-            'status' => 'active',
-            'integration_type' => "custom",
+            'name'             => $service_name,
+            'description'      => $service_description,
+            'status'           => 'active',
+            'integration_type' => 'custom',
         ];
 
         try {
-            $service = $client->post("/services", ['json' => $payload]);
+            $service = $client->post('/services', ['json' => $payload]);
 
             return $service['data']['id'];
         } catch (Exception $e) {
@@ -287,7 +285,7 @@ class MdpApi
     }
 
     /**
-     * Get organization by UUID
+     * Get organization by UUID.
      *
      * @param string $uuid
      *
@@ -313,7 +311,7 @@ class MdpApi
     }
 
     /**
-     * Get single organization membership by UUID
+     * Get single organization membership by UUID.
      *
      * @param string $uuid
      *
@@ -339,7 +337,7 @@ class MdpApi
     }
 
     /**
-     * Get organization memberships
+     * Get organization memberships.
      *
      * @param string $org_uuid Organization UUID
      *

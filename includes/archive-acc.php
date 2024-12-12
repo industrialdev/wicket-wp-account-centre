@@ -4,9 +4,7 @@
 defined('ABSPATH') || exit;
 
 /**
- * Archive My Account
- *
- * @package Wicket
+ * Archive My Account.
  */
 
 // We will just redirect user to my-account dashboard
@@ -19,7 +17,7 @@ if ($acc_dashboard_id) {
     $redirect_url = home_url();
 }
 
-/**
+/*
  * Some websites have improper HTML output before the get_header() call (bad plugins, old theme, etc.), so we need to redirect them without a PHP's header redirect.
  */
 if (!headers_sent()) {

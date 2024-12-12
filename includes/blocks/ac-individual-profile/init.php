@@ -6,18 +6,18 @@ namespace WicketAcc;
 defined('ABSPATH') || exit;
 
 /**
- * Wicket Individual Profile Block
+ * Wicket Individual Profile Block.
  **/
-class Block_Profile extends WicketAcc
+class init extends WicketAcc
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct(
-        protected array $block     = [],
+        protected array $block = [],
         protected bool $is_preview = false,
     ) {
-        $this->block      = $block;
+        $this->block = $block;
         $this->is_preview = $is_preview;
 
         // Display the block
@@ -25,7 +25,7 @@ class Block_Profile extends WicketAcc
     }
 
     /**
-     * Init block
+     * Init block.
      *
      * @return void
      */

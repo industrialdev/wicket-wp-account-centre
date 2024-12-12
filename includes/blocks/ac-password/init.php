@@ -8,18 +8,18 @@ use Exception;
 defined('ABSPATH') || exit;
 
 /**
- * Wicket Password Block
+ * Wicket Password Block.
  **/
-class Block_Password extends WicketAcc
+class init extends WicketAcc
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct(
-        protected array $block     = [],
+        protected array $block = [],
         protected bool $is_preview = false,
     ) {
-        $this->block      = $block;
+        $this->block = $block;
         $this->is_preview = $is_preview;
 
         add_action('init', [$this, 'process_wicket_password_form']);
@@ -67,7 +67,7 @@ class Block_Password extends WicketAcc
             if ($password_confirmation != $password) {
                 $pass_blank = [];
                 $pass_blank['meta'] = (object) ['field' => 'user.password'];
-                $pass_blank['title'] = __(" - Passwords do not match");
+                $pass_blank['title'] = __(' - Passwords do not match');
                 $errors[] = (object) $pass_blank;
             }
             $_SESSION['wicket_password_form_errors'] = $errors;
@@ -76,8 +76,8 @@ class Block_Password extends WicketAcc
             if (empty($errors)) {
                 $update_user = new Wicket\Entities\People([
                     'user' => [
-                        'current_password' => $current_password,
-                        'password' => $password,
+                        'current_password'      => $current_password,
+                        'password'              => $password,
                         'password_confirmation' => $password_confirmation,
                     ],
                 ]);
@@ -92,7 +92,7 @@ class Block_Password extends WicketAcc
                 // redirect here if there was updates made to reload person info and prevent form re-submission
                 if (empty($_SESSION['wicket_password_form_errors'])) {
                     unset($_SESSION['wicket_password_form_errors']);
-                    header('Location: ' . strtok($_SERVER["REQUEST_URI"], '?') . '?success');
+                    header('Location: ' . strtok($_SERVER['REQUEST_URI'], '?') . '?success');
                     die;
                 }
             }
@@ -121,28 +121,28 @@ class Block_Password extends WicketAcc
 					<strong><?php printf(_n('The form could not be submitted because 1 error was found', 'The form could not be submitted because %s errors were found', count($_SESSION['wicket_password_form_errors']), 'wicket-acc'), number_format_i18n(count($_SESSION['wicket_password_form_errors']))); ?></strong>
 					<?php
                             $counter = 1;
-			    echo "<ul>";
+			    echo '<ul>';
 			    foreach ($_SESSION['wicket_password_form_errors'] as $key => $error) {
 			        if ($error->meta->field == 'user.current_password') {
-			            $prefix = __("Current Password") . ' ';
+			            $prefix = __('Current Password') . ' ';
 			            printf(__("<li><a href='#current_password'><strong>%s</strong> %s</a></li>", 'wicket-acc'), 'Error: ' . $counter, $prefix . __($error->title));
 			        }
 			        if ($error->meta->field == 'user.password') {
-			            $prefix = __("New Password") . ' ';
+			            $prefix = __('New Password') . ' ';
 			            printf(__("<li><a href='#password'><strong>%s</strong> %s</a></li>", 'wicket-acc'), 'Error: ' . $counter, $prefix . __($error->title));
 			        }
 			        if ($error->meta->field == 'user.password_confirmation') {
-			            $prefix = __("Confirm Password") . ' ';
+			            $prefix = __('Confirm Password') . ' ';
 			            printf(__("<li><a href='#password_confirmation'><strong>%s</strong> %s</a></li>", 'wicket-acc'), 'Error: ' . $counter, $prefix . __($error->title));
 			        }
 			        $counter++;
 			    }
-			    echo "</ul>";
+			    echo '</ul>';
 			    ?>
 				</div>
 			<?php elseif (isset($_GET['success'])) : ?>
 				<div class='alert alert-success' role="alert">
-					<strong><?php _e("Your password has been updated.", 'wicket-acc'); ?></strong>
+					<strong><?php _e('Your password has been updated.', 'wicket-acc'); ?></strong>
 				</div>
 			<?php endif; ?>
 
@@ -207,10 +207,10 @@ class Block_Password extends WicketAcc
 
 				<?php
                     get_component('button', [
-                        'variant'   => 'primary',
-                        'type'      => 'submit',
-                        'classes'   => ['wicket_update_password--1'],
-                        'label'     => __('Change password', 'wicket-acc'),
+                        'variant' => 'primary',
+                        'type'    => 'submit',
+                        'classes' => ['wicket_update_password--1'],
+                        'label'   => __('Change password', 'wicket-acc'),
                     ]);
         ?>
 

@@ -6,29 +6,29 @@ namespace WicketAcc;
 defined('ABSPATH') || exit;
 
 /**
- * Wicket Block: Base Block
+ * Wicket Block: Base Block.
  *
  **/
-class Block_BaseBlock extends WicketAcc
+class init extends WicketAcc
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct(
-        protected array $block     = [],
+        protected array $block = [],
         protected bool $is_preview = false,
-        protected ?Blocks $blocks  = null,
+        protected ?Blocks $blocks = null,
     ) {
-        $this->block        = $block;
-        $this->is_preview   = $is_preview;
-        $this->blocks       = $blocks ?? new Blocks();
+        $this->block = $block;
+        $this->is_preview = $is_preview;
+        $this->blocks = $blocks ?? new Blocks();
 
         // Display the block
         $this->display_block();
     }
 
     /**
-     * Display the block
+     * Display the block.
      *
      * @return void
      */
@@ -39,7 +39,7 @@ class Block_BaseBlock extends WicketAcc
 
         if ($process_form === false) {
             $args = [
-                'block_name' => 'wicket-ac/acc-base-block',
+                'block_name'  => 'wicket-ac/acc-base-block',
                 'block_title' => 'ACC Base Block',
                 'block_error' => 'There was an error processing the form.',
             ];
@@ -49,7 +49,7 @@ class Block_BaseBlock extends WicketAcc
 
         if ($process_form === true) {
             $args = [
-                'block_name' => 'wicket-ac/acc-base-block',
+                'block_name'  => 'wicket-ac/acc-base-block',
                 'block_title' => 'ACC Base Block',
             ];
 
@@ -66,7 +66,7 @@ class Block_BaseBlock extends WicketAcc
     }
 
     /**
-     * Process a form submited to the same block
+     * Process a form submited to the same block.
      *
      * @return bool|void
      */

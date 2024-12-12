@@ -1,9 +1,8 @@
 <?php
 
 /**
- * WooCommerce My Account page
+ * WooCommerce My Account page.
  */
-
 defined('ABSPATH') || exit;
 
 $acc_sidebar_location = get_field('acc_sidebar_location', 'option');

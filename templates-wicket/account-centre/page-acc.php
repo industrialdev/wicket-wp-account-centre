@@ -2,7 +2,7 @@
 // No direct access
 defined('ABSPATH') || exit;
 
-/**
+/*
  * Template Name: ACC page
  *
  * ACC pages template.
@@ -32,28 +32,28 @@ if (!empty($dev_wrapper_classes)) {
 }
 
 // ACC Options
-$acc_dashboard_id          = get_field('acc_page_dashboard', 'option');
-$acc_sidebar_location      = get_field('acc_sidebar_location', 'option');
-$acc_spelling              = get_field('acc_localization', 'option');
-$acc_display_breadcrumb    = false;
-$acc_display_publish_date  = false;
-$is_wc_endpoint            = false;
+$acc_dashboard_id = get_field('acc_page_dashboard', 'option');
+$acc_sidebar_location = get_field('acc_sidebar_location', 'option');
+$acc_spelling = get_field('acc_localization', 'option');
+$acc_display_breadcrumb = false;
+$acc_display_publish_date = false;
+$is_wc_endpoint = false;
 $acc_global_headerbanner_page_id = WACC()->getGlobalHeaderBannerPageId();
-$acc_global_headerbanner_status  = get_field('acc_global-headerbanner', 'option');
-$current_page_id           = get_the_ID();
-$default_language          = 'en';
+$acc_global_headerbanner_status = get_field('acc_global-headerbanner', 'option');
+$current_page_id = get_the_ID();
+$default_language = 'en';
 if (function_exists('wpml_get_default_language')) {
     $default_language = wpml_get_default_language();
 }
 
 // WooCommerce endpoints
 $wc_endpoints = WC()->query->get_query_vars();
-$current_url  = $_SERVER['REQUEST_URI'];
-$wc_endpoint  = basename(rtrim($current_url, '/'));
+$current_url = $_SERVER['REQUEST_URI'];
+$wc_endpoint = basename(rtrim($current_url, '/'));
 $wc_wrapper_class = '';
 
 if (in_array($wc_endpoint, $wc_endpoints)) {
-    $is_wc_endpoint   = true;
+    $is_wc_endpoint = true;
     $wc_wrapper_class = 'woocommerce';
 }
 
@@ -91,7 +91,7 @@ if ($acc_display_breadcrumb) {
 
 if ($acc_display_publish_date) {
     echo '<div class="wp-block-published-date">'; // Having the `wp-block-` prefix will help align it with the other Blocks
-    echo "<p class='mt-3 mb-4'><strong>" . __('Published:', 'wicket') . ' ' . get_the_date('d-m-Y') . "</strong></p>";
+    echo "<p class='mt-3 mb-4'><strong>" . __('Published:', 'wicket') . ' ' . get_the_date('d-m-Y') . '</strong></p>';
     echo '</div>';
 }
 ?>

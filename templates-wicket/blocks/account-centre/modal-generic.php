@@ -5,7 +5,7 @@ namespace WicketAcc;
 // No direct access
 defined('ABSPATH') || exit;
 
-/**
+/*
  * Generic modal template for blocks
  *
  * Available data:

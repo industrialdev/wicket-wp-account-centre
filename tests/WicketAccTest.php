@@ -6,7 +6,7 @@ use WicketAcc\WicketAcc;
 // Require our main plugin file
 require_once __DIR__ . '/../class-wicket-acc-main.php';
 
-class WicketAccMainTest extends TestCase
+class WicketAccTest extends TestCase
 {
     protected $wicketAcc;
 
@@ -38,22 +38,22 @@ class WicketAccMainTest extends TestCase
     public function testAccPagesMap()
     {
         $expected = [
-            'edit-profile' => 'Edit Profile',
-            'events' => 'My Events',
-            'jobs' => 'My Jobs',
-            'job-post' => 'Post a Job',
-            'change-password' => 'Change Password',
-            'organization-management' => 'Organization Management',
-            'acc_global-headerbanner' => 'Global Header-Banner',
-            'add-payment-method' => 'Add Payment Method',
+            'edit-profile'               => 'Edit Profile',
+            'events'                     => 'My Events',
+            'jobs'                       => 'My Jobs',
+            'job-post'                   => 'Post a Job',
+            'change-password'            => 'Change Password',
+            'organization-management'    => 'Organization Management',
+            'acc_global-headerbanner'    => 'Global Header-Banner',
+            'add-payment-method'         => 'Add Payment Method',
             'set-default-payment-method' => 'Set Default Payment Method',
-            'orders' => 'Orders',
-            'view-order' => 'View Order',
-            'downloads' => 'Downloads',
-            'edit-account' => 'Edit Account',
-            'edit-address' => 'Edit Address',
-            'payment-methods' => 'Payment Methods',
-            'subscriptions' => 'Subscriptions',
+            'orders'                     => 'Orders',
+            'view-order'                 => 'View Order',
+            'downloads'                  => 'Downloads',
+            'edit-account'               => 'Edit Account',
+            'edit-address'               => 'Edit Address',
+            'payment-methods'            => 'Payment Methods',
+            'subscriptions'              => 'Subscriptions',
         ];
         $this->assertEquals($expected, $this->wicketAcc->acc_pages_map);
     }

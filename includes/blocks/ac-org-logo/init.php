@@ -6,13 +6,13 @@ namespace WicketAcc;
 defined('ABSPATH') || exit;
 
 /**
- * Wicket Organization Profile Picture Block
+ * Wicket Organization Profile Picture Block.
  *
  **/
-class Block_OrgLogoChange extends WicketAcc
+class init extends WicketAcc
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct(
         protected array $block = [],
@@ -23,21 +23,21 @@ class Block_OrgLogoChange extends WicketAcc
         protected string $uploads_url = '',
         protected array $pp_extensions = []
     ) {
-        $this->block      = $block;
+        $this->block = $block;
         $this->is_preview = $is_preview;
-        $this->blocks     = $blocks ?? new Blocks();
+        $this->blocks = $blocks ?? new Blocks();
 
-        $this->uploads_path  = WICKET_ACC_UPLOADS_PATH . 'organization-logos/';
-        $this->uploads_url   = WICKET_ACC_UPLOADS_URL . 'organization-logos/';
-        $this->pp_extensions = [ 'jpg', 'jpeg', 'png', 'gif' ];
+        $this->uploads_path = WICKET_ACC_UPLOADS_PATH . 'organization-logos/';
+        $this->uploads_url = WICKET_ACC_UPLOADS_URL . 'organization-logos/';
+        $this->pp_extensions = ['jpg', 'jpeg', 'png', 'gif'];
 
         // Check if org_id is set on superglobals for not showing the block on organization selection screen
-        if (! isset($_GET['org_id'])) {
+        if (!isset($_GET['org_id'])) {
             return;
         }
 
-        $org_id  = (isset($_GET['org_id'])) ? $_GET['org_id'] : '';
-        $person  = wicket_current_person();
+        $org_id = (isset($_GET['org_id'])) ? $_GET['org_id'] : '';
+        $person = wicket_current_person();
         $org_ids = [];
         // figure out orgs I should see
         // this association to the org is set on each role. The actual role types we look at might change depending on the project
@@ -52,17 +52,16 @@ class Block_OrgLogoChange extends WicketAcc
         }
 
         // If the org_id is not in the org_ids array, return
-        if (! in_array($org_id, $org_ids, true)) {
+        if (!in_array($org_id, $org_ids, true)) {
             return;
         }
-
 
         // Display the block
         $this->display_block();
     }
 
     /**
-     * Display the block
+     * Display the block.
      *
      * @return void
      */
@@ -70,8 +69,8 @@ class Block_OrgLogoChange extends WicketAcc
     {
         // Process the form
         $process_form = $this->process_form();
-        $remove_form  = $this->remove_form();
-        $org_id       = $_GET['org_id'];
+        $remove_form = $this->remove_form();
+        $org_id = $_GET['org_id'];
 
         if ($process_form === false) {
             $this->blocks->render_template('organization-logo-change_error');
@@ -94,7 +93,7 @@ class Block_OrgLogoChange extends WicketAcc
     }
 
     /**
-     * Process the form and save the profile picture
+     * Process the form and save the profile picture.
      *
      * @return bool
      */
@@ -105,19 +104,19 @@ class Block_OrgLogoChange extends WicketAcc
         }
 
         // No data? no action?
-        if (! isset($_POST['action']) || $_POST['action'] !== 'wicket-acc-org-logo-form') {
+        if (!isset($_POST['action']) || $_POST['action'] !== 'wicket-acc-org-logo-form') {
             return;
         }
 
         $form = $_POST;
 
         // Check nonce
-        if (! wp_verify_nonce(sanitize_text_field(wp_unslash($form['nonce'])), 'wicket-acc-org-logo-form')) {
+        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($form['nonce'])), 'wicket-acc-org-logo-form')) {
             return false;
         }
 
         // Check if the file is set and valid
-        if (! isset($_FILES['org-logo']) || $_FILES['org-logo']['error'] !== UPLOAD_ERR_OK) {
+        if (!isset($_FILES['org-logo']) || $_FILES['org-logo']['error'] !== UPLOAD_ERR_OK) {
             return false;
         }
 
@@ -150,11 +149,11 @@ class Block_OrgLogoChange extends WicketAcc
         }
 
         // No matter whats the file name, rename it to {user_id}.{extension}
-        $_FILES['org-logo']['name']      = $org_id . '.' . $file_extension;
+        $_FILES['org-logo']['name'] = $org_id . '.' . $file_extension;
         $_FILES['org-logo']['full_path'] = $org_id . '.' . $file_extension;
 
         // Create subfolder if it doesn't exist
-        if (! file_exists($this->uploads_path)) {
+        if (!file_exists($this->uploads_path)) {
             wp_mkdir_p($this->uploads_path);
         }
 
@@ -162,7 +161,7 @@ class Block_OrgLogoChange extends WicketAcc
         $movefile = move_uploaded_file($_FILES['org-logo']['tmp_name'], $file_path);
 
         // Check for errors
-        if (! $movefile) {
+        if (!$movefile) {
             return false;
         }
 
@@ -170,7 +169,7 @@ class Block_OrgLogoChange extends WicketAcc
     }
 
     /**
-     * Process the remove form and delete the profile picture
+     * Process the remove form and delete the profile picture.
      *
      * @return bool
      */
@@ -181,14 +180,14 @@ class Block_OrgLogoChange extends WicketAcc
         }
 
         // No data? no action?
-        if (! isset($_POST['action']) || $_POST['action'] !== 'wicket-acc-org-profile-picture-remove-form') {
+        if (!isset($_POST['action']) || $_POST['action'] !== 'wicket-acc-org-profile-picture-remove-form') {
             return;
         }
 
         $form = $_POST;
 
         // Check nonce
-        if (! wp_verify_nonce(sanitize_text_field(wp_unslash($form['nonce'])), 'wicket-acc-org-profile-picture-remove-form')) {
+        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($form['nonce'])), 'wicket-acc-org-profile-picture-remove-form')) {
             return false;
         }
 
@@ -206,5 +205,4 @@ class Block_OrgLogoChange extends WicketAcc
 
         return true;
     }
-
 }

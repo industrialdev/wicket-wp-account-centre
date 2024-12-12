@@ -159,13 +159,13 @@ class init extends WicketAcc
                     ?>
                     <div class="wicket-welcome-edit-profile-button col-3 text-right">
                         <?php get_component('button', [
-                                'variant'     => 'secondary',
-                                'a_tag'       => true,
-                                'classes'     => ['whitespace-nowrap'],
-                                'label'       => $editprofile_page_title,
-                                'prefix_icon' => 'fa-regular fa-pen-to-square',
-                                'link'        => $editprofile_page_link,
-                            ]) ?>
+                            'variant'     => 'secondary',
+                            'a_tag'       => true,
+                            'classes'     => ['whitespace-nowrap'],
+                            'label'       => $editprofile_page_title,
+                            'prefix_icon' => 'fa-regular fa-pen-to-square',
+                            'link'        => $editprofile_page_link,
+                        ]) ?>
                     </div>
                 <?php } ?>
             </div>

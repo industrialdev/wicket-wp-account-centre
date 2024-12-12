@@ -10,10 +10,9 @@ defined('ABSPATH') || exit;
  *
  * tp - Touchpoint data
  */
-
-$tp         = $args['tp'];
+$tp = $args['tp'];
 $event_data = urlencode(base64_encode(json_encode($tp)));
-$location   = false;
+$location = false;
 
 if (isset($tp['attributes']['data']['location']) && $tp['attributes']['data']['location']) {
     $location = $tp['attributes']['data']['location'];

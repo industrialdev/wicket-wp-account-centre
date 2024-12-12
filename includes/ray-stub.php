@@ -3,7 +3,7 @@
 // No direct access
 defined('ABSPATH') || exit;
 
-/**
+/*
  * Ray stub
  * https://myray.app
  */

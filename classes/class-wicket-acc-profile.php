@@ -6,7 +6,7 @@ namespace WicketAcc;
 defined('ABSPATH') || exit;
 
 /**
- * Profile for Wicket Account Centre
+ * Profile for Wicket Account Centre.
  *
  * Manage all actions of user's profile on WordPress.
  */
@@ -16,16 +16,16 @@ class Profile extends WicketAcc
      * Constructor.
      */
     public function __construct(
-        protected array $pp_extensions    = ['jpg', 'jpeg', 'png', 'gif'],
+        protected array $pp_extensions = ['jpg', 'jpeg', 'png', 'gif'],
         protected string $pp_uploads_path = WICKET_ACC_UPLOADS_PATH . 'profile-pictures/',
-        protected string $pp_uploads_url  = WICKET_ACC_UPLOADS_URL . 'profile-pictures/'
+        protected string $pp_uploads_url = WICKET_ACC_UPLOADS_URL . 'profile-pictures/'
     ) {
         add_filter('get_avatar', [$this, 'get_wicket_avatar'], 2050, 5);
         add_filter('get_avatar_url', [$this, 'get_wicket_avatar_url'], 2050, 3);
     }
 
     /**
-     * Changes default WP get_avatar behavior
+     * Changes default WP get_avatar behavior.
      *
      * @param string $avatar
      * @param mixed $id_or_email
@@ -49,7 +49,7 @@ class Profile extends WicketAcc
     }
 
     /**
-     * Changes default WP get_avatar_url behavior
+     * Changes default WP get_avatar_url behavior.
      *
      * @param string $avatar_url
      * @param mixed $id_or_email
@@ -71,7 +71,7 @@ class Profile extends WicketAcc
     }
 
     /**
-     * Get the profile picture URL
+     * Get the profile picture URL.
      *
      * @param int $user_id Optional user ID. If not provided, the current user ID will be used.
      *
@@ -124,7 +124,7 @@ class Profile extends WicketAcc
     }
 
     /**
-     * Check if the profile picture is a custom one
+     * Check if the profile picture is a custom one.
      *
      * @param string $pp_profile_picture
      *
@@ -132,7 +132,7 @@ class Profile extends WicketAcc
      */
     public function is_custom_profile_picture($pp_profile_picture)
     {
-        $pp_profile_picture_plugin   = WICKET_ACC_URL . '/assets/images/profile-picture-default.svg';
+        $pp_profile_picture_plugin = WICKET_ACC_URL . '/assets/images/profile-picture-default.svg';
         $pp_profile_picture_override = get_field('acc_profile_picture_default', 'option');
 
         // Check if $pp_profile_picture is one of the two

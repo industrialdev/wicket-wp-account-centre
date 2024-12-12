@@ -6,15 +6,14 @@ namespace WicketAcc;
 defined('ABSPATH') || exit;
 
 /**
- * Language file for Wicket Account Centre Plugins
+ * Language file for Wicket Account Centre Plugins.
  *
- * @package  Wicket\Admin
  * @version  1.0.0
  */
 class Language extends WicketAcc
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -22,7 +21,7 @@ class Language extends WicketAcc
     }
 
     /**
-     * Load text domain
+     * Load text domain.
      */
     public function load_textdomain()
     {

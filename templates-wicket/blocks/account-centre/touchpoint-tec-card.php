@@ -10,10 +10,9 @@ defined('ABSPATH') || exit;
  *
  * tp - Touchpoint data
  */
-
-$tp         = $args['tp'];
+$tp = $args['tp'];
 $event_data = urlencode(base64_encode(json_encode($tp)));
-$location   = false;
+$location = false;
 
 if (isset($tp['attributes']['data']['location']) && $tp['attributes']['data']['location']) {
     $location = $tp['attributes']['data']['location'];
@@ -25,16 +24,16 @@ if (isset($tp['attributes']['data']['location']) && $tp['attributes']['data']['l
 }
 
 // Convert $tp['attributes']['data']['start_date']
-$start_date       = explode(' ', $tp['attributes']['data']['start_date']);
-$start_date_day   = date('j', strtotime($tp['attributes']['data']['start_date']));
+$start_date = explode(' ', $tp['attributes']['data']['start_date']);
+$start_date_day = date('j', strtotime($tp['attributes']['data']['start_date']));
 $start_date_month = date('M', strtotime($tp['attributes']['data']['start_date']));
-$start_date_full  = date('m-d-Y', strtotime($tp['attributes']['data']['start_date']));
+$start_date_full = date('m-d-Y', strtotime($tp['attributes']['data']['start_date']));
 
 // Convert $tp['attributes']['data']['end_date']
-$end_date       = explode(' ', $tp['attributes']['data']['end_date']);
-$end_date_day   = date('j', strtotime($tp['attributes']['data']['end_date']));
+$end_date = explode(' ', $tp['attributes']['data']['end_date']);
+$end_date_day = date('j', strtotime($tp['attributes']['data']['end_date']));
 $end_date_month = date('M', strtotime($tp['attributes']['data']['end_date']));
-$end_date_full  = date('m-d-Y', strtotime($tp['attributes']['data']['end_date']));
+$end_date_full = date('m-d-Y', strtotime($tp['attributes']['data']['end_date']));
 ?>
 
 <div class="event-card <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'my-0 p-4 border border-gray-200 gap-4 rounded-md shadow-md flex flex-col md:flex-row' ?>"

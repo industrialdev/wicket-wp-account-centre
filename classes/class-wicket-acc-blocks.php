@@ -8,21 +8,20 @@ use WP_Block_Type_Registry;
 defined('ABSPATH') || exit;
 
 /**
- * ACF Blocks file for Wicket Account Centre Plugins
+ * ACF Blocks file for Wicket Account Centre Plugins.
  *
- * @package  Wicket\Admin
  * @version  1.0.0
  */
 
 /**
- * Wicket Blocks class
+ * Wicket Blocks class.
  */
 class Blocks extends WicketAcc
 {
     private $current_group_being_saved;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -36,7 +35,7 @@ class Blocks extends WicketAcc
     }
 
     /**
-     * Add Wicket block categories for Gutenberg Editor
+     * Add Wicket block categories for Gutenberg Editor.
      */
     public function editor_block_category($categories)
     {
@@ -51,7 +50,7 @@ class Blocks extends WicketAcc
     /**
      * Load ACF Blocks
      * Automatically register blocks from the blocks folder
-     * Also register block styles and scripts
+     * Also register block styles and scripts.
      *
      * @return void
      */
@@ -108,7 +107,7 @@ class Blocks extends WicketAcc
     }
 
     /**
-     * Load ACF field groups
+     * Load ACF field groups.
      */
     public function load_acf_field_group($paths)
     {
@@ -118,7 +117,7 @@ class Blocks extends WicketAcc
     }
 
     /**
-     * Get ACF Blocks from all folders included in the blocks folder
+     * Get ACF Blocks from all folders included in the blocks folder.
      */
     public function get_wicket_blocks()
     {
@@ -135,7 +134,7 @@ class Blocks extends WicketAcc
     }
 
     /**
-     * ACF field group update
+     * ACF field group update.
      */
     public function update_field_group($group)
     {
@@ -151,7 +150,7 @@ class Blocks extends WicketAcc
     }
 
     /**
-     * Save ACF field group in plugin directory
+     * Save ACF field group in plugin directory.
      *
      * @param string $path
      *
@@ -170,7 +169,7 @@ class Blocks extends WicketAcc
     /**
      * Get Block template
      * Try to get the block template from child-theme/theme folder
-     * If not found, get the block template from plugin folder
+     * If not found, get the block template from plugin folder.
      *
      * @param string $template_name
      *
@@ -197,7 +196,7 @@ class Blocks extends WicketAcc
     }
 
     /**
-     * Render Block template
+     * Render Block template.
      *
      * @param string $template_name
      *
@@ -212,6 +211,7 @@ class Blocks extends WicketAcc
         // Avoid false include
         if ($this->get_block_template_path($template_name) === false) {
             echo '<p>Template ' . $template_name . ' not found</p>';
+
             return;
         }
 
@@ -219,6 +219,5 @@ class Blocks extends WicketAcc
 
         include $this->get_block_template_path($template_name);
 
-        return;
     }
 } // end Class Wicket_Blocks.

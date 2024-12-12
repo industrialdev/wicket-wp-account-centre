@@ -5,7 +5,7 @@ namespace WicketAcc;
 // No direct access
 defined('ABSPATH') || exit;
 
-/**
+/*
  * Available $args[] variables:
  *
  * block_name - Block name

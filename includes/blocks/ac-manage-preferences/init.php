@@ -6,26 +6,27 @@ namespace WicketAcc;
 defined('ABSPATH') || exit;
 
 /**
- * Wicket Manage Preferences Block
+ * Wicket Manage Preferences Block.
  *
  **/
-class Block_ManagePreferences extends WicketAcc
+class init extends WicketAcc
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct(
-        protected array $block     = [],
+        protected array $block = [],
         protected bool $is_preview = false,
     ) {
-        $this->block      = $block;
+        $this->block = $block;
         $this->is_preview = $is_preview;
 
         // Display the block
         $this->init_block();
     }
+
     /**
-     * Init block
+     * Init block.
      *
      * @return void
      */

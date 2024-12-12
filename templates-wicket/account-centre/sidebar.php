@@ -2,7 +2,7 @@
 // No direct access
 defined('ABSPATH') || exit;
 
-/**
+/*
  * ACC navigation/sidebar template.
  *
  * Used on ACC pages and on dashboard.
@@ -12,7 +12,7 @@ defined('ABSPATH') || exit;
 
 global $wp;
 
-$nav_heading     = wp_get_nav_menu_name('wicket-acc-nav');
+$nav_heading = wp_get_nav_menu_name('wicket-acc-nav');
 $nav_heading_two = wp_get_nav_menu_name('wicket-acc-nav-secondary');
 
 do_action('woocommerce_before_account_navigation');

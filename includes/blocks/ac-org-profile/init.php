@@ -6,19 +6,19 @@ namespace WicketAcc;
 defined('ABSPATH') || exit;
 
 /**
- * Wicket Org Profile Block
+ * Wicket Org Profile Block.
  **/
-class Block_OrgProfile extends WicketAcc
+class init extends WicketAcc
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct(
-        protected array $block     = [],
+        protected array $block = [],
         protected bool $is_preview = false,
         protected int|string|null|bool $hide_additional_info = 0,
     ) {
-        $this->block      = $block;
+        $this->block = $block;
         $this->is_preview = $is_preview;
 
         $this->hide_additional_info = get_field('hide_additional_info');
@@ -28,7 +28,7 @@ class Block_OrgProfile extends WicketAcc
     }
 
     /**
-     * Init block
+     * Init block.
      *
      * @return void
      */
@@ -160,7 +160,7 @@ class Block_OrgProfile extends WicketAcc
 <?php endif; ?>
 <?php
         } else {
-            echo "<!--" . __('You currently have no organizations to manage information for.', 'wicket-acc') . "-->";
+            echo '<!--' . __('You currently have no organizations to manage information for.', 'wicket-acc') . '-->';
         }
     }
 }
