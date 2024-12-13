@@ -49,9 +49,9 @@ class init extends Blocks
             $acf_org_uuid = $_GET['org_id'];
         }
 
-        // Child organization compatibility
-        // Needs to be after the check for an org_id
+        // Child organization compatibility. Needs to be after the check for an org_id
         if (isset($_GET['child_org_id']) && !empty($_GET['child_org_id'])) {
+            $parent_org_uuid = $acf_org_uuid;
             $acf_org_uuid = $_GET['child_org_id'];
         }
 

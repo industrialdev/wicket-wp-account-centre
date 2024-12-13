@@ -39,6 +39,12 @@ class init extends Blocks
         }
 
         $org_id = (isset($_GET['org_id'])) ? $_GET['org_id'] : '';
+        // Child organization compatibility
+        if (isset($_GET['child_org_id']) && !empty($_GET['child_org_id'])) {
+            $parent_org_id = $org_id;
+            $org_id = $_GET['child_org_id'];
+        }
+
         $person = wicket_current_person();
         $org_ids = [];
         // figure out orgs I should see
