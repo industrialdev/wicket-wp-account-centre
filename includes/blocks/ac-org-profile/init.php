@@ -45,13 +45,14 @@ class init extends Blocks
          * or looking up all associated orgs to person
          * if there's more than 1, we list them for the user to choose
          * which org they want to see
-    ------------------------------------------------------------------*/
+        ------------------------------------------------------------------*/
         $org_id = (isset($_GET['org_id'])) ? $_GET['org_id'] : '';
+        $child_org_id = (isset($_GET['child_org_id'])) ? $_GET['child_org_id'] : '';
 
         // Child organization compatibility
-        if (isset($_GET['child_org_id']) && !empty($_GET['child_org_id'])) {
+        if (!empty($child_org_id)) {
             $parent_org_id = $org_id;
-            $org_id = $_GET['child_org_id'];
+            $org_id = $child_org_id;
         }
 
         $client = wicket_api_client();
