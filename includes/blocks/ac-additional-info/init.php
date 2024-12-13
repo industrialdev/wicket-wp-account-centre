@@ -49,6 +49,12 @@ class init extends Blocks
             $acf_org_uuid = $_GET['org_id'];
         }
 
+        // Child organization compatibility
+        // Needs to be after the check for an org_id
+        if (isset($_GET['child_org_id']) && !empty($_GET['child_org_id'])) {
+            $acf_org_uuid = $_GET['child_org_id'];
+        }
+
         // Create schemas_and_overrides payload for component
         $schemas_and_overrides = [];
 
@@ -73,7 +79,6 @@ class init extends Blocks
                 if (($date_from_timestamp <= $now_timestamp) && ($now_timestamp <= $date_to_timestamp)) {
                     $date_range_conditional_is_active = true;
                 }
-
             }
 
             // Build array based on slug vs ID
