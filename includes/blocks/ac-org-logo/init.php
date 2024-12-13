@@ -80,6 +80,12 @@ class init extends Blocks
         $remove_form = $this->remove_form();
         $org_id = $_GET['org_id'];
 
+        // Child organization compatibility
+        if (isset($_GET['child_org_id']) && !empty($_GET['child_org_id'])) {
+            $parent_org_id = $org_id;
+            $org_id = $_GET['child_org_id'];
+        }
+
         if ($process_form === false) {
             $this->blocks->render_template('organization-logo-change_error');
         }
