@@ -1,0 +1,34 @@
+{
+	"name": "wicket-ac/ac-touchpoint-pheedloop",
+	"title": "ACC Touchpoint Pheedloop",
+	"description": "Wicket block for AC Touchpoint Pheedloop",
+	"style": "file:./block-styles.css",
+	"script": "file:./block-script.js",
+	"category": "wicket-account-center",
+	"icon": "",
+	"apiVersion": 2,
+	"keywords": [
+		"account-center",
+		"touchpoints",
+		"service",
+		"pheedloop",
+		"wicket"
+	],
+	"acf": {
+		"mode": "preview",
+		"renderTemplate": "render.php"
+	},
+	"styles": [],
+	"supports": {
+		"align": false,
+		"anchor": false,
+		"alignContent": false,
+		"color": {
+			"text": false,
+			"background": false,
+			"link": false
+		},
+		"alignText": true,
+		"fullHeight": false
+	}
+}
