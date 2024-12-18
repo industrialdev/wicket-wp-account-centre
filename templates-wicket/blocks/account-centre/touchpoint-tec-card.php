@@ -2,6 +2,9 @@
 
 namespace WicketAcc;
 
+use DateTime;
+use DateTimeZone;
+
 // No direct access
 defined('ABSPATH') || exit;
 
@@ -24,16 +27,32 @@ if (isset($tp['attributes']['data']['location']) && $tp['attributes']['data']['l
 }
 
 // Convert $tp['attributes']['data']['start_date']
+// Example output: 2024-11-19 9:00 AM EST
 $start_date = explode(' ', $tp['attributes']['data']['start_date']);
 $start_date_day = date('j', strtotime($tp['attributes']['data']['start_date']));
 $start_date_month = date('M', strtotime($tp['attributes']['data']['start_date']));
-$start_date_full = date('m-d-Y', strtotime($tp['attributes']['data']['start_date']));
+$timezone = new DateTimeZone(get_option('timezone_string') ?: 'UTC');
+$datetime = new DateTime($tp['attributes']['data']['start_date'], $timezone);
+$start_date_full = $datetime->format('F j, Y');
+$start_time = $datetime->format('g:i a');
 
-// Convert $tp['attributes']['data']['end_date']
+// Extract timezone from original string if present
+$start_parts = explode(' ', $tp['attributes']['data']['start_date']);
+$timezone_abbr = isset($start_parts[3]) ? ' ' . $start_parts[3] : '';
+$start_time .= $timezone_abbr;
+
+// Now for the end date
 $end_date = explode(' ', $tp['attributes']['data']['end_date']);
 $end_date_day = date('j', strtotime($tp['attributes']['data']['end_date']));
 $end_date_month = date('M', strtotime($tp['attributes']['data']['end_date']));
-$end_date_full = date('m-d-Y', strtotime($tp['attributes']['data']['end_date']));
+$end_datetime = new DateTime($tp['attributes']['data']['end_date'], $timezone);
+$end_date_full = $end_datetime->format('F j, Y');
+$end_time = $end_datetime->format('g:i a');
+
+// Extract timezone from original string if present
+$end_parts = explode(' ', $tp['attributes']['data']['end_date']);
+$end_timezone_abbr = isset($end_parts[3]) ? ' ' . $end_parts[3] : '';
+$end_time .= $end_timezone_abbr;
 ?>
 
 <div class="event-card <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'my-0 p-4 border border-gray-200 gap-4 rounded-md shadow-md flex flex-col md:flex-row' ?>"
@@ -68,7 +87,7 @@ $end_date_full = date('m-d-Y', strtotime($tp['attributes']['data']['end_date']))
             <strong><?php _e('Date:', 'wicket-acc'); ?></strong> <?php echo $start_date_full; ?> - <?php echo $end_date_full; ?>
         </p>
         <p class="event-time <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm' ?>">
-            <strong><?php _e('Time:', 'wicket-acc'); ?></strong> <?php echo date('g:i a', strtotime($tp['attributes']['data']['start_date'])) . ' - ' . date('g:i a', strtotime($tp['attributes']['data']['end_date'])); ?>
+            <strong><?php _e('Time:', 'wicket-acc'); ?></strong> <?php echo $start_time; ?> - <?php echo $end_time; ?>
         </p>
         <?php if ($location) : ?>
             <p class="event-location <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm' ?>">

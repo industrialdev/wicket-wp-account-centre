@@ -23,15 +23,15 @@ if (!isset($args['block_name']) || !isset($args['block_slug']) || !isset($args['
 }
 ?>
 <style type="text/css">
-	.wicket-acc-block-error {
-		border: 2px dotted var(--tec-color-border-primary);
-		padding: 1rem;
-	}
+    .wicket-acc-block-error {
+        border: 2px dotted var(--tec-color-border-primary);
+        padding: 1rem;
+    }
 </style>
 <section class="wicket-acc-block-error <?php echo $args['block_slug']; ?> <?php echo $args['block_slug']; ?>__error">
-	<div class="wicket-acc-block-error__content">
-		<h2><?php esc_html_e('Error', 'wicket-acc'); ?></h2>
-		<p><?php esc_html_e('There was an error on block:', 'wicket-acc'); ?> <?php echo $args['block_name']; ?></p>
-		<p><?php echo $args['block_error']; ?></p>
-	</div>
+    <div class="wicket-acc-block-error__content">
+        <h2><?php esc_html_e('Error', 'wicket-acc'); ?></h2>
+        <p><?php esc_html_e('There was an error on block:', 'wicket-acc'); ?> <?php echo $args['block_name']; ?></p>
+        <p><?php echo $args['block_error']; ?></p>
+    </div>
 </section>
