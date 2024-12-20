@@ -166,7 +166,7 @@ class init extends Blocks {
 		// Filter data by type
 		$touchpoint_data = self::filter_touchpoint_data( $touchpoint_data, $display_type );
 
-        // No data
+		// No data
 		if ( empty( $touchpoint_data ) ) {
 			echo '<p class="no-data">';
 			_e( 'You do not have any ' . $display_type . ' events at this time.', 'wicket-acc' );
@@ -174,42 +174,25 @@ class init extends Blocks {
 			return;
 		}
 
-
 		// Total results
 		$total_results = count( $touchpoint_data );
 
-		$counter = 0;
+		// Get the offset from POST or default to 0
+		$offset = isset( $_POST['offset'] ) ? absint( $_POST['offset'] ) : 0;
 
-		foreach ( $touchpoint_data as $tp ) :
-			//if ($tp['attributes']['code'] == 'cancelled_registration_for_an_event') :
-			$counter++;
+		// Slice the array to get only the needed items
+		$display_data = array_slice( $touchpoint_data, $offset, $num_results );
 
+		foreach ( $display_data as $tp ) :
 			if ( isset( $tp['attributes']['data']['event_start'] ) ) {
 				$args['tp'] = $tp;
-
 				WACC()->Blocks->render_template( 'touchpoint-pheedloop-card', $args );
-			}
-			//endif;
-
-			if ( $counter == $num_results ) {
-				break;
 			}
 		endforeach;
 
-		// Dirty hack to update the number of results
-		?>
-		<script>
-			let totalElementsElement = document.getElementById('total_results');
-
-			if (totalElementsElement !== null) {
-				totalElementsElement.innerHTML = '<?php echo $total_results; ?>';
-			}
-		</script>
-		<?php
-
-		// Show more like pagination, to load more data in the same page (if there are more than $num_results)
-		if ( $counter == $num_results && $ajax === false && $config['show_view_more_events'] ) {
-			self::load_more_results( $touchpoint_data, $num_results, $total_results, $counter, $display_type );
+		// Show more button only if not an AJAX request and there are more results
+		if ( $ajax === false && $config['show_view_more_events'] && ($offset + $num_results) < $total_results ) {
+			self::load_more_results( $touchpoint_data, $num_results, $total_results, $offset, $display_type );
 		}
 	}
 
@@ -256,31 +239,26 @@ class init extends Blocks {
 	 * @param array $touchpoint_data Touchpoint data
 	 * @param int $num_results Number of results to display
 	 * @param int $total_results Total results
-	 * @param int $counter Counter of displayed results
+	 * @param int $offset Offset of displayed results
 	 * @param string $display_type Touchpoint display type: upcoming, past, all
 	 *
 	 * @return void
 	 */
-	public static function load_more_results( $touchpoint_data = [], $num_results = 5, $total_results = 0, $counter = 0, $display_type = 'upcoming' ) {
-		// Sanitize
-		$num_results   = absint( $num_results );
-		$total_results = absint( $total_results );
-		$counter       = absint( $counter );
+	public static function load_more_results( $touchpoint_data = [], $num_results = 5, $total_results = 0, $offset = 0, $display_type = 'upcoming' ) {
 		?>
-
 		<div x-data="ajaxFormHandler()">
-			<div class="wicket-ac-touchpoint__pheedloop-results container">
+            <div class="wicket-ac-touchpoint__pheedloop-results container">
 				<div class="events-list grid gap-6" x-html="responseMessage"></div>
 			</div>
 
-			<div class="flex justify-center items-center">
-				<form action="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" method="post"
+			<div class="flex justify-center items-center load-more-container">
+				<form id="form" action="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" method="post"
 					@submit.prevent="submitForm">
 					<input type="hidden" name="action" value="wicket_ac_touchpoint_pheedloop_results">
 					<input type="hidden" name="num_results" value="<?php echo $num_results; ?>">
 					<input type="hidden" name="total_results" value="<?php echo $total_results; ?>">
 					<input type="hidden" name="type" value="<?php echo $display_type; ?>">
-					<input type="hidden" name="counter" value="<?php echo $counter; ?>">
+					<input type="hidden" name="offset" value="<?php echo $offset + $num_results; ?>">
 					<?php wp_nonce_field( 'wicket_ac_touchpoint_pheedloop_results' ); ?>
 
 					<div x-show="loading" class="wicket-ac-touchpoint__loader flex justify-center items-center self-center">
@@ -295,41 +273,53 @@ class init extends Blocks {
 					</button>
 				</form>
 			</div>
-
-			<script>
-				function ajaxFormHandler() {
-					return {
-						loading: false,
-						responseMessage: '',
-						submitForm(event) {
-							this.loading = true;
-							const formData = new FormData(event.target);
-
-							console.log(formData);
-							console.log(woocommerce_params.ajax_url);
-
-							fetch(woocommerce_params.ajax_url, {
-								method: 'POST',
-								body: formData
-							})
-								.then(response => response.text())
-								.then(data => {
-									this.loading = false;
-									if (data) {
-										this.responseMessage = data;
-									} else {
-										this.responseMessage = '<?php esc_html_e( 'An error occurred. No data.', 'wicket-acc' ); ?>';
-									}
-								})
-								.catch(error => {
-									this.loading = false;
-									this.responseMessage = '<?php esc_html_e( 'An error occurred. Failed.', 'wicket-acc' ); ?>';
-								});
-						}
-					};
-				}
-			</script>
 		</div>
+
+		<script>
+			function ajaxFormHandler() {
+				return {
+					loading: false,
+					responseMessage: '',
+					submitForm(event) {
+						this.loading = true;
+						const form = document.getElementById('form');
+						const formData = new FormData(form);
+
+						fetch(woocommerce_params.ajax_url, {
+							method: 'POST',
+							body: formData,
+						})
+						.then(response => response.text())
+						.then(data => {
+							this.loading = false;
+							if (data) {
+                                this.responseMessage += data;
+								// Find the events list and load more container
+								const loadMoreContainer = document.querySelector('.load-more-container');
+
+
+								// Update the offset for the next request
+								const offset = parseInt(form.querySelector('[name="offset"]').value);
+								const numResults = parseInt(form.querySelector('[name="num_results"]').value);
+								const totalResults = parseInt(form.querySelector('[name="total_results"]').value);
+
+								// Update offset for next request
+								form.querySelector('[name="offset"]').value = offset + numResults;
+
+								// Hide "Show More" if we've loaded all results
+								if (offset + numResults >= totalResults) {
+									loadMoreContainer.style.display = 'none';
+								}
+							}
+						})
+						.catch(error => {
+							this.loading = false;
+							console.error('Error:', error);
+						});
+					}
+				};
+			}
+		</script>
 		<?php
 	}
 }
