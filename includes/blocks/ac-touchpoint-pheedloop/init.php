@@ -138,9 +138,9 @@ class init extends Blocks {
 			return false;
 		}
 
-		// Debug with person: 9e0093fb-6df8-4da3-bf62-e6c135c1e4b0
+		// Debug with person: 6d199632-1bb8-4558-9a7e-b00c824590de
 		$touchpoint_service = WACC()->MdpApi->create_touchpoint_service_id( $service_id );
-		$touchpoints        = WACC()->MdpApi->get_current_user_touchpoints( $touchpoint_service, '6d199632-1bb8-4558-9a7e-b00c824590de' );
+		$touchpoints        = WACC()->MdpApi->get_current_user_touchpoints( $touchpoint_service );
 		return $touchpoints;
 	}
 
