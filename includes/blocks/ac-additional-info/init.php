@@ -41,6 +41,12 @@ class init extends Blocks
         $acf_org_uuid = get_field('additional_info_organization_uuid') ?? '';
         $acf_use_slugs = get_field('additional_info_use_slugs_instead_of_schema_ids');
 
+        $classesArray = array_filter(
+            explode(' ', trim($this->block['className'] ?? '')),
+            'strlen'
+        );
+        $classesArray[] = 'wicket-acc-component-additional-info-block';
+
         if (!$person_id) {
             return;
         }
@@ -169,11 +175,14 @@ class init extends Blocks
             }
         }
 
+        echo '<div class="' . implode(' ', $classesArray) . '">';
+
         get_component('widget-additional-info', [
-            'classes'               => $this->block['className'] ?? [],
             'resource_type'         => $acf_resource_type,
             'org_uuid'              => $acf_org_uuid,
             'schemas_and_overrides' => $schemas_and_overrides,
         ]);
+
+        echo '</div> <!-- / .' . implode(' ', $classesArray) . ' -->';
     }
 }
