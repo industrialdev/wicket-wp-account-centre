@@ -170,7 +170,7 @@ class init extends Blocks
         }
 
         get_component('widget-additional-info', [
-            'classes'               => [],
+            'classes'               => $this->block['className'] ?? [],
             'resource_type'         => $acf_resource_type,
             'org_uuid'              => $acf_org_uuid,
             'schemas_and_overrides' => $schemas_and_overrides,
