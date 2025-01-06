@@ -5,219 +5,221 @@ namespace WicketAcc\Blocks\OrgLogo;
 use WicketAcc\Blocks;
 
 // No direct access
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Wicket Organization Profile Picture Block.
  *
  **/
-class init extends Blocks {
-	/**
-	 * Constructor.
-	 */
-	public function __construct(
-		protected array $block = [],
-		protected bool $is_preview = false,
-		protected ?Blocks $blocks = null,
-		protected int $max_size = 1,
-		protected string $uploads_path = '',
-		protected string $uploads_url = '',
-		protected array $pp_extensions = []
-	) {
-		$this->block      = $block;
-		$this->is_preview = $is_preview;
-		$this->blocks     = $blocks ?? new Blocks();
+class init extends Blocks
+{
+    /**
+     * Constructor.
+     */
+    public function __construct(
+        protected array $block = [],
+        protected bool $is_preview = false,
+        protected ?Blocks $blocks = null,
+        protected int $max_size = 1,
+        protected string $uploads_path = '',
+        protected string $uploads_url = '',
+        protected array $pp_extensions = []
+    ) {
+        $this->block = $block;
+        $this->is_preview = $is_preview;
+        $this->blocks = $blocks ?? new Blocks();
 
-		$this->uploads_path  = WICKET_ACC_UPLOADS_PATH . 'organization-logos/';
-		$this->uploads_url   = WICKET_ACC_UPLOADS_URL . 'organization-logos/';
-		$this->pp_extensions = [ 'jpg', 'jpeg', 'png', 'gif' ];
+        $this->uploads_path = WICKET_ACC_UPLOADS_PATH . 'organization-logos/';
+        $this->uploads_url = WICKET_ACC_UPLOADS_URL . 'organization-logos/';
+        $this->pp_extensions = ['jpg', 'jpeg', 'png', 'gif'];
 
-		$org_id       = ( isset( $_GET['org_id'] ) ) ? $_GET['org_id'] : '';
-		$child_org_id = ( isset( $_GET['child_org_id'] ) ) ? $_GET['child_org_id'] : '';
+        $org_id = (isset($_GET['org_id'])) ? $_GET['org_id'] : '';
+        $child_org_id = (isset($_GET['child_org_id'])) ? $_GET['child_org_id'] : '';
 
-		// Child organization compatibility
-		if ( ! empty( $child_org_id ) ) {
-			$parent_org_id = $org_id;
-			$org_id        = $child_org_id;
-		}
+        // Child organization compatibility
+        if (!empty($child_org_id)) {
+            $parent_org_id = $org_id;
+            $org_id = $child_org_id;
+        }
 
-		$person  = wicket_current_person();
-		$org_ids = [];
+        $person = wicket_current_person();
+        $org_ids = [];
 
-		// Figure out orgs I should see this association to the org is set on each role. The actual role types we look at might change depending on the project
-		foreach ( $person->included() as $person_included ) {
-			if ( isset( $person_included['attributes']['name'] ) ) {
-				if ( $person_included['type'] == 'roles' && ( stristr( $person_included['attributes']['name'], 'org_editor' ) ) ) {
-					if ( isset( $person_included['relationships']['resource']['data']['id'] ) && $person_included['relationships']['resource']['data']['type'] == 'organizations' ) {
-						$org_ids[] = $person_included['relationships']['resource']['data']['id'];
-					}
-				}
-			}
-		}
+        // Figure out orgs I should see this association to the org is set on each role. The actual role types we look at might change depending on the project
+        foreach ($person->included() as $person_included) {
+            if (isset($person_included['attributes']['name'])) {
+                if ($person_included['type'] == 'roles' && (stristr($person_included['attributes']['name'], 'org_editor'))) {
+                    if (isset($person_included['relationships']['resource']['data']['id']) && $person_included['relationships']['resource']['data']['type'] == 'organizations') {
+                        $org_ids[] = $person_included['relationships']['resource']['data']['id'];
+                    }
+                }
+            }
+        }
 
-		// If org_ids only has one org, set the org_id to that org
-		if ( count( $org_ids ) === 1 ) {
-			$org_id = $org_ids[0];
-		}
+        // If org_ids only has one org, set the org_id to that org
+        if (count($org_ids) === 1) {
+            $org_id = $org_ids[0];
+        }
 
+        // If the org_id is not in the org_ids array, return. But let user pass if a child org is defined
+        if (!in_array($org_id, $org_ids, true) && empty($child_org_id)) {
+            return;
+        }
 
+        // Display the block
+        $this->display_block($org_id);
+    }
 
-		// If the org_id is not in the org_ids array, return. But let user pass if a child org is defined
-		if ( ! in_array( $org_id, $org_ids, true ) && empty( $child_org_id ) ) {
-			return;
-		}
+    /**
+     * Display the block.
+     *
+     * @return void
+     */
+    protected function display_block($org_id)
+    {
+        // Process the form
+        $process_form = $this->process_form();
 
-		// Display the block
-		$this->display_block( $org_id );
-	}
+        $child_org_id = $_GET['child_org_id'] ?? '';
 
-	/**
-	 * Display the block.
-	 *
-	 * @return void
-	 */
-	protected function display_block( $org_id ) {
-		// Process the form
-		$process_form = $this->process_form();
+        // Child organization compatibility
+        if (!empty($child_org_id)) {
+            $parent_org_id = $org_id;
+            $org_id = $child_org_id;
+        }
 
-		$child_org_id = $_GET['child_org_id'] ?? '';
+        if ($process_form === false) {
+            $this->blocks->render_template('organization-logo-change_error');
+        }
 
-		// Child organization compatibility
-		if ( ! empty( $child_org_id ) ) {
-			$parent_org_id = $org_id;
-			$org_id        = $child_org_id;
-		}
+        if ($process_form === true) {
+            $this->blocks->render_template('organization-logo-change_success');
+        }
 
-		if ( $process_form === false ) {
-			$this->blocks->render_template( 'organization-logo-change_error' );
-		}
+        // Get user profile picture
+        $organiation_logo = WACC()->OrganizationProfile->get_organization_logo($org_id);
 
-		if ( $process_form === true ) {
-			$this->blocks->render_template( 'organization-logo-change_success' );
-		}
+        $args = [
+            'organization_logo_url' => $organiation_logo,
+            'max_upload_size'       => $this->max_size,
+            'org_id'                => $org_id,
+        ];
 
-		// Get user profile picture
-		$organiation_logo = WACC()->OrganizationProfile->get_organization_logo( $org_id );
+        // Render block
+        $this->blocks->render_template('organization-logo-change', $args);
+    }
 
-		$args = [ 
-			'organization_logo_url' => $organiation_logo,
-			'max_upload_size'       => $this->max_size,
-			'org_id'                => $org_id,
-		];
+    /**
+     * Process the form and save the profile picture.
+     *
+     * @return bool
+     */
+    public function process_form()
+    {
+        if (is_admin()) {
+            return;
+        }
 
-		// Render block
-		$this->blocks->render_template( 'organization-logo-change', $args );
-	}
+        // No data? no action?
+        if (!isset($_POST['action']) || $_POST['action'] !== 'wicket-acc-org-logo-form') {
+            return;
+        }
 
-	/**
-	 * Process the form and save the profile picture.
-	 *
-	 * @return bool
-	 */
-	public function process_form() {
-		if ( is_admin() ) {
-			return;
-		}
+        $form = $_POST;
 
-		// No data? no action?
-		if ( ! isset( $_POST['action'] ) || $_POST['action'] !== 'wicket-acc-org-logo-form' ) {
-			return;
-		}
+        // Check nonce
+        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($form['nonce'])), 'wicket-acc-org-logo-form')) {
+            return false;
+        }
 
-		$form = $_POST;
+        // Check if the file is set and valid
+        if (!isset($_FILES['org-logo']) || $_FILES['org-logo']['error'] !== UPLOAD_ERR_OK) {
+            return false;
+        }
 
-		// Check nonce
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $form['nonce'] ) ), 'wicket-acc-org-logo-form' ) ) {
-			return false;
-		}
+        // Get the extension
+        $file_extension = pathinfo($_FILES['org-logo']['name'], PATHINFO_EXTENSION);
 
-		// Check if the file is set and valid
-		if ( ! isset( $_FILES['org-logo'] ) || $_FILES['org-logo']['error'] !== UPLOAD_ERR_OK ) {
-			return false;
-		}
+        // Check if is a valid image
+        if (@getimagesize($_FILES['org-logo']['tmp_name']) === false) {
+            return false;
+        }
 
-		// Get the extension
-		$file_extension = pathinfo( $_FILES['org-logo']['name'], PATHINFO_EXTENSION );
+        // Check if the file size is too big. max_size is in MB
+        if ($_FILES['org-logo']['size'] > $this->max_size * 1024 * 1024) { // Convert MB to bytes
+            return false;
+        }
 
-		// Check if is a valid image
-		if ( @getimagesize( $_FILES['org-logo']['tmp_name'] ) === false ) {
-			return false;
-		}
+        // Org ID
+        $org_id = sanitize_text_field(wp_unslash($form['org_id']));
 
-		// Check if the file size is too big. max_size is in MB
-		if ( $_FILES['org-logo']['size'] > $this->max_size * 1024 * 1024 ) { // Convert MB to bytes
-			return false;
-		}
+        // Remove any existing file on wicket-profile-pictures/{user_id}.{extension}
+        $file_path = $this->uploads_path . $org_id . '.' . $file_extension;
 
-		// Org ID
-		$org_id = sanitize_text_field( wp_unslash( $form['org_id'] ) );
+        // Delete the file if it exists
+        foreach ($this->pp_extensions as $ext) {
+            $other_file_path = $this->uploads_path . $org_id . '.' . $ext;
 
-		// Remove any existing file on wicket-profile-pictures/{user_id}.{extension}
-		$file_path = $this->uploads_path . $org_id . '.' . $file_extension;
+            if (file_exists($other_file_path)) {
+                wp_delete_file($other_file_path);
+            }
+        }
 
-		// Delete the file if it exists
-		foreach ( $this->pp_extensions as $ext ) {
-			$other_file_path = $this->uploads_path . $org_id . '.' . $ext;
+        // No matter whats the file name, rename it to {user_id}.{extension}
+        $_FILES['org-logo']['name'] = $org_id . '.' . $file_extension;
+        $_FILES['org-logo']['full_path'] = $org_id . '.' . $file_extension;
 
-			if ( file_exists( $other_file_path ) ) {
-				wp_delete_file( $other_file_path );
-			}
-		}
+        // Create subfolder if it doesn't exist
+        if (!file_exists($this->uploads_path)) {
+            wp_mkdir_p($this->uploads_path);
+        }
 
-		// No matter whats the file name, rename it to {user_id}.{extension}
-		$_FILES['org-logo']['name']      = $org_id . '.' . $file_extension;
-		$_FILES['org-logo']['full_path'] = $org_id . '.' . $file_extension;
+        // Move the file to the uploads directory, move_uploaded_file
+        $movefile = move_uploaded_file($_FILES['org-logo']['tmp_name'], $file_path);
 
-		// Create subfolder if it doesn't exist
-		if ( ! file_exists( $this->uploads_path ) ) {
-			wp_mkdir_p( $this->uploads_path );
-		}
+        // Check for errors
+        if (!$movefile) {
+            return false;
+        }
 
-		// Move the file to the uploads directory, move_uploaded_file
-		$movefile = move_uploaded_file( $_FILES['org-logo']['tmp_name'], $file_path );
+        return true;
+    }
 
-		// Check for errors
-		if ( ! $movefile ) {
-			return false;
-		}
+    /**
+     * Process the remove form and delete the profile picture.
+     *
+     * @return bool
+     */
+    public function remove_form()
+    {
+        if (is_admin()) {
+            return;
+        }
 
-		return true;
-	}
+        // No data? no action?
+        if (!isset($_POST['action']) || $_POST['action'] !== 'wicket-acc-org-profile-picture-remove-form') {
+            return;
+        }
 
-	/**
-	 * Process the remove form and delete the profile picture.
-	 *
-	 * @return bool
-	 */
-	public function remove_form() {
-		if ( is_admin() ) {
-			return;
-		}
+        $form = $_POST;
 
-		// No data? no action?
-		if ( ! isset( $_POST['action'] ) || $_POST['action'] !== 'wicket-acc-org-profile-picture-remove-form' ) {
-			return;
-		}
+        // Check nonce
+        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($form['nonce'])), 'wicket-acc-org-profile-picture-remove-form')) {
+            return false;
+        }
 
-		$form = $_POST;
+        // Org ID
+        $org_id = $form['org_id'];
 
-		// Check nonce
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $form['nonce'] ) ), 'wicket-acc-org-profile-picture-remove-form' ) ) {
-			return false;
-		}
+        // Remove any existing file on wicket-profile-pictures/{user_id}.{extension}
+        foreach ($this->pp_extensions as $ext) {
+            $file_path = $this->uploads_path . $org_id . '.' . $ext;
 
-		// Org ID
-		$org_id = $form['org_id'];
+            if (file_exists($file_path)) {
+                wp_delete_file($file_path);
+            }
+        }
 
-		// Remove any existing file on wicket-profile-pictures/{user_id}.{extension}
-		foreach ( $this->pp_extensions as $ext ) {
-			$file_path = $this->uploads_path . $org_id . '.' . $ext;
-
-			if ( file_exists( $file_path ) ) {
-				wp_delete_file( $file_path );
-			}
-		}
-
-		return true;
-	}
+        return true;
+    }
 }
