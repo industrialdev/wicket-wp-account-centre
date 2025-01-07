@@ -138,6 +138,16 @@ class AdminSettings extends WicketAcc
             return;
         }
 
+        // Exit if not in development/local environment
+        if (
+            !(
+                (defined('WP_ENV') && WP_ENV === 'development') ||
+                (defined('WP_ENVIRONMENT_TYPE') && in_array(WP_ENVIRONMENT_TYPE, ['local', 'development'], true))
+            )
+        ) {
+            return;
+        }
+
         $acf_json_folder = WICKET_ACC_PATH . 'includes/acf-json/';
 
         if (!is_writable($acf_json_folder)) {
