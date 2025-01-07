@@ -66,7 +66,7 @@ do_action('woocommerce_before_account_navigation');
 	<?php endif; ?>
 </div>
 
-<div class="col-lg-4 lg:hidden myaccount-nav myaccount-nav-mobile">
+<div class="lg:w-1/3 lg:hidden myaccount-nav myaccount-nav-mobile">
 	<div id="dropdown-my-account-menu" class="dropdown__content dropdown__content--nav"
 		aria-labelledby="dropdown-control-my-account-menu" aria-expanded="false" role="region" style="display:none">
 		<?php
@@ -99,10 +99,9 @@ do_action('woocommerce_before_account_navigation');
 	    ?>
 	</div>
 	<a href="#" id="dropdown-control-my-account-menu" class="dropdown__button dropdown__toggle dropdown__toggle--nav"
-		aria-controls="dropdown-my-account-menu-two" aria-expanded="false">
-		<?php echo $nav_heading_two; ?> <i class="fal fa-plus"
-			aria-hidden="true"></i>
-	</a>
+		aria-controls="dropdown-my-account-menu-two"
+		aria-expanded="false"><?php echo $nav_heading_two; ?> <i
+			class="fal fa-plus" aria-hidden="true"></i></a>
 	<?php endif; ?>
 </div>
 <?php endif; ?>

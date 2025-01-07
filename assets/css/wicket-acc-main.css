@@ -3,7 +3,6 @@
  * Base styles for Wicket ACC
  */
 
-@import "_bootstrap-grid.min.css";
 @import "_wicket-theme-v2-compatibility.css";
 @import "_wicket-acc-variables.css";
 @import "_wicket-acc-animations.css";
