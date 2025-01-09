@@ -95,8 +95,8 @@
                 "id": ""
             },
             "default_value": "Set renewal window: specify how many days before membership expiration for renewal callout to display.",
-            "min": 30,
-            "max": 60,
+            "min": 1,
+            "max": 365,
             "placeholder": "",
             "step": "",
             "prepend": "",
