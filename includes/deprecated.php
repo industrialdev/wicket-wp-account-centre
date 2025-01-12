@@ -516,6 +516,8 @@ function wicket_ac_memberships_get_product_link_data($membership, $renewal_type)
             'title' => $button_label,
             'url'   => $link_url,
         ];
+        $link['link']['target'] = '';
+        $link['link_style'] = '';    
         $links[] = $link;
         if (!empty($specific_renewal_product)) {
             break;
@@ -523,6 +525,19 @@ function wicket_ac_memberships_get_product_link_data($membership, $renewal_type)
     }
 
     return $links;
+}
+
+function wicket_ac_memberships_get_subscription_renewal_link_data($membership) {
+  $url = $membership['membership']['subscription_renewal']['permalink'];
+  $button_label = $membership['callout']['button_label'];
+  $link['link'] = [
+      'title' => $button_label,
+      'url' => $url,
+  ];
+  $link['link']['target'] = '';
+  $link['link_style'] = '';    
+  $links[] = $link;
+  return $links;
 }
 
 function wicket_ac_memberships_get_page_link_data($membership)
@@ -539,6 +554,8 @@ function wicket_ac_memberships_get_page_link_data($membership)
         'title' => $button_label,
         'url'   => $url,
     ];
+    $link['link']['target'] = '';
+    $link['link_style'] = '';    
     $links[] = $link;
 
     return $links;

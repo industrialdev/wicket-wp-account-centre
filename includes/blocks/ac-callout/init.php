@@ -221,6 +221,8 @@ class init extends Blocks
                             } elseif (!empty($membership['membership']['form_page'])) {
                                 //echo '<pre>'; var_dump( $membership['membership']['form_page'] ); echo '</pre>';
                                 $links = wicket_ac_memberships_get_page_link_data($membership);
+                            } elseif (!empty($membership['membership']['subscription_renewal'])) {
+                                $links = wicket_ac_memberships_get_subscription_renewal_link_data($membership);
                             }
                             $title = $membership['callout']['header'];
                             $description = $membership['callout']['content'];
