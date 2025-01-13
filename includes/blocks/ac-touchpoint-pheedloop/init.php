@@ -38,7 +38,7 @@ class init extends Blocks
         $close = 0;
         $attrs = $this->is_preview ? ' ' : get_block_wrapper_attributes(
             [
-                'class' => 'wicket-acc-block wicket-acc-block-touchpoints-pheedloop wicket-ac-touchpoint-pheedloop max-w-5xl mx-auto my-8 p-6',
+                'class' => 'wicket-acc-block wicket-acc-block-touchpoints-pheedloop wicket-ac-touchpoint-pheedloop max-w-5xl mx-auto my-8',
             ]
         );
 
