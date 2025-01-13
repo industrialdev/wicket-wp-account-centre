@@ -194,11 +194,10 @@ class init extends Blocks
     {
         ?>
 		<div x-data="ajaxFormHandler()">
-			<div class="wicket-ac-touchpoint__vitalsource-results container">
-				<div class="events-list grid gap-6" x-html="responseMessage"></div>
+			<div class="wicket-ac-touchpoint__vitalsource-results container" x-html="responseMessage">
 			</div>
 
-			<div class="flex justify-center items-center load-more-container">
+			<div class="flex load-more-container">
 				<form id="form" action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>" method="post"
 					@submit.prevent="submitForm">
 					<input type="hidden" name="action" value="wicket_ac_touchpoint_vitalsource_results">
@@ -212,9 +211,8 @@ class init extends Blocks
 					</div>
 
 					<button type="submit"
-						class="button button-primary show-more flex items-center font-bold text-color-dark-100 my-4"
+						class="button button--primary show-more flex items-center font-bold text-color-dark-100 my-4"
 						x-show="!loading">
-						<span class="arrow mr-2">&#9660;</span>
 						<span class="text"><?php esc_html_e('Show More', 'wicket-acc'); ?></span>
 					</button>
 				</form>
