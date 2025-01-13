@@ -1,0 +1,34 @@
+{
+	"name": "wicket-ac/ac-touchpoint-vitalsource",
+	"title": "ACC Touchpoint VitalSource",
+	"description": "Wicket block for AC Touchpoint VitalSource",
+	"style": "file:./block-styles.css",
+	"script": "file:./block-script.js",
+	"category": "wicket-account-center",
+	"icon": "",
+	"apiVersion": 2,
+	"keywords": [
+		"account-center",
+		"touchpoints",
+		"service",
+		"vitalsource",
+		"wicket"
+	],
+	"acf": {
+		"mode": "preview",
+		"renderTemplate": "render.php"
+	},
+	"styles": [],
+	"supports": {
+		"align": false,
+		"anchor": false,
+		"alignContent": false,
+		"color": {
+			"text": false,
+			"background": false,
+			"link": false
+		},
+		"alignText": true,
+		"fullHeight": false
+	}
+}

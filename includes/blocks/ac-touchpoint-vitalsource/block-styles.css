@@ -1,0 +1,49 @@
+/* Theme v2 styles */
+.wicket-acc-block-touchpoints-vitalsource {
+  max-width: var(--layout-content);
+  margin: var(--space-100) auto;
+  padding: var(--space-200);
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-200);
+  }
+
+  .header h2 {
+    font-size: var(--font-size-heading-md);
+    font-weight: bold;
+  }
+
+  .header .upcoming-link {
+    font-size: var(--font-size-body-md);
+  }
+
+  .vitalsource-card {
+    display: block;
+    background-color: var(--bg-card);
+    padding: var(--spacing-200);
+    filter: drop-shadow(var(--elevation-4));
+    border-radius: var(--card-corner-radius);
+    font-size: var(--font-size-heading-xs);
+    margin-bottom: var(--spacing-200);
+    font-weight: bold;
+    color: var(--text-content);
+    text-decoration: none;
+  }
+
+  .show-more {
+    .arrow {
+      text-decoration: none;
+    }
+
+    .text {
+      text-decoration: underline;
+    }
+
+    .text:hover {
+      text-decoration: underline;
+    }
+  }
+}
