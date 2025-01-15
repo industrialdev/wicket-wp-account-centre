@@ -367,8 +367,6 @@ class Router extends WicketAcc
             return;
         }
 
-        echo 'acc_redirects';
-
         // Only if we already migrated to my-account
         if (!get_option('wicket_acc_cpt_changed_to_my_account')) {
             return;
