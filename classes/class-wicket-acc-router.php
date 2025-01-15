@@ -33,6 +33,10 @@ class Router extends WicketAcc
      */
     public function __construct()
     {
+        if (apply_filters('wicket/acc/router/disable_router', false)) {
+            return;
+        }
+
         // DEBUG ONLY, check environment
         if (defined('WP_ENV') && WP_ENV === 'development') {
             flush_rewrite_rules();
@@ -362,6 +366,8 @@ class Router extends WicketAcc
         if (is_admin()) {
             return;
         }
+
+        echo 'acc_redirects';
 
         // Only if we already migrated to my-account
         if (!get_option('wicket_acc_cpt_changed_to_my_account')) {
