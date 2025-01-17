@@ -31,18 +31,4 @@
     color: var(--text-content);
     text-decoration: none;
   }
-
-  .show-more {
-    .arrow {
-      text-decoration: none;
-    }
-
-    .text {
-      text-decoration: underline;
-    }
-
-    .text:hover {
-      text-decoration: underline;
-    }
-  }
 }

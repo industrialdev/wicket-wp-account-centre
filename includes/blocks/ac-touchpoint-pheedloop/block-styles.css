@@ -129,20 +129,4 @@ body.wicket-theme-v2 .wicket-acc-block-touchpoints-pheedloop {
       text-decoration: none;
     }
   }
-
-  .show-more {
-    /* color: var(--color-dark-100); */
-
-    .arrow {
-      text-decoration: none;
-    }
-
-    .text {
-      text-decoration: underline;
-    }
-
-    .text:hover {
-      text-decoration: underline;
-    }
-  }
 }
