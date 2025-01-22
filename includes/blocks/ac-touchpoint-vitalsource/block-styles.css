@@ -30,5 +30,10 @@
     font-weight: bold;
     color: var(--text-content);
     text-decoration: none;
+
+    &:hover,
+    &:focus {
+      text-decoration: underline;
+    }
   }
 }
