@@ -109,7 +109,7 @@ class init extends Blocks
                             <div class="my-0 wicket-welcome-memberships">
                                 <p class="mb-0 wicket-welcome-member-type">
                                     <strong><?php echo __('Membership Type:', 'wicket-acc'); ?></strong>
-                                    <?php echo $membership['name']; ?>
+                                    <?php echo apply_filters('wicket_ac_welcome_block_membership_name', $membership['name']); ?>
                                 </p>
 
                                 <?php
