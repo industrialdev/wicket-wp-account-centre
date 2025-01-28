@@ -77,7 +77,8 @@ class init extends Blocks
                         <?php _e('Welcome', 'wicket-acc'); ?>
                     </p>
                     <p class="wicket-welcome-name">
-                        <?php echo $person->given_name . ' ' . $person->family_name; ?>
+                        <?php $member_name = $person->given_name . ' ' . $person->family_name; ?>
+                        <?php echo apply_filters('wicket_ac_welcome_block_name', $member_name, $person); ?>
                         <?php do_action('wicket_ac_after_welcome_block_name', $person->id); ?>
                     </p>
 
