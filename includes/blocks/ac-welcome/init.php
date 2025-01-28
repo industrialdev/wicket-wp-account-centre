@@ -78,6 +78,7 @@ class init extends Blocks
                     </p>
                     <p class="wicket-welcome-name">
                         <?php echo $person->given_name . ' ' . $person->family_name; ?>
+                        <?php do_action('wicket_ac_after_welcome_block_name', $person->id); ?>
                     </p>
 
                     <?php
