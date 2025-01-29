@@ -5,7 +5,7 @@ namespace WicketAcc\Blocks\Welcome;
 use WicketAcc\Blocks;
 
 // No direct access
-defined('ABSPATH') || exit;
+defined('ABSPATH') || exit();
 
 /**
  * Wicket Welcome Block.
@@ -17,7 +17,7 @@ class init extends Blocks
      */
     public function __construct(
         protected array $block = [],
-        protected bool $is_preview = false,
+        protected bool $is_preview = false
     ) {
         $this->block = $block;
         $this->is_preview = $is_preview;
@@ -52,9 +52,15 @@ class init extends Blocks
         $active_memberships = wicket_get_active_memberships($iso_code);
 
         // Edit profile button (link and title)
-        if (empty($edit_profile_button_link) || !is_array($edit_profile_button_link)) {
+        if (
+            empty($edit_profile_button_link) ||
+            !is_array($edit_profile_button_link)
+        ) {
             // Use ACC mapping
-            $acc_editprofile_page = get_field('acc_page_edit-profile', 'option');
+            $acc_editprofile_page = get_field(
+                'acc_page_edit-profile',
+                'option'
+            );
             $editprofile_page_link = get_permalink($acc_editprofile_page);
             $editprofile_page_title = get_the_title($acc_editprofile_page);
         } else {
@@ -63,11 +69,22 @@ class init extends Blocks
             $editprofile_page_title = $edit_profile_button_link['title'];
         }
         ?>
-
-        <div class="wicket-acc-block wicket-acc-block-welcome wp-block-wicket-acc-callout row <?php echo defined('WICKET_WP_THEME_V2') ? 'wicket-acc-block-welcome--v2' : 'bg-light-010' ?>">
+        <div class="wicket-acc-block wicket-acc-block-welcome wp-block-wicket-acc-callout row
+        <?php echo defined(
+            'WICKET_WP_THEME_V2'
+        )
+                    ? 'wicket-acc-block-welcome--v2'
+                    : 'bg-light-010'; ?>">
             <div class="wicket-welcome-avatar col-2">
                 <?php if ($image_url) {
-                    echo '<img src="' . $image_url . '" alt="' . $person->given_name . ' ' . $person->family_name . __(' Profile Image', 'wicket-acc') . '" />';
+                    echo '<img src="' .
+                        $image_url .
+                        '" alt="' .
+                        $person->given_name .
+                        ' ' .
+                        $person->family_name .
+                        __(' Profile Image', 'wicket-acc') .
+                        '" />';
                 } ?>
             </div>
 
@@ -78,17 +95,17 @@ class init extends Blocks
                     </p>
                     <p class="wicket-welcome-name">
                         <?php $member_name = $person->given_name . ' ' . $person->family_name; ?>
-                        <?php echo apply_filters('wicket_ac_welcome_block_name', $member_name, $person); ?>
-                        <?php do_action('wicket_ac_after_welcome_block_name', $person->id); ?>
+                        <?php echo apply_filters('wicket/acc/block/welcome_block_name', $member_name, $person); ?>
+                        <?php do_action('wicket/acc/block/after_welcome_block_name', $person->id); ?>
                     </p>
 
-                    <?php
-                    if ($active_memberships) {
+                    <?php if ($active_memberships) {
                         // Track seen membership combinations to avoid duplicates
                         $seen_memberships = [];
                         foreach ($active_memberships as $membership) {
-                            if (function_exists('wicket_ac_welcome_filter_memberships')) {
-                                if (wicket_ac_welcome_filter_memberships($membership)) {
+
+                            if (function_exists('wicket_acc_welcome_filter_memberships')) {
+                                if (wicket_acc_welcome_filter_memberships($membership)) {
                                     continue;
                                 }
                             }
@@ -96,9 +113,14 @@ class init extends Blocks
                             // Create a unique key based on membership name and organization (if present)
                             $membership_key = $membership['name'];
                             if ($membership['type'] == 'organization') {
-                                $org_main_info = WACC()->MdpApi->get_organization_membership_by_uuid($membership['organization_membership_id']);
-                                $org_uuid = $org_main_info['data']['relationships']['organization']['data']['id'];
-                                $org_info = wicket_get_active_memberships_relationship($org_uuid);
+                                $org_main_info = WACC()->MdpApi->get_organization_membership_by_uuid(
+                                    $membership['organization_membership_id']
+                                );
+                                $org_uuid =
+                                    $org_main_info['data']['relationships']['organization']['data']['id'];
+                                $org_info = wicket_get_active_memberships_relationship(
+                                    $org_uuid
+                                );
                                 $membership_key .= '-' . $org_info['name'];
                             }
 
@@ -111,43 +133,58 @@ class init extends Blocks
                             <div class="my-0 wicket-welcome-memberships">
                                 <p class="mb-0 wicket-welcome-member-type">
                                     <strong><?php echo __('Membership Type:', 'wicket-acc'); ?></strong>
-                                    <?php echo apply_filters('wicket_ac_welcome_block_membership_name', $membership['name']); ?>
+                                    <?php echo apply_filters(
+                                        'wicket_ac_welcome_block_membership_name',
+                                        $membership['name']
+                                    ); ?>
                                 </p>
 
-                                <?php
-                                        if ($membership['type'] == 'organization') :
-                                            $org_main_info = WACC()->MdpApi->get_organization_membership_by_uuid($membership['organization_membership_id']);
-                                            $org_uuid = $org_main_info['data']['relationships']['organization']['data']['id'];
+                                <?php if ($membership['type'] == 'organization'):
 
-                                            $org_info = wicket_get_active_memberships_relationship($org_uuid);
-                                            ?>
+                                    $org_main_info = WACC()->MdpApi->get_organization_membership_by_uuid(
+                                        $membership['organization_membership_id']
+                                    );
+                                    $org_uuid =
+                                        $org_main_info['data']['relationships']['organization']['data']['id'];
+
+                                    $org_info = wicket_get_active_memberships_relationship($org_uuid);
+                                    ?>
                                     <p class="mb-0 wicket-welcome-member-org">
                                         <strong><?php echo $org_info['relationship']; ?>
                                             &ndash;
                                             <?php echo $org_info['name']; ?></strong>
                                     </p>
-                                <?php endif; ?>
+                                <?php
+                                endif; ?>
 
                                 <p class="mt-0 mb-2 wicket-welcome-member-active flex items-center space-x-2">
                                     <span
                                         class="text-gray-700"><?php echo __('Active Member', 'wicket-acc'); ?></span>
                                 </p>
 
-                                <?php if ($display_mdp_id) : ?>
+                                <?php if ($display_mdp_id): ?>
                                     <p class="wicket-welcome-member-mdp-id mb-0">
                                         <span><?php echo __('ID:', 'wicket-acc'); ?></span>
                                         <?php echo $identifying_number; ?>
                                     </p>
                                 <?php endif; ?>
 
-                                <?php if ($member_since && !empty($membership['starts_at']) && strtotime($membership['starts_at'])) : ?>
+                                <?php if (
+                                    $member_since &&
+                                    !empty($membership['starts_at']) &&
+                                    strtotime($membership['starts_at'])
+                                ): ?>
                                     <p class="wicket-welcome-member-since mb-0">
                                         <?php echo __('Member Since:', 'wicket-acc'); ?>
                                         <?php echo date('F j, Y', strtotime($membership['starts_at'])); ?>
                                     </p>
                                 <?php endif; ?>
 
-                                <?php if ($renewal_date && !empty($membership['ends_at']) && strtotime($membership['ends_at'])) : ?>
+                                <?php if (
+                                    $renewal_date &&
+                                    !empty($membership['ends_at']) &&
+                                    strtotime($membership['ends_at'])
+                                ): ?>
                                     <p class="wicket-welcome-renewal mb-0">
                                         <?php echo __('Renewal Date:', 'wicket-acc'); ?>
                                         <?php echo date('F j, Y', strtotime($membership['ends_at'])); ?>
@@ -156,20 +193,22 @@ class init extends Blocks
                             </div>
                     <?php
                         }
-                    }
-        ?>
+                    } ?>
                 </div>
-                <?php if ($edit_profile && isset($editprofile_page_link) && isset($editprofile_page_title)) {
-                    ?>
+                <?php if (
+                    $edit_profile &&
+                    isset($editprofile_page_link) &&
+                    isset($editprofile_page_title)
+                ) { ?>
                     <div class="wicket-welcome-edit-profile-button col-3 text-right">
                         <?php get_component('button', [
-                            'variant'     => 'secondary',
-                            'a_tag'       => true,
-                            'classes'     => ['whitespace-nowrap'],
-                            'label'       => $editprofile_page_title,
+                            'variant' => 'secondary',
+                            'a_tag' => true,
+                            'classes' => ['whitespace-nowrap'],
+                            'label' => $editprofile_page_title,
                             'prefix_icon' => 'fa-regular fa-pen-to-square',
-                            'link'        => $editprofile_page_link,
-                        ]) ?>
+                            'link' => $editprofile_page_link,
+                        ]); ?>
                     </div>
                 <?php } ?>
             </div>
