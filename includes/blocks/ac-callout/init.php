@@ -84,8 +84,11 @@ class init extends Blocks
                             }
                             $Tier = \Wicket_Memberships\Membership_Tier::get_tier_by_product_id($item->get_product_id());
                             //if this is not a pending tier skip it since they just have a membership on hold
+                            if (empty($Tier) || is_bool($Tier)) {
+                                continue;
+                            }
                             $tier_approval_required = $Tier->is_approval_required();
-                            if (empty($Tier) || empty($tier_approval_required)) {
+                            if (empty($tier_approval_required)) {
                                 continue;
                             }
                             $iso_code = '';
