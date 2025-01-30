@@ -192,10 +192,12 @@ class init extends Blocks
         // Total results
         $total_results = count($touchpoint_data);
 
-        get_component('card-call-out', [
-            'title' => __('You have no upcoming events', 'wicket-acc'),
-            'style' => 'secondary',
-        ]);
+        if ($total_results <= 0) {
+            get_component('card-call-out', [
+                'title' => __('You have no upcoming events', 'wicket-acc'),
+                'style' => 'secondary',
+            ]);
+        }
 
         $counter = 0;
 
