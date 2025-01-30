@@ -39,19 +39,22 @@ class ajax extends init
             die();
         }
 
-        // Retrieve form data
-        $num_results = absint($_POST['num_results']);
-        $total_results = absint($_POST['total_results']);
-        $counter = absint($_POST['counter']);
-        $display_type = sanitize_text_field($_POST['type']);
+        // Get POST data
+        $block_id = isset($_POST['block_id']) ? sanitize_text_field($_POST['block_id']) : '';
+        $num_param = "num-{$block_id}";
+        $num_results = isset($_POST[$num_param]) ? absint($_POST[$num_param]) : 5;
+        $total_results = isset($_POST['total_results']) ? absint($_POST['total_results']) : 0;
+        $counter = isset($_POST['counter']) ? absint($_POST['counter']) : 0;
+        $display_type = isset($_POST['type']) ? sanitize_text_field($_POST['type']) : 'upcoming';
 
-        $touchpoints_results = $this->get_touchpoints_results('Events Calendar');
+        // Get touchpoints data
+        $touchpoint_data = $this->get_touchpoints_results('Events Calendar');
 
         // We will get $this->display_touchpoints results and return it as html
         // Ideally, we should return the results as json, but... i don't know if Wicket has any standar way to render json results on the front-end
         // Even more ideally, we should be using HTMX ;)
         ob_start();
-        $this->display_touchpoints($touchpoints_results['data'], $display_type, $num_results, true);
+        $this->display_touchpoints($touchpoint_data['data'], $display_type, $num_results, true);
         $results = ob_get_clean();
 
         // If empty, results json error
@@ -61,9 +64,6 @@ class ajax extends init
             echo '</p>';
             die();
         }
-
-        // Get the results and clean the buffer
-        $results = ob_get_clean();
 
         // Send the HTML
         echo $results;

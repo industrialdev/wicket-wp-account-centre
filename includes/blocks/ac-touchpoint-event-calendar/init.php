@@ -80,8 +80,13 @@ class init extends Blocks
         }
 
         // Get query vars
-        $display = isset($_REQUEST['show']) ? sanitize_text_field($_REQUEST['show']) : 'upcoming';
-        $num_results = isset($_REQUEST['num_results']) ? absint($_REQUEST['num_results']) : $num_results;
+        $block_id = $this->block['id'] ?? 'unknown';
+        $show_param = "show-{$block_id}";
+        $num_param = "num-{$block_id}";
+
+        // Check for block-specific parameter first, fallback to default display
+        $display = isset($_REQUEST[$show_param]) ? sanitize_text_field($_REQUEST[$show_param]) : $display;
+        $num_results = isset($_REQUEST[$num_param]) ? absint($_REQUEST[$num_param]) : $num_results;
 
         if (empty($display)) {
             $display = 'upcoming';
@@ -103,15 +108,16 @@ class init extends Blocks
 
         $switch_link = add_query_arg(
             [
-                'show'        => $display_other,
-                'num_results' => $num_results,
+                $show_param   => $display_other,
+                $num_param => $num_results,
             ],
-            remove_query_arg('show')
+            remove_query_arg([$show_param, $num_param])
         );
 
         $switch_link = esc_url($switch_link);
 
         $args = [
+            'block_id'                       => $block_id,
             'block_name'                     => 'Touchpoint TEC',
             'block_description'              => 'This block displays registered data for TEC (The Events Calendar) on the front-end.',
             'block_slug'                     => 'wicket-ac-touchpoint-tec',
@@ -219,14 +225,14 @@ class init extends Blocks
 
         // Dirty hack to update the number of results
         ?>
-        <script>
-            let totalElementsElement = document.getElementById('total_results');
+<script>
+	let totalElementsElement = document.getElementById('total_results');
 
-            if ( totalElementsElement !== null ) {
-                totalElementsElement.innerHTML = '<?php echo $total_results; ?>';
-            }
-        </script>
-        <?php
+	if (totalElementsElement !== null) {
+		totalElementsElement.innerHTML = '<?php echo $total_results; ?>';
+	}
+</script>
+<?php
 
                 // Show more like pagination, to load more data in the same page (if there are more than $num_results)
                 if ($counter == $num_results && $ajax === false && $config['show_view_more_events']) {
@@ -281,10 +287,11 @@ class init extends Blocks
      * @param int $total_results Total results
      * @param int $counter Counter of displayed results
      * @param string $display_type Touchpoint display type: upcoming, past, all
+     * @param string $block_id Block ID
      *
      * @return void
      */
-    public static function load_more_results($touchpoint_data = [], $num_results = 5, $total_results = 0, $counter = 0, $display_type = 'upcoming')
+    public static function load_more_results($touchpoint_data = [], $num_results = 5, $total_results = 0, $counter = 0, $display_type = 'upcoming', $block_id = '')
     {
         // Sanitize
         $num_results = absint($num_results);
@@ -300,10 +307,10 @@ class init extends Blocks
             <div class="flex justify-center items-center">
                 <form action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>" method="post" @submit.prevent="submitForm">
                     <input type="hidden" name="action" value="wicket_ac_touchpoint_tec_results">
-                    <input type="hidden" name="num_results" value="<?php echo $num_results; ?>">
-                    <input type="hidden" name="total_results" value="<?php echo $total_results; ?>">
-                    <input type="hidden" name="type" value="<?php echo $display_type; ?>">
-                    <input type="hidden" name="counter" value="<?php echo $counter; ?>">
+                    <input type="hidden" name="num_results" value="<?php echo esc_attr($num_results); ?>">
+                    <input type="hidden" name="total_results" value="<?php echo esc_attr($total_results); ?>">
+                    <input type="hidden" name="type" value="<?php echo esc_attr($display_type); ?>">
+                    <input type="hidden" name="counter" value="<?php echo esc_attr($counter); ?>">
                     <?php wp_nonce_field('wicket_ac_touchpoint_tec_results'); ?>
 
                     <div x-show="loading" class="wicket-ac-touchpoint__loader flex justify-center items-center self-center">
@@ -339,18 +346,20 @@ class init extends Blocks
                                     if (data) {
                                         this.responseMessage = data;
                                     } else {
-                                        this.responseMessage = '<?php esc_html_e('An error occurred. No data.', 'wicket-acc'); ?>';
+                                        this.responseMessage =
+                                            '<?php esc_html_e('An error occurred. No data.', 'wicket-acc'); ?>';
                                     }
                                 })
                                 .catch(error => {
                                     this.loading = false;
-                                    this.responseMessage = '<?php esc_html_e('An error occurred. Failed.', 'wicket-acc'); ?>';
+                                    this.responseMessage =
+                                        '<?php esc_html_e('An error occurred. Failed.', 'wicket-acc'); ?>';
                                 });
                         }
                     };
                 }
             </script>
         </div>
-<?php
+        <?php
     }
 }
