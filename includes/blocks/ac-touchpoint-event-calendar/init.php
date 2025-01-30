@@ -310,7 +310,7 @@ class init extends Blocks
                         <i class="fas fa-spinner fa-spin"></i>
                     </div>
 
-                    <button type="submit" class="touchpoint-show-more button button-primary show-more flex items-center font-bold text-color-dark-100 my-4 text-[var(--wp--preset--font-size--medium)]" x-show="!loading">
+                    <button type="submit" class="touchpoint-show-more button button--secondary show-more flex items-center font-bold text-color-dark-100 my-4 text-[var(--wp--preset--font-size--medium)]" x-show="!loading">
                         <span class="arrow mr-2">&#9660;</span>
                         <span class="text"><?php esc_html_e('Show More', 'wicket-acc'); ?></span>
                     </button>
