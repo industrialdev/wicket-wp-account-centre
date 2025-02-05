@@ -5,207 +5,215 @@ namespace WicketAcc\Blocks\TouchpointMaple;
 use WicketAcc\Blocks;
 
 // No direct access
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Wicket Touchpoint Maple Block.
  **/
-class init extends Blocks {
-	/**
-	 * Constructor.
-	 */
-	public function __construct(
-		protected array $block = [],
-		protected bool $is_preview = false,
-		protected ?Blocks $blocks = null,
-	) {
-		$this->block      = $block;
-		$this->is_preview = $is_preview;
-		$this->blocks     = $blocks ?? new Blocks();
+class init extends Blocks
+{
+    /**
+     * Constructor.
+     */
+    public function __construct(
+        protected array $block = [],
+        protected bool $is_preview = false,
+        protected ?Blocks $blocks = null,
+    ) {
+        $this->block = $block;
+        $this->is_preview = $is_preview;
+        $this->blocks = $blocks ?? new Blocks();
 
-		// Display the block
-		$this->init_block();
-	}
+        // Display the block
+        $this->init_block();
+    }
 
-	/**
-	 * Get the service ID.
-	 *
-	 * Note: For staging we will be using the Service 'Aptify Conversion' in place of 'Maple LMS'. This was how historical touchpoints were imported. The structure is the same as Maple.
-	 * @return string
-	 */
-	public function get_service_id() {
-		return 'Aptify Conversion';
-	}
+    /**
+     * Get the service ID.
+     *
+     * Note: For staging we will be using the Service 'Aptify Conversion' in place of 'Maple LMS'. This was how historical touchpoints were imported. The structure is the same as Maple.
+     * @return string
+     */
+    public function get_service_id()
+    {
+        return 'Aptify Conversion';
+    }
 
-	public function get_block_id() {
-		$action = get_field( selector: 'touchpoint_action' );
-		return 'wicket-ac-touchpoint-maple-' . $action;
-	}
+    public function get_block_id()
+    {
+        $action = get_field(selector: 'touchpoint_action');
 
-	/**
-	 * Display the block.
-	 *
-	 * @return void
-	 */
-	protected function init_block() {
-		$close = 0;
-		$attrs = $this->is_preview ? ' ' : get_block_wrapper_attributes(
-			[
-				'class' => 'wicket-acc-block wicket-acc-block-touchpoints-maple wicket-ac-touchpoint-maple max-w-5xl mx-auto my-8',
-			]
-		);
+        return 'wicket-ac-touchpoint-maple-' . $action;
+    }
 
-		if ( $this->is_preview ) {
-			$args = [
-				'block_name'        => 'Touchpoint Maple',
-				'block_description' => 'This block displays registered data for Maple on the front-end.',
-				'block_slug'        => 'wicket-ac-touchpoint-maple',
-			];
+    /**
+     * Display the block.
+     *
+     * @return void
+     */
+    protected function init_block()
+    {
+        $close = 0;
+        $attrs = $this->is_preview ? ' ' : get_block_wrapper_attributes(
+            [
+                'class' => 'wicket-acc-block wicket-acc-block-touchpoints-maple wicket-ac-touchpoint-maple max-w-5xl mx-auto my-8',
+            ]
+        );
 
-			$this->blocks->render_template( 'preview', $args );
+        if ($this->is_preview) {
+            $args = [
+                'block_name'        => 'Touchpoint Maple',
+                'block_description' => 'This block displays registered data for Maple on the front-end.',
+                'block_slug'        => 'wicket-ac-touchpoint-maple',
+            ];
 
-			return;
-		}
+            $this->blocks->render_template('preview', $args);
 
-		$title          = get_field( 'title' );
-		$action         = get_field( 'touchpoint_action' );
-		$num_results    = get_field( 'page_results' );
-		$show_view_more = get_field( 'show_view_more' );
+            return;
+        }
 
-		$total_results = 0;
-		$counter       = 0;
+        $title = get_field('title');
+        $action = get_field('touchpoint_action');
+        $num_results = get_field('page_results');
+        $show_view_more = get_field('show_view_more');
 
-		$touchpoints_results = $this->get_touchpoints_results( $this->get_service_id(), $action );
+        $total_results = 0;
+        $counter = 0;
 
-		// Get query vars
-		$num_results = isset( $_REQUEST['num_results'] ) ? absint( $_REQUEST['num_results'] ) : $num_results;
+        $touchpoints_results = $this->get_touchpoints_results($this->get_service_id(), $action);
 
-		$switch_link = add_query_arg(
-			[
-				'num_results' => $num_results,
-			],
-			remove_query_arg( 'show' )
-		);
+        // Get query vars
+        $num_results = isset($_REQUEST['num_results']) ? absint($_REQUEST['num_results']) : $num_results;
 
-		$switch_link = esc_url( $switch_link );
+        $switch_link = add_query_arg(
+            [
+                'num_results' => $num_results,
+            ],
+            remove_query_arg('show')
+        );
 
-		$args = [
-			'block_name'          => 'Touchpoint Maple',
-			'block_description'   => 'This block displays registered data for Maple on the front-end.',
-			'block_slug'          => 'wicket-ac-touchpoint-maple',
-			'block_id'            => $this->get_block_id(),
-			'attrs'               => $attrs,
-			'title'               => $title,
-			'num_results'         => $num_results,
-			'total_results'       => $total_results,
-			'counter'             => $counter,
-			'close'               => $close,
-			'touchpoints_results' => $touchpoints_results,
-			'switch_link'         => $switch_link,
-			'show_view_more'      => $show_view_more,
-			'is_ajax_request'     => false,
-			'is_preview'          => $this->is_preview,
-		];
+        $switch_link = esc_url($switch_link);
 
-		// Render block
-		WACC()->Blocks->render_template( 'touchpoint-maple', $args );
-	}
+        $args = [
+            'block_name'          => 'Touchpoint Maple',
+            'block_description'   => 'This block displays registered data for Maple on the front-end.',
+            'block_slug'          => 'wicket-ac-touchpoint-maple',
+            'block_id'            => $this->get_block_id(),
+            'attrs'               => $attrs,
+            'title'               => $title,
+            'num_results'         => $num_results,
+            'total_results'       => $total_results,
+            'counter'             => $counter,
+            'close'               => $close,
+            'touchpoints_results' => $touchpoints_results,
+            'switch_link'         => $switch_link,
+            'show_view_more'      => $show_view_more,
+            'is_ajax_request'     => false,
+            'is_preview'          => $this->is_preview,
+        ];
 
-	/**
-	 * Get touchpoints results.
-	 *
-	 * $service_id - Touchpoint service id
-	 * $action - Touchpoint status
-	 *
-	 * @return mixed Array of touchpoints or false on error
-	 */
-	protected function get_touchpoints_results( $service_id = '', $action = 'enrolled' ) {
-		if ( empty( $service_id ) ) {
-			return false;
-		}
+        // Render block
+        WACC()->Blocks->render_template('touchpoint-maple', $args);
+    }
 
-		if ( isset( $_POST['touchpoint_action'] ) ) {
-			$action = $_POST['touchpoint_action'];
-		}
+    /**
+     * Get touchpoints results.
+     *
+     * $service_id - Touchpoint service id
+     * $action - Touchpoint status
+     *
+     * @return mixed Array of touchpoints or false on error
+     */
+    protected function get_touchpoints_results($service_id = '', $action = 'enrolled')
+    {
+        if (empty($service_id)) {
+            return false;
+        }
 
-		$action = $action === 'enrolled' ? 'Enrolled in a course' : 'Completed a course';
+        if (isset($_POST['touchpoint_action'])) {
+            $action = $_POST['touchpoint_action'];
+        }
 
-		// Debug with person: 6d199632-1bb8-4558-9a7e-b00c824590de
-		$touchpoint_service = WACC()->MdpApi->create_touchpoint_service_id( $service_id );
-		$touchpoints        = WACC()->MdpApi->get_current_user_touchpoints( $touchpoint_service );
+        $action = $action === 'enrolled' ? 'Enrolled in a course' : 'Completed a course';
 
-		// Filter touchpoints by action
-		$fitered_touchpoints = self::filter_touchpoints_by_action( $touchpoints, $action );
+        // Debug with person: 6d199632-1bb8-4558-9a7e-b00c824590de
+        $touchpoint_service = WACC()->MdpApi->create_touchpoint_service_id($service_id);
+        $touchpoints = WACC()->MdpApi->get_current_user_touchpoints($touchpoint_service);
 
-		return $fitered_touchpoints;
-	}
+        // Filter touchpoints by action
+        $fitered_touchpoints = self::filter_touchpoints_by_action($touchpoints, $action);
 
-	/**
-	 * Display the touchpoints.
-	 *
-	 * @param array $touchpoint_data Touchpoint data
-	 * @param string $display Touchpoint display type: upcoming, past, all
-	 * @param int $num_results Number of results to display
-	 * @param bool $ajax Is ajax request?
-	 * @param array $config show_view_more(bool), use_x_columns(int)
-	 *
-	 * @return void
-	 */
-	public static function display_touchpoints( $touchpoint_data = [], $num_results = 5, $ajax = false, $config = [], $block_id = '' ) {
-		// Config defaults
-		if ( empty( $config ) ) {
-			$config['show_view_more'] = true;
-		}
+        return $fitered_touchpoints;
+    }
 
-		// No data
-		if ( empty( $touchpoint_data ) ) {
-			echo '<p class="no-data">';
-			_e( 'You do not have any courses.', 'wicket-acc' );
-			echo '</p>';
+    /**
+     * Display the touchpoints.
+     *
+     * @param array $touchpoint_data Touchpoint data
+     * @param string $display Touchpoint display type: upcoming, past, all
+     * @param int $num_results Number of results to display
+     * @param bool $ajax Is ajax request?
+     * @param array $config show_view_more(bool), use_x_columns(int)
+     *
+     * @return void
+     */
+    public static function display_touchpoints($touchpoint_data = [], $num_results = 5, $ajax = false, $config = [], $block_id = '')
+    {
+        // Config defaults
+        if (empty($config)) {
+            $config['show_view_more'] = true;
+        }
 
-			return;
-		}
+        // No data
+        if (empty($touchpoint_data)) {
+            echo '<p class="no-data">';
+            _e('You do not have any courses.', 'wicket-acc');
+            echo '</p>';
 
-		// Total results
-		$total_results = count( $touchpoint_data );
+            return;
+        }
 
-		// Get the offset from POST or default to 0
-		$offset = isset( $_POST[ 'offset_' . $block_id ] ) ? absint( $_POST[ 'offset_' . $block_id ] ) : 0;
+        // Total results
+        $total_results = count($touchpoint_data);
 
-		// Slice the array to get only the needed items
-		$display_data      = array_slice( $touchpoint_data, $offset, $num_results );
-		$touchpoint_action = get_field( 'touchpoint_action' );
+        // Get the offset from POST or default to 0
+        $offset = isset($_POST['offset_' . $block_id]) ? absint($_POST['offset_' . $block_id]) : 0;
 
-		foreach ( $display_data as $course ) :
-			WACC()->Blocks->render_template( 'touchpoint-maple-card', $course );
-		endforeach;
+        // Slice the array to get only the needed items
+        $display_data = array_slice($touchpoint_data, $offset, $num_results);
+        $touchpoint_action = get_field('touchpoint_action');
 
-		// Show more button only if not an AJAX request and there are more results
-		if ( $ajax === false && $config['show_view_more'] && ( $offset + $num_results ) < $total_results ) {
-			self::load_more_results( $touchpoint_data, $num_results, $total_results, $offset, $block_id, $touchpoint_action );
-		}
-	}
+        foreach ($display_data as $course) :
+            WACC()->Blocks->render_template('touchpoint-maple-card', $course);
+        endforeach;
 
-	/**
-	 * Load more results.
-	 *
-	 * @param array $touchpoint_data Touchpoint data
-	 * @param int $num_results Number of results to display
-	 * @param int $total_results Total results
-	 * @param int $offset Offset of displayed results
-	 * @param string $display_type Touchpoint display type: upcoming, past, all
-	 *
-	 * @return void
-	 */
-	public static function load_more_results( $touchpoint_data = [], $num_results = 5, $total_results = 0, $offset = 0, $block_id = '', $touchpoint_action = '' ) {
-		$form_id = 'form-' . $block_id;
-		?>
+        // Show more button only if not an AJAX request and there are more results
+        if ($ajax === false && $config['show_view_more'] && ($offset + $num_results) < $total_results) {
+            self::load_more_results($touchpoint_data, $num_results, $total_results, $offset, $block_id, $touchpoint_action);
+        }
+    }
+
+    /**
+     * Load more results.
+     *
+     * @param array $touchpoint_data Touchpoint data
+     * @param int $num_results Number of results to display
+     * @param int $total_results Total results
+     * @param int $offset Offset of displayed results
+     * @param string $display_type Touchpoint display type: upcoming, past, all
+     *
+     * @return void
+     */
+    public static function load_more_results($touchpoint_data = [], $num_results = 5, $total_results = 0, $offset = 0, $block_id = '', $touchpoint_action = '')
+    {
+        $form_id = 'form-' . $block_id;
+        ?>
 		<div x-data="ajaxFormHandler('<?php echo $form_id; ?>')">
 			<div class="wicket-ac-touchpoint__maple-results container" x-html="responseMessage">
 			</div>
 
 			<div class="flex load-more-container">
-				<form id="<?php echo $form_id; ?>" action="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>"
+				<form id="<?php echo $form_id; ?>" action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
 					method="post" @submit.prevent="submitForm">
 					<input type="hidden" name="action" value="wicket_ac_touchpoint_maple_results">
 					<input type="hidden" name="touchpoint_action_<?php echo $block_id; ?>"
@@ -214,7 +222,7 @@ class init extends Blocks {
 					<input type="hidden" name="total_results_<?php echo $block_id; ?>" value="<?php echo $total_results; ?>">
 					<input type="hidden" name="offset_<?php echo $block_id; ?>" value="<?php echo $offset + $num_results; ?>">
 					<input type="hidden" name="form_id" value="<?php echo $form_id; ?>">
-					<?php wp_nonce_field( 'wicket_ac_touchpoint_maple_results', 'security_' . $block_id ); ?>
+					<?php wp_nonce_field('wicket_ac_touchpoint_maple_results', 'security_' . $block_id); ?>
 
 					<div x-show="loading" class="wicket-ac-touchpoint__loader flex justify-center items-center self-center">
 						<i class="fas fa-spinner fa-spin"></i>
@@ -223,7 +231,7 @@ class init extends Blocks {
 					<button type="submit"
 						class="button button--secondary show-more flex items-center font-bold text-color-dark-100 my-4"
 						x-show="!loading">
-						<span class="text"><?php esc_html_e( 'Show More', 'wicket-acc' ); ?></span>
+						<span class="text"><?php esc_html_e('Show More', 'wicket-acc'); ?></span>
 					</button>
 				</form>
 			</div>
@@ -275,32 +283,33 @@ class init extends Blocks {
 			}
 		</script>
 		<?php
-	}
+    }
 
-	/**
-	 * Filter touchpoints
-	 *
-	 * @param array $touchpoints
-	 *
-	 * @return array
-	 */
-	public static function filter_touchpoints_by_action( $touchpoints = [], $action ) {
-		if ( empty( $touchpoints ) ) {
-			return $touchpoints;
-		}
+    /**
+     * Filter touchpoints.
+     *
+     * @param array $touchpoints
+     *
+     * @return array
+     */
+    public static function filter_touchpoints_by_action($touchpoints, $action)
+    {
+        if (empty($touchpoints)) {
+            return $touchpoints;
+        }
 
-		$touchpoints = $touchpoints['data'];
+        $touchpoints = $touchpoints['data'];
 
-		$filtered_touchpoints = array_filter( $touchpoints, function ($touchpoint) use ($action) {
-			if ( isset( $touchpoint['attributes']['action'] ) ) {
-				$tp_action = $touchpoint['attributes']['action'];
+        $filtered_touchpoints = array_filter($touchpoints, function ($touchpoint) use ($action) {
+            if (isset($touchpoint['attributes']['action'])) {
+                $tp_action = $touchpoint['attributes']['action'];
 
-				return $tp_action == $action;
-			}
+                return $tp_action == $action;
+            }
 
-			return false;
-		} );
+            return false;
+        });
 
-		return $filtered_touchpoints;
-	}
+        return $filtered_touchpoints;
+    }
 }
