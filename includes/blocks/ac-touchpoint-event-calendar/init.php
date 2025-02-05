@@ -254,26 +254,34 @@ class init extends Blocks
             return $touchpoint_data;
         }
 
-        // Get current date as: 2024-09-19T14:00:00.000Z
-        $current_date = date('Y-m-d\TH:i:s.000Z');
+        // Ensure $display_type is valid: upcoming, past, all
+        $display_type = sanitize_text_field($display_type);
+        $display_type = in_array($display_type, ['upcoming', 'past', 'all'], true) ? $display_type : 'upcoming';
 
-        // Check inside every touchpoint for attributes->data->start_date, and compare with current date. If display_type = upcoming, return an array of touchpoints that are greater than current date. If display_type = past, return an array of touchpoints that are less than current date.
-        $filtered_touchpoint_data = array_filter($touchpoint_data, function ($touchpoint) use ($current_date, $display_type) {
-            if (isset($touchpoint['attributes']['data']['start_date'])) {
-                $start_date = $touchpoint['attributes']['data']['start_date'];
+        // Get current timestamp
+        $current_timestamp = current_datetime()->getTimestamp();
 
-                // Check if start date is greater than current date
-                if (strtotime($start_date) > strtotime($current_date)) {
-                    return $display_type == 'upcoming';
-                }
-
-                // Check if start date is less than current date
-                if (strtotime($start_date) < strtotime($current_date)) {
-                    return $display_type == 'past';
-                }
+        // Check inside every touchpoint for attributes->data->end_date, and compare with current date. If display_type = upcoming, return an array of touchpoints that are greater than current date. If display_type = past, return an array of touchpoints that are less than current date.
+        $filtered_touchpoint_data = array_filter($touchpoint_data, function ($touchpoint) use ($current_timestamp, $display_type) {
+            if (!isset($touchpoint['attributes']['data']['end_date'])) {
+                return false;
             }
 
-            return false;
+            // Convert the event's end date to a DateTime object
+            $event_end_date = date_create_from_format('Y-m-d g:i A T', $touchpoint['attributes']['data']['end_date']);
+            if (!$event_end_date) {
+                return false;
+            }
+
+            // Get timestamps for comparison (using full date/time, not start of day)
+            $event_timestamp = $event_end_date->getTimestamp();
+
+            // Compare full timestamps instead of just dates
+            if ($display_type === 'upcoming') {
+                return $event_timestamp >= $current_timestamp;
+            } else {
+                return $event_timestamp < $current_timestamp;
+            }
         });
 
         return $filtered_touchpoint_data;
