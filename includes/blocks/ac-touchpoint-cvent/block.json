@@ -1,0 +1,28 @@
+{
+    "name": "wicket-ac/ac-touchpoint-cvent",
+    "title": "ACC Touchpoint Cvent",
+    "description": "Wicket block for AC Touchpoint Cvent",
+    "style": "file:./block-styles.css",
+    "script": "file:./block-script.js",
+    "category": "wicket-account-center",
+    "icon": "",
+    "apiVersion": 2,
+    "keywords": ["account-center", "touchpoints", "service", "cvent", "wicket"],
+    "acf": {
+        "mode": "preview",
+        "renderTemplate": "render.php"
+    },
+    "styles": [],
+    "supports": {
+        "align": false,
+        "anchor": false,
+        "alignContent": false,
+        "color": {
+            "text": false,
+            "background": false,
+            "link": false
+        },
+        "alignText": true,
+        "fullHeight": false
+    }
+}

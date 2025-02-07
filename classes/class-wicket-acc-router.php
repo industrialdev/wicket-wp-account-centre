@@ -33,6 +33,10 @@ class Router extends WicketAcc
      */
     public function __construct()
     {
+        if (apply_filters('wicket/acc/router/disable_router', false)) {
+            return;
+        }
+
         // DEBUG ONLY, check environment
         if (defined('WP_ENV') && WP_ENV === 'development') {
             flush_rewrite_rules();

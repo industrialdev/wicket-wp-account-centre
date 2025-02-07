@@ -1,0 +1,37 @@
+/* Theme v2 styles */
+.wicket-acc-block-touchpoints-maple {
+  max-width: var(--layout-content);
+  margin: var(--space-100) auto;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-200);
+  }
+
+  .header h2 {
+    font-size: var(--heading-md-font-size);
+    font-weight: bold;
+  }
+
+  .header .upcoming-link {
+    font-size: var(--body-md-font-size);
+  }
+
+  .maple-card {
+    display: block;
+    background-color: var(--bg-card);
+    padding: var(--space-200);
+    filter: drop-shadow(var(--elevation-4));
+    border-radius: var(--card-corner-radius);
+    margin-bottom: var(--space-200);
+  }
+
+  .maple-card__title {
+    font-size: var(--heading-xs-font-size);
+    font-weight: bold;
+    color: var(--text-content);
+    text-decoration: none;
+  }
+}

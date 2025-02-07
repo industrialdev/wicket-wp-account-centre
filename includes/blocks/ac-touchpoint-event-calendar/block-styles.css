@@ -1,6 +1,6 @@
 /* Theme v2 styles */
 body.wicket-theme-v2 .wicket-acc-block-touchpoints-tec {
-	max-width: var(--layout-content);
+	max-width: var(--wp--custom--layout--content);
 	margin: var(--space-100) auto;
 	padding: var(--space-200);
 
@@ -12,27 +12,27 @@ body.wicket-theme-v2 .wicket-acc-block-touchpoints-tec {
 	}
 
 	.header h2 {
-		font-size: var(--font-size-heading-md);
+		font-size: var(--wp--preset--font-size--heading-md);
 		font-weight: bold;
 	}
 
 	.header .upcoming-link {
-		font-size: var(--font-size-body-md);
+		font-size: var(--wp--preset--font-size--body-md);
 		font-weight: bold;
 	}
 
 	.events-list {
 		display: grid;
-		gap: var(--spacing-200);
+		gap: var(--space-200);
 	}
 
 	.event-card {
 		background-color: var(--bg-card);
-		padding: var(--spacing-200);
+		padding: var(--space-200);
 		filter: drop-shadow(var(--elevation-4));
 		display: flex;
 		align-items: flex-start;
-		gap: var(--spacing-200);
+		gap: var(--space-200);
 
 		@media screen and (max-width: 767px) {
 			flex-direction: column;
@@ -44,35 +44,35 @@ body.wicket-theme-v2 .wicket-acc-block-touchpoints-tec {
 
 		.event-type {
 			text-transform: uppercase;
-			font-size: var(--font-size-label-md);
+			font-size: var(--wp--preset--font-size--label-md);
 			color: var(--text-accent);
 			margin-bottom: 10px;
 			font-weight: bold;
 		}
-	
+
 		.event-name {
-			font-size: var(--heading-xs-font-size);
+			font-size: var(--wp--preset--font-size--heading-xs);
 			color: var(--text-content);
 			font-weight: bold;
 			margin-bottom: var(--space-300);
 		}
-	
+
 		.event-date-box {
 			background-color: var(--bg-accent-dark);
 			color: var(--text-content-reversed);
-			border-radius: var(--label-corner-radius);
+			border-radius: var(--wp--custom--border-radius--100);
 			aspect-ratio: 1/1;
 			font-size: 1.25rem;
 			line-height: 1.2;
 			width: 58px;
 			padding: 10px;
 		}
-	
+
 		.event-date-box-month {
 			font-size: .875rem;
 			font-weight: bold;
 		}
-		
+
 		.event-date-box-day {
 			font-size: 1.25rem;
 			font-weight: bold;
@@ -80,9 +80,9 @@ body.wicket-theme-v2 .wicket-acc-block-touchpoints-tec {
 
 		.event-card-link {
 			text-decoration: none;
-			font-size: var(--heading-xs-font-size);
-			line-height: var(--heading-xs-line-height);
-			font-weight: var(--heading-xs-font-weight-md);
+			font-size: var(--wp--preset--font-size--heading-xs);
+			line-height: var(--wp--custom--line-height--normal);
+			font-weight: 500;
 
 			&:hover {
 				text-decoration: underline;
@@ -90,7 +90,7 @@ body.wicket-theme-v2 .wicket-acc-block-touchpoints-tec {
 		}
 
 		.event-date { margin-bottom: 0; }
-		
+
 		.event-time {}
 
 		.event-content-wrap {

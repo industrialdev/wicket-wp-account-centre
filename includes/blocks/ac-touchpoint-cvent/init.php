@@ -1,6 +1,6 @@
 <?php
 
-namespace WicketAcc\Blocks\TouchpointPheedloop;
+namespace WicketAcc\Blocks\TouchpointCvent;
 
 use WicketAcc\Blocks;
 
@@ -8,7 +8,7 @@ use WicketAcc\Blocks;
 defined('ABSPATH') || exit;
 
 /**
- * Wicket Touchpoint Pheedloop Block.
+ * Wicket Touchpoint Cvent Block.
  **/
 class init extends Blocks
 {
@@ -38,15 +38,15 @@ class init extends Blocks
         $close = 0;
         $attrs = $this->is_preview ? ' ' : get_block_wrapper_attributes(
             [
-                'class' => 'wicket-acc-block wicket-acc-block-touchpoints-pheedloop wicket-ac-touchpoint-pheedloop max-w-5xl mx-auto my-8',
+                'class' => 'wicket-acc-block wicket-acc-block-touchpoints-cvent wicket-ac-touchpoint-cvent max-w-5xl mx-auto my-8',
             ]
         );
 
         if ($this->is_preview) {
             $args = [
-                'block_name'        => 'Touchpoint Pheedloop',
-                'block_description' => 'This block displays registered data for Pheedloop on the front-end.',
-                'block_slug'        => 'wicket-ac-touchpoint-pheedloop',
+                'block_name'        => 'Touchpoint Cvent',
+                'block_description' => 'This block displays registered data for Cvent on the front-end.',
+                'block_slug'        => 'wicket-ac-touchpoint-cvent',
             ];
 
             $this->blocks->render_template('preview', $args);
@@ -66,7 +66,7 @@ class init extends Blocks
         $counter = 0;
         $display_type = 'upcoming';
 
-        $touchpoints_results = $this->get_touchpoints_results('Aptify Conversion');
+        $touchpoints_results = $this->get_touchpoints_results('Cvent');
 
         // Get query vars
         $display = isset($_REQUEST['show']) ? sanitize_text_field($_REQUEST['show']) : $display;
@@ -101,9 +101,9 @@ class init extends Blocks
         $switch_link = esc_url($switch_link);
 
         $args = [
-            'block_name'                     => 'Touchpoint Pheedloop',
-            'block_description'              => 'This block displays registered data for Pheedloop on the front-end.',
-            'block_slug'                     => 'wicket-ac-touchpoint-pheedloop',
+            'block_name'                     => 'Touchpoint Cvent',
+            'block_description'              => 'This block displays registered data for Cvent on the front-end.',
+            'block_slug'                     => 'wicket-ac-touchpoint-cvent',
             'attrs'                          => $attrs,
             'title'                          => $title,
             'display'                        => $display,
@@ -123,7 +123,7 @@ class init extends Blocks
         ];
 
         // Render block
-        WACC()->Blocks->render_template('touchpoint-pheedloop', $args);
+        WACC()->Blocks->render_template('touchpoint-cvent', $args);
 
     }
 
@@ -189,9 +189,9 @@ class init extends Blocks
         $display_data = array_slice($touchpoint_data, $offset, $num_results);
 
         foreach ($display_data as $tp) :
-            if (isset($tp['attributes']['data']['event_start'])) {
+            if (isset($tp['attributes']['data']['start_time'])) {
                 $args['tp'] = $tp;
-                WACC()->Blocks->render_template('touchpoint-pheedloop-card', $args);
+                WACC()->Blocks->render_template('touchpoint-cvent-card', $args);
             }
         endforeach;
 
@@ -220,8 +220,8 @@ class init extends Blocks
 
         // Check inside every touchpoint for attributes->data->StartDate, and compare with current date. If display_type = upcoming, return an array of touchpoints that are greater than current date. If display_type = past, return an array of touchpoints that are less than current date.
         $filtered_touchpoint_data = array_filter($touchpoint_data, function ($touchpoint) use ($current_date, $display_type) {
-            if (isset($touchpoint['attributes']['data']['event_start'])) {
-                $start_date = $touchpoint['attributes']['data']['event_start'];
+            if (isset($touchpoint['attributes']['data']['start_time'])) {
+                $start_date = $touchpoint['attributes']['data']['start_time'];
 
                 // Check if start date is greater than current date
                 if (strtotime($start_date) > strtotime($current_date)) {
@@ -255,19 +255,19 @@ class init extends Blocks
     {
         ?>
 		<div x-data="ajaxFormHandler()">
-            <div class="wicket-ac-touchpoint__pheedloop-results container">
+			<div class="wicket-ac-touchpoint__cvent-results container">
 				<div class="events-list grid gap-6" x-html="responseMessage"></div>
 			</div>
 
 			<div class="flex justify-center items-center load-more-container">
 				<form id="form" action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>" method="post"
 					@submit.prevent="submitForm">
-					<input type="hidden" name="action" value="wicket_ac_touchpoint_pheedloop_results">
+					<input type="hidden" name="action" value="wicket_ac_touchpoint_cvent_results">
 					<input type="hidden" name="num_results" value="<?php echo $num_results; ?>">
 					<input type="hidden" name="total_results" value="<?php echo $total_results; ?>">
 					<input type="hidden" name="type" value="<?php echo $display_type; ?>">
 					<input type="hidden" name="offset" value="<?php echo $offset + $num_results; ?>">
-					<?php wp_nonce_field('wicket_ac_touchpoint_pheedloop_results'); ?>
+					<?php wp_nonce_field('wicket_ac_touchpoint_cvent_results'); ?>
 
 					<div x-show="loading" class="wicket-ac-touchpoint__loader flex justify-center items-center self-center">
 						<i class="fas fa-spinner fa-spin"></i>
@@ -297,33 +297,33 @@ class init extends Blocks
 							method: 'POST',
 							body: formData,
 						})
-						.then(response => response.text())
-						.then(data => {
-							this.loading = false;
-							if (data) {
-                                this.responseMessage += data;
-								// Find the events list and load more container
-								const loadMoreContainer = document.querySelector('.load-more-container');
+							.then(response => response.text())
+							.then(data => {
+								this.loading = false;
+								if (data) {
+									this.responseMessage += data;
+									// Find the events list and load more container
+									const loadMoreContainer = document.querySelector('.load-more-container');
 
 
-								// Update the offset for the next request
-								const offset = parseInt(form.querySelector('[name="offset"]').value);
-								const numResults = parseInt(form.querySelector('[name="num_results"]').value);
-								const totalResults = parseInt(form.querySelector('[name="total_results"]').value);
+									// Update the offset for the next request
+									const offset = parseInt(form.querySelector('[name="offset"]').value);
+									const numResults = parseInt(form.querySelector('[name="num_results"]').value);
+									const totalResults = parseInt(form.querySelector('[name="total_results"]').value);
 
-								// Update offset for next request
-								form.querySelector('[name="offset"]').value = offset + numResults;
+									// Update offset for next request
+									form.querySelector('[name="offset"]').value = offset + numResults;
 
-								// Hide "Show More" if we've loaded all results
-								if (offset + numResults >= totalResults) {
-									loadMoreContainer.style.display = 'none';
+									// Hide "Show More" if we've loaded all results
+									if (offset + numResults >= totalResults) {
+										loadMoreContainer.style.display = 'none';
+									}
 								}
-							}
-						})
-						.catch(error => {
-							this.loading = false;
-							console.error('Error:', error);
-						});
+							})
+							.catch(error => {
+								this.loading = false;
+								console.error('Error:', error);
+							});
 					}
 				};
 			}

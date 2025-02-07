@@ -80,8 +80,13 @@ class init extends Blocks
         }
 
         // Get query vars
-        $display = isset($_REQUEST['show']) ? sanitize_text_field($_REQUEST['show']) : 'upcoming';
-        $num_results = isset($_REQUEST['num_results']) ? absint($_REQUEST['num_results']) : $num_results;
+        $block_id = $this->block['id'] ?? 'unknown';
+        $show_param = "show-{$block_id}";
+        $num_param = "num-{$block_id}";
+
+        // Check for block-specific parameter first, fallback to default display
+        $display = isset($_REQUEST[$show_param]) ? sanitize_text_field($_REQUEST[$show_param]) : $display;
+        $num_results = isset($_REQUEST[$num_param]) ? absint($_REQUEST[$num_param]) : $num_results;
 
         if (empty($display)) {
             $display = 'upcoming';
@@ -103,15 +108,16 @@ class init extends Blocks
 
         $switch_link = add_query_arg(
             [
-                'show'        => $display_other,
-                'num_results' => $num_results,
+                $show_param   => $display_other,
+                $num_param => $num_results,
             ],
-            remove_query_arg('show')
+            remove_query_arg([$show_param, $num_param])
         );
 
         $switch_link = esc_url($switch_link);
 
         $args = [
+            'block_id'                       => $block_id,
             'block_name'                     => 'Touchpoint TEC',
             'block_description'              => 'This block displays registered data for TEC (The Events Calendar) on the front-end.',
             'block_slug'                     => 'wicket-ac-touchpoint-tec',
@@ -192,10 +198,12 @@ class init extends Blocks
         // Total results
         $total_results = count($touchpoint_data);
 
-        get_component('card-call-out', [
-            'title' => __('You have no upcoming events', 'wicket-acc'),
-            'style' => 'secondary',
-        ]);
+        if ($total_results <= 0) {
+            get_component('card-call-out', [
+                'title' => __('You have no upcoming events', 'wicket-acc'),
+                'style' => 'secondary',
+            ]);
+        }
 
         $counter = 0;
 
@@ -217,14 +225,14 @@ class init extends Blocks
 
         // Dirty hack to update the number of results
         ?>
-        <script>
-            let totalElementsElement = document.getElementById('total_results');
+<script>
+	let totalElementsElement = document.getElementById('total_results');
 
-            if ( totalElementsElement !== null ) {
-                totalElementsElement.innerHTML = '<?php echo $total_results; ?>';
-            }
-        </script>
-        <?php
+	if (totalElementsElement !== null) {
+		totalElementsElement.innerHTML = '<?php echo $total_results; ?>';
+	}
+</script>
+<?php
 
                 // Show more like pagination, to load more data in the same page (if there are more than $num_results)
                 if ($counter == $num_results && $ajax === false && $config['show_view_more_events']) {
@@ -246,26 +254,34 @@ class init extends Blocks
             return $touchpoint_data;
         }
 
-        // Get current date as: 2024-09-19T14:00:00.000Z
-        $current_date = date('Y-m-d\TH:i:s.000Z');
+        // Ensure $display_type is valid: upcoming, past, all
+        $display_type = sanitize_text_field($display_type);
+        $display_type = in_array($display_type, ['upcoming', 'past', 'all'], true) ? $display_type : 'upcoming';
 
-        // Check inside every touchpoint for attributes->data->start_date, and compare with current date. If display_type = upcoming, return an array of touchpoints that are greater than current date. If display_type = past, return an array of touchpoints that are less than current date.
-        $filtered_touchpoint_data = array_filter($touchpoint_data, function ($touchpoint) use ($current_date, $display_type) {
-            if (isset($touchpoint['attributes']['data']['start_date'])) {
-                $start_date = $touchpoint['attributes']['data']['start_date'];
+        // Get current timestamp
+        $current_timestamp = current_datetime()->getTimestamp();
 
-                // Check if start date is greater than current date
-                if (strtotime($start_date) > strtotime($current_date)) {
-                    return $display_type == 'upcoming';
-                }
-
-                // Check if start date is less than current date
-                if (strtotime($start_date) < strtotime($current_date)) {
-                    return $display_type == 'past';
-                }
+        // Check inside every touchpoint for attributes->data->end_date, and compare with current date. If display_type = upcoming, return an array of touchpoints that are greater than current date. If display_type = past, return an array of touchpoints that are less than current date.
+        $filtered_touchpoint_data = array_filter($touchpoint_data, function ($touchpoint) use ($current_timestamp, $display_type) {
+            if (!isset($touchpoint['attributes']['data']['end_date'])) {
+                return false;
             }
 
-            return false;
+            // Convert the event's end date to a DateTime object
+            $event_end_date = date_create_from_format('Y-m-d g:i A T', $touchpoint['attributes']['data']['end_date']);
+            if (!$event_end_date) {
+                return false;
+            }
+
+            // Get timestamps for comparison (using full date/time, not start of day)
+            $event_timestamp = $event_end_date->getTimestamp();
+
+            // Compare full timestamps instead of just dates
+            if ($display_type === 'upcoming') {
+                return $event_timestamp >= $current_timestamp;
+            } else {
+                return $event_timestamp < $current_timestamp;
+            }
         });
 
         return $filtered_touchpoint_data;
@@ -279,10 +295,11 @@ class init extends Blocks
      * @param int $total_results Total results
      * @param int $counter Counter of displayed results
      * @param string $display_type Touchpoint display type: upcoming, past, all
+     * @param string $block_id Block ID
      *
      * @return void
      */
-    public static function load_more_results($touchpoint_data = [], $num_results = 5, $total_results = 0, $counter = 0, $display_type = 'upcoming')
+    public static function load_more_results($touchpoint_data = [], $num_results = 5, $total_results = 0, $counter = 0, $display_type = 'upcoming', $block_id = '')
     {
         // Sanitize
         $num_results = absint($num_results);
@@ -298,17 +315,17 @@ class init extends Blocks
             <div class="flex justify-center items-center">
                 <form action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>" method="post" @submit.prevent="submitForm">
                     <input type="hidden" name="action" value="wicket_ac_touchpoint_tec_results">
-                    <input type="hidden" name="num_results" value="<?php echo $num_results; ?>">
-                    <input type="hidden" name="total_results" value="<?php echo $total_results; ?>">
-                    <input type="hidden" name="type" value="<?php echo $display_type; ?>">
-                    <input type="hidden" name="counter" value="<?php echo $counter; ?>">
+                    <input type="hidden" name="num_results" value="<?php echo esc_attr($num_results); ?>">
+                    <input type="hidden" name="total_results" value="<?php echo esc_attr($total_results); ?>">
+                    <input type="hidden" name="type" value="<?php echo esc_attr($display_type); ?>">
+                    <input type="hidden" name="counter" value="<?php echo esc_attr($counter); ?>">
                     <?php wp_nonce_field('wicket_ac_touchpoint_tec_results'); ?>
 
                     <div x-show="loading" class="wicket-ac-touchpoint__loader flex justify-center items-center self-center">
                         <i class="fas fa-spinner fa-spin"></i>
                     </div>
 
-                    <button type="submit" class="button button-primary show-more flex items-center font-bold text-color-dark-100 my-4" x-show="!loading">
+                    <button type="submit" class="touchpoint-show-more button button--secondary show-more flex items-center font-bold text-color-dark-100 my-4 text-[var(--wp--preset--font-size--medium)]" x-show="!loading">
                         <span class="arrow mr-2">&#9660;</span>
                         <span class="text"><?php esc_html_e('Show More', 'wicket-acc'); ?></span>
                     </button>
@@ -337,18 +354,20 @@ class init extends Blocks
                                     if (data) {
                                         this.responseMessage = data;
                                     } else {
-                                        this.responseMessage = '<?php esc_html_e('An error occurred. No data.', 'wicket-acc'); ?>';
+                                        this.responseMessage =
+                                            '<?php esc_html_e('An error occurred. No data.', 'wicket-acc'); ?>';
                                     }
                                 })
                                 .catch(error => {
                                     this.loading = false;
-                                    this.responseMessage = '<?php esc_html_e('An error occurred. Failed.', 'wicket-acc'); ?>';
+                                    this.responseMessage =
+                                        '<?php esc_html_e('An error occurred. Failed.', 'wicket-acc'); ?>';
                                 });
                         }
                     };
                 }
             </script>
         </div>
-<?php
+        <?php
     }
 }
