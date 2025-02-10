@@ -192,8 +192,10 @@ class init extends Blocks
             $config['use_x_columns'] = 1;
         }
 
+        $registered_action = get_field('registered_action');
+
         // Filter data by type
-        $touchpoint_data = self::filter_touchpoint_data($touchpoint_data, $display_type);
+        $touchpoint_data = self::filter_touchpoint_data($touchpoint_data, $display_type, $registered_action);
 
         // Total results
         $total_results = count($touchpoint_data);
@@ -248,7 +250,7 @@ class init extends Blocks
      *
      * @return array
      */
-    public static function filter_touchpoint_data($touchpoint_data = [], $display_type = 'upcoming')
+    public static function filter_touchpoint_data($touchpoint_data = [], $display_type = 'upcoming', $registered_action = [])
     {
         if (empty($touchpoint_data)) {
             return $touchpoint_data;
@@ -282,6 +284,11 @@ class init extends Blocks
             } else {
                 return $event_timestamp < $current_timestamp;
             }
+        });
+
+        // Now, filter by registered_action
+        $filtered_touchpoint_data = array_filter($filtered_touchpoint_data, function ($touchpoint) use ($registered_action) {
+            return in_array($touchpoint['attributes']['code'], $registered_action, true);
         });
 
         return $filtered_touchpoint_data;
