@@ -318,10 +318,16 @@ class Router extends WicketAcc
             }
 
             if ($post->post_type == 'my-account') {
-                $template = $this->get_wicket_acc_template($post->ID);
+                // Check if user selected a custom template
+                $custom_template = get_page_template_slug($post->ID);
 
-                if ($template) {
-                    return $template;
+                if (!$custom_template) {
+                    // Only override default template if no custom template was selected
+                    $template = $this->get_wicket_acc_template($post->ID);
+
+                    if ($template) {
+                        return $template;
+                    }
                 }
             }
 
