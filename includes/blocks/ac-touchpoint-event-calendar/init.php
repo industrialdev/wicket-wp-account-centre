@@ -309,87 +309,88 @@ class init extends Blocks
         $received_results_count = count($touchpoint_data);
         ?>
 
-<div x-data="ajaxFormHandler_<?php echo esc_attr($block_id); ?>()">
-	<div class="wicket-ac-touchpoint__tec-results container">
-		<div class="events-list grid gap-6"
-			x-html="responseMessage_<?php echo esc_attr($block_id); ?>">
-		</div>
-	</div>
+        <div x-data="ajaxFormHandler_<?php echo esc_attr($block_id); ?>()">
+            <div class="wicket-ac-touchpoint__tec-results container">
+                <div class="events-list grid gap-6"
+                    x-html="responseMessage_<?php echo esc_attr($block_id); ?>">
+                </div>
+            </div>
 
-	<div class="flex justify-center items-center">
-		<form
-			action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
-			method="post" @submit.prevent="submitForm">
-			<input type="hidden" name="action" value="wicket_ac_touchpoint_tec_results">
-			<input type="hidden" name="num_results"
-				value="<?php echo esc_attr($num_results); ?>">
-			<input type="hidden" name="total_results"
-				value="<?php echo esc_attr($total_results); ?>">
-			<input type="hidden" name="type"
-				value="<?php echo esc_attr($display_type); ?>">
-			<input type="hidden" name="counter"
-				value="<?php echo esc_attr($counter); ?>">
-			<input type="hidden" name="touchpoint_data"
-				value="<?php echo esc_html($touchpoint_data_input); ?>">
-			<?php wp_nonce_field('wicket_ac_touchpoint_tec_results'); ?>
+            <div class="flex justify-center items-center">
+                <form
+                    action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
+                    method="post" @submit.prevent="submitForm">
+                    <input type="hidden" name="action" value="wicket_ac_touchpoint_tec_results">
+                    <input type="hidden" name="num_results"
+                        value="<?php echo esc_attr($num_results); ?>">
+                    <input type="hidden" name="total_results"
+                        value="<?php echo esc_attr($total_results); ?>">
+                    <input type="hidden" name="type"
+                        value="<?php echo esc_attr($display_type); ?>">
+                    <input type="hidden" name="counter"
+                        value="<?php echo esc_attr($counter); ?>">
+                    <input type="hidden" name="touchpoint_data"
+                        value="<?php echo esc_html($touchpoint_data_input); ?>">
+                    <?php wp_nonce_field('wicket_ac_touchpoint_tec_results'); ?>
 
-			<div x-show="loading" class="wicket-ac-touchpoint__loader flex justify-center items-center self-center">
-				<i class="fas fa-spinner fa-spin"></i>
-			</div>
+                    <div x-show="loading" class="wicket-ac-touchpoint__loader flex justify-center items-center self-center">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
 
-			<button type="submit"
-				class="touchpoint-show-more button button--secondary show-more flex items-center font-bold text-color-dark-100 my-4 text-[var(--wp--preset--font-size--medium)] <?php if($received_results_count < 1) : ?>hidden<?php endif; ?>"
-				x-show="!loading && !buttonClicked">
-				<span class="arrow mr-2">&#9660;</span>
-				<span
-					class="text"><?php esc_html_e('Show More', 'wicket-acc'); ?></span>
-			</button>
-		</form>
-	</div>
+                    <button type="submit"
+                        class="touchpoint-show-more button button--secondary show-more flex items-center font-bold text-color-dark-100 my-4 text-[var(--wp--preset--font-size--medium)] <?php if ($received_results_count < 1) : ?>hidden<?php endif; ?>"
+                        x-show="!loading && !buttonClicked">
+                        <span class="arrow mr-2">&#9660;</span>
+                        <span
+                            class="text"><?php esc_html_e('Show More', 'wicket-acc'); ?></span>
+                    </button>
+                </form>
+            </div>
+        </div>
 
-	<script>
-		function ajaxFormHandler_ <?php echo esc_attr($block_id); ?>() {
-			return {
-				loading: false,
-				<?php if($received_results_count < 1) : ?>
-				buttonClicked: true,
-				<?php else : ?>
-				buttonClicked: false,
-				<?php endif; ?>
-				responseMessage_ <?php echo esc_attr($block_id); ?>: '',
-				submitForm(event) {
-					this.loading = true;
-					const formData = new FormData(event.target);
+        <script>
+            function ajaxFormHandler_<?php echo esc_attr($block_id); ?>() {
+                return {
+                    loading: false,
+                    <?php if ($received_results_count < 1) : ?>
+                        buttonClicked: true,
+                    <?php else : ?>
+                        buttonClicked: false,
+                    <?php endif; ?>
+                    responseMessage_<?php echo esc_attr($block_id); ?>: '',
+                    submitForm(event) {
+                        this.loading = true;
+                        const formData = new FormData(event.target);
 
-					console.log(formData);
-					console.log(woocommerce_params.ajax_url);
+                        console.log(formData);
+                        console.log(woocommerce_params.ajax_url);
 
-					fetch(woocommerce_params.ajax_url, {
-							method: 'POST',
-							body: formData
-						})
-						.then(response => response.text())
-						.then(data => {
-							this.loading = false;
-							if (data) {
-								this.responseMessage_ <?php echo esc_attr($block_id); ?> =
-									data;
-								this.buttonClicked = true;
-							} else {
-								this.responseMessage_ <?php echo esc_attr($block_id); ?> =
-									'<?php esc_html_e('An error occurred. No data.', 'wicket-acc'); ?>';
-							}
-						})
-						.catch(error => {
-							this.loading = false;
-							this.responseMessage_ <?php echo esc_attr($block_id); ?> =
-								'<?php esc_html_e('An error occurred. Failed.', 'wicket-acc'); ?>';
-						});
-				}
-			};
-		}
-	</script>
-</div>
+                        fetch(woocommerce_params.ajax_url, {
+                                method: 'POST',
+                                body: formData
+                            })
+                            .then(response => response.text())
+                            .then(data => {
+                                this.loading = false;
+                                if (data) {
+                                    this.responseMessage_<?php echo esc_attr($block_id); ?> =
+                                        data;
+                                    this.buttonClicked = true;
+                                } else {
+                                    this.responseMessage_<?php echo esc_attr($block_id); ?> =
+                                        '<?php esc_html_e('An error occurred. No data.', 'wicket-acc'); ?>';
+                                }
+                            })
+                            .catch(error => {
+                                this.loading = false;
+                                this.responseMessage_<?php echo esc_attr($block_id); ?> =
+                                    '<?php esc_html_e('An error occurred. Failed.', 'wicket-acc'); ?>';
+                            });
+                    }
+                };
+            }
+        </script>
+
 <?php
     }
 }
