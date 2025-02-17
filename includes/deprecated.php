@@ -17,11 +17,10 @@ defined('ABSPATH') || exit;
  * Thank you.
  */
 
-//@formatter:off
-
 /**
  * Returns active memberships from wicket API.
  *
+ * @deprecated 1.5.0 Pending reimplementation as a method
  * @param string $iso_code (Optional) ISO code for the language: en, fr, es, etc.
  *
  * @return array $memberships slug and id
@@ -69,6 +68,7 @@ function wicket_get_active_memberships($iso_code = 'en')
 /**
  * Returns active memberships from WooCommerce.
  *
+ * @deprecated 1.5.0 Pending reimplementation as a method
  * @return array $memberships slug and id
  */
 function woo_get_active_memberships()
@@ -99,6 +99,7 @@ function woo_get_active_memberships()
 /**
  * Returns active memberships relationship from wicket API.
  *
+ * @deprecated 1.5.0 Pending reimplementation as a method
  * @return array $memberships relationship
  */
 function wicket_get_active_memberships_relationship($org_uuid)
@@ -140,6 +141,14 @@ function wicket_get_active_memberships_relationship($org_uuid)
     return $org_info;
 }
 
+/**
+ * Check if membership is in renewal period.
+ *
+ * @deprecated 1.5.0 Pending reimplementation as a method
+ * @param array $memberships
+ * @param string $renewal_period
+ * @return array
+ */
 function is_renewal_period($memberships, $renewal_period)
 {
     $memberships_to_renew = [];
@@ -157,6 +166,13 @@ function is_renewal_period($memberships, $renewal_period)
     return $memberships_to_renew;
 }
 
+/**
+ * Validate profile widget fields.
+ *
+ * @deprecated 1.5.0 Pending reimplementation as a method
+ * @param array $fields Fields to validate
+ * @return bool
+ */
 function wicket_profile_widget_validation($fields = [])
 {
     $person = wicket_current_person();
@@ -182,6 +198,7 @@ function wicket_profile_widget_validation($fields = [])
 /**
  * Validates the addresses of the person.
  *
+ * @deprecated 1.5.0 Pending reimplementation as a method
  * @param object $person Person object
  *
  * @return bool $addresses
@@ -227,6 +244,7 @@ function wicket_validation_addresses($person)
 /**
  * Menu walker for the wicket ACC menu.
  *
+ * @deprecated 1.5.0 Pending reimplementation as a method
  * @return void
  */
 class wicket_acc_menu_walker extends Walker_Nav_Menu
@@ -303,6 +321,7 @@ class wicket_acc_menu_walker extends Walker_Nav_Menu
 /**
  * Menu walker (mobile) for the wicket ACC menu.
  *
+ * @deprecated 1.5.0 Pending reimplementation as a method
  * @return void
  */
 class wicket_acc_menu_mobile_walker extends Walker_Nav_Menu
@@ -379,6 +398,7 @@ class wicket_acc_menu_mobile_walker extends Walker_Nav_Menu
 /**
  * Add multiple products to cart.
  *
+ * @deprecated 1.5.0 Pending reimplementation as a method
  * @return void
  */
 function wicket_ac_maybe_add_multiple_products_to_cart()
@@ -448,6 +468,7 @@ add_action('wp_loaded', 'wicket_ac_maybe_add_multiple_products_to_cart', 15);
 /**
  * Returns productlinks for renewal callouts based on the next tier's products assigned.
  *
+ * @deprecated 1.5.0 Pending reimplementation as a method
  * @param mixed $membership
  * @param mixed $renewal_type
  * @return string[][][]
@@ -525,6 +546,13 @@ function wicket_ac_memberships_get_product_link_data($membership, $renewal_type)
     return $links;
 }
 
+/**
+ * Get page link data for memberships.
+ *
+ * @deprecated 1.5.0 Pending reimplementation as a method
+ * @param mixed $membership
+ * @return array
+ */
 function wicket_ac_memberships_get_page_link_data($membership)
 {
     $url = $membership['membership']['form_page']['permalink'] . '?membership_post_id_renew=' . $membership['membership']['ID'];
@@ -547,10 +575,10 @@ function wicket_ac_memberships_get_page_link_data($membership)
 /**
  * Alter the 'pages' admin settings to provide the wicket ACC pages along with normal pages.
  *
+ * @deprecated 1.5.0 Pending reimplementation as a method
  * @param string $output
  * @param array $parsed_args
  * @param array $pages
- *
  * @return string $output
  */
 function wicket_acc_alter_wp_job_manager_pages($output, $parsed_args, $pages)
@@ -568,8 +596,8 @@ function wicket_acc_alter_wp_job_manager_pages($output, $parsed_args, $pages)
 /**
  * Dropdown pages for the wicket ACC Job Manager.
  *
+ * @deprecated 1.5.0 Pending reimplementation as a method
  * @param array $parsed_args
- *
  * @return string $output
  */
 function wp_job_dropdown_pages($parsed_args = '')
@@ -596,9 +624,9 @@ function wp_job_dropdown_pages($parsed_args = '')
  * Get user profile picture
  * To pull in as wp_user profile image.
  *
+ * @deprecated 1.5.0 Pending reimplementation as a method
  * @param mixed $user WP_User object, user ID or email
  * @param array $args (Optional)
- *
  * @return string URL to the profile picture
  */
 function wicket_acc_get_avatar($user, $args = [])
@@ -646,7 +674,6 @@ function wicket_acc_get_avatar($user, $args = [])
     return apply_filters('wicket/acc/get_avatar', $pp_profile_picture);
 }
 
-//@formatter:on
 /*
  * MARK: PLEASE READ.
  *

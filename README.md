@@ -41,26 +41,6 @@ Then bump the plugin version number running `composer version-bump`
 
 Commit and push.
 
-## Features
+# Documentation
 
-### ACC Pages
-
-Inside the Account Centre menu in WP, you can create multiple pages that will be available within the ACC custom post type.
-
-ACC will create the default pages for you and map them in ACC Options. You can change this mapping at any time.
-
-### ACC Blocks
-
-There are unique Wicket Blocks available for the Account Centre pages (or any WP page) that are used to manage and display user/MDP data.
-
-1. ACC Welcome Block: displays the user's active memberships.
-2. ACC Additional Info: displays the user's additional information fields.
-3. ACC Individual Profile: updates the user's profile information.
-4. ACC Organization Profile: updates an organization profile owned by the user.
-5. ACC Callout Block Become a Member: prompts the user to obtain a membership.
-6. ACC Individual Profile: prompts the user to complete their profile information.
-7. ACC Membership Renewal: prompts the user to renew their membership(s).
-8. ACC Profile Picture Change: allows the user to update their profile picture.
-9. ACC Touchpoints MicroSpec: displays a list of events (from MicroSpec) and their data.
-10. ACC Touchpoints TEC: displays a list of events (from The Events Calendar) and their data.
-11. ACC Organization Management: displays a list of organizations (from the Organization Management plugin) and their members. Allows users to manage memberships.
+Check this plugin documentation [here](docs/).

@@ -77,7 +77,6 @@ class WicketAcc
         'organization-management' => 'Organization Management',
         'organization-profile'    => 'Organization Profile',
         'organization-members'    => 'Organization Members',
-        'organization-roster'     => 'Organization Roster',
         'acc_global-headerbanner' => 'Global Header-Banner',
         // WooCommerce endpoints https://developer.woocommerce.com/docs/woocommerce-endpoints/
         //'order-pay'                      => 'Order Pay',
@@ -101,7 +100,6 @@ class WicketAcc
         'organization-management',
         'organization-profile',
         'organization-members',
-        'organization-roster',
         'acc_global-headerbanner',
         'add-payment-method',
         'set-default-payment-method',
