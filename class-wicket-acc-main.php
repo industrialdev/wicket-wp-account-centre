@@ -245,7 +245,6 @@ class WicketAcc
         ];
 
         $includes_global = [
-            'includes/ray-stub.php',
             'includes/helpers.php',
             'includes/deprecated.php',
         ];
