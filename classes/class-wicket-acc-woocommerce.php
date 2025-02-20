@@ -33,9 +33,6 @@ class WooCommerce extends WicketAcc
         add_filter('woocommerce_cart_tax_totals', [$this, 'remove_cart_tax_totals'], 10, 2);
         add_filter('woocommerce_calculated_total', [$this, 'exclude_tax_cart_total'], 10, 2);
         add_filter('woocommerce_subscriptions_calculated_total', [$this, 'exclude_tax_cart_total']);
-
-        // Mark order as completed when it is paid
-        //add_action('woocommerce_payment_complete_order_status_processing', [$this, 'mark_order_as_completed']);
     }
 
     /**
@@ -176,27 +173,5 @@ class WooCommerce extends WicketAcc
         $total = round(WC()->cart->cart_contents_total + WC()->cart->shipping_total + WC()->cart->fee_total, WC()->cart->dp);
 
         return $total;
-    }
-
-    /**
-     * Automatically mark an order as "completed" when it is paid.
-     *
-     * @param int $order_id The order ID.
-     *
-     * @return void
-     */
-    public function mark_order_as_completed($order_id)
-    {
-        // Check if ACF:acc_wc_auto_complete_orders option is enabled
-        if (!get_field('acc_wc_auto_complete_orders', 'option')) {
-            return;
-        }
-
-        $order = wc_get_order($order_id);
-
-        // Order successfully paid?
-        if ($order->has_status('processing') && $order->is_paid()) {
-            $order->update_status('completed');
-        }
     }
 }
