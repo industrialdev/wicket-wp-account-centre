@@ -52,6 +52,34 @@
             "placeholder": ""
         },
         {
+            "key": "field_67bcb38d05e88",
+            "label": "Service",
+            "name": "touchpoint_service",
+            "aria-label": "",
+            "type": "select",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 0,
+            "choices": {
+                "Aptify Conversion": "Aptify Conversion",
+                "Maple LMS": "Maple LMS"
+            },
+            "default_value": "enrolled",
+            "return_format": "value",
+            "multiple": 0,
+            "allow_null": 0,
+            "allow_in_bindings": 0,
+            "ui": 0,
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
             "key": "field_67a08f6172430",
             "label": "Touchpoints per page",
             "name": "page_results",
@@ -116,5 +144,5 @@
     "description": "",
     "show_in_rest": 0,
     "acfml_field_group_mode": "advanced",
-    "modified": 1738657333
+    "modified": 1740420019
 }

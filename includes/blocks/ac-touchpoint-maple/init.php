@@ -36,7 +36,9 @@ class init extends Blocks
      */
     public function get_service_id()
     {
-        return 'Aptify Conversion';
+        $service_id = get_field('touchpoint_service');
+
+        return $service_id ? $service_id : 'Aptify Conversion';
     }
 
     public function get_block_id()
