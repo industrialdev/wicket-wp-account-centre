@@ -73,7 +73,7 @@ if (!empty($override_past_events_link)) {
 		<div class="header flex flex-col mb-6">
 
 			<div
-				class="flex flex-col md:flex-row md:justify-between items-center md:items-center w-full event-section-container">
+				class="flex flex-col md:flex-row md:justify-between items-start md:items-center md:items-center w-full event-section-container">
 				<?php if ($display == 'upcoming' && !$single_event) : ?>
 				<?php if (!empty($title)) : ?>
 				<h3

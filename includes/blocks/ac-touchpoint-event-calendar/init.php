@@ -177,10 +177,18 @@ class init extends Blocks
     {
         // No data
         if (empty($touchpoint_data)) {
-            echo '<p class="no-data">';
-            _e('You do not have any ' . $display_type . ' data at this time.', 'wicket-acc');
-            echo '</p>';
 
+            if ($display_type === 'past') {
+                get_component('card-call-out', [
+                    'title' => __('You have no past events.', 'wicket-acc'),
+                    'style' => 'secondary',
+                ]);
+            } else {
+                get_component('card-call-out', [
+                    'title' => sprintf(__('You have no %s events.', 'wicket-acc'), $display_type),
+                    'style' => 'secondary',
+                ]);
+            }
             return;
         }
 
@@ -200,13 +208,6 @@ class init extends Blocks
 
         // Total results
         $total_results = count($touchpoint_data);
-
-        if ($total_results <= 0) {
-            get_component('card-call-out', [
-                'title' => __('You have no upcoming events', 'wicket-acc'),
-                'style' => 'secondary',
-            ]);
-        }
 
         $counter = 0;
 

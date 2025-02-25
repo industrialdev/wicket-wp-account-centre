@@ -31,6 +31,7 @@
 		box-shadow: var(--box-shadow-4);
 		padding: var(--space-200);
 		box-shadow: var(--box-shadow-4);
+    border-radius: var(--card-corner-radius);
 	}
 
 	.event-card-link {

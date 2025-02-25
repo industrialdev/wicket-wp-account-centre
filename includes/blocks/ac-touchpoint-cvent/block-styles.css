@@ -31,6 +31,7 @@ body.wicket-theme-v2 .wicket-acc-block-touchpoints-cvent {
     display: flex;
     align-items: flex-start;
     gap: var(--space-200);
+    border-radius: var(--card-corner-radius);
 
     @media screen and (max-width: 767px) {
       flex-direction: column;
