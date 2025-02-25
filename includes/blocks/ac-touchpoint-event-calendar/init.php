@@ -189,6 +189,7 @@ class init extends Blocks
                     'style' => 'secondary',
                 ]);
             }
+
             return;
         }
 

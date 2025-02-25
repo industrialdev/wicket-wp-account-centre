@@ -69,5 +69,6 @@ class Assets extends WicketAcc
         wp_enqueue_style('wicket-acc-frontend-styles', WICKET_ACC_URL . 'assets/css/wicket-acc-main.css', [], WICKET_ACC_VERSION);
         wp_enqueue_script('wicket-acc-frontend-scripts', WICKET_ACC_URL . 'assets/js/wicket-acc-main.js', [], WICKET_ACC_VERSION, true);
         wp_enqueue_script('wicket-acc-frontend-legacy-scripts', WICKET_ACC_URL . 'assets/js/wicket-acc-legacy.js', [], WICKET_ACC_VERSION, true);
+        wp_enqueue_script('wicket-acc-orders', WICKET_ACC_URL . 'assets/js/wicket-acc-orders.js', [], WICKET_ACC_VERSION, true);
     }
 }

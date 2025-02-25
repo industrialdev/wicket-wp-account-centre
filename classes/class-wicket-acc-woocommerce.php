@@ -33,6 +33,9 @@ class WooCommerce extends WicketAcc
         add_filter('woocommerce_cart_tax_totals', [$this, 'remove_cart_tax_totals'], 10, 2);
         add_filter('woocommerce_calculated_total', [$this, 'exclude_tax_cart_total'], 10, 2);
         add_filter('woocommerce_subscriptions_calculated_total', [$this, 'exclude_tax_cart_total']);
+
+        // Fix pagination URLs for orders endpoint
+        add_filter('woocommerce_get_endpoint_url', [$this, 'fix_orders_pagination_url'], 10, 4);
     }
 
     /**
@@ -173,5 +176,29 @@ class WooCommerce extends WicketAcc
         $total = round(WC()->cart->cart_contents_total + WC()->cart->shipping_total + WC()->cart->fee_total, WC()->cart->dp);
 
         return $total;
+    }
+
+    /**
+     * Fix pagination URLs for orders endpoint.
+     *
+     * @param string $url The URL.
+     * @param string $endpoint The endpoint.
+     * @param int $value The value.
+     * @param string $permalink The permalink.
+     *
+     * @return string The fixed URL.
+     */
+    public function fix_orders_pagination_url($url, $endpoint, $value, $permalink)
+    {
+        // Only modify URLs for the orders endpoint with pagination
+        if ($endpoint === 'orders' && is_numeric($value)) {
+            // Check if the URL has the duplicate "orders" pattern
+            if (strpos($url, '/orders/orders/') !== false) {
+                // Fix the URL by replacing the duplicate pattern
+                $url = str_replace('/orders/orders/', '/orders/', $url);
+            }
+        }
+
+        return $url;
     }
 }
