@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 link.setAttribute('hx-swap', 'outerHTML');
                 link.setAttribute('hx-trigger', 'click');
                 link.setAttribute('hx-select', '.woocommerce-orders-table');
+                link.setAttribute('hx-disabled-elt', 'this');
 
                 // Add a custom attribute to store the original URL
                 link.setAttribute('data-original-url', originalUrl);
