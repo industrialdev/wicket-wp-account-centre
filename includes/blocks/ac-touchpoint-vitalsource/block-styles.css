@@ -22,11 +22,11 @@
   .vitalsource-card {
     display: block;
     background-color: var(--bg-card);
-    padding: var(--spacing-200);
+    padding: var(--space-200);
     filter: drop-shadow(var(--elevation-4));
     border-radius: var(--card-corner-radius);
     font-size: var(--font-size-heading-xs);
-    margin-bottom: var(--spacing-200);
+    margin-bottom: var(--space-200);
     font-weight: bold;
     color: var(--text-content);
     text-decoration: none;

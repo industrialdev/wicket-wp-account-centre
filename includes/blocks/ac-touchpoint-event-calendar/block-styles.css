@@ -111,7 +111,7 @@ body.wicket-theme-v2 .wicket-acc-block-touchpoints-tec {
 	}
 
 	.event-section-container {
-		gap: var(--spacing-300);
+		gap: var(--space-300);
 	}
 
 	.past-link {
