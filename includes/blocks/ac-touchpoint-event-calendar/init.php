@@ -339,13 +339,20 @@ class init extends Blocks
                         <i class="fas fa-spinner fa-spin"></i>
                     </div>
 
-                    <button type="submit"
-                        class="touchpoint-show-more button button--secondary show-more flex items-center font-bold text-color-dark-100 my-4 text-[var(--wp--preset--font-size--medium)] <?php if ($received_results_count < 1) : ?>hidden<?php endif; ?>"
-                        x-show="!loading && !buttonClicked">
-                        <span class="arrow mr-2">&#9660;</span>
-                        <span
-                            class="text"><?php esc_html_e('Show More', 'wicket-acc'); ?></span>
-                    </button>
+                    <?php $show_more_classes = $received_results_count < 1 ? 'hidden' : ''; ?>
+
+                    <?php
+                        get_component('button', [
+                            'variant' => 'secondary',
+                            'type'    => 'submit',
+                            'classes' => ['touchpoint-show-more', 'my-4', $show_more_classes],
+                            'label'   => __('Show More', 'wicket-acc'),
+                            'prefix_icon' => 'fa-solid fa-caret-down',
+                            'atts'   => [
+                                'x-show="!loading && !buttonClicked"',
+                            ],
+                        ]);
+                    ?>
                 </form>
             </div>
         </div>
