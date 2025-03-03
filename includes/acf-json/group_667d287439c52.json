@@ -24,6 +24,27 @@
             "append": ""
         },
         {
+            "key": "field_66e4eb906eb0c",
+            "label": "Past Events Title",
+            "name": "past_events_title",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Optional. Title to display when viewing past events. If empty, the regular title will be used.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 2,
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
             "key": "field_667d287486291",
             "label": "Display Registered Actions",
             "name": "registered_action",
@@ -132,14 +153,43 @@
             "append": ""
         },
         {
+            "key": "field_66e4f1ff9cb87",
+            "label": "Show switch view link",
+            "name": "show_switch_view_link",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "Show the link that switches between past and upcoming events views.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 3,
+            "message": "",
+            "default_value": 1,
+            "ui": 1,
+            "ui_on_text": "",
+            "ui_off_text": ""
+        },
+        {
             "key": "field_66d5f1ff9cb86",
             "label": "Override \"see past events\" link",
             "name": "override_past_events_link",
             "aria-label": "",
             "type": "text",
-            "instructions": "Optional.",
+            "instructions": "Optional. Full URL where the user will be redirected when clicking on the \"see past events\" link.",
             "required": false,
-            "conditional_logic": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_66e4f1ff9cb87",
+                        "operator": "==",
+                        "value": "1"
+                    }
+                ]
+            ],
             "wrapper": {
                 "width": "",
                 "class": "",
@@ -221,5 +271,5 @@
     "description": "",
     "show_in_rest": 0,
     "acfml_field_group_mode": "localization",
-    "modified": 1728572992
+    "modified": 1728572993
 }

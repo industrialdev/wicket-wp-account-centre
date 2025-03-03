@@ -55,9 +55,11 @@ class init extends Blocks
         }
 
         $title = get_field('title');
+        $past_events_title = get_field('past_events_title');
         $display = get_field('default_display');
         $registered_action = get_field('registered_action');
         $num_results = get_field('page_results');
+        $show_switch_view_link = get_field('show_switch_view_link');
         $override_past_events_link = get_field('override_past_events_link');
         $override_past_events_link_text = get_field('override_past_events_link_text');
         $show_view_more_events = get_field('show_view_more_events');
@@ -121,6 +123,7 @@ class init extends Blocks
             'block_slug'                     => 'wicket-ac-touchpoint-tec',
             'attrs'                          => $attrs,
             'title'                          => $title,
+            'past_events_title'              => $past_events_title,
             'display'                        => $display,
             'num_results'                    => $num_results,
             'total_results'                  => $total_results,
@@ -129,6 +132,7 @@ class init extends Blocks
             'display_type'                   => $display_type,
             'touchpoints_results'            => $touchpoints_results,
             'switch_link'                    => $switch_link,
+            'show_switch_view_link'         => $show_switch_view_link,
             'override_past_events_link'      => $override_past_events_link,
             'override_past_events_link_text' => $override_past_events_link_text,
             'show_view_more_events'          => $show_view_more_events,
@@ -177,18 +181,9 @@ class init extends Blocks
     {
         // No data
         if (empty($touchpoint_data)) {
-
-            if ($display_type === 'past') {
-                get_component('card-call-out', [
-                    'title' => __('You have no past events.', 'wicket-acc'),
-                    'style' => 'secondary',
-                ]);
-            } else {
-                get_component('card-call-out', [
-                    'title' => sprintf(__('You have no %s events.', 'wicket-acc'), $display_type),
-                    'style' => 'secondary',
-                ]);
-            }
+            echo '<p class="no-data">';
+            _e('You do not have any ' . $display_type . ' data at this time.', 'wicket-acc');
+            echo '</p>';
 
             return;
         }
@@ -209,6 +204,13 @@ class init extends Blocks
 
         // Total results
         $total_results = count($touchpoint_data);
+
+        if ($total_results <= 0) {
+            get_component('card-call-out', [
+                'title' => __('You have no upcoming events', 'wicket-acc'),
+                'style' => 'secondary',
+            ]);
+        }
 
         $counter = 0;
 
@@ -311,37 +313,37 @@ class init extends Blocks
         $received_results_count = count($touchpoint_data);
         ?>
 
-        <div x-data="ajaxFormHandler_<?php echo esc_attr($block_id); ?>()">
-            <div class="wicket-ac-touchpoint__tec-results container">
-                <div class="events-list grid gap-6"
-                    x-html="responseMessage_<?php echo esc_attr($block_id); ?>">
-                </div>
+<div x-data="ajaxFormHandler_<?php echo esc_attr($block_id); ?>()">
+    <div class="wicket-ac-touchpoint__tec-results container">
+        <div class="events-list grid gap-6"
+            x-html="responseMessage_<?php echo esc_attr($block_id); ?>">
+        </div>
+    </div>
+
+    <div class="flex justify-center items-center">
+        <form
+            action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
+            method="post" @submit.prevent="submitForm">
+            <input type="hidden" name="action" value="wicket_ac_touchpoint_tec_results">
+            <input type="hidden" name="num_results"
+                value="<?php echo esc_attr($num_results); ?>">
+            <input type="hidden" name="total_results"
+                value="<?php echo esc_attr($total_results); ?>">
+            <input type="hidden" name="type"
+                value="<?php echo esc_attr($display_type); ?>">
+            <input type="hidden" name="counter"
+                value="<?php echo esc_attr($counter); ?>">
+            <input type="hidden" name="touchpoint_data"
+                value="<?php echo esc_html($touchpoint_data_input); ?>">
+            <?php wp_nonce_field('wicket_ac_touchpoint_tec_results'); ?>
+
+            <div x-show="loading" class="wicket-ac-touchpoint__loader flex justify-center items-center self-center">
+                <i class="fas fa-spinner fa-spin"></i>
             </div>
 
-            <div class="flex justify-center items-center">
-                <form
-                    action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
-                    method="post" @submit.prevent="submitForm">
-                    <input type="hidden" name="action" value="wicket_ac_touchpoint_tec_results">
-                    <input type="hidden" name="num_results"
-                        value="<?php echo esc_attr($num_results); ?>">
-                    <input type="hidden" name="total_results"
-                        value="<?php echo esc_attr($total_results); ?>">
-                    <input type="hidden" name="type"
-                        value="<?php echo esc_attr($display_type); ?>">
-                    <input type="hidden" name="counter"
-                        value="<?php echo esc_attr($counter); ?>">
-                    <input type="hidden" name="touchpoint_data"
-                        value="<?php echo esc_html($touchpoint_data_input); ?>">
-                    <?php wp_nonce_field('wicket_ac_touchpoint_tec_results'); ?>
+            <?php $show_more_classes = $received_results_count < 1 ? 'hidden' : ''; ?>
 
-                    <div x-show="loading" class="wicket-ac-touchpoint__loader flex justify-center items-center self-center">
-                        <i class="fas fa-spinner fa-spin"></i>
-                    </div>
-
-                    <?php $show_more_classes = $received_results_count < 1 ? 'hidden' : ''; ?>
-
-                    <?php
+            <?php
                         get_component('button', [
                             'variant' => 'secondary',
                             'type'    => 'submit',
@@ -352,53 +354,53 @@ class init extends Blocks
                                 'x-show="!loading && !buttonClicked"',
                             ],
                         ]);
-                    ?>
-                </form>
-            </div>
-        </div>
+        ?>
+        </form>
+    </div>
+</div>
 
-        <script>
-            function ajaxFormHandler_<?php echo esc_attr($block_id); ?>() {
-                return {
-                    loading: false,
-                    <?php if ($received_results_count < 1) : ?>
-                        buttonClicked: true,
-                    <?php else : ?>
-                        buttonClicked: false,
-                    <?php endif; ?>
-                    responseMessage_<?php echo esc_attr($block_id); ?>: '',
-                    submitForm(event) {
-                        this.loading = true;
-                        const formData = new FormData(event.target);
+<script>
+    function ajaxFormHandler_ <?php echo esc_attr($block_id); ?>() {
+        return {
+            loading: false,
+            <?php if ($received_results_count < 1) : ?>
+            buttonClicked: true,
+            <?php else : ?>
+            buttonClicked: false,
+            <?php endif; ?>
+            responseMessage_ <?php echo esc_attr($block_id); ?>: '',
+            submitForm(event) {
+                this.loading = true;
+                const formData = new FormData(event.target);
 
-                        console.log(formData);
-                        console.log(woocommerce_params.ajax_url);
+                console.log(formData);
+                console.log(woocommerce_params.ajax_url);
 
-                        fetch(woocommerce_params.ajax_url, {
-                                method: 'POST',
-                                body: formData
-                            })
-                            .then(response => response.text())
-                            .then(data => {
-                                this.loading = false;
-                                if (data) {
-                                    this.responseMessage_<?php echo esc_attr($block_id); ?> =
-                                        data;
-                                    this.buttonClicked = true;
-                                } else {
-                                    this.responseMessage_<?php echo esc_attr($block_id); ?> =
-                                        '<?php esc_html_e('An error occurred. No data.', 'wicket-acc'); ?>';
-                                }
-                            })
-                            .catch(error => {
-                                this.loading = false;
-                                this.responseMessage_<?php echo esc_attr($block_id); ?> =
-                                    '<?php esc_html_e('An error occurred. Failed.', 'wicket-acc'); ?>';
-                            });
-                    }
-                };
+                fetch(woocommerce_params.ajax_url, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.text())
+                    .then(data => {
+                        this.loading = false;
+                        if (data) {
+                            this.responseMessage_ <?php echo esc_attr($block_id); ?> =
+                                data;
+                            this.buttonClicked = true;
+                        } else {
+                            this.responseMessage_ <?php echo esc_attr($block_id); ?> =
+                                '<?php esc_html_e('An error occurred. No data.', 'wicket-acc'); ?>';
+                        }
+                    })
+                    .catch(error => {
+                        this.loading = false;
+                        this.responseMessage_ <?php echo esc_attr($block_id); ?> =
+                            '<?php esc_html_e('An error occurred. Failed.', 'wicket-acc'); ?>';
+                    });
             }
-        </script>
+        };
+    }
+</script>
 
 <?php
     }
