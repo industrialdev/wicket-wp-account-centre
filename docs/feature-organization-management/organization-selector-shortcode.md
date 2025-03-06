@@ -50,14 +50,14 @@ The Organization Selector Shortcode provides a reusable way to implement organiz
 
 ### Actions
 ```php
-do_action('wicket/acc/organization-selected', $organization_id);
-do_action('wicket/acc/organization-changed', $new_org_id, $old_org_id);
+do_action('wicket/acc/organization_selected', $organization_id);
+do_action('wicket/acc/organization_changed', $new_org_id, $old_org_id);
 ```
 
 ### Filters
 ```php
-apply_filters('wicket/acc/organization-selector-modes', $modes);
-apply_filters('wicket/acc/organization-selector-display', $html, $mode);
+apply_filters('wicket/acc/organization_selector_modes', $modes);
+apply_filters('wicket/acc/organization_selector_display', $html, $mode);
 ```
 
 ## Integration Example

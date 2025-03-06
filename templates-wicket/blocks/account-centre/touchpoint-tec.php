@@ -21,8 +21,6 @@ defined('ABSPATH') || exit;
  * $touchpoints_results - Touchpoint results
  * $is_preview - Is preview?
  */
-
-// @formatter:off
 $attrs = $args['attrs'];
 $block_id = $args['block_id'];
 $title = $args['title'];
@@ -47,7 +45,6 @@ $is_ajax_request = $args['is_ajax_request'];
 $show_param = "show-{$block_id}";
 $num_param = "num-{$block_id}";
 $registered_action = $args['registered_action'];
-// @formatter:on
 
 // Process event data from URL
 $single_event = false;
@@ -116,8 +113,6 @@ if (!empty($override_past_events_link)) {
         </div>
 
         <?php if (defined('WICKET_WP_THEME_V2')) : ?>
-            <?php //
-            ?>
         <?php else: ?>
             <div class="data-quantity text-left mb-3 text-lg">
                 <?php esc_html_e('Results:', 'wicket-acc'); ?>
@@ -126,12 +121,12 @@ if (!empty($override_past_events_link)) {
             </div>
         <?php endif; ?>
 
-        <div
-            class="events-list grid gap-4 sm:grid-cols-1 md:grid-cols-<?php echo $use_x_columns; ?> lg:grid-cols-<?php echo $use_x_columns; ?>">
+        <div class="events-list grid gap-4 sm:grid-cols-1 md:grid-cols-<?php echo $use_x_columns; ?> lg:grid-cols-<?php echo $use_x_columns; ?>">
             <?php
             $args = [
                 'tp'                    => $event_data,
                 'show_view_more_events' => $show_view_more_events,
+                'block_id'              => $block_id,
             ];
 
 if ($single_event) {
@@ -154,12 +149,12 @@ if ($single_event) {
         </div>
     </div>
     <script>
-        let totalElementsElement_ <?php echo $block_id; ?> = document.getElementById(
+        let totalElementsElement_<?php echo $block_id; ?> = document.getElementById(
             'total_results-<?php echo $block_id; ?>');
 
-        if (totalElementsElement_ <?php echo $block_id; ?> !== null) {
-            totalElementsElement_ <?php echo $block_id; ?>.innerHTML =
-                '<?php echo $total_results; ?>';
+        if (totalElementsElement_<?php echo $block_id; ?> !== null) {
+            totalElementsElement_<?php echo $block_id; ?>.innerHTML =
+                '<?php echo esc_js($total_results); ?>';
         }
     </script>
 </section>
