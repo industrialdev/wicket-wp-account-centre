@@ -14,6 +14,7 @@ global $wp;
 
 $nav_heading = wp_get_nav_menu_name('wicket-acc-nav');
 $nav_heading_two = wp_get_nav_menu_name('wicket-acc-nav-secondary');
+$show_acc_secondary_nav = apply_filters('wicket_acc_show_secondary_nav', true);
 
 do_action('woocommerce_before_account_navigation');
 ?>
@@ -43,7 +44,7 @@ do_action('woocommerce_before_account_navigation');
     ?>
 	</div>
 
-	<?php if (has_nav_menu('wicket-acc-nav-secondary')) : ?>
+	<?php if (has_nav_menu('wicket-acc-nav-secondary') && $show_acc_secondary_nav) : ?>
 	<div class="myaccount-nav__container">
 		<?php if ($nav_heading_two) :
 		    $myaccount_page = get_option('woocommerce_myaccount_page_id');
@@ -84,7 +85,7 @@ do_action('woocommerce_before_account_navigation');
 		aria-controls="dropdown-my-account-menu"
 		aria-expanded="false"><?php echo $nav_heading; ?> <i
 			class="fal fa-plus" aria-hidden="true"></i></a>
-	<?php if (has_nav_menu('wicket-acc-nav-secondary')) : ?>
+	<?php if (has_nav_menu('wicket-acc-nav-secondary') && $show_acc_secondary_nav) : ?>
 	<div id="dropdown-my-account-menu-two" class="dropdown__content dropdown__content--nav"
 		aria-labelledby="dropdown-control-my-account-menu" aria-expanded="false" role="region" style="display:none">
 		<?php
