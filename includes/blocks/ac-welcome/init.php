@@ -149,10 +149,10 @@ class init extends Blocks
 
                                     $org_info = wicket_get_active_memberships_relationship($org_uuid);
                                     ?>
-                                    <p class="mb-0 wicket-welcome-member-org">
-                                        <strong><?php echo $org_info['relationship']; ?>
-                                            &ndash;
-                                            <?php echo $org_info['name']; ?></strong>
+                                    <p class="mb-0 wicket-welcome-member-org font-bold">
+                                        <?php echo __($org_info['relationship'], 'wicket-acc'); ?>
+                                        &ndash;
+                                        <?php echo $org_info['name']; ?>
                                     </p>
                                 <?php
                                 endif; ?>
