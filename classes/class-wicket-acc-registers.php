@@ -113,7 +113,7 @@ class Registers extends WicketAcc
         $template_path = WICKET_ACC_PLUGIN_TEMPLATE_PATH . '/account-centre/page-acc.php';
 
         if (file_exists($template_path)) {
-            $page_templates['plugins/wicket-wp-account-centre/templates-wicket/account-centre/page-acc.php'] = __('ACC Page', 'wicket-child');
+            $page_templates['plugins/wicket-wp-account-centre/templates-wicket/account-centre/page-acc.php'] = __('ACC Page', 'wicket-acc');
         }
 
         return $page_templates;

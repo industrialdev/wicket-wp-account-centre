@@ -105,7 +105,7 @@ class init extends Blocks
                             $button_label = $Tier->get_approval_callout_button_label($iso_code);
                             $link['link'] = [
                                 'title' => $button_label,
-                                'url'   => 'mailto: ' . $Tier->get_approval_email() . '?subject=' . __('Re: Pending Membership Request', 'wicket-memberships'),
+                                'url'   => 'mailto: ' . $Tier->get_approval_email() . '?subject=' . __('Re: Pending Membership Request', 'wicket-acc'),
                             ];
                             if(!empty($button_label) && $button_label != ' ') {
                                 $links[] = $link;
