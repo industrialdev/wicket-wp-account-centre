@@ -43,6 +43,7 @@ class init extends Blocks
         $current_user = wp_get_current_user();
         $person = wicket_current_person();
         $identifying_number = $person->identifying_number;
+        $membership_began_on = $person->membership_began_on;
         $edit_profile = get_field('edit_profile_button');
         $edit_profile_button_link = get_field('edit_profile_button_link');
         $member_since = get_field('member_since');
@@ -69,12 +70,7 @@ class init extends Blocks
             $editprofile_page_title = $edit_profile_button_link['title'];
         }
         ?>
-        <div class="wicket-acc-block wicket-acc-block-welcome wp-block-wicket-acc-callout row
-        <?php echo defined(
-            'WICKET_WP_THEME_V2'
-        )
-                    ? 'wicket-acc-block-welcome--v2'
-                    : 'bg-light-010'; ?>">
+        <div class="wicket-acc-block wicket-acc-block-welcome wp-block-wicket-acc-callout row <?php echo defined('WICKET_WP_THEME_V2') ? 'wicket-acc-block-welcome--v2' : 'bg-light-010'; ?>">
             <div class="wicket-welcome-avatar col-2">
                 <?php if ($image_url) {
                     echo '<img src="' .
@@ -175,8 +171,12 @@ class init extends Blocks
                                     strtotime($membership['starts_at'])
                                 ): ?>
                                     <p class="wicket-welcome-member-since mb-0">
-                                        <?php echo __('Member Since:', 'wicket-acc'); ?>
-                                        <?php echo date('F j, Y', strtotime($membership['starts_at'])); ?>
+                                        <?php esc_html_e(__('Member Since:', 'wicket-acc')); ?>
+                                        <?php if (isset($membership_began_on) && !empty($membership_began_on)) {
+                                            echo date('F j, Y', strtotime($membership_began_on));
+                                        } else {
+                                            echo date('F j, Y', strtotime($membership['starts_at']));
+                                        } ?>
                                     </p>
                                 <?php endif; ?>
 
@@ -216,4 +216,3 @@ class init extends Blocks
 <?php
     }
 }
-?>
