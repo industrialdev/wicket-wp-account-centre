@@ -1,9 +1,9 @@
 /**
- * WooCommerce Orders HTMX integration
+ * WooCommerce Subscriptions HTMX integration
  */
 document.addEventListener('DOMContentLoaded', function() {
-    // If we don't find class .woocommerce-MyAccount-orders, we exit
-    const el = document.querySelector('.woocommerce-MyAccount-orders');
+    // If we don't find class .woocommerce-MyAccount-subscriptions, we exit
+    const el = document.querySelector('.woocommerce-MyAccount-subscriptions');
     const classExists = !!el; // Convert to boolean
 
     if (!classExists) {
@@ -16,11 +16,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Function to set up HTMX attributes on pagination links
-    function setupOrdersPagination() {
-        // Find all pagination links within the orders table navigation
+    function setupSubscriptionsPagination() {
+        // Find all pagination links within the subscriptions table navigation
         const paginationLinks = document.querySelectorAll('.woocommerce-pagination a');
 
         if (paginationLinks.length > 0) {
+
             paginationLinks.forEach(link => {
                 const originalUrl = link.getAttribute('href');
                 const wcAccountUrl = convertToWcAccountUrl(originalUrl);
@@ -72,15 +73,15 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        const ordersTable = document.querySelector('.woocommerce-orders-table');
-        if (!ordersTable) {
+        const subscriptionsTable = document.querySelector('.woocommerce-orders-table');
+        if (!subscriptionsTable) {
             return;
         }
 
         // Create loading indicator
         const loadingIndicator = document.createElement('div');
         loadingIndicator.className = 'woocommerce-orders-loading';
-        loadingIndicator.innerHTML = '<div class="spinner"></div><p>Loading orders...</p>';
+        loadingIndicator.innerHTML = '<div class="spinner"></div><p>Loading subscriptions...</p>';
         loadingIndicator.style.cssText = 'position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10;';
 
         // Add spinner styles if not already added
@@ -104,11 +105,11 @@ document.addEventListener('DOMContentLoaded', function() {
             document.head.appendChild(spinnerStyle);
         }
 
-        // Make sure the orders table has position relative
-        ordersTable.style.position = 'relative';
+        // Make sure the subscriptions table has position relative
+        subscriptionsTable.style.position = 'relative';
 
-        // Add loading indicator to orders table
-        ordersTable.appendChild(loadingIndicator);
+        // Add loading indicator to subscriptions table
+        subscriptionsTable.appendChild(loadingIndicator);
     }
 
     // Function to hide loading indicator
@@ -138,14 +139,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     currentPagination.outerHTML = newPagination.outerHTML;
 
                     // Re-setup pagination on the new pagination links
-                    setupOrdersPagination();
+                    setupSubscriptionsPagination();
                 }
 
                 // Hide loading indicator after both table and pagination are updated
                 hideLoadingIndicator();
             })
             .catch(error => {
-                console.error('Error fetching pagination:', error);
                 hideLoadingIndicator();
             });
     }
@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // Setup pagination again after content is swapped
-            setupOrdersPagination();
+            setupSubscriptionsPagination();
 
             // Also update the pagination if it exists outside the swapped content
             const paginationOutside = document.querySelector('.woocommerce-pagination');
@@ -183,12 +183,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 const paginationFromResponse = responseDoc.querySelector('.woocommerce-pagination');
                 if (paginationFromResponse) {
                     paginationOutside.outerHTML = paginationFromResponse.outerHTML;
-                    setupOrdersPagination();
+                    setupSubscriptionsPagination();
                 }
             }
         }
     });
 
     // Initial setup
-    setupOrdersPagination();
+    setupSubscriptionsPagination();
 });
