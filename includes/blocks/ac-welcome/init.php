@@ -71,7 +71,7 @@ class init extends Blocks
         }
         ?>
         <div class="wicket-acc-block wicket-acc-block-welcome wp-block-wicket-acc-callout row <?php echo defined('WICKET_WP_THEME_V2') ? 'wicket-acc-block-welcome--v2' : 'bg-light-010'; ?>">
-            <div class="wicket-welcome-avatar col-2">
+            <div class="wicket-welcome-avatar col-2 mr-3">
                 <?php if ($image_url) {
                     echo '<img src="' .
                         $image_url .
@@ -84,8 +84,8 @@ class init extends Blocks
                 } ?>
             </div>
 
-            <div class="wicket-welcome-content-container col row">
-                <div class="wicket-welcome-content col">
+            <div class="wicket-welcome-content-container col row w-full">
+                <div class="wicket-welcome-content col w-full">
                     <p class="wicket-welcome-label">
                         <?php _e('Welcome', 'wicket-acc'); ?>
                     </p>
