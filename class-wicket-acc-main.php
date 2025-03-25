@@ -244,7 +244,7 @@ class WicketAcc
 
         $includes_global = [
             'includes/helpers.php',
-            'includes/deprecated.php',
+            'includes/legacy.php',
         ];
 
         // Admin Classes
