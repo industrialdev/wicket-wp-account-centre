@@ -2,6 +2,8 @@
 
 namespace WicketAcc;
 
+use WicketAcc\Shortcodes\Shortcodes;
+
 /*
  * @package  wicket-wp-account-centre
  * @author  Wicket Inc.
@@ -9,7 +11,7 @@ namespace WicketAcc;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Customize WooCommerce my account features to build the Wicket Account Centre. Expands it with additional blocks and pages.
- * Version:           1.5.141
+ * Version:           1.5.142
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io

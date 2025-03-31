@@ -8,9 +8,7 @@ defined('ABSPATH') || exit;
 use WicketAcc\WicketAcc;
 
 /**
- * Shortcodes file of Module.
- *
- * @version  1.0.0
+ * Shortcodes for Wicket Account Centre.
  */
 class Shortcodes extends WicketAcc
 {
