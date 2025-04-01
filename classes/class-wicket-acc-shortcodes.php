@@ -26,6 +26,13 @@ class Shortcodes extends WicketAcc
      */
     public function orgSelectorCallback()
     {
+        global $wp;
+
+        // Not on admin, REST API or AJAX
+        if (is_admin() || defined('REST_REQUEST') || defined('DOING_AJAX')) {
+            return '<p>[Organization Selector]</p>';
+        }
+
         $org_uuid = $_GET['org_id'] ?? '';
         $lang = defined('ICL_LANGUAGE_CODE') ? ICL_LANGUAGE_CODE : 'en';
         $org_uuids_list = [];
@@ -39,7 +46,7 @@ class Shortcodes extends WicketAcc
         }
 
         if (empty($org_uuids_list)) {
-            return __('No organizations found for your account.', 'wicket-acc');
+            return __('<p>No organizations found for your account.</p>', 'wicket-acc');
         }
 
         // If user only has one organization, redirect to that organization with url parameters
@@ -71,8 +78,6 @@ class Shortcodes extends WicketAcc
                 </h2>
                 <ul class="wicket-organization-selector mb-10">
                     <?php
-                                global $wp;
-
             foreach ($org_uuids_list as $i_org_id) :
                 // Check if org has at least one membership
                 $org_memberships = wicket_get_org_memberships($i_org_id);
