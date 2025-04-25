@@ -51,6 +51,19 @@ class init extends Blocks
         $display_mdp_id = get_field('display_mdp_id');
         $image_url = get_avatar_url($current_user->ID, ['size' => '300']);
         $active_memberships = wicket_get_active_memberships($iso_code);
+        $lang = defined('ICL_LANGUAGE_CODE') ? ICL_LANGUAGE_CODE : 'en';
+
+        // We need to find these at the MDP at some point
+        $relationship_translations = [
+            'Primary Contact'             => 'Personne-ressource principale',
+            'Voting Contact'              => 'Personne-ressource habilitée à voter',
+            'Primary Tradeshow Contact'   => 'Personne-ressource principale pour les salons',
+            'Secondary Tradeshow Contact' => 'Personne-ressource secondaire pour les salons',
+            'Accounting Contact'          => 'Personne-ressource à la comptabilité',
+            'Regulatory'                  => 'Affaires réglementaires',
+            'Member'                      => 'Membre',
+            'Employee'                    => 'Employé(e)',
+        ];
 
         // Edit profile button (link and title)
         if (
@@ -131,7 +144,7 @@ class init extends Blocks
                                     <strong><?php echo __('Membership Type:', 'wicket-acc'); ?></strong>
                                     <?php echo apply_filters(
                                         'wicket_ac_welcome_block_membership_name',
-                                        $membership['name']
+                                        $membership['name_' . $lang],
                                     ); ?>
                                 </p>
 
@@ -144,11 +157,16 @@ class init extends Blocks
                                         $org_main_info['data']['relationships']['organization']['data']['id'];
 
                                     $org_info = wicket_get_active_memberships_relationship($org_uuid);
+
+                                    $english_relationship = $org_info['relationship'];
+                                    $display_relationship = ($lang === 'fr' && isset($relationship_translations[$english_relationship]))
+                                        ? $relationship_translations[$english_relationship]
+                                        : $english_relationship;
                                     ?>
                                     <p class="mb-0 wicket-welcome-member-org font-bold">
-                                        <?php echo __($org_info['relationship'], 'wicket-acc'); ?>
+                                        <?php echo esc_html($display_relationship); ?>
                                         &ndash;
-                                        <?php echo $org_info['name']; ?>
+                                        <?php echo esc_html($org_info['name_' . $lang]); ?>
                                     </p>
                                 <?php
                                 endif; ?>
