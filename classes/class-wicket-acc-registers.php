@@ -110,10 +110,17 @@ class Registers extends WicketAcc
      */
     public function register_acc_page_template($page_templates, $theme, $post)
     {
-        $template_path = WICKET_ACC_PLUGIN_TEMPLATE_PATH . '/account-centre/page-acc.php';
+        $templates = [
+            'account-centre/page-acc.php' => __('ACC Page', 'wicket-acc'),
+            'account-centre/page-acc-org_id.php' => __('ACC Page with Org ID', 'wicket-acc'),
+        ];
 
-        if (file_exists($template_path)) {
-            $page_templates['plugins/wicket-wp-account-centre/templates-wicket/account-centre/page-acc.php'] = __('ACC Page', 'wicket-acc');
+        foreach ($templates as $template_file => $template_name) {
+            $template_path = WICKET_ACC_PLUGIN_TEMPLATE_PATH . $template_file;
+
+            if (file_exists($template_path)) {
+                $page_templates['plugins/wicket-wp-account-centre/templates-wicket/' . $template_file] = $template_name;
+            }
         }
 
         return $page_templates;
