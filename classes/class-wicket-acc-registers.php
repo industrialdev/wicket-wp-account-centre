@@ -110,10 +110,17 @@ class Registers extends WicketAcc
      */
     public function register_acc_page_template($page_templates, $theme, $post)
     {
-        $template_path = WICKET_ACC_PLUGIN_TEMPLATE_PATH . '/account-centre/page-acc.php';
+        $templates = [
+            'account-centre/page-acc.php' => __('ACC Page', 'wicket-acc'),
+            'account-centre/page-acc-org_id.php' => __('ACC Page with Org ID', 'wicket-acc'),
+        ];
 
-        if (file_exists($template_path)) {
-            $page_templates['plugins/wicket-wp-account-centre/templates-wicket/account-centre/page-acc.php'] = __('ACC Page', 'wicket-acc');
+        foreach ($templates as $template_file => $template_name) {
+            $template_path = WICKET_ACC_PLUGIN_TEMPLATE_PATH . $template_file;
+
+            if (file_exists($template_path)) {
+                $page_templates['plugins/wicket-wp-account-centre/templates-wicket/' . $template_file] = $template_name;
+            }
         }
 
         return $page_templates;
@@ -134,8 +141,8 @@ class Registers extends WicketAcc
 
         $template_basename = basename($template);
 
-        if ($requested_basename === 'page-acc.php' && $template_basename !== 'search.php') {
-            $template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/page-acc.php';
+        if (($requested_basename === 'page-acc.php' || $requested_basename === 'page-acc-org_id.php') && $template_basename !== 'search.php') {
+            $template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/' . $requested_basename;
 
             if (file_exists($template)) {
                 return $template;
