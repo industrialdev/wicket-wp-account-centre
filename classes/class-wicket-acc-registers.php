@@ -22,7 +22,8 @@ class Registers extends WicketAcc
     {
         add_action('init', [$this, 'register_post_type']);
         add_action('init', [$this, 'register_nav_menu']); // In case we need to check for logged in user/role. See https://wordpress.stackexchange.com/questions/217351/on-which-hook-should-i-be-calling-register-nav-menus
-        add_filter('theme_page_templates', [$this, 'register_acc_page_template'], 10, 3);
+        // Use the CPT-specific filter instead of the generic page filter
+        add_filter('theme_my-account_templates', [$this, 'register_acc_page_template'], 10, 3);
         add_filter('template_include', [$this, 'load_acc_page_template'], 10, 1);
     }
 
@@ -101,19 +102,36 @@ class Registers extends WicketAcc
     /**
      * Register ACC page template
      * Shows ACC page as selectable page template in the page editor.
+     * Only adds templates if the post type is 'my-account'.
      *
-     * @param array $page_templates
-     * @param string $theme
-     * @param WP_Post $post
+     * @param array          $page_templates Current page templates.
+     * @param WP_Theme       $theme          WP_Theme instance.
+     * @param WP_Post|null   $post           WP_Post object or null.
      *
-     * @return array
+     * @return array Modified page templates.
      */
     public function register_acc_page_template($page_templates, $theme, $post)
     {
-        $template_path = WICKET_ACC_PLUGIN_TEMPLATE_PATH . '/account-centre/page-acc.php';
+        // Ensure we only add these templates for the 'my-account' post type
+        if ($post && $post->post_type === 'my-account') {
+            $templates = [
+                'account-centre/page-acc.php'      => __('ACC Page', 'wicket-acc'),
+                'account-centre/page-acc-org_id.php' => __('ACC Page with Org Selector', 'wicket-acc'),
+            ];
 
-        if (file_exists($template_path)) {
-            $page_templates['plugins/wicket-wp-account-centre/templates-wicket/account-centre/page-acc.php'] = __('ACC Page', 'wicket-acc');
+            foreach ($templates as $template_file => $template_name) {
+                // Construct the full path to check existence
+                $template_path = WICKET_ACC_PLUGIN_TEMPLATE_PATH . $template_file;
+
+                if (file_exists($template_path)) {
+                    // Construct the path relative to the plugin root directory for the key
+                    $plugin_relative_path = 'templates-wicket/' . $template_file;
+                    $page_templates[$plugin_relative_path] = $template_name;
+                } else {
+                    // Optional: Log if template file is not found for debugging
+                    // error_log('Wicket ACC Template not found: ' . $template_path);
+                }
+            }
         }
 
         return $page_templates;
@@ -134,8 +152,8 @@ class Registers extends WicketAcc
 
         $template_basename = basename($template);
 
-        if ($requested_basename === 'page-acc.php' && $template_basename !== 'search.php') {
-            $template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/page-acc.php';
+        if (($requested_basename === 'page-acc.php' || $requested_basename === 'page-acc-org_id.php') && $template_basename !== 'search.php') {
+            $template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/' . $requested_basename;
 
             if (file_exists($template)) {
                 return $template;

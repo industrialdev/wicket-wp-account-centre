@@ -148,11 +148,13 @@ class Shortcodes extends WicketAcc
                 $person_included['type'] == 'roles' && stristr($person_included['attributes']['name'], 'owner')
                 || stristr($person_included['attributes']['name'], 'member')
                 || stristr($person_included['attributes']['name'], 'org_editor')
+                || stristr($person_included['attributes']['name'], 'membership_manager')
                 || isset(
                     $person_included['attributes']['assignable_role_names']
                 ) && (
                     in_array('member', $roles)
                     || in_array('org_editor', $roles)
+                    || in_array('membership_manager', $roles)
                 )
             ) {
 
