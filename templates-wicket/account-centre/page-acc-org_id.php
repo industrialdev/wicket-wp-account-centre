@@ -3,7 +3,7 @@
 defined('ABSPATH') || exit;
 
 /*
- * Template Name: ACC page with Org ID
+ * Template Name: ACC page with Org Selector
  * Template Post Type: my-account
  */
 
@@ -115,7 +115,8 @@ if ($acc_global_headerbanner_page_id && $acc_global_headerbanner_status) {
     // ACC page
     // Do we have an org_id in URL?
     $org_id = $_REQUEST['org_id'] ?? null;
-if (!$org_id) {
+
+if (empty($org_id) || $org_id === null) {
     echo do_shortcode('[org-selector]');
 } else {
     if (have_posts()) {
