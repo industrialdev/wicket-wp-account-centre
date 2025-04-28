@@ -3,14 +3,8 @@
 defined('ABSPATH') || exit;
 
 /*
- * Template Name: ACC page
+ * Template Name: ACC page with Org ID
  * Template Post Type: my-account
- *
- * ACC pages template.
- *
- * This is the default template used for pages created inside Wicket Account Centre CPT.
- *
- * This template can be overridden (at theme level) by copying it to yourtheme/templates-wicket/account-centre/page-acc.php.
  */
 
 get_header();
@@ -119,12 +113,20 @@ if ($acc_global_headerbanner_page_id && $acc_global_headerbanner_status) {
     <div class="woocommerce-wicket--account-centre wicket-acc-page wicket-acc-page-acc <?php echo $wc_wrapper_class; ?>">
         <?php
     // ACC page
+    // Do we have an org_id in URL?
+    $org_id = $_REQUEST['org_id'] ?? null;
+if (!$org_id) {
+    echo do_shortcode('[org-selector]');
+} else {
     if (have_posts()) {
         while (have_posts()) :
             the_post();
             the_content();
         endwhile;
+    } else {
+        echo '<p>' . __('No content found.', 'wicket-acc') . '</p>';
     }
+}
 
 if ($is_wc_endpoint) {
     // Run the WooCommerce endpoint action
