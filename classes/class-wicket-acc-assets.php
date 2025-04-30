@@ -63,7 +63,7 @@ class Assets extends WicketAcc
         if ((defined('WP_ENV') && in_array(WP_ENV, ['local', 'development'], true)) ||
             (defined('WP_ENVIRONMENT_TYPE') && in_array(WP_ENVIRONMENT_TYPE, ['local', 'development'], true)) ||
             (defined('WP_DEBUG') && WP_DEBUG === true)) {
-            wp_enqueue_style('tailwind-css-development', 'https://cdn.tailwindcss.com', [], WICKET_ACC_VERSION);
+            wp_enqueue_script('tailwind-css-development', 'https://cdn.tailwindcss.com', [], WICKET_ACC_VERSION, false);
         }
 
         wp_enqueue_style('wicket-acc-frontend-styles', WICKET_ACC_URL . 'assets/css/wicket-acc-main.css', [], WICKET_ACC_VERSION);
