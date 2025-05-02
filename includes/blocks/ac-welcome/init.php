@@ -142,10 +142,14 @@ class init extends Blocks
                             <div class="my-0 wicket-welcome-memberships">
                                 <p class="mb-0 wicket-welcome-member-type">
                                     <strong><?php echo __('Membership Type:', 'wicket-acc'); ?></strong>
-                                    <?php echo apply_filters(
-                                        'wicket_ac_welcome_block_membership_name',
-                                        $membership['name_' . $lang],
-                                    ); ?>
+                                    <?php
+                                    $membership_name = $membership['name_' . $lang] ?? $membership['name'] ?? ''; // Added fallback and ensure we have a value
+
+                            echo apply_filters(
+                                'wicket/acc/block/ac-welcome/membership_name',
+                                $membership_name,
+                            );
+                            ?>
                                 </p>
 
                                 <?php if ($membership['type'] == 'organization'):
