@@ -170,7 +170,7 @@ class init extends Blocks
                                     <p class="mb-0 wicket-welcome-member-org font-bold">
                                         <?php echo esc_html($display_relationship); ?>
                                         &ndash;
-                                        <?php echo esc_html($org_info['name_' . $lang]); ?>
+                                        <?php echo esc_html($org_info['name_' . $lang] ?? $org_info['name']); ?>
                                     </p>
                                 <?php
                                 endif; ?>
