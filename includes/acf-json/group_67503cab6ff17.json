@@ -146,6 +146,28 @@
             "append": ""
         },
         {
+            "key": "field_6821f3453014d",
+            "label": "Service ID",
+            "name": "service_id",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 2,
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
             "key": "field_67503cab7a52e",
             "label": "Show \"View More\" events",
             "name": "show_view_more_events",
@@ -186,5 +208,5 @@
     "description": "",
     "show_in_rest": 0,
     "acfml_field_group_mode": "advanced",
-    "modified": 1734529919
+    "modified": 1747055722
 }
