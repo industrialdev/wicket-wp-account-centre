@@ -186,7 +186,7 @@ class init extends Blocks
         // No data
         if (empty($touchpoint_data)) {
             echo '<p class="no-data">';
-            _e('You do not have any ' . $display_type . ' data at this time.', 'wicket-acc');
+            _e('You do not have any data at this time.', 'wicket-acc');
             echo '</p>';
 
             return;
