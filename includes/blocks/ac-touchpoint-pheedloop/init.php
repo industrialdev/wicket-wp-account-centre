@@ -61,12 +61,13 @@ class init extends Blocks
         $override_past_events_link_text = get_field('override_past_events_link_text');
         $show_view_more_events = get_field('show_view_more_events');
         $use_x_columns = get_field('use_x_columns');
+        $service_id = get_field('service_id');
 
         $total_results = 0;
         $counter = 0;
         $display_type = 'upcoming';
 
-        $touchpoints_results = $this->get_touchpoints_results('Aptify Conversion');
+        $touchpoints_results = $this->get_touchpoints_results($service_id);
 
         // Get query vars
         $display = isset($_REQUEST['show']) ? sanitize_text_field($_REQUEST['show']) : $display;

@@ -1,6 +1,6 @@
 <?php
 
-namespace WicketAcc\Blocks\TouchpointEventCalendar;
+namespace WicketAcc\Blocks\TouchpointMoodle;
 
 use WicketAcc\Blocks;
 
@@ -8,7 +8,7 @@ use WicketAcc\Blocks;
 defined('ABSPATH') || exit;
 
 /**
- * Wicket Touchpoint Event Calendar Block.
+ * Wicket Touchpoint Moodle Block.
  **/
 class init extends Blocks
 {
@@ -38,15 +38,15 @@ class init extends Blocks
         $close = 0;
         $attrs = get_block_wrapper_attributes(
             [
-                'class' => 'wicket-acc-block wicket-acc-block-touchpoints-tec flex flex-col gap-8',
+                'class' => 'wicket-acc-block wicket-acc-block-touchpoints-moodle flex flex-col gap-8',
             ]
         );
 
         if ($this->is_preview) {
             $args = [
-                'block_name'        => 'Touchpoints TEC',
-                'block_description' => 'This block displays registered data for The Events Calendar on the front-end.',
-                'block_slug'        => 'wicket-ac-touchpoint-tec',
+                'block_name'        => 'Touchpoints Moodle',
+                'block_description' => 'This block displays registered data from Moodle on the front-end.',
+                'block_slug'        => 'wicket-ac-touchpoint-moodle',
             ];
 
             $this->blocks->render_template('preview', $args);
@@ -69,13 +69,18 @@ class init extends Blocks
         $counter = 0;
         $display_type = 'upcoming';
 
-        $touchpoints_results = $this->get_touchpoints_results('Events Calendar');
+        $touchpoints_results = $this->get_touchpoints_results('Moodle');
+
+        // echo '<pre>';
+        // print_r($touchpoints_results);
+        // echo '</pre>';
+        // die;
 
         if (empty($registered_action)) {
             $registered_action = [
-                'rsvp_to_event',
-                'registered_for_an_event',
-                'attended_an_event',
+                'enrolled_in_a_course',
+                'completed_a_course',
+                'created_account',
             ];
         }
 
@@ -118,9 +123,9 @@ class init extends Blocks
 
         $args = [
             'block_id'                       => $block_id,
-            'block_name'                     => 'Touchpoint TEC',
-            'block_description'              => 'This block displays registered data for TEC (The Events Calendar) on the front-end.',
-            'block_slug'                     => 'wicket-ac-touchpoint-tec',
+            'block_name'                     => 'Touchpoint Moodle',
+            'block_description'              => 'This block displays registered data from Moodle on the front-end.',
+            'block_slug'                     => 'wicket-ac-touchpoint-moodle',
             'attrs'                          => $attrs,
             'title'                          => $title,
             'past_events_title'              => $past_events_title,
@@ -132,7 +137,7 @@ class init extends Blocks
             'display_type'                   => $display_type,
             'touchpoints_results'            => $touchpoints_results,
             'switch_link'                    => $switch_link,
-            'show_switch_view_link'         => $show_switch_view_link,
+            'show_switch_view_link'          => $show_switch_view_link,
             'override_past_events_link'      => $override_past_events_link,
             'override_past_events_link_text' => $override_past_events_link_text,
             'show_view_more_events'          => $show_view_more_events,
@@ -143,7 +148,7 @@ class init extends Blocks
         ];
 
         // Render block
-        WACC()->Blocks->render_template('touchpoint-tec', $args);
+        WACC()->Blocks->render_template('touchpoint-moodle', $args);
     }
 
     /**
@@ -181,7 +186,7 @@ class init extends Blocks
         // No data
         if (empty($touchpoint_data)) {
             echo '<p class="no-data">';
-            _e('You do not have any ' . $display_type . ' data at this time.', 'wicket-acc');
+            _e('You do not have any data at this time.', 'wicket-acc');
             echo '</p>';
 
             return;
@@ -217,15 +222,10 @@ class init extends Blocks
         $counter = 0;
 
         foreach ($touchpoint_data as $key => $tp) :
-            //if ($tp['attributes']['code'] == 'cancelled_registration_for_an_event') :
             $counter++;
 
-            if (isset($tp['attributes']['data']['start_date'])) {
-                $args['tp'] = $tp;
-
-                WACC()->Blocks->render_template('touchpoint-tec-card', $args);
-            }
-            //endif;
+            $args['tp'] = $tp;
+            WACC()->Blocks->render_template('touchpoint-moodle-card', $args);
 
             // Remove current loop element from array
             unset($touchpoint_data[$key]);
@@ -261,32 +261,9 @@ class init extends Blocks
 
         // Get current timestamp
         $current_timestamp = current_datetime()->getTimestamp();
-
-        // Check inside every touchpoint for attributes->data->end_date, and compare with current date. If display_type = upcoming, return an array of touchpoints that are greater than current date. If display_type = past, return an array of touchpoints that are less than current date.
-        $filtered_touchpoint_data = array_filter($touchpoint_data, function ($touchpoint) use ($current_timestamp, $display_type) {
-            if (!isset($touchpoint['attributes']['data']['end_date'])) {
-                return false;
-            }
-
-            // Convert the event's end date to a DateTime object
-            $event_end_date = date_create_from_format('Y-m-d g:i A T', $touchpoint['attributes']['data']['end_date']);
-            if (!$event_end_date) {
-                return false;
-            }
-
-            // Get timestamps for comparison (using full date/time, not start of day)
-            $event_timestamp = $event_end_date->getTimestamp();
-
-            // Compare full timestamps instead of just dates
-            if ($display_type === 'upcoming') {
-                return $event_timestamp >= $current_timestamp;
-            } else {
-                return $event_timestamp < $current_timestamp;
-            }
-        });
-
+        
         // Now, filter by registered_action
-        $filtered_touchpoint_data = array_filter($filtered_touchpoint_data, function ($touchpoint) use ($registered_action) {
+        $filtered_touchpoint_data = array_filter($touchpoint_data, function ($touchpoint) use ($registered_action) {
             return is_array($registered_action) && in_array($touchpoint['attributes']['code'], $registered_action, true);
         });
 
@@ -316,7 +293,7 @@ class init extends Blocks
         ?>
 
         <div x-data="ajaxFormHandler_<?php echo esc_attr($block_id); ?>()">
-            <div class="wicket-ac-touchpoint__tec-results container">
+            <div class="wicket-ac-touchpoint__moodle-results container">
                 <div class="events-list grid gap-6"
                     x-html="responseMessage_<?php echo esc_attr($block_id); ?>">
                 </div>
@@ -326,7 +303,7 @@ class init extends Blocks
                 <form
                     action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
                     method="post" @submit.prevent="submitForm">
-                    <input type="hidden" name="action" value="wicket_ac_touchpoint_tec_results">
+                    <input type="hidden" name="action" value="wicket_ac_touchpoint_moodle_results">
                     <input type="hidden" name="num_results"
                         value="<?php echo esc_attr($num_results); ?>">
                     <input type="hidden" name="total_results"
@@ -337,7 +314,7 @@ class init extends Blocks
                         value="<?php echo esc_attr($counter); ?>">
                     <input type="hidden" name="touchpoint_data"
                         value="<?php echo esc_html($touchpoint_data_input); ?>">
-                    <?php wp_nonce_field('wicket_ac_touchpoint_tec_results'); ?>
+                    <?php wp_nonce_field('wicket_ac_touchpoint_moodle_results'); ?>
 
                     <div x-show="loading" class="wicket-ac-touchpoint__loader flex justify-center items-center self-center">
                         <i class="fas fa-spinner fa-spin"></i>
