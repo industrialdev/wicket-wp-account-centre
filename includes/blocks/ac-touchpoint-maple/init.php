@@ -36,14 +36,24 @@ class init extends Blocks
      */
     public function get_service_id()
     {
-        return 'Aptify Conversion';
+        $service_id = get_field('touchpoint_service');
+
+        return $service_id ? $service_id : 'Aptify Conversion';
     }
 
+    /**
+     * Get a unique block ID.
+     *
+     * @return string
+     */
     public function get_block_id()
     {
         $action = get_field(selector: 'touchpoint_action');
 
-        return 'wicket-ac-touchpoint-maple-' . $action;
+        // Add a unique identifier based on the block instance
+        $block_id = $this->block['id'] ?? uniqid();
+
+        return 'wicket-ac-touchpoint-maple-' . $action . '-' . $block_id;
     }
 
     /**
@@ -177,7 +187,13 @@ class init extends Blocks
         $total_results = count($touchpoint_data);
 
         // Get the offset from POST or default to 0
-        $offset = isset($_POST['offset_' . $block_id]) ? absint($_POST['offset_' . $block_id]) : 0;
+        // Check both formats for backward compatibility
+        $offset = 0;
+        if (isset($_POST['offset']) && isset($_POST['block_id']) && $_POST['block_id'] === $block_id) {
+            $offset = absint($_POST['offset']);
+        } elseif (isset($_POST['offset_' . $block_id])) {
+            $offset = absint($_POST['offset_' . $block_id]);
+        }
 
         // Slice the array to get only the needed items
         $display_data = array_slice($touchpoint_data, $offset, $num_results);
@@ -200,26 +216,28 @@ class init extends Blocks
      * @param int $num_results Number of results to display
      * @param int $total_results Total results
      * @param int $offset Offset of displayed results
-     * @param string $display_type Touchpoint display type: upcoming, past, all
+     * @param string $block_id Block ID for unique identification
+     * @param string $touchpoint_action Touchpoint action type
      *
      * @return void
      */
     public static function load_more_results($touchpoint_data = [], $num_results = 5, $total_results = 0, $offset = 0, $block_id = '', $touchpoint_action = '')
     {
         $form_id = 'form-' . $block_id;
+        $container_id = 'container-' . $block_id;
         ?>
-		<div x-data="ajaxFormHandler('<?php echo $form_id; ?>')">
-			<div class="wicket-ac-touchpoint__maple-results container" x-html="responseMessage">
+		<div x-data="ajaxFormHandler('<?php echo $form_id; ?>', '<?php echo $container_id; ?>')">
+			<div id="<?php echo $container_id; ?>" class="wicket-ac-touchpoint__maple-results container">
 			</div>
 
-			<div class="flex load-more-container">
+			<div class="flex load-more-container" id="load-more-<?php echo $block_id; ?>">
 				<form id="<?php echo $form_id; ?>" action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
 					method="post" @submit.prevent="submitForm">
 					<input type="hidden" name="action" value="wicket_ac_touchpoint_maple_results">
-					<input type="hidden" name="touchpoint_action_<?php echo $block_id; ?>"
-						value="<?php echo $touchpoint_action; ?>">
+					<input type="hidden" name="block_id" value="<?php echo $block_id; ?>">
+					<input type="hidden" name="touchpoint_action" value="<?php echo $touchpoint_action; ?>">
 					<input type="hidden" name="num_results_<?php echo $block_id; ?>" value="<?php echo $num_results; ?>">
-					<input type="hidden" name="total_results_<?php echo $block_id; ?>" value="<?php echo $total_results; ?>">
+					<input type="hidden" name="total_results" value="<?php echo $total_results; ?>">
 					<input type="hidden" name="offset_<?php echo $block_id; ?>" value="<?php echo $offset + $num_results; ?>">
 					<input type="hidden" name="form_id" value="<?php echo $form_id; ?>">
 					<?php wp_nonce_field('wicket_ac_touchpoint_maple_results', 'security_' . $block_id); ?>
@@ -238,14 +256,15 @@ class init extends Blocks
 		</div>
 
 		<script>
-			function ajaxFormHandler(formId) {
+			function ajaxFormHandler(formId, containerId) {
 				return {
 					loading: false,
-					responseMessage: '',
 					submitForm(event) {
 						this.loading = true;
 						const form = document.getElementById(formId);
+						const container = document.getElementById(containerId);
 						const formData = new FormData(form);
+						const blockId = form.querySelector('[name="block_id"]').value;
 
 						fetch(woocommerce_params.ajax_url, {
 							method: 'POST',
@@ -255,20 +274,21 @@ class init extends Blocks
 							.then(data => {
 								this.loading = false;
 								if (data) {
-									this.responseMessage += data;
-									// Find closest .load-more-container
-									const loadMoreContainer = form.closest('.load-more-container');
+									// Append new content to this specific container
+									container.innerHTML += data;
 
+									// Find the load more container for this specific block
+									const loadMoreContainer = document.getElementById('load-more-' + blockId);
 
 									// Update the offset for the next request
-									const offset = parseInt(form.querySelector('[name="offset_<?php echo $block_id; ?>"]').value);
-									const numResults = parseInt(form.querySelector('[name="num_results_<?php echo $block_id; ?>"]').value);
-									const totalResults = parseInt(form.querySelector('[name="total_results_<?php echo $block_id; ?>"]').value);
+									const offset = parseInt(form.querySelector('[name="offset_' + blockId + '"]').value);
+									const numResults = parseInt(form.querySelector('[name="num_results_' + blockId + '"]').value);
+									const totalResults = parseInt(form.querySelector('[name="total_results"]').value);
 
 									// Update offset for next request
-									form.querySelector('[name="offset_<?php echo $block_id; ?>"]').value = offset + numResults;
+									form.querySelector('[name="offset_' + blockId + '"]').value = offset + numResults;
 
-									// Hide "Show More" if we've loaded all results
+									// Hide "Show More" if we've loaded all results for this specific block
 									if (offset + numResults >= totalResults) {
 										loadMoreContainer.style.display = 'none';
 									}

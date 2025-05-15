@@ -3,13 +3,13 @@
 namespace WicketAcc;
 
 /*
- * @package  wicket-account-centre
+ * @package  wicket-wp-account-centre
  * @author  Wicket Inc.
  *
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Customize WooCommerce my account features to build the Wicket Account Centre. Expands it with additional blocks and pages.
- * Version:           1.5.118
+ * Version:           1.5.158
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -77,7 +77,6 @@ class WicketAcc
         'organization-management' => 'Organization Management',
         'organization-profile'    => 'Organization Profile',
         'organization-members'    => 'Organization Members',
-        'organization-roster'     => 'Organization Roster',
         'acc_global-headerbanner' => 'Global Header-Banner',
         // WooCommerce endpoints https://developer.woocommerce.com/docs/woocommerce-endpoints/
         //'order-pay'                      => 'Order Pay',
@@ -101,7 +100,6 @@ class WicketAcc
         'organization-management',
         'organization-profile',
         'organization-members',
-        'organization-roster',
         'acc_global-headerbanner',
         'add-payment-method',
         'set-default-payment-method',
@@ -196,8 +194,6 @@ class WicketAcc
 
         $this->includes();
 
-        ray('Wicket\'s Account Centre');
-
         if (is_admin()) {
             new AdminSettings();
         }
@@ -206,6 +202,7 @@ class WicketAcc
         new Router();
         new Blocks();
         new Helpers();
+        new Shortcodes();
         new Registers();
         new Profile();
         new OrganizationProfile();
@@ -243,13 +240,13 @@ class WicketAcc
             'classes/class-wicket-acc-woocommerce.php',
             'classes/class-wicket-acc-helpers.php',
             'classes/class-wicket-acc-helpers-router.php',
+            'classes/class-wicket-acc-shortcodes.php',
             'classes/class-wicket-acc-assets.php',
         ];
 
         $includes_global = [
-            'includes/ray-stub.php',
             'includes/helpers.php',
-            'includes/deprecated.php',
+            'includes/legacy.php',
         ];
 
         // Admin Classes

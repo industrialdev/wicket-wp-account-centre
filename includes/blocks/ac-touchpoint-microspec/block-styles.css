@@ -1,13 +1,13 @@
 .wicket-ac-touchpoint-microspec {
 	max-width: var(--layout-content);
-	margin: var(--spacing-100) auto;
-	padding: var(--spacing-200);
+	margin: var(--space-100) auto;
+	padding: var(--space-200);
 
 	.header {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		margin-bottom: var(--spacing-200);
+		margin-bottom: var(--space-200);
 	}
 
 	.header h2 {
@@ -22,15 +22,16 @@
 
 	.events-list {
 		display: grid;
-		gap: var(--spacing-200);
+		gap: var(--space-200);
 	}
 
 	.event-card {
 		border: 1px solid var(--color-light-020);
 		border-radius: var(--border-radius-100);
 		box-shadow: var(--box-shadow-4);
-		padding: var(--spacing-200);
+		padding: var(--space-200);
 		box-shadow: var(--box-shadow-4);
+    border-radius: var(--card-corner-radius);
 	}
 
 	.event-card-link {
@@ -39,7 +40,7 @@
 
 	.event-card p,
 	.event-card h3 {
-		margin-bottom: var(--spacing-100);
+		margin-bottom: var(--space-100);
 	}
 
 	.event-type {
@@ -80,11 +81,11 @@
 	/* Responsive styles */
 	@media (min-width: 640px) {
 		.wicket-ac-touchpoint-microspec {
-			padding: var(--spacing-300);
+			padding: var(--space-300);
 		}
 
 		.event-card {
-			padding: var(--spacing-300);
+			padding: var(--space-300);
 		}
 
 		.header h2 {
@@ -98,11 +99,11 @@
 
 	@media (min-width: 768px) {
 		.wicket-ac-touchpoint-microspec {
-			padding: var(--spacing-400);
+			padding: var(--space-400);
 		}
 
 		.event-card {
-			padding: var(--spacing-400);
+			padding: var(--space-400);
 		}
 
 		.header h2 {

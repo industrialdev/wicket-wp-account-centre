@@ -34,8 +34,8 @@ class WooCommerce extends WicketAcc
         add_filter('woocommerce_calculated_total', [$this, 'exclude_tax_cart_total'], 10, 2);
         add_filter('woocommerce_subscriptions_calculated_total', [$this, 'exclude_tax_cart_total']);
 
-        // Mark order as completed when it is paid
-        //add_action('woocommerce_payment_complete_order_status_processing', [$this, 'mark_order_as_completed']);
+        // Fix pagination URLs for orders endpoint
+        add_filter('woocommerce_get_endpoint_url', [$this, 'fix_orders_pagination_url'], 10, 4);
     }
 
     /**
@@ -179,24 +179,26 @@ class WooCommerce extends WicketAcc
     }
 
     /**
-     * Automatically mark an order as "completed" when it is paid.
+     * Fix pagination URLs for orders endpoint.
      *
-     * @param int $order_id The order ID.
+     * @param string $url The URL.
+     * @param string $endpoint The endpoint.
+     * @param int $value The value.
+     * @param string $permalink The permalink.
      *
-     * @return void
+     * @return string The fixed URL.
      */
-    public function mark_order_as_completed($order_id)
+    public function fix_orders_pagination_url($url, $endpoint, $value, $permalink)
     {
-        // Check if ACF:acc_wc_auto_complete_orders option is enabled
-        if (!get_field('acc_wc_auto_complete_orders', 'option')) {
-            return;
+        // Only modify URLs for the orders endpoint with pagination
+        if ($endpoint === 'orders' && is_numeric($value)) {
+            // Check if the URL has the duplicate "orders" pattern
+            if (strpos($url, '/orders/orders/') !== false) {
+                // Fix the URL by replacing the duplicate pattern
+                $url = str_replace('/orders/orders/', '/orders/', $url);
+            }
         }
 
-        $order = wc_get_order($order_id);
-
-        // Order successfully paid?
-        if ($order->has_status('processing') && $order->is_paid()) {
-            $order->update_status('completed');
-        }
+        return $url;
     }
 }

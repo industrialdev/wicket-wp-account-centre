@@ -43,6 +43,7 @@ class init extends Blocks
         $current_user = wp_get_current_user();
         $person = wicket_current_person();
         $identifying_number = $person->identifying_number;
+        $membership_began_on = $person->membership_began_on;
         $edit_profile = get_field('edit_profile_button');
         $edit_profile_button_link = get_field('edit_profile_button_link');
         $member_since = get_field('member_since');
@@ -50,6 +51,19 @@ class init extends Blocks
         $display_mdp_id = get_field('display_mdp_id');
         $image_url = get_avatar_url($current_user->ID, ['size' => '300']);
         $active_memberships = wicket_get_active_memberships($iso_code);
+        $lang = defined('ICL_LANGUAGE_CODE') ? ICL_LANGUAGE_CODE : 'en';
+
+        // We need to find these at the MDP at some point
+        $relationship_translations = [
+            'Primary Contact'             => 'Personne-ressource principale',
+            'Voting Contact'              => 'Personne-ressource habilitée à voter',
+            'Primary Tradeshow Contact'   => 'Personne-ressource principale pour les salons',
+            'Secondary Tradeshow Contact' => 'Personne-ressource secondaire pour les salons',
+            'Accounting Contact'          => 'Personne-ressource à la comptabilité',
+            'Regulatory'                  => 'Affaires réglementaires',
+            'Member'                      => 'Membre',
+            'Employee'                    => 'Employé(e)',
+        ];
 
         // Edit profile button (link and title)
         if (
@@ -69,13 +83,8 @@ class init extends Blocks
             $editprofile_page_title = $edit_profile_button_link['title'];
         }
         ?>
-        <div class="wicket-acc-block wicket-acc-block-welcome wp-block-wicket-acc-callout row
-        <?php echo defined(
-            'WICKET_WP_THEME_V2'
-        )
-                    ? 'wicket-acc-block-welcome--v2'
-                    : 'bg-light-010'; ?>">
-            <div class="wicket-welcome-avatar col-2">
+        <div class="wicket-acc-block wicket-acc-block-welcome wp-block-wicket-acc-callout row <?php echo defined('WICKET_WP_THEME_V2') ? 'wicket-acc-block-welcome--v2' : 'bg-light-010'; ?>">
+            <div class="wicket-welcome-avatar col-2 mr-3">
                 <?php if ($image_url) {
                     echo '<img src="' .
                         $image_url .
@@ -88,8 +97,8 @@ class init extends Blocks
                 } ?>
             </div>
 
-            <div class="wicket-welcome-content-container col row">
-                <div class="wicket-welcome-content col">
+            <div class="wicket-welcome-content-container col row w-full">
+                <div class="wicket-welcome-content col w-full">
                     <p class="wicket-welcome-label">
                         <?php _e('Welcome', 'wicket-acc'); ?>
                     </p>
@@ -133,10 +142,14 @@ class init extends Blocks
                             <div class="my-0 wicket-welcome-memberships">
                                 <p class="mb-0 wicket-welcome-member-type">
                                     <strong><?php echo __('Membership Type:', 'wicket-acc'); ?></strong>
-                                    <?php echo apply_filters(
-                                        'wicket_ac_welcome_block_membership_name',
-                                        $membership['name']
-                                    ); ?>
+                                    <?php
+                                    $membership_name = $membership['name_' . $lang] ?? $membership['name'] ?? ''; // Added fallback and ensure we have a value
+
+                            echo apply_filters(
+                                'wicket/acc/block/ac-welcome/membership_name',
+                                $membership_name,
+                            );
+                            ?>
                                 </p>
 
                                 <?php if ($membership['type'] == 'organization'):
@@ -148,11 +161,16 @@ class init extends Blocks
                                         $org_main_info['data']['relationships']['organization']['data']['id'];
 
                                     $org_info = wicket_get_active_memberships_relationship($org_uuid);
+
+                                    $english_relationship = $org_info['relationship'];
+                                    $display_relationship = ($lang === 'fr' && isset($relationship_translations[$english_relationship]))
+                                        ? $relationship_translations[$english_relationship]
+                                        : $english_relationship;
                                     ?>
-                                    <p class="mb-0 wicket-welcome-member-org">
-                                        <strong><?php echo $org_info['relationship']; ?>
-                                            &ndash;
-                                            <?php echo $org_info['name']; ?></strong>
+                                    <p class="mb-0 wicket-welcome-member-org font-bold">
+                                        <?php echo esc_html($display_relationship); ?>
+                                        &ndash;
+                                        <?php echo esc_html($org_info['name_' . $lang] ?? $org_info['name']); ?>
                                     </p>
                                 <?php
                                 endif; ?>
@@ -175,8 +193,12 @@ class init extends Blocks
                                     strtotime($membership['starts_at'])
                                 ): ?>
                                     <p class="wicket-welcome-member-since mb-0">
-                                        <?php echo __('Member Since:', 'wicket-acc'); ?>
-                                        <?php echo date('F j, Y', strtotime($membership['starts_at'])); ?>
+                                        <?php esc_html_e(__('Member Since:', 'wicket-acc')); ?>
+                                        <?php if (isset($membership_began_on) && !empty($membership_began_on)) {
+                                            echo date('F j, Y', strtotime($membership_began_on));
+                                        } else {
+                                            echo date('F j, Y', strtotime($membership['starts_at']));
+                                        } ?>
                                     </p>
                                 <?php endif; ?>
 
@@ -216,4 +238,3 @@ class init extends Blocks
 <?php
     }
 }
-?>

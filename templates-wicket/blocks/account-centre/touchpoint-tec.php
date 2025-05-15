@@ -21,11 +21,10 @@ defined('ABSPATH') || exit;
  * $touchpoints_results - Touchpoint results
  * $is_preview - Is preview?
  */
-
-// @formatter:off
 $attrs = $args['attrs'];
 $block_id = $args['block_id'];
 $title = $args['title'];
+$past_events_title = $args['past_events_title'];
 $display = $args['display'];
 $num_results = $args['num_results'];
 $total_results = $args['total_results'];
@@ -36,6 +35,7 @@ $switch_link_past = $args['switch_link'];
 $touchpoints_results = $args['touchpoints_results'];
 $is_preview = $args['is_preview'];
 $close = $args['close'];
+$show_switch_view_link = $args['show_switch_view_link'];
 $override_past_events_link = $args['override_past_events_link'];
 $override_past_events_link_text = $args['override_past_events_link_text'];
 $past_events_link_text = __('See Past Registered Events', 'wicket-acc');
@@ -44,7 +44,7 @@ $use_x_columns = absint($args['use_x_columns']);
 $is_ajax_request = $args['is_ajax_request'];
 $show_param = "show-{$block_id}";
 $num_param = "num-{$block_id}";
-// @formatter:on
+$registered_action = $args['registered_action'];
 
 // Process event data from URL
 $single_event = false;
@@ -70,78 +70,91 @@ if (!empty($override_past_events_link)) {
 <section <?php echo $attrs; ?>>
     <div class="container events_<?php echo $display; ?>">
         <div class="header flex flex-col mb-6">
-
-            <div class="flex flex-col md:flex-row md:justify-between items-center md:items-center w-full <?php echo defined('WICKET_WP_THEME_V2') ? 'event-section-container' : '' ?>">
+            <div class="flex flex-col md:flex-row md:justify-between items-center md:items-center w-full event-section-container">
                 <?php if ($display == 'upcoming' && !$single_event) : ?>
                     <?php if (!empty($title)) : ?>
-                        <h3 class="text-center md:text-left lg:text-left <?php echo defined('WICKET_WP_THEME_V2') ? 'event-section-title' : 'font-bold text-2xl text-dark-100 mb-4 md:mb-0 w-full md:w-auto' ?>"><?php echo esc_html($title); ?></h3>
-                    <?php else: ?>
-                        <h3 class="text-center md:text-left lg:text-left <?php echo defined('WICKET_WP_THEME_V2') ? 'event-section-title' : 'font-bold text-2xl text-dark-100 mb-4 md:mb-0 w-full md:w-auto' ?>"><?php esc_html_e('Upcoming Registered Events', 'wicket-acc'); ?></h3>
+                        <h3
+                            class="text-center md:text-left lg:text-left <?php echo defined('WICKET_WP_THEME_V2') ? 'event-section-title' : 'font-bold text-2xl text-dark-100 mb-4 md:mb-0 w-full md:w-auto' ?>">
+                            <?php echo esc_html($title); ?>
+                        </h3>
                     <?php endif; ?>
-                    <?php
-                    $switch_link_past = add_query_arg([$show_param => 'past', $num_param => $num_results], get_permalink());
-?>
-                    <a href="<?php echo esc_url($switch_link_past); ?>" class="past-link text-center md:text-right  <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-base mb-4 font-bold w-full md:w-auto' ?>"><?php esc_html_e($past_events_link_text, 'wicket-acc'); ?></a>
+                    <?php if ($show_switch_view_link) : ?>
+                        <?php
+                        $switch_link_past = add_query_arg([$show_param => 'past', $num_param => $num_results], get_permalink());
+                        ?>
+                        <a href="<?php echo esc_url($switch_link_past); ?>"
+                            class="past-link text-center md:text-right font-bold <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-base mb-4 font-bold w-full md:w-auto' ?>"><?php esc_html_e($past_events_link_text, 'wicket-acc'); ?></a>
+                    <?php endif; ?>
                 <?php elseif ($display == 'past' && !$single_event) : ?>
-                    <h3 class="font-bold mb-4 md:mb-0 md:text-left text-center text-base <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'w-full md:w-auto' ?>"><?php esc_html_e('Past Registered Events', 'wicket-acc'); ?></h3>
-                    <?php
-$switch_link = add_query_arg([$show_param => 'upcoming', $num_param => $num_results], get_permalink());
-                    ?>
-                    <a href="<?php echo esc_url($switch_link); ?>" class="upcoming-link font-bold text-center md:text-right mb-4 text-base <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'w-full md:w-auto' ?>"><?php esc_html_e('See Upcoming Registered Events', 'wicket-acc'); ?></a>
+                    <?php if (!empty($past_events_title) || !empty($title)) : ?>
+                        <h3
+                            class="font-bold mb-4 md:mb-0 md:text-left text-center text-base <?php echo defined('WICKET_WP_THEME_V2') ? 'event-section-title' : 'w-full md:w-auto' ?>">
+                            <?php echo esc_html($past_events_title ?: $title); ?>
+                        </h3>
+                    <?php endif; ?>
+                    <?php if ($show_switch_view_link) : ?>
+                        <?php
+                        $switch_link = add_query_arg([$show_param => 'upcoming', $num_param => $num_results], get_permalink());
+                        ?>
+                        <a href="<?php echo esc_url($switch_link); ?>"
+                            class="upcoming-link text-center md:text-right mb-4 <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-base mb-4 w-full md:w-auto' ?>"><?php esc_html_e('See Upcoming Registered Events', 'wicket-acc'); ?></a>
+                    <?php endif; ?>
                 <?php elseif ($single_event) : ?>
-                    <h3 class="text-2xl font-bold mb-4 md:mb-0 md:text-left text-center text-base <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'w-full md:w-auto' ?>"><?php esc_html_e('Event Details', 'wicket-acc'); ?></h3>
-                    <a href="javascript:history.back()" class="back-link font-bold text-center md:text-right <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'w-full md:w-auto' ?>"><?php esc_html_e('Go Back ←', 'wicket-acc'); ?></a>
+                    <?php if (!empty($title)) : ?>
+                        <h3
+                            class="text-2xl font-bold mb-4 md:mb-0 md:text-left text-center text-base <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'w-full md:w-auto' ?>">
+                            <?php esc_html_e('Event Details', 'wicket-acc'); ?>
+                        </h3>
+                    <?php endif; ?>
+                    <a href="javascript:history.back()"
+                        class="back-link font-bold text-center md:text-right <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'w-full md:w-auto' ?>"><?php esc_html_e('Go Back ←', 'wicket-acc'); ?></a>
                 <?php endif; ?>
             </div>
         </div>
 
         <?php if (defined('WICKET_WP_THEME_V2')) : ?>
-            <?php //?>
         <?php else: ?>
             <div class="data-quantity text-left mb-3 text-lg">
-                Results: <span id="total_results"><?php echo $total_results; ?></span>
+                <?php esc_html_e('Results:', 'wicket-acc'); ?>
+                <span
+                    id="total_results-<?php echo $block_id; ?>"><?php echo $total_results; ?></span>
             </div>
         <?php endif; ?>
 
         <div class="events-list grid gap-4 sm:grid-cols-1 md:grid-cols-<?php echo $use_x_columns; ?> lg:grid-cols-<?php echo $use_x_columns; ?>">
             <?php
-            if ($single_event) {
-                $args = [
-                    'tp'                    => $event_data,
-                    'show_view_more_events' => $show_view_more_events,
-                ];
+            $args = [
+                'tp'                    => $event_data,
+                'show_view_more_events' => $show_view_more_events,
+                'block_id'              => $block_id,
+            ];
 
-                WACC()->Blocks->render_template('touchpoint-tec-card', $args);
-            } else {
+if ($single_event) {
+    WACC()->Blocks->render_template('touchpoint-tec-card', $args);
+} else {
 
-                if ($display == 'upcoming' || $display == 'all') {
-                    TouchpointEventCalendar::display_touchpoints($touchpoints_results['data'], 'upcoming', $num_results, false, $show_view_more_events);
+    if ($display == 'upcoming' || $display == 'all') {
+        TouchpointEventCalendar::display_touchpoints($touchpoints_results['data'], 'upcoming', $num_results, false, $args);
 
-                    $close++;
-                }
+        $close++;
+    }
 
-                if ($display == 'past' || $display == 'all') {
-                    TouchpointEventCalendar::display_touchpoints($touchpoints_results['data'], 'past', $num_results, false, $show_view_more_events);
+    if ($display == 'past' || $display == 'all') {
+        TouchpointEventCalendar::display_touchpoints($touchpoints_results['data'], 'past', $num_results, false, $args);
 
-                    $close++;
-                }
-            }
+        $close++;
+    }
+}
 ?>
         </div>
-        <form
-            action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
-            method="post" @submit.prevent="submitForm">
-            <input type="hidden" name="action" value="wicket_ac_touchpoint_tec_results">
-            <input type="hidden" name="<?php echo esc_attr($num_param); ?>"
-                value="<?php echo esc_attr($num_results); ?>">
-            <input type="hidden" name="total_results"
-                value="<?php echo esc_attr($total_results); ?>">
-            <input type="hidden" name="type"
-                value="<?php echo esc_attr($display_type); ?>">
-            <input type="hidden" name="counter"
-                value="<?php echo esc_attr($counter); ?>">
-            <input type="hidden" name="block_id"
-                value="<?php echo esc_attr($block_id); ?>">
-        </form>
     </div>
+    <script>
+        let totalElementsElement_<?php echo $block_id; ?> = document.getElementById(
+            'total_results-<?php echo $block_id; ?>');
+
+        if (totalElementsElement_<?php echo $block_id; ?> !== null) {
+            totalElementsElement_<?php echo $block_id; ?>.innerHTML =
+                '<?php echo esc_js($total_results); ?>';
+        }
+    </script>
 </section>

@@ -4,6 +4,7 @@ defined('ABSPATH') || exit;
 
 /*
  * Template Name: ACC page
+ * Template Post Type: my-account
  *
  * ACC pages template.
  *
@@ -91,7 +92,7 @@ if ($acc_display_breadcrumb) {
 
 if ($acc_display_publish_date) {
     echo '<div class="wp-block-published-date">'; // Having the `wp-block-` prefix will help align it with the other Blocks
-    echo "<p class='mt-3 mb-4'><strong>" . __('Published:', 'wicket') . ' ' . get_the_date('d-m-Y') . '</strong></p>';
+    echo "<p class='mt-3 mb-4'><strong>" . __('Published:', 'wicket-acc') . ' ' . get_the_date('d-m-Y') . '</strong></p>';
     echo '</div>';
 }
 ?>

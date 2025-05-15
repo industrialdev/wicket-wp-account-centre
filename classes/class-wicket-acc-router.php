@@ -20,6 +20,19 @@ defined('ABSPATH') || exit;
  *
  * If you need to translate my-account CPT slug for other languages, use WPML directly:
  * https://wpml.org/documentation/getting-started-guide/translating-page-slugs/
+ *
+ * Old Warning:
+ *
+ * Organization Management templates were not found. Please install them in your active theme to use Organization Management.
+ * You can retrieve the zip file from: ./templates-wicket/account-centre/org-management/
+ * Recreate the same directory structure in your active theme: ./templates-wicket/account-centre/org-management/
+ * Unzip the file into that directory. The structure should look like this:
+ * ./templates-wicket/account-centre/org-management/acc-orgman-index.php
+ * ./templates-wicket/account-centre/org-management/acc-orgman-members.php
+ * ./templates-wicket/account-centre/org-management/acc-orgman-profile.php
+ * ./templates-wicket/account-centre/org-management/acc-orgman-roster.php
+ * You can now use Organization Management.
+ * Feel free to modify these templates in your active theme to meet the client's needs.
  */
 class Router extends WicketAcc
 {
@@ -219,21 +232,6 @@ class Router extends WicketAcc
             $acc_orgman_page = $this->orgman_page_requested($post_id);
 
             $user_template = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/org-management/acc-orgman-' . $acc_orgman_page . '.php';
-
-            // Every site need to use their own, that why we won't load templates from plugin
-            if (!file_exists($user_template)) {
-                $error_message = __('<p>Organization Management templates were not found. Please install them in your active theme to use Organization Management.</p>', 'wicket');
-                $error_message .= '<p>You can retrieve the zip file from: ./templates-wicket/account-centre/org-management/</p>';
-                $error_message .= '<p>Recreate the same directory structure in your active theme: ./templates-wicket/account-centre/org-management/</p>';
-                $error_message .= '<p>Unzip the file into that directory. The structure should look like this:</p>';
-                $error_message .= '<ul>';
-                $error_message .= '<li>./templates-wicket/account-centre/org-management/acc-orgman-index.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-members.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-profile.php</li><li>./templates-wicket/account-centre/org-management/acc-orgman-roster.php</li>';
-                $error_message .= '</ul>';
-                $error_message .= '<p>You can now use Organization Management.</p>';
-                $error_message .= '<p>Feel free to modify these templates in your active theme to meet the client\'s needs.</p>';
-
-                wp_die($error_message, 404);
-            }
         }
 
         if (file_exists($user_template)) {
@@ -318,10 +316,16 @@ class Router extends WicketAcc
             }
 
             if ($post->post_type == 'my-account') {
-                $template = $this->get_wicket_acc_template($post->ID);
+                // Check if user selected a custom template
+                $custom_template = get_page_template_slug($post->ID);
 
-                if ($template) {
-                    return $template;
+                if (!$custom_template) {
+                    // Only override default template if no custom template was selected
+                    $template = $this->get_wicket_acc_template($post->ID);
+
+                    if ($template) {
+                        return $template;
+                    }
                 }
             }
 
@@ -364,11 +368,6 @@ class Router extends WicketAcc
     public function acc_redirects()
     {
         if (is_admin()) {
-            return;
-        }
-
-        // Only if we already migrated to my-account
-        if (!get_option('wicket_acc_cpt_changed_to_my_account')) {
             return;
         }
 

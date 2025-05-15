@@ -21,16 +21,17 @@ body.wicket-theme-v2 .wicket-acc-block-touchpoints-cvent {
 
   .events-list {
     display: grid;
-    gap: var(--spacing-200);
+    gap: var(--space-200);
   }
 
   .event-card {
     background-color: var(--bg-card);
-    padding: var(--spacing-200);
+    padding: var(--space-200);
     filter: drop-shadow(var(--elevation-4));
     display: flex;
     align-items: flex-start;
-    gap: var(--spacing-200);
+    gap: var(--space-200);
+    border-radius: var(--card-corner-radius);
 
     @media screen and (max-width: 767px) {
       flex-direction: column;
@@ -114,7 +115,7 @@ body.wicket-theme-v2 .wicket-acc-block-touchpoints-cvent {
   }
 
   .event-section-container {
-    gap: var(--spacing-300);
+    gap: var(--space-300);
   }
 
   .past-link {
