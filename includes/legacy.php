@@ -465,6 +465,31 @@ add_action('wp_loaded', 'wicket_ac_maybe_add_multiple_products_to_cart', 15);
   add_filter( "wicket_renewal_filter_product_data", 'wicket_admin_filter_products', 15);
   */
 
+  /**
+   * Create single link url for multiple membership renewal
+   * @param mixed $multi_tier_links
+   * @param mixed $links
+   * @return string
+   */
+  function wicket_ac_memberships_get_product_multi_tier_links( $multi_tier_links, $links ) {
+    $query_string_arg = '';
+    $q = empty($multi_tier_links) ? "?" : "&";
+    $parts = parse_url($links[0]['link']['url']);
+    //$url =  $parts['scheme'] . '://' . $parts['host'] . $parts['path'];    
+    parse_str($parts['query'], $query);
+    //var_dump($multi_tier_links);
+    if(!empty( $query['add-to-cart'])) {
+      $query_string_arg = "membership_post_id_renew";
+      $product_id = isset($query['add-to-cart']) ? (int) $query['add-to-cart'] : null;
+      $membership_post_id_renew = isset($query['membership_post_id_renew']) ? (int) $query['membership_post_id_renew'] : null;  
+    } else {
+      $query_string_arg = "multi_tier_renewal";
+      $membership_post_id_renew = isset($query['membership_post_id_renew']) ? (int) $query['membership_post_id_renew'] : null;  
+      $product_id = get_post_meta( $membership_post_id_renew, 'membership_tier_post_id', true);
+    }
+    return $multi_tier_links .= $q . $query_string_arg . "[$product_id]=$membership_post_id_renew";
+  }
+
 /**
  * Returns productlinks for renewal callouts based on the next tier's products assigned.
  *
