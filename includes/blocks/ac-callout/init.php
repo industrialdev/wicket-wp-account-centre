@@ -249,30 +249,53 @@ class init extends Blocks
 
                             if( !empty($membership['membership']['multi_tier_renewal'])) {
                               $parts = parse_url($links[0]['link']['url']);
+                              
+                              if (isset($parts['query'])) {
+                                  $params = [];
+                                  parse_str($parts['query'], $params);
+                                  $late_fee_product_id   = $params['late_fee_product_id'] ?? null;
+                                  if( 
+                                      is_null($late_fee_product_id )
+                                      && !empty($params['add-to-cart']) 
+                                      && $product_ids = explode(",", $params['add-to-cart'])
+                                    ) {
+                                    $late_fee_product_id = $product_ids[1];
+                                  }
+                              }
+                              
                               if(empty($url[ $parts['path'] ])) {
                                 if(empty($parts['host'])) {
                                   $url[ $parts['path'] ] = $parts['path'];
                                 } else {
                                   $url[ $parts['path'] ] =  $parts['scheme'] . '://' . $parts['host'] . $parts['path'];                                
                                 }
-                            }
+                              }
 
-                            $multi_tier_links[ $parts['path'] ] = wicket_ac_memberships_get_product_multi_tier_links($multi_tier_links[ $parts['path'] ], $links);
-                            if(empty($multi_tier_title[ $parts['path'] ])) {
-                              $multi_tier_title[ $parts['path'] ] = $title;
-                            }
-                            if(empty($multi_tier_desc[ $parts['path'] ])) {
-                              $multi_tier_desc[ $parts['path'] ] = $description;
-                            }
-                            if(empty($multi_tier_link_title[ $parts['path'] ])) {
-                              $multi_tier_link_title[ $parts['path'] ] = $links[0]['link']['title'];
-                            }
-
-                            $links_array[ $parts['path'] ] = [
+                              $multi_tier_links[ $parts['path'] ] = wicket_ac_memberships_get_product_multi_tier_links($multi_tier_links[ $parts['path'] ], $links);
+                              if(empty($multi_tier_title[ $parts['path'] ])) {
+                                $multi_tier_title[ $parts['path'] ] = $title;
+                              }
+                              if(empty($multi_tier_desc[ $parts['path'] ])) {
+                                //if(!empty($late_fee_product_id)) {
+                                //  $description .= '<br><small>Note: Membership is in Grace Period and a Late Fee applies.</small>';
+                                //}
+                                $multi_tier_desc[ $parts['path'] ] = $description;
+                              }
+                              if(empty($multi_tier_link_title[ $parts['path'] ])) {
+                                $multi_tier_link_title[ $parts['path'] ] = $links[0]['link']['title'];
+                              }
+                              $renewal_type_array[ $parts['path'] ] = $renewal_type;                              
+                              $full_url = $url[ $parts['path'] ] . $multi_tier_links[ $parts['path'] ];
+                              if(!empty($late_fee_product_id)) {
+                                $full_url .= '&late_fee_product_id='.$late_fee_product_id;
+                              } else if(!empty($add_to_cart_id)) {
+                                $full_url .= '&add-to-cart='.$add_to_cart_id;
+                              }
+                              $links_array[ $parts['path'] ] = [
                                 [ 'link' =>
                                   [
                                   'title' => $multi_tier_link_title[ $parts['path'] ],
-                                  'url' => $url[ $parts['path'] ] . $multi_tier_links[ $parts['path'] ],
+                                  'url' => $full_url
                                   ]
                                 ]
                               ];
@@ -304,7 +327,7 @@ class init extends Blocks
                       if(!empty($multi_tier_links)) {
                         foreach($links_array as $links_path => $links_value) {
                           //var_dump($links_value);
-                          $attrs = get_block_wrapper_attributes(['class' => 'callout-' . $block_logic . ' callout-' . $renewal_type]);
+                          $attrs = get_block_wrapper_attributes(['class' => 'callout-' . $block_logic . ' callout-' . $renewal_type_array[ $links_path ] . ' callout-multi_tier']);
                           echo '<div ' . $attrs . '>';
                           get_component('card-call-out', [
                               'title'       => $multi_tier_title[ $links_path ],

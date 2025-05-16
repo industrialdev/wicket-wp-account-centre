@@ -477,20 +477,48 @@ add_action('wp_loaded', 'wicket_ac_maybe_add_multiple_products_to_cart', 15);
     $parts = parse_url($links[0]['link']['url']);
     //$url =  $parts['scheme'] . '://' . $parts['host'] . $parts['path'];    
     parse_str($parts['query'], $query);
+    //var_dump($query);
+    //var_dump($links);
     //var_dump($multi_tier_links);
     if(!empty( $query['add-to-cart'])) {
       $query_string_arg = "membership_post_id_renew";
       $product_id = isset($query['add-to-cart']) ? (int) $query['add-to-cart'] : null;
+      if(count($links) > 1) {
+        [$parent_product_id, $variation_id] = wicket_multiple_products_use_tier_reference( $product_id );
+        if(!empty($variation_id)) {
+          $product_id = $variation_id;
+        } else {
+          $product_id = $parent_product_id;
+        }
+      }
       $membership_post_id_renew = isset($query['membership_post_id_renew']) ? (int) $query['membership_post_id_renew'] : null;  
     } else {
       $query_string_arg = "multi_tier_renewal";
       $membership_post_id_renew = isset($query['membership_post_id_renew']) ? (int) $query['membership_post_id_renew'] : null;  
       $product_id = get_post_meta( $membership_post_id_renew, 'membership_tier_post_id', true);
     }
-    return $multi_tier_links .= $q . $query_string_arg . "[$product_id]=$membership_post_id_renew";
+
+    $return_link = $multi_tier_links .= $q . $query_string_arg . "[$product_id]=$membership_post_id_renew";
+    return $return_link;
   }
 
-/**
+  /** 
+   * We have multiple products on a tier so use the tier_reference value on the product if found
+   * 
+   */
+
+   function wicket_multiple_products_use_tier_reference( $product_id ) {
+    $tier_obj = \Wicket_Memberships\Membership_Tier::get_tier_by_product_id( $product_id );
+    if(!empty($tier_obj)) {
+      $membership_tier_slug = $tier_obj->get_membership_tier_slug();
+      [$parent_product_id, $variation_id] = wicket_get_product_by_tier_reference_with_slug($membership_tier_slug);
+    }
+    if(!empty($parent_product_id)) {
+      return [$parent_product_id, $variation_id];
+    }
+  }
+   
+   /**
  * Returns productlinks for renewal callouts based on the next tier's products assigned.
  *
  * @deprecated 1.5.0 Pending reimplementation as a method
