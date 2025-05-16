@@ -261,7 +261,7 @@ class init extends Blocks
 
         // Get current timestamp
         $current_timestamp = current_datetime()->getTimestamp();
-        
+
         // Now, filter by registered_action
         $filtered_touchpoint_data = array_filter($touchpoint_data, function ($touchpoint) use ($registered_action) {
             return is_array($registered_action) && in_array($touchpoint['attributes']['code'], $registered_action, true);

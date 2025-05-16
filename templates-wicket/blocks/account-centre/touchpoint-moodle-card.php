@@ -2,9 +2,6 @@
 
 namespace WicketAcc;
 
-use DateTime;
-use DateTimeZone;
-
 // No direct access
 defined('ABSPATH') || exit;
 
