@@ -9,11 +9,14 @@ namespace WicketAcc;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Customize WooCommerce my account features to build the Wicket Account Centre. Expands it with additional blocks and pages.
- * Version:           1.5.158
+ * Version:           1.5.161
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
  * Support:           https://wicket.io
+ * Requires at least: 6.5
+ * Requires PHP: 8.1
+ * Requires Plugins: wicket-wp-base-plugin
  * Domain Path:       /languages
  * Text Domain:       wicket-acc
  */
