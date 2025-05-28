@@ -19,10 +19,10 @@ $details = $tp['attributes']['details'];
 // Completed a course
 $course_name = $tp['attributes']['data']['course_name'];
 $course_id = $tp['attributes']['data']['course_id'];
-$course_start_date = $tp['attributes']['data']['course_start_date'];
-$course_end_date = $tp['attributes']['data']['course_end_date'];
-$enrolled_start_date = $tp['attributes']['data']['start_date']; // this is different for some reason
-$enrolled_end_date = $tp['attributes']['data']['end_date']; // this is different for some reason
+$course_start_date = $tp['attributes']['data']['start_date'];
+$course_end_date = $tp['attributes']['data']['end_date'];
+$enrolled_start_date = $tp['attributes']['data']['start_date']; 
+$enrolled_end_date = $tp['attributes']['data']['end_date']; 
 $grade_achieved = $tp['attributes']['data']['final_grade']['gradeformatted'];
 $grade_percentage = $tp['attributes']['data']['final_grade']['percentageformatted'];
 ?>
