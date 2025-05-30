@@ -184,9 +184,7 @@ class WicketAcc
     /**
      * Constructor.
      */
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     /**
      * Run.
@@ -288,9 +286,7 @@ class WicketAcc
     /**
      * Plugin activation.
      */
-    public function plugin_activated()
-    {
-    }
+    public function plugin_activated() {}
 } // end Class.
 
 // Initialize the plugin
