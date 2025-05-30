@@ -16,7 +16,7 @@ namespace WicketAcc;
  * Support:           https://wicket.io
  * Requires at least: 6.5
  * Requires PHP: 8.1
- * Requires Plugins: wicket-wp-base-plugin, woocommerce
+ * Requires Plugins: wicket-wp-base-plugin, woocommerce, advanced-custom-fields
  * Domain Path:       /languages
  * Text Domain:       wicket-acc
  */
@@ -184,7 +184,9 @@ class WicketAcc
     /**
      * Constructor.
      */
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     /**
      * Run.
@@ -286,7 +288,9 @@ class WicketAcc
     /**
      * Plugin activation.
      */
-    public function plugin_activated() {}
+    public function plugin_activated()
+    {
+    }
 } // end Class.
 
 // Initialize the plugin
