@@ -218,7 +218,7 @@ class init extends Blocks
                             if ($membership['membership']['meta']['membership_status'] == 'pending') {
                                 //this status is convered in the Become a Member block
                                 continue;
-                            } elseif (!empty($membership['membership']['next_tier'])) {
+                            } elseif (!empty($membership['membership']['next_tier']) && empty($membership['membership']['subscription_renewal'])) {
                                 //echo '<pre>'; var_dump( $membership['membership']['next_tier'] ); echo '</pre>';
                                 $links = wicket_ac_memberships_get_product_link_data($membership, $renewal_type);
                             } elseif (!empty($membership['membership']['form_page'])) {
