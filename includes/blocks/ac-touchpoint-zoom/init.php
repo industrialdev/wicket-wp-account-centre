@@ -1,6 +1,6 @@
 <?php
 
-namespace WicketAcc\Blocks\TouchpointMoodle;
+namespace WicketAcc\Blocks\TouchpointZoom;
 
 use WicketAcc\Blocks;
 
@@ -8,7 +8,7 @@ use WicketAcc\Blocks;
 defined('ABSPATH') || exit;
 
 /**
- * Wicket Touchpoint Moodle Block.
+ * Wicket Touchpoint Zoom Block.
  **/
 class init extends Blocks
 {
@@ -38,15 +38,15 @@ class init extends Blocks
         $close = 0;
         $attrs = get_block_wrapper_attributes(
             [
-                'class' => 'wicket-acc-block wicket-acc-block-touchpoints-moodle flex flex-col gap-8',
+                'class' => 'wicket-acc-block wicket-acc-block-touchpoints-zoom flex flex-col gap-8',
             ]
         );
 
         if ($this->is_preview) {
             $args = [
-                'block_name'        => 'Touchpoints Moodle',
-                'block_description' => 'This block displays registered data from Moodle on the front-end.',
-                'block_slug'        => 'wicket-ac-touchpoint-moodle',
+                'block_name'        => 'Touchpoints Zoom',
+                'block_description' => 'This block displays registered data for Zoom Webinars on the front-end.',
+                'block_slug'        => 'wicket-ac-touchpoint-zoom',
             ];
 
             $this->blocks->render_template('preview', $args);
@@ -69,18 +69,13 @@ class init extends Blocks
         $counter = 0;
         $display_type = 'upcoming';
 
-        $touchpoints_results = $this->get_touchpoints_results('Moodle');
-
-        // echo '<pre>';
-        // print_r($touchpoints_results);
-        // echo '</pre>';
-        // die;
+        $touchpoints_results = $this->get_touchpoints_results('Zoom Webinars (1)');
 
         if (empty($registered_action)) {
             $registered_action = [
-                'enrolled_in_a_course',
-                'completed_a_course',
-                'created_account',
+                'rsvp_to_event',
+                'registered_for_an_event',
+                'attended_an_event',
             ];
         }
 
@@ -113,8 +108,8 @@ class init extends Blocks
 
         $switch_link = add_query_arg(
             [
-                $show_param   => $display_other,
-                $num_param => $num_results,
+                $show_param => $display_other,
+                $num_param  => $num_results,
             ],
             remove_query_arg([$show_param, $num_param])
         );
@@ -123,9 +118,9 @@ class init extends Blocks
 
         $args = [
             'block_id'                       => $block_id,
-            'block_name'                     => 'Touchpoint Moodle',
-            'block_description'              => 'This block displays registered data from Moodle on the front-end.',
-            'block_slug'                     => 'wicket-ac-touchpoint-moodle',
+            'block_name'                     => 'Touchpoint Zoom',
+            'block_description'              => 'This block displays registered data for Zoom Webinars on the front-end.',
+            'block_slug'                     => 'wicket-ac-touchpoint-zoom',
             'attrs'                          => $attrs,
             'title'                          => $title,
             'past_events_title'              => $past_events_title,
@@ -148,7 +143,7 @@ class init extends Blocks
         ];
 
         // Render block
-        WACC()->Blocks->render_template('touchpoint-moodle', $args);
+        WACC()->Blocks->render_template('touchpoint-zoom', $args);
     }
 
     /**
@@ -186,7 +181,7 @@ class init extends Blocks
         // No data
         if (empty($touchpoint_data)) {
             echo '<p class="no-data">';
-            _e('You do not have any data at this time.', 'wicket-acc');
+            _e('You do not have any ' . $display_type . ' data at this time.', 'wicket-acc');
             echo '</p>';
 
             return;
@@ -214,7 +209,7 @@ class init extends Blocks
 
         if ($total_results <= 0) {
             get_component('card-call-out', [
-                'title' => __('You have no upcoming events', 'wicket-acc'),
+                'title' => __('You have no upcoming webinars', 'wicket-acc'),
                 'style' => 'secondary',
             ]);
         }
@@ -224,8 +219,11 @@ class init extends Blocks
         foreach ($touchpoint_data as $key => $tp) :
             $counter++;
 
-            $args['tp'] = $tp;
-            WACC()->Blocks->render_template('touchpoint-moodle-card', $args);
+            if (isset($tp['attributes']['data']['start_date'])) {
+                $args['tp'] = $tp;
+
+                WACC()->Blocks->render_template('touchpoint-zoom-card', $args);
+            }
 
             // Remove current loop element from array
             unset($touchpoint_data[$key]);
@@ -252,22 +250,45 @@ class init extends Blocks
     public static function filter_touchpoint_data($touchpoint_data = [], $display_type = 'upcoming', $registered_action = [])
     {
         if (empty($touchpoint_data)) {
-            return $touchpoint_data;
+            return [];
         }
 
-        // Ensure $display_type is valid: upcoming, past, all
-        $display_type = sanitize_text_field($display_type);
-        $display_type = in_array($display_type, ['upcoming', 'past', 'all'], true) ? $display_type : 'upcoming';
+        if (empty($registered_action)) {
+            $registered_action = [
+                'rsvp_to_event',
+                'event_registered',
+                'attended_an_event',
+            ];
+        }
 
-        // Get current timestamp
-        $current_timestamp = current_datetime()->getTimestamp();
+        $filtered_data = [];
 
-        // Now, filter by registered_action
-        $filtered_touchpoint_data = array_filter($touchpoint_data, function ($touchpoint) use ($registered_action) {
-            return is_array($registered_action) && in_array($touchpoint['attributes']['code'], $registered_action, true);
-        });
+        foreach ($touchpoint_data as $tp) {
+            // Is this action in the allowed list?
+            if (!in_array($tp['attributes']['code'], $registered_action)) {
+                continue;
+            }
 
-        return $filtered_touchpoint_data;
+            // Get the start date for comparison
+            $start_date = $tp['attributes']['data']['start_date'] ?? '';
+
+            if (empty($start_date)) {
+                continue;
+            }
+
+            $start_timestamp = strtotime($start_date);
+            $current_timestamp = current_time('timestamp');
+
+            if ($display_type === 'upcoming' && $start_timestamp >= $current_timestamp) {
+                $filtered_data[] = $tp;
+            } elseif ($display_type === 'past' && $start_timestamp < $current_timestamp) {
+                $filtered_data[] = $tp;
+            } elseif ($display_type === 'all') {
+                $filtered_data[] = $tp;
+            }
+        }
+
+        return $filtered_data;
     }
 
     /**
@@ -276,110 +297,101 @@ class init extends Blocks
      * @param array $touchpoint_data Touchpoint data
      * @param int $num_results Number of results to display
      * @param int $total_results Total results
-     * @param int $counter Counter of displayed results
+     * @param int $counter Counter
      * @param string $display_type Touchpoint display type: upcoming, past, all
-     * @param bool $ajax Whether the results are being loaded via AJAX
+     * @param bool $ajax Is ajax request?
+     * @param string $block_id Block ID
      *
      * @return void
      */
     public static function load_more_results($touchpoint_data = [], $num_results = 5, $total_results = 0, $counter = 0, $display_type = 'upcoming', $ajax = false, $block_id = 0)
     {
-        // Sanitize
-        $num_results = absint($num_results);
-        $total_results = absint($total_results);
-        $counter = absint($counter);
-        $touchpoint_data_input = base64_encode(maybe_serialize($touchpoint_data));
-        $received_results_count = count($touchpoint_data);
+        // Encode touchpoint data for ajax
+        $touchpoint_data_encoded = base64_encode(serialize($touchpoint_data));
+
+        // Calculate remaining results
+        $remaining_results = $total_results - $counter;
+
+        if ($remaining_results <= 0) {
+            return;
+        }
+
+        $nonce = wp_create_nonce('wicket_ac_touchpoint_zoom_results');
+        $num_param = "num-{$block_id}";
+
         ?>
+		<div class="load-more-container text-center mt-8" id="load-more-container-<?php echo $block_id; ?>">
+			<button class="load-more-btn btn btn-primary" data-block-id="<?php echo $block_id; ?>"
+				data-total-results="<?php echo $total_results; ?>" data-counter="<?php echo $counter; ?>"
+				data-type="<?php echo $display_type; ?>" data-<?php echo $num_param; ?>="<?php echo $num_results; ?>"
+				data-touchpoint-data="<?php echo $touchpoint_data_encoded; ?>" data-nonce="<?php echo $nonce; ?>"
+				onclick="loadMoreZoomResults(this)">
+				<?php _e('Load More', 'wicket-acc'); ?> (<?php echo $remaining_results; ?>
+				<?php _e('remaining', 'wicket-acc'); ?>)
+			</button>
+		</div>
 
-        <div x-data="ajaxFormHandler_<?php echo esc_attr($block_id); ?>()">
-            <div class="wicket-ac-touchpoint__moodle-results container">
-                <div class="events-list grid gap-6"
-                    x-html="responseMessage_<?php echo esc_attr($block_id); ?>">
-                </div>
-            </div>
+		<script>
+			function loadMoreZoomResults(button) {
+				const blockId = button.getAttribute('data-block-id');
+				const totalResults = button.getAttribute('data-total-results');
+				const counter = button.getAttribute('data-counter');
+				const type = button.getAttribute('data-type');
+				const numParam = 'num-' + blockId;
+				const numResults = button.getAttribute('data-' + numParam);
+				const touchpointData = button.getAttribute('data-touchpoint-data');
+				const nonce = button.getAttribute('data-nonce');
 
-            <div class="flex justify-center items-center">
-                <form
-                    action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
-                    method="post" @submit.prevent="submitForm">
-                    <input type="hidden" name="action" value="wicket_ac_touchpoint_moodle_results">
-                    <input type="hidden" name="num_results"
-                        value="<?php echo esc_attr($num_results); ?>">
-                    <input type="hidden" name="total_results"
-                        value="<?php echo esc_attr($total_results); ?>">
-                    <input type="hidden" name="type"
-                        value="<?php echo esc_attr($display_type); ?>">
-                    <input type="hidden" name="counter"
-                        value="<?php echo esc_attr($counter); ?>">
-                    <input type="hidden" name="touchpoint_data"
-                        value="<?php echo esc_html($touchpoint_data_input); ?>">
-                    <?php wp_nonce_field('wicket_ac_touchpoint_moodle_results'); ?>
+				// Disable button
+				button.disabled = true;
+				button.innerHTML = '<?php _e('Loading...', 'wicket-acc'); ?>';
 
-                    <div x-show="loading" class="wicket-ac-touchpoint__loader flex justify-center items-center self-center">
-                        <i class="fas fa-spinner fa-spin"></i>
-                    </div>
+				// AJAX request
+				const xhr = new XMLHttpRequest();
+				xhr.open('POST', '<?php echo admin_url('admin-ajax.php'); ?>', true);
+				xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
-                    <?php $show_more_classes = $received_results_count < 1 ? 'hidden' : ''; ?>
+				xhr.onreadystatechange = function () {
+					if (xhr.readyState === XMLHttpRequest.DONE) {
+						if (xhr.status === 200) {
+							// Insert results before the load more button
+							const container = document.getElementById('load-more-container-' + blockId);
+							const eventsGrid = container.parentNode.querySelector('.events-list');
 
-                    <?php
-                            get_component('button', [
-                                'variant' => 'secondary',
-                                'type'    => 'submit',
-                                'classes' => ['touchpoint-show-more', 'my-4', $show_more_classes],
-                                'label'   => __('Show More', 'wicket-acc'),
-                                'prefix_icon' => 'fa-solid fa-caret-down',
-                                'atts'   => [
-                                    'x-show="!loading && !buttonClicked"',
-                                ],
-                            ]);
-        ?>
-                </form>
-            </div>
-        </div>
+							// Create temporary container to parse HTML
+							const tempDiv = document.createElement('div');
+							tempDiv.innerHTML = xhr.responseText;
 
-        <script>
-            function ajaxFormHandler_<?php echo esc_attr($block_id); ?>() {
-                return {
-                    loading: false,
-                    <?php if ($received_results_count < 1) : ?>
-                        buttonClicked: true,
-                    <?php else : ?>
-                        buttonClicked: false,
-                    <?php endif; ?>
-                    responseMessage_<?php echo esc_attr($block_id); ?>: '',
-                    submitForm(event) {
-                        this.loading = true;
-                        const formData = new FormData(event.target);
+							// Append new cards to events grid
+							while (tempDiv.firstChild) {
+								eventsGrid.appendChild(tempDiv.firstChild);
+							}
 
-                        console.log(formData);
-                        console.log(woocommerce_params.ajax_url);
+							// Remove load more container
+							container.remove();
+						} else {
+							// Re-enable button on error
+							button.disabled = false;
+							button.innerHTML = '<?php _e('Load More', 'wicket-acc'); ?>';
+							console.error('Error loading more results');
+						}
+					}
+				};
 
-                        fetch(woocommerce_params.ajax_url, {
-                                method: 'POST',
-                                body: formData
-                            })
-                            .then(response => response.text())
-                            .then(data => {
-                                this.loading = false;
-                                if (data) {
-                                    this.responseMessage_<?php echo esc_attr($block_id); ?> =
-                                        data;
-                                    this.buttonClicked = true;
-                                } else {
-                                    this.responseMessage_<?php echo esc_attr($block_id); ?> =
-                                        '<?php esc_html_e('An error occurred. No data.', 'wicket-acc'); ?>';
-                                }
-                            })
-                            .catch(error => {
-                                this.loading = false;
-                                this.responseMessage_<?php echo esc_attr($block_id); ?> =
-                                    '<?php esc_html_e('An error occurred. Failed.', 'wicket-acc'); ?>';
-                            });
-                    }
-                };
-            }
-        </script>
-<?php
+				// Send request
+				const params = new URLSearchParams();
+				params.append('action', 'wicket_ac_touchpoint_zoom_results');
+				params.append('security', nonce);
+				params.append('block_id', blockId);
+				params.append('total_results', totalResults);
+				params.append('counter', counter);
+				params.append('type', type);
+				params.append(numParam, numResults);
+				params.append('touchpoint_data', touchpointData);
+
+				xhr.send(params.toString());
+			}
+		</script>
+		<?php
     }
 }
