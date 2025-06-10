@@ -428,16 +428,28 @@ function wicket_ac_maybe_add_multiple_products_to_cart()
         }
 
         $add_to_cart_handler = apply_filters('woocommerce_add_to_cart_handler', $adding_to_cart->product_type, $adding_to_cart);
-
-        if ('simple' !== $add_to_cart_handler) {
-            continue;
-        }
-
         $quantity = empty($_REQUEST['quantity']) ? 1 : wc_stock_amount($_REQUEST['quantity']);
         $passed_validation = apply_filters('woocommerce_add_to_cart_validation', true, $product_id, $quantity);
 
-        if ($passed_validation && false !== WC()->cart->add_to_cart($product_id, $quantity)) {
-            wc_add_to_cart_message([$product_id => $quantity], true);
+        if ($passed_validation
+              && (
+                  strpos($add_to_cart_handler, 'variable') !== false
+                || strpos($add_to_cart_handler, 'variation') !== false
+              )
+        ) {
+            $variation_id = $product_id;
+            $variation = wc_get_product($variation_id);
+            $parent_id = $variation->get_parent_id();
+            $variation_attributes = $variation->get_attributes();
+            $variation_data = [];
+            foreach ($variation_attributes as $key => $value) {
+                $variation_data['attribute_' . $key] = $value;
+            }
+            WC()->cart->add_to_cart($parent_id, $quantity, $variation_id, $variation_data);
+        } else {
+            if ($passed_validation && false !== WC()->cart->add_to_cart($product_id, $quantity)) {
+                wc_add_to_cart_message([$product_id => $quantity], true);
+            }
         }
     }
 }
