@@ -19,3 +19,13 @@
     }
   }
 }
+
+.woocommerce-account:has(.wicket-acc-page) .woocommerce::after,
+.woocommerce-account:has(.wicket-acc-page) .woocommerce::before {
+  content: none !important;
+}
+
+div.woocommerce:has(.wicket-acc-page) {
+  padding-top: 0;
+  padding-bottom: 0;
+}
