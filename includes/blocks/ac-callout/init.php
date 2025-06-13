@@ -83,6 +83,9 @@ class init extends Blocks
                                 continue; //if it is not a membership product check the next one
                             }
                             $Tier = \Wicket_Memberships\Membership_Tier::get_tier_by_product_id($item->get_product_id());
+                            if(empty($Tier) || is_bool($Tier)) {
+                              continue;
+                            }
                             //if this is not a pending tier skip it since they just have a membership on hold
                             if (empty($Tier) || is_bool($Tier)) {
                                 continue;
@@ -222,12 +225,14 @@ class init extends Blocks
                             if ($membership['membership']['meta']['membership_status'] == 'pending') {
                                 //this status is convered in the Become a Member block
                                 continue;
-                            } elseif (!empty($membership['membership']['next_tier'])) {
+                            } elseif (!empty($membership['membership']['next_tier']) && empty($membership['membership']['subscription_renewal'])) {
                                 //echo '<pre>'; var_dump( $membership['membership']['next_tier'] ); echo '</pre>';
                                 $links = wicket_ac_memberships_get_product_link_data($membership, $renewal_type);
                             } elseif (!empty($membership['membership']['form_page'])) {
                                 //echo '<pre>'; var_dump( $membership['membership']['form_page'] ); echo '</pre>';
                                 $links = wicket_ac_memberships_get_page_link_data($membership);
+                            } elseif (!empty($membership['membership']['subscription_renewal'])) {
+                                $links = wicket_ac_memberships_get_subscription_renewal_link_data($membership);
                             }
 
                             $title = $membership['callout']['header'];
