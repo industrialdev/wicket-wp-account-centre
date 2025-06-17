@@ -143,15 +143,17 @@ $rules = [
 
 $finder = PhpCsFixer\Finder::create()
     ->exclude([
-        '.ci',
-        'node_modules',
-        'vendor',
-        'languages',
-        'dist',
+    '.ci',
+    'node_modules',
+    'vendor',
+    'vendor-dist',
+    'docs',
+    'languages',
+    'dist',
     ])
     ->name('*.php')
     ->notName([
-        'composer.lock',
+    'composer.lock',
     ])
     ->ignoreDotFiles(true)
     ->in(__DIR__);
