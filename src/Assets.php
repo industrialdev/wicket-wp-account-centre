@@ -50,21 +50,45 @@ class Assets extends WicketAcc
             $post = get_queried_object();
         }
 
-        // Only on pages related to Wicket Account Centre
-        if (!(
-            (isset($post) && $post instanceof \WP_Post && (
-                $post->post_type === 'my-account' || str_starts_with($post->post_name, 'organization')
-            )) || is_woocommerce() || is_account_page() || is_wc_endpoint_url()
-        )) {
+        // Determine if assets should be enqueued based on context.
+        // Assets are enqueued if:
+        // 1. The current post type IS 'my-account', OR
+        // 2. The current page IS one of 'my-account', 'mon-compte', 'mi-cuenta', OR
+        // 3. WooCommerce IS active AND it's a relevant WooCommerce page (shop, account, endpoint).
+        // If NONE of these conditions are met, we return early.
+
+        $current_post_type = get_post_type(); // Relies on global $post. Returns false if no global $post.
+
+        $is_relevant_page_slug = is_page([
+            'my-account',
+            'mon-compte',
+            'mi-cuenta',
+        ]);
+
+        $is_relevant_woocommerce_context = WACC()->isWooCommerceActive() && (
+            is_woocommerce() ||
+            is_account_page() ||
+            is_wc_endpoint_url()
+        );
+
+        // If it's NOT the 'my-account' post type, AND
+        // it's NOT one of the specified page slugs, AND
+        // it's NOT a relevant WooCommerce context,
+        // THEN return early and do not enqueue assets.
+        if (
+            ('my-account' !== $current_post_type) &&
+            (!$is_relevant_page_slug) &&
+            (!$is_relevant_woocommerce_context)
+        ) {
             return;
         }
 
         // Tailwind CSS Play CDN - Load in development environments or when WP_DEBUG is true
-        if ((defined('WP_ENV') && in_array(WP_ENV, ['local', 'development'], true)) ||
+        /*if ((defined('WP_ENV') && in_array(WP_ENV, ['local', 'development'], true)) ||
             (defined('WP_ENVIRONMENT_TYPE') && in_array(WP_ENVIRONMENT_TYPE, ['local', 'development'], true)) ||
             (defined('WP_DEBUG') && WP_DEBUG === true)) {
             wp_enqueue_script('tailwind-css-development', 'https://cdn.tailwindcss.com', [], WICKET_ACC_VERSION, false);
-        }
+        }*/
 
         wp_enqueue_style('wicket-acc-frontend-styles', WICKET_ACC_URL . 'assets/css/wicket-acc-main.css', [], WICKET_ACC_VERSION);
         wp_enqueue_script('wicket-acc-frontend-scripts', WICKET_ACC_URL . 'assets/js/wicket-acc-main.js', [], WICKET_ACC_VERSION, true);

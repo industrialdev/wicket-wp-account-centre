@@ -48,14 +48,16 @@ if (function_exists('wpml_get_default_language')) {
 }
 
 // WooCommerce endpoints
-$wc_endpoints = WC()->query->get_query_vars();
-$current_url = $_SERVER['REQUEST_URI'];
-$wc_endpoint = basename(rtrim($current_url, '/'));
 $wc_wrapper_class = '';
+if (WACC()->isWooCommerceActive()) {
+    $wc_endpoints = WC()->query->get_query_vars();
+    $current_url = $_SERVER['REQUEST_URI'];
+    $wc_endpoint = basename(rtrim($current_url, '/'));
 
-if (in_array($wc_endpoint, $wc_endpoints)) {
-    $is_wc_endpoint = true;
-    $wc_wrapper_class = 'woocommerce';
+    if (in_array($wc_endpoint, $wc_endpoints)) {
+        $is_wc_endpoint = true;
+        $wc_wrapper_class = 'woocommerce';
+    }
 }
 
 // WPML enabled?

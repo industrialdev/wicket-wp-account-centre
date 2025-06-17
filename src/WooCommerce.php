@@ -6,12 +6,8 @@ namespace WicketAcc;
 defined('ABSPATH') || exit;
 
 /**
- * Wicket Account Centre
- * WooCommerce.
- */
-
-/**
- * WooCommerce Class.
+ * WooCommerce Integration Class
+ * Handles WooCommerce functionality when available.
  */
 class WooCommerce extends WicketAcc
 {
@@ -20,6 +16,11 @@ class WooCommerce extends WicketAcc
      */
     public function __construct()
     {
+        // Only run if WooCommerce is active
+        if (!WACC()->isWooCommerceActive()) {
+            return;
+        }
+
         // Override templates
         add_filter('woocommerce_locate_template', [$this, 'override_woocommerce_template'], 10, 3);
 
@@ -36,6 +37,9 @@ class WooCommerce extends WicketAcc
 
         // Fix pagination URLs for orders endpoint
         add_filter('woocommerce_get_endpoint_url', [$this, 'fix_orders_pagination_url'], 10, 4);
+
+        // Add WooCommerce endpoints to account pages
+        add_filter('wicket_acc_menu_items', [$this, 'add_wc_menu_items']);
     }
 
     /**
@@ -77,7 +81,7 @@ class WooCommerce extends WicketAcc
         // If we are seeing a WC endpoint from $acc_prefer_wc_endpoints
         if (in_array($wc_endpoint, $this->acc_prefer_wc_endpoints)) {
             // Only on WooCommerce pages
-            if (!is_account_page()) {
+            if (!WACC()->is_account_page()) {
                 return $template;
             }
 
@@ -120,7 +124,7 @@ class WooCommerce extends WicketAcc
         }
 
         // Only on WooCommerce myaccount pages
-        if (!is_account_page()) {
+        if (!WACC()->is_account_page()) {
             return;
         }
 
@@ -200,5 +204,44 @@ class WooCommerce extends WicketAcc
         }
 
         return $url;
+    }
+
+    /**
+     * Add WooCommerce menu items to account menu.
+     *
+     * @param array $items Current menu items.
+     * @return array Modified menu items.
+     */
+    public function add_wc_menu_items($items)
+    {
+        if (!WACC()->isWooCommerceActive()) {
+            return $items;
+        }
+
+        // Add WooCommerce menu items
+        $wc_items = [
+            'orders' => [
+                'title' => __('Orders', 'wicket-acc'),
+                'url' => wc_get_account_endpoint_url('orders'),
+            ],
+            'downloads' => [
+                'title' => __('Downloads', 'wicket-acc'),
+                'url' => wc_get_account_endpoint_url('downloads'),
+            ],
+            'payment-methods' => [
+                'title' => __('Payment Methods', 'wicket-acc'),
+                'url' => wc_get_account_endpoint_url('payment-methods'),
+            ],
+        ];
+
+        // Add subscriptions if WooCommerce Subscriptions is active
+        if (class_exists('WC_Subscriptions')) {
+            $wc_items['subscriptions'] = [
+                'title' => __('Subscriptions', 'wicket-acc'),
+                'url' => wc_get_account_endpoint_url('subscriptions'),
+            ];
+        }
+
+        return array_merge($items, $wc_items);
     }
 }

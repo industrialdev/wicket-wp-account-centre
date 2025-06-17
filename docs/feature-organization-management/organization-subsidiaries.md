@@ -114,7 +114,7 @@ class SubsidiaryPermissions {
     ],
     'actions' => [
         'create_subsidiary' => [
-            'url' => '/wp-htmx/organization/{uuid}/subsidiary/create',
+            'url' => '/wp-html/organization/{uuid}/subsidiary/create',
             'visible' => 'boolean'  // Based on user permissions
         ]
     ]
@@ -182,16 +182,16 @@ class OrganizationSubsidiaries {
    - Previous/Next navigation
    - Page numbers for quick navigation
 
-### HTMX Integration
+### Datastar Integration
 ```php
 [
     'endpoints' => [
         'list' => [
-            'url' => '/wp-htmx/organization/{uuid}/subsidiaries',
+            'url' => '/wp-html/organization/{uuid}/subsidiaries',
             'trigger' => 'load'
         ],
         'pagination' => [
-            'url' => '/wp-htmx/organization/{uuid}/subsidiaries',
+            'url' => '/wp-html/organization/{uuid}/subsidiaries',
             'trigger' => 'click',
             'target' => '#subsidiaries-list',
             'indicator' => '.loading'
@@ -212,12 +212,12 @@ class OrganizationSubsidiaries {
             'text' => 'Add New Subsidiary',
             'classes' => 'button button-primary',
             'attributes' => [
-                'hx-get' => '/wp-htmx/organization/{uuid}/subsidiary/create/modal',
+                'hx-get' => '/wp-html/organization/{uuid}/subsidiary/create/modal',
                 'hx-target' => '#modal-container'
             ]
         ],
         'form' => [
-            'endpoint' => '/wp-htmx/organization/{uuid}/subsidiary/create',
+            'endpoint' => '/wp-html/organization/{uuid}/subsidiary/create',
             'target' => '#create-subsidiary-result',
             'fields' => [
                 'basic_info' => [

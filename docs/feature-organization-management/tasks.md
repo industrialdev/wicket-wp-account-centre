@@ -3,10 +3,10 @@
 ## Phase 0: Infrastructure Setup (Weeks 1-2, +2 days)
 
 ### Project: ACC - Infrastructure Setup
-1. HTMX Infrastructure Research & Decision
+1. Datastar API Infrastructure Research & Decision
    - Priority: P1
    - Estimate: 3
-   - Description: Research and establish the HTMX integration approach for dynamic content loading in the Account Centre plugin. Focus on WordPress compatibility, security considerations with nonces, and optimal implementation patterns. Key decisions include: CSRF handling strategy, response format standardization, and error handling approach. Must consider both server-side (PHP handlers) and client-side (JavaScript extensions) architecture. Final output should be a clear technical specification for the team to follow.
+   - Description: Research and establish the Datastar API integration approach for dynamic content loading in the Account Centre plugin. Focus on WordPress compatibility, security considerations with nonces, and optimal implementation patterns. Key decisions include: CSRF handling strategy, response format standardization, and error handling approach. Must consider both server-side (PHP handlers) and client-side (JavaScript extensions) architecture. Final output should be a clear technical specification for the team to follow.
    - Subtasks:
      - [ ] Research existing solutions
      - [ ] Present options to team
@@ -50,22 +50,21 @@
 5. Frontend Infrastructure Implementation
    - Priority: P2
    - Estimate: 3
-   - Description: Set up the frontend architecture to support modern, interactive features using HTMX and Hyperscript. Implement utility functions for common frontend operations, establish ARIA patterns for accessibility, and create a robust foundation for dynamic content updates. Configure TailwindCSS to work seamlessly with our centralized theme variables system.
+   - Description: Set up the frontend architecture to support modern, interactive features using Datastar. Implement utility functions for common frontend operations, establish ARIA patterns for accessibility, and create a robust foundation for dynamic content updates. Configure TailwindCSS to work seamlessly with our centralized theme variables system.
    - Consideration: mobile first, always responsive design.
-   - Consideration: Ensure progressive enhancement - all features should work without JavaScript enabled, with HTMX/Hyperscript adding enhanced interactivity.
+   - Consideration: Ensure progressive enhancement - all features should work without JavaScript enabled, with Datastar adding enhanced interactivity.
    - Consideration: Follow WAI-ARIA best practices from the start, establishing reusable accessibility patterns.
    - Consideration: Strictly enforce the use of theme-variables.css for all styling properties - no hardcoded values allowed for colors, sizes, weights, dimensions, or any other design tokens. All styles must be configurable via the theme system.
    - Subtasks:
-     - [ ] Add HTMX integration
-     - [ ] Add Hyperscript integration
+     - [ ] Add Datastar integration
      - [ ] Set up ES6 utilities if needed
 
-6. Base & Standard HTMX API Implementation
+6. Base & Standard Datastar API Implementation
    - Priority: P2
    - Estimate: 5
-   - Description: Implement the server-side infrastructure for handling HTMX requests within WordPress. Create a robust routing system for HTMX endpoints, standardize response formats, and establish security measures including nonce validation and permission checks.
+   - Description: Implement the server-side infrastructure for handling Datastar requests within WordPress. Create a robust routing system for Datastar endpoints, standardize response formats, and establish security measures including nonce validation and permission checks.
    - Consideration: Implement proper error handling with appropriate HTTP status codes and user-friendly error messages in both HTML and JSON formats.
-   - Consideration: Cache responses appropriately, considering both server-side caching and HTMX's client-side caching headers.
+   - Consideration: Cache responses appropriately, considering both server-side caching and Datastar's client-side caching headers.
    - Consideration: Ensure all responses are properly escaped and sanitized, following WordPress security best practices.
    - Subtasks:
      - [ ] Set up WordPress integration (as decided on task 1)
@@ -78,7 +77,7 @@
    - Priority: P2
    - Estimate: 3
    - Description: Create a standardized foundation for all Account Centre blocks. Implement a base block class that handles common functionality, ACF field registration, and template rendering. This infrastructure will ensure consistency across all organization management blocks while reducing code duplication.
-   - Consideration: Base block class must handle all shared functionality: settings management, template loading, HTMX integration, and error handling.
+   - Consideration: Base block class must handle all shared functionality: settings management, template loading, Datastar integration, and error handling.
    - Consideration: Block templates should follow a consistent structure with clear separation between logic and presentation.
    - Consideration: ACF field registration should support both global config inheritance and block-specific overrides.
    - Subtasks:
@@ -111,7 +110,7 @@
    - Estimate: 8
    - Description: Create a foundational shortcode [wicket_organization_selector] that will be used across the plugin for organization selection. This shortcode enables users to switch between organizations they have access to, serving as a crucial navigation component that other blocks can embed and utilize. It should provide a consistent interface for organization selection while being highly configurable through shortcode attributes.
    - Consideration: Design the shortcode to be highly configurable through attributes (e.g., [wicket_organization_selector mode="cards" filter="active" show_count="true"]). Support various display modes, filtering options, and callback handling.
-   - Consideration: Use HTMX for seamless organization switching without page reloads. Implement proper state management using WordPress transients to maintain selected organization across page loads.
+   - Consideration: Use Datastar for seamless organization switching without page reloads. Implement proper state management using WordPress transients to maintain selected organization across page loads.
    - Consideration: Create actions and filters to allow other blocks to hook into organization selection events (e.g., 'wicket_organization_selected', 'wicket_organization_changed'). Implement proper caching of user's organization list to minimize API calls.
    - Subtasks:
       - [ ] Create shortcode registration and handler
@@ -140,11 +139,11 @@
     - Priority: P2
     - Estimate: 5
     - Description: Main interface for viewing detailed organization information. This block displays comprehensive organization details including contact information, business details, membership status, and related organizations. It serves as the primary read-only view for organization data, with links to relevant management blocks for users with appropriate permissions.
-    - Consideration: Implement progressive loading using HTMX to improve initial page load time. Load secondary information (like membership stats, related orgs) after the primary profile data is displayed.
+    - Consideration: Implement progressive loading using Datastar to improve initial page load time. Load secondary information (like membership stats, related orgs) after the primary profile data is displayed.
     - Consideration: Structure the view with clear visual hierarchy - primary info (name, status, type) first, followed by contact details, then extended information.
     - Subtasks:
       - [ ] Create block structure with section components
-      - [ ] Implement progressive loading with HTMX
+      - [ ] Implement progressive loading with Datastar
       - [ ] Add schema.org markup
       - [ ] Create permission-based view variations
       - [ ] Add links to management blocks
@@ -155,12 +154,12 @@
     - Priority: P2
     - Estimate: 8
     - Description: Edit interface for managing organization profile data. This block provides a form-based interface for updating organization details with real-time validation, proper error handling, and field-level permissions. It should handle both basic information updates and more complex operations like status changes or relationship modifications.
-    - Consideration: Implement field-level validation with real-time feedback using HTMX. Show validation errors inline as users type, but only trigger API calls on form submission or explicit save actions.
+    - Consideration: Implement field-level validation with real-time feedback using Datastar. Show validation errors inline as users type, but only trigger API calls on form submission or explicit save actions.
     - Consideration: Use a multi-step form approach for complex changes (like status updates) that require additional confirmation or documentation. Each step should be independently validated.
     - Consideration: Implement proper state management to handle unsaved changes, including warning users before navigating away from unsaved edits.
     - Subtasks:
       - [ ] Create form structure with field grouping
-      - [ ] Implement real-time validation with HTMX
+      - [ ] Implement real-time validation with Datastar
       - [ ] Add multi-step workflows for complex changes
       - [ ] Create permission-based field visibility
       - [ ] Add unsaved changes detection
@@ -175,13 +174,13 @@
     - Priority: P2
     - Estimate: 8
     - Description: Main interface for viewing and managing organization members. This block provides a comprehensive view of all organization members with advanced filtering, sorting. It includes role management, status updates, and integration with the member addition process. The interface should handle large member lists efficiently while maintaining responsive performance.
-    - Consideration: Implement virtual scrolling or pagination with HTMX for large member lists. Use progressive loading to fetch member details only when needed, with proper loading indicators to maintain user experience.
+    - Consideration: Implement virtual scrolling or pagination with Datastar for large member lists. Use progressive loading to fetch member details only when needed, with proper loading indicators to maintain user experience.
     - Consideration: Cache member data appropriately to reduce server load, but implement proper cache invalidation when member details are updated through any interface.
     - Consideration: Leave the road paved for future work on a bulk member editing and/or deletion process.
     - Subtasks:
       - [ ] Create responsive table/grid view for members
       - [ ] Implement advanced filtering and sorting
-      - [ ] Add virtual scrolling with HTMX
+      - [ ] Add virtual scrolling with Datastar
       - [ ] Implement role management controls
       - [ ] Add member status indicators
       - [ ] Implement data caching strategy
@@ -191,12 +190,12 @@
     - Priority: P2
     - Estimate: 8
     - Description: Create a focused interface for adding new members to an organization, with role assignment capabilities and proper validation. This block should provide a streamlined process for organization administrators to add members while ensuring proper permissions and data validation. The interface should support both single member addition and potential bulk operations.
-    - Consideration: Implement real-time email validation and role permission checks using HTMX. Use proper error handling to show meaningful messages for various scenarios (e.g., already a member, invalid email, insufficient permissions).
+    - Consideration: Implement real-time email validation and role permission checks using Datastar. Use proper error handling to show meaningful messages for various scenarios (e.g., already a member, invalid email, insufficient permissions).
     - Consideration: Create action hooks for member addition events to allow other components to react (e.g., notifications, logging). Use the standard hook prefix 'wicket/acc/member-*'.
     - Subtasks:
       - [ ] Create member addition form with email and role fields
       - [ ] Implement role selection with proper permission checks
-      - [ ] Add email validation with HTMX integration
+      - [ ] Add email validation with Datastar integration
       - [ ] Create success/error message handling
       - [ ] Add loading states and progress indicators
       - [ ] Email notification on member addition to new members
@@ -206,12 +205,12 @@
     - Priority: P3
     - Estimate: 5
     - Description: Create a block for managing organization-related documents, providing a centralized interface for uploading, organizing, and accessing important files. This block should support various document types, implement proper access controls, and integrate with WordPress media management while maintaining organization-specific context.
-    - Consideration: Implement progressive loading using HTMX for document lists, with proper filtering and sorting capabilities. Use infinite scroll or load-more patterns for large document collections.
+    - Consideration: Implement progressive loading using Datastar for document lists, with proper filtering and sorting capabilities. Use infinite scroll or load-more patterns for large document collections.
     - Consideration: Create a robust permission system that respects both WordPress capabilities and organization roles. Use action hooks with 'wicket/acc/document-*' prefix for extensibility.
     - Consideration: Implement proper file type validation, size limits, and storage management.
     - Subtasks:
       - [ ] Create document upload interface
-      - [ ] Implement document list view with HTMX
+      - [ ] Implement document list view with Datastar
       - [ ] Create document preview functionality
       - [ ] Implement permission-based access control
       - [ ] Add document metadata management
@@ -221,7 +220,7 @@
     - Priority: P2
     - Estimate: 8
     - Description: Create a block for managing organization business information, providing a structured interface for viewing and editing key business details such as tax information, business numbers, and industry classifications. This block should handle complex business data while maintaining data integrity and proper validation.
-    - Consideration: Implement field-specific validation using HTMX for real-time feedback. Handle different business number formats and validations based on organization type and jurisdiction.
+    - Consideration: Implement field-specific validation using Datastar for real-time feedback. Handle different business number formats and validations based on organization type and jurisdiction.
     - Subtasks:
       - [ ] Create business info display layout
       - [ ] Implement edit mode with validation
@@ -234,7 +233,7 @@
     - Priority: P3
     - Estimate: 8
     - Description: Create a block for managing organization subsidiary relationships, providing a hierarchical view of parent-child organization connections. This block should enable users to visualize, establish, and manage organizational hierarchies while maintaining proper access controls and data consistency.
-    - Consideration: Implement an intuitive tree-view interface using HTMX for dynamic loading of subsidiary levels. Use proper indentation and visual cues to represent hierarchy depth.
+    - Consideration: Implement an intuitive tree-view interface using Datastar for dynamic loading of subsidiary levels. Use proper indentation and visual cues to represent hierarchy depth.
     - Subtasks:
       - [ ] Create hierarchical view interface
       - [ ] Implement subsidiary management
@@ -247,7 +246,7 @@
     - Priority: P2
     - Estimate: 8
     - Description: Create a central management block that provides a comprehensive overview and quick access to all organization management functions. This block should serve as a dashboard-like interface, integrating with other organization blocks and providing essential management tools in one place.
-    - Consideration: Implement a responsive grid layout that adapts to available space and device size. Use HTMX for dynamic content loading and updates.
+    - Consideration: Implement a responsive grid layout that adapts to available space and device size. Use Datastar for dynamic content loading and updates.
     - Consideration: Ensure proper permission checks for displaying management options and sensitive information.
     - Subtasks:
       - [ ] Create main management interface
@@ -292,11 +291,11 @@
 21. Performance Optimization Review
     - Priority: P3
     - Estimate: 8
-    - Description: Conduct a thorough performance review of all organization management blocks, focusing on HTMX implementation efficiency, WordPress query optimization, and frontend asset loading. Identify and implement optimizations to ensure smooth user experience even with large datasets.
-    - Consideration: Use browser performance tools to measure and optimize HTMX request patterns, DOM updates, and CSS rendering.
+    - Description: Conduct a thorough performance review of all organization management blocks, focusing on Datastar implementation efficiency, WordPress query optimization, and frontend asset loading. Identify and implement optimizations to ensure smooth user experience even with large datasets.
+    - Consideration: Use browser performance tools to measure and optimize Datastar request patterns, DOM updates, and CSS rendering.
     - Consideration: Review WordPress query patterns for optimization opportunities, particularly in list views and data-heavy operations.
     - Subtasks:
-      - [ ] Profile HTMX request patterns
+      - [ ] Profile Datastar request patterns
       - [ ] Analyze WordPress query performance
       - [ ] Review CSS and JS asset loading
       - [ ] Optimize large dataset handling
@@ -313,7 +312,7 @@
       - [ ] Create hook and filter reference with examples
       - [ ] Document shortcode attributes and use cases
       - [ ] Write security implementation guidelines
-      - [ ] Document HTMX integration patterns
+      - [ ] Document Datastar integration patterns
 
 ## Task Priority Legend
 - P1: Critical path, must be completed first

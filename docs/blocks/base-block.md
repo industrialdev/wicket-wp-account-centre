@@ -25,19 +25,51 @@ namespace WicketAcc\Blocks\BaseBlock;
 
 use WicketAcc\WicketAcc;
 
+/**
+ * The main class for the base block.
+ *
+ * This class is intended to be copied and adapted for new blocks.
+ * The filename `init.php` is expected to contain a class named `init`.
+ */
 class init extends WicketAcc {
+    /**
+     * The block settings and attributes.
+     * @var array
+     */
     protected array $block = [];
+
+    /**
+     * Whether the block is rendered in the editor preview.
+     * @var bool
+     */
     protected bool $is_preview = false;
-    protected ?Blocks $blocks = null;
 
-    public function __construct(
-        array $block = [],
-        bool $is_preview = false,
-        ?Blocks $blocks = null
-    );
+    /**
+     * Constructor.
+     *
+     * @param array $block The block settings and attributes.
+     * @param bool $is_preview True when rendered in the editor.
+     */
+    public function __construct(array $block = [], bool $is_preview = false) {
+        $this->block = $block;
+        $this->is_preview = $is_preview;
+    }
 
-    protected function display_block(): void;
-    protected function process_form(): bool|void;
+    /**
+     * Renders the block's display output.
+     */
+    protected function display_block(): void {
+        // Implementation in child/copied class
+    }
+
+    /**
+     * Processes form submissions for the block.
+     *
+     * @return bool|void
+     */
+    protected function process_form() {
+        // Implementation in child/copied class
+    }
 }
 ```
 

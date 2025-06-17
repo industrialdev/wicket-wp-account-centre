@@ -222,14 +222,14 @@ class DocumentProcessor {
 - `wicket_orgman_register_document()`
 - `wicket_orgman_remove_document()`
 
-## HTMX Integration
+## Datastar Integration
 
 ### Document Upload
 ```php
 [
     'endpoints' => [
         'upload' => [
-            'url' => '/wp-htmx/organization/{uuid}/documents/upload',
+            'url' => '/wp-html/organization/{uuid}/documents/upload',
             'method' => 'POST',
             'encoding' => 'multipart/form-data',
             'target' => '#documents-list',
@@ -237,7 +237,7 @@ class DocumentProcessor {
             'indicator' => '.uploading'
         ],
         'remove' => [
-            'url' => '/wp-htmx/organization/{uuid}/documents/{doc_uuid}/remove',
+            'url' => '/wp-html/organization/{uuid}/documents/{doc_uuid}/remove',
             'method' => 'DELETE',
             'target' => '#document-{doc_uuid}',
             'swap' => 'outerHTML',

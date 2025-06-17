@@ -151,7 +151,7 @@ class OrganizationMembersAdd {
             'text' => 'Bulk Add Members',
             'classes' => 'button button-secondary',
             'attributes' => [
-                'hx-get' => '/wp-htmx/organization/{uuid}/members/bulk-add/modal',
+                'hx-get' => '/wp-html/organization/{uuid}/members/bulk-add/modal',
                 'hx-target' => '#modal-container'
             ]
         ],
@@ -171,7 +171,7 @@ Jane,Smith,jane@example.com,member'
             'sample_file' => [
                 'text' => 'Download Sample CSV',
                 'filename' => 'member-upload-template.csv',
-                'url' => '/wp-htmx/organization/{uuid}/members/download-template'
+                'url' => '/wp-html/organization/{uuid}/members/download-template'
             ]
         ]
     ]

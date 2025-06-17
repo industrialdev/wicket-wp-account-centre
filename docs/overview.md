@@ -5,23 +5,19 @@ The Account Centre (ACC) plugin serves as a bridge between WordPress and the Mem
 
 # Technical Architecture
 
-## Stack Components
+## Technical Stack
 - Advanced Custom Fields Pro: Block creation and management
 - TailwindCSS: Styling and component design. Read and re-use CSS variables in /uploads/wicket-theme/css/theme-variables.css for custom styling
-- HTMX: Dynamic UI updates and API interactions
-- Hyperscript: Enhanced client-side behaviors
+- Datastar: Dynamic UI updates and API interactions using Hypermedia
 - MDP API: Data source integration
+
+## Code Structure
+- **PSR-4 Autoloading**: The plugin uses Composer for dependency management and follows the PSR-4 standard for autoloading classes.
+- **Source Directory**: All PHP classes are located in the `src/` directory, organized by namespaces.
+- **Main Plugin File**: The entry point is `class-wicket-acc-main.php`, which initializes the plugin and its components.
 
 ## Security
 - WordPress capabilities mapping to MDP roles
 - WordPress nonce validation
 - API token management
 - REQUEST (GET/POST) data validation and sanitization according to WordPress standards
-
-## Technical Stack
-- WordPress Core
-- Advanced Custom Fields Pro (ACF)
-- TailwindCSS for styling
-- HTMX for dynamic interactions
-- Hyperscript for enhanced interactivity
-

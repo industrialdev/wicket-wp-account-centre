@@ -23,24 +23,54 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.64"
     },
+    "autoload": {
+        "psr-4": {
+            "WicketAcc\\": "src/",
+            "WicketAcc\\Admin\\": "src/admin/"
+        }
+    },
     "scripts": {
+        "dump-autoload-prod": "@php composer dump-autoload --optimize --no-dev",
+        "prefix-namespaces": "strauss",
         "post-install-cmd": [
             "@php -r \"if (getenv('COMPOSER_DEV_MODE') === '0') { system('rm -rf ./.ci'); }\"",
-            "@php -r \"if (PHP_OS_FAMILY === 'Darwin' || PHP_OS_FAMILY === 'Linux') { system('./.ci/install-hooks.sh'); } else { system('./.ci/install-hooks.bat'); }\""
+            "@php -r \"if (PHP_OS_FAMILY === 'Darwin' || PHP_OS_FAMILY === 'Linux') { system('./.ci/install-hooks.sh'); } else { system('./.ci/install-hooks.bat'); }\"",
+            "@cs:fix",
+            "@prefix-namespaces",
+            "@dump-autoload-prod"
         ],
         "post-update-cmd": [
             "@php -r \"if (getenv('COMPOSER_DEV_MODE') === '0') { system('rm -rf ./.ci'); }\"",
-            "@php -r \"if (PHP_OS_FAMILY === 'Darwin' || PHP_OS_FAMILY === 'Linux') { system('./.ci/install-hooks.sh'); } else { system('./.ci/install-hooks.bat'); }\""
+            "@php -r \"if (PHP_OS_FAMILY === 'Darwin' || PHP_OS_FAMILY === 'Linux') { system('./.ci/install-hooks.sh'); } else { system('./.ci/install-hooks.bat'); }\"",
+            "@cs:fix",
+            "@prefix-namespaces",
+            "@dump-autoload-prod"
         ],
         "version-bump": [
             "@php ./.ci/version-bump.php",
-            "@cs:fix"
+            "@cs:fix",
+            "@prefix-namespaces",
+            "@dump-autoload-prod"
         ],
-        "cs:fix": "@php -r \"system(PHP_OS_FAMILY === 'Windows' ? './.ci/php.exe ./.ci/php-cs-fixer.phar fix' : (PHP_OS_FAMILY === 'Darwin' ? './.ci/php-macos ./.ci/php-cs-fixer.phar fix' : './.ci/php-linux ./.ci/php-cs-fixer.phar fix'));\""
+        "cs:fix": "@php -r \"system(PHP_OS_FAMILY === 'Windows' ? './.ci/php.exe ./.ci/php-cs-fixer.phar fix' : (PHP_OS_FAMILY === 'Darwin' ? './.ci/php-macos ./.ci/php-cs-fixer.phar fix' : './.ci/php-linux ./.ci/php-cs-fixer.phar fix'));\"",
+        "post-autoload-dump": [
+            "strauss include-autoloader"
+        ]
     },
     "config": {
         "platform": {
             "php": "8.1.0"
+        }
+    },
+    "extra": {
+        "strauss": {
+            "target_directory": "vendor-dist",
+            "namespace_prefix": "WicketAcc\\",
+            "classmap_prefix": "WicketAcc_",
+            "constant_prefix": "WicketAcc_",
+            "packages": [],
+            "override_autoload": [],
+            "delete_vendor_packages": false
         }
     }
 }

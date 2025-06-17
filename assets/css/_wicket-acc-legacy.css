@@ -47,7 +47,8 @@
     }
 
     .myaccount-nav {
-      width: 25%;
+      width: 28%;
+        padding-right: var(--wicket-acc-padding-sm);
     }
 
     .wicket-acc-menu {
@@ -182,7 +183,7 @@
     font-weight: var(--label-md-font-weight, 400);
     text-transform: uppercase;
     line-height: var(--label-md-line-height, normal);
-    
+
     a {
       color: var(--nav-contextual-title, inherit);
       text-decoration: none;

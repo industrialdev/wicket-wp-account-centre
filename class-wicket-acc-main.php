@@ -2,13 +2,16 @@
 
 namespace WicketAcc;
 
+use WicketAcc\Admin\AdminSettings;
+use WicketAcc\Admin\WicketAccSafeguard;
+
 /*
  * @package  wicket-wp-account-centre
  * @author  Wicket Inc.
  *
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
- * Description:       Customize WooCommerce my account features to build the Wicket Account Centre. Expands it with additional blocks and pages.
+ * Description:       Custom account management system for Wicket. Provides user account features, organization management, and additional blocks and pages. Integrates with WooCommerce when available.
  * Version:           1.5.166
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
@@ -16,28 +19,13 @@ namespace WicketAcc;
  * Support:           https://wicket.io
  * Requires at least: 6.6
  * Requires PHP: 8.1
- * Requires Plugins: wicket-wp-base-plugin, woocommerce, advanced-custom-fields-pro
+ * Requires Plugins: wicket-wp-base-plugin, advanced-custom-fields-pro
  * Domain Path:       /languages
  * Text Domain:       wicket-acc
  */
 
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
-}
-
-if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')), true)) {
-    /*
-     * Show Required Plugin Notice
-     */
-    add_action('admin_notices', function () {
-        // Deactivate this plugin.
-        deactivate_plugins(__FILE__);
-
-        $wicket_acc_plugin_check = '<div id="message" class="error">class-wicket-acc-main.php
-        <p><strong>Wicket Account Centre plugin is inactive.</strong> The <a href="https://wordpress.org/extend/plugins/woocommerce/">WooCommerce plugin</a> must be active for this plugin to be used. Please install &amp; activate WooCommerce »</p></div>';
-
-        echo wp_kses_post($wicket_acc_plugin_check);
-    });
 }
 
 // Constants
@@ -52,6 +40,11 @@ define('WICKET_ACC_PLUGIN_TEMPLATE_URL', WICKET_ACC_URL . 'templates-wicket/');
 define('WICKET_ACC_USER_TEMPLATE_PATH', get_stylesheet_directory() . '/templates-wicket/');
 define('WICKET_ACC_USER_TEMPLATE_URL', get_stylesheet_directory_uri() . '/templates-wicket/');
 define('WICKET_ACC_TEMPLATES_FOLDER', 'account-centre');
+
+// Composer Autoloader
+if (file_exists(WICKET_ACC_PATH . 'vendor-dist/autoload.php')) {
+    require_once WICKET_ACC_PATH . 'vendor-dist/autoload.php';
+}
 
 /**
  * The main Wicket Account Centre class.
@@ -195,10 +188,20 @@ class WicketAcc
 
         register_activation_hook(__FILE__, [$this, 'plugin_activated']);
 
-        $this->includes();
+        // Load global helper files
+        $includes_global = [
+            'includes/helpers.php',
+            'includes/legacy.php',
+        ];
+        foreach ($includes_global as $global_file_path) {
+            if (file_exists(WICKET_ACC_PATH . $global_file_path)) {
+                include_once WICKET_ACC_PATH . $global_file_path;
+            }
+        }
 
         if (is_admin()) {
             new AdminSettings();
+            new WicketAccSafeguard(); // Initialize the safeguard class for admin tasks
         }
 
         new MdpApi();
@@ -210,76 +213,17 @@ class WicketAcc
         new Profile();
         new OrganizationProfile();
         new Assets();
-        new WooCommerce();
         new User();
+        new Account();
+
+        // Load WooCommerce integration if active
+        if (WACC()->isWooCommerceActive()) {
+            new WooCommerce();
+        }
 
         // Conditionally load these classes
         if (!is_admin()) {
             new Language();
-        }
-    }
-
-    /**
-     * Plugin includes.
-     *
-     * @return void
-     */
-    protected function includes()
-    {
-        // Includes
-        $includes_admin = [
-            'classes/admin/class-wicket-acc-admin.php',
-        ];
-
-        $include_classes = [
-            'classes/class-wicket-acc-language.php',
-            'classes/class-wicket-acc-mdp-api.php',
-            'classes/class-wicket-acc-registers.php',
-            'classes/class-wicket-acc-blocks.php',
-            'classes/class-wicket-acc-profile.php',
-            'classes/class-wicket-acc-org-profile.php',
-            'classes/class-wicket-acc-user.php',
-            'classes/class-wicket-acc-router.php',
-            'classes/class-wicket-acc-woocommerce.php',
-            'classes/class-wicket-acc-helpers.php',
-            'classes/class-wicket-acc-helpers-router.php',
-            'classes/class-wicket-acc-shortcodes.php',
-            'classes/class-wicket-acc-assets.php',
-        ];
-
-        $includes_global = [
-            'includes/helpers.php',
-            'includes/legacy.php',
-        ];
-
-        // Admin Classes
-        if (is_admin()) {
-            // Admin only
-            if (is_array($includes_admin) && !empty($includes_admin)) {
-                foreach ($includes_admin as $file) {
-                    if (file_exists(WICKET_ACC_PATH . $file)) {
-                        include_once WICKET_ACC_PATH . $file;
-                    }
-                }
-            }
-        }
-
-        // Classes
-        if (is_array($include_classes) && !empty($include_classes)) {
-            foreach ($include_classes as $file) {
-                if (file_exists(WICKET_ACC_PATH . $file)) {
-                    include_once WICKET_ACC_PATH . $file;
-                }
-            }
-        }
-
-        // Global
-        if (is_array($includes_global) && !empty($includes_global)) {
-            foreach ($includes_global as $file) {
-                if (file_exists(WICKET_ACC_PATH . $file)) {
-                    include_once WICKET_ACC_PATH . $file;
-                }
-            }
         }
     }
 

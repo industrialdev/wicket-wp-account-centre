@@ -160,20 +160,94 @@ class Helpers extends WicketAcc
     }
 
     /**
-     * Get create account page URL.
+     * Check if we're on an account page.
      *
+     * @return bool
+     */
+    public function is_account_page()
+    {
+        return is_singular('account') || is_post_type_archive('account');
+    }
+
+    /**
+     * Get account page URL.
+     *
+     * @param string $endpoint Optional. Endpoint to append to the URL.
      * @return string
      */
-    public function getCreateAccountPageURL()
+    public function get_account_page_url($endpoint = '')
     {
-        $url = get_permalink(get_page_by_path('create-account', OBJECT, 'page'));
-
-        // Not exists?
-        if (empty($url)) {
+        $account_page = get_page_by_path('account');
+        if (!$account_page) {
             return home_url();
         }
 
+        $url = get_permalink($account_page);
+        if ($endpoint) {
+            $url = trailingslashit($url) . $endpoint;
+        }
+
         return $url;
+    }
+
+    /**
+     * Get account menu items.
+     *
+     * @return array
+     */
+    public function get_account_menu_items()
+    {
+        $items = [
+            'dashboard' => [
+                'title' => __('Dashboard', 'wicket-acc'),
+                'url' => $this->get_account_page_url(),
+            ],
+            'edit-profile' => [
+                'title' => __('Edit Profile', 'wicket-acc'),
+                'url' => $this->get_account_page_url('edit-profile'),
+            ],
+            'change-password' => [
+                'title' => __('Change Password', 'wicket-acc'),
+                'url' => $this->get_account_page_url('change-password'),
+            ],
+            'organization-management' => [
+                'title' => __('Organization Management', 'wicket-acc'),
+                'url' => $this->get_account_page_url('organization-management'),
+            ],
+        ];
+
+        return apply_filters('wicket_acc_menu_items', $items);
+    }
+
+    /**
+     * Render account menu.
+     *
+     * @param string $menu_location Optional. Menu location to render.
+     * @return void
+     */
+    public function render_account_menu($menu_location = 'wicket-acc-nav')
+    {
+        if (has_nav_menu($menu_location)) {
+            wp_nav_menu([
+                'container' => false,
+                'theme_location' => $menu_location,
+                'depth' => 3,
+                'menu_id' => 'wicket-acc-menu',
+                'menu_class' => 'wicket-acc-menu',
+                'walker' => new wicket_acc_menu_walker(),
+            ]);
+        } else {
+            $items = $this->get_account_menu_items();
+            if (!empty($items)) {
+                echo '<ul class="wicket-acc-menu">';
+                foreach ($items as $item) {
+                    echo '<li class="wicket-acc-menu-item">';
+                    echo '<a href="' . esc_url($item['url']) . '">' . esc_html($item['title']) . '</a>';
+                    echo '</li>';
+                }
+                echo '</ul>';
+            }
+        }
     }
 
     /**

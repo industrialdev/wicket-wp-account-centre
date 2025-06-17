@@ -3,8 +3,8 @@
  * Base styles for Wicket ACC
  */
 
-@import "_wicket-theme-v2-compatibility.css";
 @import "_wicket-acc-variables.css";
+@import "_wicket-acc-global.css";
 @import "_wicket-acc-animations.css";
 @import "_wicket-acc-blocks-global.css";
 @import "_wicket-acc-legacy.css";

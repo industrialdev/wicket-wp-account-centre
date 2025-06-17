@@ -274,7 +274,7 @@ public function updateSectionData(
 [
     'operational_status' => [
         'title' => 'Operational Status',
-        'endpoint' => '/wp-htmx/organization/{uuid}/business-info/operational-status',
+        'endpoint' => '/wp-html/organization/{uuid}/business-info/operational-status',
         'fields' => [
             'status' => [
                 'type' => 'select',
@@ -296,7 +296,7 @@ public function updateSectionData(
     ],
     'retail_presence' => [
         'title' => 'Retail Presence',
-        'endpoint' => '/wp-htmx/organization/{uuid}/business-info/retail-presence',
+        'endpoint' => '/wp-html/organization/{uuid}/business-info/retail-presence',
         'fields' => [
             'has_physical_locations' => [
                 'type' => 'boolean',
@@ -315,7 +315,7 @@ public function updateSectionData(
     ],
     'revenue' => [
         'title' => 'Revenue Information',
-        'endpoint' => '/wp-htmx/organization/{uuid}/business-info/revenue',
+        'endpoint' => '/wp-html/organization/{uuid}/business-info/revenue',
         'fields' => [
             'range' => [
                 'type' => 'select',
@@ -334,7 +334,7 @@ public function updateSectionData(
         'sub_forms' => [
             'company_attributes' => [
                 'title' => 'Company Attributes',
-                'endpoint' => '/wp-htmx/organization/{uuid}/business-info/attributes',
+                'endpoint' => '/wp-html/organization/{uuid}/business-info/attributes',
                 'fields' => [
                     'business_type' => [
                         'type' => 'select',
@@ -350,7 +350,7 @@ public function updateSectionData(
             ],
             'certifications' => [
                 'title' => 'Certifications',
-                'endpoint' => '/wp-htmx/organization/{uuid}/business-info/certifications',
+                'endpoint' => '/wp-html/organization/{uuid}/business-info/certifications',
                 'fields' => [
                     'certifications' => [
                         'type' => 'repeater',
@@ -364,7 +364,7 @@ public function updateSectionData(
             ],
             'business_services' => [
                 'title' => 'Business Services',
-                'endpoint' => '/wp-htmx/organization/{uuid}/business-info/services',
+                'endpoint' => '/wp-html/organization/{uuid}/business-info/services',
                 'fields' => [
                     'services' => [
                         'type' => 'checkboxes',
@@ -375,7 +375,7 @@ public function updateSectionData(
             ],
             'interests' => [
                 'title' => 'Business Interests',
-                'endpoint' => '/wp-htmx/organization/{uuid}/business-info/interests',
+                'endpoint' => '/wp-html/organization/{uuid}/business-info/interests',
                 'fields' => [
                     'interests' => [
                         'type' => 'tags',

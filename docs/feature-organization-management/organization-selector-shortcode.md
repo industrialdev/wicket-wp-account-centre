@@ -81,7 +81,7 @@ function refreshContent(organizationId) {
 
 ## Performance Considerations
 - Implements caching for organization list
-- Uses HTMX for efficient updates
+- Uses Datastar for efficient updates
 - Minimizes API calls through state management
 
 ## Accessibility

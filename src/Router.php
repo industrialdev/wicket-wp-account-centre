@@ -381,12 +381,19 @@ class Router extends WicketAcc
 
         $acc_dashboard_id = get_option('options_acc_page_dashboard');
         $acc_dashboard_url = get_permalink($acc_dashboard_id);
+        $acc_dashboard_slug = get_post($acc_dashboard_id)->post_name;
 
-        $wc_page_id = wc_get_page_id('myaccount');
-        $wc_page_slug = get_post($wc_page_id)->post_name;
+        if (WACC()->isWooCommerceActive()) {
+            $wc_page_id = wc_get_page_id('myaccount');
+            $wc_page_slug = get_post($wc_page_id)->post_name;
 
-        if ($current_lang !== 'en') {
-            $wc_page_slug = $this->acc_wc_index_slugs[$current_lang];
+            if ($current_lang !== 'en') {
+                $wc_page_slug = $this->acc_wc_index_slugs[$current_lang];
+            }
+
+            if (!empty($acc_dashboard_slug)) {
+                $acc_dashboard_slug = $wc_page_slug;
+            }
         }
 
         $server_request_uri = $_SERVER['REQUEST_URI'];
@@ -399,10 +406,10 @@ class Router extends WicketAcc
             }
         }
 
-        // WooCommerce account page index only
-        if (str_contains($server_request_uri, $wc_page_slug)) {
-            // Redirect user when is on WC index page only
-            if ($server_request_uri === '/' . $wc_page_slug . '/') {
+        // Account Centre entry point index only
+        if (str_contains($server_request_uri, $acc_dashboard_slug)) {
+            // Redirect user when is on ACC index page only
+            if ($server_request_uri === '/' . $acc_dashboard_slug . '/') {
                 if (headers_sent()) {
                     // Any other more elegant way to do this?
                     echo '<meta http-equiv="refresh" content="0;url=' . $acc_dashboard_url . '" />';

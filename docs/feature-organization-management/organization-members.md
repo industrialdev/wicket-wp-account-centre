@@ -221,7 +221,7 @@ Users must have at least one of these roles to access the block:
         'placeholder' => 'Search by name or email',
         'min_chars' => 3,
         'debounce' => 300, // milliseconds
-        'endpoint' => '/wp-htmx/organization/{uuid}/members/search',
+        'endpoint' => '/wp-html/organization/{uuid}/members/search',
         'live_update' => true
     ]
 ]
@@ -394,7 +394,7 @@ public function searchMembers(string $organizationUuid, string $query): array
 - `wicket_orgman_update_member_permissions()`
 - `wicket_orgman_end_relationship_today()`
 
-### HTMX Integration
+### Datastar Integration
 
 #### Search Input
 ```html
@@ -402,7 +402,7 @@ public function searchMembers(string $organizationUuid, string $query): array
     type="search"
     name="member_search"
     placeholder="Search by name or email"
-    hx-get="/wp-htmx/organization/{uuid}/members/search"
+    hx-get="/wp-html/organization/{uuid}/members/search"
     hx-trigger="keyup changed delay:300ms, search"
     hx-target="#members-list"
     hx-indicator=".search-indicator"
@@ -486,7 +486,7 @@ public function searchMembers(string $organizationUuid, string $query): array
 ```
 
 ### Pagination Component
-- HTMX-powered pagination navigation
+- Datastar-powered pagination navigation
 - Maintains search state across pages
 - Loading indicator during page transitions
 - Disabled states for pagination limits

@@ -1,6 +1,6 @@
 <?php
 
-namespace WicketAcc;
+namespace WicketAcc\Admin;
 
 // No direct access
 defined('ABSPATH') || exit;
@@ -12,7 +12,7 @@ defined('ABSPATH') || exit;
 /**
  * Admin class of module.
  */
-class AdminSettings extends WicketAcc
+class WicketAccSafeguard extends \WicketAcc\WicketAcc
 {
     /**
      * Constructor.
