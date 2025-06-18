@@ -107,7 +107,7 @@ class init extends Blocks
                         foreach ($active_memberships as $membership) {
 
                             if (function_exists('wicket_acc_welcome_filter_memberships')) {
-                                if (wicket_acc_welcome_filter_memberships($membership)) {
+                                if (\wicket_acc_welcome_filter_memberships($membership)) {
                                     continue;
                                 }
                             }
@@ -115,7 +115,7 @@ class init extends Blocks
                             // Create a unique key based on membership name and organization (if present)
                             $membership_key = $membership['name'];
                             if ($membership['type'] == 'organization') {
-                                $org_main_info = WACC()->MdpApi->get_organization_membership_by_uuid(
+                                $org_main_info = WACC()->MdpApi->Membership->getOrganizationMembershipByUuid(
                                     $membership['organization_membership_id']
                                 );
                                 $org_uuid =
@@ -147,7 +147,7 @@ class init extends Blocks
 
                                 <?php if ($membership['type'] == 'organization'):
 
-                                    $org_main_info = WACC()->MdpApi->get_organization_membership_by_uuid(
+                                    $org_main_info = WACC()->MdpApi->Membership->getOrganizationMembershipByUuid(
                                         $membership['organization_membership_id']
                                     );
                                     $org_uuid =

@@ -35,11 +35,11 @@ ac-org-profile/
 
 3. **Language Support**
    ```php
-   $lang = defined('ICL_LANGUAGE_CODE') ? ICL_LANGUAGE_CODE : 'en';
+   $lang = WACC()->Language->getCurrentLanguage();
    ```
-   - WPML integration
-   - Default language fallback
-   - Multilingual content handling
+   - Centralized language detection (WPML, Polylang, WP User/Site Locale)
+   - Consistent language handling via `Language` class
+   - Default fallback to 'en'
 
 ### Features
 

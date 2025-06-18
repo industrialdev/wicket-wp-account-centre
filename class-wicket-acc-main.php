@@ -4,6 +4,7 @@ namespace WicketAcc;
 
 use WicketAcc\Admin\AdminSettings;
 use WicketAcc\Admin\WicketAccSafeguard;
+use WicketAcc\MdpApi\Init as MdpApi;
 
 /*
  * @package  wicket-wp-account-centre

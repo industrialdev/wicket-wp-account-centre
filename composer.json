@@ -17,8 +17,16 @@
         }
     ],
     "type": "wordpress-plugin",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:industrialdev/wicket-sdk-php.git",
+            "no-api": true
+        }
+    ],
     "require": {
-        "php": ">=8.1.0"
+        "php": ">=8.1.0",
+        "industrialdev/wicket-sdk-php": "dev-master"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.64"
@@ -34,25 +42,27 @@
         "prefix-namespaces": "strauss",
         "post-install-cmd": [
             "@php -r \"if (getenv('COMPOSER_DEV_MODE') === '0') { system('rm -rf ./.ci'); }\"",
-            "@php -r \"if (PHP_OS_FAMILY === 'Darwin' || PHP_OS_FAMILY === 'Linux') { system('./.ci/install-hooks.sh'); } else { system('./.ci/install-hooks.bat'); }\"",
             "@cs:fix",
             "@prefix-namespaces",
+            "@clean-vendor-dist",
             "@dump-autoload-prod"
         ],
         "post-update-cmd": [
             "@php -r \"if (getenv('COMPOSER_DEV_MODE') === '0') { system('rm -rf ./.ci'); }\"",
-            "@php -r \"if (PHP_OS_FAMILY === 'Darwin' || PHP_OS_FAMILY === 'Linux') { system('./.ci/install-hooks.sh'); } else { system('./.ci/install-hooks.bat'); }\"",
             "@cs:fix",
             "@prefix-namespaces",
+            "@clean-vendor-dist",
             "@dump-autoload-prod"
         ],
         "version-bump": [
             "@php ./.ci/version-bump.php",
             "@cs:fix",
             "@prefix-namespaces",
+            "@clean-vendor-dist",
             "@dump-autoload-prod"
         ],
         "cs:fix": "@php -r \"system(PHP_OS_FAMILY === 'Windows' ? './.ci/php.exe ./.ci/php-cs-fixer.phar fix' : (PHP_OS_FAMILY === 'Darwin' ? './.ci/php-macos ./.ci/php-cs-fixer.phar fix' : './.ci/php-linux ./.ci/php-cs-fixer.phar fix'));\"",
+        "clean-vendor-dist": "find vendor-dist -type d -name \".git\" -exec rm -rf {} +",
         "post-autoload-dump": [
             "strauss include-autoloader"
         ]

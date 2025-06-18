@@ -35,10 +35,10 @@ class Profile extends WicketAcc
      *
      * @return string
      */
-    public function get_wicket_avatar($avatar, $id_or_email, $size, $default, $alt)
+    public function get_wicket_avatar(string $avatar, $id_or_email, int $size, string $default, string $alt): string
     {
         // Get the profile picture URL
-        $pp_profile_picture = $this->get_profile_picture();
+        $pp_profile_picture = $this->getProfilePicture();
 
         // If the profile picture URL is not empty, return it
         if (!empty($pp_profile_picture)) {
@@ -57,10 +57,10 @@ class Profile extends WicketAcc
      *
      * @return string
      */
-    public function get_wicket_avatar_url($avatar_url, $id_or_email, $args = [])
+    public function get_wicket_avatar_url(string $avatar_url, $id_or_email, array $args = []): string
     {
         // Get the profile picture URL
-        $pp_profile_picture = $this->get_profile_picture();
+        $pp_profile_picture = $this->getProfilePicture();
 
         // If the profile picture URL is not empty, return it
         if (!empty($pp_profile_picture)) {
@@ -77,42 +77,38 @@ class Profile extends WicketAcc
      *
      * @return string|bool Profile picture URL, default one or false on error
      */
-    public function get_profile_picture($user_id = null)
+    public function getProfilePicture(?int $user_id = null): string|false
     {
         if (empty($user_id)) {
             // Get current WP user ID
             $user_id = get_current_user_id();
         }
 
-        // Guest?
-        if (is_wp_error($user_id)) {
+        // Guest or user not logged in
+        if (empty($user_id) || !is_int($user_id)) {
             return false;
         }
 
-        // Check for jpg or png
+        // Check for jpg, jpeg, png, or gif
         $extensions = $this->pp_extensions;
         $pp_profile_picture = '';
-        $pp_valid_extension = '';
 
         foreach ($extensions as $ext) {
             $file_path = $this->pp_uploads_path . $user_id . '.' . $ext;
 
             if (file_exists($file_path)) {
                 // Found it!
-                $pp_profile_picture = $file_path;
-                $pp_valid_extension = $ext;
+                $pp_profile_picture = $this->pp_uploads_url . $user_id . '.' . $ext;
                 break;
             }
         }
 
-        // Get file URL
-        if (!empty($pp_valid_extension)) {
-            $pp_profile_picture = $this->pp_uploads_url . $user_id . '.' . $pp_valid_extension;
-        }
-
         // Check if ACC option acc_profile_picture_default has an image URL set
-        if (empty($pp_profile_picture) && get_field('acc_profile_picture_default', 'option') !== '') {
-            $pp_profile_picture = get_field('acc_profile_picture_default', 'option');
+        if (empty($pp_profile_picture)) {
+            $default_picture = get_field('acc_profile_picture_default', 'option');
+            if (!empty($default_picture)) {
+                $pp_profile_picture = $default_picture;
+            }
         }
 
         // Still no image? Return the default svg
@@ -130,12 +126,16 @@ class Profile extends WicketAcc
      *
      * @return bool True if the profile picture is a custom one, false if it is the default one
      */
-    public function is_custom_profile_picture($pp_profile_picture)
+    public function isCustomProfilePicture(string $pp_profile_picture): bool
     {
         $pp_profile_picture_plugin = WICKET_ACC_URL . '/assets/images/profile-picture-default.svg';
         $pp_profile_picture_override = get_field('acc_profile_picture_default', 'option');
 
-        // Check if $pp_profile_picture is one of the two
+        // Check if $pp_profile_picture is one of the two defaults
+        if (empty($pp_profile_picture_override)) {
+            return $pp_profile_picture !== $pp_profile_picture_plugin;
+        }
+
         return $pp_profile_picture !== $pp_profile_picture_plugin && $pp_profile_picture !== $pp_profile_picture_override;
     }
 }

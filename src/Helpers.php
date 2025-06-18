@@ -62,20 +62,20 @@ class Helpers extends WicketAcc
         $locale = get_field('ac_localization', 'option');
 
         if (empty($locale)) {
-            return 'Account Centre';
+            return __('Account Centre', 'wicket-acc');
         }
 
         // Check if returned value is a valid and allowed slug
         if (!in_array($locale, ['account-centre', 'account-center'])) {
-            return 'Account Centre';
+            return __('Account Centre', 'wicket-acc');
         }
 
         // Check if we have center in the slug
         if (str_contains($locale, 'center')) {
-            return 'Account Center';
+            return __('Account Center', 'wicket-acc');
         }
 
-        return 'Account Centre';
+        return __('Account Centre', 'wicket-acc');
     }
 
     /**
@@ -234,7 +234,7 @@ class Helpers extends WicketAcc
                 'depth' => 3,
                 'menu_id' => 'wicket-acc-menu',
                 'menu_class' => 'wicket-acc-menu',
-                'walker' => new wicket_acc_menu_walker(),
+                'walker' => new \wicket_acc_menu_walker(),
             ]);
         } else {
             $items = $this->get_account_menu_items();
@@ -278,5 +278,24 @@ class Helpers extends WicketAcc
     public function getThemeURL()
     {
         return trailingslashit(get_stylesheet_directory_uri());
+    }
+
+    /**
+     * Checks if a given string is a valid UUID (RFC 4122 compliant).
+     *
+     * @param string $uuid The string to check.
+     *
+     * @return bool True if the string is a valid UUID, false otherwise.
+     */
+    public function isValidUuid(string $uuid): bool
+    {
+        // A regular expression that matches the standard UUID format.
+        // It checks for 32 hexadecimal characters, grouped by hyphens in a 8-4-4-4-12 pattern.
+        // The 'i' flag makes the match case-insensitive for hexadecimal characters (a-f/A-F).
+        // The third group's first character (version) is typically 1-5 for standard UUIDs.
+        // The fourth group's first character (variant) is typically 8, 9, a, or b for standard UUIDs.
+        $regex = '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i';
+
+        return (bool) preg_match($regex, $uuid);
     }
 }

@@ -35,7 +35,7 @@ class init extends Blocks
     {
         $wicket_settings = get_wicket_settings();
         $person_id = wicket_current_person_uuid();
-        $environment = wicket_get_option('wicket_admin_settings_environment');
+        $environment = WACC()->MdpApi->getOption('wicket_admin_settings_environment');
         $acf_ai_schema = get_field('additional_info_schema');
         $acf_resource_type = get_field('additional_info_resource_type');
         $acf_org_uuid = get_field('additional_info_organization_uuid') ?? '';

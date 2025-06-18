@@ -78,4 +78,100 @@ class User extends WicketAcc
 
         return false;
     }
+
+    /**
+     * Used if a user exists in the MDP but not WP, and you need to sync them
+     * down on a one-off basis, for example processing an order or for roster management.
+     *
+     * @param string $uuid UUID of their MDP person
+     * @param string $first_name (optional) First name override, if needed
+     * @param string $last_name  (optional) Last name override, if needed
+     * @param string $femail     (optional) Email override, if needed
+     *
+     * @return bool | int        Will return false if there was a problem, and their new
+     *                           WP user ID if successful.
+     */
+    /**
+     * Creates a WordPress user from an MDP person record if they don't already exist.
+     * Used for syncing a user on-demand (e.g., processing an order, roster management).
+     *
+     * @param string|null $uuid       UUID of the MDP person.
+     * @param string|null $firstName  Optional first name override.
+     * @param string|null $lastName   Optional last name override.
+     * @param string|null $email      Optional email override.
+     *
+     * @return int|false The new WP user ID if successful, otherwise false.
+     */
+    public function createWpUserIfNotExist(?string $uuid, ?string $firstName = null, ?string $lastName = null, ?string $email = null): int|false
+    {
+        if (empty($uuid)) {
+            WACC()->Log->warning('createWpUserIfNotExist called with an empty UUID.', ['source' => __METHOD__]);
+
+            return false;
+        }
+
+        // Check if WP user already exists by login (UUID)
+        $user = get_user_by('login', $uuid);
+        if ($user) {
+            return $user->ID;
+        }
+
+        // If overrides are not provided, fetch data from MDP
+        if (is_null($firstName) && is_null($lastName) && is_null($email)) {
+            $mdp_person = WACC()->MdpApi->Person->getPersonByUuid($uuid);
+
+            if (!$mdp_person || !isset($mdp_person->attributes)) {
+                WACC()->Log->error('Failed to retrieve person data from MDP for user creation, or data is malformed.', ['source' => __METHOD__, 'uuid' => $uuid]);
+
+                return false;
+            }
+
+            $attributes = $mdp_person->attributes;
+            $firstName = $attributes->given_name ?? null;
+            $lastName = $attributes->family_name ?? null;
+            $email = $attributes->primary_email_address ?? null;
+        }
+
+        // An email is required to create a user
+        if (empty($email)) {
+            WACC()->Log->error('Email is missing for user creation.', ['source' => __METHOD__, 'uuid' => $uuid]);
+
+            return false;
+        }
+
+        // Final check if WP user exists by email to prevent errors
+        $user = get_user_by('email', $email);
+        if ($user) {
+            return $user->ID;
+        }
+
+        // Create the WP user
+        $user_data = [
+            'user_email'   => $email,
+            'user_pass'    => wp_generate_password(16, false),
+            'user_login'   => sanitize_user($uuid),
+            'display_name' => trim($firstName . ' ' . $lastName),
+            'first_name'   => $firstName,
+            'last_name'    => $lastName,
+            'role'         => 'subscriber', // Use a default, safe role
+        ];
+
+        $user_id = wp_insert_user($user_data);
+
+        if (is_wp_error($user_id)) {
+            WACC()->Log->error(
+                'Failed to create WordPress user.',
+                [
+                    'source' => __METHOD__,
+                    'uuid' => $uuid,
+                    'email' => $email,
+                    'error_message' => $user_id->get_error_message(),
+                ]
+            );
+
+            return false;
+        }
+
+        return $user_id;
+    }
 }

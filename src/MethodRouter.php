@@ -2,6 +2,8 @@
 
 namespace WicketAcc;
 
+use WicketAcc\MdpApi\Init as MdpApi;
+
 // No direct access
 defined('ABSPATH') || exit;
 
@@ -25,6 +27,7 @@ class MethodRouter
             'OrganizationProfile' => new OrganizationProfile(),
             'Blocks'              => new Blocks(),
             'User'                => new User(),
+            'Log'                 => new Log(),
         ];
 
         // Store Helpers instance separately
@@ -36,10 +39,10 @@ class MethodRouter
      *
      * @param string $name
      *
-     * @return object
+     * @return object|Blocks|MdpApi|OrganizationProfile|Profile|User|Log
      * @throws \Exception
      */
-    public function __get($name): Blocks|MdpApi|OrganizationProfile|Profile|User
+    public function __get($name): Blocks|MdpApi|OrganizationProfile|Profile|User|Log
     {
         if (isset($this->instances[$name])) {
             return $this->instances[$name];

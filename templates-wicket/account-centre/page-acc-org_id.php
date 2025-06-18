@@ -55,7 +55,7 @@ if (in_array($wc_endpoint, $wc_endpoints)) {
 // WPML enabled?
 if (defined('ICL_SITEPRESS_VERSION')) {
     // Not in default language
-    if ($default_language !== ICL_LANGUAGE_CODE) {
+    if ($default_language !== WACC()->Language->getCurrentLanguage()) {
         // We are in a translation, get the current page translation parent
         $original_page_id = apply_filters(
             'wpml_object_id',

@@ -76,7 +76,7 @@ This is the recommended approach. Access the component as if it were a property 
 $profile_manager = WACC()->Profile;
 
 // Now use its methods
-$avatar_url = $profile_manager->get_profile_picture();
+$avatar_url = $profile_manager->getProfilePicture();
 ```
 
 **B) Method Access (`__call`)**

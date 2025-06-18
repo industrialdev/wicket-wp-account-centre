@@ -34,7 +34,7 @@ class Shortcodes extends WicketAcc
         }
 
         $org_uuid = $_GET['org_id'] ?? '';
-        $lang = defined('ICL_LANGUAGE_CODE') ? ICL_LANGUAGE_CODE : 'en';
+        $lang = WACC()->Language->getCurrentLanguage();
         $org_uuids_list = [];
 
         if (!empty($org_uuid)) {

@@ -66,7 +66,7 @@ class init extends Blocks
                         apiRoot: '<?php echo $wicket_settings['api_endpoint'] ?>',
                         accessToken: '<?php echo wicket_access_token_for_person(wicket_current_person_uuid()) ?>',
                         personId: '<?php echo wicket_current_person_uuid(); ?>',
-                        lang: "<?php echo defined('ICL_LANGUAGE_CODE') ? ICL_LANGUAGE_CODE : 'en' ?>",
+                        lang: "<?php echo WACC()->Language->getCurrentLanguage(); ?>",
                         hideLanguagePreferences: <?php echo $hide_language_preference ? 'true' : 'false' ?>,
                     }).then(function(widget) {
                         widget.listen(widget.eventTypes.SAVE_SUCCESS, function(payload) {
