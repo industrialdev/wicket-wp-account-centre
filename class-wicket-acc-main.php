@@ -212,19 +212,16 @@ class WicketAcc
         new Shortcodes();
         new Registers();
         new Profile();
+        new OrganizationManagement();
         new OrganizationProfile();
         new Assets();
         new User();
         new Account();
+        new Language();
 
         // Load WooCommerce integration if active
         if (WACC()->isWooCommerceActive()) {
             new WooCommerce();
-        }
-
-        // Conditionally load these classes
-        if (!is_admin()) {
-            new Language();
         }
     }
 

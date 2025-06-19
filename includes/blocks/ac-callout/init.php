@@ -42,9 +42,16 @@ class init extends Blocks
         $title = get_field('ac_callout_title');
         $description = get_field('ac_callout_description');
         $links = get_field('ac_callout_links');
-        $memberships = wicket_get_active_memberships();
-        $woo_memberships = woo_get_active_memberships();
         $classes = [];
+
+        // Initialize ISO code for language using WACC Language helper
+        $iso_code = WACC()->Language->getCurrentLanguage();
+
+        // Get Wicket memberships using the new MdpApi method
+        $memberships = WACC()->Membership->getCurrentPersonActiveMemberships($iso_code);
+
+        // Get WooCommerce memberships using the new MdpApi method
+        $woo_memberships = WACC()->Membership->getCurrentUserWooActiveMemberships();
 
         if ($this->is_preview) {
             if ($block_logic == '') {
@@ -78,11 +85,14 @@ class init extends Blocks
 
                     foreach ($orders as $order) {
                         foreach ($order->get_items() as $item) {
+                            /* @disregard P1013 Undefined method 'get_product_id' */
                             if (class_exists('WC_Subscriptions_Product') && \WC_Subscriptions_Product::is_subscription($item->get_product_id())) {
+                                /** @disregard P1013 Undefined method 'get_product_id' */
                                 $terms = get_the_terms($item->get_product_id(), 'product_cat');
                                 if (empty($terms) || !array_intersect($membership_cats, wp_list_pluck($terms, 'slug'))) {
                                     continue; //if it is not a membership product check the next one
                                 }
+                                /** @disregard P1013 Undefined method 'get_product_id' */
                                 $Tier = \Wicket_Memberships\Membership_Tier::get_tier_by_product_id($item->get_product_id());
                                 //if this is not a pending tier skip it since they just have a membership on hold
                                 if (empty($Tier) || is_bool($Tier)) {
@@ -92,7 +102,7 @@ class init extends Blocks
                                 if (empty($tier_approval_required)) {
                                     continue;
                                 }
-                                $iso_code = '';
+                                // $iso_code is now initialized earlier
                                 if (defined('ICL_SITEPRESS_VERSION')) {
                                     $iso_code = apply_filters('wpml_current_language', null);
                                     if (empty($iso_code)) {

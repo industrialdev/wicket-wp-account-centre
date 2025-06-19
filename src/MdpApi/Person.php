@@ -188,7 +188,7 @@ class Person extends Init
         try {
             // The Wicket SDK's fetch method with includes for profile data typically returns a resource object.
             // Assuming the SDK handles the 'include' parameters internally or this is a base fetch.
-            return $client->people->fetch($person_uuid, ['include' => 'emails,phones,addresses,identities']);
+            return $client->people->fetch($person_uuid, ['include' => 'emails,phones,addresses,identities,memberships']);
         } catch (RequestException $e) {
             $response_code = $e->hasResponse() ? $e->getResponse()->getStatusCode() : null;
             WACC()->Log->error(
@@ -435,5 +435,889 @@ class Person extends Init
         );
 
         return '';
+    }
+
+    /**
+     * Search for people by a search term.
+     *
+     * This method uses the autocomplete endpoint to find people based on a query term.
+     * It's designed for front-end search displays where a specific UUID is not known.
+     *
+     * @param string $searchTerm The query term (e.g., 'Rob Ferguson', 'rob@example.com').
+     * @param array  $args       (Optional) Additional arguments. Currently supports 'limit'.
+     *                           - 'limit' (int): Maximum number of results to return. Defaults to 100.
+     *
+     * @return array|false An array of person data on success, false on failure.
+     *                     Each person array contains 'id', 'full_name', and 'primary_email_address'.
+     */
+    public function searchPeople(string $searchTerm, array $args = []): array|false
+    {
+        if (empty($searchTerm)) {
+            WACC()->Log->warning('Search term is empty.', ['source' => __METHOD__]);
+
+            return false;
+        }
+
+        $defaults = [
+            'limit' => 100,
+        ];
+        $args = wp_parse_args($args, $defaults);
+
+        $client = $this->initClient();
+        if (!$client) {
+            return false; // initClient() logs the error
+        }
+
+        $queryParams = [
+            'query' => [
+                'query' => $searchTerm,
+                'fields' => [
+                    'people' => 'full_name,primary_email_address',
+                ],
+                'filter' => [
+                    'resource_type' => 'people',
+                ],
+                'page' => [
+                    'size' => (int) $args['limit'],
+                ],
+            ],
+        ];
+
+        try {
+            $response = $client->get('/search/autocomplete', $queryParams);
+
+            if (empty($response['included'])) {
+                WACC()->Log->info(
+                    'Person search returned no results.',
+                    ['source' => __METHOD__, 'searchTerm' => $searchTerm]
+                );
+
+                return []; // Return empty array for no results, which is not an error
+            }
+
+            $formattedResults = [];
+            foreach ($response['included'] as $result) {
+                if ($result['type'] === 'people') {
+                    $formattedResults[] = [
+                        'id' => $result['id'],
+                        'full_name' => $result['attributes']['full_name'] ?? '',
+                        'primary_email_address' => $result['attributes']['primary_email_address'] ?? '',
+                    ];
+                }
+            }
+
+            return $formattedResults;
+        } catch (RequestException $e) {
+            $statusCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 'N/A';
+            $errorMessageDetail = 'RequestException while searching people.';
+            if ($e->hasResponse()) {
+                try {
+                    $errorBody = json_decode((string) $e->getResponse()->getBody(), true, 512, JSON_THROW_ON_ERROR);
+                    $errorMessageDetail = $errorBody['errors'][0]['detail'] ?? $errorBody['errors'][0]['title'] ?? $e->getMessage();
+                } catch (\JsonException $jsonEx) {
+                    $errorMessageDetail = 'Could not decode API error response: ' . $jsonEx->getMessage();
+                }
+            }
+            $logContext = [
+                'source'          => __METHOD__,
+                'searchTerm'      => $searchTerm,
+                'args'            => $args,
+                'status_code'     => $statusCode,
+                'response_body'   => $e->hasResponse() ? (string) $e->getResponse()->getBody() : null,
+                'exception_trace' => $e->getTraceAsString(),
+            ];
+            WACC()->Log->error($errorMessageDetail, $logContext);
+
+            return false;
+        } catch (Exception $e) {
+            $logContext = [
+                'source'          => __METHOD__,
+                'searchTerm'      => $searchTerm,
+                'args'            => $args,
+                'exception_class' => get_class($e),
+                'exception_trace' => $e->getTraceAsString(),
+            ];
+            WACC()->Log->error('Generic Exception while searching people: ' . $e->getMessage(), $logContext);
+
+            return false;
+        }
+    }
+
+    /**
+     * Get all "connections" (relationships) of a Wicket person.
+     *
+     * @return array|false Array of person connections on success, false on failure.
+     */
+    public function getPersonConnections()
+    {
+        $personId = $this->getCurrentPersonUuid();
+        if (!$personId) {
+            WACC()->Log->warning('No person ID available to fetch connections', ['source' => __METHOD__]);
+
+            return false;
+        }
+
+        static $connections = null;
+
+        if (is_null($connections)) {
+            try {
+                $client = $this->initClient();
+                if (!$client) {
+                    return false;
+                }
+
+                $response = $client->get("people/{$personId}/connections", [
+                    'query' => [
+                        'filter' => [
+                            'connection_type_eq' => 'all',
+                        ],
+                        'sort' => '-created_at',
+                    ],
+                ]);
+
+                $connections = $response['data'] ?? false;
+
+                if (empty($connections)) {
+                    WACC()->Log->info('No connections found for person', [
+                        'source' => __METHOD__,
+                        'personId' => $personId,
+                    ]);
+                }
+            } catch (RequestException $e) {
+                $statusCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 'N/A';
+                WACC()->Log->error("Error fetching person connections (HTTP {$statusCode}): " . $e->getMessage(), [
+                    'source' => __METHOD__,
+                    'personId' => $personId,
+                    'statusCode' => $statusCode,
+                ]);
+
+                return false;
+            } catch (Exception $e) {
+                WACC()->Log->error('Unexpected error fetching person connections: ' . $e->getMessage(), [
+                    'source' => __METHOD__,
+                    'personId' => $personId,
+                    'exception' => get_class($e),
+                ]);
+
+                return false;
+            }
+        }
+        if ($connections) {
+            return $connections;
+        }
+    }
+
+    /**
+     * Get all "connections" (relationships) of a specific Wicket person by their UUID.
+     *
+     * @param string $personUuid The UUID of the person to fetch connections for.
+     * @return array|false Array of person connections on success, false on failure.
+     */
+    public function getPersonConnectionsById(string $personUuid)
+    {
+        if (empty($personUuid)) {
+            WACC()->Log->warning('No person UUID provided to fetch connections', ['source' => __METHOD__]);
+
+            return false;
+        }
+
+        static $connectionsCache = [];
+
+        if (!isset($connectionsCache[$personUuid])) {
+            try {
+                $client = $this->initClient();
+                if (!$client) {
+                    return false;
+                }
+
+                $response = $client->get("people/{$personUuid}/connections", [
+                    'query' => [
+                        'filter' => [
+                            'connection_type_eq' => 'all',
+                        ],
+                        'sort' => '-created_at',
+                    ],
+                ]);
+
+                $connections = $response['data'] ?? false;
+
+                if (empty($connections)) {
+                    WACC()->Log->info('No connections found for specified person', [
+                        'source' => __METHOD__,
+                        'personUuid' => $personUuid,
+                    ]);
+                    $connectionsCache[$personUuid] = false;
+                } else {
+                    $connectionsCache[$personUuid] = $connections;
+                }
+            } catch (RequestException $e) {
+                $statusCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 'N/A';
+                WACC()->Log->error("Error fetching person connections (HTTP {$statusCode}): " . $e->getMessage(), [
+                    'source' => __METHOD__,
+                    'personUuid' => $personUuid,
+                    'statusCode' => $statusCode,
+                ]);
+
+                return false;
+            } catch (Exception $e) {
+                WACC()->Log->error('Unexpected error fetching person connections: ' . $e->getMessage(), [
+                    'source' => __METHOD__,
+                    'personUuid' => $personUuid,
+                    'exception' => get_class($e),
+                ]);
+
+                return false;
+            }
+        }
+
+        return $connectionsCache[$personUuid];
+    }
+
+    /**
+     * Create a basic person record in MDP.
+     *
+     * @param string $givenName The person's given name.
+     * @param string $familyName The person's family name.
+     * @param ?string $email Optional email address.
+     * @param ?string $password Optional password. Must be provided with passwordConfirmation.
+     * @param ?string $passwordConfirmation Optional password confirmation. Must match password.
+     * @param ?string $jobTitle Optional job title.
+     * @param ?string $gender Optional gender.
+     * @param array $additionalDataFields Optional additional data fields (key-value pairs).
+     * @return array|false The created person data array on success, false on failure.
+     */
+    public function createPerson(
+        string $givenName,
+        string $familyName,
+        ?string $email = null,
+        ?string $password = null,
+        ?string $passwordConfirmation = null,
+        ?string $jobTitle = null,
+        ?string $gender = null,
+        array $additionalDataFields = []
+    ): array|false {
+        $client = $this->initClient();
+        if (!$client) {
+            WACC()->Log->error('Failed to initialize API client.', ['source' => __METHOD__]);
+
+            return false;
+        }
+
+        $attributes = [
+            'given_name' => $givenName,
+            'family_name' => $familyName,
+        ];
+
+        if (!empty($jobTitle)) {
+            $attributes['job_title'] = $jobTitle;
+        }
+
+        if (!empty($gender)) {
+            $attributes['gender'] = $gender;
+        }
+
+        if (!empty($password) && !empty($passwordConfirmation)) {
+            if ($password === $passwordConfirmation) {
+                $attributes['user']['password'] = $password;
+                $attributes['user']['password_confirmation'] = $passwordConfirmation;
+            } else {
+                WACC()->Log->warning('Password and confirmation do not match during person creation.', [
+                    'source' => __METHOD__,
+                    'givenName' => $givenName, // Avoid logging sensitive data like full name if possible
+                    'familyNameInitial' => !empty($familyName) ? substr($familyName, 0, 1) : '',
+                ]);
+
+                return false; // Passwords don't match, fail creation
+            }
+        }
+
+        if (!empty($additionalDataFields)) {
+            $attributes['data_fields'] = $additionalDataFields;
+        }
+
+        $payload = [
+            'data' => [
+                'type' => 'people',
+                'attributes' => $attributes,
+            ],
+        ];
+
+        if (!empty($email)) {
+            // This structure for creating a related email with attributes within the relationship
+            // is specific to how the Wicket API might handle it. Standard JSON:API is different.
+            $payload['data']['relationships']['emails']['data'][] = [
+                'type' => 'emails',
+                'attributes' => [
+                    'address' => $email,
+                    'is_primary' => true, // Assume new email should be primary
+                ],
+            ];
+        }
+
+        try {
+            $personResponse = $client->post('people', ['json' => $payload]);
+
+            // Assuming the SDK client returns an array structure directly
+            return $personResponse;
+        } catch (RequestException $e) {
+            $errorDetails = [
+                'source' => __METHOD__,
+                'message' => $e->getMessage(),
+            ];
+            if ($e->hasResponse()) {
+                $errorDetails['statusCode'] = $e->getResponse()->getStatusCode();
+                // getContents() can only be called once on a stream, be careful if needing to re-read
+                $errorDetails['responseBody'] = $e->getResponse()->getBody()->getContents();
+            }
+            WACC()->Log->error('RequestException while creating person.', $errorDetails);
+
+            return false;
+        } catch (Exception $e) {
+            WACC()->Log->error('Generic Exception while creating person.', [
+                'source' => __METHOD__,
+                'message' => $e->getMessage(),
+                'exception_type' => get_class($e),
+            ]);
+
+            return false;
+        }
+    }
+
+    /**
+     * Update multiple profile attributes of a Wicket person.
+     *
+     * Example of $fieldsToUpdate array:
+     * [
+     *  'attributes' => ['family_name' => 'Smith', 'job_title' => 'Developer'],
+     *  'addresses' => [ ['uuid' => 'addr_uuid_1', 'city' => 'New York'], ['type' => 'home', 'address1' => '123 Main St'] ],
+     *  'phones' => [ ['uuid' => 'phone_uuid_1', 'number' => '+15551234567'], ['type' => 'mobile', 'number' => '+15557654321'] ],
+     *  'emails' => [ ['uuid' => 'email_uuid_1', 'address' => 'new@example.com'], ['type' => 'work', 'address' => 'work@example.com'] ],
+     *  'web_addresses' => [ ['uuid' => 'web_uuid_1', 'address' => 'https://new.example.com'] ]
+     * ]
+     *
+     * @param string $personUuid The UUID of the person to update.
+     * @param array $fieldsToUpdate An array containing the fields to update, categorized by type (attributes, addresses, etc.).
+     * @return array ['success' => bool, 'error' => string|array, 'data' => array (person data on attribute success)]
+     */
+    public function updatePerson(string $personUuid, array $fieldsToUpdate): array
+    {
+        $client = $this->initClient();
+        if (!$client) {
+            return ['success' => false, 'error' => 'API client initialization failed.'];
+        }
+
+        // Fetch current person data. getPersonByUuid returns an array or false.
+        $currentPersonData = $this->getPersonByUuid($personUuid);
+        if (!$currentPersonData) {
+            return ['success' => false, 'error' => sprintf(__('Wicket person with UUID %s not found.', 'wicket-acc'), $personUuid)];
+        }
+
+        $errors = [];
+        $updatedPersonData = null;
+
+        // Update direct person attributes
+        if (isset($fieldsToUpdate['attributes']) && is_array($fieldsToUpdate['attributes'])) {
+            $attributesPayload = [];
+            $allowedDirectAttributes = [
+                'additional_name',
+                'family_name',
+                'given_name',
+                'honorific_prefix',
+                'honorific_suffix',
+                'job_function',
+                'job_level',
+                'job_title',
+                'nickname',
+                'status',
+                'suffix',
+                'data_fields',
+            ];
+
+            foreach ($fieldsToUpdate['attributes'] as $key => $value) {
+                if (in_array($key, $allowedDirectAttributes)) {
+                    $attributesPayload[$key] = $value;
+                } else {
+                    WACC()->Log->info(
+                        sprintf("Attribute '%s' is not directly updatable on Person object and was ignored.", $key),
+                        ['source' => __METHOD__, 'person_uuid' => $personUuid]
+                    );
+                }
+            }
+
+            if (!empty($attributesPayload)) {
+                // Assuming wicket_filter_null_and_blank is a global helper. If not, this needs attention.
+                if (function_exists('wicket_filter_null_and_blank')) {
+                    $attributesPayload = wicket_filter_null_and_blank($attributesPayload);
+                }
+
+                if (!empty($attributesPayload)) { // Ensure there's something to send after filtering
+                    $payload = [
+                        'data' => [
+                            'id' => $personUuid,
+                            'type' => 'people',
+                            'attributes' => $attributesPayload,
+                        ],
+                    ];
+
+                    try {
+                        $updatedPersonData = $client->patch("people/{$personUuid}", ['json' => $payload]);
+                    } catch (RequestException $e) {
+                        $errorMsg = 'Failed to update person attributes.';
+                        $context = ['source' => __METHOD__, 'person_uuid' => $personUuid, 'payload' => $payload];
+                        if ($e->hasResponse()) {
+                            $context['statusCode'] = $e->getResponse()->getStatusCode();
+                            $context['responseBody'] = $e->getResponse()->getBody()->getContents();
+                        }
+                        WACC()->Log->error($errorMsg, $context);
+                        $errors[] = $errorMsg . ' ' . $e->getMessage();
+                    } catch (Exception $e) {
+                        WACC()->Log->error('Generic exception updating person attributes.', ['source' => __METHOD__, 'person_uuid' => $personUuid, 'message' => $e->getMessage()]);
+                        $errors[] = 'An unexpected error occurred while updating attributes: ' . $e->getMessage();
+                    }
+                }
+            }
+        }
+
+        // Update related entities (addresses, phones, emails, web_addresses)
+        // These will call refactored methods like $this->updatePersonAddressesInternal, etc.
+        // For now, assuming they exist or will be created. The original function names are used as placeholders for refactoring targets.
+
+        // Call internal method to update addresses
+        if (isset($fieldsToUpdate['addresses']) && is_array($fieldsToUpdate['addresses'])) {
+            $addressesResult = $this->updatePersonAddressesInternal($personUuid, $fieldsToUpdate['addresses']);
+            if (!$addressesResult['success']) {
+                $errors = array_merge($errors, $addressesResult['error']);
+            }
+        }
+
+        // Call internal method to update phones
+        if (isset($fieldsToUpdate['phones']) && is_array($fieldsToUpdate['phones'])) {
+            $phonesResult = $this->updatePersonPhonesInternal($personUuid, $fieldsToUpdate['phones']);
+            if (!$phonesResult['success']) {
+                $errors = array_merge($errors, $phonesResult['error']);
+            }
+        }
+
+        // Call internal method to update emails
+        if (isset($fieldsToUpdate['emails']) && is_array($fieldsToUpdate['emails'])) {
+            $emailsResult = $this->updatePersonEmailsInternal($personUuid, $fieldsToUpdate['emails']);
+            if (!$emailsResult['success']) {
+                $errors = array_merge($errors, $emailsResult['error']);
+            }
+        }
+
+        // Call internal method to update web addresses
+        if (isset($fieldsToUpdate['web_addresses']) && is_array($fieldsToUpdate['web_addresses'])) {
+            $webAddressesResult = $this->updatePersonWebAddressesInternal($personUuid, $fieldsToUpdate['web_addresses']);
+            if (!$webAddressesResult['success']) {
+                $errors = array_merge($errors, $webAddressesResult['error']);
+            }
+        }
+
+        if (!empty($errors)) {
+            $response['success'] = false;
+            $response['error'] = implode('; ', $errors);
+            $response['data'] = ['errors_detail' => $errors]; // Provide detailed errors if needed
+
+            return $response;
+        }
+
+        if (empty($errors)) {
+            return ['success' => true, 'data' => $updatedPersonData ?? $currentPersonData]; // Return updated or current person data
+        }
+
+        return ['success' => false, 'error' => $errors, 'data' => null];
+    }
+
+    /**
+     * Update or create addresses for a person.
+     *
+     * @param string $personUuid The UUID of the person.
+     * @param array $addressesInput Array of address data. Each item should be an associative array.
+     *                            If 'uuid' is present, address is updated. Otherwise, it's created.
+     *                            Example item: ['uuid' => 'xyz', 'type' => 'home', 'address1' => '123 Main St', ...]
+     * @return array ['success' => bool, 'error' => array of error messages]
+     */
+    protected function updatePersonAddressesInternal(string $personUuid, array $addressesInput): array
+    {
+        $client = $this->initClient();
+        if (!$client) {
+            return ['success' => false, 'error' => ['API client initialization failed.']];
+        }
+
+        $errors = [];
+
+        foreach ($addressesInput as $addressItem) {
+            if (!is_array($addressItem)) {
+                $errors[] = 'Invalid address item data provided; not an array.';
+                continue;
+            }
+
+            $attributes = $addressItem;
+            unset($attributes['uuid']); // Remove UUID from attributes payload
+
+            // Sanitize attributes if the global helper exists
+            if (function_exists('wicket_filter_null_and_blank')) {
+                $attributes = wicket_filter_null_and_blank($attributes);
+            }
+
+            if (empty($attributes)) {
+                // Nothing to update or create if all attributes are blank after filtering
+                continue;
+            }
+
+            $addressUuid = $addressItem['uuid'] ?? null;
+
+            try {
+                if (!empty($addressUuid)) {
+                    // Update existing address
+                    $payload = [
+                        'data' => [
+                            'id' => $addressUuid,
+                            'type' => 'addresses',
+                            'attributes' => $attributes,
+                        ],
+                    ];
+                    $client->patch("people/{$personUuid}/addresses/{$addressUuid}", ['json' => $payload]);
+                } else {
+                    // Create new address
+                    $payload = [
+                        'data' => [
+                            'type' => 'addresses',
+                            'attributes' => $attributes,
+                        ],
+                    ];
+                    $client->post("people/{$personUuid}/addresses", ['json' => $payload]);
+                }
+            } catch (RequestException $e) {
+                $action = empty($addressUuid) ? 'create' : 'update';
+                $errorMsg = sprintf('Failed to %s address (UUID: %s).', $action, $addressUuid ?? 'N/A');
+                $context = [
+                    'source' => __METHOD__,
+                    'person_uuid' => $personUuid,
+                    'address_uuid' => $addressUuid,
+                    'payload' => $payload,
+                    'original_exception' => $e->getMessage(),
+                ];
+                if ($e->hasResponse()) {
+                    $context['statusCode'] = $e->getResponse()->getStatusCode();
+                    $context['responseBody'] = $e->getResponse()->getBody()->getContents();
+                }
+                WACC()->Log->error($errorMsg, $context);
+                $errors[] = $errorMsg . ' API Error: ' . $e->getMessage();
+            } catch (Exception $e) {
+                $action = empty($addressUuid) ? 'create' : 'update';
+                $errorMsg = sprintf('Generic exception during address %s (UUID: %s).', $action, $addressUuid ?? 'N/A');
+                WACC()->Log->error($errorMsg, ['source' => __METHOD__, 'person_uuid' => $personUuid, 'address_uuid' => $addressUuid, 'message' => $e->getMessage()]);
+                $errors[] = $errorMsg . ' ' . $e->getMessage();
+            }
+        }
+
+        if (empty($errors)) {
+            return ['success' => true, 'error' => []];
+        }
+
+        return ['success' => false, 'error' => $errors];
+    }
+
+    /**
+     * Update or create phone numbers for a person.
+     *
+     * @param string $personUuid The UUID of the person.
+     * @param array $phonesInput Array of phone data. Each item should be an associative array.
+     *                           If 'uuid' is present, phone is updated. Otherwise, it's created.
+     *                           Example item: ['uuid' => 'xyz', 'type' => 'work', 'number' => '+15551234567']
+     * @return array ['success' => bool, 'error' => array of error messages]
+     */
+    protected function updatePersonPhonesInternal(string $personUuid, array $phonesInput): array
+    {
+        $client = $this->initClient();
+        if (!$client) {
+            return ['success' => false, 'error' => ['API client initialization failed.']];
+        }
+
+        $errors = [];
+        $readOnlyAttributes = [
+            'uuid', 'type_external_id', 'number_national_format', 'number_international_format',
+            'extension', 'country_code_number', 'created_at', 'updated_at', 'deleted_at',
+            'primary_sms', 'consent', 'consent_third_party', 'consent_directory',
+        ];
+
+        foreach ($phonesInput as $phoneItem) {
+            if (!is_array($phoneItem)) {
+                $errors[] = 'Invalid phone item data provided; not an array.';
+                continue;
+            }
+
+            $attributes = $phoneItem;
+            $phoneUuid = $phoneItem['uuid'] ?? null;
+
+            // Remove read-only attributes for PATCH and UUID from attributes payload
+            foreach ($readOnlyAttributes as $key) {
+                unset($attributes[$key]);
+            }
+            if ($phoneUuid) { // If it's an update, uuid is in $phoneUuid, not needed in attributes
+                unset($attributes['uuid']);
+            }
+
+            // Sanitize attributes if the global helper exists
+            if (function_exists('wicket_filter_null_and_blank')) {
+                $attributes = wicket_filter_null_and_blank($attributes);
+            }
+
+            if (empty($attributes)) {
+                continue; // Nothing to update or create
+            }
+
+            try {
+                if (!empty($phoneUuid)) {
+                    // Update existing phone
+                    $payload = [
+                        'data' => [
+                            'id' => $phoneUuid,
+                            'type' => 'phones',
+                            'attributes' => $attributes,
+                        ],
+                    ];
+                    $client->patch("phones/{$phoneUuid}", ['json' => $payload]);
+                } else {
+                    // Create new phone
+                    $payload = [
+                        'data' => [
+                            'type' => 'phones',
+                            'attributes' => $attributes, // Ensure 'type', 'number', 'primary' are set as needed
+                        ],
+                    ];
+                    $client->post("people/{$personUuid}/phones", ['json' => $payload]);
+                }
+            } catch (RequestException $e) {
+                $action = empty($phoneUuid) ? 'create' : 'update';
+                $errorMsg = sprintf('Failed to %s phone (UUID: %s).', $action, $phoneUuid ?? 'N/A');
+                $context = [
+                    'source' => __METHOD__,
+                    'person_uuid' => $personUuid,
+                    'phone_uuid' => $phoneUuid,
+                    'payload' => $payload,
+                    'original_exception' => $e->getMessage(),
+                ];
+                if ($e->hasResponse()) {
+                    $context['statusCode'] = $e->getResponse()->getStatusCode();
+                    $context['responseBody'] = $e->getResponse()->getBody()->getContents();
+                }
+                WACC()->Log->error($errorMsg, $context);
+                $errors[] = $errorMsg . ' API Error: ' . $e->getMessage();
+            } catch (Exception $e) {
+                $action = empty($phoneUuid) ? 'create' : 'update';
+                $errorMsg = sprintf('Generic exception during phone %s (UUID: %s).', $action, $phoneUuid ?? 'N/A');
+                WACC()->Log->error($errorMsg, ['source' => __METHOD__, 'person_uuid' => $personUuid, 'phone_uuid' => $phoneUuid, 'message' => $e->getMessage()]);
+                $errors[] = $errorMsg . ' ' . $e->getMessage();
+            }
+        }
+
+        if (empty($errors)) {
+            return ['success' => true, 'error' => []];
+        }
+
+        return ['success' => false, 'error' => $errors];
+    }
+
+    /**
+     * Update or create email addresses for a person.
+     *
+     * @param string $personUuid The UUID of the person.
+     * @param array $emailsInput Array of email data. Each item should be an associative array.
+     *                           If 'uuid' is present, email is updated. Otherwise, it's created.
+     *                           Example item: ['uuid' => 'xyz', 'type' => 'work', 'address' => 'test@example.com', 'primary' => true]
+     * @return array ['success' => bool, 'error' => array of error messages]
+     */
+    protected function updatePersonEmailsInternal(string $personUuid, array $emailsInput): array
+    {
+        $client = $this->initClient();
+        if (!$client) {
+            return ['success' => false, 'error' => ['API client initialization failed.']];
+        }
+
+        $errors = [];
+        $readOnlyAttributes = [
+            'uuid', 'type_external_id', 'localpart', 'domain', 'email', 'unique',
+            'created_at', 'updated_at', 'deleted_at', 'consent', 'consent_third_party', 'consent_directory',
+        ];
+
+        foreach ($emailsInput as $emailItem) {
+            if (!is_array($emailItem)) {
+                $errors[] = 'Invalid email item data provided; not an array.';
+                continue;
+            }
+
+            $attributes = $emailItem;
+            $emailUuid = $emailItem['uuid'] ?? null;
+
+            // Remove read-only attributes for PATCH and UUID from attributes payload
+            foreach ($readOnlyAttributes as $key) {
+                unset($attributes[$key]);
+            }
+            if ($emailUuid) { // If it's an update, uuid is in $emailUuid, not needed in attributes
+                unset($attributes['uuid']);
+            }
+
+            // Sanitize attributes if the global helper exists
+            if (function_exists('wicket_filter_null_and_blank')) {
+                $attributes = wicket_filter_null_and_blank($attributes);
+            }
+
+            if (empty($attributes)) {
+                continue; // Nothing to update or create
+            }
+
+            try {
+                if (!empty($emailUuid)) {
+                    // Update existing email
+                    $payload = [
+                        'data' => [
+                            'id' => $emailUuid,
+                            'type' => 'emails',
+                            'attributes' => $attributes,
+                        ],
+                    ];
+                    $client->patch("emails/{$emailUuid}", ['json' => $payload]);
+                } else {
+                    // Create new email
+                    $payload = [
+                        'data' => [
+                            'type' => 'emails',
+                            'attributes' => $attributes, // Ensure 'address', 'type', 'primary', 'unique' are set as needed
+                        ],
+                    ];
+                    $client->post("people/{$personUuid}/emails", ['json' => $payload]);
+                }
+            } catch (RequestException $e) {
+                $action = empty($emailUuid) ? 'create' : 'update';
+                $errorMsg = sprintf('Failed to %s email (UUID: %s).', $action, $emailUuid ?? 'N/A');
+                $context = [
+                    'source' => __METHOD__,
+                    'person_uuid' => $personUuid,
+                    'email_uuid' => $emailUuid,
+                    'payload' => $payload,
+                    'original_exception' => $e->getMessage(),
+                ];
+                if ($e->hasResponse()) {
+                    $context['statusCode'] = $e->getResponse()->getStatusCode();
+                    $context['responseBody'] = $e->getResponse()->getBody()->getContents();
+                }
+                WACC()->Log->error($errorMsg, $context);
+                $errors[] = $errorMsg . ' API Error: ' . $e->getMessage();
+            } catch (Exception $e) {
+                $action = empty($emailUuid) ? 'create' : 'update';
+                $errorMsg = sprintf('Generic exception during email %s (UUID: %s).', $action, $emailUuid ?? 'N/A');
+                WACC()->Log->error($errorMsg, ['source' => __METHOD__, 'person_uuid' => $personUuid, 'email_uuid' => $emailUuid, 'message' => $e->getMessage()]);
+                $errors[] = $errorMsg . ' ' . $e->getMessage();
+            }
+        }
+
+        if (empty($errors)) {
+            return ['success' => true, 'error' => []];
+        }
+
+        return ['success' => false, 'error' => $errors];
+    }
+
+    /**
+     * Update or create web addresses for a person.
+     *
+     * @param string $personUuid The UUID of the person.
+     * @param array $webAddressesInput Array of web address data. Each item should be an associative array.
+     *                                 If 'uuid' is present, web address is updated. Otherwise, it's created.
+     *                                 Example item: ['uuid' => 'xyz', 'type' => 'website', 'address' => 'https://example.com']
+     * @return array ['success' => bool, 'error' => array of error messages]
+     */
+    protected function updatePersonWebAddressesInternal(string $personUuid, array $webAddressesInput): array
+    {
+        $client = $this->initClient();
+        if (!$client) {
+            return ['success' => false, 'error' => ['API client initialization failed.']];
+        }
+
+        $errors = [];
+        $readOnlyAttributes = [
+            'uuid', 'type_external_id', 'data', 'created_at', 'updated_at', 'deleted_at',
+            'consent', 'consent_third_party', 'consent_directory',
+        ];
+
+        foreach ($webAddressesInput as $webAddressItem) {
+            if (!is_array($webAddressItem)) {
+                $errors[] = 'Invalid web address item data provided; not an array.';
+                continue;
+            }
+
+            $attributes = $webAddressItem;
+            $webAddressUuid = $webAddressItem['uuid'] ?? null;
+
+            // Remove read-only attributes for PATCH and UUID from attributes payload
+            foreach ($readOnlyAttributes as $key) {
+                unset($attributes[$key]);
+            }
+            if ($webAddressUuid) { // If it's an update, uuid is in $webAddressUuid, not needed in attributes
+                unset($attributes['uuid']);
+            }
+
+            // Sanitize attributes if the global helper exists
+            if (function_exists('wicket_filter_null_and_blank')) {
+                $attributes = wicket_filter_null_and_blank($attributes);
+            }
+
+            if (empty($attributes)) {
+                continue; // Nothing to update or create
+            }
+
+            try {
+                if (!empty($webAddressUuid)) {
+                    // Update existing web address
+                    $payload = [
+                        'data' => [
+                            'id' => $webAddressUuid,
+                            'type' => 'web-addresses', // API uses 'web-addresses'
+                            'attributes' => $attributes,
+                        ],
+                    ];
+                    $client->patch("web-addresses/{$webAddressUuid}", ['json' => $payload]);
+                } else {
+                    // Create new web address
+                    $payload = [
+                        'data' => [
+                            'type' => 'web-addresses', // API uses 'web-addresses'
+                            'attributes' => $attributes, // Ensure 'address', 'type' are set as needed
+                        ],
+                    ];
+                    $client->post("people/{$personUuid}/web-addresses", ['json' => $payload]);
+                }
+            } catch (RequestException $e) {
+                $action = empty($webAddressUuid) ? 'create' : 'update';
+                $errorMsg = sprintf('Failed to %s web address (UUID: %s).', $action, $webAddressUuid ?? 'N/A');
+                $context = [
+                    'source' => __METHOD__,
+                    'person_uuid' => $personUuid,
+                    'web_address_uuid' => $webAddressUuid,
+                    'payload' => $payload,
+                    'original_exception' => $e->getMessage(),
+                ];
+                if ($e->hasResponse()) {
+                    $context['statusCode'] = $e->getResponse()->getStatusCode();
+                    $context['responseBody'] = $e->getResponse()->getBody()->getContents();
+                }
+                WACC()->Log->error($errorMsg, $context);
+                $errors[] = $errorMsg . ' API Error: ' . $e->getMessage();
+            } catch (Exception $e) {
+                $action = empty($webAddressUuid) ? 'create' : 'update';
+                $errorMsg = sprintf('Generic exception during web address %s (UUID: %s).', $action, $webAddressUuid ?? 'N/A');
+                WACC()->Log->error($errorMsg, ['source' => __METHOD__, 'person_uuid' => $personUuid, 'web_address_uuid' => $webAddressUuid, 'message' => $e->getMessage()]);
+                $errors[] = $errorMsg . ' ' . $e->getMessage();
+            }
+        }
+
+        if (empty($errors)) {
+            return ['success' => true, 'error' => []];
+        }
+
+        return ['success' => false, 'error' => $errors];
     }
 }

@@ -20,125 +20,51 @@ defined('ABSPATH') || exit;
 /**
  * Returns active memberships from wicket API.
  *
- * @deprecated 1.5.0 Pending reimplementation as a method
- * @param string $iso_code (Optional) ISO code for the language: en, fr, es, etc.
- *
- * @return array $memberships slug and id
+ * @deprecated 1.6.0 Available as method WACC()->Membership->getCurrentPersonActiveMemberships()
  */
 function wicket_get_active_memberships($iso_code = 'en')
 {
-    $all_summaries = [];
-    $membership_summary = [];
-
-    $plan_lookup_slugs = [];
-    $plan_lookup_ids = [];
-
-    $wicket_memberships = wicket_get_current_person_memberships();
-
-    if ($wicket_memberships) {
-        $helper = new Wicket\ResponseHelper($wicket_memberships);
-
-        foreach ($helper->data as $entry) {
-            $membership_tier = $helper->getIncludedRelationship($entry, 'membership');
-            if (!$membership_tier) {
-                continue;
-            }
-            if ($entry['attributes']['status'] != 'Active') {
-                continue;
-            }
-            $entry_summary = [
-                'membership_category' => $entry['attributes']['membership_category'],
-                'starts_at'           => $entry['attributes']['starts_at'],
-                'ends_at'             => $entry['attributes']['ends_at'],
-                'name'                => $membership_tier['attributes']['name_' . $iso_code],
-                'type'                => $membership_tier['attributes']['type'],
-            ];
-
-            if (isset($entry['relationships']['organization_membership']['data']['id'])) {
-                $entry_summary['organization_membership_id'] = $entry['relationships']['organization_membership']['data']['id'];
-            }
-
-            $membership_summary[] = $entry_summary;
+    // This function is now a wrapper for the MdpApi Membership class method.
+    if (!function_exists('WACC') || !method_exists(WACC()->Membership, 'getCurrentPersonActiveMemberships')) {
+        // Log an error or return an empty array if the WACC system isn't available.
+        // Depending on how critical this is, you might want to trigger_error.
+        if (function_exists('WACC') && WACC()->Log) {
+            WACC()->Log->error('WACC MdpApi or Membership class not available for wicket_get_active_memberships.', ['source' => __FUNCTION__]);
         }
+
+        return [];
     }
 
-    return $membership_summary;
+    return WACC()->Membership->getCurrentPersonActiveMemberships($iso_code);
 }
 
 /**
  * Returns active memberships from WooCommerce.
  *
- * @deprecated 1.5.0 Pending reimplementation as a method
- * @return array $memberships slug and id
+ * @deprecated 1.6.0 Available as method WACC()->Membership->getCurrentUserWooActiveMemberships()
  */
 function woo_get_active_memberships()
 {
-    $membership_summary = null;
-
-    $args = [
-        'status' => ['active', 'complimentary'],
-    ];
-
-    if (function_exists('wc_memberships_get_user_memberships')) {
-        $memberships = wc_memberships_get_user_memberships(get_current_user_id(), $args);
-
-        foreach ($memberships as $membership) {
-            $entry_summary = [
-                'starts_at' => $membership->get_start_date(),
-                'ends_at'   => $membership->get_end_date(),
-                'name'      => $membership->plan->name,
-            ];
-
-            $membership_summary[] = $entry_summary;
+    // This function is now a wrapper for the MdpApi Membership class method.
+    if (!function_exists('WACC') || !method_exists(WACC()->Membership, 'getCurrentUserWooActiveMemberships')) {
+        if (function_exists('WACC') && WACC()->Log) {
+            WACC()->Log->error('WACC MdpApi or Membership class/method not available for woo_get_active_memberships.', ['source' => __FUNCTION__]);
         }
+
+        return []; // Return empty array or null based on original behavior, null might be more accurate here.
     }
 
-    return $membership_summary;
+    return WACC()->Membership->getCurrentUserWooActiveMemberships();
 }
 
 /**
  * Returns active memberships relationship from wicket API.
  *
- * @deprecated 1.5.0 Pending reimplementation as a method
- * @return array $memberships relationship
+ * @deprecated 1.6.0 Available as method WACC()->Membership->getActiveMembershipRelationship()
  */
 function wicket_get_active_memberships_relationship($org_uuid)
 {
-    $person_type = '';
-    $wicket_memberships = wicket_get_current_person_memberships();
-    $person_uuid = wicket_current_person_uuid();
-    $org_info = [];
-
-    if ($wicket_memberships) {
-        foreach ($wicket_memberships['included'] as $included) {
-            if ($included['type'] !== 'organizations') {
-                continue;
-            }
-
-            $included_org_uuid = (isset($included['id'])) ? $included['id'] : '';
-
-            if ($org_uuid !== $included_org_uuid) {
-                continue;
-            }
-
-            $org_connections = wicket_get_org_connections_by_id($included_org_uuid);
-            $org_info['name'] = (isset($included['attributes']['legal_name'])) ? $included['attributes']['legal_name'] : '';
-
-            if ($org_connections) {
-                foreach ($org_connections['data'] as $org_included) {
-                    $person_to_org_uuid = (isset($org_included['relationships']['person']['data']['id'])) ? $org_included['relationships']['person']['data']['id'] : '';
-                    if ($person_to_org_uuid == $person_uuid) {
-                        $person_type = (isset($org_included['attributes']['type'])) ? $org_included['attributes']['type'] : '';
-                    }
-                }
-            }
-        }
-    }
-
-    $person_type = str_replace(['-', '_'], ' ', $person_type);
-    $org_info['relationship'] = ucwords($person_type);
-
-    return $org_info;
+    return WACC()->Membership->getActiveMembershipRelationship($org_uuid);
 }
 
 /**
@@ -519,6 +445,7 @@ function wicket_ac_memberships_get_product_link_data($membership, $renewal_type)
                 if (!empty($the_order) && !empty($membership['late_fee_product_id'])) {
                     $product_exists = false;
                     foreach ($the_order->get_items() as $item_id => $item) {
+                        /* @disregard P1013 Undefined method 'get_product_id' */
                         if ($item->get_product_id() == $membership['late_fee_product_id']) {
                             $product_exists = true;
                             break;

@@ -265,6 +265,9 @@ class Init
             'Segment'      => Segment::class,
             'Membership'   => Membership::class,
             'Helper'       => Helper::class,
+            'Schema'       => Schema::class,
+            'Notification' => Notification::class,
+            'Roles'        => Roles::class,
         ];
 
         if (array_key_exists($name, $validClasses)) {

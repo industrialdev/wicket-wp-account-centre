@@ -22,13 +22,22 @@ class MethodRouter
     {
         // Register all class instances except Helpers
         $this->instances = [
-            'MdpApi'              => new MdpApi(),
-            'Profile'             => new Profile(),
-            'OrganizationProfile' => new OrganizationProfile(),
-            'Blocks'              => new Blocks(),
-            'User'                => new User(),
-            'Log'                 => new Log(),
+            'MdpApi'                 => new MdpApi(),
+            'Profile'                => new Profile(),
+            'OrganizationManagement' => new OrganizationManagement(),
+            'OrganizationProfile'    => new OrganizationProfile(),
+            'Blocks'                 => new Blocks(),
+            'User'                   => new User(),
+            'Log'                    => new Log(),
+            'WooCommerce'            => new WooCommerce(),
+            'Language'               => new Language(),
         ];
+
+        // Now instantiate Membership since MdpApi and its children are available
+        $this->instances['Membership'] = new \WicketAcc\MdpApi\Membership(
+            $this->instances['MdpApi']->Person,
+            $this->instances['MdpApi']->Organization
+        );
 
         // Store Helpers instance separately
         $this->helpersInstance = new Helpers();
@@ -39,10 +48,10 @@ class MethodRouter
      *
      * @param string $name
      *
-     * @return object|Blocks|MdpApi|OrganizationProfile|Profile|User|Log
+     * @return object|Blocks|MdpApi|OrganizationProfile|Profile|User|Log|WooCommerce|Language|\WicketAcc\MdpApi\Membership|OrganizationManagement
      * @throws \Exception
      */
-    public function __get($name): Blocks|MdpApi|OrganizationProfile|Profile|User|Log
+    public function __get($name): Blocks|MdpApi|OrganizationProfile|Profile|User|Log|WooCommerce|Language|\WicketAcc\MdpApi\Membership|OrganizationManagement
     {
         if (isset($this->instances[$name])) {
             return $this->instances[$name];

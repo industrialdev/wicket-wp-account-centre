@@ -38,10 +38,10 @@ class Group extends Init
         }
 
         try {
-            $groupsData = $client->get('groups');
+            $groupsApiResponse = $client->get('groups');
 
-            // Assuming $groupsData is an array as per Wicket SDK behavior for list endpoints.
-            return $groupsData;
+            // Assuming $groupsApiResponse is an array as per Wicket SDK behavior for list endpoints.
+            return $groupsApiResponse;
         } catch (RequestException $e) {
             $statusCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 'N/A';
             WACC()->Log->error(
@@ -63,7 +63,7 @@ class Group extends Init
     /**
      * Get all groups that a person UUID is part of.
      *
-     * @param ?string $person_uuid (Optional) The person UUID to search for. If missing, uses current person.
+     * @param ?string $personUuid (Optional) The person UUID to search for. If missing, uses current person.
      * @param array   $args (Optional) Array of arguments to pass to the API:
      *                      'org_id'       => (string|null) The organization UUID to search for. Default null (search all groups).
      *                      'search_query' => (string|null) The search query to find groups by their names (case insensitive). Default null.
@@ -72,7 +72,7 @@ class Group extends Init
      *
      * @return array|false Array of group memberships with included group data on success, false on failure or if no groups found.
      */
-    public function getPersonGroups(?string $person_uuid = null, array $args = []): array|false
+    public function getPersonGroups(?string $personUuid = null, array $args = []): array|false
     {
         // Default args
         $defaults = [
@@ -83,12 +83,12 @@ class Group extends Init
         ];
         $args = wp_parse_args($args, $defaults);
 
-        if (is_null($person_uuid)) {
+        if (is_null($personUuid)) {
             // Assumes $this->Person->getCurrentPersonUuid() exists and returns ?string
-            $person_uuid = $this->Person->getCurrentPersonUuid();
+            $personUuid = $this->Person->getCurrentPersonUuid();
         }
 
-        if (empty($person_uuid)) {
+        if (empty($personUuid)) {
             WACC()->Log->warning('Person UUID is empty, cannot fetch groups.', ['source' => 'MdpApi-Group']);
 
             return false;
@@ -102,30 +102,30 @@ class Group extends Init
 
         try {
             // Payload
-            $query_params = [
+            $queryParams = [
                 'page' => [
                     'number' => (int) $args['page'],
                     'size'   => (int) $args['per_page'],
                 ],
                 'filter' => [
-                    'person_uuid_eq' => $person_uuid,
+                    'person_uuid_eq' => $personUuid,
                 ],
                 'include' => 'group',
             ];
 
             // Arg: org_id
             if (!empty($args['org_id'])) {
-                $query_params['filter']['group_organization_uuid_eq'] = $args['org_id'];
+                $queryParams['filter']['group_organization_uuid_eq'] = $args['org_id'];
             }
 
             // Arg: search_query
             if (!empty($args['search_query'])) {
-                $query_params['filter']['group_name_en_i_cont'] = $args['search_query'];
+                $queryParams['filter']['group_name_en_i_cont'] = $args['search_query'];
             }
 
             // Query the MDP
             $response = $client->get('/group_members', [
-                'query' => $query_params,
+                'query' => $queryParams,
             ]);
 
             if (!isset($response['data']) || empty($response['data'])) {
@@ -133,7 +133,7 @@ class Group extends Init
                     'No group data found for person.',
                     [
                         'source' => 'MdpApi-Group',
-                        'person_uuid' => $person_uuid,
+                        'personUuid' => $personUuid,
                         'args' => $args,
                         'response_keys' => isset($response) ? array_keys($response) : 'null_response',
                     ]
@@ -147,7 +147,7 @@ class Group extends Init
             $statusCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 'N/A';
             $log_context = [
                 'source' => 'MdpApi-Group',
-                'person_uuid' => $person_uuid,
+                'personUuid' => $personUuid,
                 'args' => $args,
                 'status_code' => $statusCode,
             ];
@@ -161,7 +161,7 @@ class Group extends Init
         } catch (\Exception $e) {
             $log_context = [
                 'source' => 'MdpApi-Group',
-                'person_uuid' => $person_uuid,
+                'personUuid' => $personUuid,
                 'args' => $args,
             ];
             $log_context['exception_class'] = get_class($e);
@@ -178,7 +178,7 @@ class Group extends Init
     /**
      * Get all groups associated with a specific Organization UUID.
      *
-     * @param string $org_uuid The organization UUID to search for.
+     * @param string $orgUuid The organization UUID to search for.
      * @param array  $args (Optional) Array of arguments to pass to the API:
      *                     'search_query' => (string|null) The search query to find groups by their names (case insensitive). Default null.
      *                     'per_page'     => (int) The number of groups to return per page. Default 20.
@@ -186,7 +186,7 @@ class Group extends Init
      *
      * @return array|false Array of groups on success, false on failure or if no groups found.
      */
-    public function getOrganizationGroups(string $org_uuid, array $args = []): array|false
+    public function getOrganizationGroups(string $orgUuid, array $args = []): array|false
     {
         // Default args
         $defaults = [
@@ -196,7 +196,7 @@ class Group extends Init
         ];
         $args = wp_parse_args($args, $defaults);
 
-        if (empty($org_uuid)) {
+        if (empty($orgUuid)) {
             WACC()->Log->warning('Organization UUID is empty, cannot fetch groups.', ['source' => 'MdpApi-Group']);
 
             return false;
@@ -210,24 +210,24 @@ class Group extends Init
 
         try {
             // Payload
-            $query_params = [
+            $queryParams = [
                 'page' => [
                     'number' => (int) $args['page'],
                     'size'   => (int) $args['per_page'],
                 ],
                 'filter' => [
-                    'organization_uuid_eq' => $org_uuid,
+                    'organization_uuid_eq' => $orgUuid,
                 ],
             ];
 
             // Arg: search_query
             if (!empty($args['search_query'])) {
-                $query_params['filter']['name_en_i_cont'] = $args['search_query'];
+                $queryParams['filter']['name_en_i_cont'] = $args['search_query'];
             }
 
             // Query the MDP
             $response = $client->get('/groups', [
-                'query' => $query_params,
+                'query' => $queryParams,
             ]);
 
             if (!isset($response['data']) || empty($response['data'])) {
@@ -235,7 +235,7 @@ class Group extends Init
                     'No groups found for organization.',
                     [
                         'source'   => 'MdpApi-Group',
-                        'org_uuid' => $org_uuid,
+                        'orgUuid' => $orgUuid,
                         'args'     => $args,
                     ]
                 );
@@ -248,7 +248,7 @@ class Group extends Init
             $statusCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 'N/A';
             $log_context = [
                 'source'      => 'MdpApi-Group',
-                'org_uuid'    => $org_uuid,
+                'orgUuid'    => $orgUuid,
                 'args'        => $args,
                 'status_code' => $statusCode,
                 'exception_trace' => $e->getTraceAsString(),
@@ -262,7 +262,7 @@ class Group extends Init
         } catch (\Exception $e) {
             $log_context = [
                 'source'   => 'MdpApi-Group',
-                'org_uuid' => $org_uuid,
+                'orgUuid' => $orgUuid,
                 'args'     => $args,
                 'exception_class' => get_class($e),
                 'exception_trace' => $e->getTraceAsString(),
@@ -279,9 +279,9 @@ class Group extends Init
     /**
      * Add a member to a group with the specified role.
      *
-     * @param string $person_id The UUID of the person to add.
-     * @param string $group_uuid The UUID of the group to add the member to.
-     * @param string $group_role_slug The role to assign to the person (e.g., 'member', 'admin').
+     * @param string $personId The UUID of the person to add.
+     * @param string $groupUuid The UUID of the group to add the member to.
+     * @param string $groupRoleSlug The role to assign to the person (e.g., 'member', 'admin').
      * @param array  $args { (Optional) Array of arguments.
      *     @type ?string     The start date for the membership (YYYY-MM-DD). Defaults to today.
      *     @type ?string       The end date for the membership (YYYY-MM-DD). Default null.
@@ -290,13 +290,13 @@ class Group extends Init
      *
      * @return array|false The API response array for the new or existing membership, or false on failure.
      */
-    public function addGroupMember(string $person_id, string $group_uuid, string $group_role_slug, array $args = []): array|false
+    public function addGroupMember(string $personId, string $groupUuid, string $groupRoleSlug, array $args = []): array|false
     {
         // Validate required parameters
-        if (empty($person_id) || empty($group_uuid) || empty($group_role_slug)) {
+        if (empty($personId) || empty($groupUuid) || empty($groupRoleSlug)) {
             WACC()->Log->warning(
                 'Missing required parameter(s) for addGroupMember.',
-                ['source' => 'MdpApi-Group', 'person_id' => $person_id, 'group_uuid' => $group_uuid, 'role' => $group_role_slug]
+                ['source' => 'MdpApi-Group', 'personId' => $personId, 'groupUuid' => $groupUuid, 'role' => $groupRoleSlug]
             );
 
             return false;
@@ -312,16 +312,16 @@ class Group extends Init
 
         // If skip_if_exists is true, check for an existing membership
         if ($args['skip_if_exists']) {
-            $existing_memberships = $this->getPersonGroups($person_id);
-            if (!empty($existing_memberships['data'])) {
-                foreach ($existing_memberships['data'] as $membership) {
+            $existingMemberships = $this->getPersonGroups($personId);
+            if (!empty($existingMemberships['data'])) {
+                foreach ($existingMemberships['data'] as $membership) {
                     if (
-                        ($membership['relationships']['group']['data']['id'] ?? '') === $group_uuid
-                        && ($membership['attributes']['type'] ?? '') === $group_role_slug
+                        ($membership['relationships']['group']['data']['id'] ?? '') === $groupUuid
+                        && ($membership['attributes']['type'] ?? '') === $groupRoleSlug
                     ) {
                         WACC()->Log->info(
                             'User is already a member of the group with the same role. Skipping.',
-                            ['source' => 'MdpApi-Group', 'person_id' => $person_id, 'group_uuid' => $group_uuid]
+                            ['source' => 'MdpApi-Group', 'personId' => $personId, 'groupUuid' => $groupUuid]
                         );
 
                         return $membership; // Return existing membership data
@@ -331,7 +331,7 @@ class Group extends Init
         }
 
         // Set start date to today if not provided, formatted correctly with timezone
-        $start_date = $args['start_date'] ?? (new \DateTime('today', wp_timezone()))->format('Y-m-d\T00:00:00P');
+        $startDate = $args['start_date'] ?? (new \DateTime('today', wp_timezone()))->format('Y-m-d\T00:00:00P');
 
         $client = $this->initClient();
         if (!$client) {
@@ -343,16 +343,16 @@ class Group extends Init
             'data' => [
                 'type'       => 'group_members',
                 'attributes' => [
-                    'type'       => $group_role_slug,
-                    'start_date' => $start_date,
+                    'type'       => $groupRoleSlug,
+                    'start_date' => $startDate,
                     'end_date'   => $args['end_date'],
                 ],
                 'relationships' => [
                     'person' => [
-                        'data' => ['type' => 'people', 'id' => $person_id],
+                        'data' => ['type' => 'people', 'id' => $personId],
                     ],
                     'group' => [
-                        'data' => ['type' => 'groups', 'id' => $group_uuid],
+                        'data' => ['type' => 'groups', 'id' => $groupUuid],
                     ],
                 ],
             ],
@@ -362,29 +362,29 @@ class Group extends Init
             return $client->post('group_members', ['json' => $payload]);
         } catch (RequestException $e) {
             $statusCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 'N/A';
-            $log_context = [
+            $logContext = [
                 'source'      => 'MdpApi-Group',
-                'person_id'   => $person_id,
-                'group_uuid'  => $group_uuid,
+                'personId'   => $personId,
+                'groupUuid'  => $groupUuid,
                 'args'        => $args,
                 'status_code' => $statusCode,
                 'payload'     => $payload, // Log the payload for debugging
                 'exception_trace' => $e->getTraceAsString(),
             ];
-            WACC()->Log->error('RequestException while adding group member: ' . $e->getMessage(), $log_context);
+            WACC()->Log->error('RequestException while adding group member: ' . $e->getMessage(), $logContext);
 
             return false;
         } catch (\Exception $e) {
-            $log_context = [
+            $logContext = [
                 'source'   => 'MdpApi-Group',
-                'person_id'   => $person_id,
-                'group_uuid'  => $group_uuid,
+                'personId'   => $personId,
+                'groupUuid'  => $groupUuid,
                 'args'     => $args,
                 'payload'     => $payload,
                 'exception_class' => get_class($e),
                 'exception_trace' => $e->getTraceAsString(),
             ];
-            WACC()->Log->error('Generic Exception while adding group member: ' . $e->getMessage(), $log_context);
+            WACC()->Log->error('Generic Exception while adding group member: ' . $e->getMessage(), $logContext);
 
             return false;
         }
@@ -415,7 +415,7 @@ class Group extends Init
             $client->delete("/group_members/{$groupMembershipId}");
             WACC()->Log->info(
                 'Successfully removed group member.',
-                ['source' => 'MdpApi-Group', 'group_membership_id' => $groupMembershipId]
+                ['source' => 'MdpApi-Group', 'groupMembershipId' => $groupMembershipId]
             );
 
             return true;
@@ -423,7 +423,7 @@ class Group extends Init
             $statusCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 'N/A';
             $log_context = [
                 'source'              => 'MdpApi-Group',
-                'group_membership_id' => $groupMembershipId,
+                'groupMembershipId' => $groupMembershipId,
                 'status_code'         => $statusCode,
                 'exception_trace'     => $e->getTraceAsString(),
             ];
@@ -436,7 +436,7 @@ class Group extends Init
         } catch (\Exception $e) {
             $log_context = [
                 'source'              => 'MdpApi-Group',
-                'group_membership_id' => $groupMembershipId,
+                'groupMembershipId' => $groupMembershipId,
                 'exception_class'     => get_class($e),
                 'exception_trace'     => $e->getTraceAsString(),
             ];
@@ -476,7 +476,7 @@ class Group extends Init
             if (empty($response['data'])) {
                 WACC()->Log->info(
                     'Group not found or no data returned.',
-                    ['source' => 'MdpApi-Group', 'group_uuid' => $uuid]
+                    ['source' => 'MdpApi-Group', 'groupUuid' => $uuid]
                 );
 
                 return false;
@@ -485,28 +485,28 @@ class Group extends Init
             return $response; // Assuming the response structure includes the group data directly or under a 'data' key
         } catch (RequestException $e) {
             $statusCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 'N/A';
-            $log_context = [
+            $logContext = [
                 'source'      => 'MdpApi-Group',
-                'group_uuid'  => $uuid,
+                'groupUuid'  => $uuid,
                 'status_code' => $statusCode,
                 'exception_trace' => $e->getTraceAsString(),
             ];
             // Specifically log 404 as info, others as error
             if ($statusCode === 404) {
-                WACC()->Log->info('Group not found (404).', $log_context);
+                WACC()->Log->info('Group not found (404).', $logContext);
             } else {
-                WACC()->Log->error('RequestException while fetching group: ' . $e->getMessage(), $log_context);
+                WACC()->Log->error('RequestException while fetching group: ' . $e->getMessage(), $logContext);
             }
 
             return false;
         } catch (\Exception $e) {
-            $log_context = [
+            $logContext = [
                 'source'   => 'MdpApi-Group',
-                'group_uuid' => $uuid,
+                'groupUuid' => $uuid,
                 'exception_class' => get_class($e),
                 'exception_trace' => $e->getTraceAsString(),
             ];
-            WACC()->Log->error('Generic Exception while fetching group: ' . $e->getMessage(), $log_context);
+            WACC()->Log->error('Generic Exception while fetching group: ' . $getMessage(), $logContext);
 
             return false;
         }
@@ -515,7 +515,7 @@ class Group extends Init
     /**
      * Get all members (people) of a specific group, with optional filtering.
      *
-     * @param string $group_uuid The UUID of the group to get members from.
+     * @param string $groupUuid The UUID of the group to get members from.
      * @param array  $args (Optional) Array of arguments for filtering and pagination:
      *                     'per_page' => (int) Number of members per page. Default 50.
      *                     'page'     => (int) Page number. Default 1.
@@ -524,9 +524,9 @@ class Group extends Init
      *
      * @return array|false Array of group members (people data) on success, false on failure.
      */
-    public function getGroupMembers(string $group_uuid, array $args = []): array|false
+    public function getGroupMembers(string $groupUuid, array $args = []): array|false
     {
-        if (empty($group_uuid)) {
+        if (empty($groupUuid)) {
             WACC()->Log->warning('Group UUID is empty, cannot fetch group members.', ['source' => 'MdpApi-Group']);
 
             return false;
@@ -546,8 +546,8 @@ class Group extends Init
             return false; // initClient() logs the error
         }
 
-        $endpoint = "/groups/{$group_uuid}/people";
-        $query_params = [
+        $endpoint = "/groups/{$groupUuid}/people";
+        $queryParams = [
             'page' => [
                 'number' => (int) $args['page'],
                 'size'   => (int) $args['per_page'],
@@ -560,22 +560,22 @@ class Group extends Init
 
         // Handle role filtering
         if (!empty($args['role'])) {
-            $trimmed_role = trim($args['role']);
-            if (str_contains($trimmed_role, ',')) {
-                $roles_array = array_map('trim', explode(',', $trimmed_role));
-                $query_params['filter']['resource_type_slug_in'] = $roles_array;
+            $trimmedRole = trim($args['role']);
+            if (str_contains($trimmedRole, ',')) {
+                $rolesArray = array_map('trim', explode(',', $trimmedRole));
+                $queryParams['filter']['resource_type_slug_in'] = $rolesArray;
             } else {
-                $query_params['filter']['resource_type_slug_eq'] = $trimmed_role;
+                $queryParams['filter']['resource_type_slug_eq'] = $trimmedRole;
             }
         }
 
         try {
-            $response = $client->get($endpoint, ['query' => $query_params]);
+            $response = $client->get($endpoint, ['query' => $queryParams]);
 
             if (empty($response['data']) && empty($response['included'])) {
                 WACC()->Log->info(
                     'No members found for group or no data returned.',
-                    ['source' => 'MdpApi-Group', 'group_uuid' => $group_uuid, 'args' => $args]
+                    ['source' => 'MdpApi-Group', 'groupUuid' => $groupUuid, 'args' => $args]
                 );
 
                 // Return empty array if no data, as it's a valid state (group with no members)
@@ -588,35 +588,35 @@ class Group extends Init
             return $response;
         } catch (RequestException $e) {
             $statusCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 'N/A';
-            $error_message_detail = 'RequestException while fetching group members.';
+            $errorMessageDetail = 'RequestException while fetching group members.';
             if ($e->hasResponse()) {
                 try {
-                    $error_body = json_decode((string) $e->getResponse()->getBody(), true, 512, JSON_THROW_ON_ERROR);
-                    $error_message_detail = $error_body['errors'][0]['detail'] ?? $error_body['errors'][0]['title'] ?? $e->getMessage();
+                    $errorBody = json_decode((string) $e->getResponse()->getBody(), true, 512, JSON_THROW_ON_ERROR);
+                    $errorMessageDetail = $errorBody['errors'][0]['detail'] ?? $errorBody['errors'][0]['title'] ?? $e->getMessage();
                 } catch (\JsonException $jsonEx) {
-                    $error_message_detail = 'Could not decode API error response: ' . $jsonEx->getMessage();
+                    $errorMessageDetail = 'Could not decode API error response: ' . $jsonEx->getMessage();
                 }
             }
-            $log_context = [
+            $logContext = [
                 'source'      => 'MdpApi-Group',
-                'group_uuid'  => $group_uuid,
+                'groupUuid'  => $groupUuid,
                 'args'        => $args,
                 'status_code' => $statusCode,
                 'response_body' => $e->hasResponse() ? (string) $e->getResponse()->getBody() : null,
                 'exception_trace' => $e->getTraceAsString(),
             ];
-            WACC()->Log->error($error_message_detail, $log_context);
+            WACC()->Log->error($errorMessageDetail, $logContext);
 
             return false;
         } catch (\Exception $e) {
-            $log_context = [
+            $logContext = [
                 'source'   => 'MdpApi-Group',
-                'group_uuid' => $group_uuid,
+                'groupUuid' => $groupUuid,
                 'args'     => $args,
                 'exception_class' => get_class($e),
                 'exception_trace' => $e->getTraceAsString(),
             ];
-            WACC()->Log->error('Generic Exception while fetching group members: ' . $e->getMessage(), $log_context);
+            WACC()->Log->error('Generic Exception while fetching group members: ' . $e->getMessage(), $logContext);
 
             return false;
         }
@@ -625,8 +625,8 @@ class Group extends Init
     /**
      * Search for members within a specific group.
      *
-     * @param string $group_uuid The UUID of the group to search in.
-     * @param string $search_query The search query (person's first/last name, email).
+     * @param string $groupUuid The UUID of the group to search in.
+     * @param string $searchQuery The search query (person's first/last name, email).
      * @param array  $args (Optional) Array of arguments for filtering and pagination:
      *                     'per_page' => (int) Number of members per page. Default 20.
      *                     'page'     => (int) Page number. Default 1.
@@ -635,12 +635,12 @@ class Group extends Init
      *
      * @return array|false The API response array on success, false on failure.
      */
-    public function searchGroupMembers(string $group_uuid, string $search_query, array $args = []): array|false
+    public function searchGroupMembers(string $groupUuid, string $searchQuery, array $args = []): array|false
     {
-        if (empty($group_uuid) || empty($search_query)) {
+        if (empty($groupUuid) || empty($searchQuery)) {
             WACC()->Log->warning(
                 'Group UUID or search query is empty.',
-                ['source' => 'MdpApi-Group', 'group_uuid' => $group_uuid, 'search_query' => $search_query]
+                ['source' => 'MdpApi-Group', 'groupUuid' => $groupUuid, 'searchQuery' => $searchQuery]
             );
 
             return false;
@@ -659,8 +659,8 @@ class Group extends Init
             return false; // initClient() logs the error
         }
 
-        $endpoint = "/groups/{$group_uuid}/people";
-        $query_params = [
+        $endpoint = "/groups/{$groupUuid}/people";
+        $queryParams = [
             'page' => [
                 'number' => (int) $args['page'],
                 'size'   => (int) $args['per_page'],
@@ -669,7 +669,7 @@ class Group extends Init
                 'active_eq' => $args['active'] ? 'true' : 'false',
                 'person_search_query' => [
                     'keywords' => [
-                        'term'   => $search_query,
+                        'term'   => $searchQuery,
                         'fields' => 'full_name,given_name,family_name,primary_email',
                     ],
                 ],
@@ -678,58 +678,58 @@ class Group extends Init
         ];
 
         if (!empty($args['role'])) {
-            $trimmed_role = trim($args['role']);
-            if (str_contains($trimmed_role, ',')) {
-                $roles_array = array_map('trim', explode(',', $trimmed_role));
-                $query_params['filter']['resource_type_slug_in'] = $roles_array;
+            $trimmedRole = trim($args['role']);
+            if (str_contains($trimmedRole, ',')) {
+                $rolesArray = array_map('trim', explode(',', $trimmedRole));
+                $queryParams['filter']['resource_type_slug_in'] = $rolesArray;
             } else {
-                $query_params['filter']['resource_type_slug_eq'] = $trimmed_role;
+                $queryParams['filter']['resource_type_slug_eq'] = $trimmedRole;
             }
         }
 
         try {
-            $response = $client->get($endpoint, ['query' => $query_params]);
+            $response = $client->get($endpoint, ['query' => $queryParams]);
             if (empty($response['data']) && empty($response['included'])) {
                 WACC()->Log->info(
                     'Search returned no members for group.',
-                    ['source' => 'MdpApi-Group', 'group_uuid' => $group_uuid, 'search_query' => $search_query, 'args' => $args]
+                    ['source' => 'MdpApi-Group', 'groupUuid' => $groupUuid, 'searchQuery' => $searchQuery, 'args' => $args]
                 );
             }
 
             return $response;
         } catch (RequestException $e) {
             $statusCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 'N/A';
-            $error_message_detail = 'RequestException while searching group members.';
+            $errorMessageDetail = 'RequestException while searching group members.';
             if ($e->hasResponse()) {
                 try {
-                    $error_body = json_decode((string) $e->getResponse()->getBody(), true, 512, JSON_THROW_ON_ERROR);
-                    $error_message_detail = $error_body['errors'][0]['detail'] ?? $error_body['errors'][0]['title'] ?? $e->getMessage();
+                    $errorBody = json_decode((string) $e->getResponse()->getBody(), true, 512, JSON_THROW_ON_ERROR);
+                    $errorMessageDetail = $errorBody['errors'][0]['detail'] ?? $errorBody['errors'][0]['title'] ?? $e->getMessage();
                 } catch (\JsonException $jsonEx) {
-                    $error_message_detail = 'Could not decode API error response: ' . $jsonEx->getMessage();
+                    $errorMessageDetail = 'Could not decode API error response: ' . $jsonEx->getMessage();
                 }
             }
-            $log_context = [
+            $logContext = [
                 'source'       => 'MdpApi-Group',
-                'group_uuid'   => $group_uuid,
-                'search_query' => $search_query,
+                'groupUuid'   => $groupUuid,
+                'searchQuery' => $searchQuery,
                 'args'         => $args,
                 'status_code'  => $statusCode,
                 'response_body' => $e->hasResponse() ? (string) $e->getResponse()->getBody() : null,
                 'exception_trace' => $e->getTraceAsString(),
             ];
-            WACC()->Log->error($error_message_detail, $log_context);
+            WACC()->Log->error($errorMessageDetail, $logContext);
 
             return false;
         } catch (\Exception $e) {
-            $log_context = [
+            $logContext = [
                 'source'       => 'MdpApi-Group',
-                'group_uuid'   => $group_uuid,
-                'search_query' => $search_query,
+                'groupUuid'   => $groupUuid,
+                'searchQuery' => $searchQuery,
                 'args'         => $args,
                 'exception_class' => get_class($e),
                 'exception_trace' => $e->getTraceAsString(),
             ];
-            WACC()->Log->error('Generic Exception while searching group members: ' . $e->getMessage(), $log_context);
+            WACC()->Log->error('Generic Exception while searching group members: ' . $e->getMessage(), $logContext);
 
             return false;
         }

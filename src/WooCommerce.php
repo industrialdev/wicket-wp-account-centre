@@ -16,6 +16,14 @@ class WooCommerce extends WicketAcc
      */
     public function __construct()
     {
+        add_action('init', [$this, 'initialize']);
+    }
+
+    /**
+     * Initialize hooks and filters for WooCommerce integration.
+     */
+    public function initialize()
+    {
         // Only run if WooCommerce is active
         if (!WACC()->isWooCommerceActive()) {
             return;

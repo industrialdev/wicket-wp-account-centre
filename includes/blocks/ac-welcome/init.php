@@ -107,6 +107,7 @@ class init extends Blocks
                         foreach ($active_memberships as $membership) {
 
                             if (function_exists('wicket_acc_welcome_filter_memberships')) {
+                                /* @disregard P1010 Undefined function 'wicket_acc_welcome_filter_memberships' */
                                 if (\wicket_acc_welcome_filter_memberships($membership)) {
                                     continue;
                                 }

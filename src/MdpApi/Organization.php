@@ -305,4 +305,143 @@ class Organization extends Init
             return false;
         }
     }
+
+    /**
+     * Get basic organization information by UUID, including alternate name and parent details.
+     *
+     * Fetches localized legal name and description, as well as the parent organization's UUID and name.
+     *
+     * @param string $uuid The organization UUID.
+     * @param string $lang Language code for localization (e.g., 'en', 'fr'). Defaults to 'en'.
+     * @return array|false An array with basic organization details, or false on failure.
+     */
+    public function getOrganizationBasicInfo(string $uuid, string $lang = 'en'): array|false
+    {
+        if (empty($uuid)) {
+            WACC()->Log->warning('Organization UUID cannot be empty.', ['source' => __METHOD__]);
+
+            return false;
+        }
+
+        $orgData = $this->getOrganizationByUuid($uuid);
+        if (empty($orgData['data'])) {
+            WACC()->Log->warning('Organization not found for provided UUID.', ['source' => __METHOD__, 'uuid' => $uuid]);
+
+            return false;
+        }
+
+        $attributes = $orgData['data']['attributes'] ?? [];
+        $relationships = $orgData['data']['relationships'] ?? [];
+
+        $orgName = $attributes["legal_name_{$lang}"] ?? $attributes['legal_name'] ?? '';
+        $orgAlternateName = $attributes["alternate_name_{$lang}"] ?? $attributes['alternate_name'] ?? '';
+        $orgDescription = $attributes["description_{$lang}"] ?? $attributes['description'] ?? '';
+        $orgType = $attributes['type'] ?? '';
+        $orgStatus = $attributes['status'] ?? '';
+
+        // Derive pretty type name
+        $orgTypePretty = '';
+        if (!empty($orgType)) {
+            $orgTypePretty = ucwords(str_replace(['-', '_'], ' ', $orgType));
+        }
+        // Use the Helper class to get the resource type name by slug.
+        $orgTypeName = '';
+        if (!empty($orgType)) {
+            $orgTypeName = WACC()->MdpApi->Helper->getResourceTypeNameBySlug($orgType);
+            // If the helper didn't find a specific name, fall back to the pretty version.
+            if (empty($orgTypeName)) {
+                $orgTypeName = $orgTypePretty;
+            }
+        }
+
+        $parentUuid = $relationships['parent_organization']['data']['id'] ?? '';
+        $parentName = '';
+        if (!empty($parentUuid)) {
+            $parentOrgData = $this->getOrganizationByUuid($parentUuid);
+            if (!empty($parentOrgData['data']['attributes'])) {
+                $parentAttributes = $parentOrgData['data']['attributes'];
+                $parentName = $parentAttributes["legal_name_{$lang}"] ?? $parentAttributes['legal_name'] ?? '';
+            }
+        }
+
+        return [
+            'org_uuid'        => $uuid,
+            'org_name'        => $orgName,
+            'org_name_alt'    => $orgAlternateName,
+            'org_description' => $orgDescription,
+            'org_type'        => $orgType, // This is the slug
+            'org_type_pretty' => $orgTypePretty,
+            'org_type_slug'   => $orgType, // Explicitly the slug
+            'org_type_name'   => $orgTypeName,
+            'org_status'      => $orgStatus,
+            'org_parent_id'   => $parentUuid,
+            'org_parent_name' => $parentName,
+        ];
+    }
+
+    /**
+     * Get all "connections" (relationships) of a specific Wicket organization by its UUID.
+     *
+     * @param string $orgUuid The UUID of the organization to fetch connections for.
+     * @return array|false Array of organization connections on success, false on failure.
+     */
+    public function getOrgConnectionsById(string $orgUuid)
+    {
+        if (empty($orgUuid)) {
+            WACC()->Log->warning('No organization UUID provided to fetch connections', ['source' => __METHOD__]);
+
+            return false;
+        }
+
+        static $connectionsCache = [];
+
+        if (!isset($connectionsCache[$orgUuid])) {
+            try {
+                $client = $this->initClient();
+                if (!$client) {
+                    return false;
+                }
+
+                $response = $client->get("organizations/{$orgUuid}/connections", [
+                    'query' => [
+                        'filter' => [
+                            'connection_type_eq' => 'all',
+                        ],
+                        'sort' => '-created_at',
+                    ],
+                ]);
+
+                $connections = $response['data'] ?? false;
+
+                if (empty($connections)) {
+                    WACC()->Log->info('No connections found for specified organization', [
+                        'source' => __METHOD__,
+                        'orgUuid' => $orgUuid,
+                    ]);
+                    $connectionsCache[$orgUuid] = false;
+                } else {
+                    $connectionsCache[$orgUuid] = $connections;
+                }
+            } catch (RequestException $e) {
+                $statusCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 'N/A';
+                WACC()->Log->error("Error fetching organization connections (HTTP {$statusCode}): " . $e->getMessage(), [
+                    'source' => __METHOD__,
+                    'orgUuid' => $orgUuid,
+                    'statusCode' => $statusCode,
+                ]);
+
+                return false;
+            } catch (Exception $e) {
+                WACC()->Log->error('Unexpected error fetching organization connections: ' . $e->getMessage(), [
+                    'source' => __METHOD__,
+                    'orgUuid' => $orgUuid,
+                    'exception' => get_class($e),
+                ]);
+
+                return false;
+            }
+        }
+
+        return $connectionsCache[$orgUuid];
+    }
 }
