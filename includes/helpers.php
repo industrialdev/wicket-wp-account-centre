@@ -37,6 +37,7 @@ function WACC()
 
     if ($instance === null) {
         $instance = new MethodRouter();
+        $instance->init();
     }
 
     return $instance;

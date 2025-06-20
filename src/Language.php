@@ -17,7 +17,7 @@ class Language extends WicketAcc
      */
     public function __construct()
     {
-        add_action('plugins_loaded', [$this, 'load_textdomain']);
+        add_action('init', [$this, 'load_textdomain']);
     }
 
     /**
@@ -69,6 +69,7 @@ class Language extends WicketAcc
 
         // 2. Check Polylang
         if (function_exists('pll_current_language')) {
+            /** @disregard P1010 Undefined function 'WicketAcc\pll_current_language' */
             $lang = pll_current_language('slug'); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
             if (is_string($lang)) {
                 return substr($lang, 0, 2);

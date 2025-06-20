@@ -444,4 +444,242 @@ class Organization extends Init
 
         return $connectionsCache[$orgUuid];
     }
+
+    /**
+     * Get person-to-organization relationships for a specific organization.
+     *
+     * @param string $orgUuid The organization UUID.
+     * @return array|false An array of relationship data or false on failure.
+     */
+    public function getOrganizationPersonRelationships(string $orgUuid): array|false
+    {
+        if (empty($orgUuid)) {
+            WACC()->Log->warning('Organization UUID cannot be empty.', ['source' => __METHOD__]);
+
+            return false;
+        }
+
+        $client = $this->initClient();
+        if (!$client) {
+            WACC()->Log->error('Failed to initialize API client.', ['source' => __METHOD__, 'orgUuid' => $orgUuid]);
+
+            return false;
+        }
+
+        try {
+            $response = $client->get("organizations/{$orgUuid}/connections", [
+                'query' => [
+                    'filter' => [
+                        'connection_type_eq' => 'person_to_organization',
+                    ],
+                ],
+            ]);
+
+            return $response['data'] ?? false;
+        } catch (RequestException $e) {
+            WACC()->Log->error(
+                'RequestException while fetching organization person relationships.',
+                [
+                    'source' => __METHOD__,
+                    'orgUuid' => $orgUuid,
+                    'message' => $e->getMessage(),
+                    'exception' => $e,
+                ]
+            );
+
+            return false;
+        } catch (Exception $e) {
+            WACC()->Log->error(
+                'Generic Exception while fetching organization person relationships.',
+                [
+                    'source' => __METHOD__,
+                    'orgUuid' => $orgUuid,
+                    'message' => $e->getMessage(),
+                    'exception' => $e,
+                ]
+            );
+
+            return false;
+        }
+    }
+
+    /**
+     * Returns an array of all the user's roles for a specific organization.
+     *
+     * @param string $personUuid The person's UUID.
+     * @param string $orgUuid    The organization's UUID.
+     * @return array|false An array of role names or false on failure/no roles found.
+     */
+    public function getOrganizationPersonRoles(string $personUuid, string $orgUuid): array|false
+    {
+        if (empty($personUuid) || empty($orgUuid)) {
+            WACC()->Log->error('Person UUID and Organization UUID are required.', ['source' => __METHOD__]);
+
+            return false;
+        }
+
+        $client = $this->initClient();
+        if (!$client) {
+            return false;
+        }
+
+        try {
+            $params = [
+                'query' => [
+                    'page[number]' => 1,
+                    'page[size]'   => 100,
+                    'include'      => 'resource',
+                    'sort'         => '-global,name',
+                ],
+            ];
+
+            $response = $client->get("people/{$personUuid}/roles", $params);
+
+            $usersRoles = [];
+            if (!empty($response['data'])) {
+                foreach ($response['data'] as $role) {
+                    if (
+                        isset($role['relationships']['resource']['data']['id']) &&
+                        $role['relationships']['resource']['data']['id'] === $orgUuid
+                    ) {
+                        $usersRoles[] = $role['attributes']['name'];
+                    }
+                }
+            }
+
+            return !empty($usersRoles) ? $usersRoles : false;
+        } catch (RequestException $e) {
+            $errorMsg = 'Failed to get person roles for organization.';
+            $context = [
+                'source'      => __METHOD__,
+                'person_uuid' => $personUuid,
+                'org_uuid'    => $orgUuid,
+                'original_exception' => $e->getMessage(),
+            ];
+            if ($e->hasResponse()) {
+                $context['statusCode'] = $e->getResponse()->getStatusCode();
+                $context['responseBody'] = $e->getResponse()->getBody()->getContents();
+            }
+            WACC()->Log->error($errorMsg, $context);
+        } catch (Exception $e) {
+            WACC()->Log->error('Generic exception while getting person roles for organization.', [
+                'source'      => __METHOD__,
+                'person_uuid' => $personUuid,
+                'org_uuid'    => $orgUuid,
+                'message'     => $e->getMessage(),
+            ]);
+        }
+
+        return false;
+    }
+
+    /**
+     * Get extended organization info, including main address, phone, and email.
+     *
+     * This method retrieves organization data and its primary contact details,
+     * utilizing caching to improve performance.
+     *
+     * @param string $orgUuid The organization UUID.
+     * @param string $lang    The language code (currently used for cache key).
+     * @return array|false The organization info or false on failure.
+     */
+    public function getOrganizationInfoExtended(string $orgUuid, string $lang = 'en'): array|false
+    {
+        if (empty($orgUuid) || empty($lang)) {
+            WACC()->Log->error('Organization UUID and language are required.', ['source' => __METHOD__]);
+
+            return false;
+        }
+
+        $orgInfoKey = sprintf(
+            'wicket_orgman_org_info_extended_%s_%s',
+            sanitize_key($orgUuid),
+            sanitize_key($lang)
+        );
+        $orgInfo = get_transient($orgInfoKey);
+
+        if (false !== $orgInfo) {
+            return $orgInfo;
+        }
+
+        $client = $this->initClient();
+        if (!$client) {
+            return false;
+        }
+
+        try {
+            // Fetch organization info with included contact details in one call
+            $response = $client->get("organizations/{$orgUuid}", [
+                'query' => [
+                    'include' => 'addresses,phones,emails',
+                ],
+            ]);
+
+            if (empty($response['data'])) {
+                return false;
+            }
+
+            $orgInfo = $response['data']['attributes'];
+            $orgInfo['id'] = $response['data']['id'];
+            $orgInfo['org_meta'] = [
+                'main_address' => [],
+                'main_phone' => [],
+                'main_email' => [],
+                'billing_email' => '',
+            ];
+
+            if (!empty($response['included'])) {
+                foreach ($response['included'] as $item) {
+                    switch ($item['type']) {
+                        case 'addresses':
+                            // Assuming the first address is the main one as per original logic
+                            if (empty($orgInfo['org_meta']['main_address'])) {
+                                $orgInfo['org_meta']['main_address'] = $item['attributes'];
+                            }
+                            break;
+                        case 'phones':
+                            // Assuming the first phone is the main one
+                            if (empty($orgInfo['org_meta']['main_phone'])) {
+                                $orgInfo['org_meta']['main_phone'] = $item['attributes'];
+                            }
+                            break;
+                        case 'emails':
+                            // Assuming the first email is the main one
+                            if (empty($orgInfo['org_meta']['main_email'])) {
+                                $orgInfo['org_meta']['main_email'] = $item['attributes'];
+                            }
+                            // Check for billing email
+                            if (isset($item['attributes']['type']) && $item['attributes']['type'] === 'billing') {
+                                $orgInfo['org_meta']['billing_email'] = $item['attributes']['address'];
+                            }
+                            break;
+                    }
+                }
+            }
+
+            set_transient($orgInfoKey, $orgInfo, 30); // Cache for 30 seconds
+
+            return $orgInfo;
+        } catch (RequestException $e) {
+            $errorMsg = 'Failed to get extended organization info.';
+            $context = [
+                'source'      => __METHOD__,
+                'org_uuid'    => $orgUuid,
+                'original_exception' => $e->getMessage(),
+            ];
+            if ($e->hasResponse()) {
+                $context['statusCode'] = $e->getResponse()->getStatusCode();
+                $context['responseBody'] = $e->getResponse()->getBody()->getContents();
+            }
+            WACC()->Log->error($errorMsg, $context);
+        } catch (Exception $e) {
+            WACC()->Log->error('Generic exception while getting extended organization info.', [
+                'source'      => __METHOD__,
+                'org_uuid'    => $orgUuid,
+                'message'     => $e->getMessage(),
+            ]);
+        }
+
+        return false;
+    }
 }

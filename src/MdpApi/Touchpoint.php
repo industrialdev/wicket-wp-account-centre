@@ -30,17 +30,17 @@ class Touchpoint extends Init
      * @param string|null $person_id  Optional. The person's UUID. If null, the current user's UUID is used.
      * @return array|false An array of touchpoints or false on failure.
      */
-    public function getCurrentUserTouchpoints(string $service_id, ?string $person_id = null): array|false
+    public function getCurrentUserTouchpoints(string $serviceId, ?string $personId = null): array|false
     {
-        if (empty($service_id)) {
+        if (empty($serviceId)) {
             WACC()->Log->warning('Service ID cannot be empty.', ['source' => __METHOD__]);
 
             return false;
         }
 
-        $p_id = $person_id ?? $this->Person->getCurrentPersonUuid();
+        $pId = $personId ?? $this->Person->getCurrentPersonUuid();
 
-        if (empty($p_id)) {
+        if (empty($pId)) {
             WACC()->Log->warning('Person ID could not be determined.', ['source' => __METHOD__]);
 
             return false;
@@ -55,20 +55,20 @@ class Touchpoint extends Init
         try {
             $params = [
                 'page[size]' => 100,
-                'filter[service_id]' => $service_id,
+                'filter[service_id]' => $serviceId,
             ];
-            $response = $client->get("people/{$p_id}/touchpoints", ['query' => $params]);
+            $response = $client->get("people/{$pId}/touchpoints", ['query' => $params]);
 
             return $response['data'] ?? [];
         } catch (RequestException $e) {
-            $response_code = $e->hasResponse() ? $e->getResponse()->getStatusCode() : null;
+            $responseCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : null;
             WACC()->Log->error(
                 'Touchpoint API request failed.',
                 [
                     'source' => __METHOD__,
-                    'person_id' => $p_id,
-                    'service_id' => $service_id,
-                    'status' => $response_code,
+                    'person_id' => $pId,
+                    'service_id' => $serviceId,
+                    'status' => $responseCode,
                     'error' => $e->getMessage(),
                 ]
             );
@@ -79,8 +79,8 @@ class Touchpoint extends Init
                 'An unexpected error occurred while fetching touchpoints.',
                 [
                     'source' => __METHOD__,
-                    'person_id' => $p_id,
-                    'service_id' => $service_id,
+                    'person_id' => $pId,
+                    'service_id' => $serviceId,
                     'exception_class' => get_class($e),
                     'error' => $e->getMessage(),
                     'trace' => $e->getTraceAsString(),
@@ -114,20 +114,20 @@ class Touchpoint extends Init
      *                                  - 'details' (string): Details about the touchpoint.
      *                                  - 'data' (array): Additional data for the touchpoint.
      *                                  - 'external_event_id' (string): A unique value to prevent duplicate touchpoints.
-     * @param string $wicket_service_id The ID of the Wicket service.
+     * @param string $wicketServiceId The ID of the Wicket service.
      * @return bool                     True if the touchpoint was successfully written, false otherwise.
      */
-    public function writeTouchpoint(array $params, string $wicket_service_id): bool
+    public function writeTouchpoint(array $params, string $wicketServiceId): bool
     {
         $client = $this->initClient();
         if (!$client) {
             return false;
         }
 
-        $payload = $this->buildTouchpointPayload($params, $wicket_service_id);
+        $payload = $this->buildTouchpointPayload($params, $wicketServiceId);
 
         if (empty($payload)) {
-            WACC()->Log->warning('Failed to build touchpoint payload or payload is empty.', ['source' => __METHOD__, 'params' => $params, 'service_id' => $wicket_service_id]);
+            WACC()->Log->warning('Failed to build touchpoint payload or payload is empty.', ['source' => __METHOD__, 'params' => $params, 'service_id' => $wicketServiceId]);
 
             return false;
         }
@@ -144,7 +144,7 @@ class Touchpoint extends Init
                 'Touchpoint API POST request failed.',
                 [
                     'source' => __METHOD__,
-                    'service_id' => $wicket_service_id,
+                    'service_id' => $wicketServiceId,
                     'status' => $response_code,
                     'error' => $e->getMessage(),
                     'payload' => $payload, // Log payload for debugging
@@ -157,7 +157,7 @@ class Touchpoint extends Init
                 'An unexpected error occurred while writing touchpoint.',
                 [
                     'source' => __METHOD__,
-                    'service_id' => $wicket_service_id,
+                    'service_id' => $wicketServiceId,
                     'exception_class' => get_class($e),
                     'error' => $e->getMessage(),
                     'trace' => $e->getTraceAsString(),
@@ -173,15 +173,15 @@ class Touchpoint extends Init
      * Build the payload for a touchpoint.
      *
      * @param array  $params            Parameters for the touchpoint.
-     * @param string $wicket_service_id The Wicket service ID.
+     * @param string $wicketServiceId The Wicket service ID.
      * @return array|null The payload array or null if required parameters are missing.
      */
-    private function buildTouchpointPayload(array $params, string $wicket_service_id): ?array
+    private function buildTouchpointPayload(array $params, string $wicketServiceId): ?array
     {
-        if (empty($params['person_id']) || empty($params['action']) || empty($wicket_service_id)) {
+        if (empty($params['personId']) || empty($params['action']) || empty($wicketServiceId)) {
             WACC()->Log->warning(
                 'Missing required parameters for building touchpoint payload.',
-                ['source' => __METHOD__, 'person_id_present' => !empty($params['person_id']), 'action_present' => !empty($params['action']), 'service_id_present' => !empty($wicket_service_id)]
+                ['source' => __METHOD__, 'personIdPresent' => !empty($params['personId']), 'actionPresent' => !empty($params['action']), 'serviceIdPresent' => !empty($wicketServiceId)]
             );
 
             return null;
@@ -206,7 +206,7 @@ class Touchpoint extends Init
                     'service' => [
                         'data' => [
                             'type' => 'services',
-                            'id' => $wicket_service_id,
+                            'id' => $wicketServiceId,
                         ],
                     ],
                 ],
@@ -231,9 +231,9 @@ class Touchpoint extends Init
      * @param string $service_description The description for a new service.
      * @return string|null The service ID on success, or null on failure.
      */
-    public function getOrCreateServiceId(string $service_name, string $service_description = 'Custom from WP'): ?string
+    public function getOrCreateServiceId(string $serviceName, string $serviceDescription = 'Custom from WP'): ?string
     {
-        if (empty($service_name)) {
+        if (empty($serviceName)) {
             WACC()->Log->warning('Service name cannot be empty.', ['source' => __METHOD__]);
 
             return null;
@@ -246,7 +246,7 @@ class Touchpoint extends Init
 
         try {
             // 1. Check for existing service
-            $params = ['filter[name_eq]' => $service_name];
+            $params = ['filter[name_eq]' => $serviceName];
             $existing_services = $client->get('services', ['query' => $params]);
 
             if (!empty($existing_services['data'][0]['id'])) {
@@ -258,8 +258,8 @@ class Touchpoint extends Init
                 'data' => [
                     'type' => 'services',
                     'attributes' => [
-                        'name'             => $service_name,
-                        'description'      => $service_description,
+                        'name'             => $serviceName,
+                        'description'      => $serviceDescription,
                         'status'           => 'active',
                         'integration_type' => 'custom',
                     ],
@@ -275,18 +275,18 @@ class Touchpoint extends Init
 
             WACC()->Log->error(
                 'Failed to create service or extract ID from response.',
-                ['source' => __METHOD__, 'service_name' => $service_name, 'response' => $new_service]
+                ['source' => __METHOD__, 'service_name' => $serviceName, 'response' => $new_service]
             );
 
             return null;
         } catch (RequestException $e) {
-            $response_code = $e->hasResponse() ? $e->getResponse()->getStatusCode() : null;
+            $responseCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : null;
             WACC()->Log->error(
                 'Touchpoint Service API request failed.',
                 [
                     'source' => __METHOD__,
-                    'service_name' => $service_name,
-                    'status' => $response_code,
+                    'service_name' => $serviceName,
+                    'status' => $responseCode,
                     'error' => $e->getMessage(),
                 ]
             );
@@ -297,7 +297,7 @@ class Touchpoint extends Init
                 'An unexpected error occurred while getting or creating a service.',
                 [
                     'source' => __METHOD__,
-                    'service_name' => $service_name,
+                    'service_name' => $serviceName,
                     'exception_class' => get_class($e),
                     'error' => $e->getMessage(),
                     'trace' => $e->getTraceAsString(),

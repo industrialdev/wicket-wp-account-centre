@@ -5,6 +5,7 @@ namespace WicketAcc;
 use WicketAcc\Admin\AdminSettings;
 use WicketAcc\Admin\WicketAccSafeguard;
 use WicketAcc\MdpApi\Init as MdpApi;
+use WicketAcc\Services\Notification;
 
 /*
  * @package  wicket-wp-account-centre
@@ -214,10 +215,11 @@ class WicketAcc
         new Profile();
         new OrganizationManagement();
         new OrganizationProfile();
+        new OrganizationRoster();
         new Assets();
         new User();
-        new Account();
         new Language();
+        new Notification();
 
         // Load WooCommerce integration if active
         if (WACC()->isWooCommerceActive()) {

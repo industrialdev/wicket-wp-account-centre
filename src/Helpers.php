@@ -166,7 +166,7 @@ class Helpers extends WicketAcc
      */
     public function is_account_page()
     {
-        return is_singular('account') || is_post_type_archive('account');
+        return is_singular('my-account') || is_post_type_archive('my-account');
     }
 
     /**
@@ -177,7 +177,7 @@ class Helpers extends WicketAcc
      */
     public function get_account_page_url($endpoint = '')
     {
-        $account_page = get_page_by_path('account');
+        $account_page = get_page_by_path($this->getAccSlug());
         if (!$account_page) {
             return home_url();
         }

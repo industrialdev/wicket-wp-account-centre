@@ -273,9 +273,7 @@ class Roles extends Init
         }
 
         // Remove roles from WordPress.
-        if (function_exists('wicket_orgman_remove_wp_roles')) {
-            wicket_orgman_remove_wp_roles($updateRolePersonUuid, $rolesToRemove);
-        }
+        WACC()->User->removeWpRoles($updateRolePersonUuid, $rolesToRemove);
 
         // Add new roles to MDP.
         foreach ($newRoles as $roleToAdd) {
@@ -283,21 +281,18 @@ class Roles extends Init
         }
 
         // Add new roles to WordPress.
-        if (function_exists('wicket_orgman_assign_wp_roles')) {
-            wicket_orgman_assign_wp_roles($updateRolePersonUuid, $newRoles);
-        }
+        WACC()->User->assignWpRoles($updateRolePersonUuid, $newRoles);
 
         // Create Touchpoint.
-        // TODO: Confirm if get_create_touchpoint_service_id and write_touchpoint should be WACC()->MdpApi->Touchpoint methods.
-        if (function_exists('get_create_touchpoint_service_id') && function_exists('write_touchpoint')) {
-            $touchpointParams = [
-                'person_id' => $updateRolePersonUuid,
-                'action'    => 'Organization member updated',
-                'details'   => "Person's role was updated from '" . esc_html(json_encode($personCurrentRoles)) . "' to '" . esc_html(json_encode($newRoles)) . "' on " . date('c', time()),
-                'data'      => ['org_id' => $orgId],
-            ];
-            $serviceId = get_create_touchpoint_service_id('Roster Manage', 'Updated member role');
-            write_touchpoint($touchpointParams, $serviceId);
+        $touchpointParams = [
+            'person_id' => $updateRolePersonUuid,
+            'action'    => 'Organization member updated',
+            'details'   => "Person's role was updated from '" . esc_html(json_encode($personCurrentRoles)) . "' to '" . esc_html(json_encode($newRoles)) . "' on " . date('c', time()),
+            'data'      => ['org_id' => $orgId],
+        ];
+        $serviceId = WACC()->MdpApi->Touchpoint->getOrCreateServiceId('Roster Manage', 'Updated member role');
+        if ($serviceId) {
+            WACC()->MdpApi->Touchpoint->writeTouchpoint($touchpointParams, $serviceId);
         }
 
         $response = [

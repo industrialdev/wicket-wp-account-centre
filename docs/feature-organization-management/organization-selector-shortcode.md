@@ -136,6 +136,4 @@ This method will:
 
 ## Legacy Functions to be Refactored
 - `wicket_orgman_get_person_organizations()`
-- `wicket_orgman_get_person_current_roles_by_org_id()`
-- `wicket_orgman_role_check()`
 - `get_wicket_user_uuid()`

@@ -445,4 +445,150 @@ class Membership extends Init
 
         return $membership_summary;
     }
+
+    /**
+     * Get organization membership data by its UUID, including membership and owner details.
+     *
+     * @param string $membershipUuid The UUID of the organization membership.
+     *
+     * @return array|false The API response array on success, false otherwise.
+     */
+    public function getOrganizationMembershipData(string $membershipUuid): array|false
+    {
+        if (empty($membershipUuid)) {
+            WACC()->Log->warning('Membership UUID cannot be empty.', ['source' => __METHOD__]);
+
+            return false;
+        }
+
+        $client = $this->initClient();
+        if (!$client) {
+            // initClient() already logs the error.
+            return false;
+        }
+
+        try {
+            $endpoint = 'organization_memberships/' . sanitize_text_field($membershipUuid);
+            $params = [
+                'query' => [
+                    'include' => 'membership,owner',
+                ],
+            ];
+
+            $response = $client->get($endpoint, $params);
+
+            if (empty($response['data'])) {
+                WACC()->Log->info('No data found for the given organization membership UUID.', [
+                    'source' => __METHOD__,
+                    'membership_uuid' => $membershipUuid,
+                ]);
+
+                return false;
+            }
+
+            return $response;
+        } catch (RequestException $e) {
+            $response_code = $e->hasResponse() ? $e->getResponse()->getStatusCode() : null;
+            WACC()->Log->error(
+                'RequestException while fetching organization membership data.',
+                [
+                    'source' => __METHOD__,
+                    'membership_uuid' => $membershipUuid,
+                    'status_code' => $response_code,
+                    'message' => $e->getMessage(),
+                ]
+            );
+
+            return false;
+        } catch (Exception $e) {
+            WACC()->Log->error(
+                'Generic Exception while fetching organization membership data.',
+                [
+                    'source' => __METHOD__,
+                    'membership_uuid' => $membershipUuid,
+                    'message' => $e->getMessage(),
+                ]
+            );
+
+            return false;
+        }
+    }
+
+    /**
+     * Get all person memberships for a given organization membership.
+     *
+     * @param string $membershipUuid The UUID of the organization membership.
+     * @param array<string, int> $args The arguments for pagination.
+     *        - 'page': The page number.
+     *        - 'size': The page size.
+     *
+     * @return array|false The API response array on success, false otherwise.
+     */
+    public function getOrganizationMembershipMembers(string $membershipUuid, array $args = []): array|false
+    {
+        if (empty($membershipUuid)) {
+            WACC()->Log->warning('Membership UUID cannot be empty.', ['source' => __METHOD__]);
+
+            return false;
+        }
+
+        // Set pagination defaults
+        $page = isset($args['page']) ? absint($args['page']) : 1;
+        $size = isset($args['size']) ? absint($args['size']) : 20;
+
+        $client = $this->initClient();
+        if (!$client) {
+            // initClient() already logs the error.
+            return false;
+        }
+
+        try {
+            $endpoint = 'organization_memberships/' . sanitize_text_field($membershipUuid) . '/person_memberships';
+            $params = [
+                'query' => [
+                    'page' => [
+                        'number' => $page,
+                        'size'   => $size,
+                    ],
+                ],
+            ];
+
+            $response = $client->get($endpoint, $params);
+
+            if (!isset($response['data'])) {
+                WACC()->Log->info('No data found for the given organization membership members.', [
+                    'source' => __METHOD__,
+                    'membership_uuid' => $membershipUuid,
+                ]);
+
+                return false;
+            }
+
+            return $response;
+        } catch (RequestException $e) {
+            $response_code = $e->hasResponse() ? $e->getResponse()->getStatusCode() : null;
+            WACC()->Log->error(
+                'RequestException while fetching organization membership members.',
+                [
+                    'source' => __METHOD__,
+                    'membership_uuid' => $membershipUuid,
+                    'status_code' => $response_code,
+                    'message' => $e->getMessage(),
+                ]
+            );
+
+            return false;
+        } catch (Exception $e) {
+            WACC()->Log->error(
+                'Generic Exception while fetching organization membership members.',
+                [
+                    'source' => __METHOD__,
+                    'membership_uuid' => $membershipUuid,
+                    'message' => $e->getMessage(),
+                ]
+            );
+
+            return false;
+        }
+    }
 }

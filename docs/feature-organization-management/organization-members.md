@@ -370,15 +370,8 @@ public function searchMembers(string $organizationUuid, string $query): array
             return $this->getMembers($organizationUuid);
         }
 
-        $results = wicket_orgman_membership_search_members(
-            $organizationUuid,
-            [
-                'query' => $query,
-                'fields' => ['first_name', 'last_name', 'email'],
-                'page' => 1,
-                'limit' => 20
-            ]
-        );
+        // TODO: Replace with modern API call for member search.
+        $results = [];
 
         return $this->formatMemberResults($results);
 
@@ -390,9 +383,6 @@ public function searchMembers(string $organizationUuid, string $query): array
 ```
 
 ### Required Legacy Functions
-- `wicket_orgman_get_organization_members()`
-- `wicket_orgman_update_member_permissions()`
-- `wicket_orgman_end_relationship_today()`
 
 ### Datastar Integration
 
@@ -508,7 +498,3 @@ public function searchMembers(string $organizationUuid, string $query): array
 - Invalid removal mode
 
 ## Legacy Functions to be Refactored
-- `wicket_orgman_get_organization_members()`
-- `wicket_orgman_membership_search_members()`
-- `wicket_orgman_update_member_permissions()`
-- `wicket_orgman_end_relationship_today()`

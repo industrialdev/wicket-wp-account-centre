@@ -266,7 +266,6 @@ class Init
             'Membership'   => Membership::class,
             'Helper'       => Helper::class,
             'Schema'       => Schema::class,
-            'Notification' => Notification::class,
             'Roles'        => Roles::class,
         ];
 

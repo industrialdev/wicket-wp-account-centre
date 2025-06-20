@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace WicketAcc\MdpApi;
+namespace WicketAcc\Services;
 
 use WP_User;
 
@@ -12,14 +12,14 @@ defined('ABSPATH') || exit;
 /**
  * Handles MDP Notification related functionality.
  */
-class Notification extends Init
+class Notification
 {
     /**
      * Constructor.
      */
     public function __construct()
     {
-        parent::__construct();
+        WACC()->Notification = $this;
     }
 
     /**
@@ -202,5 +202,114 @@ class Notification extends Init
         }
 
         return $sent;
+    }
+
+    /**
+     * Sends an email to a person assigned to an organization with instructions on how to access their team profile.
+     *
+     * @param string $personUuid The person's UUID.
+     * @param string $orgUuid The organization's UUID for branding.
+     * @return void
+     */
+    public function sendPersonToOrgAssignmentEmail(string $personUuid, string $orgUuid): void
+    {
+        $lang = WACC()->Language->getCurrentLanguage();
+        $person = WACC()->MdpApi->Person->getPerson($personUuid);
+        $org = WACC()->MdpApi->Organization->getOrganizationInfo($orgUuid);
+
+        if (!$person || !$org) {
+            WACC()->Log->error('Failed to send assignment email: Invalid person or organization.', [
+                'source' => __METHOD__, 'personUuid' => $personUuid, 'orgUuid' => $orgUuid,
+            ]);
+
+            return;
+        }
+
+        $home_url = get_home_url();
+        $site_name = get_bloginfo('name');
+        $base_domain = parse_url(get_site_url(), PHP_URL_HOST);
+        $organization_name = $org['legal_name'] ?? $site_name;
+
+        $to = $person['primary_email_address'] ?? '';
+        if (empty($to)) {
+            WACC()->Log->error('Failed to send assignment email: Person has no primary email address.', [
+                'source' => __METHOD__, 'personUuid' => $personUuid,
+            ]);
+
+            return;
+        }
+
+        $first_name = $person['given_name'] ?? '';
+        $subject = 'Welcome to ' . $organization_name;
+
+        $body = "Hi $first_name, <br>
+<p>You have been assigned a membership as part of $organization_name.</p>
+<p>You will receive an account confirmation email from phca@wicketcloud.com, this will allow you to set your password and login for the first time.</p>
+<p>Going forward you can visit <a href='$home_url'>$site_name</a> and login to complete your profile and access your resources.</p>
+<br>
+Thank you,
+<br>
+$organization_name";
+
+        $headers = ['Content-Type: text/html; charset=UTF-8'];
+        $headers[] = 'From: ' . $organization_name . ' <no-reply@' . $base_domain . '>';
+
+        wp_mail($to, $subject, $body, $headers);
+    }
+
+    /**
+     * Sends an email notification to the organization owner.
+     *
+     * @param array $emailData {
+     *     Required. An array of email data.
+     *     @type string $orgUuid The organization UUID.
+     *     @type string $subject The email subject.
+     *     @type string $body The email body.
+     *     @type string $lang The language code.
+     *     @type string $to (Optional) The recipient email address. Defaults to org's main email.
+     * }
+     * @return bool True if the email was sent successfully, false otherwise.
+     */
+    public function sendEmailNotification(array $emailData): bool
+    {
+        $requiredKeys = ['orgUuid', 'subject', 'body', 'lang'];
+        foreach ($requiredKeys as $key) {
+            if (empty($emailData[$key])) {
+                WACC()->Log->error("Email notification missing required data: `{$key}`.", [
+                    'source' => __METHOD__, 'emailData' => $emailData,
+                ]);
+
+                return false;
+            }
+        }
+
+        $orgInfo = WACC()->MdpApi->Organization->getOrganizationInfoExtended($emailData['orgUuid'], $emailData['lang']);
+
+        if (!$orgInfo) {
+            WACC()->Log->error('Failed to send notification: Invalid organization.', [
+                'source' => __METHOD__, 'orgUuid' => $emailData['orgUuid'],
+            ]);
+
+            return false;
+        }
+
+        $to = $emailData['to'] ?? $orgInfo['org_meta']['main_email']['address'] ?? '';
+        if (empty($to)) {
+            WACC()->Log->error('Failed to send notification: No recipient email address found.', [
+                'source' => __METHOD__, 'orgUuid' => $emailData['orgUuid'],
+            ]);
+
+            return false;
+        }
+
+        $subject = sanitize_text_field($emailData['subject']);
+        $body = $emailData['body'];
+        $base_domain = parse_url(get_site_url(), PHP_URL_HOST);
+        $from_name = $orgInfo['legal_name'] ?? get_bloginfo('name');
+
+        $headers = ['Content-Type: text/html; charset=UTF-8'];
+        $headers[] = 'From: ' . $from_name . ' <no-reply@' . $base_domain . '>';
+
+        return wp_mail($to, $subject, $body, $headers);
     }
 }

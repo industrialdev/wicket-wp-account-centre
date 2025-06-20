@@ -26,8 +26,8 @@ class Helpers extends WicketAcc
 - `getGlobalHeaderBannerPageId(): int`: Retrieves the page ID for the global header banner content. This content is expected to be a 'my-account' CPT with the slug `acc_global-headerbanner`. Handles WPML translation of the page ID.
 - `renderAccSidebar(): void`: Renders the Account Centre sidebar template. It first checks for `account-centre/sidebar.php` in the child theme (`WICKET_ACC_USER_TEMPLATE_PATH`), then in the plugin's template path (`WICKET_ACC_PLUGIN_TEMPLATE_PATH`), and includes it if found.
 - `renderGlobalSubHeader(): void`: Renders the global sub-header banner content. It uses `getGlobalHeaderBannerPageId()` and an ACF option `acc_global-headerbanner` to fetch and display the content of the banner page.
-- `is_account_page(): bool`: Checks if the current page is a singular 'account' CPT page or the 'account' CPT archive page.
-- `get_account_page_url(string $endpoint = ''): string`: Gets the URL for the main account page (slug: 'account'). If an `$endpoint` is provided, it's appended to the URL. Falls back to `home_url()` if the 'account' page isn't found.
+- `is_account_page(): bool`: Checks if the current page is a singular 'my-account' CPT page or the 'my-account' CPT archive page.
+- `get_account_page_url(string $endpoint = ''): string`: Gets the URL for the main account page (slug: 'my-account'). If an `$endpoint` is provided, it's appended to the URL. Falls back to `home_url()` if the 'my-account' page isn't found.
 - `get_account_menu_items(): array`: Retrieves an array of account menu items (dashboard, edit profile, change password, organization management). This array is filterable via `wicket_acc_menu_items`.
 - `render_account_menu(string $menu_location = 'wicket-acc-nav'): void`: Renders the account navigation menu. It first tries to render a WordPress nav menu assigned to `$menu_location` using `wicket_acc_menu_walker`. If no menu is assigned, it falls back to rendering a list from `get_account_menu_items()`.
 

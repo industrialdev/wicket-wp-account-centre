@@ -55,10 +55,10 @@ class Router extends WicketAcc
             flush_rewrite_rules();
         }
 
-        add_action('admin_init', [$this, 'init_all_pages']);
-        add_action('init', [$this, 'acc_pages_template']);
-        add_filter('archive_template', [$this, 'custom_archive_template']);
-        add_action('plugins_loaded', [$this, 'acc_redirects']);
+        add_action('admin_init', [$this, 'initAllPages']);
+        add_action('init', [$this, 'accPagesTemplate']);
+        add_filter('archive_template', [$this, 'customArchiveTemplate']);
+        add_action('init', [$this, 'accRedirects']);
     }
 
     /**
@@ -66,7 +66,7 @@ class Router extends WicketAcc
      *
      * @return int
      */
-    public function get_acc_page_id()
+    public function getAccPageId()
     {
         if ($this->acc_page_id_cache === null) {
             $this->acc_page_id_cache = get_field('acc_page_dashboard', 'option');
@@ -80,10 +80,10 @@ class Router extends WicketAcc
      *
      * @return string
      */
-    public function get_acc_slug()
+    public function getAccSlug()
     {
         if ($this->acc_slug_cache === null) {
-            $acc_page_id = $this->get_acc_page_id();
+            $acc_page_id = $this->getAccPageId();
             $this->acc_slug_cache = get_post($acc_page_id)->post_name;
         }
 
@@ -99,7 +99,7 @@ class Router extends WicketAcc
      *
      * @return mixed	ID of created page or false
      */
-    public function create_page($slug, $name)
+    public function createPage($slug, $name)
     {
         // Let's ensure our setting option doesn't have a page defined yet
         $page_id = get_field('acc_page_' . $slug, 'option');
@@ -108,7 +108,7 @@ class Router extends WicketAcc
             return $page_id;
         }
 
-        $page_id = $this->get_page_id_by_slug($slug);
+        $page_id = $this->getPageIdBySlug($slug);
 
         if ($page_id) {
             update_field('acc_page_' . $slug, $page_id, 'option');
@@ -146,7 +146,7 @@ class Router extends WicketAcc
      *
      * @return int|bool Page ID or false if not found
      */
-    public function get_page_id_by_slug($slug)
+    public function getPageIdBySlug($slug)
     {
         global $wpdb;
 
@@ -171,7 +171,7 @@ class Router extends WicketAcc
      *
      * @return void
      */
-    public function init_all_pages()
+    public function initAllPages()
     {
         // Check if we've already created the main page
         if (get_option('wicket_acc_created_dashboard_page')) {
@@ -183,10 +183,10 @@ class Router extends WicketAcc
 
         // Create all other pages
         foreach ($pagesToCreate as $slug => $name) {
-            $this->create_page($slug, $name);
+            $this->createPage($slug, $name);
         }
 
-        $this->maybe_create_acc_dashboard_page();
+        $this->maybeCreateAccDashboardPage();
     }
 
     /**
@@ -194,7 +194,7 @@ class Router extends WicketAcc
      *
      * return void
      */
-    public function maybe_create_acc_dashboard_page()
+    public function maybeCreateAccDashboardPage()
     {
         // Check if we've already created the main page
         if (get_option('wicket_acc_created_dashboard_page')) {
@@ -210,7 +210,7 @@ class Router extends WicketAcc
         }
 
         // Create page
-        $this->create_page($set_slug, $set_name);
+        $this->createPage($set_slug, $set_name);
 
         // Save option to track that we've created the page
         update_option('wicket_acc_created_dashboard_page', true);
@@ -223,13 +223,13 @@ class Router extends WicketAcc
      *
      * @return string|false
      */
-    private function get_wicket_acc_template($post_id = null)
+    private function getWicketAccTemplate($post_id = null)
     {
         $user_template = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/page-acc.php';
         $plugin_template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/page-acc.php';
 
-        if ($post_id && $this->is_orgmanagement_page($post_id)) {
-            $acc_orgman_page = $this->orgman_page_requested($post_id);
+        if ($post_id && $this->isOrgmanagementPage($post_id)) {
+            $acc_orgman_page = $this->orgmanPageRequested($post_id);
 
             $user_template = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/org-management/acc-orgman-' . $acc_orgman_page . '.php';
         }
@@ -253,7 +253,7 @@ class Router extends WicketAcc
      *
      * @return string|false
      */
-    private function is_orgmanagement_page($post_id)
+    private function isOrgmanagementPage($post_id)
     {
         $orgManagementIndex = get_field('acc_page_orgman-index', 'option');
         $orgManagementProfile = get_field('acc_page_orgman-profile', 'option');
@@ -288,13 +288,13 @@ class Router extends WicketAcc
      *
      * @return bool
      */
-    private function orgman_page_requested($post_id)
+    private function orgmanPageRequested($post_id)
     {
         if (!$post_id) {
             return false;
         }
 
-        return $this->is_orgmanagement_page($post_id);
+        return $this->isOrgmanagementPage($post_id);
     }
 
     /**
@@ -302,7 +302,7 @@ class Router extends WicketAcc
      *
      * @return void
      */
-    public function acc_pages_template()
+    public function accPagesTemplate()
     {
         if (is_admin()) {
             return;
@@ -321,7 +321,7 @@ class Router extends WicketAcc
 
                 if (!$custom_template) {
                     // Only override default template if no custom template was selected
-                    $template = $this->get_wicket_acc_template($post->ID);
+                    $template = $this->getWicketAccTemplate($post->ID);
 
                     if ($template) {
                         return $template;
@@ -342,7 +342,7 @@ class Router extends WicketAcc
      *
      * @return string
      */
-    public function custom_archive_template($template)
+    public function customArchiveTemplate($template)
     {
         if (is_admin()) {
             return $template;
@@ -365,21 +365,18 @@ class Router extends WicketAcc
      * 2. Old acc slugs (account-centre) to new slugs (my-account)
      * 3. WooCommerce critical endpoints out from ACC.
      */
-    public function acc_redirects()
+    public function accRedirects()
     {
         if (is_admin()) {
             return;
         }
 
-        // WPML compatibility
-        if (defined('ICL_SITEPRESS_VERSION')) {
-            global $sitepress;
-            $current_lang = $sitepress->get_current_language();
-        } else {
-            $current_lang = 'en';
-        }
+        $current_lang = WACC()->Language->getCurrentLanguage();
 
-        $acc_dashboard_id = get_option('options_acc_page_dashboard');
+        $acc_dashboard_id = $this->getAccPageId();
+
+        WACC()->Log->debug('ACC Dashboard ID: ' . $acc_dashboard_id);
+
         $acc_dashboard_url = get_permalink($acc_dashboard_id);
         $acc_dashboard_slug = get_post($acc_dashboard_id)->post_name;
 

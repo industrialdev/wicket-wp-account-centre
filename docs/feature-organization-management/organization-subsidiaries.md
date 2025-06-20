@@ -383,16 +383,9 @@ class SubsidiaryCreation {
 - `wicket_orgman_create_organization()`
 - `wicket_orgman_set_parent_organization()`
 - `wicket_orgman_create_or_update_organization_address()`
-- `wicket_orgman_create_or_update_organization_email()`
-- `wicket_orgman_create_or_update_organization_phone()`
-- `wicket_orgman_create_or_update_organization_website()`
-- `wicket_orgman_getCountries()`
-- `wicket_orgman_getStatesProvinces()`
 
 ## Required Legacy Functions
 - `wicket_orgman_get_organization_children()`
-- `wicket_orgman_get_organization_info_extended()`
-- `wicket_orgman_role_check()`
 
 ## Error States
 1. No subsidiaries:

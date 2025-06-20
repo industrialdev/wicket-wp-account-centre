@@ -102,76 +102,150 @@ class User extends WicketAcc
      *
      * @return int|false The new WP user ID if successful, otherwise false.
      */
-    public function createWpUserIfNotExist(?string $uuid, ?string $firstName = null, ?string $lastName = null, ?string $email = null): int|false
+    public function createOrUpdateWpUser(?string $uuid, ?string $firstName = null, ?string $lastName = null, ?string $email = null): int|false
     {
         if (empty($uuid)) {
-            WACC()->Log->warning('createWpUserIfNotExist called with an empty UUID.', ['source' => __METHOD__]);
+            WACC()->Log->warning('createOrUpdateWpUser called with an empty UUID.', ['source' => __METHOD__]);
 
             return false;
         }
 
-        // Check if WP user already exists by login (UUID)
-        $user = get_user_by('login', $uuid);
-        if ($user) {
-            return $user->ID;
+        // If overrides are not provided, fetch data from MDP
+        if (is_null($firstName) || is_null($lastName) || is_null($email)) {
+            $mdp_person = WACC()->MdpApi->Person->getPersonByUuid($uuid);
+            if (!$mdp_person || !isset($mdp_person->attributes)) {
+                WACC()->Log->error('Failed to retrieve person data from MDP for user creation/update.', ['source' => __METHOD__, 'uuid' => $uuid]);
+
+                return false;
+            }
+            $attributes = $mdp_person->attributes;
+            $firstName ??= $attributes->given_name ?? null;
+            $lastName ??= $attributes->family_name ?? null;
+            $email ??= $attributes->primary_email_address ?? null;
         }
 
-        // If overrides are not provided, fetch data from MDP
-        if (is_null($firstName) && is_null($lastName) && is_null($email)) {
-            $mdp_person = WACC()->MdpApi->Person->getPersonByUuid($uuid);
+        if (empty($email)) {
+            WACC()->Log->error('Email is missing for user creation/update.', ['source' => __METHOD__, 'uuid' => $uuid]);
 
-            if (!$mdp_person || !isset($mdp_person->attributes)) {
-                WACC()->Log->error('Failed to retrieve person data from MDP for user creation, or data is malformed.', ['source' => __METHOD__, 'uuid' => $uuid]);
+            return false;
+        }
+
+        $user = get_user_by('login', $uuid) ?: get_user_by('email', $email);
+
+        if ($user) {
+            // Update existing user
+            $user_data = [
+                'ID'         => $user->ID,
+                'user_email' => $email,
+                'first_name' => $firstName,
+                'last_name'  => $lastName,
+            ];
+            $user_id = wp_update_user($user_data);
+            if (is_wp_error($user_id)) {
+                WACC()->Log->error(
+                    'Failed to update WordPress user.',
+                    ['source' => __METHOD__, 'uuid' => $uuid, 'error' => $user_id->get_error_message()]
+                );
 
                 return false;
             }
 
-            $attributes = $mdp_person->attributes;
-            $firstName = $attributes->given_name ?? null;
-            $lastName = $attributes->family_name ?? null;
-            $email = $attributes->primary_email_address ?? null;
-        }
+            return $user_id;
+        } else {
+            // Create new user
+            $user_data = [
+                'user_email'   => $email,
+                'user_pass'    => wp_generate_password(16, false),
+                'user_login'   => sanitize_user($uuid),
+                'display_name' => trim($firstName . ' ' . $lastName),
+                'first_name'   => $firstName,
+                'last_name'    => $lastName,
+                'role'         => 'subscriber',
+            ];
+            $user_id = wp_insert_user($user_data);
+            if (is_wp_error($user_id)) {
+                WACC()->Log->error(
+                    'Failed to create WordPress user.',
+                    ['source' => __METHOD__, 'uuid' => $uuid, 'error' => $user_id->get_error_message()]
+                );
 
-        // An email is required to create a user
-        if (empty($email)) {
-            WACC()->Log->error('Email is missing for user creation.', ['source' => __METHOD__, 'uuid' => $uuid]);
+                return false;
+            }
+
+            return $user_id;
+        }
+    }
+
+    /**
+     * Assign one or more WordPress roles to a user.
+     *
+     * @param string $personUuid The person's UUID (user_login) or email address.
+     * @param string|string[] $roles The role or roles to assign.
+     * @return bool True on success, false on failure.
+     */
+    public function assignWpRoles(string $personUuid, string|array $roles): bool
+    {
+        return $this->updateUserRoles($personUuid, $roles, 'add');
+    }
+
+    /**
+     * Remove one or more WordPress roles from a user.
+     *
+     * @param string $personUuid The person's UUID (user_login) or email address.
+     * @param string|string[] $roles The role or roles to remove.
+     * @return bool True on success, false on failure.
+     */
+    public function removeWpRoles(string $personUuid, string|array $roles): bool
+    {
+        return $this->updateUserRoles($personUuid, $roles, 'remove');
+    }
+
+    /**
+     * Private helper to add or remove roles from a user.
+     *
+     * @param string $personUuid The person's UUID (user_login) or email address.
+     * @param string|string[] $roles The role or roles to update.
+     * @param string $action The action to perform ('add' or 'remove').
+     * @return bool True on success, false on failure.
+     */
+    private function updateUserRoles(string $personUuid, string|array $roles, string $action): bool
+    {
+        if (empty($personUuid) || empty($roles)) {
+            WACC()->Log->warning('User role update skipped: Missing person UUID or roles.', [
+                'source' => __METHOD__,
+                'person_uuid' => $personUuid,
+                'action' => $action,
+            ]);
 
             return false;
         }
 
-        // Final check if WP user exists by email to prevent errors
-        $user = get_user_by('email', $email);
-        if ($user) {
-            return $user->ID;
-        }
+        $user = get_user_by('login', $personUuid) ?? get_user_by('email', $personUuid);
 
-        // Create the WP user
-        $user_data = [
-            'user_email'   => $email,
-            'user_pass'    => wp_generate_password(16, false),
-            'user_login'   => sanitize_user($uuid),
-            'display_name' => trim($firstName . ' ' . $lastName),
-            'first_name'   => $firstName,
-            'last_name'    => $lastName,
-            'role'         => 'subscriber', // Use a default, safe role
-        ];
-
-        $user_id = wp_insert_user($user_data);
-
-        if (is_wp_error($user_id)) {
-            WACC()->Log->error(
-                'Failed to create WordPress user.',
-                [
-                    'source' => __METHOD__,
-                    'uuid' => $uuid,
-                    'email' => $email,
-                    'error_message' => $user_id->get_error_message(),
-                ]
-            );
+        if (!$user) {
+            WACC()->Log->error('Failed to find user for role update.', [
+                'source' => __METHOD__,
+                'person_uuid' => $personUuid,
+                'action' => $action,
+            ]);
 
             return false;
         }
 
-        return $user_id;
+        $roles = (array) $roles;
+        $actionMethod = $action === 'add' ? 'add_role' : 'remove_role';
+
+        foreach ($roles as $role) {
+            $user->$actionMethod($role);
+        }
+
+        WACC()->Log->info('Successfully updated user roles.', [
+            'source' => __METHOD__,
+            'user_id' => $user->ID,
+            'roles' => $roles,
+            'action' => $action,
+        ]);
+
+        return true;
     }
 }

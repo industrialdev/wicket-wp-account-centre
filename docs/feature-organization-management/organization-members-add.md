@@ -178,10 +178,7 @@ Jane,Smith,jane@example.com,member'
 ]
 ```
 
-## Required Legacy Functions
-- `wicket_orgman_get_person_by_email()`
-- `wicket_orgman_create_person()`
-- `wicket_orgman_update_member_permissions()`
+
 
 ## Error Handling
 - Email already exists in organization

@@ -3,6 +3,7 @@
 namespace WicketAcc;
 
 use WicketAcc\MdpApi\Init as MdpApi;
+use WicketAcc\Services\Notification;
 
 // No direct access
 defined('ABSPATH') || exit;
@@ -20,17 +21,27 @@ class MethodRouter
      */
     public function __construct()
     {
+        // The constructor is intentionally left empty to be populated by the init method.
+    }
+
+    /**
+     * Initialize the services.
+     */
+    public function init()
+    {
         // Register all class instances except Helpers
         $this->instances = [
             'MdpApi'                 => new MdpApi(),
             'Profile'                => new Profile(),
             'OrganizationManagement' => new OrganizationManagement(),
             'OrganizationProfile'    => new OrganizationProfile(),
+            'OrganizationRoster'     => new OrganizationRoster(),
             'Blocks'                 => new Blocks(),
             'User'                   => new User(),
             'Log'                    => new Log(),
             'WooCommerce'            => new WooCommerce(),
             'Language'               => new Language(),
+            'Notification'           => new Notification(),
         ];
 
         // Now instantiate Membership since MdpApi and its children are available
@@ -48,10 +59,10 @@ class MethodRouter
      *
      * @param string $name
      *
-     * @return object|Blocks|MdpApi|OrganizationProfile|Profile|User|Log|WooCommerce|Language|\WicketAcc\MdpApi\Membership|OrganizationManagement
+     * @return object|Blocks|MdpApi|OrganizationProfile|Profile|User|Log|WooCommerce|Language|\WicketAcc\MdpApi\Membership|OrganizationManagement|OrganizationRoster
      * @throws \Exception
      */
-    public function __get($name): Blocks|MdpApi|OrganizationProfile|Profile|User|Log|WooCommerce|Language|\WicketAcc\MdpApi\Membership|OrganizationManagement
+    public function __get($name): Blocks|MdpApi|OrganizationProfile|Profile|User|Log|WooCommerce|Language|\WicketAcc\MdpApi\Membership|OrganizationManagement|OrganizationRoster
     {
         if (isset($this->instances[$name])) {
             return $this->instances[$name];

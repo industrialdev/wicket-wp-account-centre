@@ -216,9 +216,6 @@ public function updateSectionData(
 ```
 
 ## Required Legacy Functions
-- `wicket_orgman_get_org_additional_info()`
-- `wicket_orgman_business_info_send_section_patch()`
-- `wicket_orgman_role_check()`
 
 ## Error Handling
 - Missing required fields

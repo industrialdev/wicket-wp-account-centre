@@ -215,10 +215,8 @@ class DocumentProcessor {
 ```
 
 ## Required Legacy Functions
-- `wicket_orgman_get_organization_documents()`
 - `wicket_orgman_upload_organization_document()`
 - `wicket_orgman_remove_organization_document()`
-- `wicket_orgman_role_check()`
 - `wicket_orgman_register_document()`
 - `wicket_orgman_remove_document()`
 

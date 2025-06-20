@@ -213,7 +213,6 @@ public function getNavigationAccess(): array
 ```
 
 ## Required Legacy Functions
-- `wicket_orgman_get_organization_info_extended()`
 - `wicket_orgman_get_organization_children()`
 - `wicket_orgman_get_membership_details()`
 
