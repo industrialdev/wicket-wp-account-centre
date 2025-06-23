@@ -46,8 +46,16 @@ class MethodRouter
 
         // Now instantiate Membership since MdpApi and its children are available
         $this->instances['Membership'] = new \WicketAcc\MdpApi\Membership(
+            $this->instances['MdpApi']->Address,
+            $this->instances['MdpApi']->Group,
+            $this->instances['MdpApi']->Helper,
+            $this->instances['MdpApi']->Membership,
             $this->instances['MdpApi']->Person,
-            $this->instances['MdpApi']->Organization
+            $this->instances['MdpApi']->Organization,
+            $this->instances['MdpApi']->Roles,
+            $this->instances['MdpApi']->Schema,
+            $this->instances['MdpApi']->Segment,
+            $this->instances['MdpApi']->Touchpoint,
         );
 
         // Store Helpers instance separately
