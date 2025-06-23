@@ -20,12 +20,12 @@ defined('ABSPATH') || exit;
 /**
  * Returns active memberships from wicket API.
  *
- * @deprecated 1.6.0 Available as method WACC()->Membership->getCurrentPersonActiveMemberships()
+ * @deprecated 1.6.0 Available as method WACC()->MdpApi->Membership->getCurrentPersonActiveMemberships()
  */
 function wicket_get_active_memberships($iso_code = 'en')
 {
     // This function is now a wrapper for the MdpApi Membership class method.
-    if (!function_exists('WACC') || !method_exists(WACC()->Membership, 'getCurrentPersonActiveMemberships')) {
+    if (!function_exists('WACC') || !method_exists(WACC()->MdpApi->Membership, 'getCurrentPersonActiveMemberships')) {
         // Log an error or return an empty array if the WACC system isn't available.
         // Depending on how critical this is, you might want to trigger_error.
         if (function_exists('WACC') && WACC()->Log) {
@@ -35,18 +35,18 @@ function wicket_get_active_memberships($iso_code = 'en')
         return [];
     }
 
-    return WACC()->Membership->getCurrentPersonActiveMemberships($iso_code);
+    return WACC()->MdpApi->Membership->getCurrentPersonActiveMemberships($iso_code);
 }
 
 /**
  * Returns active memberships from WooCommerce.
  *
- * @deprecated 1.6.0 Available as method WACC()->Membership->getCurrentUserWooActiveMemberships()
+ * @deprecated 1.6.0 Available as method WACC()->MdpApi->Membership->getCurrentUserWooActiveMemberships()
  */
 function woo_get_active_memberships()
 {
     // This function is now a wrapper for the MdpApi Membership class method.
-    if (!function_exists('WACC') || !method_exists(WACC()->Membership, 'getCurrentUserWooActiveMemberships')) {
+    if (!function_exists('WACC') || !method_exists(WACC()->MdpApi->Membership, 'getCurrentUserWooActiveMemberships')) {
         if (function_exists('WACC') && WACC()->Log) {
             WACC()->Log->error('WACC MdpApi or Membership class/method not available for woo_get_active_memberships.', ['source' => __FUNCTION__]);
         }
@@ -54,17 +54,17 @@ function woo_get_active_memberships()
         return []; // Return empty array or null based on original behavior, null might be more accurate here.
     }
 
-    return WACC()->Membership->getCurrentUserWooActiveMemberships();
+    return WACC()->MdpApi->Membership->getCurrentUserWooActiveMemberships();
 }
 
 /**
  * Returns active memberships relationship from wicket API.
  *
- * @deprecated 1.6.0 Available as method WACC()->Membership->getActiveMembershipRelationship()
+ * @deprecated 1.6.0 Available as method WACC()->MdpApi->Membership->getActiveMembershipRelationship()
  */
 function wicket_get_active_memberships_relationship($org_uuid)
 {
-    return WACC()->Membership->getActiveMembershipRelationship($org_uuid);
+    return WACC()->MdpApi->Membership->getActiveMembershipRelationship($org_uuid);
 }
 
 /**

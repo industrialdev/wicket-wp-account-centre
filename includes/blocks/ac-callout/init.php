@@ -48,10 +48,10 @@ class init extends Blocks
         $iso_code = WACC()->Language->getCurrentLanguage();
 
         // Get Wicket memberships using the new MdpApi method
-        $memberships = WACC()->Membership->getCurrentPersonActiveMemberships($iso_code);
+        $memberships = WACC()->MdpApi->Membership->getCurrentPersonActiveMemberships($iso_code);
 
         // Get WooCommerce memberships using the new MdpApi method
-        $woo_memberships = WACC()->Membership->getCurrentUserWooActiveMemberships();
+        $woo_memberships = WACC()->MdpApi->Membership->getCurrentUserWooActiveMemberships();
 
         if ($this->is_preview) {
             if ($block_logic == '') {
