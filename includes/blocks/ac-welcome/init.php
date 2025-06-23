@@ -105,7 +105,6 @@ class init extends Blocks
                         // Track seen membership combinations to avoid duplicates
                         $seen_memberships = [];
                         foreach ($active_memberships as $membership) {
-
                             if (function_exists('wicket_acc_welcome_filter_memberships')) {
                                 /* @disregard P1010 Undefined function 'wicket_acc_welcome_filter_memberships' */
                                 if (\wicket_acc_welcome_filter_memberships($membership)) {
@@ -137,7 +136,7 @@ class init extends Blocks
                                 <p class="mb-0 wicket-welcome-member-type">
                                     <strong><?php echo __('Membership Type:', 'wicket-acc'); ?></strong>
                                     <?php
-                                    $membership_name = $membership['name_' . $current_lang] ?? $membership['name'] ?? ''; // Added fallback and ensure we have a value
+                                            $membership_name = $membership['name_' . $current_lang] ?? $membership['name'] ?? ''; // Added fallback and ensure we have a value
 
                             echo apply_filters(
                                 'wicket/acc/block/ac-welcome/membership_name',
@@ -151,6 +150,7 @@ class init extends Blocks
                                     $org_main_info = WACC()->MdpApi->Membership->getOrganizationMembershipByUuid(
                                         $membership['organization_membership_id']
                                     );
+
                                     $org_uuid =
                                         $org_main_info['data']['relationships']['organization']['data']['id'];
 
@@ -167,6 +167,37 @@ class init extends Blocks
                                         <?php echo esc_html($org_info['name_' . $current_lang] ?? $org_info['name']); ?>
                                     </p>
                                 <?php
+                                endif; ?>
+
+                                <?php if ($membership['type'] == 'individual'): ?>
+                                    <?php
+                                    // For individual memberships, we need to get the relationship from the organization connection
+                                    $individual_relationship = '';
+                                    if (isset($membership['organization_membership_id'])) {
+                                        // Get the organization membership info to find the organization
+                                        $org_main_info = WACC()->MdpApi->Membership->getOrganizationMembershipByUuid(
+                                            $membership['organization_membership_id']
+                                        );
+
+                                        if (isset($org_main_info['data']['relationships']['organization']['data']['id'])) {
+                                            $org_uuid = $org_main_info['data']['relationships']['organization']['data']['id'];
+                                            $org_info = wicket_get_active_memberships_relationship($org_uuid);
+                                            $individual_relationship = $org_info['relationship'] ?? '';
+
+                                            // Apply translation if needed
+                                            $display_relationship = ($current_lang === 'fr' && isset($relationship_translations[$individual_relationship]))
+                                                ? $relationship_translations[$individual_relationship]
+                                                : $individual_relationship;
+                                        }
+                                    }
+
+                                    if (!empty($display_relationship)): ?>
+                                        <p class="mb-0 wicket-welcome-member-org font-bold">
+                                            <?php echo esc_html($display_relationship); ?>
+                                            &ndash;
+                                            <?php echo esc_html($membership['name_' . $current_lang] ?? $membership['name']); ?>
+                                        </p>
+                                <?php endif;
                                 endif; ?>
 
                                 <p class="mt-0 mb-2 wicket-welcome-member-active flex items-center space-x-2">
