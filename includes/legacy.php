@@ -24,17 +24,6 @@ defined('ABSPATH') || exit;
  */
 function wicket_get_active_memberships($iso_code = 'en')
 {
-    // This function is now a wrapper for the MdpApi Membership class method.
-    if (!function_exists('WACC') || !method_exists(WACC()->MdpApi->Membership, 'getCurrentPersonActiveMemberships')) {
-        // Log an error or return an empty array if the WACC system isn't available.
-        // Depending on how critical this is, you might want to trigger_error.
-        if (function_exists('WACC') && WACC()->Log) {
-            WACC()->Log->error('WACC MdpApi or Membership class not available for wicket_get_active_memberships.', ['source' => __FUNCTION__]);
-        }
-
-        return [];
-    }
-
     return WACC()->MdpApi->Membership->getCurrentPersonActiveMemberships($iso_code);
 }
 
@@ -45,15 +34,6 @@ function wicket_get_active_memberships($iso_code = 'en')
  */
 function woo_get_active_memberships()
 {
-    // This function is now a wrapper for the MdpApi Membership class method.
-    if (!function_exists('WACC') || !method_exists(WACC()->MdpApi->Membership, 'getCurrentUserWooActiveMemberships')) {
-        if (function_exists('WACC') && WACC()->Log) {
-            WACC()->Log->error('WACC MdpApi or Membership class/method not available for woo_get_active_memberships.', ['source' => __FUNCTION__]);
-        }
-
-        return []; // Return empty array or null based on original behavior, null might be more accurate here.
-    }
-
     return WACC()->MdpApi->Membership->getCurrentUserWooActiveMemberships();
 }
 
@@ -357,11 +337,12 @@ function wicket_ac_maybe_add_multiple_products_to_cart()
         $quantity = empty($_REQUEST['quantity']) ? 1 : wc_stock_amount($_REQUEST['quantity']);
         $passed_validation = apply_filters('woocommerce_add_to_cart_validation', true, $product_id, $quantity);
 
-        if ($passed_validation
-              && (
-                  strpos($add_to_cart_handler, 'variable') !== false
+        if (
+            $passed_validation
+            && (
+                strpos($add_to_cart_handler, 'variable') !== false
                 || strpos($add_to_cart_handler, 'variation') !== false
-              )
+            )
         ) {
             $variation_id = $product_id;
             $variation = wc_get_product($variation_id);

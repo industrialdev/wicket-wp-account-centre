@@ -44,7 +44,7 @@ class init extends Blocks
         $renewal_date = get_field('renewal_date');
         $display_mdp_id = get_field('display_mdp_id');
         $image_url = get_avatar_url($current_user->ID, ['size' => '300']);
-        $active_memberships = wicket_get_active_memberships($current_lang);
+        $active_memberships = WACC()->MdpApi->Membership->getCurrentPersonActiveMemberships($current_lang);
 
         // We need to find these at the MDP at some point
         $relationship_translations = [
@@ -107,7 +107,7 @@ class init extends Blocks
                         foreach ($active_memberships as $membership) {
                             if (function_exists('wicket_acc_welcome_filter_memberships')) {
                                 /* @disregard P1010 Undefined function 'wicket_acc_welcome_filter_memberships' */
-                                if (\wicket_acc_welcome_filter_memberships($membership)) {
+                                if (wicket_acc_welcome_filter_memberships($membership)) {
                                     continue;
                                 }
                             }
@@ -146,7 +146,6 @@ class init extends Blocks
                                 </p>
 
                                 <?php if ($membership['type'] == 'organization'):
-
                                     $org_main_info = WACC()->MdpApi->Membership->getOrganizationMembershipByUuid(
                                         $membership['organization_membership_id']
                                     );
@@ -154,7 +153,7 @@ class init extends Blocks
                                     $org_uuid =
                                         $org_main_info['data']['relationships']['organization']['data']['id'];
 
-                                    $org_info = wicket_get_active_memberships_relationship($org_uuid);
+                                    $org_info = WACC()->MdpApi->Membership->getActiveMembershipRelationship($org_uuid);
 
                                     $english_relationship = $org_info['relationship'];
                                     $display_relationship = ($current_lang === 'fr' && isset($relationship_translations[$english_relationship]))
@@ -169,8 +168,7 @@ class init extends Blocks
                                 <?php
                                 endif; ?>
 
-                                <?php if ($membership['type'] == 'individual'): ?>
-                                    <?php
+                                <?php if ($membership['type'] == 'individual'):
                                     // For individual memberships, we need to get the relationship from the organization connection
                                     $individual_relationship = '';
                                     if (isset($membership['organization_membership_id'])) {
@@ -181,7 +179,7 @@ class init extends Blocks
 
                                         if (isset($org_main_info['data']['relationships']['organization']['data']['id'])) {
                                             $org_uuid = $org_main_info['data']['relationships']['organization']['data']['id'];
-                                            $org_info = wicket_get_active_memberships_relationship($org_uuid);
+                                            $org_info = WACC()->MdpApi->Membership->getActiveMembershipRelationship($org_uuid);
                                             $individual_relationship = $org_info['relationship'] ?? '';
 
                                             // Apply translation if needed

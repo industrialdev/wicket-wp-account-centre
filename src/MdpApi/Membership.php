@@ -17,6 +17,7 @@ class Membership extends Init
 {
     protected Person $person;
     protected Organization $organization;
+    protected array $cache = [];
 
     /**
      * Constructor.
@@ -34,23 +35,17 @@ class Membership extends Init
      * @param string $uuid The membership UUID.
      * @return array|false The membership data array or false on failure.
      */
-    /**
-     * Get a single organization membership by its UUID.
-     *
-     * @param string $uuid The membership UUID.
-     * @return array|false The membership data array or false on failure.
-     */
     public function getOrganizationMembershipByUuid(string $uuid): array|false
     {
         if (empty($uuid)) {
-            WACC()->Log->warning('UUID cannot be empty.', ['source' => __METHOD__]);
+            WACC()->Log->warning('UUID cannot be empty.', ['source' => __CLASS__]);
 
             return false;
         }
 
         $client = $this->initClient();
         if (!$client) {
-            WACC()->Log->error('Failed to initialize API client.', ['source' => __METHOD__, 'uuid' => $uuid]);
+            WACC()->Log->error('Failed to initialize API client.', ['source' => __CLASS__, 'uuid' => $uuid]);
 
             return false;
         }
@@ -62,7 +57,7 @@ class Membership extends Init
             WACC()->Log->error(
                 'API Exception while fetching organization membership by UUID.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'uuid' => $uuid,
                     'message' => $e->getMessage(),
                     'exception' => $e,
@@ -89,14 +84,14 @@ class Membership extends Init
     public function getOrganizationMemberships(string $org_uuid): array|false
     {
         if (empty($org_uuid)) {
-            WACC()->Log->warning('Organization UUID cannot be empty.', ['source' => __METHOD__]);
+            WACC()->Log->warning('Organization UUID cannot be empty.', ['source' => __CLASS__]);
 
             return false;
         }
 
         $client = $this->initClient();
         if (!$client) {
-            WACC()->Log->error('Failed to initialize API client.', ['source' => __METHOD__, 'org_uuid' => $org_uuid]);
+            WACC()->Log->error('Failed to initialize API client.', ['source' => __CLASS__, 'org_uuid' => $org_uuid]);
 
             return false;
         }
@@ -107,7 +102,7 @@ class Membership extends Init
             if (!isset($org_memberships_response['data'])) {
                 WACC()->Log->warning(
                     'API response for organization memberships did not contain a data key.',
-                    ['source' => __METHOD__, 'org_uuid' => $org_uuid, 'response' => $org_memberships_response]
+                    ['source' => __CLASS__, 'org_uuid' => $org_uuid, 'response' => $org_memberships_response]
                 );
 
                 return false; // Or an empty array if that's preferred for malformed responses
@@ -143,7 +138,7 @@ class Membership extends Init
             WACC()->Log->error(
                 'API Exception while fetching organization memberships.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'org_uuid' => $org_uuid,
                     'message' => $e->getMessage(),
                     'exception' => $e,
@@ -200,7 +195,7 @@ class Membership extends Init
             WACC()->Log->error(
                 'API Exception while assigning person to organization membership.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'personId' => $personId,
                     'membershipId' => $membershipId,
                     'orgMembershipId' => $orgMembershipId,
@@ -234,7 +229,7 @@ class Membership extends Init
             WACC()->Log->error(
                 'API Exception while unassigning person from organization membership.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'personMembershipUuid' => $personMembershipUuid,
                     'message' => $e->getMessage(),
                     'exception' => $e,
@@ -256,102 +251,40 @@ class Membership extends Init
     public function getCurrentPersonActiveMemberships(string $iso_code = 'en'): array
     {
         $membership_summary = [];
-        $person_uuid = WACC()->MdpApi->Person->getCurrentPersonUuid();
 
-        if (empty($person_uuid)) {
-            WACC()->Log->debug('No current person UUID found, cannot fetch active memberships.', ['source' => __METHOD__]);
+        // Use the same approach as the original working function
+        $wicket_memberships = $this->getCurrentPersonMemberships();
 
-            return [];
-        }
+        if ($wicket_memberships) {
+            $helper = new \Wicket\ResponseHelper($wicket_memberships);
 
-        $person_profile = WACC()->MdpApi->Person->getPersonProfileByUuid($person_uuid);
-
-        if (!$person_profile || !isset($person_profile->included) || !is_array($person_profile->included)) {
-            WACC()->Log->debug(
-                'Person profile or included data not found/valid for active memberships.',
-                ['source' => __METHOD__, 'person_uuid' => $person_uuid, 'profile_exists' => !empty($person_profile)]
-            );
-
-            return [];
-        }
-
-        $person_membership_entries = [];
-        $membership_tiers_map = [];
-
-        foreach ($person_profile->included as $included_item) {
-            if (!isset($included_item->type, $included_item->id)) {
-                continue;
-            }
-            // The SDK might use 'person_memberships' or 'person-memberships' as type
-            if (strtolower($included_item->type) === 'person_memberships' || strtolower($included_item->type) === 'person-memberships') {
-                // Ensure this person_membership entry actually belongs to the current person
-                if (
-                    isset($included_item->relationships->person->data->id) &&
-                    $included_item->relationships->person->data->id === $person_uuid
-                ) {
-                    $person_membership_entries[] = $included_item;
+            foreach ($helper->data as $entry) {
+                $membership_tier = $helper->getIncludedRelationship($entry, 'membership');
+                if (!$membership_tier) {
+                    continue;
                 }
-            } elseif (strtolower($included_item->type) === 'memberships') { // These are the membership tiers/plans
-                $membership_tiers_map[$included_item->id] = $included_item;
+                if ($entry['attributes']['status'] != 'Active') {
+                    continue;
+                }
+                $entry_summary = [
+                    'membership_category' => $entry['attributes']['membership_category'],
+                    'starts_at'           => $entry['attributes']['starts_at'],
+                    'ends_at'             => $entry['attributes']['ends_at'],
+                    'name'                => $membership_tier['attributes']['name_' . $iso_code] ?? $membership_tier['attributes']['name'] ?? 'N/A',
+                    'type'                => $membership_tier['attributes']['type'],
+                ];
+
+                if (isset($entry['relationships']['organization_membership']['data']['id'])) {
+                    $entry_summary['organization_membership_id'] = $entry['relationships']['organization_membership']['data']['id'];
+                }
+
+                $membership_summary[] = $entry_summary;
             }
-        }
-
-        if (empty($person_membership_entries)) {
-            WACC()->Log->debug('No relevant person_membership entries found in included data.', [
-                'source' => __METHOD__,
-                'person_uuid' => $person_uuid,
-                'included_count' => count($person_profile->included),
-            ]);
-
-            return [];
-        }
-
-        foreach ($person_membership_entries as $entry) {
-            if (!isset($entry->attributes->status) || strtolower($entry->attributes->status) !== 'active') {
-                continue;
-            }
-
-            $membership_tier_id = $entry->relationships->membership->data->id ?? null;
-            $membership_tier = $membership_tier_id ? ($membership_tiers_map[$membership_tier_id] ?? null) : null;
-
-            if (!$membership_tier) {
-                WACC()->Log->warning('Membership tier/plan details not found for active person_membership.', [
-                    'source' => __METHOD__,
-                    'person_uuid' => $person_uuid,
-                    'person_membership_id' => $entry->id,
-                    'membership_tier_id' => $membership_tier_id,
-                ]);
-                continue;
-            }
-
-            $name_property = 'name_' . strtolower($iso_code);
-            $default_name_property = 'name_en'; // Fallback to English name
-
-            $entry_summary = [
-                'membership_category' => $entry->attributes->membership_category ?? null,
-                'starts_at'           => $entry->attributes->starts_at ?? null,
-                'ends_at'             => $entry->attributes->ends_at ?? null,
-                'name'                => $membership_tier->attributes->$name_property ?? $membership_tier->attributes->$default_name_property ?? $membership_tier->attributes->name ?? 'N/A',
-                'type'                => $membership_tier->attributes->type ?? null,
-            ];
-
-            if (isset($entry->relationships->organization_membership->data->id)) {
-                $entry_summary['organization_membership_id'] = $entry->relationships->organization_membership->data->id;
-            }
-
-            $membership_summary[] = $entry_summary;
         }
 
         return $membership_summary;
     }
 
-    /**
-     * Returns active memberships for the current user from WooCommerce Memberships.
-     *
-     * @return array An array of active WooCommerce membership summaries, or an empty array if none are found
-     *               or WooCommerce Memberships is not active/user not logged in.
-     *               Each summary contains 'starts_at', 'ends_at', and 'name'.
-     */
     /**
      * Returns active memberships relationship from wicket API.
      *
@@ -361,11 +294,11 @@ class Membership extends Init
     public function getActiveMembershipRelationship(string $org_uuid): array
     {
         $person_type = '';
-        $wicket_memberships = $this->getCurrentPersonActiveMemberships();
+        $wicket_memberships = $this->getCurrentPersonMemberships();
         $person_uuid = $this->person->getCurrentPersonUuid();
         $org_info = [];
 
-        if (!empty($wicket_memberships['included'])) {
+        if ($wicket_memberships && isset($wicket_memberships['included'])) {
             foreach ($wicket_memberships['included'] as $included) {
                 if ($included['type'] !== 'organizations') {
                     continue;
@@ -380,11 +313,13 @@ class Membership extends Init
                 $org_connections = $this->organization->getOrgConnectionsById($included_org_uuid);
                 $org_info['name'] = $included['attributes']['legal_name'] ?? '';
 
-                if (!empty($org_connections)) {
-                    foreach ($org_connections as $org_connection) {
-                        $person_to_org_uuid = $org_connection['relationships']['person']['data']['id'] ?? '';
+                if ($org_connections) {
+                    foreach ($org_connections as $org_included) {
+                        $person_to_org_uuid = $org_included['relationships']['person']['data']['id'] ?? '';
+
                         if ($person_to_org_uuid == $person_uuid) {
-                            $person_type = $org_connection['attributes']['type'] ?? '';
+                            $person_type = $org_included['attributes']['type'] ?? '';
+                            break; // Found the match, no need to continue
                         }
                     }
                 }
@@ -401,19 +336,15 @@ class Membership extends Init
     {
         $membership_summary = [];
 
-        if (!function_exists('WACC') || !WACC()->isWooCommerceActive() || !function_exists('wc_memberships_get_user_memberships')) {
-            if (function_exists('WACC') && WACC()->Log) {
-                WACC()->Log->debug('WooCommerce or WC Memberships not active, cannot fetch Woo memberships.', ['source' => __METHOD__]);
-            }
+        if (!WACC()->isWooCommerceActive()) {
+            WACC()->Log->debug('WooCommerce not active, cannot fetch Woo memberships.', ['source' => __CLASS__]);
 
             return [];
         }
 
         $current_user_id = get_current_user_id();
         if (!$current_user_id) {
-            if (function_exists('WACC') && WACC()->Log) {
-                WACC()->Log->debug('No current user ID, cannot fetch Woo memberships.', ['source' => __METHOD__]);
-            }
+            WACC()->Log->debug('No current user ID, cannot fetch Woo memberships.', ['source' => __CLASS__]);
 
             return [];
         }
@@ -422,25 +353,23 @@ class Membership extends Init
             'status' => ['active', 'complimentary'],
         ];
 
-        /** @disregard P1010 Undefined function */
-        $wc_user_memberships = \wc_memberships_get_user_memberships($current_user_id, $args);
+        if (function_exists('wc_memberships_get_user_memberships')) {
+            /** @disregard P1010 Undefined function */
+            $wc_user_memberships = \wc_memberships_get_user_memberships($current_user_id, $args);
+        }
 
         if (empty($wc_user_memberships)) {
             return [];
         }
 
-        foreach ($wc_user_memberships as $membership_obj) {
-            if (!is_object($membership_obj) || !method_exists($membership_obj, 'get_plan') || !is_object($membership_obj->get_plan()) || !method_exists($membership_obj->get_plan(), 'get_name')) {
-                if (function_exists('WACC') && WACC()->Log) {
-                    WACC()->Log->warning('Invalid WooCommerce membership object encountered.', ['source' => __METHOD__, 'membership_object_type' => gettype($membership_obj)]);
-                }
-                continue;
-            }
-            $membership_summary[] = [
-                'starts_at' => $membership_obj->get_start_date(),
-                'ends_at'   => $membership_obj->get_end_date(),
-                'name'      => $membership_obj->get_plan()->get_name(),
+        foreach ($wc_user_memberships as $membership) {
+            $entry_summary = [
+                'starts_at' => $membership->get_start_date(),
+                'ends_at'   => $membership->get_end_date(),
+                'name'      => $membership->plan->name,
             ];
+
+            $membership_summary[] = $entry_summary;
         }
 
         return $membership_summary;
@@ -456,7 +385,7 @@ class Membership extends Init
     public function getOrganizationMembershipData(string $membershipUuid): array|false
     {
         if (empty($membershipUuid)) {
-            WACC()->Log->warning('Membership UUID cannot be empty.', ['source' => __METHOD__]);
+            WACC()->Log->warning('Membership UUID cannot be empty.', ['source' => __CLASS__]);
 
             return false;
         }
@@ -479,7 +408,7 @@ class Membership extends Init
 
             if (empty($response['data'])) {
                 WACC()->Log->info('No data found for the given organization membership UUID.', [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'membership_uuid' => $membershipUuid,
                 ]);
 
@@ -492,7 +421,7 @@ class Membership extends Init
             WACC()->Log->error(
                 'RequestException while fetching organization membership data.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'membership_uuid' => $membershipUuid,
                     'status_code' => $response_code,
                     'message' => $e->getMessage(),
@@ -504,7 +433,7 @@ class Membership extends Init
             WACC()->Log->error(
                 'Generic Exception while fetching organization membership data.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'membership_uuid' => $membershipUuid,
                     'message' => $e->getMessage(),
                 ]
@@ -527,7 +456,7 @@ class Membership extends Init
     public function getOrganizationMembershipMembers(string $membershipUuid, array $args = []): array|false
     {
         if (empty($membershipUuid)) {
-            WACC()->Log->warning('Membership UUID cannot be empty.', ['source' => __METHOD__]);
+            WACC()->Log->warning('Membership UUID cannot be empty.', ['source' => __CLASS__]);
 
             return false;
         }
@@ -557,7 +486,7 @@ class Membership extends Init
 
             if (!isset($response['data'])) {
                 WACC()->Log->info('No data found for the given organization membership members.', [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'membership_uuid' => $membershipUuid,
                 ]);
 
@@ -570,7 +499,7 @@ class Membership extends Init
             WACC()->Log->error(
                 'RequestException while fetching organization membership members.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'membership_uuid' => $membershipUuid,
                     'status_code' => $response_code,
                     'message' => $e->getMessage(),
@@ -582,8 +511,109 @@ class Membership extends Init
             WACC()->Log->error(
                 'Generic Exception while fetching organization membership members.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'membership_uuid' => $membershipUuid,
+                    'message' => $e->getMessage(),
+                ]
+            );
+
+            return false;
+        }
+    }
+
+    /**
+     * Gets the person memberships for a specified UUID using the person membership entries endpoint.
+     *
+     * @param array $args (Optional) Array of arguments to pass to the API
+     *              person_uuid (Optional) The person UUID to search for. If missing, uses current person.
+     *              include (Optional) The include parameter to pass to the API. Default: 'membership,organization_membership.organization,fusebill_subscription'.
+     *              filter (Optional) The filter parameter to pass to the API. Default: ['active_at' => 'now'].
+     *
+     * @return array|false Array of memberships on ['data'] or false on failure
+     */
+    public function getCurrentPersonMemberships(array $args = []): array|false
+    {
+        $defaults = [
+            'person_uuid' => WACC()->MdpApi->Person->getCurrentPersonUuid(),
+            'include' => 'membership,organization_membership.organization,fusebill_subscription',
+            'filter' => [
+                'active_at' => 'now',
+            ],
+        ];
+
+        $args = wp_parse_args($args, $defaults);
+        $uuid = $args['person_uuid'];
+
+        if (empty($uuid)) {
+            WACC()->Log->warning('Person UUID cannot be empty for membership entries.', ['source' => __CLASS__]);
+
+            return false;
+        }
+
+        $client = $this->initClient();
+        if (!$client) {
+            WACC()->Log->error('Failed to initialize API client.', ['source' => __CLASS__, 'person_uuid' => $uuid]);
+
+            return false;
+        }
+
+        // Use class-level caching with person UUID as key
+        $cache_key = 'membership_entries_' . $uuid;
+        if (isset($this->cache[$cache_key])) {
+            return $this->cache[$cache_key];
+        }
+
+        try {
+            $endpoint = 'people/' . $uuid . '/membership_entries';
+            $query_params = [];
+
+            if (!empty($args['include'])) {
+                $query_params['include'] = $args['include'];
+            }
+
+            if (!empty($args['filter'])) {
+                $query_params['filter'] = $args['filter'];
+            }
+
+            if (!empty($query_params)) {
+                $endpoint .= '?' . http_build_query($query_params);
+            }
+
+            $memberships = $client->get($endpoint);
+
+            if ($memberships) {
+                // Cache the result
+                $this->cache[$cache_key] = $memberships;
+
+                return $memberships;
+            }
+
+            WACC()->Log->info('No membership entries found for person.', [
+                'source' => __CLASS__,
+                'person_uuid' => $uuid,
+            ]);
+
+            return false;
+        } catch (RequestException $e) {
+            $response_code = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 'unknown';
+
+            WACC()->Log->error(
+                'RequestException while fetching person membership entries.',
+                [
+                    'source' => __CLASS__,
+                    'person_uuid' => $uuid,
+                    'status_code' => $response_code,
+                    'message' => $e->getMessage(),
+                ]
+            );
+
+            return false;
+        } catch (Exception $e) {
+            WACC()->Log->error(
+                'Generic Exception while fetching person membership entries.',
+                [
+                    'source' => __CLASS__,
+                    'person_uuid' => $uuid,
                     'message' => $e->getMessage(),
                 ]
             );
