@@ -271,14 +271,15 @@ class Init
 
         if (array_key_exists($name, $validClasses)) {
             if (!isset($this->specializedInstances[$name])) {
-                $className = $validClasses[$name]; // Get the fully qualified class name
+                $className = $validClasses[$name];
                 if (class_exists($className)) {
-                    // Pass the current Init instance to the constructor of specialized classes
-                    // if they need access to common methods like initClient() directly
-                    // For now, they extend Init, so they inherit it.
-                    $this->specializedInstances[$name] = new $className();
+                    // Special handling for Membership class dependencies
+                    if ($name === 'Membership') {
+                        $this->specializedInstances[$name] = new $className($this->Person, $this->Organization);
+                    } else {
+                        $this->specializedInstances[$name] = new $className();
+                    }
                 } else {
-                    // This case should ideally not be reached if autoloading is correct and classes exist
                     throw new Exception("Specialized API class {$className} not found. Ensure it exists, the namespace is correct, and autoloading is configured.");
                 }
             }
@@ -286,8 +287,6 @@ class Init
             return $this->specializedInstances[$name];
         }
 
-        // Fallback for properties not matching specialized classes
-        // This will generate a standard PHP notice for undefined properties if strict_types is not breaking it.
         trigger_error('Undefined property: ' . __CLASS__ . "::\\$$name", E_USER_NOTICE);
 
         return null;

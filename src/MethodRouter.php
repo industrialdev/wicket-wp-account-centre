@@ -44,12 +44,6 @@ class MethodRouter
             'Notification'           => new Notification(),
         ];
 
-        // Now instantiate Membership since MdpApi and its children are available
-        $this->instances['Membership'] = new \WicketAcc\MdpApi\Membership(
-            $this->instances['MdpApi']->Person,
-            $this->instances['MdpApi']->Organization
-        );
-
         // Store Helpers instance separately
         $this->helpersInstance = new Helpers();
     }
@@ -59,10 +53,10 @@ class MethodRouter
      *
      * @param string $name
      *
-     * @return object|Blocks|MdpApi|OrganizationProfile|Profile|User|Log|WooCommerce|Language|\WicketAcc\MdpApi\Membership|OrganizationManagement|OrganizationRoster
+     * @return object|Blocks|MdpApi|OrganizationProfile|Profile|User|Log|WooCommerce|Language|OrganizationManagement|OrganizationRoster
      * @throws \Exception
      */
-    public function __get($name): Blocks|MdpApi|OrganizationProfile|Profile|User|Log|WooCommerce|Language|\WicketAcc\MdpApi\Membership|OrganizationManagement|OrganizationRoster
+    public function __get($name): Blocks|MdpApi|OrganizationProfile|Profile|User|Log|WooCommerce|Language|OrganizationManagement|OrganizationRoster
     {
         if (isset($this->instances[$name])) {
             return $this->instances[$name];
