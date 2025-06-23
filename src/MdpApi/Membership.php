@@ -361,8 +361,8 @@ class Membership extends Init
     public function getActiveMembershipRelationship(string $org_uuid): array
     {
         $person_type = '';
-        $wicket_memberships = $this->getCurrentPersonMemberships();
-        $person_uuid = $this->person->getPersonUuid();
+        $wicket_memberships = $this->getCurrentPersonActiveMemberships();
+        $person_uuid = $this->person->getCurrentPersonUuid();
         $org_info = [];
 
         if (!empty($wicket_memberships['included'])) {
