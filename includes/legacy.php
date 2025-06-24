@@ -384,60 +384,7 @@ add_action('wp_loaded', 'wicket_ac_maybe_add_multiple_products_to_cart', 15);
   add_filter( "wicket_renewal_filter_product_data", 'wicket_admin_filter_products', 15);
   */
 
-  /**
-   * Create single link url for multiple membership renewal
-   * @param mixed $multi_tier_links
-   * @param mixed $links
-   * @return string
-   */
-  function wicket_ac_memberships_get_product_multi_tier_links( $multi_tier_links, $links ) {
-    $query_string_arg = '';
-    $q = empty($multi_tier_links) ? "?" : "&";
-    $parts = parse_url($links[0]['link']['url']);
-    //$url =  $parts['scheme'] . '://' . $parts['host'] . $parts['path'];    
-    parse_str($parts['query'], $query);
-    //var_dump($query);
-    //var_dump($links);
-    //var_dump($multi_tier_links);
-    if(!empty( $query['add-to-cart'])) {
-      $query_string_arg = "membership_post_id_renew";
-      $product_id = isset($query['add-to-cart']) ? (int) $query['add-to-cart'] : null;
-      if(count($links) > 1) {
-        [$parent_product_id, $variation_id] = wicket_multiple_products_use_tier_reference( $product_id );
-        if(!empty($variation_id)) {
-          $product_id = $variation_id;
-        } else {
-          $product_id = $parent_product_id;
-        }
-      }
-      $membership_post_id_renew = isset($query['membership_post_id_renew']) ? (int) $query['membership_post_id_renew'] : null;  
-    } else {
-      $query_string_arg = "multi_tier_renewal";
-      $membership_post_id_renew = isset($query['membership_post_id_renew']) ? (int) $query['membership_post_id_renew'] : null;  
-      $product_id = get_post_meta( $membership_post_id_renew, 'membership_tier_post_id', true);
-    }
-
-    $return_link = $multi_tier_links .= $q . $query_string_arg . "[$product_id]=$membership_post_id_renew";
-    return $return_link;
-  }
-
-  /** 
-   * We have multiple products on a tier so use the tier_reference value on the product if found
-   * 
-   */
-
-   function wicket_multiple_products_use_tier_reference( $product_id ) {
-    $tier_obj = \Wicket_Memberships\Membership_Tier::get_tier_by_product_id( $product_id );
-    if(!empty($tier_obj)) {
-      $membership_tier_slug = $tier_obj->get_membership_tier_slug();
-      [$parent_product_id, $variation_id] = wicket_get_product_by_tier_reference_with_slug($membership_tier_slug);
-    }
-    if(!empty($parent_product_id)) {
-      return [$parent_product_id, $variation_id];
-    }
-  }
-   
-   /**
+/**
  * Returns productlinks for renewal callouts based on the next tier's products assigned.
  *
  * @deprecated 1.5.0 Pending reimplementation as a method
@@ -466,21 +413,50 @@ function wicket_ac_memberships_get_product_link_data($membership, $renewal_type)
         ) {
             continue;
         }
-      
-        $product = wc_get_product($product_data['variation_id']);
-        if (empty($product)) {
-            $product = wc_get_product($product_data['product_id']);
+        //currently disabled use of subscription renewal flow
+        if (0 && !empty($next_tier['next_subscription_id'])) {
+            $current_subscription = wcs_get_subscription($next_tier['next_subscription_id']);
+            if ($renewal_type == 'grace_period') {
+                //get the order created by subscription and add late fee product and return link to it
+                $renewal_orders = $current_subscription->get_related_orders('renewal');
+                foreach ($renewal_orders as $order_id) {
+                    $the_order = wc_get_order($order_id);
+                    break;
+                }
+                if (!empty($the_order) && !empty($membership['late_fee_product_id'])) {
+                    $product_exists = false;
+                    foreach ($the_order->get_items() as $item_id => $item) {
+                        /* @disregard P1013 Undefined method 'get_product_id' */
+                        if ($item->get_product_id() == $membership['late_fee_product_id']) {
+                            $product_exists = true;
+                            break;
+                        }
+                    }
+                    if (empty($product_exists)) {
+                        $the_order->add_product(wc_get_product($membership['late_fee_product_id']), 1);
+                        $the_order->calculate_totals();
+                        $the_order->save();
+                    }
+                }
+                $link_url = $the_order->get_checkout_payment_url();
+            } elseif ($renewal_type == 'early_renewal') {
+                //use subscription method to get early renewal checkout link
+                $link_url = wcs_get_early_renewal_url($current_subscription);
+            }
+            $specific_renewal_product = true;
+        } else {
+            $product = wc_get_product($product_data['variation_id']);
+            if (empty($product)) {
+                $product = wc_get_product($product_data['product_id']);
+            }
+            $button_label .= ' (' . $product->get_name() . ')';
+            $product_id = $product->get_id();
+            $link_url = '/cart/?membership_post_id_renew=' . $membership_post_id . '&add-to-cart=' . $product_id . $late_fee_product_id . '&quantity=1';
         }
-      
-        $button_label .= ' (' . $product->get_name() . ')';
-        $product_id = $product->get_id();
-        $link_url = '/cart/?membership_post_id_renew=' . $membership_post_id . '&add-to-cart=' . $product_id . $late_fee_product_id . '&quantity=1';
-                $link['link'] = [
+        $link['link'] = [
             'title' => $button_label,
             'url'   => $link_url,
         ];
-        $link['link']['target'] = '';
-        $link['link_style'] = '';    
         $links[] = $link;
         if (!empty($specific_renewal_product)) {
             break;
@@ -490,24 +466,6 @@ function wicket_ac_memberships_get_product_link_data($membership, $renewal_type)
     return $links;
 }
 
-function wicket_ac_memberships_get_subscription_renewal_link_data($membership) {
-  $url = $membership['membership']['subscription_renewal']['permalink'];
-  $parsed_url = wp_parse_url( $url );
-  $query_string = isset( $parsed_url['query'] ) ? '?' . $parsed_url['query'] : '';
-  $checkout_url = wc_get_checkout_url();
-  $url = trailingslashit( $checkout_url ) . $query_string;
-  $button_label = $membership['callout']['button_label'];
-  $link['link'] = [
-      'title' => $button_label,
-      'url' => $url,
-  ];
-  $link['link']['target'] = '';
-  $link['link_style'] = '';    
-  $links[] = $link;
-  return $links;
-}
-
-
 /**
  * Get page link data for memberships.
  *
@@ -515,7 +473,6 @@ function wicket_ac_memberships_get_subscription_renewal_link_data($membership) {
  * @param mixed $membership
  * @return array
  */
-
 function wicket_ac_memberships_get_page_link_data($membership)
 {
     $url = $membership['membership']['form_page']['permalink'] . '?membership_post_id_renew=' . $membership['membership']['ID'];
@@ -530,8 +487,6 @@ function wicket_ac_memberships_get_page_link_data($membership)
         'title' => $button_label,
         'url'   => $url,
     ];
-    $link['link']['target'] = '';
-    $link['link_style'] = '';    
     $links[] = $link;
 
     return $links;

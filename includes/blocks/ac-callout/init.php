@@ -83,31 +83,14 @@ class init extends Blocks
                     $membership_cats = ['membership'];
                     $membership_cats = apply_filters('wicket/acc/block/ac-callout/renewal_filter_product_data', $membership_cats);
 
-                foreach ($orders as $order) {
-                    foreach ($order->get_items() as $item) {
-                        if (class_exists('WC_Subscriptions_Product') && \WC_Subscriptions_Product::is_subscription($item->get_product_id())) {
-                            $terms = get_the_terms($item->get_product_id(), 'product_cat');
-                            if (empty($terms) || !array_intersect($membership_cats, wp_list_pluck($terms, 'slug'))) {
-                                continue; //if it is not a membership product check the next one
-                            }
-                            $Tier = \Wicket_Memberships\Membership_Tier::get_tier_by_product_id($item->get_product_id());
-                            if(empty($Tier) || is_bool($Tier)) {
-                              continue;
-                            }
-                            //if this is not a pending tier skip it since they just have a membership on hold
-                            if (empty($Tier) || is_bool($Tier)) {
-                                continue;
-                            }
-                            $tier_approval_required = $Tier->is_approval_required();
-                            if (empty($tier_approval_required)) {
-                                continue;
-                            }
-                            $iso_code = '';
-                            if (defined('ICL_SITEPRESS_VERSION')) {
-                                $iso_code = apply_filters('wpml_current_language', null);
-                                if (empty($iso_code)) {
-                                    $locale = get_locale();
-                                    $iso_code = substr($locale, 0, 2);
+                    foreach ($orders as $order) {
+                        foreach ($order->get_items() as $item) {
+                            /* @disregard P1013 Undefined method 'get_product_id' */
+                            if (class_exists('WC_Subscriptions_Product') && \WC_Subscriptions_Product::is_subscription($item->get_product_id())) {
+                                /** @disregard P1013 Undefined method 'get_product_id' */
+                                $terms = get_the_terms($item->get_product_id(), 'product_cat');
+                                if (empty($terms) || !array_intersect($membership_cats, wp_list_pluck($terms, 'slug'))) {
+                                    continue; //if it is not a membership product check the next one
                                 }
                                 /** @disregard P1013 Undefined method 'get_product_id' */
                                 $Tier = \Wicket_Memberships\Membership_Tier::get_tier_by_product_id($item->get_product_id());
@@ -221,13 +204,7 @@ class init extends Blocks
                         );
                     }
                     $membership_renewals['membership_exists'] = [];
-                    $multi_tier_links = [];
-                    $links_array = [];
-                    //echo '<pre>'; print_r($membership_renewals);exit;
                     foreach ($membership_renewals as $renewal_type => $renewal_data) {
-                      if($renewal_type == 'multi_tier') {
-                        continue;
-                      }
                         foreach ($renewal_data as $membership) {
                             if (!empty($_ENV['WICKET_MEMBERSHIPS_DEBUG_ACC']) && $renewal_type == 'debug') {
                                 if ($membership['membership']['ends_in_days'] > 0) {
@@ -241,7 +218,6 @@ class init extends Blocks
                                     echo "End {$membership['membership']['meta']['membership_ends_at']}<br>";
                                     echo "Exp {$membership['membership']['meta']['membership_expires_at']}<br>";
                                     echo "End in {$membership['membership']['ends_in_days']} Days <br>";
-                                    echo "MultiTier Renewal: {$membership['membership']['multi_tier_renewal']}<br>";
                                     echo '</pre>';
                                 }
                                 continue;
@@ -251,16 +227,13 @@ class init extends Blocks
                             if ($membership['membership']['meta']['membership_status'] == 'pending') {
                                 //this status is convered in the Become a Member block
                                 continue;
-                            } elseif (!empty($membership['membership']['next_tier']) && empty($membership['membership']['subscription_renewal'])) {
+                            } elseif (!empty($membership['membership']['next_tier'])) {
                                 //echo '<pre>'; var_dump( $membership['membership']['next_tier'] ); echo '</pre>';
                                 $links = wicket_ac_memberships_get_product_link_data($membership, $renewal_type);
                             } elseif (!empty($membership['membership']['form_page'])) {
                                 //echo '<pre>'; var_dump( $membership['membership']['form_page'] ); echo '</pre>';
                                 $links = wicket_ac_memberships_get_page_link_data($membership);
-                            } elseif (!empty($membership['membership']['subscription_renewal'])) {
-                                $links = wicket_ac_memberships_get_subscription_renewal_link_data($membership);
                             }
-
                             $title = $membership['callout']['header'];
                             $description = $membership['callout']['content'];
                             if (!empty($_ENV['WICKET_MEMBERSHIPS_DEBUG_ACC'])) {
@@ -274,75 +247,23 @@ class init extends Blocks
                                 echo "End {$membership['membership']['meta']['membership_ends_at']}<br>";
                                 echo "Exp {$membership['membership']['meta']['membership_expires_at']}<br>";
                                 echo "End in {$membership['membership']['ends_in_days']} Days <br>";
-                                echo "MultiTier Renewal: {$membership['membership']['multi_tier_renewal']}<br>";
                                 echo '</pre>';
                             }
-
-                            if( !empty($membership['membership']['multi_tier_renewal'])) {
-                              $parts = parse_url($links[0]['link']['url']);
-                              
-                              if (isset($parts['query'])) {
-                                  $params = [];
-                                  parse_str($parts['query'], $params);
-                                  $late_fee_product_id   = $params['late_fee_product_id'] ?? null;
-                                  if( 
-                                      is_null($late_fee_product_id )
-                                      && !empty($params['add-to-cart']) 
-                                      && $product_ids = explode(",", $params['add-to-cart'])
-                                    ) {
-                                    $late_fee_product_id = $product_ids[1];
-                                  }
-                              }
-                              
-                              if(empty($url[ $parts['path'] ])) {
-                                if(empty($parts['host'])) {
-                                  $url[ $parts['path'] ] = $parts['path'];
-                                } else {
-                                  $url[ $parts['path'] ] =  $parts['scheme'] . '://' . $parts['host'] . $parts['path'];                                
-                                }
-                              }
-
-                              $multi_tier_links[ $parts['path'] ] = wicket_ac_memberships_get_product_multi_tier_links($multi_tier_links[ $parts['path'] ], $links);
-                              if(empty($multi_tier_title[ $parts['path'] ])) {
-                                $multi_tier_title[ $parts['path'] ] = $title;
-                              }
-                              if(empty($multi_tier_desc[ $parts['path'] ])) {
-                                //if(!empty($late_fee_product_id)) {
-                                //  $description .= '<br><small>Note: Membership is in Grace Period and a Late Fee applies.</small>';
-                                //}
-                                $multi_tier_desc[ $parts['path'] ] = $description;
-                              }
-                              if(empty($multi_tier_link_title[ $parts['path'] ])) {
-                                $multi_tier_link_title[ $parts['path'] ] = $links[0]['link']['title'];
-                              }
-                              $renewal_type_array[ $parts['path'] ] = $renewal_type;                              
-                              $full_url = $url[ $parts['path'] ] . $multi_tier_links[ $parts['path'] ];
-                              if(!empty($late_fee_product_id)) {
-                                $full_url .= '&late_fee_product_id='.$late_fee_product_id;
-                              } else if(!empty($add_to_cart_id)) {
-                                $full_url .= '&add-to-cart='.$add_to_cart_id;
-                              }
-                              $links_array[ $parts['path'] ] = [
-                                [ 'link' =>
-                                  [
-                                  'title' => $multi_tier_link_title[ $parts['path'] ],
-                                  'url' => $full_url
-                                  ]
-                                ]
-                              ];
-                            } else {
-                              $callout = [
-                                'renewal_type' => $renewal_type,
-                                'title' => $title,
-                                'description' => $description,
-                                'links' => $links,
-                                'membership' => $membership
-                              ];
-                              $callouts[] = $callout;  
-                            }
+                            /**
+                             * We are returning early here.
+                             */
+                            $attrs = get_block_wrapper_attributes(['class' => 'callout-' . $block_logic . ' callout-' . $renewal_type]);
+                            echo '<div ' . $attrs . '>';
+                            get_component('card-call-out', [
+                                'title'       => $title,
+                                'description' => $description . '<!-- renewal-order_id: ' . $membership['membership']['meta']['membership_parent_order_id'] . ' //-->',
+                                'links'       => $links,
+                                'style'       => '',
+                            ]);
+                            echo '</div>';
                         }
-                      }
-                      if (!empty($_ENV['WICKET_MEMBERSHIPS_DEBUG_ACC'])) {
+                    }
+                    if (!empty($_ENV['WICKET_MEMBERSHIPS_DEBUG_ACC'])) {
                         $args = [
                             'post_type'      => 'wicket_mship_tier',
                             'post_status'    => 'publish',
@@ -354,33 +275,9 @@ class init extends Blocks
                         }
                         echo '<div style="padding: 8px;border: solid 2px #ccc; border-radius: 5px;"><p>For testing callouts add <code style="background-color:#ccc;font-size:10pt;"> ?wicket_wp_membership_debug_days=123 </code>&nbsp;to see what callouts would appear in 123 days.</p>';
                         echo '<p>You can add the following classes:&nbsp;<code style="background-color:#ccc;font-size:10pt;"> .acc_hide_mship_any, ' . implode(', ', $tier_hide_classes) . ' </code>&nbsp;to any element on this page to hide when an active or delayed status membership exists for the user.</p></div>';
-                      }
-                      if(!empty($multi_tier_links)) {
-                        foreach($links_array as $links_path => $links_value) {
-                          //var_dump($links_value);
-                          $attrs = get_block_wrapper_attributes(['class' => 'callout-' . $block_logic . ' callout-' . $renewal_type_array[ $links_path ] . ' callout-multi_tier']);
-                          echo '<div ' . $attrs . '>';
-                          get_component('card-call-out', [
-                              'title'       => $multi_tier_title[ $links_path ],
-                              'description' => $multi_tier_desc[ $links_path ] . '<!-- renewal-order_id: ' . $membership['membership']['meta']['membership_parent_order_id'] . ' //-->',
-                              'links'       => $links_value,
-                              'style'       => '',
-                          ]);
-                          echo '</div>';  
-                        }
-                      }
-                      foreach($callouts as $callout) {
-                        $attrs = get_block_wrapper_attributes(['class' => 'callout-' . $block_logic . ' callout-' . $callout['renewal_type']]);
-                        echo '<div ' . $attrs . '>';
-                        get_component('card-call-out', [
-                            'title'       => $callout['title'],
-                            'description' => $callout['description'] . '<!-- renewal-order_id: ' . $callout['membership']['membership']['meta']['membership_parent_order_id'] . ' //-->',
-                            'links'       => $callout['links'],
-                            'style'       => '',
-                        ]);
-                        echo '</div>';
-                      }
-                      return;
+                    }
+
+                    return;
                 }
                 break;
 
