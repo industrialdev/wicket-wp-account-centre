@@ -43,7 +43,7 @@ class CarbonFieldsInit extends WicketAcc
             return;
         }
 
-        $main_options_container = Container::make('theme_options', 'wicket_acc_options', __('ACC Main Options'))
+        $main_options_container = Container::make('theme_options', 'wicket_acc_options', __('ACC Options'))
             ->set_page_parent('edit.php?post_type=my-account')
             ->add_tab(__('Main Options'), [
                 Field::make('radio', 'ac_localization', __('Centre/Center localization'))
