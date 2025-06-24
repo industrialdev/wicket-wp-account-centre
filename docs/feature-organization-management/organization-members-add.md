@@ -151,7 +151,7 @@ class OrganizationMembersAdd {
             'text' => 'Bulk Add Members',
             'classes' => 'button button-secondary',
             'attributes' => [
-                'hx-get' => '/wp-htmx/organization/{uuid}/members/bulk-add/modal',
+                'hx-get' => '/wp-html/organization/{uuid}/members/bulk-add/modal',
                 'hx-target' => '#modal-container'
             ]
         ],
@@ -171,17 +171,14 @@ Jane,Smith,jane@example.com,member'
             'sample_file' => [
                 'text' => 'Download Sample CSV',
                 'filename' => 'member-upload-template.csv',
-                'url' => '/wp-htmx/organization/{uuid}/members/download-template'
+                'url' => '/wp-html/organization/{uuid}/members/download-template'
             ]
         ]
     ]
 ]
 ```
 
-## Required Legacy Functions
-- `wicket_orgman_get_person_by_email()`
-- `wicket_orgman_create_person()`
-- `wicket_orgman_update_member_permissions()`
+
 
 ## Error Handling
 - Email already exists in organization

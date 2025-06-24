@@ -73,18 +73,6 @@ class RoleChecker {
 #### Required Legacy Functions
 From the legacy codebase, we'll incorporate:
 
-1. `wicket_orgman_get_person_current_roles_by_org_id()`
-   - Primary source for organization roles
-   - Will be refactored into `getPersonOrganizationRoles`
-
-2. `wicket_orgman_role_check()`
-   - Core role validation logic
-   - Will be adapted into `personHasOrganizationRoles`
-
-3. `wicket_orgman_person_has_org_roles()`
-   - Additional role validation helper
-   - Will be merged with `personHasOrganizationRoles`
-
 #### Implementation Notes
 - Methods will use proper type hints and return types
 - Will implement caching for frequent role checks
@@ -130,6 +118,3 @@ try {
 ```
 
 ## Legacy Functions to be Refactored
-- `wicket_orgman_get_person_current_roles_by_org_id()`
-- `wicket_orgman_role_check()`
-- `wicket_orgman_person_has_org_roles()`

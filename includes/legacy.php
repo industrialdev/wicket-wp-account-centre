@@ -20,125 +20,31 @@ defined('ABSPATH') || exit;
 /**
  * Returns active memberships from wicket API.
  *
- * @deprecated 1.5.0 Pending reimplementation as a method
- * @param string $iso_code (Optional) ISO code for the language: en, fr, es, etc.
- *
- * @return array $memberships slug and id
+ * @deprecated 1.6.0 Available as method WACC()->MdpApi->Membership->getCurrentPersonActiveMemberships()
  */
 function wicket_get_active_memberships($iso_code = 'en')
 {
-    $all_summaries = [];
-    $membership_summary = [];
-
-    $plan_lookup_slugs = [];
-    $plan_lookup_ids = [];
-
-    $wicket_memberships = wicket_get_current_person_memberships();
-
-    if ($wicket_memberships) {
-        $helper = new Wicket\ResponseHelper($wicket_memberships);
-
-        foreach ($helper->data as $entry) {
-            $membership_tier = $helper->getIncludedRelationship($entry, 'membership');
-            if (!$membership_tier) {
-                continue;
-            }
-            if ($entry['attributes']['status'] != 'Active') {
-                continue;
-            }
-            $entry_summary = [
-                'membership_category' => $entry['attributes']['membership_category'],
-                'starts_at'           => $entry['attributes']['starts_at'],
-                'ends_at'             => $entry['attributes']['ends_at'],
-                'name'                => $membership_tier['attributes']['name_' . $iso_code],
-                'type'                => $membership_tier['attributes']['type'],
-            ];
-
-            if (isset($entry['relationships']['organization_membership']['data']['id'])) {
-                $entry_summary['organization_membership_id'] = $entry['relationships']['organization_membership']['data']['id'];
-            }
-
-            $membership_summary[] = $entry_summary;
-        }
-    }
-
-    return $membership_summary;
+    return WACC()->MdpApi->Membership->getCurrentPersonActiveMemberships($iso_code);
 }
 
 /**
  * Returns active memberships from WooCommerce.
  *
- * @deprecated 1.5.0 Pending reimplementation as a method
- * @return array $memberships slug and id
+ * @deprecated 1.6.0 Available as method WACC()->MdpApi->Membership->getCurrentUserWooActiveMemberships()
  */
 function woo_get_active_memberships()
 {
-    $membership_summary = null;
-
-    $args = [
-        'status' => ['active', 'complimentary'],
-    ];
-
-    if (function_exists('wc_memberships_get_user_memberships')) {
-        $memberships = wc_memberships_get_user_memberships(get_current_user_id(), $args);
-
-        foreach ($memberships as $membership) {
-            $entry_summary = [
-                'starts_at' => $membership->get_start_date(),
-                'ends_at'   => $membership->get_end_date(),
-                'name'      => $membership->plan->name,
-            ];
-
-            $membership_summary[] = $entry_summary;
-        }
-    }
-
-    return $membership_summary;
+    return WACC()->MdpApi->Membership->getCurrentUserWooActiveMemberships();
 }
 
 /**
  * Returns active memberships relationship from wicket API.
  *
- * @deprecated 1.5.0 Pending reimplementation as a method
- * @return array $memberships relationship
+ * @deprecated 1.6.0 Available as method WACC()->MdpApi->Membership->getActiveMembershipRelationship()
  */
 function wicket_get_active_memberships_relationship($org_uuid)
 {
-    $person_type = '';
-    $wicket_memberships = wicket_get_current_person_memberships();
-    $person_uuid = wicket_current_person_uuid();
-    $org_info = [];
-
-    if ($wicket_memberships) {
-        foreach ($wicket_memberships['included'] as $included) {
-            if ($included['type'] !== 'organizations') {
-                continue;
-            }
-
-            $included_org_uuid = (isset($included['id'])) ? $included['id'] : '';
-
-            if ($org_uuid !== $included_org_uuid) {
-                continue;
-            }
-
-            $org_connections = wicket_get_org_connections_by_id($included_org_uuid);
-            $org_info['name'] = (isset($included['attributes']['legal_name'])) ? $included['attributes']['legal_name'] : '';
-
-            if ($org_connections) {
-                foreach ($org_connections['data'] as $org_included) {
-                    $person_to_org_uuid = (isset($org_included['relationships']['person']['data']['id'])) ? $org_included['relationships']['person']['data']['id'] : '';
-                    if ($person_to_org_uuid == $person_uuid) {
-                        $person_type = (isset($org_included['attributes']['type'])) ? $org_included['attributes']['type'] : '';
-                    }
-                }
-            }
-        }
-    }
-
-    $person_type = str_replace(['-', '_'], ' ', $person_type);
-    $org_info['relationship'] = ucwords($person_type);
-
-    return $org_info;
+    return WACC()->MdpApi->Membership->getActiveMembershipRelationship($org_uuid);
 }
 
 /**
@@ -431,11 +337,12 @@ function wicket_ac_maybe_add_multiple_products_to_cart()
         $quantity = empty($_REQUEST['quantity']) ? 1 : wc_stock_amount($_REQUEST['quantity']);
         $passed_validation = apply_filters('woocommerce_add_to_cart_validation', true, $product_id, $quantity);
 
-        if ($passed_validation
-              && (
-                  strpos($add_to_cart_handler, 'variable') !== false
+        if (
+            $passed_validation
+            && (
+                strpos($add_to_cart_handler, 'variable') !== false
                 || strpos($add_to_cart_handler, 'variation') !== false
-              )
+            )
         ) {
             $variation_id = $product_id;
             $variation = wc_get_product($variation_id);
@@ -559,11 +466,12 @@ function wicket_ac_memberships_get_product_link_data($membership, $renewal_type)
         ) {
             continue;
         }
-        
+      
         $product = wc_get_product($product_data['variation_id']);
         if (empty($product)) {
             $product = wc_get_product($product_data['product_id']);
         }
+      
         $button_label .= ' (' . $product->get_name() . ')';
         $product_id = $product->get_id();
         $link_url = '/cart/?membership_post_id_renew=' . $membership_post_id . '&add-to-cart=' . $product_id . $late_fee_product_id . '&quantity=1';
@@ -640,6 +548,11 @@ function wicket_ac_memberships_get_page_link_data($membership)
  */
 function wicket_acc_alter_wp_job_manager_pages($output, $parsed_args, $pages)
 {
+    // Check if Job Manager is active
+    if (!class_exists('WP_Job_Manager')) {
+        return $output;
+    }
+
     if (in_array($parsed_args['name'], ['job_manager_submit_job_form_page_id', 'job_manager_job_dashboard_page_id', 'job_manager_jobs_page_id', 'job_manager_terms_and_conditions_page_id'])) {
         $parsed_args['post_type'] = ['my-account', 'page'];
         $output = wp_job_dropdown_pages($parsed_args);

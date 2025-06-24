@@ -49,7 +49,9 @@ ac-manage-preferences/
  * Manage Preferences block implementation
  * Extends base block functionality
  */
-class AC_Manage_Preferences_Block extends AC_Base_Block {
+namespace WicketAcc\Blocks;
+
+class ManagePreferences extends BaseBlock {
     /**
      * Sets up preference management functionality
      * Registers AJAX endpoints and form handlers
@@ -126,7 +128,7 @@ class AC_Manage_Preferences_Block extends AC_Base_Block {
 ### Preference Update
 ```php
 /**
- * Endpoint: /wp-htmx/person/{uuid}/preferences
+ * Endpoint: /wp-html/person/{uuid}/preferences
  * Method: POST
  * Updates user preferences
  */
@@ -135,7 +137,7 @@ class AC_Manage_Preferences_Block extends AC_Base_Block {
 ### Preference Fetch
 ```php
 /**
- * Endpoint: /wp-htmx/person/{uuid}/preferences
+ * Endpoint: /wp-html/person/{uuid}/preferences
  * Method: GET
  * Retrieves current preferences
  */

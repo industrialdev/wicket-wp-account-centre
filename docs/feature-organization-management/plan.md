@@ -90,10 +90,10 @@ This separation ensures:
     - [ ] `getMdpAffiliationMode()`
     - [ ] `getGroupManagementSettings()`
 
-### 0.2 HTMX API Infrastructure Decision (Team)
-- [ ] Evaluate HTMX API Infrastructure Options
+### 0.2 Datastar API Infrastructure Decision (Team)
+- [ ] Evaluate Datastar API Infrastructure Options
   - [ ] Research existing solutions:
-    - [ ] HTMX-API-WP library evaluation
+    - [ ] Hypermedia API for WP library evaluation
     - [ ] Custom implementation feasibility
   - [ ] Compare options based on:
     - [ ] WordPress integration capabilities
@@ -110,7 +110,7 @@ This separation ensures:
   - [ ] Team decision on implementation approach
 
 ### 0.2 Base Classes and Interfaces (Post-Decision)
-- [ ] Design architecture based on HTMX API decision
+- [ ] Design architecture based on Datastar API decision
 
 - [ ] Create `OrganizationManager` base class
   - Core methods for organization data handling
@@ -132,17 +132,13 @@ This separation ensures:
 ### 0.3 Frontend Infrastructure Implementation
 - [ ] Set up JavaScript Infrastructure
   - [ ] Implement Vanilla ES6 base utilities
-  - [ ] Add HTMX integration (following JS Priority)
-    - [ ] Add HTMX library (latest version)
+    - [ ] Add Datastar integration (following JS Priority)
+    - [ ] Add Datastar library (latest version)
     - [ ] Create initialization module
     - [ ] Implement WordPress-compliant event handlers
     - [ ] Create accessibility-aware utility functions
-  - [ ] Add Hyperscript integration
-    - [ ] Add Hyperscript library (latest version)
-    - [ ] Create initialization module
-    - [ ] Implement WAI-ARIA compliant behaviors
 
-- [ ] Implement chosen HTMX API solution
+- [ ] Implement chosen Datastar API solution
   - [ ] Setup and configuration
   - [ ] WordPress integration
     - [ ] Action hooks setup
@@ -161,8 +157,7 @@ This separation ensures:
 ### 0.4 Block Infrastructure
 - [ ] Set up ACF Pro block registration system
 - [ ] Create base block class with common functionality
-  - [ ] HTMX integration methods
-  - [ ] Hyperscript integration methods
+  - [ ] Datastar integration methods
   - [ ] Dynamic content loading utilities
 - [ ] Set up TailwindCSS with theme variables integration
 
@@ -223,7 +218,7 @@ This separation ensures:
 - [ ] Validate responsive breakpoints
 
 ### Performance & Documentation
-- [ ] Profile HTMX request patterns
+- [ ] Profile Datastar request patterns
 - [ ] Analyze WordPress query performance
 - [ ] Review CSS and JS asset loading
 - [ ] Create comprehensive documentation
@@ -245,8 +240,7 @@ This separation ensures:
 3. `MDPIntegration` - Required for API communication
 4. Base block class - Used by all blocks
 5. Frontend Infrastructure
-   - HTMX setup and utilities
-   - Hyperscript setup and behaviors
+   - Datastar setup and utilities
    - AJAX endpoints infrastructure
    - Dynamic content handlers
 
@@ -298,7 +292,7 @@ This separation ensures:
    - Feature flag system
    - Comprehensive logging
 
-3. HTMX Implementation Risks
+3. Datastar Implementation Risks
    - Security considerations for dynamic endpoints
    - Performance impact of template loading
    - Browser compatibility issues

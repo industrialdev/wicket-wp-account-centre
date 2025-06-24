@@ -193,11 +193,6 @@ Users must have at least one of these roles to access the block:
 6. UI feedback
 
 ## Required Legacy Functions
-- `wicket_orgman_get_organization_info_extended()`
-- `wicket_orgman_create_or_update_organization_phone()`
-- `wicket_orgman_create_or_update_organization_email()`
-- `wicket_orgman_create_or_update_organization_website()`
-- `wicket_orgman_business_info_send_section_patch()`
 
 ## Form Validation
 - Client-side validation using WordPress form validation
@@ -213,17 +208,8 @@ Users must have at least one of these roles to access the block:
 - Success/error notifications
 
 # Legacy Functions to Refactored
-- `wicket_orgman_get_organization_info_extended()`:
-  - Retrieve organization data for editing
-- `wicket_orgman_create_or_update_organization_phone()`:
-  - Update organization phone numbers
-- `wicket_orgman_create_or_update_organization_email()`:
-  - Update organization email addresses
-- `wicket_orgman_create_or_update_organization_website()`:
-  - Update organization website URLs
-- `wicket_orgman_business_info_send_section_patch()`:
-  - Send updated organization data to MDP
 
+  - Retrieve organization data for editing
 ## Integration Methods
 
 ### Main Methods

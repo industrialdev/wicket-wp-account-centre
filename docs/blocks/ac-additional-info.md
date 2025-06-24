@@ -92,7 +92,7 @@ Required roles for editing:
 ### Section Update
 ```php
 /**
- * Endpoint: /wp-htmx/organization/{uuid}/additional-info/{section}
+ * Endpoint: /wp-html/organization/{uuid}/additional-info/{section}
  * Method: POST
  *
  * Updates section data in MDP
@@ -103,7 +103,7 @@ Required roles for editing:
 ### Section Fetch
 ```php
 /**
- * Endpoint: /wp-htmx/organization/{uuid}/additional-info/{section}
+ * Endpoint: /wp-html/organization/{uuid}/additional-info/{section}
  * Method: GET
  *
  * Retrieves section data and form fields

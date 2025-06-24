@@ -133,16 +133,18 @@ if ($single_event) {
     WACC()->Blocks->render_template('touchpoint-tec-card', $args);
 } else {
 
-    if ($display == 'upcoming' || $display == 'all') {
-        TouchpointEventCalendar::display_touchpoints($touchpoints_results['data'], 'upcoming', $num_results, false, $args);
+    if (!empty($touchpoints_results['data'])) {
+        if ($display == 'upcoming' || $display == 'all') {
+            TouchpointEventCalendar::display_touchpoints($touchpoints_results['data'], 'upcoming', $num_results, false, $args);
 
-        $close++;
-    }
+            $close++;
+        }
 
-    if ($display == 'past' || $display == 'all') {
-        TouchpointEventCalendar::display_touchpoints($touchpoints_results['data'], 'past', $num_results, false, $args);
+        if ($display == 'past' || $display == 'all') {
+            TouchpointEventCalendar::display_touchpoints($touchpoints_results['data'], 'past', $num_results, false, $args);
 
-        $close++;
+            $close++;
+        }
     }
 }
 ?>

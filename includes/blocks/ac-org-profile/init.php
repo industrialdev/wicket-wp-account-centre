@@ -38,7 +38,7 @@ class init extends Blocks
     {
         global $wp;
 
-        $lang = defined('ICL_LANGUAGE_CODE') ? ICL_LANGUAGE_CODE : 'en';
+        $lang = WACC()->Language->getCurrentLanguage();
 
         /**------------------------------------------------------------------
          * Decide whether we are loading an ORG from the URL
@@ -59,7 +59,7 @@ class init extends Blocks
         $person = wicket_current_person();
 
         if ($org_id) {
-            $org = wicket_get_organization($org_id);
+            $org = WACC()->MdpApi->Organization->getOrganizationByUuid($org_id);
         } else {
             $org_ids = [];
             // figure out orgs I should see
@@ -80,7 +80,7 @@ class init extends Blocks
             // else we build a list of their orgs below to choose from
             if (count($org_ids) == 1) {
                 $org_id = $org_ids[0];
-                $org = wicket_get_organization($org_id);
+                $org = WACC()->MdpApi->Organization->getOrganizationByUuid($org_id);
             }
         }
 

@@ -11,11 +11,12 @@ This official Wicket plugin includes the Account Centre blocks and pages for Woo
 - WSL2 on Windows, or Linux/macOS with Bash 5.x or greater (ZSH is also compatible). On macOS, ensure Bash is up to date, even if you're using ZSH. Use [Homebrew](https://formulae.brew.sh/formula/bash) to update Bash if needed.
 - [Composer](https://getcomposer.org/).
 - [EditorConfig](https://editorconfig.org/) installed in your code editor.
+- [Strauss](https://github.com/BrianHenryIE/strauss/).
 - (Optional) [PHP CS Fixer](https://marketplace.visualstudio.com/items?itemName=junstyle.php-cs-fixer) extension for VSCode, or the equivalent for your editor of choice (e.g., [Sublime Text](https://packagecontrol.io/packages/PHP%20CS%20Fixer)). Having this extension installed allows PHP-CS-Fixer to run on file save, so your code is formatted automatically without needing to wait for a git commit to trigger the formatting.
 
 Repository contains pre-compiled PHP binaries for Windows, Linux, and macOS, so devs can use PHP-CS-Fixer without having to install PHP in their own machine. Binaries provided by [static-php-cli](https://static-php.dev/).
 
-You can run the command `composer php-format` from the root of the repository to run PHP-CS-Fixer with the embedded PHP binary.
+You can run the command `composer cs:fix` from the root of the repository to run PHP-CS-Fixer with the embedded PHP binary.
 
 ### Setup local dev environment
 
@@ -35,9 +36,11 @@ Ensure that `wicket-wp-account-centre/includes/acf-json` is writable by Docker o
 
 Do your work and have fun :)
 
-When tested and ready, put your relevant changes into the `CHANGELOG.md` file. Use a new version number or update a previous one already present in the file. Your choice.
+When tested and ready, put your relevant changes into the `CHANGELOG.md` file, only when they are mayor changes, new features, or breaking changes. Use a new version number or update a previous one already present in the file. Your choice.
 
-Then bump the plugin version number running `composer version-bump`
+If you added new libraries through Composer or classes on `src/`, run `composer dump-autoload-prod` to update the autoloader.
+
+Then bump the plugin version number running `composer version-bump`.
 
 Commit and push.
 

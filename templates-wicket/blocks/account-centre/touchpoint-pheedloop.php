@@ -127,13 +127,25 @@ if (!empty($override_past_events_link)) {
             } else {
 
                 if ($display == 'upcoming' || $display == 'all') {
-                    TouchpointPheedloop::display_touchpoints($touchpoints_results['data'], 'upcoming', $num_results, false, $args);
+                    TouchpointPheedloop::display_touchpoints(
+                        (isset($touchpoints_results['data']) && is_array($touchpoints_results['data']) && !empty($touchpoints_results['data'])) ? $touchpoints_results['data'] : [],
+                        'upcoming',
+                        $num_results,
+                        false,
+                        $args
+                    );
 
                     $close++;
                 }
 
                 if ($display == 'past' || $display == 'all') {
-                    TouchpointPheedloop::display_touchpoints($touchpoints_results['data'], 'past', $num_results, false, $args);
+                    TouchpointPheedloop::display_touchpoints(
+                        (isset($touchpoints_results['data']) && is_array($touchpoints_results['data']) && !empty($touchpoints_results['data'])) ? $touchpoints_results['data'] : [],
+                        'past',
+                        $num_results,
+                        false,
+                        $args
+                    );
 
                     $close++;
                 }

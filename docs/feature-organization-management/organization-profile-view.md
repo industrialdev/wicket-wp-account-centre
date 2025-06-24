@@ -266,17 +266,8 @@ public static function getOrganizationProfile(string $organizationUuid): array
 #### Required Legacy Functions
 The following functions from the old implementation will be incorporated:
 
-1. `wicket_orgman_get_organization_info_extended()`
    - Primary source for organization data
    - Will be refactored into the main method
-
-2. `wicket_orgman_get_organization_documents()`
-   - Supporting function for document retrieval
-   - Will be included as a protected method
-
-3. `wicket_orgman_role_check()`
-   - Required for permission validation
-   - Will be adapted into an authorization helper
 
 #### Implementation Notes
 - All functionality will be moved to proper OOP structure
@@ -291,6 +282,5 @@ The following functions from the old implementation will be incorporated:
 - Failed validation results in appropriate error messages
 
 ## Legacy Functions to be Refactored
-- `wicket_orgman_get_organization_info_extended()`
 - `wicket_orgman_get_organization_types()`
 - `wicket_orgman_get_address_types()`
