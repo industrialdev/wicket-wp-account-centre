@@ -42,6 +42,7 @@ class CarbonFieldsInit extends WicketAcc
         if ($has_run) {
             return;
         }
+
         $main_options_container = Container::make('theme_options', 'wicket_acc_options', __('ACC Main Options'))
             ->set_page_parent('edit.php?post_type=my-account')
             ->add_tab(__('Main Options'), [

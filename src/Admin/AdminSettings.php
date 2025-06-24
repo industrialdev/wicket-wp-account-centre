@@ -25,6 +25,79 @@ class AdminSettings extends \WicketAcc\WicketAcc
 
         // Keep admin assets enqueue
         add_action('admin_enqueue_scripts', [$this, 'enqueueAdminAssets']);
+
+        // Add custom links to the admin menu
+        add_action('admin_menu', [$this, 'accCustomAdminLinks']);
+
+        // Reorder the submenu to place our options page third
+        add_action('admin_menu', [$this, 'reorderAccSubmenu'], 99);
+    }
+
+    /**
+     * Reorder the 'My Account' submenu items to place 'ACC Main Options' third.
+     *
+     * This works by finding our options page in the global $submenu array,
+     * removing it, and then re-inserting it at the desired position.
+     */
+    public function reorderAccSubmenu()
+    {
+        global $submenu;
+        $parent_slug = 'edit.php?post_type=my-account';
+        $options_page_slug = 'crb_carbon_fields_container_wicket_acc_options.php';
+
+        // Check if the submenu for our parent exists
+        if (empty($submenu[$parent_slug])) {
+            return;
+        }
+
+        $menu_items = $submenu[$parent_slug];
+        $options_page_item = null;
+
+        // Find and remove the 'ACC Main Options' item
+        foreach ($menu_items as $key => $item) {
+            if ($item[2] === $options_page_slug) {
+                $options_page_item = $item;
+                unset($menu_items[$key]);
+                break;
+            }
+        }
+
+        // If we found our options page, re-insert it at the third position (index 2)
+        if ($options_page_item) {
+            $new_menu = array_values($menu_items);
+            array_splice($new_menu, 2, 0, [$options_page_item]);
+            $submenu[$parent_slug] = $new_menu;
+        }
+    }
+
+    /**
+     * Add custom links to the admin menu under 'My Account'.
+     * These links were part of the original ACF implementation.
+     */
+    public function accCustomAdminLinks()
+    {
+        $parent_slug = 'edit.php?post_type=my-account';
+
+        // Only show the 'Global Header' link if the feature is enabled in the options.
+        if (function_exists('carbon_get_theme_option') && carbon_get_theme_option('acc_global-headerbanner')) {
+            $global_header_post_id = WACC()->getGlobalHeaderBannerPageId();
+
+            add_submenu_page(
+                $parent_slug,
+                __('Global Header', 'wicket-acc'),
+                __('Global Header', 'wicket-acc'),
+                'manage_options',
+                'post.php?post=' . $global_header_post_id . '&action=edit'
+            );
+        }
+
+        add_submenu_page(
+            $parent_slug,
+            __('Menu Editor', 'wicket-acc'),
+            __('Menu Editor', 'wicket-acc'),
+            'manage_options',
+            'nav-menus.php'
+        );
     }
 
     /**
