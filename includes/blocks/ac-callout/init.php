@@ -78,10 +78,9 @@ class init extends Blocks
                  * Use filter to add product_cat you want to look for
                  * apply_filters("wicket/acc/block/ac-callout/renewal_filter_product_data", function() { return ['memberships']}, 10, 1);.
                  */
-                if (WACC()->isWooCommerceActive()) {
-                    $orders = wc_get_orders(['type' => 'shop_order', 'status' => 'wc-on-hold', 'limit' => -1, 'customer' => get_current_user_id()]);
-                    $membership_cats = ['membership'];
-                    $membership_cats = apply_filters('wicket/acc/block/ac-callout/renewal_filter_product_data', $membership_cats);
+                $orders = wc_get_orders(['type' => 'shop_order', 'status' => 'wc-on-hold', 'limit' => -1, 'customer' => get_current_user_id()]);
+                $membership_cats = ['membership'];
+                $membership_cats = apply_filters('wicket/acc/block/ac-callout/renewal_filter_product_data', $membership_cats);
 
                     foreach ($orders as $order) {
                         foreach ($order->get_items() as $item) {
