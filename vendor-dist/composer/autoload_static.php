@@ -763,6 +763,7 @@ class ComposerStaticInit25b1eff86541e9e47c69f912bcb70ad8
         'WicketAcc\\Symfony\\Polyfill\\Php80\\Php80' => __DIR__ . '/..' . '/symfony/polyfill-php80/Php80.php',
         'WicketAcc\\Symfony\\Polyfill\\Php80\\PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/PhpToken.php',
         'WicketAcc\\User' => __DIR__ . '/../..' . '/src/User.php',
+        'WicketAcc\\WicketSettingsDatastore' => __DIR__ . '/../..' . '/src/WicketSettingsDatastore.php',
         'WicketAcc\\Wicket\\ApiResource' => __DIR__ . '/..' . '/industrialdev/wicket-sdk-php/src/ApiResource.php',
         'WicketAcc\\Wicket\\Client' => __DIR__ . '/..' . '/industrialdev/wicket-sdk-php/src/Client.php',
         'WicketAcc\\Wicket\\Entities\\Addresses' => __DIR__ . '/..' . '/industrialdev/wicket-sdk-php/src/Entities/Addresses.php',

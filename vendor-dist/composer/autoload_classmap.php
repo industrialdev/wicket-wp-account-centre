@@ -614,6 +614,7 @@ return array(
     'WicketAcc\\Symfony\\Polyfill\\Php80\\Php80' => $vendorDir . '/symfony/polyfill-php80/Php80.php',
     'WicketAcc\\Symfony\\Polyfill\\Php80\\PhpToken' => $vendorDir . '/symfony/polyfill-php80/PhpToken.php',
     'WicketAcc\\User' => $baseDir . '/src/User.php',
+    'WicketAcc\\WicketSettingsDatastore' => $baseDir . '/src/WicketSettingsDatastore.php',
     'WicketAcc\\Wicket\\ApiResource' => $vendorDir . '/industrialdev/wicket-sdk-php/src/ApiResource.php',
     'WicketAcc\\Wicket\\Client' => $vendorDir . '/industrialdev/wicket-sdk-php/src/Client.php',
     'WicketAcc\\Wicket\\Entities\\Addresses' => $vendorDir . '/industrialdev/wicket-sdk-php/src/Entities/Addresses.php',

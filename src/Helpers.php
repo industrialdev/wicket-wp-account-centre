@@ -162,7 +162,7 @@ class Helpers extends WicketAcc
     /**
      * Check if we're on an account page.
      *
-     * @return bool
+     * @return bool True if we're on an account page, false otherwise.
      */
     public function is_account_page()
     {
