@@ -201,6 +201,9 @@ class WicketAcc
             }
         }
 
+        // Carbon Fields
+        new CarbonFieldsInit();
+
         if (is_admin()) {
             new AdminSettings();
             new WicketAccSafeguard(); // Initialize the safeguard class for admin tasks

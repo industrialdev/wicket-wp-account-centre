@@ -36,7 +36,7 @@ class WooCommerce extends WicketAcc
         add_action('init', [$this, 'wc_remove_order_again_button']);
 
         // Add global header banner as ACC pages
-        add_action('wicket_header_end', [$this, 'wc_add_acc_banner'], PHP_INT_MAX);
+        //add_action('wicket_header_end', [$this, 'wc_add_acc_banner'], PHP_INT_MAX);
 
         // Remove tax totals
         add_filter('woocommerce_cart_tax_totals', [$this, 'remove_cart_tax_totals'], 10, 2);
