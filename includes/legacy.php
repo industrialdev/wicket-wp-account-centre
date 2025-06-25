@@ -466,21 +466,23 @@ function wicket_ac_memberships_get_product_link_data($membership, $renewal_type)
     return $links;
 }
 
-function wicket_ac_memberships_get_subscription_renewal_link_data($membership) {
-  $url = $membership['membership']['subscription_renewal']['permalink'];
-  $parsed_url = wp_parse_url( $url );
-  $query_string = isset( $parsed_url['query'] ) ? '?' . $parsed_url['query'] : '';
-  $checkout_url = wc_get_checkout_url();
-  //$url = trailingslashit( $checkout_url ) . $query_string;
-  $button_label = $membership['callout']['button_label'];
-  $link['link'] = [
-      'title' => $button_label,
-      'url' => $url,
-  ];
-  $link['link']['target'] = '';
-  $link['link_style'] = '';    
-  $links[] = $link;
-  return $links;
+function wicket_ac_memberships_get_subscription_renewal_link_data($membership)
+{
+    $url = $membership['membership']['subscription_renewal']['permalink'];
+    $parsed_url = wp_parse_url($url);
+    $query_string = isset($parsed_url['query']) ? '?' . $parsed_url['query'] : '';
+    $checkout_url = wc_get_checkout_url();
+    //$url = trailingslashit( $checkout_url ) . $query_string;
+    $button_label = $membership['callout']['button_label'];
+    $link['link'] = [
+        'title' => $button_label,
+        'url' => $url,
+    ];
+    $link['link']['target'] = '';
+    $link['link_style'] = '';
+    $links[] = $link;
+
+    return $links;
 }
 
 /**

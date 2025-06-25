@@ -26,6 +26,7 @@ class WicketSettingsDatastore extends Datastore
     public function load(Field $field)
     {
         $settings = get_option(self::OPTION_NAME, []);
+
         return $settings[$field->get_base_name()] ?? null;
     }
 
@@ -62,8 +63,7 @@ class WicketSettingsDatastore extends Datastore
 
     /**
      * Not used for this datastore.
+     * Needed for Carbon Fields compatibility.
      */
-    public function init()
-    {
-    }
+    public function init() {}
 }
