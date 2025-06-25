@@ -147,83 +147,83 @@ class CarbonFieldsInit extends WicketAcc
             $orgman_members_page,
         ]);
 
-        //if (!class_exists('Wicket_Main')) {
-        $datastore = new WicketSettingsDatastore();
+        if (!class_exists('Wicket_Main')) {
+            $datastore = new WicketSettingsDatastore();
 
-        /** @var Field\Html_Field $status_field */
-        $status_field = Field::make('html', 'crb_status_html');
-        $status_field->set_html($this->get_api_status_html());
+            /** @var Field\Html_Field $status_field */
+            $status_field = Field::make('html', 'crb_status_html');
+            $status_field->set_html($this->get_api_status_html());
 
-        /** @var Field\Radio_Field $environment_field */
-        $environment_field = Field::make('radio', 'wicket_admin_settings_environment', __('Wicket Environment'));
-        $environment_field->set_options([
-            'stage' => __('Staging', 'wicket'),
-            'prod' => __('Production', 'wicket'),
-        ])->set_datastore($datastore);
+            /** @var Field\Radio_Field $environment_field */
+            $environment_field = Field::make('radio', 'wicket_admin_settings_environment', __('Wicket Environment'));
+            $environment_field->set_options([
+                'stage' => __('Staging', 'wicket'),
+                'prod' => __('Production', 'wicket'),
+            ])->set_datastore($datastore);
 
-        /** @var Field\Separator_Field $prod_separator */
-        $prod_separator = Field::make('separator', 'crb_separator_prod', __('Production Settings'));
+            /** @var Field\Separator_Field $prod_separator */
+            $prod_separator = Field::make('separator', 'crb_separator_prod', __('Production Settings'));
 
-        /** @var Field\Text_Field $prod_api_endpoint */
-        $prod_api_endpoint = Field::make('text', 'wicket_admin_settings_prod_api_endpoint', __('API Endpoint (Production)'));
-        $prod_api_endpoint->set_attribute('placeholder', 'https://[client]-api.wicketcloud.com')->set_datastore($datastore);
+            /** @var Field\Text_Field $prod_api_endpoint */
+            $prod_api_endpoint = Field::make('text', 'wicket_admin_settings_prod_api_endpoint', __('API Endpoint (Production)'));
+            $prod_api_endpoint->set_attribute('placeholder', 'https://[client]-api.wicketcloud.com')->set_datastore($datastore);
 
-        /** @var Field\Text_Field $prod_secret_key */
-        $prod_secret_key = Field::make('text', 'wicket_admin_settings_prod_secret_key', __('JWT Secret Key (Production)'));
-        $prod_secret_key->set_datastore($datastore);
+            /** @var Field\Text_Field $prod_secret_key */
+            $prod_secret_key = Field::make('text', 'wicket_admin_settings_prod_secret_key', __('JWT Secret Key (Production)'));
+            $prod_secret_key->set_datastore($datastore);
 
-        /** @var Field\Text_Field $prod_person_id */
-        $prod_person_id = Field::make('text', 'wicket_admin_settings_prod_person_id', __('Person ID (Production)'));
-        $prod_person_id->set_datastore($datastore);
+            /** @var Field\Text_Field $prod_person_id */
+            $prod_person_id = Field::make('text', 'wicket_admin_settings_prod_person_id', __('Person ID (Production)'));
+            $prod_person_id->set_datastore($datastore);
 
-        /** @var Field\Text_Field $prod_parent_org */
-        $prod_parent_org = Field::make('text', 'wicket_admin_settings_prod_parent_org', __('Parent Org (Production)'));
-        $prod_parent_org->set_datastore($datastore);
+            /** @var Field\Text_Field $prod_parent_org */
+            $prod_parent_org = Field::make('text', 'wicket_admin_settings_prod_parent_org', __('Parent Org (Production)'));
+            $prod_parent_org->set_datastore($datastore);
 
-        /** @var Field\Text_Field $prod_wicket_admin */
-        $prod_wicket_admin = Field::make('text', 'wicket_admin_settings_prod_wicket_admin', __('Wicket Admin (Production)'));
-        $prod_wicket_admin->set_attribute('placeholder', 'https://[client]-admin.wicketcloud.com')->set_datastore($datastore);
+            /** @var Field\Text_Field $prod_wicket_admin */
+            $prod_wicket_admin = Field::make('text', 'wicket_admin_settings_prod_wicket_admin', __('Wicket Admin (Production)'));
+            $prod_wicket_admin->set_attribute('placeholder', 'https://[client]-admin.wicketcloud.com')->set_datastore($datastore);
 
-        /** @var Field\Separator_Field $stage_separator */
-        $stage_separator = Field::make('separator', 'crb_separator_stage', __('Staging Settings'));
+            /** @var Field\Separator_Field $stage_separator */
+            $stage_separator = Field::make('separator', 'crb_separator_stage', __('Staging Settings'));
 
-        /** @var Field\Text_Field $stage_api_endpoint */
-        $stage_api_endpoint = Field::make('text', 'wicket_admin_settings_stage_api_endpoint', __('API Endpoint (Staging)'));
-        $stage_api_endpoint->set_attribute('placeholder', 'https://[client]-api.wicketcloud.com')->set_datastore($datastore);
+            /** @var Field\Text_Field $stage_api_endpoint */
+            $stage_api_endpoint = Field::make('text', 'wicket_admin_settings_stage_api_endpoint', __('API Endpoint (Staging)'));
+            $stage_api_endpoint->set_attribute('placeholder', 'https://[client]-api.wicketcloud.com')->set_datastore($datastore);
 
-        /** @var Field\Text_Field $stage_secret_key */
-        $stage_secret_key = Field::make('text', 'wicket_admin_settings_stage_secret_key', __('JWT Secret Key (Staging)'));
-        $stage_secret_key->set_datastore($datastore);
+            /** @var Field\Text_Field $stage_secret_key */
+            $stage_secret_key = Field::make('text', 'wicket_admin_settings_stage_secret_key', __('JWT Secret Key (Staging)'));
+            $stage_secret_key->set_datastore($datastore);
 
-        /** @var Field\Text_Field $stage_person_id */
-        $stage_person_id = Field::make('text', 'wicket_admin_settings_stage_person_id', __('Person ID (Staging)'));
-        $stage_person_id->set_datastore($datastore);
+            /** @var Field\Text_Field $stage_person_id */
+            $stage_person_id = Field::make('text', 'wicket_admin_settings_stage_person_id', __('Person ID (Staging)'));
+            $stage_person_id->set_datastore($datastore);
 
-        /** @var Field\Text_Field $stage_parent_org */
-        $stage_parent_org = Field::make('text', 'wicket_admin_settings_stage_parent_org', __('Parent Org (Staging)'));
-        $stage_parent_org->set_datastore($datastore);
+            /** @var Field\Text_Field $stage_parent_org */
+            $stage_parent_org = Field::make('text', 'wicket_admin_settings_stage_parent_org', __('Parent Org (Staging)'));
+            $stage_parent_org->set_datastore($datastore);
 
-        /** @var Field\Text_Field $stage_wicket_admin */
-        $stage_wicket_admin = Field::make('text', 'wicket_admin_settings_stage_wicket_admin', __('Wicket Admin (Staging)'));
-        $stage_wicket_admin->set_attribute('placeholder', 'https://[client]-admin.wicketcloud.com')->set_datastore($datastore);
+            /** @var Field\Text_Field $stage_wicket_admin */
+            $stage_wicket_admin = Field::make('text', 'wicket_admin_settings_stage_wicket_admin', __('Wicket Admin (Staging)'));
+            $stage_wicket_admin->set_attribute('placeholder', 'https://[client]-admin.wicketcloud.com')->set_datastore($datastore);
 
-        $main_options_container->add_tab(__('Environments'), [
-            $status_field,
-            $environment_field,
-            $prod_separator,
-            $prod_api_endpoint,
-            $prod_secret_key,
-            $prod_person_id,
-            $prod_parent_org,
-            $prod_wicket_admin,
-            $stage_separator,
-            $stage_api_endpoint,
-            $stage_secret_key,
-            $stage_person_id,
-            $stage_parent_org,
-            $stage_wicket_admin,
-        ]);
-        //}
+            $main_options_container->add_tab(__('Environments'), [
+                $status_field,
+                $environment_field,
+                $prod_separator,
+                $prod_api_endpoint,
+                $prod_secret_key,
+                $prod_person_id,
+                $prod_parent_org,
+                $prod_wicket_admin,
+                $stage_separator,
+                $stage_api_endpoint,
+                $stage_secret_key,
+                $stage_person_id,
+                $stage_parent_org,
+                $stage_wicket_admin,
+            ]);
+        }
 
         $has_run = true;
     }
