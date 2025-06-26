@@ -1,7 +1,7 @@
 {
     "name": "industrialdev/wicket-wp-account-centre",
     "description": "Wicket's Account Centre for WordPress",
-    "version": "1.5.183",
+    "version": "1.5.184",
     "keywords": [
         "wordpress",
         "wicket",
@@ -26,7 +26,8 @@
     ],
     "require": {
         "php": ">=8.1.0",
-        "industrialdev/wicket-sdk-php": "dev-master"
+        "industrialdev/wicket-sdk-php": "dev-master",
+        "htmlburger/carbon-fields": "^3.6"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.64"
@@ -39,20 +40,23 @@
     },
     "scripts": {
         "dump-autoload-prod": "@php composer dump-autoload --optimize --no-dev",
-        "prefix-namespaces": "strauss",
-        "post-install-cmd": [
-            "@php -r \"if (getenv('COMPOSER_DEV_MODE') === '0') { system('rm -rf ./.ci'); }\"",
-            "@cs:fix",
-            "@prefix-namespaces",
-            "@clean-vendor-dist",
+        "remove-ci-folder": "@php -r \"if (getenv('COMPOSER_DEV_MODE') === '0') { system('rm -rf ./.ci'); }\"",
+        "prefix-namespaces": [
+            "strauss",
+            "cp -R vendor/htmlburger/carbon-fields/assets vendor-dist/htmlburger/carbon-fields/",
+            "cp -R vendor/htmlburger/carbon-fields/build vendor-dist/htmlburger/carbon-fields/",
+            "cp -R vendor/htmlburger/carbon-fields/templates vendor-dist/htmlburger/carbon-fields/",
             "@dump-autoload-prod"
         ],
-        "post-update-cmd": [
-            "@php -r \"if (getenv('COMPOSER_DEV_MODE') === '0') { system('rm -rf ./.ci'); }\"",
+        "post-install-cmd": [
+            "@remove-ci-folder",
             "@cs:fix",
-            "@prefix-namespaces",
-            "@clean-vendor-dist",
-            "@dump-autoload-prod"
+            "@prefix-namespaces"
+        ],
+        "post-update-cmd": [
+            "@remove-ci-folder",
+            "@cs:fix",
+            "@prefix-namespaces"
         ],
         "version-bump": [
             "@php ./.ci/version-bump.php",
@@ -71,11 +75,31 @@
     "extra": {
         "strauss": {
             "target_directory": "vendor-dist",
+            "override_autoload": {
+                "htmlburger/carbon-fields": {
+                    "psr-4": {
+                        "Carbon_Fields\\": "core/"
+                    },
+                    "files": [
+                        "config.php",
+                        "core/functions.php"
+                    ]
+                }
+            },
             "namespace_prefix": "WicketAcc\\",
             "classmap_prefix": "WicketAcc_",
-            "constant_prefix": "WicketAcc_",
+            "constant_prefix": "",
+            "classmap_output": true,
             "packages": [],
-            "override_autoload": [],
+            "exclude_from_prefix": {
+                "packages": [
+                    "htmlburger/carbon-fields"
+                ],
+                "namespaces": [
+                    "Carbon_Fields"
+                ],
+                "file_patterns": []
+            },
             "delete_vendor_packages": false
         }
     }

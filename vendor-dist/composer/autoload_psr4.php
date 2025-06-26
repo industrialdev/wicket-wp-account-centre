@@ -28,4 +28,5 @@ return array(
     'WicketAcc\\Admin\\' => array($baseDir . '/src/admin'),
     'WicketAcc\\' => array($baseDir . '/src'),
     'Illuminate\\Contracts\\' => array($vendorDir . '/illuminate/contracts'),
+    'Carbon_Fields\\' => array($vendorDir . '/htmlburger/carbon-fields/core'),
 );
