@@ -14,6 +14,18 @@ defined('ABSPATH') || exit;
 class init extends Blocks
 {
     /**
+     * The value of the 'pass_query_string' ACF field.
+     * @var bool
+     */
+    protected bool $pass_query_string = false;
+
+    /**
+     * The value of the 'custom_query_string' ACF field.
+     * @var string
+     */
+    protected string $custom_query_string = '';
+
+    /**
      * Constructor.
      */
     public function __construct(
@@ -43,6 +55,9 @@ class init extends Blocks
         $description = get_field('ac_callout_description');
         $links = get_field('ac_callout_links');
         $classes = [];
+
+        $this->pass_query_string = (bool) get_field('pass_query_string');
+        $this->custom_query_string = (string) get_field('custom_query_string');
 
         // Initialize ISO code for language using WACC Language helper
         $iso_code = WACC()->Language->getCurrentLanguage();
@@ -90,7 +105,7 @@ class init extends Blocks
                                 continue; //if it is not a membership product check the next one
                             }
                             $Tier = \Wicket_Memberships\Membership_Tier::get_tier_by_product_id($item->get_product_id());
-                            if(empty($Tier) || is_bool($Tier)) {
+                            if (empty($Tier) || is_bool($Tier)) {
                                 continue;
                             }
                             //if this is not a pending tier skip it since they just have a membership on hold
@@ -145,7 +160,7 @@ class init extends Blocks
                                 get_component('card-call-out', [
                                     'title'       => $title,
                                     'description' => $description,
-                                    'links'       => $links,
+                                    'links'       => $this->append_query_string($links),
                                     'style'       => '',
                                 ]);
                                 echo '</div>';
@@ -186,7 +201,7 @@ class init extends Blocks
                                 get_component('card-call-out', [
                                     'title'       => $title,
                                     'description' => $description,
-                                    'links'       => $links,
+                                    'links'       => $this->append_query_string($links),
                                     'style'       => '',
                                 ]);
                                 echo '</div>';
@@ -224,7 +239,7 @@ class init extends Blocks
                     $links_array = [];
                     //echo '<pre>'; print_r($membership_renewals);exit;
                     foreach ($membership_renewals as $renewal_type => $renewal_data) {
-                        if($renewal_type == 'multi_tier') {
+                        if ($renewal_type == 'multi_tier') {
                             continue;
                         }
                         foreach ($renewal_data as $membership) {
@@ -277,14 +292,14 @@ class init extends Blocks
                                 echo '</pre>';
                             }
 
-                            if(!empty($membership['membership']['multi_tier_renewal'])) {
+                            if (!empty($membership['membership']['multi_tier_renewal'])) {
                                 $parts = parse_url($links[0]['link']['url']);
 
                                 if (isset($parts['query'])) {
                                     $params = [];
                                     parse_str($parts['query'], $params);
                                     $late_fee_product_id = $params['late_fee_product_id'] ?? null;
-                                    if(
+                                    if (
                                         is_null($late_fee_product_id)
                                         && !empty($params['add-to-cart'])
                                         && $product_ids = explode(',', $params['add-to-cart'])
@@ -293,8 +308,8 @@ class init extends Blocks
                                     }
                                 }
 
-                                if(empty($url[$parts['path']])) {
-                                    if(empty($parts['host'])) {
+                                if (empty($url[$parts['path']])) {
+                                    if (empty($parts['host'])) {
                                         $url[$parts['path']] = $parts['path'];
                                     } else {
                                         $url[$parts['path']] = $parts['scheme'] . '://' . $parts['host'] . $parts['path'];
@@ -302,23 +317,23 @@ class init extends Blocks
                                 }
 
                                 $multi_tier_links[$parts['path']] = wicket_ac_memberships_get_product_multi_tier_links($multi_tier_links[$parts['path']], $links);
-                                if(empty($multi_tier_title[$parts['path']])) {
+                                if (empty($multi_tier_title[$parts['path']])) {
                                     $multi_tier_title[$parts['path']] = $title;
                                 }
-                                if(empty($multi_tier_desc[$parts['path']])) {
+                                if (empty($multi_tier_desc[$parts['path']])) {
                                     //if(!empty($late_fee_product_id)) {
                                     //  $description .= '<br><small>Note: Membership is in Grace Period and a Late Fee applies.</small>';
                                     //}
                                     $multi_tier_desc[$parts['path']] = $description;
                                 }
-                                if(empty($multi_tier_link_title[$parts['path']])) {
+                                if (empty($multi_tier_link_title[$parts['path']])) {
                                     $multi_tier_link_title[$parts['path']] = $links[0]['link']['title'];
                                 }
                                 $renewal_type_array[$parts['path']] = $renewal_type;
                                 $full_url = $url[$parts['path']] . $multi_tier_links[$parts['path']];
-                                if(!empty($late_fee_product_id)) {
+                                if (!empty($late_fee_product_id)) {
                                     $full_url .= '&late_fee_product_id=' . $late_fee_product_id;
-                                } elseif(!empty($add_to_cart_id)) {
+                                } elseif (!empty($add_to_cart_id)) {
                                     $full_url .= '&add-to-cart=' . $add_to_cart_id;
                                 }
                                 $links_array[$parts['path']] = [
@@ -353,27 +368,27 @@ class init extends Blocks
                         echo '<div style="padding: 8px;border: solid 2px #ccc; border-radius: 5px;"><p>For testing callouts add <code style="background-color:#ccc;font-size:10pt;"> ?wicket_wp_membership_debug_days=123 </code>&nbsp;to see what callouts would appear in 123 days.</p>';
                         echo '<p>You can add the following classes:&nbsp;<code style="background-color:#ccc;font-size:10pt;"> .acc_hide_mship_any, ' . implode(', ', $tier_hide_classes) . ' </code>&nbsp;to any element on this page to hide when an active or delayed status membership exists for the user.</p></div>';
                     }
-                    if(!empty($multi_tier_links)) {
-                        foreach($links_array as $links_path => $links_value) {
+                    if (!empty($multi_tier_links)) {
+                        foreach ($links_array as $links_path => $links_value) {
                             //var_dump($links_value);
                             $attrs = get_block_wrapper_attributes(['class' => 'callout-' . $block_logic . ' callout-' . $renewal_type_array[$links_path] . ' callout-multi_tier']);
                             echo '<div ' . $attrs . '>';
                             get_component('card-call-out', [
                                 'title'       => $multi_tier_title[$links_path],
                                 'description' => $multi_tier_desc[$links_path] . '<!-- renewal-order_id: ' . $membership['membership']['meta']['membership_parent_order_id'] . ' //-->',
-                                'links'       => $links_value,
+                                'links'       => $this->append_query_string($links_value),
                                 'style'       => '',
                             ]);
                             echo '</div>';
                         }
                     }
-                    foreach($callouts as $callout) {
+                    foreach ($callouts as $callout) {
                         $attrs = get_block_wrapper_attributes(['class' => 'callout-' . $block_logic . ' callout-' . $callout['renewal_type']]);
                         echo '<div ' . $attrs . '>';
                         get_component('card-call-out', [
                             'title'       => $callout['title'],
                             'description' => $callout['description'] . '<!-- renewal-order_id: ' . $callout['membership']['membership']['meta']['membership_parent_order_id'] . ' //-->',
-                            'links'       => $callout['links'],
+                            'links'       => $this->append_query_string($callout['links']),
                             'style'       => '',
                         ]);
                         echo '</div>';
@@ -399,11 +414,38 @@ class init extends Blocks
             get_component('card-call-out', [
                 'title'       => $title,
                 'description' => $description,
-                'links'       => $links,
+                'links'       => $this->append_query_string($links),
                 'style'       => '',
             ]);
             echo '</div>';
 
         endif;
+    }
+
+    /**
+     * Appends a custom query string to an array of links if configured.
+     *
+     * @param array $links The array of links from the ACF repeater.
+     * @return array The modified array of links.
+     */
+    protected function append_query_string(array $links = []): array
+    {
+        if (empty($this->pass_query_string) || empty($this->custom_query_string) || empty($links)) {
+            return $links;
+        }
+
+        foreach ($links as $i => $link_item) {
+            if (!empty($link_item['link']['url']) && str_starts_with($link_item['link']['url'], 'http')) {
+                $url = $link_item['link']['url'];
+                if (strpos($url, '?') === false) {
+                    $url .= '?' . $this->custom_query_string;
+                } else {
+                    $url .= '&' . $this->custom_query_string;
+                }
+                $links[$i]['link']['url'] = $url;
+            }
+        }
+
+        return $links;
     }
 }
