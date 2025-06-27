@@ -31,6 +31,9 @@ class AdminSettings extends \WicketAcc\WicketAcc
 
         // Reorder the submenu to place our options page third
         add_action('admin_menu', [$this, 'reorderAccSubmenu'], 99);
+
+        // Check ACF JSON folder permissions for legacy Blocks
+        add_action('admin_notices', [$this, 'checkAcfJsonFolderPermissions']);
     }
 
     /**
@@ -169,5 +172,39 @@ class AdminSettings extends \WicketAcc\WicketAcc
 
         wp_enqueue_script('wicket-acc-admin', WICKET_ACC_URL . 'assets/js/wicket-acc-admin-main.js', ['jquery'], '1.0', true);
         wp_enqueue_style('wicket-acc-admin', WICKET_ACC_URL . 'assets/css/wicket-acc-admin-main.css', false, '1.0');
+    }
+
+    /**
+     * On ACF pages at the backend,
+     * warn the user if /includes/acf-json/ folder is not writable.
+     */
+    public function checkAcfJsonFolderPermissions()
+    {
+        die('<h1>Wicket ACC Plugin: checkAcfJsonFolderPermissions() method is being called.</h1>');
+        // Always show test notice first to confirm method is called
+        echo '<div class="notice notice-success"><p><strong>Wicket ACC:</strong> checkAcfJsonFolderPermissions method is working!</p></div>';
+
+        // Only on the backend
+        if (!is_admin()) {
+            return;
+        }
+
+        // Comment out environment check for testing
+        if (
+            !(
+                (defined('WP_ENV') && WP_ENV === 'development') ||
+                (defined('WP_ENVIRONMENT_TYPE') && in_array(WP_ENVIRONMENT_TYPE, ['local', 'development'], true))
+            )
+        ) {
+            return;
+        }
+
+        $acf_json_folder = WICKET_ACC_PATH . 'includes/acf-json/';
+
+        echo '<div class="notice notice-info"><p><strong>ACF JSON Folder Check:</strong> ' . esc_html($acf_json_folder) . ' - Writable: ' . (is_writable($acf_json_folder) ? 'Yes' : 'No') . '</p></div>';
+
+        if (!is_writable($acf_json_folder)) {
+            echo '<div class="notice notice-error"><p><strong>ACF JSON folder not writable</strong></p><p>The ' . esc_html($acf_json_folder) . ' folder is not writable. Please make sure the folder is writable by the server.</p><p>Not solving this issue, will result in ACF fields not being saved at plugin level and will not be visible on other sites backend.</p></div>';
+        }
     }
 }
