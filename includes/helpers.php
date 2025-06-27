@@ -2,26 +2,26 @@
 
 // No direct access
 
-use WicketAcc\MethodRouter;
+use WicketAcc\WicketAcc;
 
 defined('ABSPATH') || exit;
 
 /*
  *
- * DO NOT ADD MORE HELPERS HERE
- * DO NOT ADD MORE HELPERS HERE
- * DO NOT ADD MORE HELPERS HERE
+ * DO NOT ADD MORE HELPERS HERE.
+ * This file should only contain the WACC() helper function.
  *
- * Please, use ./src/Helpers.php file instead.
+ * Please, add new helper methods to the ./src/Helpers.php file.
  *
- * ./src/Helpers.php can contain several methods as helpers.
+ * The WACC() function returns the main plugin instance, which provides
+ * access to all plugin components and helper methods.
  *
- * Usage of methods inside the class, from outsite this plugin:
- * WACC()->method_name();
+ * ---- USAGE ----
  *
- * Also, ./src/MethodRouter.php can mount an already registered class, so WACC() can use them and their methods directly as helpers. Without the need to write a wrapper helper method for each method of the exposed class.
+ * To call a helper method (from the Helpers class):
+ * WACC()->my_helper_method();
  *
- * Usage of any method from outside this plugin:
+ * To access a plugin component (e.g., Profile, MdpApi):
  * WACC()->className->method_name();
  *
  */
@@ -29,36 +29,29 @@ defined('ABSPATH') || exit;
 /**
  * Magic wrapper Class for WACC() helpers.
  *
- * @return object
+ * @return WicketAcc
  */
 function WACC()
 {
-    static $instance = null;
-
-    if ($instance === null) {
-        $instance = new MethodRouter();
-        $instance->init();
-    }
-
-    return $instance;
+    return WicketAcc::get_instance();
 }
 
 /*
  *
- * DO NOT ADD MORE HELPERS HERE
- * DO NOT ADD MORE HELPERS HERE
- * DO NOT ADD MORE HELPERS HERE
+ * DO NOT ADD MORE HELPERS HERE.
+ * This file should only contain the WACC() helper function.
  *
- * Please, use ./src/Helpers.php file instead.
+ * Please, add new helper methods to the ./src/Helpers.php file.
  *
- * ./src/Helpers.php can contain several methods as helpers.
+ * The WACC() function returns the main plugin instance, which provides
+ * access to all plugin components and helper methods.
  *
- * Usage of methods inside the class, from outsite this plugin:
- * WACC()->method_name();
+ * ---- USAGE ----
  *
- * Also, ./src/MethodRouter.php can mount an already registered class, so WACC() can use them and their methods directly as helpers. Without the need to write a wrapper helper method for each method of the exposed class.
+ * To call a helper method (from the Helpers class):
+ * WACC()->my_helper_method();
  *
- * Usage of any method from outside this plugin:
+ * To access a plugin component (e.g., Profile, MdpApi):
  * WACC()->className->method_name();
  *
  */

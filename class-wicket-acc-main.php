@@ -14,7 +14,7 @@ use WicketAcc\Services\Notification;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Custom account management system for Wicket. Provides user account features, organization management, and additional blocks and pages. Integrates with WooCommerce when available.
- * Version:           1.5.191
+ * Version:           1.5.200
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -48,11 +48,53 @@ if (file_exists(WICKET_ACC_PATH . 'vendor-dist/autoload.php')) {
     require_once WICKET_ACC_PATH . 'vendor-dist/autoload.php';
 }
 
+// Initialize the plugin when all plugins are loaded
+add_action(
+    'plugins_loaded',
+    [WicketAcc::get_instance(), 'plugin_setup']
+);
+
 /**
  * The main Wicket Account Centre class.
  */
 class WicketAcc
 {
+    /**
+     * Plugin instance.
+     *
+     * @see get_instance()
+     * @type object
+     */
+    protected static $instance = null;
+
+    /**
+     * URL to this plugin's directory.
+     *
+     * @type string
+     */
+    public $plugin_url = '';
+
+    /**
+     * Path to this plugin's directory.
+     *
+     * @type string
+     */
+    public $plugin_path = '';
+
+    /**
+     * Component instances.
+     *
+     * @var array
+     */
+    private array $instances = [];
+
+    /**
+     * Helpers instance.
+     *
+     * @var Helpers
+     */
+    private Helpers $helpersInstance;
+
     protected array $acc_index_slugs = [
         'en' => 'my-account',
         'fr' => 'mon-compte',
@@ -177,18 +219,81 @@ class WicketAcc
     ];
 
     /**
-     * Constructor.
+     * Access this plugin's working instance.
+     *
+     * @wp-hook plugins_loaded
+     * @return  object of this class
+     */
+    public static function get_instance()
+    {
+        null === self::$instance and self::$instance = new self();
+
+        return self::$instance;
+    }
+
+    /**
+     * Constructor. Intentionally left empty and public.
+     *
+     * @see plugin_setup()
      */
     public function __construct() {}
 
     /**
-     * Run.
+     * Get the instance of a class.
+     *
+     * @param string $name
+     *
+     * @return object|Blocks|MdpApi|OrganizationProfile|Profile|User|Log|WooCommerce|Language|OrganizationManagement|OrganizationRoster
+     * @throws \Exception
      */
-    public function run()
+    public function __get($name): Blocks|MdpApi|OrganizationProfile|Profile|User|Log|WooCommerce|Language|OrganizationManagement|OrganizationRoster
     {
-        add_filter('wp_dropdown_pages', 'wicket_acc_alter_wp_job_manager_pages', 10, 3);
+        if (isset($this->instances[$name])) {
+            return $this->instances[$name];
+        }
 
-        register_activation_hook(__FILE__, [$this, 'plugin_activated']);
+        throw new \Exception("Class instance $name does not exist.");
+    }
+
+    /**
+     * Call magic method for class instances.
+     *
+     * @param string $name
+     * @param array $arguments
+     *
+     * @return object|mixed
+     * @throws \Exception
+     */
+    public function __call($name, $arguments)
+    {
+        // Handle Helpers class methods directly
+        if (method_exists($this->helpersInstance, $name)) {
+            return call_user_func_array([$this->helpersInstance, $name], $arguments);
+        }
+
+        // Handle dynamic class instance call
+        if (isset($this->instances[$name])) {
+            return $this->instances[$name];
+        }
+
+        throw new \Exception("Method or class instance '$name' does not exist. Available instances: " . implode(', ', array_keys($this->instances)));
+    }
+
+    /**
+     * Used for regular plugin work.
+     *
+     * @wp-hook plugins_loaded
+     * @since   2012.09.10
+     * @return  void
+     */
+    public function plugin_setup()
+    {
+        $this->plugin_url = WICKET_ACC_URL;
+        $this->plugin_path = WICKET_ACC_PATH;
+
+        Log::registerFatalErrorHandler();
+
+        add_filter('wp_dropdown_pages', 'wicket_acc_alter_wp_job_manager_pages', 10, 3);
 
         // Load global helper files
         $includes_global = [
@@ -196,46 +301,42 @@ class WicketAcc
             'includes/legacy.php',
         ];
         foreach ($includes_global as $global_file_path) {
-            if (file_exists(WICKET_ACC_PATH . $global_file_path)) {
-                include_once WICKET_ACC_PATH . $global_file_path;
+            if (file_exists($this->plugin_path . $global_file_path)) {
+                include_once $this->plugin_path . $global_file_path;
             }
         }
 
-        // Carbon Fields
+        $this->helpersInstance = new Helpers();
+
+        // Instantiate services
+        $this->instances = [
+            'MdpApi'                 => new MdpApi(),
+            'Profile'                => new Profile(),
+            'OrganizationManagement' => new OrganizationManagement(),
+            'OrganizationProfile'    => new OrganizationProfile(),
+            'OrganizationRoster'     => new OrganizationRoster(),
+            'Blocks'                 => new Blocks(),
+            'User'                   => new User(),
+            'Log'                    => new Log(),
+            'Language'               => new Language(),
+            'Notification'           => new Notification(),
+        ];
+
+        // Instantiate classes for their hooks
         new CarbonFieldsInit();
+        new Router();
+        new Shortcodes();
+        new Registers();
+        new Assets();
 
         if (is_admin()) {
             new AdminSettings();
             new WicketAccSafeguard(); // Initialize the safeguard class for admin tasks
         }
 
-        new MdpApi();
-        new Router();
-        new Blocks();
-        new Helpers();
-        new Shortcodes();
-        new Registers();
-        new Profile();
-        new OrganizationManagement();
-        new OrganizationProfile();
-        new OrganizationRoster();
-        new Assets();
-        new User();
-        new Language();
-        new Notification();
-
         // Load WooCommerce integration if active
-        if (WACC()->isWooCommerceActive()) {
-            new WooCommerce();
+        if ($this->isWooCommerceActive()) {
+            $this->instances['WooCommerce'] = new WooCommerce();
         }
     }
-
-    /**
-     * Plugin activation.
-     */
-    public function plugin_activated() {}
 } // end Class.
-
-// Initialize the plugin
-$WicketAcc = new WicketAcc();
-$WicketAcc->run();

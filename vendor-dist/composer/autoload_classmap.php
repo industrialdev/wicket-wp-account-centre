@@ -477,7 +477,6 @@ return array(
     'WicketAcc\\MdpApi\\Schema' => $baseDir . '/src/MdpApi/Schema.php',
     'WicketAcc\\MdpApi\\Segment' => $baseDir . '/src/MdpApi/Segment.php',
     'WicketAcc\\MdpApi\\Touchpoint' => $baseDir . '/src/MdpApi/Touchpoint.php',
-    'WicketAcc\\MethodRouter' => $baseDir . '/src/MethodRouter.php',
     'WicketAcc\\OrganizationManagement' => $baseDir . '/src/OrganizationManagement.php',
     'WicketAcc\\OrganizationProfile' => $baseDir . '/src/OrganizationProfile.php',
     'WicketAcc\\OrganizationRoster' => $baseDir . '/src/OrganizationRoster.php',

@@ -626,7 +626,6 @@ class ComposerStaticInit25b1eff86541e9e47c69f912bcb70ad8
         'WicketAcc\\MdpApi\\Schema' => __DIR__ . '/../..' . '/src/MdpApi/Schema.php',
         'WicketAcc\\MdpApi\\Segment' => __DIR__ . '/../..' . '/src/MdpApi/Segment.php',
         'WicketAcc\\MdpApi\\Touchpoint' => __DIR__ . '/../..' . '/src/MdpApi/Touchpoint.php',
-        'WicketAcc\\MethodRouter' => __DIR__ . '/../..' . '/src/MethodRouter.php',
         'WicketAcc\\OrganizationManagement' => __DIR__ . '/../..' . '/src/OrganizationManagement.php',
         'WicketAcc\\OrganizationProfile' => __DIR__ . '/../..' . '/src/OrganizationProfile.php',
         'WicketAcc\\OrganizationRoster' => __DIR__ . '/../..' . '/src/OrganizationRoster.php',
