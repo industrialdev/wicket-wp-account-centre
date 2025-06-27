@@ -180,10 +180,6 @@ class AdminSettings extends \WicketAcc\WicketAcc
      */
     public function checkAcfJsonFolderPermissions()
     {
-        die('<h1>Wicket ACC Plugin: checkAcfJsonFolderPermissions() method is being called.</h1>');
-        // Always show test notice first to confirm method is called
-        echo '<div class="notice notice-success"><p><strong>Wicket ACC:</strong> checkAcfJsonFolderPermissions method is working!</p></div>';
-
         // Only on the backend
         if (!is_admin()) {
             return;
@@ -200,8 +196,6 @@ class AdminSettings extends \WicketAcc\WicketAcc
         }
 
         $acf_json_folder = WICKET_ACC_PATH . 'includes/acf-json/';
-
-        echo '<div class="notice notice-info"><p><strong>ACF JSON Folder Check:</strong> ' . esc_html($acf_json_folder) . ' - Writable: ' . (is_writable($acf_json_folder) ? 'Yes' : 'No') . '</p></div>';
 
         if (!is_writable($acf_json_folder)) {
             echo '<div class="notice notice-error"><p><strong>ACF JSON folder not writable</strong></p><p>The ' . esc_html($acf_json_folder) . ' folder is not writable. Please make sure the folder is writable by the server.</p><p>Not solving this issue, will result in ACF fields not being saved at plugin level and will not be visible on other sites backend.</p></div>';
