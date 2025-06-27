@@ -216,12 +216,12 @@
             ]
         },
         {
-            "key": "field_7146d7d67c51f",
-            "label": "Pass query string with link",
-            "name": "pass_query_string",
+            "key": "field_7146d7d67c51g",
+            "label": "Capture and use current URL query string",
+            "name": "capture_use_query_string",
             "aria-label": "",
             "type": "true_false",
-            "instructions": "If enabled, a custom query string can be appended to the links in this callout.",
+            "instructions": "If enabled, the current URL's query string will be captured and appended to the links in this callout.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -235,35 +235,6 @@
             "ui_off_text": "",
             "ui": 1,
             "wpml_cf_preferences": 1
-        },
-        {
-            "key": "field_71480d124b8d7",
-            "label": "Query String",
-            "name": "custom_query_string",
-            "aria-label": "",
-            "type": "text",
-            "instructions": "Enter the query string to append (e.g., utm_source=callout&utm_medium=internal). Do not include the leading '?'.",
-            "required": 1,
-            "conditional_logic": [
-                [
-                    {
-                        "field": "field_7146d7d67c51f",
-                        "operator": "==",
-                        "value": "1"
-                    }
-                ]
-            ],
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": "",
-            "wpml_cf_preferences": 2
         }
     ],
     "location": [
@@ -285,5 +256,5 @@
     "description": "",
     "show_in_rest": 0,
     "acfml_field_group_mode": "localization",
-    "modified": 1751062657
+    "modified": 1751076406
 }

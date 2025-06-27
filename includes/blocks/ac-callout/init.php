@@ -14,16 +14,10 @@ defined('ABSPATH') || exit;
 class init extends Blocks
 {
     /**
-     * The value of the 'pass_query_string' ACF field.
+     * The value of the 'capture_use_query_string' ACF field.
      * @var bool
      */
-    protected bool $pass_query_string = false;
-
-    /**
-     * The value of the 'custom_query_string' ACF field.
-     * @var string
-     */
-    protected string $custom_query_string = '';
+    protected bool $capture_use_query_string = false;
 
     /**
      * Constructor.
@@ -56,8 +50,7 @@ class init extends Blocks
         $links = get_field('ac_callout_links');
         $classes = [];
 
-        $this->pass_query_string = (bool) get_field('pass_query_string');
-        $this->custom_query_string = (string) get_field('custom_query_string');
+        $this->capture_use_query_string = (bool) get_field('capture_use_query_string');
 
         // Initialize ISO code for language using WACC Language helper
         $iso_code = WACC()->Language->getCurrentLanguage();
@@ -423,27 +416,70 @@ class init extends Blocks
     }
 
     /**
-     * Appends a custom query string to an array of links if configured.
+     * Appends the current page's query string to an array of links.
+     *
+     * This method intelligently merges the query string from the current page URL
+     * with any existing query string in the link. Parameters from the current page's
+     * URL will override any matching parameters in the link's URL.
      *
      * @param array $links The array of links from the ACF repeater.
      * @return array The modified array of links.
      */
     protected function append_query_string(array $links = []): array
     {
-        if (empty($this->pass_query_string) || empty($this->custom_query_string) || empty($links)) {
+        if (empty($this->capture_use_query_string) || empty($_SERVER['QUERY_STRING']) || empty($links)) {
+            return $links;
+        }
+
+        // Parse the current page's query string into an array.
+        parse_str($_SERVER['QUERY_STRING'], $page_query_params);
+
+        if (empty($page_query_params)) {
             return $links;
         }
 
         foreach ($links as $i => $link_item) {
-            if (!empty($link_item['link']['url']) && str_starts_with($link_item['link']['url'], 'http')) {
-                $url = $link_item['link']['url'];
-                if (strpos($url, '?') === false) {
-                    $url .= '?' . $this->custom_query_string;
-                } else {
-                    $url .= '&' . $this->custom_query_string;
-                }
-                $links[$i]['link']['url'] = $url;
+            if (empty($link_item['link']['url'])) {
+                continue;
             }
+
+            $url_parts = parse_url($link_item['link']['url']);
+            if ($url_parts === false) {
+                // Couldn't parse the URL, skip it.
+                continue;
+            }
+
+            // Parse the link's existing query string, if it has one.
+            $link_query_params = [];
+            if (isset($url_parts['query'])) {
+                parse_str($url_parts['query'], $link_query_params);
+            }
+
+            // Merge the parameters. Page parameters override link parameters.
+            $merged_params = array_merge($link_query_params, $page_query_params);
+
+            // Build the new query string.
+            $new_query_string = http_build_query($merged_params);
+
+            // Reconstruct the final URL.
+            $new_url = '';
+            if (isset($url_parts['scheme'])) {
+                $new_url .= $url_parts['scheme'] . '://';
+            }
+            if (isset($url_parts['host'])) {
+                $new_url .= $url_parts['host'];
+            }
+            if (isset($url_parts['port'])) {
+                $new_url .= ':' . $url_parts['port'];
+            }
+            if (isset($url_parts['path'])) {
+                $new_url .= $url_parts['path'];
+            }
+            if (!empty($new_query_string)) {
+                $new_url .= '?' . $new_query_string;
+            }
+
+            $links[$i]['link']['url'] = $new_url;
         }
 
         return $links;
