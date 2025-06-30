@@ -1,6 +1,6 @@
 <?php
 
-namespace WicketAcc\MdpApi;
+namespace WicketAcc\Mdp;
 
 use Exception; // Required for getCurrentPerson
 use GuzzleHttp\Exception\RequestException;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace WicketAcc\MdpApi;
+namespace WicketAcc\Mdp;
 
 use Exception;
 use GuzzleHttp\Exception\RequestException;
@@ -120,7 +120,7 @@ class Roles extends Init
         }
 
         // Fetch person data to find the role ID
-        $person = WACC()->MdpApi->Person->getPersonByUuid($personUuid);
+        $person = WACC()->Mdp->Person->getPersonByUuid($personUuid);
         if (!$person || !isset($person->data->id)) { // Ensure person data is valid
             WACC()->Log->warning(
                 'Failed to retrieve person or person data is invalid for role removal.',
@@ -290,9 +290,9 @@ class Roles extends Init
             'details'   => "Person's role was updated from '" . esc_html(json_encode($personCurrentRoles)) . "' to '" . esc_html(json_encode($newRoles)) . "' on " . date('c', time()),
             'data'      => ['org_id' => $orgId],
         ];
-        $serviceId = WACC()->MdpApi->Touchpoint->getOrCreateServiceId('Roster Manage', 'Updated member role');
+        $serviceId = WACC()->Mdp->Touchpoint->getOrCreateServiceId('Roster Manage', 'Updated member role');
         if ($serviceId) {
-            WACC()->MdpApi->Touchpoint->writeTouchpoint($touchpointParams, $serviceId);
+            WACC()->Mdp->Touchpoint->writeTouchpoint($touchpointParams, $serviceId);
         }
 
         $response = [

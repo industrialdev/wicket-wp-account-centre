@@ -33,8 +33,8 @@ class init extends Blocks
      */
     protected function init_block()
     {
-        $person_id = WACC()->MdpApi->Person->getCurrentPersonUuid();
-        $environment = WACC()->MdpApi->getOption('wicket_admin_settings_environment');
+        $person_id = WACC()->Mdp->Person->getCurrentPersonUuid();
+        $environment = WACC()->Mdp->getOption('wicket_admin_settings_environment');
         $acf_ai_schema = get_field('additional_info_schema');
         $acf_resource_type = get_field('additional_info_resource_type');
         $acf_org_uuid = get_field('additional_info_organization_uuid') ?? '';

@@ -164,8 +164,8 @@ class init extends Blocks
             return false;
         }
 
-        $touchpoint_service = WACC()->MdpApi->Touchpoint->getOrCreateServiceId($service_id);
-        $touchpoints = WACC()->MdpApi->Touchpoint->getCurrentUserTouchpoints($touchpoint_service);
+        $touchpoint_service = WACC()->Mdp->Touchpoint->getOrCreateServiceId($service_id);
+        $touchpoints = WACC()->Mdp->Touchpoint->getCurrentUserTouchpoints($touchpoint_service);
 
         return $touchpoints;
     }

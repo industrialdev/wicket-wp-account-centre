@@ -45,7 +45,7 @@
      - [ ] Create OrganizationManager class
      - [ ] Create OrganizationMember class
      - [ ] Create MemberPermissions class
-     - [ ] Extend MdpApi class with organization-specific functionality
+     - [ ] Extend Mdp class with organization-specific functionality
 
 5. Frontend Infrastructure Implementation
    - Priority: P2

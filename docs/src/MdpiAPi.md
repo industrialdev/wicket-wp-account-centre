@@ -1,7 +1,7 @@
 # ACC MDP API Class Documentation
 
 ## Overview
-The `MdpApi` class serves as a dedicated wrapper for the Wicket PHP SDK (`Wicket\Client`), providing a simplified interface for interacting with the Member Data Platform (MDP) API. It handles client initialization, authentication, and provides methods to fetch and manage data such as people, organizations, and touchpoints.
+The `Mdp` class serves as a dedicated wrapper for the Wicket PHP SDK (`Wicket\Client`), providing a simplified interface for interacting with the Member Data Platform (MDP) API. It handles client initialization, authentication, and provides methods to fetch and manage data such as people, organizations, and touchpoints.
 
 ## Class Definition
 ```php
@@ -10,7 +10,7 @@ namespace WicketAcc;
 use Exception;
 use Wicket\Client;
 
-class MdpApi
+class Mdp
 {
     /**
      * Constructor.
@@ -46,7 +46,7 @@ class MdpApi
 - `writeTouchpoint(array $params, string $wicket_service_id): bool`: Writes a touchpoint to the MDP. Requires parameters like `person_id`, `action`, `details`, etc., and a `wicket_service_id`. Returns `true` on success, `false` on failure. See PHPDoc in `Touchpoint.php` for detailed `params` structure.
 
 ## Usage Example
-The `MdpApi` class is accessible via the `WACC()` global function.
+The `Mdp` class is accessible via the `WACC()` global function.
 
 ```php
 // Get the current person's data from the MDP
@@ -57,7 +57,7 @@ if ($person_data) {
 }
 
 // Get information for a specific organization
-$org_info = WACC()->MdpApi->Organization->getOrganizationInfo('org-uuid-123');
+$org_info = WACC()->Mdp->Organization->getOrganizationInfo('org-uuid-123');
 ```
 
 ## Error Handling

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace WicketAcc\MdpApi;
+namespace WicketAcc\Mdp;
 
 use Exception;
 use GuzzleHttp\Exception\RequestException;
@@ -89,7 +89,7 @@ class Helper extends Init
             return false;
         }
 
-        $client = WACC()->MdpApi->initClient();
+        $client = WACC()->Mdp->initClient();
         if (!$client) {
             WACC()->Log->error('Failed to initialize API client.', ['source' => __METHOD__]);
 

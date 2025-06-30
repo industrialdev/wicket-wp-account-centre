@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace WicketAcc\MdpApi;
+namespace WicketAcc\Mdp;
 
 use Exception;
 use GuzzleHttp\Exception\RequestException;
@@ -105,7 +105,7 @@ class Touchpoint extends Init
      *   'data' => ['test' => 'thing'],
      *   'external_event_id' => 'some unique value used when you dont want duplicate touchpoints but cant control how they are triggered'
      * ];
-     * WACC()->MdpApi->Touchpoint->writeTouchpoint($params, WACC()->MdpApi->Touchpoint->getOrCreateServiceId('[service name]', '[service description]'));
+     * WACC()->Mdp->Touchpoint->writeTouchpoint($params, WACC()->Mdp->Touchpoint->getOrCreateServiceId('[service name]', '[service description]'));
      * ```
      *
      * @param array  $params            The parameters for the touchpoint, including:

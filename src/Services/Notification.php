@@ -32,7 +32,7 @@ class Notification
     public function sendPersonToTeamAssignmentEmail(WP_User $user, string $orgUuid): bool
     {
         // Fetch organization details, including emails
-        $org = WACC()->MdpApi->Organization->getOrganizationByUuid($orgUuid, 'emails');
+        $org = WACC()->Mdp->Organization->getOrganizationByUuid($orgUuid, 'emails');
         if (empty($org['data'])) {
             WACC()->Log->error('Failed to retrieve organization data for notification.', [
                 'source' => __METHOD__,
@@ -43,7 +43,7 @@ class Notification
         }
 
         // Fetch person details using the user's login, which is the person UUID
-        $person = WACC()->MdpApi->Person->getPersonByUuid($user->user_login);
+        $person = WACC()->Mdp->Person->getPersonByUuid($user->user_login);
         if (empty($person)) {
             WACC()->Log->error('Failed to retrieve person data for notification.', [
                 'source' => __METHOD__,
@@ -104,7 +104,7 @@ class Notification
     public function sendNewPersonToTeamAssignmentEmail(string $firstName, string $lastName, string $email, string $orgUuid): bool
     {
         // Fetch organization details, including emails
-        $org = WACC()->MdpApi->Organization->getOrganizationByUuid($orgUuid, 'emails');
+        $org = WACC()->Mdp->Organization->getOrganizationByUuid($orgUuid, 'emails');
         if (empty($org['data'])) {
             WACC()->Log->error('Failed to retrieve organization data for new person notification.', [
                 'source' => __METHOD__,
@@ -214,8 +214,8 @@ class Notification
     public function sendPersonToOrgAssignmentEmail(string $personUuid, string $orgUuid): void
     {
         $lang = WACC()->Language->getCurrentLanguage();
-        $person = WACC()->MdpApi->Person->getPerson($personUuid);
-        $org = WACC()->MdpApi->Organization->getOrganizationInfo($orgUuid);
+        $person = WACC()->Mdp->Person->getPerson($personUuid);
+        $org = WACC()->Mdp->Organization->getOrganizationInfo($orgUuid);
 
         if (!$person || !$org) {
             WACC()->Log->error('Failed to send assignment email: Invalid person or organization.', [
@@ -283,7 +283,7 @@ $organization_name";
             }
         }
 
-        $orgInfo = WACC()->MdpApi->Organization->getOrganizationInfoExtended($emailData['orgUuid'], $emailData['lang']);
+        $orgInfo = WACC()->Mdp->Organization->getOrganizationInfoExtended($emailData['orgUuid'], $emailData['lang']);
 
         if (!$orgInfo) {
             WACC()->Log->error('Failed to send notification: Invalid organization.', [

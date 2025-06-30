@@ -20,31 +20,31 @@ defined('ABSPATH') || exit;
 /**
  * Returns active memberships from wicket API.
  *
- * @deprecated 1.6.0 Available as method WACC()->MdpApi->Membership->getCurrentPersonActiveMemberships()
+ * @deprecated 1.6.0 Available as method WACC()->Mdp->Membership->getCurrentPersonActiveMemberships()
  */
 function wicket_get_active_memberships($iso_code = 'en')
 {
-    return WACC()->MdpApi->Membership->getCurrentPersonActiveMemberships($iso_code);
+    return WACC()->Mdp->Membership->getCurrentPersonActiveMemberships($iso_code);
 }
 
 /**
  * Returns active memberships from WooCommerce.
  *
- * @deprecated 1.6.0 Available as method WACC()->MdpApi->Membership->getCurrentUserWooActiveMemberships()
+ * @deprecated 1.6.0 Available as method WACC()->Mdp->Membership->getCurrentUserWooActiveMemberships()
  */
 function woo_get_active_memberships()
 {
-    return WACC()->MdpApi->Membership->getCurrentUserWooActiveMemberships();
+    return WACC()->Mdp->Membership->getCurrentUserWooActiveMemberships();
 }
 
 /**
  * Returns active memberships relationship from wicket API.
  *
- * @deprecated 1.6.0 Available as method WACC()->MdpApi->Membership->getActiveMembershipRelationship()
+ * @deprecated 1.6.0 Available as method WACC()->Mdp->Membership->getActiveMembershipRelationship()
  */
 function wicket_get_active_memberships_relationship($org_uuid)
 {
-    return WACC()->MdpApi->Membership->getActiveMembershipRelationship($org_uuid);
+    return WACC()->Mdp->Membership->getActiveMembershipRelationship($org_uuid);
 }
 
 /**

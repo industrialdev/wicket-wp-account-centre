@@ -1,6 +1,6 @@
 <?php
 
-namespace WicketAcc\MdpApi;
+namespace WicketAcc\Mdp;
 
 use Exception;
 use Firebase\JWT\JWT;
@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
  * Class Init
  * Base class for MDP API interactions and gateway to specialized API handlers.
  * Provides access to specialized API classes like Person, Organization, etc., via magic __get().
- * Example: WACC()->MdpApi->Person->getCurrentPerson();.
+ * Example: WACC()->Mdp->Person->getCurrentPerson();.
  */
 class Init
 {

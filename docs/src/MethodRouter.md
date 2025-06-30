@@ -23,10 +23,10 @@ class MethodRouter
      * Get the instance of a registered component.
      *
      * @param string $name Class name of the component.
-     * @return Blocks|MdpApi|OrganizationProfile|Profile|User The component instance.
+     * @return Blocks|Mdp|OrganizationProfile|Profile|User The component instance.
      * @throws \Exception If the component is not registered.
      */
-    public function __get(string $name): Blocks|MdpApi|OrganizationProfile|Profile|User;
+    public function __get(string $name): Blocks|Mdp|OrganizationProfile|Profile|User;
 
     /**
      * Call a method on the Helpers instance or get a component instance.
@@ -54,7 +54,7 @@ class MethodRouter
 The `MethodRouter` provides access to the following components:
 
 - **`Helpers`**: A collection of utility methods.
-- **`MdpApi`**: Manages communication with the Wicket Member Data Platform (MDP) API.
+- **`Mdp`**: Manages communication with the Wicket Member Data Platform (MDP) API.
 - **`Profile`**: Manages user profile pictures and avatars.
 - **`OrganizationProfile`**: Manages organization logos.
 - **`Blocks`**: Handles custom Gutenberg blocks.
@@ -122,4 +122,4 @@ if ($slug) {
 
 ## Error Handling
 - Throws an `\Exception` if you try to access a component instance that is not registered (e.g., `WACC()->NonExistentClass`).
-- Throws an `\Exception` if you call a method that does not exist on the `Helpers` class and is not a registered component name (e.g., `WACC()->undefinedHelperMethod()`). The error message will be similar to: `Method or class instance 'undefinedHelperMethod' does not exist. Available instances: MdpApi, Profile, OrganizationProfile, Blocks, User`.
+- Throws an `\Exception` if you call a method that does not exist on the `Helpers` class and is not a registered component name (e.g., `WACC()->undefinedHelperMethod()`). The error message will be similar to: `Method or class instance 'undefinedHelperMethod' does not exist. Available instances: Mdp, Profile, OrganizationProfile, Blocks, User`.

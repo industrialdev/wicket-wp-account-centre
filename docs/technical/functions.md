@@ -89,7 +89,7 @@ function WACC()
 
 ### Common Helper Classes
 
-1. **MdpApi**
+1. **Mdp**
    - API integration methods
    - Data synchronization
    - Error handling

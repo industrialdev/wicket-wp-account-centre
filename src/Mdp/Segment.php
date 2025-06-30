@@ -1,6 +1,6 @@
 <?php
 
-namespace WicketAcc\MdpApi;
+namespace WicketAcc\Mdp;
 
 // No direct access
 defined('ABSPATH') || exit;

@@ -21,7 +21,7 @@ defined('ABSPATH') || exit;
  * To call a helper method (from the Helpers class):
  * WACC()->my_helper_method();
  *
- * To access a plugin component (e.g., Profile, MdpApi):
+ * To access a plugin component (e.g., Profile, Mdp):
  * WACC()->className->method_name();
  *
  */
@@ -51,7 +51,7 @@ function WACC()
  * To call a helper method (from the Helpers class):
  * WACC()->my_helper_method();
  *
- * To access a plugin component (e.g., Profile, MdpApi):
+ * To access a plugin component (e.g., Profile, Mdp):
  * WACC()->className->method_name();
  *
  */

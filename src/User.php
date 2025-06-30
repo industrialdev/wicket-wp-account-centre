@@ -112,7 +112,7 @@ class User extends WicketAcc
 
         // If overrides are not provided, fetch data from MDP
         if (is_null($firstName) || is_null($lastName) || is_null($email)) {
-            $mdp_person = WACC()->MdpApi->Person->getPersonByUuid($uuid);
+            $mdp_person = WACC()->Mdp->Person->getPersonByUuid($uuid);
             if (!$mdp_person || !isset($mdp_person->attributes)) {
                 WACC()->Log->error('Failed to retrieve person data from MDP for user creation/update.', ['source' => __METHOD__, 'uuid' => $uuid]);
 

@@ -124,7 +124,7 @@ $acc_prefer_wc_endpoints = [
 The plugin initializes the following classes in its `run()` method:
 
 1. **Base Classes**
-   - `MdpApi`: MDP API integration
+   - `Mdp`: MDP API integration
    - `Router`: URL handling
    - `Blocks`: Block management
    - `Helpers`: Utility functions

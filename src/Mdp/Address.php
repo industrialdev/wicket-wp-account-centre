@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace WicketAcc\MdpApi;
+namespace WicketAcc\Mdp;
 
 use Exception;
 use GuzzleHttp\Exception\RequestException;

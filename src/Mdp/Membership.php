@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace WicketAcc\MdpApi;
+namespace WicketAcc\Mdp;
 
 use Exception;
 use GuzzleHttp\Exception\RequestException;
@@ -243,7 +243,7 @@ class Membership extends Init
     /**
      * Returns active memberships for the current person from Wicket.
      * This method replicates and replaces the functionality of the legacy
-     * `wicket_get_active_memberships` function using the new MdpApi structure.
+     * `wicket_get_active_memberships` function using the new Mdp structure.
      *
      * @param string $iso_code (Optional) ISO code for the language: en, fr, es, etc. Defaults to 'en'.
      * @return array An array of active membership summaries.
@@ -534,7 +534,7 @@ class Membership extends Init
     public function getCurrentPersonMemberships(array $args = []): array|false
     {
         $defaults = [
-            'person_uuid' => WACC()->MdpApi->Person->getCurrentPersonUuid(),
+            'person_uuid' => WACC()->Mdp->Person->getCurrentPersonUuid(),
             'include' => 'membership,organization_membership.organization,fusebill_subscription',
             'filter' => [
                 'active_at' => 'now',

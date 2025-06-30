@@ -33,13 +33,13 @@ class OrganizationRoster
             return false;
         }
 
-        $personUuid = WACC()->MdpApi->Person->getCurrentPersonUuid();
+        $personUuid = WACC()->Mdp->Person->getCurrentPersonUuid();
 
         if (empty($personUuid)) {
             return false;
         }
 
-        $memberships = WACC()->MdpApi->Person->getPersonOrganizationMemberships($personUuid);
+        $memberships = WACC()->Mdp->Person->getPersonOrganizationMemberships($personUuid);
 
         if (empty($memberships['data']) || !is_array($memberships['data'])) {
             return false;

@@ -4,7 +4,7 @@ namespace WicketAcc;
 
 use WicketAcc\Admin\AdminSettings;
 use WicketAcc\Admin\WicketAccSafeguard;
-use WicketAcc\MdpApi\Init as MdpApi;
+use WicketAcc\Mdp\Init as Mdp;
 use WicketAcc\Services\Notification;
 
 /*
@@ -14,7 +14,7 @@ use WicketAcc\Services\Notification;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Custom account management system for Wicket. Provides user account features, organization management, and additional blocks and pages. Integrates with WooCommerce when available.
- * Version:           1.5.202
+ * Version:           1.5.203
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -243,11 +243,16 @@ class WicketAcc
      *
      * @param string $name
      *
-     * @return object|Blocks|MdpApi|OrganizationProfile|Profile|User|Log|WooCommerce|Language|OrganizationManagement|OrganizationRoster
+     * @return object|Blocks|Mdp|OrganizationProfile|Profile|User|Log|WooCommerce|Language|OrganizationManagement|OrganizationRoster
      * @throws \Exception
      */
-    public function __get($name): Blocks|MdpApi|OrganizationProfile|Profile|User|Log|WooCommerce|Language|OrganizationManagement|OrganizationRoster
+    public function __get($name): Blocks|Mdp|OrganizationProfile|Profile|User|Log|WooCommerce|Language|OrganizationManagement|OrganizationRoster
     {
+        // Handle MdpApi alias for backward compatibility
+        if ($name === 'MdpApi') {
+            $name = 'Mdp';
+        }
+
         if (isset($this->instances[$name])) {
             return $this->instances[$name];
         }
@@ -310,7 +315,7 @@ class WicketAcc
 
         // Instantiate services
         $this->instances = [
-            'MdpApi'                 => new MdpApi(),
+            'Mdp'                    => new Mdp(),
             'Profile'                => new Profile(),
             'OrganizationManagement' => new OrganizationManagement(),
             'OrganizationProfile'    => new OrganizationProfile(),
@@ -323,7 +328,8 @@ class WicketAcc
         ];
 
         // Instantiate classes for their hooks
-        new CarbonFieldsInit();
+        new CFInitOptions(); // Options always should be first, it bootstraps Carbon Fields
+        new CFInitBlocks();
         new Router();
         new Shortcodes();
         new Registers();

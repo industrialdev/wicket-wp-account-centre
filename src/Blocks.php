@@ -28,6 +28,7 @@ class Blocks extends WicketAcc
         add_filter('block_categories_all', [$this, 'editor_block_category']);
 
         add_action('init', [$this, 'load_wicket_blocks'], 5); // We need to use WP's init here https://www.advancedcustomfields.com/resources/create-your-first-acf-block/
+
         add_filter('acf/settings/load_json', [$this, 'load_acf_field_group']);
 
         add_action('acf/update_field_group', [$this, 'update_field_group'], 1, 1);
