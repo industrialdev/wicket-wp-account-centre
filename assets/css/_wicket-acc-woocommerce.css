@@ -25,7 +25,8 @@
   content: none !important;
 }
 
-div.woocommerce:has(.wicket-acc-page) {
+div.woocommerce:has(.wicket-acc-page),
+#main-content:has(div.woocommerce:has(.wicket-acc-page)) {
   padding-top: 0;
   padding-bottom: 0;
 }

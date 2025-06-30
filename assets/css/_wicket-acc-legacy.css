@@ -44,6 +44,7 @@
   .wicket-acc {
     .woocommerce-wicket--account-centre {
       max-width: 70%;
+      margin-left: 0;
     }
 
     .myaccount-nav {
