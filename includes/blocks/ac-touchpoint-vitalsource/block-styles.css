@@ -25,11 +25,16 @@
     padding: var(--space-200);
     filter: drop-shadow(var(--elevation-4));
     border-radius: var(--card-corner-radius);
-    font-size: var(--font-size-heading-xs);
     margin-bottom: var(--space-200);
-    font-weight: bold;
     color: var(--text-content);
     text-decoration: none;
+  }
+
+  .vitalsource-card__title {
+    font-size: var(--font-size-heading-xs);
+    font-weight: bold;
+    text-decoration: none;
+    color: var(--text-content);
 
     &:hover,
     &:focus {

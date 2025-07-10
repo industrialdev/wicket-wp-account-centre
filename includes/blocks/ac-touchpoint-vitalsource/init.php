@@ -279,8 +279,6 @@ class init extends Blocks
             return $touchpoints;
         }
 
-        $touchpoints = $touchpoints['data'] ?? [];
-
         $filtered_touchpoints = array_filter($touchpoints, function ($touchpoint) use ($action) {
             if (isset($touchpoint['attributes']['action'])) {
                 $tp_action = $touchpoint['attributes']['action'];
