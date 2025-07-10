@@ -31,12 +31,11 @@ class init extends Blocks
     /**
      * Get the service ID.
      *
-     * Note: For staging we will be using the Service 'Aptify Conversion' in place of 'VitalSource'. This was how historical touchpoints were imported. The structure is the same as VitalSource.
      * @return string
      */
     public function get_service_id()
     {
-        return 'Aptify Conversion';
+        return 'VitalSource';
     }
 
     /**
