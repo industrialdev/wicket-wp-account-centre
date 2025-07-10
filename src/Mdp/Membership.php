@@ -35,7 +35,7 @@ class Membership extends Init
      * @param string $uuid The membership UUID.
      * @return array|false The membership data array or false on failure.
      */
-    public function getOrganizationMembershipByUuid(string $uuid): array|false
+    public function getOrganizationMembershipByUuid(?string $uuid): array|false
     {
         if (empty($uuid)) {
             WACC()->Log->warning('UUID cannot be empty.', ['source' => __CLASS__]);
@@ -288,11 +288,15 @@ class Membership extends Init
     /**
      * Returns active memberships relationship from wicket API.
      *
-     * @param string $org_uuid The organization UUID
-     * @return array $memberships relationship
+     * @param string|null $org_uuid The organization UUID
+     * @return array|false $memberships relationship, false if UUID is null
      */
-    public function getActiveMembershipRelationship(string $org_uuid): array
+    public function getActiveMembershipRelationship(?string $org_uuid): array|false
     {
+        if ($org_uuid === null) {
+            return false;
+        }
+
         $person_type = '';
         $wicket_memberships = $this->getCurrentPersonMemberships();
         $person_uuid = $this->person->getCurrentPersonUuid();
