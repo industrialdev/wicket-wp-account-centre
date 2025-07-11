@@ -422,11 +422,21 @@ class init extends Blocks
      * with any existing query string in the link. Parameters from the current page's
      * URL will override any matching parameters in the link's URL.
      *
-     * @param array $links The array of links from the ACF repeater.
+     * @param array|null|string $links The array of links from the ACF repeater.
      * @return array The modified array of links.
      */
-    protected function append_query_string(array $links = []): array
+    protected function append_query_string(array|null|string $links = []): array
     {
+        // Return empty array if links is null or empty string
+        if (is_null($links) || $links === '') {
+            return [];
+        }
+
+        // Convert string to empty array (fallback for unexpected string input)
+        if (is_string($links)) {
+            return [];
+        }
+
         if (empty($this->capture_use_query_string) || empty($_SERVER['QUERY_STRING']) || empty($links)) {
             return $links;
         }
