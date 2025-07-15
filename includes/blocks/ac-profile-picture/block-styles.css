@@ -1,257 +1,293 @@
 /* Define CSS variables for colors */
 :root {
-	--wicket-ac-black: #000000;
-	--wicket-ac-white: #ffffff;
-	--wicket-ac-gray: #f3f4f6;
-	--wicket-ac-dark-gray: #374151;
-	--wicket-ac-border-color:  var(--border-light, #d1d5db);
-	--wicket-ac-primary: #1f2937;
-	--wicket-ac-hover-primary: #111827;
+  --wicket-ac-black: #000000;
+  --wicket-ac-white: #ffffff;
+  --wicket-ac-gray: #f3f4f6;
+  --wicket-ac-dark-gray: #374151;
+  --wicket-ac-border-color:  var(--border-light, #d1d5db);
+  --wicket-ac-primary: #1f2937;
+  --wicket-ac-hover-primary: #111827;
 }
 
 .wicket-acc-profile-picture {
-	background-color: var(--bg-light-neutral, var(--wicket-ac-white));
-	padding: var(--space-250, 24px) !important;
-	border-radius: var(--card-accent-corner-radius, 8px);
-	border: var(--border-call-out, 1px) solid var(--wicket-ac-border-color);
-	max-width: 600px;
-	width: 100%;
-	text-align: center;
+  background-color: var(--bg-light-neutral, var(--wicket-ac-white));
+  padding: var(--space-250, 24px) !important;
+  border-radius: var(--card-accent-corner-radius, 8px);
+  border: var(--border-call-out, 1px) solid var(--wicket-ac-border-color);
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
 
-	h2 {
-		font-size: var(--heading-sm-font-size, 1.5rem);
-		font-weight: bold;
-		margin-bottom: var(--space-250, 16px);
-	}
+  h2 {
+    font-size: var(--heading-sm-font-size, 1.5rem);
+    font-weight: bold;
+    margin-bottom: var(--space-250, 16px);
+  }
 
-	.profile-image {
-		justify-content: center;
-		margin-bottom: 16px;
-		position: relative;
-		display: inline-block;
-	}
+  .profile-image {
+    justify-content: center;
+    margin-bottom: 16px;
+    position: relative;
+    display: inline-block;
+  }
 
-	.profile-image img {
-		display: block;
-		width: 135px;
-		height: auto;
-		border-radius: 50%;
-		border: var(--border-md) solid var(--border-white);
-	}
+  .profile-image img {
+    display: block;
+    width: 135px;
+    height: auto;
+    border-radius: 50%;
+    border: var(--border-md) solid var(--border-white);
+  }
 
-	.circle-x {
-		position: absolute;
-		top: 8px;
-		/* Adjust as necessary */
-		right: 8px;
-		/* Adjust as necessary */
-		width: 24px;
-		/* Adjust as necessary */
-		height: 24px;
-		/* Adjust as necessary */
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background-color: var(--color-white);
-		color: var(--color-primary);
-		border: 2px solid var(--color-primary);
-		border-radius: 50%;
-		font-weight: bold;
-		cursor: pointer;
-		/* Optional: if you want to make it clickable */
-	}
+  .circle-x {
+    position: absolute;
+    top: 8px;
+    /* Adjust as necessary */
+    right: 8px;
+    /* Adjust as necessary */
+    width: 24px;
+    /* Adjust as necessary */
+    height: 24px;
+    /* Adjust as necessary */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-white);
+    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
+    border-radius: 50%;
+    font-weight: bold;
+    cursor: pointer;
+    /* Optional: if you want to make it clickable */
+  }
 
-	form {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
-	.sr-only {
-		position: absolute;
-		width: 1px;
-		height: 1px;
-		padding: 0;
-		margin: -1px;
-		overflow: hidden;
-		clip: rect(0, 0, 0, 0);
-		border: 0;
-	}
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
 
-	.buttons {
-		display: flex;
-		justify-content: center;
-		gap: 16px;
-		margin-top: 16px;
-		margin-bottom: 16px;
-	}
+  .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
 
-	.btn {
-		padding: 8px 16px;
-		border-radius: 4px;
-		font-size: 1rem;
-		cursor: pointer;
-		transition: background-color 0.3s;
-	}
+  .btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
 
-	.choose-file {
-		background-color: var(--wicket-ac-dark-gray);
-		color: var(--wicket-ac-white);
-		border: none;
-	}
+  .choose-file {
+    background-color: var(--wicket-ac-dark-gray);
+    color: var(--wicket-ac-white);
+    border: none;
+  }
 
-	.choose-file:hover {
-		background-color: var(--wicket-ac-hover-primary);
-	}
+  .choose-file:hover {
+    background-color: var(--wicket-ac-hover-primary);
+  }
 
-	.update-image {
-		background-color: var(--wicket-ac-white);
-		color: var(--wicket-ac-primary);
-		border: 1px solid var(--wicket-ac-border-color);
-	}
+  .update-image {
+    background-color: var(--wicket-ac-white);
+    color: var(--wicket-ac-primary);
+    border: 1px solid var(--wicket-ac-border-color);
+  }
 
-	.update-image:hover {
-		background-color: var(--wicket-ac-gray);
-	}
+  .update-image:hover {
+    background-color: var(--wicket-ac-gray);
+  }
 
-	/* theme v2 button styles */
+  /* theme v2 button styles */
 
-	&.wicket-acc-profile-picture--v2 .guidance {
-		color: var(--text-content-secondary);
-		font-size: var(--body-sm-font-size);
-	}
+  &.wicket-acc-profile-picture--v2 .guidance {
+    color: var(--text-content-secondary);
+    font-size: var(--body-sm-font-size);
+  }
 
-	&.wicket-acc-profile-picture--v2 .choose-file {
+  &.wicket-acc-profile-picture--v2 .choose-file {
     border-radius: var(--interactive-corner-radius-md);
-		border-style: solid;
+    border-style: solid;
     padding: var(--space-200);
     font-size: var(--button-label-md-font-size);
     font-weight: var(--button-label-md-font-weight);
     line-height: var(--button-label-md-line-height);
-		border-width: var(--border-interactive-md);
+    border-width: var(--border-interactive-md);
     border-color: var(--border-interactive);
     background-color: rgba(0, 0, 0, 0);
     color: var(--text-button-label);
-		margin-bottom: 0;
+    margin-bottom: 0;
 
-		&:hover {
-			background-color: var(--bg-interactive);
-			color: var(--text-button-label-reversed);
-			text-decoration: underline;
-		}
-	}
+    &:hover {
+      background-color: var(--bg-interactive);
+      color: var(--text-button-label-reversed);
+      text-decoration: underline;
+    }
+  }
 
-	&.wicket-acc-profile-picture--v2 input#profile-image:focus + label {
-		background-color: var(--highlight-dark);
-		color: var(--text-button-label-reversed);
-		text-decoration: underline;
-	}
+  &.wicket-acc-profile-picture--v2 input#profile-image:focus + label {
+    background-color: var(--highlight-dark);
+    color: var(--text-button-label-reversed);
+    text-decoration: underline;
+  }
 
-	&.wicket-acc-profile-picture--v2 .circle-x {
-		position: absolute;
-		top: 8px;
-		right: 8px;
-		width: auto;
-		height: auto;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background-color: var(--bg-white);
-		filter: drop-shadow(var(--elevation-4));
-		color: var(--interactive);
-		cursor: pointer;
-		border: 0;
-		font-size: 22px;
+  &.wicket-acc-profile-picture--v2 .circle-x {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: auto;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-white);
+    filter: drop-shadow(var(--elevation-4));
+    color: var(--interactive);
+    cursor: pointer;
+    border: 0;
+    font-size: 22px;
 
-		.fa-solid {
-			display: none;
-		}
+    .fa-solid {
+      display: none;
+    }
 
-		&:hover, &:focus {
-			.fa-regular {
-				display: none;
-			}
-			.fa-solid {
-				display: inline;
-			}
-		}
-	}
-	
-	&.wicket-acc-profile-picture--v2 .update-image {
-		border-radius: var(--interactive-corner-radius-md);
-		border-style: solid;
-		padding: var(--space-200);
-		font-size: var(--button-label-md-font-size);
-		font-weight: var(--button-label-md-font-weight);
-		line-height: var(--button-label-md-line-height);
-		border-width: var(--border-interactive-md);
-		border-color: rgba(0, 0, 0, 0);
-		background-color: var(--bg-interactive);
-		color: var(--text-button-label-reversed);
+    &:hover, &:focus {
+      .fa-regular {
+        display: none;
+      }
+      .fa-solid {
+        display: inline;
+      }
+    }
+  }
 
-		&:hover {
-			border-color: var(--border-interactive);
-			background-color: rgba(0, 0, 0, 0);
-			color: var(--text-button-label);
-			text-decoration-line: underline;
-		}
-		
-		&:focus {
-			border-color: var(--border-interactive);
-			background-color: var(--highlight-light);
-			color: var(--text-button-label);
-			text-decoration-line: underline;
-		}
+  &.wicket-acc-profile-picture--v2 .update-image {
+    border-radius: var(--interactive-corner-radius-md);
+    border-style: solid;
+    padding: var(--space-200);
+    font-size: var(--button-label-md-font-size);
+    font-weight: var(--button-label-md-font-weight);
+    line-height: var(--button-label-md-line-height);
+    border-width: var(--border-interactive-md);
+    border-color: rgba(0, 0, 0, 0);
+    background-color: var(--bg-interactive);
+    color: var(--text-button-label-reversed);
 
-		&:disabled {
-			background-color: var(--bg-disabled);
-			color: var(--text-disabled);
-			border-color: var(--border-disabled);
-			pointer-events: none;
-		}
-	}
+    &:hover {
+      border-color: var(--border-interactive);
+      background-color: rgba(0, 0, 0, 0);
+      color: var(--text-button-label);
+      text-decoration-line: underline;
+    }
 
-	.update-image:disabled {
-		pointer-events: none;
-		opacity: 0.3;
-	}
+    &:focus {
+      border-color: var(--border-interactive);
+      background-color: var(--highlight-light);
+      color: var(--text-button-label);
+      text-decoration-line: underline;
+    }
 
-	/* Responsive styles */
-	@media (min-width: 640px) {
-		.container {
-			padding: 32px;
-		}
+    &:disabled {
+      background-color: var(--bg-disabled);
+      color: var(--text-disabled);
+      border-color: var(--border-disabled);
+      pointer-events: none;
+    }
+  }
 
-		.btn {
-			font-size: 1.125rem;
-		}
-	}
+  .update-image:disabled {
+    pointer-events: none;
+    opacity: 0.3;
+  }
 
-	@media (min-width: 768px) {
-		.container {
-			padding: 40px;
-		}
+  /* Responsive styles */
+  @media (min-width: 640px) {
+    .container {
+      padding: 32px;
+    }
 
-		.btn {
-			font-size: 1.25rem;
-		}
-	}
+    .btn {
+      font-size: 1.125rem;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .container {
+      padding: 40px;
+    }
+
+    .btn {
+      font-size: 1.25rem;
+    }
+  }
 }
 
 .wicket-acc-profile-picture--v2.wicket-acc-profile-picture__success,
 .wicket-acc-profile-picture--v2.wicket-acc-profile-picture__error,
 .wicket-acc-profile-picture--v2 .file-alert {
-	padding: var(--space-250);
-	border-radius: var(--alerts-corner-radius);
-	border: 0;
-	border-left: var(--border-alert) solid var(--state-success);
-	background-color: var(--state-success-light);
-	margin-bottom: var(--space-250);
-	font-size: var(--body-sm-font-size);
-	font-weight: bold;
+  padding: var(--space-150);
+  border-radius: var(--alerts-corner-radius);
+  border: 0;
+  border-left: var(--border-alert) solid var(--state-success);
+  background-color: var(--state-success-light);
+  margin-bottom: var(--space-200);
+  font-size: var(--body-sm-font-size);
+  font-weight: bold;
 }
 
 .wicket-acc-profile-picture--v2.wicket-acc-profile-picture__error {
-	border-left: var(--border-alert) solid var(--state-error);
-	background-color: var(--state-error-light);
+  border-left: var(--border-alert) solid var(--state-error);
+  background-color: var(--state-error-light);
+}
+.wicket-acc-profile-picture--v2.wicket-acc-profile-picture__error h3 {
+  margin: 0 0 var(--space-100) 0;
+  font-size: var(--body-md-font-size);
+}
+
+.wicket-acc-profile-picture--v2.wicket-acc-profile-picture__error p {
+  margin: 0 0 var(--space-150) 0;
+}
+
+.wicket-acc-profile-picture--v2.wicket-acc-profile-picture__error .upload-requirements {
+  background-color: var(--bg-secondary);
+  border-radius: var(--corner-radius);
+  border: 1px solid var(--border-secondary);
+}
+
+.wicket-acc-profile-picture--v2.wicket-acc-profile-picture__error .upload-requirements h4 {
+  font-size: var(--body-sm-font-size);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.wicket-acc-profile-picture--v2.wicket-acc-profile-picture__error .upload-requirements ul {
+  margin: 0;
+  padding-left: var(--space-200);
+  font-size: var(--body-sm-font-size);
+  color: var(--text-secondary);
+  line-height: 1.3;
+}
+
+.wicket-acc-profile-picture--v2.wicket-acc-profile-picture__error .upload-requirements li {
+  margin-bottom: var(--space-50);
+}
+
+.wicket-acc-profile-picture--v2.wicket-acc-profile-picture__error .upload-requirements li:last-child {
+  margin-bottom: 0;
 }

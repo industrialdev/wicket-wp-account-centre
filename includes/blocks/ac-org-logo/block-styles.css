@@ -99,22 +99,22 @@
   }
 
   .choose-file:hover {
-    background-color: var(--wicket-ac-hover-primary);
+    background-color: var(--wicket-ac-primary);
   }
 
   .update-image {
-    background-color: var(--wicket-ac-white);
-    color: var(--wicket-ac-primary);
-    border: 1px solid var(--wicket-ac-border-color);
+    background-color: var(--wicket-ac-primary);
+      color: var(--wicket-ac-white);
+      border: none;
+    }
+
+    .update-image:hover {
+      background-color: var(--wicket-ac-hover-primary);
   }
 
   .update-image:disabled {
     pointer-events: none;
     opacity: 0.3;
-  }
-
-  .update-image:hover {
-    background-color: var(--wicket-ac-gray);
   }
 
   /* Responsive styles */
@@ -137,4 +137,61 @@
       font-size: 1.25rem;
     }
   }
+}
+
+/* Error state styling */
+.wicket-acc-org-logo-change__error {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.wicket-acc-org-logo-change--v2.wicket-acc-org-logo-change__error {
+  padding: var(--space-150);
+  border-radius: var(--alerts-corner-radius);
+  border: 0;
+  border-left: var(--border-alert) solid var(--state-error);
+  background-color: var(--state-error-light);
+  margin-bottom: var(--space-200);
+  font-size: var(--body-sm-font-size);
+  font-weight: bold;
+}
+
+.wicket-acc-org-logo-change--v2.wicket-acc-org-logo-change__error h3 {
+  margin: 0 0 var(--space-100) 0;
+  font-size: var(--body-md-font-size);
+}
+
+.wicket-acc-org-logo-change--v2.wicket-acc-org-logo-change__error p {
+  margin: 0 0 var(--space-150) 0;
+}
+
+.wicket-acc-org-logo-change--v2.wicket-acc-org-logo-change__error .upload-requirements {
+  background-color: var(--bg-secondary);
+  border-radius: var(--corner-radius);
+  border: 1px solid var(--border-secondary);
+}
+
+.wicket-acc-org-logo-change--v2.wicket-acc-org-logo-change__error .upload-requirements h4 {
+  font-size: var(--body-sm-font-size);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.wicket-acc-org-logo-change--v2.wicket-acc-org-logo-change__error .upload-requirements ul {
+  margin: 0;
+  padding-left: var(--space-200);
+  font-size: var(--body-sm-font-size);
+  color: var(--text-secondary);
+  line-height: 1.3;
+}
+
+.wicket-acc-org-logo-change--v2.wicket-acc-org-logo-change__error .upload-requirements li {
+  margin-bottom: var(--space-50);
+}
+
+.wicket-acc-org-logo-change--v2.wicket-acc-org-logo-change__error .upload-requirements li:last-child {
+  margin-bottom: 0;
 }
