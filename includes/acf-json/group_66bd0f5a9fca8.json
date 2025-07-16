@@ -22,6 +22,28 @@
             "esc_html": 0
         },
         {
+            "key": "field_6877be00fdcad",
+            "label": "Hide Alternate Name Field",
+            "name": "hide_alternate_name_field",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 3,
+            "message": "",
+            "default_value": 0,
+            "allow_in_bindings": 1,
+            "ui_on_text": "",
+            "ui_off_text": "",
+            "ui": 1
+        },
+        {
             "key": "field_66bd0f5d52114",
             "label": "Hide Additional Info",
             "name": "hide_additional_info",
@@ -35,7 +57,7 @@
                 "class": "",
                 "id": ""
             },
-            "wpml_cf_preferences": 1,
+            "wpml_cf_preferences": 3,
             "message": "",
             "default_value": 0,
             "ui_on_text": "",
@@ -62,5 +84,5 @@
     "description": "",
     "show_in_rest": 0,
     "acfml_field_group_mode": "localization",
-    "modified": 1728572359
+    "modified": 1752682015
 }
