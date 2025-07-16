@@ -116,24 +116,32 @@ class init extends Blocks
 			</script>
 
 			<script>
-				(function () {
-					Wicket.ready(function () {
-						var widgetRoot = document.getElementById('profile');
 
-						Wicket.widgets.editOrganizationProfile({
-							rootEl: widgetRoot,
-							apiRoot: '<?php echo $wicket_settings['api_endpoint'] ?>',
-							accessToken: '<?php echo $access_token ?>',
-							orgId: '<?php echo $org_id ?>',
-							lang: "<?php echo $lang; ?>",
-							hiddenFields: [<?php echo $this->hide_alternate_name_field ? 'alternateName' : '' ?>]
-						}).then(function (widget) {
-							widget.listen(widget.eventTypes.SAVE_SUCCESS, function (payload) {
+				<?php
+                $hidden_fields = [];
+            if ($this->hide_alternate_name_field) {
+                $hidden_fields[] = 'alternateName';
+            }
+            ?>
 
+					(function () {
+						Wicket.ready(function () {
+							var widgetRoot = document.getElementById('profile');
+
+							Wicket.widgets.editOrganizationProfile({
+								rootEl: widgetRoot,
+								apiRoot: '<?php echo $wicket_settings['api_endpoint'] ?>',
+								accessToken: '<?php echo $access_token ?>',
+								orgId: '<?php echo $org_id ?>',
+								lang: "<?php echo $lang; ?>",
+								hiddenFields: ['<?php echo implode("', '", $hidden_fields) ?>']
+							}).then(function (widget) {
+								widget.listen(widget.eventTypes.SAVE_SUCCESS, function (payload) {
+
+								});
 							});
 						});
-					});
-				})()
+					})()
 			</script>
 
 			<?php if ($this->hide_additional_info == 0) : ?>
