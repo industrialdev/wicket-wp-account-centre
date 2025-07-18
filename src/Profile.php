@@ -37,8 +37,20 @@ class Profile extends WicketAcc
      */
     public function get_wicket_avatar(string $avatar, $id_or_email, int $size, string $default, string $alt): string
     {
+        // Get the user ID from the id_or_email parameter
+        $user_id = null;
+
+        if (is_numeric($id_or_email)) {
+            $user_id = (int)$id_or_email;
+        } else {
+            $user = get_user_by('email', $id_or_email);
+            if ($user) {
+                $user_id = $user->ID;
+            }
+        }
+
         // Get the profile picture URL
-        $pp_profile_picture = $this->getProfilePicture();
+        $pp_profile_picture = $this->getProfilePicture($user_id);
 
         // If the profile picture URL is not empty, return it
         if (!empty($pp_profile_picture)) {
@@ -59,8 +71,20 @@ class Profile extends WicketAcc
      */
     public function get_wicket_avatar_url(string $avatar_url, $id_or_email, array $args = []): string
     {
+        // Get the user ID from the id_or_email parameter
+        $user_id = null;
+
+        if (is_numeric($id_or_email)) {
+            $user_id = (int)$id_or_email;
+        } else {
+            $user = get_user_by('email', $id_or_email);
+            if ($user) {
+                $user_id = $user->ID;
+            }
+        }
+
         // Get the profile picture URL
-        $pp_profile_picture = $this->getProfilePicture();
+        $pp_profile_picture = $this->getProfilePicture($user_id);
 
         // If the profile picture URL is not empty, return it
         if (!empty($pp_profile_picture)) {
@@ -79,14 +103,17 @@ class Profile extends WicketAcc
      */
     public function getProfilePicture(?int $user_id = null): string|false
     {
-        if (empty($user_id)) {
-            // Get current WP user ID
-            $user_id = get_current_user_id();
-        }
 
-        // Guest or user not logged in
-        if (empty($user_id) || !is_int($user_id)) {
-            return false;
+        // If no user ID is provided, use the current user ID
+        switch (true) {
+            case ($user_id === null):
+                $user_id = get_current_user_id();
+                break;
+            case (is_numeric($user_id) && intval($user_id) > 0):
+                $user_id = intval($user_id);
+                break;
+            default:
+                $user_id = 0;
         }
 
         // Check for jpg, jpeg, png, or gif
