@@ -97,11 +97,11 @@ class ChangePassword
           <ul>
             <?php foreach ($formErrors as $index => $error): ?>
               <?php
-                        $errorMap = [
-                            'user.current_password' => ['Current Password', '#current_password'],
-                            'user.password' => ['New Password', '#password'],
-                            'user.password_confirmation' => ['Confirm Password', '#password_confirmation'],
-                        ];
+                            $errorMap = [
+                                'user.current_password' => ['Current Password', '#current_password'],
+                                'user.password' => ['New Password', '#password'],
+                                'user.password_confirmation' => ['Confirm Password', '#password_confirmation'],
+                            ];
 
                 if (isset($errorMap[$error->meta->field])):
                     [$prefix, $anchor] = $errorMap[$error->meta->field];
@@ -125,22 +125,22 @@ class ChangePassword
       <form class='manage_password_form' method="post">
         <?php
           $fields = [
-                    [
-                        'id' => 'current_password',
-                        'label' => __('Current password', 'wicket-acc'),
-                        'hasError' => $currentPasswordError,
-                    ],
-                    [
-                        'id' => 'password',
-                        'label' => __('New password', 'wicket-acc'),
-                        'hasError' => $passwordError,
-                        'helpText' => __('Minimum of 8 characters', 'wicket-acc'),
-                    ],
-                    [
-                        'id' => 'password_confirmation',
-                        'label' => __('Confirm new password', 'wicket-acc'),
-                        'hasError' => $passwordConfirmError,
-                    ],
+              [
+                  'id' => 'current_password',
+                  'label' => __('Current password', 'wicket-acc'),
+                  'hasError' => $currentPasswordError,
+              ],
+              [
+                  'id' => 'password',
+                  'label' => __('New password', 'wicket-acc'),
+                  'hasError' => $passwordError,
+                  'helpText' => __('Minimum of 8 characters', 'wicket-acc'),
+              ],
+              [
+                  'id' => 'password_confirmation',
+                  'label' => __('Confirm new password', 'wicket-acc'),
+                  'hasError' => $passwordConfirmError,
+              ],
           ];
 
         foreach ($fields as $field):

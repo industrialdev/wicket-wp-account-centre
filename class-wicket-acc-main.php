@@ -14,7 +14,7 @@ use WicketAcc\Services\Notification;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Custom account management system for Wicket. Provides user account features, organization management, and additional blocks and pages. Integrates with WooCommerce when available.
- * Version:           1.5.213
+ * Version:           1.5.214
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -109,15 +109,15 @@ class WicketAcc
 
     protected array $acc_pages_map = [
         // Wicket pages
-        'edit-profile'            => 'Edit Profile',
-        'events'                  => 'My Events',
-        'jobs'                    => 'My Jobs',
-        'job-post'                => 'Post a Job',
-        'change-password'         => 'Change Password',
-        'organization-management' => 'Organization Management',
-        'organization-profile'    => 'Organization Profile',
-        'organization-members'    => 'Organization Members',
-        'acc_global-headerbanner' => 'Global Header-Banner',
+        'edit-profile'               => 'Edit Profile',
+        'events'                     => 'My Events',
+        'jobs'                       => 'My Jobs',
+        'job-post'                   => 'Post a Job',
+        'change-password'            => 'Change Password',
+        'organization-management'    => 'Organization Management',
+        'organization-profile'       => 'Organization Profile',
+        'organization-members'       => 'Organization Members',
+        'acc_global-headerbanner'    => 'Global Header-Banner',
         // WooCommerce endpoints https://developer.woocommerce.com/docs/woocommerce-endpoints/
         //'order-pay'                      => 'Order Pay',
         //'order-received'                 => 'Order Received',
@@ -131,7 +131,7 @@ class WicketAcc
         'payment-methods'            => 'Payment Methods',
         //'customer-logout'                => 'Logout',
         // WooCommerce subscription endpoints
-        'subscriptions' => 'Subscriptions',
+        'subscriptions'              => 'Subscriptions',
     ];
 
     protected array $acc_pages_map_auto_create = [
@@ -151,17 +151,17 @@ class WicketAcc
     ];
 
     protected array $acc_wc_endpoints = [
-        'order-pay' => [
+        'order-pay'                  => [
             'en' => 'order-pay',
             'fr' => 'ordre-paiement',
             'es' => 'orden-pago',
         ],
-        'order-received' => [
+        'order-received'             => [
             'en' => 'order-received',
             'fr' => 'ordre-recibida',
             'es' => 'orden-recibida',
         ],
-        'add-payment-method' => [
+        'add-payment-method'         => [
             'en' => 'add-payment-method',
             'fr' => 'ajouter-mode-paiement',
             'es' => 'agregar-medio-pago',
@@ -171,42 +171,42 @@ class WicketAcc
             'fr' => 'definir-mode-paiement-defaut',
             'es' => 'establecer-medio-pago-principal',
         ],
-        'orders' => [
+        'orders'                     => [
             'en' => 'orders',
             'fr' => 'commandes',
             'es' => 'ordenes',
         ],
-        'view-order' => [
+        'view-order'                 => [
             'en' => 'view-order',
             'fr' => 'afficher-commande',
             'es' => 'ver-orden',
         ],
-        'downloads' => [
+        'downloads'                  => [
             'en' => 'downloads',
             'fr' => 'telechargements',
             'es' => 'descargas',
         ],
-        'edit-account' => [
+        'edit-account'               => [
             'en' => 'edit-account',
             'fr' => 'editer-compte',
             'es' => 'editar-cuenta',
         ],
-        'edit-address' => [
+        'edit-address'               => [
             'en' => 'edit-address',
             'fr' => 'editer-adresse',
             'es' => 'editar-dirección',
         ],
-        'payment-methods' => [
+        'payment-methods'            => [
             'en' => 'payment-methods',
             'fr' => 'modes-de-paiement',
             'es' => 'medios-de-pago',
         ],
-        'customer-logout' => [
+        'customer-logout'            => [
             'en' => 'customer-logout',
             'fr' => 'deconnexion',
             'es' => 'cerrar-sesion',
         ],
-        'subscriptions' => [
+        'subscriptions'              => [
             'en' => 'subscriptions',
             'fr' => 'souscriptions',
             'es' => 'suscripciones',
@@ -337,7 +337,11 @@ class WicketAcc
 
         if (is_admin()) {
             new AdminSettings();
-            new WicketAccSafeguard(); // Initialize the safeguard class for admin tasks
+
+            // Only initialize safeguard on non-development environments
+            if (!defined('WP_ENVIRONMENT_TYPE') || WP_ENVIRONMENT_TYPE !== 'development') {
+                new WicketAccSafeguard(); // Initialize the safeguard class for admin tasks
+            }
         }
 
         // Load WooCommerce integration if active

@@ -41,7 +41,10 @@ class Profile extends WicketAcc
         $user_id = null;
 
         if (is_numeric($id_or_email)) {
-            $user_id = (int)$id_or_email;
+            $user_id = (int) $id_or_email;
+        } elseif ($id_or_email instanceof \WP_User) {
+            // Handle WP_User object
+            $user_id = $id_or_email->ID;
         } else {
             $user = get_user_by('email', $id_or_email);
             if ($user) {
@@ -75,7 +78,10 @@ class Profile extends WicketAcc
         $user_id = null;
 
         if (is_numeric($id_or_email)) {
-            $user_id = (int)$id_or_email;
+            $user_id = (int) $id_or_email;
+        } elseif ($id_or_email instanceof \WP_User) {
+            // Handle WP_User object
+            $user_id = $id_or_email->ID;
         } else {
             $user = get_user_by('email', $id_or_email);
             if ($user) {
@@ -106,10 +112,10 @@ class Profile extends WicketAcc
 
         // If no user ID is provided, use the current user ID
         switch (true) {
-            case ($user_id === null):
+            case  $user_id === null :
                 $user_id = get_current_user_id();
                 break;
-            case (is_numeric($user_id) && intval($user_id) > 0):
+            case  is_numeric($user_id) && intval($user_id) > 0 :
                 $user_id = intval($user_id);
                 break;
             default:

@@ -24,6 +24,36 @@
             "append": ""
         },
         {
+            "key": "field_687cbf6043662",
+            "label": "Action",
+            "name": "action",
+            "aria-label": "",
+            "type": "select",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 0,
+            "choices": {
+                "eBook Fulfillment": "eBook Fulfillment",
+                "eBook Codes for others": "eBook Codes for others"
+            },
+            "default_value": false,
+            "return_format": "value",
+            "multiple": 0,
+            "allow_null": 0,
+            "allow_in_bindings": 0,
+            "ui": 0,
+            "ajax": 0,
+            "placeholder": "",
+            "create_options": 0,
+            "save_options": 0
+        },
+        {
             "key": "field_678106129c2e2",
             "label": "Touchpoints per page",
             "name": "page_results",
@@ -88,5 +118,5 @@
     "description": "",
     "show_in_rest": 0,
     "acfml_field_group_mode": "advanced",
-    "modified": 1736509461
+    "modified": 1753007235
 }

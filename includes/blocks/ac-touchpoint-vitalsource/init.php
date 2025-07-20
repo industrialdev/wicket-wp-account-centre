@@ -119,12 +119,12 @@ class init extends Blocks
             return false;
         }
 
-        // Debug with person: 6d199632-1bb8-4558-9a7e-b00c824590de
         $touchpoint_service = WACC()->Mdp->Touchpoint->getOrCreateServiceId($service_id);
         $touchpoints = WACC()->Mdp->Touchpoint->getCurrentUserTouchpoints($touchpoint_service);
+        $action = get_field('action') ?? 'eBook Fulfillment';
 
         // Filter touchpoints by action
-        $fitered_touchpoints = self::filter_touchpoints_by_action($touchpoints, 'eBook Fulfillment');
+        $fitered_touchpoints = self::filter_touchpoints_by_action($touchpoints, $action);
 
         return $fitered_touchpoints;
     }
