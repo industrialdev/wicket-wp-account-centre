@@ -1,0 +1,181 @@
+.wicket-acc-org-search-select {
+  .component-org-search-select {
+    position: relative;
+  }
+
+  .component-org-search-select__current-orgs-title {
+    margin-top: var(--space-250);
+    margin-bottom: var(--space-250);
+    font-family: var(--heading-md-font-family);
+    line-height: var(--heading-md-line-height);
+    font-weight: var(--heading-md-font-weight-sm);
+  }
+
+  .component-org-search-select .current-org-listing-right {
+    display: flex;
+    gap: var(--space-150);
+    align-items: flex-start;
+  }
+
+  .component-org-search-select__search-orgs-title {
+    margin-bottom: var(--space-400);
+    font-family: var(--heading-md-font-family);
+    line-height: var(--heading-md-line-height);
+    font-weight: var(--heading-md-font-weight-sm);
+  }
+
+  .component-org-search-select__card {
+    background-color: var(--bg-light-neutral);
+    border-radius: var(--card-accent-corner-radius);
+    padding: var(--space-250);
+    border: var(--border-sm) solid var(--border-light);
+    margin-bottom: var(--space-250);
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-200);
+  }
+
+  .component-org-search-select__card--selected {
+    border: var(--border-md) solid var(--highlight-dark);
+  }
+
+  .component-org-search-select__matching-orgs-title {
+    margin-top: var(--space-400);
+    margin-bottom: var(--space-250);
+    font-family: var(--heading-xs-font-family);
+    line-height: var(--heading-xs-line-height);
+    font-weight: var(--heading-xs-font-weight-sm);
+  }
+
+  .component-org-search-select__card-top-header {
+    display: flex;
+    margin-bottom: var(--space-250);
+    align-items: center;
+  }
+
+  .component-org-search-select__org-description {
+    margin-bottom: var(--space-250);
+    font-family: var(--body-sm-font-family);
+    line-height: var(--body-sm-line-height);
+    font-weight: var(--body-sm-font-weight);
+  }
+
+  .component-org-search-select__org-type {
+    margin-bottom: var(--space-100);
+    font-family: var(--label-md-font-family);
+    line-height: var(--label-md-line-height);
+    font-weight: var(--label-md-font-weight);
+    text-transform: uppercase;
+  }
+
+  .component-org-search-select__org-name {
+    margin-right: var(--space-200);
+    font-family: var(--heading-sm-font-family);
+    line-height: var(--heading-sm-line-height);
+    font-weight: var(--heading-sm-font-weight-sm);
+  }
+
+  .component-org-search-select__active-membership-label,
+  .component-org-search-select__inactive-membership-label {
+    font-family: var(--body-sm-font-family);
+    line-height: var(--body-sm-line-height);
+    font-weight: var(--body-sm-font-weight);
+    display: flex;
+    gap: var(--space-100);
+    align-items: center;
+  }
+
+  .component-org-search-select__active-membership-label i {
+    font-size: 12px;
+    color: var(--status-active);
+  }
+
+  .component-org-search-select__inactive-membership-label i {
+    font-size: 12px;
+    color: var(--status-inactive);
+  }
+
+  .component-org-search-select .orgss-results {
+    border-radius: var(--card-accent-corner-radius);
+  }
+
+  .component-org-search-select .orgss-results--has-results {
+    padding: var(--space-200);
+    border: var(--border-sm) solid var(--border-light);
+  }
+
+  .component-org-search-select__matching-org-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: var(--space-200);
+    padding-top: var(--space-200);
+    padding-bottom: var(--space-200);
+    border-bottom: var(--border-sm) solid var(--border-light);
+  }
+
+  .component-org-search-select__matching-org-title {
+    font-family: var(--heading-xs-font-family);
+    line-height: var(--heading-xs-line-height);
+    font-weight: var(--heading-xs-font-weight-sm);
+  }
+
+  .component-org-search-select__no-results {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: var(--space-200);
+    background-color: var(--state-info-secondary-light);
+    border-radius: var(--card-accent-corner-radius);
+    border: var(--border-sm) solid var(--state-info-secondary-light);
+    font-family: var(--body-lg-font-family);
+    line-height: var(--body-lg-line-height);
+    font-weight: var(--body-lg-font-weight);
+  }
+
+  .component-org-search-select__search-container {
+    display: flex;
+    flex-direction: column;
+    max-height: 20rem; /* 320px */
+    overflow-y: scroll;
+  }
+
+  .component-org-search-select .orgss-create-org-form {
+    margin-top: var(--space-400);
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-light-neutral);
+    border-radius: var(--card-accent-corner-radius);
+    padding: var(--space-400);
+  }
+
+  .component-org-search-select__cant-find-org-title {
+    margin-bottom: var(--space-300);
+    font-family: var(--heading-xs-font-family);
+    line-height: var(--heading-xs-line-height);
+    font-weight: var(--heading-xs-font-weight-sm);
+  }
+
+  .orgss-search-form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Responsive Styles */
+  @media (min-width: 768px) {
+    .component-org-search-select__current-orgs-title,
+    .component-org-search-select__search-orgs-title {
+      font-weight: var(--heading-md-font-weight-md);
+    }
+
+    .component-org-search-select__matching-orgs-title,
+    .component-org-search-select__cant-find-org-title {
+      font-weight: var(--heading-xs-font-weight-md);
+    }
+
+    .component-org-search-select__org-name {
+      font-weight: var(--heading-sm-font-weight-md);
+    }
+  }
+}

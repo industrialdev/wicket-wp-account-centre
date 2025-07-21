@@ -1,0 +1,37 @@
+{
+  "name": "wicket-ac/ac-org-search-select",
+  "title": "ACC Org. Search & Select",
+  "description": "A Wicket block for searching and selecting an organization",
+  "style": "file:./block-styles.css",
+  "category": "wicket-account-center",
+  "icon": "",
+  "apiVersion": 2,
+  "keywords": [
+    "account-center",
+    "organization",
+    "search",
+    "select",
+    "wicket"
+  ],
+  "acf": {
+    "mode": "edit",
+    "renderTemplate": "render.php"
+  },
+  "styles": [],
+  "supports": {
+    "align": ["full"],
+    "anchor": false,
+    "alignContent": false,
+    "color": {
+      "text": false,
+      "background": false,
+      "link": false
+    },
+    "alignText": false,
+    "fullHeight": false,
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  }
+}
