@@ -9,30 +9,8 @@ defined('ABSPATH') || exit;
  * Router Class
  * Get ACC pages, IDs, slugs, and data needed to jump between them.
  *
- * Migration to 1.3.x or greater, from 1.2.x or lower.
- * Manual steps:
- *
- * 1. Open wp-admin at the target site being updated. Reload it if you are already there.
- *
- * 2. Follow on-screen instructions. They will be only be shown once.
- *
- * Done.
- *
  * If you need to translate my-account CPT slug for other languages, use WPML directly:
  * https://wpml.org/documentation/getting-started-guide/translating-page-slugs/
- *
- * Old Warning:
- *
- * Organization Management templates were not found. Please install them in your active theme to use Organization Management.
- * You can retrieve the zip file from: ./templates-wicket/account-centre/org-management/
- * Recreate the same directory structure in your active theme: ./templates-wicket/account-centre/org-management/
- * Unzip the file into that directory. The structure should look like this:
- * ./templates-wicket/account-centre/org-management/acc-orgman-index.php
- * ./templates-wicket/account-centre/org-management/acc-orgman-members.php
- * ./templates-wicket/account-centre/org-management/acc-orgman-profile.php
- * ./templates-wicket/account-centre/org-management/acc-orgman-roster.php
- * You can now use Organization Management.
- * Feel free to modify these templates in your active theme to meet the client's needs.
  */
 class Router extends WicketAcc
 {
@@ -72,6 +50,12 @@ class Router extends WicketAcc
             $this->acc_page_id_cache = get_field('acc_page_dashboard', 'option');
         }
 
+        // Still null or empty?
+        if (empty($this->acc_page_id_cache)) {
+            // Check if we have a page with slug 'dashboard'
+            $this->acc_page_id_cache = $this->getPageIdBySlug('dashboard');
+        }
+
         return $this->acc_page_id_cache;
     }
 
@@ -97,7 +81,7 @@ class Router extends WicketAcc
      * @param string $slug
      * @param string $name
      *
-     * @return mixed	ID of created page or false
+     * @return mixed    ID of created page or false
      */
     public function createPage($slug, $name)
     {
@@ -119,7 +103,7 @@ class Router extends WicketAcc
         // Create requested page as a child of ACC index page
         $page_id = wp_insert_post(
             [
-                'post_type'      => 'my-account',
+                'post_type'      => $this->acc_post_type,
                 'post_author'    => wp_get_current_user()->ID,
                 'post_title'     => $name,
                 'post_name'      => $slug,
@@ -152,8 +136,9 @@ class Router extends WicketAcc
 
         $page_id = $wpdb->get_var(
             $wpdb->prepare(
-                "SELECT ID FROM $wpdb->posts WHERE post_name = %s AND post_type = 'my-account' AND post_status = 'publish'",
-                $slug
+                "SELECT ID FROM $wpdb->posts WHERE post_name = %s AND post_type = %s AND post_status = 'publish'",
+                $slug,
+                $this->acc_post_type
             )
         );
 
@@ -315,7 +300,7 @@ class Router extends WicketAcc
                 return $single_template;
             }
 
-            if ($post->post_type == 'my-account') {
+            if ($post->post_type == $this->acc_post_type) {
                 // Check if user selected a custom template
                 $custom_template = get_page_template_slug($post->ID);
 
@@ -348,7 +333,7 @@ class Router extends WicketAcc
             return $template;
         }
 
-        if (is_post_type_archive('my-account')) {
+        if (is_post_type_archive($this->acc_post_type)) {
             $fixed_template = WICKET_ACC_PATH . 'includes/archive-acc.php';
 
             if (file_exists($fixed_template)) {
@@ -357,6 +342,23 @@ class Router extends WicketAcc
         }
 
         return $template;
+    }
+
+    /**
+     * Perform redirect with fallback for when headers are already sent.
+     *
+     * @param string $url Target URL
+     * @return void
+     */
+    private function performRedirect(string $url): void
+    {
+        if (headers_sent()) {
+            echo '<meta http-equiv="refresh" content="0;url=' . esc_url($url) . '" />';
+            echo '<script>window.location.href="' . esc_url($url) . '";</script>';
+        } else {
+            wp_safe_redirect($url);
+        }
+        exit;
     }
 
     /**
@@ -372,13 +374,17 @@ class Router extends WicketAcc
         }
 
         $current_lang = WACC()->Language->getCurrentLanguage();
-
-        $acc_dashboard_id = $this->getAccPageId();
-
-        WACC()->Log->debug('ACC Dashboard ID: ' . $acc_dashboard_id);
-
+        $acc_dashboard_id = (int) $this->getAccPageId();
         $acc_dashboard_url = get_permalink($acc_dashboard_id);
         $acc_dashboard_slug = get_post($acc_dashboard_id)->post_name;
+        $acc_myaccount_slug = get_query_var('term');
+
+        // WPML compatibility
+        if (defined('ICL_SITEPRESS_VERSION')) {
+            $acc_dashboard_id_translation = apply_filters('wpml_object_id', $acc_dashboard_id, 'post', true, $current_lang);
+            $acc_dashboard_url_translation = get_permalink($acc_dashboard_id_translation);
+            $acc_myaccount_slug_translation = apply_filters('wpml_get_translated_slug', $this->acc_post_type, $this->acc_post_type, $current_lang, 'post');
+        }
 
         if (WACC()->isWooCommerceActive()) {
             $wc_page_id = wc_get_page_id('myaccount');
@@ -395,27 +401,14 @@ class Router extends WicketAcc
 
         $server_request_uri = $_SERVER['REQUEST_URI'];
 
-        // WPML compatibility
-        if (defined('ICL_SITEPRESS_VERSION')) {
-            if ($current_lang !== 'en') {
-                // Adjust $server_request_uri to remove lang code
-                $server_request_uri = str_replace('/' . $current_lang . '/', '/', $server_request_uri);
-            }
-        }
-
-        // Account Centre entry point index only
-        if (str_contains($server_request_uri, $acc_dashboard_slug)) {
-            // Redirect user when is on ACC index page only
-            if ($server_request_uri === '/' . $acc_dashboard_slug . '/') {
-                if (headers_sent()) {
-                    // Any other more elegant way to do this?
-                    echo '<meta http-equiv="refresh" content="0;url=' . $acc_dashboard_url . '" />';
-                    echo '<script>window.location.href="' . $acc_dashboard_url . '";</script>';
-                } else {
-                    wp_safe_redirect($acc_dashboard_url);
-                }
-                exit;
-            }
+        // Combined redirect logic for ACC index pages
+        if ($server_request_uri === '/' . $acc_dashboard_slug . '/') {
+            $this->performRedirect($acc_dashboard_url);
+        } elseif (defined('ICL_SITEPRESS_VERSION') &&
+                  $current_lang !== 'en' &&
+                  isset($acc_myaccount_slug_translation) &&
+                  $server_request_uri === '/' . $current_lang . '/' . $acc_myaccount_slug_translation . '/') {
+            $this->performRedirect($acc_dashboard_url_translation);
         }
 
         // Redirect old ACC slugs
@@ -425,31 +418,18 @@ class Router extends WicketAcc
         ];
 
         foreach ($acc_old_slugs as $old_slug) {
-            // If requested URL contains any of the old slugs,
             if (str_contains($server_request_uri, $old_slug)) {
-                if (headers_sent()) {
-                    // Any other more elegant way to do this?
-                    echo '<meta http-equiv="refresh" content="0;url=' . $acc_dashboard_url . '" />';
-                    echo '<script>window.location.href="' . $acc_dashboard_url . '";</script>';
-                } else {
-                    wp_safe_redirect($acc_dashboard_url);
-                }
-                exit;
+                $this->performRedirect($acc_dashboard_url);
             }
         }
 
-        // Redirect (some) WC endpoints
-        // There're some WC endpoints that need to be loaded from WC directly, and can't be easily replaced with my-account posts.
+        // Redirect (some) WC endpoints (my-account endpoints are for us)
         if (is_array($this->acc_prefer_wc_endpoints) && !empty($this->acc_prefer_wc_endpoints)) {
-            // Determine if $server_request_uri is loading a WC endpoint, match with acc_wc_endpoints
-
-            // Our WC endpoint is the last part of the url. Example for https://localhost/fr/mon-compte/modes-de-paiement/ = modes-de-paiement
             $current_url = home_url(add_query_arg(null, null));
             $current_url = rtrim($current_url, '/');
             $wc_endpoint = basename($current_url);
 
             if ($current_lang !== 'en') {
-                // Find the correct WC endpoint slug
                 foreach ($this->acc_wc_endpoints as $endpoint_key => $translations) {
                     if (isset($translations[$current_lang]) && $translations[$current_lang] === $wc_endpoint) {
                         $wc_endpoint = $translations['en'];
@@ -458,23 +438,10 @@ class Router extends WicketAcc
                 }
             }
 
-            // Now $wc_endpoint contains the English version of the endpoint
-
-            // Check if this endpoint is in the preferred WC endpoints
             if (in_array($wc_endpoint, $this->acc_prefer_wc_endpoints)) {
-                // Are we already inside any WC endpoint?
                 if (!str_contains($server_request_uri, $wc_page_slug)) {
-                    // Get the WC endpoint URL
                     $wc_endpoint_url = home_url(wc_get_endpoint_url($wc_endpoint, '', $wc_page_slug));
-
-                    if (headers_sent()) {
-                        echo '<meta http-equiv="refresh" content="0;url=' . esc_url($wc_endpoint_url) . '" />';
-                        echo '<script>window.location.href="' . esc_url($wc_endpoint_url) . '";</script>';
-                    } else {
-                        wp_safe_redirect($wc_endpoint_url);
-                    }
-
-                    exit;
+                    $this->performRedirect($wc_endpoint_url);
                 }
             }
         }

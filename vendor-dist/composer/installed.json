@@ -28,7 +28,7 @@
             },
             "time": "2024-02-09T16:56:22+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "WicketAcc\\Carbon\\Doctrine\\": "src/Carbon/Doctrine/"
@@ -100,7 +100,7 @@
             },
             "time": "2024-02-18T20:23:39+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "WicketAcc\\Doctrine\\Inflector\\": "lib/Doctrine/Inflector"
@@ -198,7 +198,7 @@
             },
             "time": "2025-04-09T20:32:01+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "WicketAcc\\Firebase\\JWT\\": "src"
@@ -279,7 +279,7 @@
                     "forward-command": false
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "src/functions_include.php"
@@ -391,7 +391,7 @@
                     "forward-command": false
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "WicketAcc\\GuzzleHttp\\Promise\\": "src/"
@@ -488,7 +488,7 @@
                     "forward-command": false
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "WicketAcc\\GuzzleHttp\\Psr7\\": "src/"
@@ -740,7 +740,7 @@
                     "dev-master": "10.x-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "helpers.php"
@@ -792,7 +792,7 @@
                     "dev-master": "10.x-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "WicketAcc\\Illuminate\\Support\\": ""
@@ -843,7 +843,7 @@
                     "dev-master": "10.x-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "Illuminate\\Contracts\\": ""
@@ -892,7 +892,7 @@
                     "dev-master": "10.x-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "WicketAcc\\Illuminate\\Support\\": ""
@@ -963,7 +963,7 @@
                     "dev-master": "10.x-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "helpers.php"
@@ -1016,7 +1016,7 @@
             "time": "2024-11-01T19:14:14+00:00",
             "default-branch": true,
             "type": "php",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "WicketAcc\\Wicket\\": "src"
@@ -1095,7 +1095,7 @@
                     "dev-master": "3.x-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "WicketAcc\\Carbon\\": "src/Carbon/"
@@ -1164,7 +1164,7 @@
             },
             "time": "2022-11-25T14:36:26+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "WicketAcc\\Psr\\Clock\\": "src/"
@@ -1277,7 +1277,7 @@
                     "dev-master": "1.0.x-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "WicketAcc\\Psr\\Http\\Client\\": "src/"
@@ -1332,7 +1332,7 @@
                     "dev-master": "1.0.x-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "WicketAcc\\Psr\\Http\\Message\\": "src/"
@@ -1389,7 +1389,7 @@
                     "dev-master": "2.0.x-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "WicketAcc\\Psr\\Http\\Message\\": "src/"
@@ -1445,7 +1445,7 @@
                     "dev-master": "3.0.x-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "WicketAcc\\Psr\\SimpleCache\\": "src/"
@@ -1498,7 +1498,7 @@
             },
             "time": "2019-03-08T08:55:37+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "src/getallheaders.php"
@@ -1809,7 +1809,7 @@
             },
             "time": "2025-06-26T21:24:02+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "Resources/functions.php"
@@ -1885,7 +1885,7 @@
                     "dev-main": "3.6-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "WicketAcc\\Symfony\\Contracts\\Translation\\": ""
@@ -1963,7 +1963,7 @@
             },
             "time": "2024-11-21T01:49:47+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "voku\\": "src/voku/"

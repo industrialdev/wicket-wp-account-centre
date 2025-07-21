@@ -112,10 +112,10 @@ class Profile extends WicketAcc
 
         // If no user ID is provided, use the current user ID
         switch (true) {
-            case  $user_id === null :
+            case $user_id === null :
                 $user_id = get_current_user_id();
                 break;
-            case  is_numeric($user_id) && intval($user_id) > 0 :
+            case is_numeric($user_id) && intval($user_id) > 0 :
                 $user_id = intval($user_id);
                 break;
             default:
