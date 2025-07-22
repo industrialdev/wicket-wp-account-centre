@@ -71,6 +71,12 @@
   .nav-selected {
     background: whitesmoke;
   }
+
+  @media (min-width: 1024px) {
+    .myaccount-nav-mobile {
+      display: none;
+    }
+  }
 }
 
 .wicket-acc--v2 {
@@ -83,11 +89,11 @@
     padding: var(--space-250);
     z-index: var(--wicket-acc-z-index-dropdown);
     width: 100%;
-  
+
     #dropdown-my-account-menu {
       padding-bottom: var(--space-150);
     }
-  
+
     .dropdown__toggle--nav {
       display: block;
       position: relative;
@@ -100,52 +106,52 @@
       font-weight: var(--label-md-font-weight);
       line-height: var(--label-md-line-height);
       text-decoration: none;
-  
+
       i {
         color: var(--interactive);
       }
-  
+
       &.open i {
         transform: rotate(-45deg);
       }
     }
-  
+
     .nav__contextual {
       padding: 1.2rem 0.5rem;
-  
+
       h2 {
         display: none;
       }
-  
+
       ul>li:first-of-type {
         border-top: 0 none;
       }
     }
   }
-  
+
   .wicket_acc_sub_list {
     display: none;
     margin: -5px 0px 10px !important;
     padding: 0;
-  
+
     li {
       display: block !important;
       margin: 0px 0px !important;
       border-bottom: none !important;
     }
-  
+
     a {
       padding: 3px 6px 3px 13px !important;
     }
   }
-  
+
   .nav-selected {
     background: whitesmoke;
   }
 
   ul.wicket-acc-menu-mobile {
     > li {
-      
+
       a, button {
         text-decoration: none !important;
         color: var(--nav-contextual-sublink);
@@ -168,6 +174,12 @@
         color: var(--nav-contextual-link-lvl-1);
         font-weight: bold;
       }
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .myaccount-nav-mobile {
+      display: none;
     }
   }
 }
