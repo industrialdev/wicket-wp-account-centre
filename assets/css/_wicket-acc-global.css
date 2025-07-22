@@ -11,3 +11,7 @@ body.wicket-theme-v2 {
     padding-left: 0;
   }
 }
+
+.wicket-acc-page {
+  max-width: var(--wicket-acc-container-width);
+}

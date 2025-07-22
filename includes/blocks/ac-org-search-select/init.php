@@ -31,7 +31,8 @@ class init extends Blocks
         $this->render_block();
     }
 
-    public function render_block() {
+    public function render_block()
+    {
         $attrs = get_block_wrapper_attributes(['class' => 'wicket-acc-org-search-select']);
 
         $search_mode = get_field('orgss_search_mode');
