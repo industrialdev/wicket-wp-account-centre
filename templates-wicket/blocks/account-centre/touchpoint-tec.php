@@ -18,7 +18,8 @@ defined('ABSPATH') || exit;
  * $counter - Counter
  * $display_type - Touchpoint display type: upcoming, past, all
  * $switch_link - Switch link
- * $touchpoints_results - Touchpoint results
+ * $touchpoints_upcoming - Upcoming touchpoint results
+ * $touchpoints_past - Past touchpoint results
  * $is_preview - Is preview?
  */
 $attrs = $args['attrs'];
@@ -32,7 +33,8 @@ $counter = $args['counter'];
 $display_type = $args['display_type'];
 $switch_link = $args['switch_link'];
 $switch_link_past = $args['switch_link'];
-$touchpoints_results = $args['touchpoints_results'];
+$touchpoints_upcoming = $args['touchpoints_upcoming'];
+$touchpoints_past = $args['touchpoints_past'];
 $is_preview = $args['is_preview'];
 $close = $args['close'];
 $show_switch_view_link = $args['show_switch_view_link'];
@@ -133,16 +135,23 @@ if ($single_event) {
     WACC()->Blocks->render_template('touchpoint-tec-card', $args);
 } else {
 
-    if (!empty($touchpoints_results['data'])) {
-        if ($display == 'upcoming' || $display == 'all') {
-            TouchpointEventCalendar::display_touchpoints($touchpoints_results['data'], 'upcoming', $num_results, false, $args);
-
+    if (
+        (!empty($touchpoints_upcoming) && is_array($touchpoints_upcoming)) ||
+        (!empty($touchpoints_past) && is_array($touchpoints_past))
+    ) {
+        if ($display === 'upcoming') {
+            TouchpointEventCalendar::display_touchpoints($touchpoints_upcoming, 'upcoming', $num_results, false, $args);
             $close++;
-        }
+        } elseif ($display === 'past') {
+            TouchpointEventCalendar::display_touchpoints($touchpoints_past, 'past', $num_results, false, $args);
+            $close++;
+        } elseif ($display === 'all') {
+            $all_touchpoints = array_merge(
+                is_array($touchpoints_upcoming) ? $touchpoints_upcoming : [],
+                is_array($touchpoints_past) ? $touchpoints_past : []
+            );
 
-        if ($display == 'past' || $display == 'all') {
-            TouchpointEventCalendar::display_touchpoints($touchpoints_results['data'], 'past', $num_results, false, $args);
-
+            TouchpointEventCalendar::display_touchpoints($all_touchpoints, 'all', $num_results, false, $args);
             $close++;
         }
     }

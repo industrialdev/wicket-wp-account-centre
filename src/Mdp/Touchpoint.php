@@ -28,9 +28,12 @@ class Touchpoint extends Init
      *
      * @param string      $service_id The service ID to filter touchpoints by.
      * @param string|null $person_id  Optional. The person's UUID. If null, the current user's UUID is used.
+     * @param array       $options    Optional. Array of options. Supported keys: {
+     *                               - 'mode': 'upcoming' (default) or 'past'.
+     * }
      * @return array|false An array of touchpoints or false on failure.
      */
-    public function getCurrentUserTouchpoints(string $serviceId, ?string $personId = null): array|false
+    public function getCurrentUserTouchpoints(string $serviceId, ?string $personId = null, array $options = []): array|false
     {
         if (empty($serviceId)) {
             WACC()->Log->warning('Service ID cannot be empty.', ['source' => __METHOD__]);
@@ -54,9 +57,18 @@ class Touchpoint extends Init
 
         try {
             $params = [
-                'page[size]' => 100,
+                'page[size]' => 20,
                 'filter[service_id]' => $serviceId,
             ];
+
+            // Date-based filtering
+            $today = '2025-07-23';
+            $mode = $options['mode'] ?? 'upcoming';
+            if ($mode === 'past') {
+                $params['filter[end_date]'] = $today;
+            } else {
+                $params['filter[start_date]'] = $today;
+            }
             $response = $client->get("people/{$pId}/touchpoints", ['query' => $params]);
 
             return $response['data'] ?? [];

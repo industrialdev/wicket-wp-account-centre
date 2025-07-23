@@ -69,7 +69,8 @@ class init extends Blocks
         $counter = 0;
         $display_type = 'upcoming';
 
-        $touchpoints_results = $this->get_touchpoints_results('Events Calendar');
+        $touchpoints_upcoming = $this->get_touchpoints_results('Events Calendar', ['mode' => 'upcoming']);
+        $touchpoints_past = $this->get_touchpoints_results('Events Calendar', ['mode' => 'past']);
 
         if (empty($registered_action)) {
             $registered_action = [
@@ -130,7 +131,8 @@ class init extends Blocks
             'counter'                        => $counter,
             'close'                          => $close,
             'display_type'                   => $display_type,
-            'touchpoints_results'            => $touchpoints_results,
+            'touchpoints_upcoming'           => $touchpoints_upcoming,
+            'touchpoints_past'               => $touchpoints_past,
             'switch_link'                    => $switch_link,
             'show_switch_view_link'         => $show_switch_view_link,
             'override_past_events_link'      => $override_past_events_link,
@@ -151,16 +153,18 @@ class init extends Blocks
      *
      * $service_id - Touchpoint service id
      *
+     * @param string $service_id Touchpoint service id
+     * @param array  $options    Optional. Array of options for filtering (e.g., ['mode' => 'upcoming'|'past']).
      * @return mixed Array of touchpoints or false on error
      */
-    protected function get_touchpoints_results($service_id = '')
+    protected function get_touchpoints_results($service_id = '', $options = [])
     {
         if (empty($service_id)) {
             return false;
         }
 
         $touchpoint_service = WACC()->Mdp->Touchpoint->getOrCreateServiceId($service_id);
-        $touchpoints = WACC()->Mdp->Touchpoint->getCurrentUserTouchpoints($touchpoint_service);
+        $touchpoints = WACC()->Mdp->Touchpoint->getCurrentUserTouchpoints($touchpoint_service, null, $options);
 
         return $touchpoints;
     }
@@ -168,8 +172,8 @@ class init extends Blocks
     /**
      * Display the touchpoints.
      *
-     * @param array $touchpoint_data Touchpoint data
-     * @param string $display Touchpoint display type: upcoming, past, all
+     * @param array $touchpoint_data Touchpoint data (already filtered for display type)
+     * @param string $display_type Touchpoint display type: upcoming, past, all
      * @param int $num_results Number of results to display
      * @param bool $ajax Is ajax request?
      * @param array $config show_view_more_events(bool), use_x_columns(int)
@@ -196,13 +200,6 @@ class init extends Blocks
         }
 
         $block_id = $config['block_id'];
-
-        $registered_action = get_field('registered_action');
-
-        // Filter data by type. Only on initial call. We don't want ajax calls to be filtered again
-        if ($ajax === false) {
-            $touchpoint_data = self::filter_touchpoint_data($touchpoint_data, $display_type, $registered_action);
-        }
 
         // Total results
         $total_results = count($touchpoint_data);
@@ -239,58 +236,6 @@ class init extends Blocks
         if ($total_results > 1 && $config['show_view_more_events'] && $ajax === false) {
             self::load_more_results($touchpoint_data, $num_results, $total_results, $counter, $display_type, $ajax, $block_id);
         }
-    }
-
-    /**
-     * Filter touchpoint data.
-     *
-     * @param array $touchpoint_data Touchpoint data
-     * @param string $display_type Touchpoint display type: upcoming, past, all
-     *
-     * @return array
-     */
-    public static function filter_touchpoint_data($touchpoint_data = [], $display_type = 'upcoming', $registered_action = [])
-    {
-        if (empty($touchpoint_data)) {
-            return $touchpoint_data;
-        }
-
-        // Ensure $display_type is valid: upcoming, past, all
-        $display_type = sanitize_text_field($display_type);
-        $display_type = in_array($display_type, ['upcoming', 'past', 'all'], true) ? $display_type : 'upcoming';
-
-        // Get current timestamp
-        $current_timestamp = current_datetime()->getTimestamp();
-
-        // Check inside every touchpoint for attributes->data->end_date, and compare with current date. If display_type = upcoming, return an array of touchpoints that are greater than current date. If display_type = past, return an array of touchpoints that are less than current date.
-        $filtered_touchpoint_data = array_filter($touchpoint_data, function ($touchpoint) use ($current_timestamp, $display_type) {
-            if (!isset($touchpoint['attributes']['data']['end_date'])) {
-                return false;
-            }
-
-            // Convert the event's end date to a DateTime object
-            $event_end_date = date_create_from_format('Y-m-d g:i A T', $touchpoint['attributes']['data']['end_date']);
-            if (!$event_end_date) {
-                return false;
-            }
-
-            // Get timestamps for comparison (using full date/time, not start of day)
-            $event_timestamp = $event_end_date->getTimestamp();
-
-            // Compare full timestamps instead of just dates
-            if ($display_type === 'upcoming') {
-                return $event_timestamp >= $current_timestamp;
-            } else {
-                return $event_timestamp < $current_timestamp;
-            }
-        });
-
-        // Now, filter by registered_action
-        $filtered_touchpoint_data = array_filter($filtered_touchpoint_data, function ($touchpoint) use ($registered_action) {
-            return is_array($registered_action) && in_array($touchpoint['attributes']['code'], $registered_action, true);
-        });
-
-        return $filtered_touchpoint_data;
     }
 
     /**
