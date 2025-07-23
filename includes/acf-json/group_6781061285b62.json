@@ -24,6 +24,28 @@
             "append": ""
         },
         {
+            "key": "field_6880c6c80ba49",
+            "label": "Description",
+            "name": "description",
+            "aria-label": "",
+            "type": "wysiwyg",
+            "instructions": "Optional. Leave it empty so as not to be shown to the user.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 2,
+            "default_value": "",
+            "allow_in_bindings": 0,
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 1,
+            "delay": 0
+        },
+        {
             "key": "field_687cbf6043662",
             "label": "Action",
             "name": "action",
@@ -118,5 +140,5 @@
     "description": "",
     "show_in_rest": 0,
     "acfml_field_group_mode": "advanced",
-    "modified": 1753007235
+    "modified": 1753269980
 }

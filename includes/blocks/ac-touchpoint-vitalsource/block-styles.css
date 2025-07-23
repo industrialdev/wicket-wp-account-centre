@@ -13,6 +13,13 @@
   .header h2 {
     font-size: var(--font-size-heading-sm);
     font-weight: bold;
+    line-height: 1.2;
+  }
+
+  .description {
+    font-size: var(--font-size-body-md);
+    color: var(--text-content);
+    margin-bottom: var(--space-200);
   }
 
   .header .upcoming-link {

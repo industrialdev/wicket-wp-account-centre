@@ -22,12 +22,24 @@ $counter = $args['counter'];
 $touchpoints_results = $args['touchpoints_results'];
 $show_view_more = $args['show_view_more'];
 $is_ajax_request = $args['is_ajax_request'];
+$title = $args['title'];
+$description = $args['description'];
 ?>
 
 <section <?php echo $args['attrs']; ?>>
 	<div class="header">
-		<h2><?php echo esc_html($args['title']); ?></h2>
+		<?php if ($title) : ?>
+			<h2><?php echo esc_html($title); ?></h2>
+		<?php endif; ?>
 	</div>
+
+	<?php if ($description) : ?>
+		<div class="description">
+			<?php echo wp_kses_post($description); ?>
+		</div>
+	<?php endif; ?>
+
+
 
 	<div class="vitalsource-list">
 		<?php

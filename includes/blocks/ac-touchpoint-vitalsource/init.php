@@ -65,6 +65,7 @@ class init extends Blocks
         }
 
         $title = get_field('title');
+        $description = get_field('description');
         $num_results = get_field('page_results');
         $show_view_more = get_field('show_view_more');
 
@@ -91,6 +92,7 @@ class init extends Blocks
             'block_slug'          => 'wicket-ac-touchpoint-vitalsource',
             'attrs'               => $attrs,
             'title'               => $title,
+            'description'         => $description,
             'num_results'         => $num_results,
             'total_results'       => $total_results,
             'counter'             => $counter,
