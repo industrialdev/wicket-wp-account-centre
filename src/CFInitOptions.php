@@ -106,7 +106,7 @@ class CFInitOptions extends WicketAcc
         );
 
         if (!class_exists('Wicket_Main')) {
-            $datastore = new WicketSettingsDatastore();
+            $datastore = new CFWicketSettingsDatastore();
 
             $main_options_container->add_tab(
                 __('Environments'),

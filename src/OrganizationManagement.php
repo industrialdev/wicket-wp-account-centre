@@ -80,7 +80,12 @@ class OrganizationManagement extends WicketAcc
         }
 
         if (did_action('acf/init')) {
-            $pageId = get_field('acc_page_orgman-' . sanitize_text_field($slug), 'option');
+            // Get from Carbon Fields with fallback to ACF
+            if (function_exists('carbon_get_theme_option')) {
+                $pageId = carbon_get_theme_option('acc_page_orgman-' . sanitize_text_field($slug));
+            } else {
+                $pageId = get_field('acc_page_orgman-' . sanitize_text_field($slug), 'option');
+            }
         } else {
             $pageId = get_option('acc_page_orgman-' . sanitize_text_field($slug));
         }

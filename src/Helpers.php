@@ -59,7 +59,12 @@ class Helpers extends WicketAcc
      */
     public function getAccName()
     {
-        $locale = get_field('ac_localization', 'option');
+        // Get from Carbon Fields with fallback to ACF
+        if (function_exists('carbon_get_theme_option')) {
+            $locale = carbon_get_theme_option('ac_localization');
+        } else {
+            $locale = get_field('ac_localization', 'option');
+        }
 
         if (empty($locale)) {
             return __('Account Centre', 'wicket-acc');
@@ -147,7 +152,12 @@ class Helpers extends WicketAcc
     public function renderGlobalSubHeader()
     {
         $acc_global_headerbanner_page_id = WACC()->getGlobalHeaderBannerPageId();
-        $acc_global_headerbanner_status = get_field('acc_global-headerbanner', 'option');
+        // Get from Carbon Fields with fallback to ACF
+        if (function_exists('carbon_get_theme_option')) {
+            $acc_global_headerbanner_status = carbon_get_theme_option('acc_global-headerbanner');
+        } else {
+            $acc_global_headerbanner_status = get_field('acc_global-headerbanner', 'option');
+        }
 
         if ($acc_global_headerbanner_page_id && $acc_global_headerbanner_status) {
             $global_banner_page = get_post($acc_global_headerbanner_page_id);

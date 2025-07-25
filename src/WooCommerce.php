@@ -94,7 +94,12 @@ class WooCommerce extends WicketAcc
             }
 
             // We need to load the content of the post with slug $wc_endpoint from CPT my-account
-            $acc_post_id = get_field('acc_page_' . $wc_endpoint, 'option');
+            // Get from Carbon Fields with fallback to ACF
+            if (function_exists('carbon_get_theme_option')) {
+                $acc_post_id = carbon_get_theme_option('acc_page_' . $wc_endpoint);
+            } else {
+                $acc_post_id = get_field('acc_page_' . $wc_endpoint, 'option');
+            }
 
             if ($acc_post_id) {
                 // Get post content and display it
@@ -125,7 +130,12 @@ class WooCommerce extends WicketAcc
      */
     public function wc_add_acc_banner()
     {
-        $acc_banner_enabled = get_field('acc_global-headerbanner', 'option');
+        // Get from Carbon Fields with fallback to ACF
+        if (function_exists('carbon_get_theme_option')) {
+            $acc_banner_enabled = carbon_get_theme_option('acc_global-headerbanner');
+        } else {
+            $acc_banner_enabled = get_field('acc_global-headerbanner', 'option');
+        }
 
         if (!$acc_banner_enabled) {
             return;

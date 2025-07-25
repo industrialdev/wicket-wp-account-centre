@@ -138,7 +138,12 @@ class Profile extends WicketAcc
 
         // Check if ACC option acc_profile_picture_default has an image URL set
         if (empty($pp_profile_picture)) {
-            $default_picture = get_field('acc_profile_picture_default', 'option');
+            // Get from Carbon Fields with fallback to ACF
+            if (function_exists('carbon_get_theme_option')) {
+                $default_picture = carbon_get_theme_option('acc_profile_picture_default');
+            } else {
+                $default_picture = get_field('acc_profile_picture_default', 'option');
+            }
             if (!empty($default_picture)) {
                 $pp_profile_picture = $default_picture;
             }
@@ -162,7 +167,12 @@ class Profile extends WicketAcc
     public function isCustomProfilePicture(string $pp_profile_picture): bool
     {
         $pp_profile_picture_plugin = WICKET_ACC_URL . '/assets/images/profile-picture-default.svg';
-        $pp_profile_picture_override = get_field('acc_profile_picture_default', 'option');
+        // Get from Carbon Fields with fallback to ACF
+        if (function_exists('carbon_get_theme_option')) {
+            $pp_profile_picture_override = carbon_get_theme_option('acc_profile_picture_default');
+        } else {
+            $pp_profile_picture_override = get_field('acc_profile_picture_default', 'option');
+        }
 
         // Check if $pp_profile_picture is one of the two defaults
         if (empty($pp_profile_picture_override)) {

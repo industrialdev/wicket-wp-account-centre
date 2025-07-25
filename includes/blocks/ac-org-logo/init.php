@@ -9,7 +9,6 @@ defined('ABSPATH') || exit;
 
 /**
  * Wicket Organization Profile Picture Block.
- *
  **/
 class init extends Blocks
 {
@@ -34,6 +33,17 @@ class init extends Blocks
         $this->uploads_path = WICKET_ACC_UPLOADS_PATH . 'organization-logos/';
         $this->uploads_url = WICKET_ACC_UPLOADS_URL . 'organization-logos/';
         $this->pp_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+
+        // Get max size from Carbon Fields setting
+        if (function_exists('carbon_get_theme_option')) {
+            $this->max_size = absint(carbon_get_theme_option('acc_profile_picture_size'));
+        } else {
+            // Fallback to ACF if Carbon Fields is not available
+            $this->max_size = absint(get_field('acc_profile_picture_size', 'option'));
+        }
+
+        // Ensure we have a valid max size (minimum 1MB)
+        $this->max_size = max(1, $this->max_size);
 
         $org_id = (isset($_GET['org_id'])) ? $_GET['org_id'] : '';
         $child_org_id = (isset($_GET['child_org_id'])) ? $_GET['child_org_id'] : '';

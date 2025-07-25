@@ -9,7 +9,6 @@ defined('ABSPATH') || exit;
 
 /**
  * Wicket Profile Picture Block.
- *
  **/
 class init extends Blocks
 {
@@ -20,7 +19,7 @@ class init extends Blocks
         protected array $block = [],
         protected bool $is_preview = false,
         protected ?Blocks $blocks = null,
-        protected int $pp_max_size = 0,
+        protected int $pp_max_size = 1,
         protected string $pp_uploads_path = '',
         protected string $pp_uploads_url = '',
         protected array $pp_extensions = [],
@@ -31,7 +30,16 @@ class init extends Blocks
         $this->is_preview = $is_preview;
         $this->blocks = $blocks ?? new Blocks();
 
-        $this->pp_max_size = absint(get_field('acc_profile_picture_size', 'option'));  // in MB
+        // Get max size from Carbon Fields setting
+        if (function_exists('carbon_get_theme_option')) {
+            $this->pp_max_size = absint(carbon_get_theme_option('acc_profile_picture_size'));
+        } else {
+            // Fallback to ACF if Carbon Fields is not available
+            $this->pp_max_size = absint(get_field('acc_profile_picture_size', 'option'));
+        }
+
+        // Ensure we have a valid max size (minimum 1MB)
+        $this->pp_max_size = max(1, $this->pp_max_size);
         $this->pp_uploads_path = WICKET_ACC_UPLOADS_PATH . 'profile-pictures/';
         $this->pp_uploads_url = WICKET_ACC_UPLOADS_URL . 'profile-pictures/';
         $this->pp_extensions = ['jpg', 'jpeg', 'png', 'gif'];

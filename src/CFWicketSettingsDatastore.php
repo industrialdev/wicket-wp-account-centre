@@ -10,7 +10,7 @@ use Carbon_Fields\Field\Field;
  *
  * Stores all fields in a single serialized array in the 'wicket_settings' option.
  */
-class WicketSettingsDatastore extends Datastore
+class CFWicketSettingsDatastore extends Datastore
 {
     /**
      * The option name where settings are stored.
