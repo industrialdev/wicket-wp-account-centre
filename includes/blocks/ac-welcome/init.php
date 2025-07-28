@@ -81,7 +81,7 @@ class init extends Blocks
                 <?php if ($image_url) {
                     echo '<img src="' .
                         $image_url .
-                        '" alt="' .
+                        '?' . time() . '" alt="' .
                         $person->given_name .
                         ' ' .
                         $person->family_name .
