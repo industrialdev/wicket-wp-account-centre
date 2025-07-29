@@ -56,6 +56,11 @@
 		margin-bottom: 0.5rem;
 	}
 
+	&.wicket-acc-block-welcome--v2 .wicket-welcome-member-org {
+		line-height: var(--body-md-line-height);
+		font-family: var(--body-md-font-family);
+	}
+
 	&.wicket-acc-block-welcome--v2 .wicket-welcome-member-type {
 		font-weight: var(--body-md-font-weight);
     line-height: var(--body-md-line-height);
