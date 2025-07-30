@@ -100,52 +100,52 @@ class init extends Blocks
                         <?php echo apply_filters('wicket/acc/block/welcome_block_name', $member_name, $person); ?>
                         <?php do_action('wicket/acc/block/after_welcome_block_name', $person->id); ?>
                     </p>
-                    
-                        <?php if ($active_memberships) { ?>
-                            <div class="gap-6 grid grid-cols-1">
+
+                    <?php if ($active_memberships) { ?>
+                        <div class="gap-6 grid grid-cols-1">
                             <?php
                             // Track seen membership combinations to avoid duplicates
                             $seen_memberships = [];
-                            foreach ($active_memberships as $membership) {
-                                if (function_exists('wicket_acc_welcome_filter_memberships')) {
-                                    /* @disregard P1010 Undefined function 'wicket_acc_welcome_filter_memberships' */
-                                    if (wicket_acc_welcome_filter_memberships($membership)) {
-                                        continue;
-                                    }
-                                }
+                        foreach ($active_memberships as $membership) {
+                            // Apply WordPress filter for membership filtering
+                            $should_filter = apply_filters('wicket/acc/block/welcome_filter_memberships', false, $membership);
 
-                                // Create a unique key based on membership name and organization (if present)
-                                $membership_key = $membership['name'];
-                                if ($membership['type'] == 'organization') {
-                                    $org_main_info = WACC()->Mdp->Membership->getOrganizationMembershipByUuid(
-                                        $membership['organization_membership_id']
-                                    );
-                                    $org_uuid =
-                                        $org_main_info['data']['relationships']['organization']['data']['id'];
-                                    $org_info = wicket_get_active_memberships_relationship(
-                                        $org_uuid
-                                    );
-                                    $membership_key .= '-' . $org_info['name'];
-                                }
+                            if ($should_filter) {
+                                continue;
+                            }
 
-                                // Skip if we've seen this combination before
-                                if (isset($seen_memberships[$membership_key])) {
-                                    continue;
-                                }
-                                $seen_memberships[$membership_key] = true;
-                                ?>
+                            // Create a unique key based on membership name and organization (if present)
+                            $membership_key = $membership['name'];
+                            if ($membership['type'] == 'organization') {
+                                $org_main_info = WACC()->Mdp->Membership->getOrganizationMembershipByUuid(
+                                    $membership['organization_membership_id']
+                                );
+                                $org_uuid =
+                                    $org_main_info['data']['relationships']['organization']['data']['id'];
+                                $org_info = wicket_get_active_memberships_relationship(
+                                    $org_uuid
+                                );
+                                $membership_key .= '-' . $org_info['name'];
+                            }
+
+                            // Skip if we've seen this combination before
+                            if (isset($seen_memberships[$membership_key])) {
+                                continue;
+                            }
+                            $seen_memberships[$membership_key] = true;
+                            ?>
 
                                 <div class="my-0 wicket-welcome-memberships">
                                     <p class="mb-0 wicket-welcome-member-type">
                                         <strong><?php echo __('Membership Type:', 'wicket-acc'); ?></strong>
                                         <?php
-                                                $membership_name = $membership['name_' . $current_lang] ?? $membership['name'] ?? ''; // Added fallback and ensure we have a value
+                                        $membership_name = $membership['name_' . $current_lang] ?? $membership['name'] ?? ''; // Added fallback and ensure we have a value
 
-                                echo apply_filters(
-                                    'wicket/acc/block/ac-welcome/membership_name',
-                                    $membership_name,
-                                );
-                                ?>
+                            echo apply_filters(
+                                'wicket/acc/block/ac-welcome/membership_name',
+                                $membership_name,
+                            );
+                            ?>
                                     </p>
 
                                     <?php if ($membership['type'] == 'organization'):
@@ -228,22 +228,23 @@ class init extends Blocks
                                         </p>
                                     <?php endif; ?>
 
-                                    <?php if (
-                                        $renewal_date &&
-                                        !empty($membership['ends_at']) &&
-                                        strtotime($membership['ends_at'])
-                                    ): ?>
-                                        <p class="wicket-welcome-renewal mb-0">
-                                            <?php echo __('Renewal Date:', 'wicket-acc'); ?>
-                                            <?php echo date('F j, Y', strtotime($membership['ends_at'])); ?>
-                                        </p>
-                                    <?php endif; ?>
+                                    <?php if ($renewal_date):
+                                        // Get the max end date for the person's memberships
+                                        $max_end_date = WACC()->Mdp->Membership->getPersonMaxEndDate(['person_uuid' => $person->id]);
+                                        if ($max_end_date && strtotime($max_end_date)): ?>
+                                            <p class="wicket-welcome-renewal mb-0">
+                                                <?php echo __('Renewal Date:', 'wicket-acc'); ?>
+                                                <?php echo date('F j, Y', strtotime($max_end_date)); ?>
+                                            </p>
+                                    <?php
+                                        endif;
+                                    endif; ?>
                                 </div>
 
-                        <?php } ?>
+                            <?php } ?>
                         </div>
                     <?php } ?>
-                    
+
                 </div>
                 <?php if (
                     $edit_profile &&

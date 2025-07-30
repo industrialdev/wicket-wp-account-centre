@@ -625,4 +625,110 @@ class Membership extends Init
             return false;
         }
     }
+
+    /**
+     * Gets the max end date for a person's memberships using the person_member_histories endpoint.
+     *
+     * @param array $args Optional arguments.
+     *              person_uuid (string|null) The person UUID to search for. If null/missing, uses current person.
+     *              rollup_type (string) The rollup type to filter by. Default: 'category'.
+     *              category (string) The category to filter by. Default: 'Membership'.
+     * @return string|false The max end date on success, false on failure.
+     */
+    public function getPersonMaxEndDate(array $args = []): string|false
+    {
+        $defaults = [
+            'person_uuid' => null,
+            'rollup_type' => 'category',
+            'category' => 'Membership',
+        ];
+
+        $args = wp_parse_args($args, $defaults);
+        extract($args);
+
+        if (empty($person_uuid)) {
+            $person_uuid = WACC()->Mdp->Person->getCurrentPersonUuid();
+        }
+
+        if (empty($person_uuid)) {
+            WACC()->Log->warning('Person UUID cannot be empty for max end date.', ['source' => __CLASS__]);
+
+            return false;
+        }
+
+        $client = $this->initClient();
+        if (!$client) {
+            WACC()->Log->error('Failed to initialize API client.', ['source' => __CLASS__, 'person_uuid' => $person_uuid]);
+
+            return false;
+        }
+
+        // Use class-level caching with person UUID as key
+        $cache_key = 'max_end_date_' . $person_uuid . '_' . $rollup_type . '_' . $category;
+        if (isset($this->cache[$cache_key])) {
+            return $this->cache[$cache_key];
+        }
+
+        try {
+            $endpoint = 'person_member_histories';
+            $query_params = [
+                'filter[rollup_type_eq]' => $rollup_type,
+                'filter[person_uuid_eq]' => $person_uuid,
+            ];
+
+            // Add category filter if rollup_type is category
+            if ($rollup_type === 'category') {
+                $query_params['filter[category_eq]'] = $category;
+            }
+
+            $endpoint .= '?' . http_build_query($query_params);
+
+            $response = $client->get($endpoint);
+
+            if (!empty($response['data']) && is_array($response['data'])) {
+                // Get the max_ends_at from the first entry (should only be one with category rollup)
+                foreach ($response['data'] as $entry) {
+                    if (isset($entry['attributes']['max_ends_at'])) {
+                        $max_end_date = $entry['attributes']['max_ends_at'];
+                        // Cache the result
+                        $this->cache[$cache_key] = $max_end_date;
+
+                        return $max_end_date;
+                    }
+                }
+            }
+
+            WACC()->Log->info('No max end date found for person.', [
+                'source' => __CLASS__,
+                'person_uuid' => $person_uuid,
+            ]);
+
+            return false;
+        } catch (RequestException $e) {
+            $response_code = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 'unknown';
+
+            WACC()->Log->error(
+                'RequestException while fetching person max end date.',
+                [
+                    'source' => __CLASS__,
+                    'person_uuid' => $person_uuid,
+                    'status_code' => $response_code,
+                    'message' => $e->getMessage(),
+                ]
+            );
+
+            return false;
+        } catch (Exception $e) {
+            WACC()->Log->error(
+                'Generic Exception while fetching person max end date.',
+                [
+                    'source' => __CLASS__,
+                    'person_uuid' => $person_uuid,
+                    'message' => $e->getMessage(),
+                ]
+            );
+
+            return false;
+        }
+    }
 }
