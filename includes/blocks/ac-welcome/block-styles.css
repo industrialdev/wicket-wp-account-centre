@@ -4,7 +4,7 @@
 
 	display: flex;
 	padding: var(--space-250, 1rem);
-	margin: 1rem;
+	margin: var(--space-100) auto;
 	border: 1px solid var(--bg-accent-light, var(--wicket-acc-border-color-light));
 	border-radius: var(--card-accent-corner-radius, 1rem);
 	font-family: var(--wicket-acc-font-family-montserrat);
