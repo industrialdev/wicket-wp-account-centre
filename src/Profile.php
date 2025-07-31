@@ -140,7 +140,7 @@ class Profile extends WicketAcc
         if (empty($pp_profile_picture)) {
             // Get from Carbon Fields with fallback to ACF
             if (function_exists('carbon_get_theme_option')) {
-                $default_picture = carbon_get_theme_option('acc_profile_picture_default');
+                $default_picture = wp_get_attachment_url(carbon_get_theme_option('acc_profile_picture_default'));
             } else {
                 $default_picture = get_field('acc_profile_picture_default', 'option');
             }
@@ -169,7 +169,7 @@ class Profile extends WicketAcc
         $pp_profile_picture_plugin = WICKET_ACC_URL . '/assets/images/profile-picture-default.svg';
         // Get from Carbon Fields with fallback to ACF
         if (function_exists('carbon_get_theme_option')) {
-            $pp_profile_picture_override = carbon_get_theme_option('acc_profile_picture_default');
+            $pp_profile_picture_override =  wp_get_attachment_url(carbon_get_theme_option('acc_profile_picture_default'));
         } else {
             $pp_profile_picture_override = get_field('acc_profile_picture_default', 'option');
         }
