@@ -12,6 +12,48 @@ defined('ABSPATH') || exit;
 class Assets extends WicketAcc
 {
     /**
+     * Get the latest modification time from an array of files.
+     *
+     * @param array $files Array of file paths.
+     * @return int|string The latest modification time or WICKET_ACC_VERSION as a fallback.
+     */
+    private function get_latest_modification_time(array $files, string $transient_key)
+    {
+        // In development environments, bypass the cache to ensure changes are reflected immediately.
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            $timestamps = [];
+            foreach ($files as $file) {
+                if (file_exists($file)) {
+                    $timestamps[] = filemtime($file);
+                }
+            }
+
+            return !empty($timestamps) ? max($timestamps) : WICKET_ACC_VERSION;
+        }
+
+        // Try to get the cached version from the transient.
+        $cached_version = get_transient($transient_key);
+        if (false !== $cached_version) {
+            return $cached_version;
+        }
+
+        // If the transient is not set, calculate the latest modification time.
+        $timestamps = [];
+        foreach ($files as $file) {
+            if (file_exists($file)) {
+                $timestamps[] = filemtime($file);
+            }
+        }
+
+        $latest_version = !empty($timestamps) ? max($timestamps) : WICKET_ACC_VERSION;
+
+        // Cache the new version in a transient for 1 hour.
+        set_transient($transient_key, $latest_version, HOUR_IN_SECONDS);
+
+        return $latest_version;
+    }
+
+    /**
      * Assets constructor.
      *
      * Adds actions to enqueue admin and frontend assets.
@@ -29,8 +71,13 @@ class Assets extends WicketAcc
      */
     public function enqueue_admin_assets()
     {
-        wp_enqueue_style('wicket-acc-admin-styles', WICKET_ACC_URL . 'assets/css/wicket-acc-admin-main.css', [], WICKET_ACC_VERSION);
-        wp_enqueue_script('wicket-acc-admin-scripts', WICKET_ACC_URL . 'assets/js/wicket-acc-admin-main.js', [], WICKET_ACC_VERSION, true);
+        $admin_css_files = [
+            WICKET_ACC_PATH . 'assets/css/wicket-acc-admin-main.css',
+        ];
+        $admin_js_path = WICKET_ACC_PATH . 'assets/js/wicket-acc-admin-main.js';
+
+        wp_enqueue_style('wicket-acc-admin-styles', WICKET_ACC_URL . 'assets/css/wicket-acc-admin-main.css', [], $this->get_latest_modification_time($admin_css_files, 'wicket_acc_admin_css_version'));
+        wp_enqueue_script('wicket-acc-admin-scripts', WICKET_ACC_URL . 'assets/js/wicket-acc-admin-main.js', [], file_exists($admin_js_path) ? filemtime($admin_js_path) : WICKET_ACC_VERSION, true);
     }
 
     /**
@@ -83,17 +130,28 @@ class Assets extends WicketAcc
             return;
         }
 
-        // Tailwind CSS Play CDN - Load in development environments or when WP_DEBUG is true
-        /*if ((defined('WP_ENV') && in_array(WP_ENV, ['local', 'development'], true)) ||
-            (defined('WP_ENVIRONMENT_TYPE') && in_array(WP_ENVIRONMENT_TYPE, ['local', 'development'], true)) ||
-            (defined('WP_DEBUG') && WP_DEBUG === true)) {
-            wp_enqueue_script('tailwind-css-development', 'https://cdn.tailwindcss.com', [], WICKET_ACC_VERSION, false);
-        }*/
+        $frontend_css_files = [
+            WICKET_ACC_PATH . 'assets/css/wicket-acc-main.css',
+            WICKET_ACC_PATH . 'assets/css/_wicket-acc-variables.css',
+            WICKET_ACC_PATH . 'assets/css/_wicket-acc-global.css',
+            WICKET_ACC_PATH . 'assets/css/_wicket-acc-animations.css',
+            WICKET_ACC_PATH . 'assets/css/_wicket-acc-blocks-global.css',
+            WICKET_ACC_PATH . 'assets/css/_wicket-acc-legacy.css',
+            WICKET_ACC_PATH . 'assets/css/_wicket-acc-pages.css',
+            WICKET_ACC_PATH . 'assets/css/_wicket-acc-woocommerce.css',
+            WICKET_ACC_PATH . 'assets/css/_wicket-acc-navigation.css',
+            WICKET_ACC_PATH . 'assets/css/_wicket-acc-org-management.css',
+        ];
 
-        wp_enqueue_style('wicket-acc-frontend-styles', WICKET_ACC_URL . 'assets/css/wicket-acc-main.css', [], WICKET_ACC_VERSION);
-        wp_enqueue_script('wicket-acc-frontend-scripts', WICKET_ACC_URL . 'assets/js/wicket-acc-main.js', [], WICKET_ACC_VERSION, true);
-        wp_enqueue_script('wicket-acc-frontend-legacy-scripts', WICKET_ACC_URL . 'assets/js/wicket-acc-legacy.js', [], WICKET_ACC_VERSION, true);
-        wp_enqueue_script('wicket-acc-orders', WICKET_ACC_URL . 'assets/js/wicket-acc-orders.js', [], WICKET_ACC_VERSION, true);
-        wp_enqueue_script('wicket-acc-subscriptions', WICKET_ACC_URL . 'assets/js/wicket-acc-subscriptions.js', [], WICKET_ACC_VERSION, true);
+        $frontend_js_path = WICKET_ACC_PATH . 'assets/js/wicket-acc-main.js';
+        $legacy_js_path = WICKET_ACC_PATH . 'assets/js/wicket-acc-legacy.js';
+        $orders_js_path = WICKET_ACC_PATH . 'assets/js/wicket-acc-orders.js';
+        $subscriptions_js_path = WICKET_ACC_PATH . 'assets/js/wicket-acc-subscriptions.js';
+
+        wp_enqueue_style('wicket-acc-frontend-styles', WICKET_ACC_URL . 'assets/css/wicket-acc-main.css', [], $this->get_latest_modification_time($frontend_css_files, 'wicket_acc_frontend_css_version'));
+        wp_enqueue_script('wicket-acc-frontend-scripts', WICKET_ACC_URL . 'assets/js/wicket-acc-main.js', [], file_exists($frontend_js_path) ? filemtime($frontend_js_path) : WICKET_ACC_VERSION, true);
+        wp_enqueue_script('wicket-acc-frontend-legacy-scripts', WICKET_ACC_URL . 'assets/js/wicket-acc-legacy.js', [], file_exists($legacy_js_path) ? filemtime($legacy_js_path) : WICKET_ACC_VERSION, true);
+        wp_enqueue_script('wicket-acc-orders', WICKET_ACC_URL . 'assets/js/wicket-acc-orders.js', [], file_exists($orders_js_path) ? filemtime($orders_js_path) : WICKET_ACC_VERSION, true);
+        wp_enqueue_script('wicket-acc-subscriptions', WICKET_ACC_URL . 'assets/js/wicket-acc-subscriptions.js', [], file_exists($subscriptions_js_path) ? filemtime($subscriptions_js_path) : WICKET_ACC_VERSION, true);
     }
 }
