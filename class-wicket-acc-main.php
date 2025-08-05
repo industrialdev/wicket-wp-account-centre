@@ -14,7 +14,7 @@ use WicketAcc\Services\Notification;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Custom account management system for Wicket. Provides user account features, organization management, and additional blocks and pages. Integrates with WooCommerce when available.
- * Version:           1.5.233
+ * Version:           1.5.240
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -245,10 +245,10 @@ class WicketAcc
      *
      * @param string $name
      *
-     * @return object|Blocks|Mdp|OrganizationProfile|Profile|User|Log|WooCommerce|Language|OrganizationManagement|OrganizationRoster
+     * @return object|Blocks|Mdp|OrganizationProfile|Profile|User|Log|WooCommerce|Language|OrganizationManagement|OrganizationRoster|Settings
      * @throws \Exception
      */
-    public function __get($name): Blocks|Mdp|OrganizationProfile|Profile|User|Log|WooCommerce|Language|OrganizationManagement|OrganizationRoster
+    public function __get($name): Blocks|Mdp|OrganizationProfile|Profile|User|Log|WooCommerce|Language|OrganizationManagement|OrganizationRoster|Settings
     {
         // Handle MdpApi alias for backward compatibility
         if ($name === 'MdpApi') {
