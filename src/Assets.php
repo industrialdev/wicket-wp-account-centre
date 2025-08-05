@@ -97,6 +97,20 @@ class Assets extends WicketAcc
             $post = get_queried_object();
         }
 
+        // Check if the current theme name starts with 'wicket'
+        // If so, we don't include picocss to avoid conflicts
+        $theme = wp_get_theme();
+        $theme_name = $theme->get('Name');
+        $is_wicket_theme = str_starts_with(strtolower($theme_name), 'wicket');
+
+        // Allow third-party developers to prevent enqueueing our version of picocss
+        $should_enqueue_wicket_styles = apply_filters('wicket/acc/should_enqueue_wicket_styles', true);
+
+        // Enqueue picocss unless using a wicket theme or filter returns false
+        if (!$is_wicket_theme && $should_enqueue_wicket_styles) {
+            wp_enqueue_style('wicket-acc-pico', WICKET_ACC_URL . 'assets/css/wicket-pico-fluid.css', [], WICKET_ACC_VERSION);
+        }
+
         // Determine if assets should be enqueued based on context.
         // Assets are enqueued if:
         // 1. The current post type IS 'my-account', OR

@@ -1,7 +1,7 @@
 {
     "name": "industrialdev/wicket-wp-account-centre",
     "description": "Wicket's Account Centre for WordPress",
-    "version": "1.5.231",
+    "version": "1.5.232",
     "keywords": [
         "wordpress",
         "wicket",
@@ -27,7 +27,8 @@
     "require": {
         "php": ">=8.1.0",
         "industrialdev/wicket-sdk-php": "dev-master",
-        "htmlburger/carbon-fields": "^3.6"
+        "htmlburger/carbon-fields": "^3.6",
+        "picocss/pico": "^2.1"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.64"
@@ -51,17 +52,20 @@
         "post-install-cmd": [
             "@remove-ci-folder",
             "@cs:fix",
-            "@prefix-namespaces"
+            "@prefix-namespaces",
+            "@process-pico-css"
         ],
         "post-update-cmd": [
             "@remove-ci-folder",
             "@cs:fix",
-            "@prefix-namespaces"
+            "@prefix-namespaces",
+            "@process-pico-css"
         ],
         "version-bump": [
             "@php ./.ci/version-bump.php",
             "@cs:fix"
         ],
+        "process-pico-css": "@php ./.ci/process-pico-css.php",
         "cs:fix": "@php -r \"system(PHP_OS_FAMILY === 'Windows' ? './.ci/php.exe ./.ci/php-cs-fixer.phar fix' : (PHP_OS_FAMILY === 'Darwin' ? './.ci/php-macos ./.ci/php-cs-fixer.phar fix' : './.ci/php-linux ./.ci/php-cs-fixer.phar fix'));\"",
         "post-autoload-dump": [
             "strauss include-autoloader"

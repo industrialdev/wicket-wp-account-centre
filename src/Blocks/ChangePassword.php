@@ -60,7 +60,7 @@ class ChangePassword
         $formInstructions = $fields['form_instructions'] ?? __('Enter your current password and choose a new one.', 'wicket-acc');
 
         $attrs = get_block_wrapper_attributes([
-            'class' => 'wicket-acc-block wicket-acc-block-password flex flex-col gap-8',
+            'class' => 'wicket wicket-acc-block wicket-acc-block-password flex flex-col gap-8',
         ]);
 
         // Helper function to check for field errors
