@@ -45,11 +45,18 @@ class Profile extends WicketAcc
         } elseif ($id_or_email instanceof \WP_User) {
             // Handle WP_User object
             $user_id = $id_or_email->ID;
-        } else {
+        } elseif (is_string($id_or_email)) {
+            // Handle email string
             $user = get_user_by('email', $id_or_email);
             if ($user) {
                 $user_id = $user->ID;
             }
+        } elseif ($id_or_email instanceof \WP_Comment) {
+            // Handle WP_Comment object
+            $user_id = (int) $id_or_email->user_id;
+        } elseif ($id_or_email instanceof \WP_Post) {
+            // Handle WP_Post object
+            $user_id = (int) $id_or_email->post_author;
         }
 
         // Get the profile picture URL
@@ -82,11 +89,18 @@ class Profile extends WicketAcc
         } elseif ($id_or_email instanceof \WP_User) {
             // Handle WP_User object
             $user_id = $id_or_email->ID;
-        } else {
+        } elseif (is_string($id_or_email)) {
+            // Handle email string
             $user = get_user_by('email', $id_or_email);
             if ($user) {
                 $user_id = $user->ID;
             }
+        } elseif ($id_or_email instanceof \WP_Comment) {
+            // Handle WP_Comment object
+            $user_id = (int) $id_or_email->user_id;
+        } elseif ($id_or_email instanceof \WP_Post) {
+            // Handle WP_Post object
+            $user_id = (int) $id_or_email->post_author;
         }
 
         // Get the profile picture URL
