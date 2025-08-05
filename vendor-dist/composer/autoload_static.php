@@ -660,6 +660,7 @@ class ComposerStaticInit25b1eff86541e9e47c69f912bcb70ad8
         'WicketAcc\\Registers' => __DIR__ . '/../..' . '/src/Registers.php',
         'WicketAcc\\Router' => __DIR__ . '/../..' . '/src/Router.php',
         'WicketAcc\\Services\\Notification' => __DIR__ . '/../..' . '/src/Services/Notification.php',
+        'WicketAcc\\Settings' => __DIR__ . '/../..' . '/src/Settings.php',
         'WicketAcc\\Shortcodes' => __DIR__ . '/../..' . '/src/Shortcodes.php',
         'WicketAcc\\Symfony\\Component\\Translation\\CatalogueMetadataAwareInterface' => __DIR__ . '/..' . '/symfony/translation/CatalogueMetadataAwareInterface.php',
         'WicketAcc\\Symfony\\Component\\Translation\\Catalogue\\AbstractOperation' => __DIR__ . '/..' . '/symfony/translation/Catalogue/AbstractOperation.php',

@@ -61,6 +61,7 @@ class ChangePassword
 
         $attrs = get_block_wrapper_attributes([
             'class' => 'wicket wicket-acc-block wicket-acc-block-password flex flex-col gap-8',
+            'data-theme' => WACC()->Settings->get_wicket_theme(),
         ]);
 
         // Helper function to check for field errors

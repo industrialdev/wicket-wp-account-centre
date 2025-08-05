@@ -327,6 +327,7 @@ class WicketAcc
             'Log'                    => new Log(),
             'Language'               => new Language(),
             'Notification'           => new Notification(),
+            'Settings'               => new Settings(),
         ];
 
         // Instantiate classes for their hooks

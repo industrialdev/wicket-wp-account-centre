@@ -11,6 +11,23 @@ defined('ABSPATH') || exit;
  */
 class Assets extends WicketAcc
 {
+    private $wicketTheme;
+    private $wicketPreferColorScheme;
+
+    /**
+     * Assets constructor.
+     *
+     * Adds actions to enqueue admin and frontend assets.
+     */
+    public function __construct()
+    {
+        $this->wicketTheme = WACC()->Settings->getWicketTheme();
+        $this->wicketPreferColorScheme = WACC()->Settings->getWicketPreferColorScheme();
+
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
+    }
+
     /**
      * Get the latest modification time from an array of files.
      *
@@ -54,17 +71,6 @@ class Assets extends WicketAcc
     }
 
     /**
-     * Assets constructor.
-     *
-     * Adds actions to enqueue admin and frontend assets.
-     */
-    public function __construct()
-    {
-        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
-        add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
-    }
-
-    /**
      * Enqueue admin assets (CSS & JS).
      *
      * @return void
@@ -78,6 +84,13 @@ class Assets extends WicketAcc
 
         wp_enqueue_style('wicket-acc-admin-styles', WICKET_ACC_URL . 'assets/css/wicket-acc-admin-main.css', [], $this->get_latest_modification_time($admin_css_files, 'wicket_acc_admin_css_version'));
         wp_enqueue_script('wicket-acc-admin-scripts', WICKET_ACC_URL . 'assets/js/wicket-acc-admin-main.js', [], file_exists($admin_js_path) ? filemtime($admin_js_path) : WICKET_ACC_VERSION, true);
+
+        // Localize script with settings
+        $localized_settings = [
+            'wicket_theme' => $this->wicketTheme,
+            'wicket_prefer_color_scheme' => $this->wicketPreferColorScheme,
+        ];
+        wp_localize_script('wicket-acc-admin-scripts', 'wicketAccSettings', $localized_settings);
     }
 
     /**
@@ -102,11 +115,8 @@ class Assets extends WicketAcc
         $theme = wp_get_theme();
         $theme_name = $theme->get('Name');
         $is_wicket_theme = str_starts_with(strtolower($theme_name), 'wicket');
-
-        // Allow third-party developers to prevent enqueueing our version of picocss
         $should_enqueue_wicket_styles = apply_filters('wicket/acc/should_enqueue_wicket_styles', true);
 
-        // Enqueue picocss unless using a wicket theme or filter returns false
         if (!$is_wicket_theme && $should_enqueue_wicket_styles) {
             wp_enqueue_style('wicket-acc-pico', WICKET_ACC_URL . 'assets/css/wicket-pico-fluid.css', [], WICKET_ACC_VERSION);
         }
@@ -167,5 +177,12 @@ class Assets extends WicketAcc
         wp_enqueue_script('wicket-acc-frontend-legacy-scripts', WICKET_ACC_URL . 'assets/js/wicket-acc-legacy.js', [], file_exists($legacy_js_path) ? filemtime($legacy_js_path) : WICKET_ACC_VERSION, true);
         wp_enqueue_script('wicket-acc-orders', WICKET_ACC_URL . 'assets/js/wicket-acc-orders.js', [], file_exists($orders_js_path) ? filemtime($orders_js_path) : WICKET_ACC_VERSION, true);
         wp_enqueue_script('wicket-acc-subscriptions', WICKET_ACC_URL . 'assets/js/wicket-acc-subscriptions.js', [], file_exists($subscriptions_js_path) ? filemtime($subscriptions_js_path) : WICKET_ACC_VERSION, true);
+
+        // Localize script with settings
+        $localized_settings = [
+            'wicket_theme' => $this->wicketTheme,
+            'wicket_prefer_color_scheme' => $this->wicketPreferColorScheme,
+        ];
+        wp_localize_script('wicket-acc-frontend-scripts', 'wicketAccSettings', $localized_settings);
     }
 }

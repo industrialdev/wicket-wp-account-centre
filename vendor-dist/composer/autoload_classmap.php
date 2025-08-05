@@ -511,6 +511,7 @@ return array(
     'WicketAcc\\Registers' => $baseDir . '/src/Registers.php',
     'WicketAcc\\Router' => $baseDir . '/src/Router.php',
     'WicketAcc\\Services\\Notification' => $baseDir . '/src/Services/Notification.php',
+    'WicketAcc\\Settings' => $baseDir . '/src/Settings.php',
     'WicketAcc\\Shortcodes' => $baseDir . '/src/Shortcodes.php',
     'WicketAcc\\Symfony\\Component\\Translation\\CatalogueMetadataAwareInterface' => $vendorDir . '/symfony/translation/CatalogueMetadataAwareInterface.php',
     'WicketAcc\\Symfony\\Component\\Translation\\Catalogue\\AbstractOperation' => $vendorDir . '/symfony/translation/Catalogue/AbstractOperation.php',

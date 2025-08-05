@@ -22,11 +22,11 @@ if (!is_dir($targetDir)) {
 // Define CSS files to process
 $cssFiles = [
     [
-        'source' => __DIR__ . '/../vendor/picocss/pico/css/pico.conditional.zinc.css',
+        'source' => __DIR__ . '/../vendor/picocss/pico/css/pico.classless.zinc.css',
         'target' => $targetDir . '/wicket-pico.css'
     ],
     [
-        'source' => __DIR__ . '/../vendor/picocss/pico/css/pico.fluid.classless.conditional.zinc.css',
+        'source' => __DIR__ . '/../vendor/picocss/pico/css/pico.fluid.classless.zinc.css',
         'target' => $targetDir . '/wicket-pico-fluid.css'
     ]
 ];
@@ -50,26 +50,32 @@ function processCssFile($sourceFile, $targetFile) {
         exit(1);
     }
 
-    // Copy the file
-    if (!copy($sourceFile, $targetFile)) {
-        echo "Error: Failed to copy file from $sourceFile to $targetFile\n";
-        exit(1);
-    }
-
-    // Read the copied file
-    $content = file_get_contents($targetFile);
+    // Read the source file content
+    $content = file_get_contents($sourceFile);
     if ($content === false) {
-        echo "Error: Failed to read copied file: $targetFile\n";
+        echo "Error: Failed to read source file: $sourceFile\n";
         exit(1);
     }
 
-    // Replace .pico class names with .wicket (but not CSS variables like --pico-*)
-    // This regex looks for .pico followed by a non-word character or end of string
-    // to avoid matching things like .pico-class or --pico-something
-    $processedContent = preg_replace('/\.pico(?=\W|$)/', '.wicket', $content);
+    // Separate header (@charset, comments) from the main CSS content
+    $header = '';
+    $mainContent = $content;
 
-    // Write the modified content back to the file
-    if (file_put_contents($targetFile, $processedContent) === false) {
+    // Use a regex to find the header part (everything before the first ruleset)
+    // This looks for @charset, and any comments before the first selector like `:root` or `a`
+    if (preg_match('/^((?:@charset[^;]+;\s*)?(?:\/\*.*?\*\/\s*)*)/s', $content, $matches)) {
+        $header = $matches[1];
+        $mainContent = substr($content, strlen($header));
+    }
+
+    // Wrap the main content in .wicket class for scoping
+    $scopedContent = ".wicket {\n" . trim($mainContent) . "\n}";
+
+    // Combine header and scoped content
+    $finalContent = $header . $scopedContent;
+
+    // Write the modified content to the target file
+    if (file_put_contents($targetFile, $finalContent) === false) {
         echo "Error: Failed to write processed content to $targetFile\n";
         exit(1);
     }
