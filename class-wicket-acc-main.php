@@ -14,7 +14,7 @@ use WicketAcc\Services\Notification;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Custom account management system for Wicket. Provides user account features, organization management, and additional blocks and pages. Integrates with WooCommerce when available.
- * Version:           1.5.240
+ * Version:           1.5.241
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -245,14 +245,19 @@ class WicketAcc
      *
      * @param string $name
      *
-     * @return object|Blocks|Mdp|OrganizationProfile|Profile|User|Log|WooCommerce|Language|OrganizationManagement|OrganizationRoster|Settings
+     * @return object|Blocks|Mdp|OrganizationProfile|Profile|User|Log|WooCommerce|Language|OrganizationManagement|OrganizationRoster|Settings|Helpers
      * @throws \Exception
      */
-    public function __get($name): Blocks|Mdp|OrganizationProfile|Profile|User|Log|WooCommerce|Language|OrganizationManagement|OrganizationRoster|Settings
+    public function __get($name): Blocks|Mdp|OrganizationProfile|Profile|User|Log|WooCommerce|Language|OrganizationManagement|OrganizationRoster|Settings|Helpers
     {
         // Handle MdpApi alias for backward compatibility
         if ($name === 'MdpApi') {
             $name = 'Mdp';
+        }
+
+        // Handle Helpers alias for backward compatibility
+        if ($name === 'Helpers') {
+            return $this->getHelpers();
         }
 
         if (isset($this->instances[$name])) {
@@ -273,9 +278,11 @@ class WicketAcc
      */
     public function __call($name, $arguments)
     {
+        $helpers = $this->getHelpers();
+
         // Handle Helpers class methods directly
-        if (method_exists($this->helpersInstance, $name)) {
-            return call_user_func_array([$this->helpersInstance, $name], $arguments);
+        if (method_exists($helpers, $name)) {
+            return call_user_func_array([$helpers, $name], $arguments);
         }
 
         // Handle dynamic class instance call
@@ -284,6 +291,20 @@ class WicketAcc
         }
 
         throw new \Exception("Method or class instance '$name' does not exist. Available instances: " . implode(', ', array_keys($this->instances)));
+    }
+
+    /**
+     * Get the Helpers instance (lazy initialization).
+     *
+     * @return Helpers
+     */
+    private function getHelpers(): Helpers
+    {
+        if (!isset($this->helpersInstance)) {
+            $this->helpersInstance = new Helpers();
+        }
+
+        return $this->helpersInstance;
     }
 
     /**
@@ -313,8 +334,7 @@ class WicketAcc
             }
         }
 
-        $this->helpersInstance = new Helpers();
-
+        // Instantiate services
         // Instantiate services
         $this->instances = [
             'Mdp'                    => new Mdp(),
