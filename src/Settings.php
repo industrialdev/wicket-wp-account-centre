@@ -41,7 +41,7 @@ class Settings extends WicketAcc
      *
      * @return string
      */
-    public function getWicketTheme(): string
+    public function getWicketCssTheme(): string
     {
         return $this->wicketTheme;
     }
@@ -51,7 +51,7 @@ class Settings extends WicketAcc
      *
      * @return string
      */
-    public function getWicketPreferColorScheme(): string
+    public function getWicketCssPreferColorScheme(): string
     {
         return $this->wicketPreferColorScheme;
     }

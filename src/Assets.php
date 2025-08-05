@@ -21,8 +21,8 @@ class Assets extends WicketAcc
      */
     public function __construct()
     {
-        $this->wicketTheme = WACC()->Settings->getWicketTheme();
-        $this->wicketPreferColorScheme = WACC()->Settings->getWicketPreferColorScheme();
+        $this->wicketTheme = WACC()->Settings->getWicketCssTheme();
+        $this->wicketPreferColorScheme = WACC()->Settings->getWicketCssPreferColorScheme();
 
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
