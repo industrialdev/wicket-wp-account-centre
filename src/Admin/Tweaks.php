@@ -64,6 +64,7 @@ class Tweaks
             $output .= '<option value="' . esc_attr($cpt->ID) . '"' . selected($current, $cpt->ID, false) . '>' . esc_html($cpt->post_title) . '</option>';
         }
         $output .= '</optgroup></select>';
+
         return $output;
     }
 

@@ -3,8 +3,8 @@
 namespace WicketAcc;
 
 use WicketAcc\Admin\AdminSettings;
-use WicketAcc\Admin\Tweaks;
 use WicketAcc\Admin\Safeguards;
+use WicketAcc\Admin\Tweaks;
 use WicketAcc\Mdp\Init as Mdp;
 use WicketAcc\Services\Notification;
 
@@ -15,7 +15,7 @@ use WicketAcc\Services\Notification;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Custom account management system for Wicket. Provides user account features, organization management, and additional blocks and pages. Integrates with WooCommerce when available.
- * Version:           1.5.243
+ * Version:           1.5.244
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
