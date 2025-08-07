@@ -3,7 +3,8 @@
 namespace WicketAcc;
 
 use WicketAcc\Admin\AdminSettings;
-use WicketAcc\Admin\WicketAccSafeguard;
+use WicketAcc\Admin\Tweaks;
+use WicketAcc\Admin\Safeguards;
 use WicketAcc\Mdp\Init as Mdp;
 use WicketAcc\Services\Notification;
 
@@ -360,10 +361,11 @@ class WicketAcc
 
         if (is_admin()) {
             new AdminSettings();
+            new Tweaks();
 
             // Only initialize safeguard on non-development environments
             if (!defined('WP_ENVIRONMENT_TYPE') || WP_ENVIRONMENT_TYPE !== 'development') {
-                new WicketAccSafeguard(); // Initialize the safeguard class for admin tasks
+                new Safeguards(); // Initialize the safeguard class for admin tasks
             }
         }
 
