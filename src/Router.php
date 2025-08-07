@@ -49,7 +49,7 @@ class Router extends WicketAcc
         if ($this->acc_page_id_cache === null) {
             // Get from Carbon Fields with fallback to ACF
             if (function_exists('carbon_get_theme_option')) {
-                $this->acc_page_id_cache = carbon_get_theme_option('acc_page_dashboard');
+                $this->acc_page_id_cache = carbon_get_theme_option('acc_page_dashboard')[0]['id'];
             } else {
                 $this->acc_page_id_cache = get_field('acc_page_dashboard', 'option');
             }
@@ -435,9 +435,11 @@ class Router extends WicketAcc
             '/account-center',
         ];
 
-        foreach ($acc_old_slugs as $old_slug) {
-            if (str_contains($server_request_uri, $old_slug)) {
-                $this->performRedirect($acc_dashboard_url);
+        if (is_array($acc_old_slugs) && !empty($acc_old_slugs)) {
+            foreach ($acc_old_slugs as $old_slug) {
+                if (str_contains($server_request_uri, $old_slug)) {
+                    $this->performRedirect($acc_dashboard_url);
+                }
             }
         }
 
