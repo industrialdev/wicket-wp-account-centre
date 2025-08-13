@@ -34,16 +34,15 @@ class Helpers extends WicketAcc
      */
     public function getAccSlug()
     {
-        // WPML enabled?
-        if (function_exists('icl_get_languages')) {
-            global $sitepress;
-            $current_language = $sitepress->get_current_language();
-
+        // Prefer the shared helper for current language resolution.
+        if (function_exists('wicket_get_current_language')) {
+            $current_language = wicket_get_current_language();
             if (isset($this->acc_index_slugs[$current_language])) {
                 return $this->acc_index_slugs[$current_language];
             }
         }
 
+        // Fallback to English if no match.
         return $this->acc_index_slugs['en'];
     }
 

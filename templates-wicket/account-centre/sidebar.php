@@ -36,14 +36,10 @@ do_action('wicket/acc/sidebar/before_account_navigation_ul');
         <div class="myaccount-nav__container">
             <?php
             if ($nav_heading) :
-                if (WACC()->isWooCommerceActive()) {
-                    $myaccount_page = get_option('woocommerce_myaccount_page_id');
-                } else {
-                    $myaccount_page = get_page_by_path('my-account');
-                }
+                $acc_url = home_url(WACC()->getAccSlug() . '/');
     ?>
                 <h2 class="myaccount-nav-heading"><a
-                        href="<?php echo get_permalink($myaccount_page); ?>"><?php echo $nav_heading; ?></a>
+                        href="<?php echo esc_url($acc_url); ?>"><?php echo $nav_heading; ?></a>
                 </h2>
             <?php endif; ?>
             <?php
@@ -61,14 +57,10 @@ do_action('wicket/acc/sidebar/before_account_navigation_ul');
         <?php if (has_nav_menu('wicket-acc-nav-secondary') && $show_acc_secondary_nav) : ?>
             <div class="myaccount-nav__container">
                 <?php if ($nav_heading_two) :
-                    if (WACC()->isWooCommerceActive()) {
-                        $myaccount_page = get_option('woocommerce_myaccount_page_id');
-                    } else {
-                        $myaccount_page = get_page_by_path('my-account');
-                    }
+                    $acc_url = home_url(WACC()->getAccSlug() . '/');
             ?>
                     <h2 class="myaccount-nav-heading"><a
-                            href="<?php echo get_permalink($myaccount_page); ?>"><?php echo $nav_heading_two; ?></a>
+                            href="<?php echo esc_url($acc_url); ?>"><?php echo $nav_heading_two; ?></a>
                     </h2>
                 <?php endif; ?>
                 <?php
