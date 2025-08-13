@@ -30,13 +30,8 @@ class init extends Blocks
         $this->is_preview = $is_preview;
         $this->blocks = $blocks ?? new Blocks();
 
-        // Get max size from Carbon Fields setting
-        if (function_exists('carbon_get_theme_option')) {
-            $this->pp_max_size = absint(carbon_get_theme_option('acc_profile_picture_size'));
-        } else {
-            // Fallback to ACF if Carbon Fields is not available
-            $this->pp_max_size = absint(get_field('acc_profile_picture_size', 'option'));
-        }
+        // Get max size from centralized helper (CF preferred, ACF fallback)
+        $this->pp_max_size = absint(WACC()->getOption('acc_profile_picture_size', 1));
 
         // Ensure we have a valid max size (minimum 1MB)
         $this->pp_max_size = max(1, $this->pp_max_size);

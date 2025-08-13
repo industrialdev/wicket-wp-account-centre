@@ -8,7 +8,7 @@ defined('ABSPATH') || exit;
  */
 
 // We will just redirect user to my-account dashboard
-$acc_dashboard_id = get_field('acc_page_dashboard', 'option');
+$acc_dashboard_id = WACC()->getOptionPageId('acc_page_dashboard', 0);
 
 if ($acc_dashboard_id) {
     $redirect_url = get_permalink($acc_dashboard_id);

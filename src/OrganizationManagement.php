@@ -79,15 +79,10 @@ class OrganizationManagement extends WicketAcc
             return home_url();
         }
 
-        if (did_action('acf/init')) {
-            // Get from Carbon Fields with fallback to ACF
-            if (function_exists('carbon_get_theme_option')) {
-                $pageId = carbon_get_theme_option('acc_page_orgman-' . sanitize_text_field($slug));
-            } else {
-                $pageId = get_field('acc_page_orgman-' . sanitize_text_field($slug), 'option');
-            }
-        } else {
-            $pageId = get_option('acc_page_orgman-' . sanitize_text_field($slug));
+        // Prefer centralized helper (CF first, ACF fallback); then fallback to get_option
+        $pageId = WACC()->getOptionPageId('acc_page_orgman-' . sanitize_text_field($slug), 0);
+        if (!$pageId) {
+            $pageId = (int) get_option('acc_page_orgman-' . sanitize_text_field($slug));
         }
 
         // Not found? Try to found the page by slug: organization-{slug}

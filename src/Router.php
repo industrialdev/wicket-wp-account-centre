@@ -47,12 +47,7 @@ class Router extends WicketAcc
     public function getAccPageId()
     {
         if ($this->acc_page_id_cache === null) {
-            // Get from Carbon Fields with fallback to ACF
-            if (function_exists('carbon_get_theme_option')) {
-                $this->acc_page_id_cache = carbon_get_theme_option('acc_page_dashboard')[0]['id'];
-            } else {
-                $this->acc_page_id_cache = get_field('acc_page_dashboard', 'option');
-            }
+            $this->acc_page_id_cache = WACC()->getOptionPageId('acc_page_dashboard', 0);
         }
 
         // Still null or empty?
@@ -91,12 +86,7 @@ class Router extends WicketAcc
     public function createPage($slug, $name)
     {
         // Let's ensure our setting option doesn't have a page defined yet
-        // Get from Carbon Fields with fallback to ACF
-        if (function_exists('carbon_get_theme_option')) {
-            $page_id = carbon_get_theme_option('acc_page_' . $slug);
-        } else {
-            $page_id = get_field('acc_page_' . $slug, 'option');
-        }
+        $page_id = WACC()->getOptionPageId('acc_page_' . $slug, 0);
 
         if ($page_id) {
             return $page_id;
@@ -250,18 +240,10 @@ class Router extends WicketAcc
      */
     private function isOrgmanagementPage($post_id)
     {
-        // Get from Carbon Fields with fallback to ACF
-        if (function_exists('carbon_get_theme_option')) {
-            $orgManagementIndex = carbon_get_theme_option('acc_page_orgman-index');
-            $orgManagementProfile = carbon_get_theme_option('acc_page_orgman-profile');
-            $orgManagementMembers = carbon_get_theme_option('acc_page_orgman-members');
-            $orgManagementRoster = carbon_get_theme_option('acc_page_orgman-roster');
-        } else {
-            $orgManagementIndex = get_field('acc_page_orgman-index', 'option');
-            $orgManagementProfile = get_field('acc_page_orgman-profile', 'option');
-            $orgManagementMembers = get_field('acc_page_orgman-members', 'option');
-            $orgManagementRoster = get_field('acc_page_orgman-roster', 'option');
-        }
+        $orgManagementIndex = WACC()->getOptionPageId('acc_page_orgman-index', 0);
+        $orgManagementProfile = WACC()->getOptionPageId('acc_page_orgman-profile', 0);
+        $orgManagementMembers = WACC()->getOptionPageId('acc_page_orgman-members', 0);
+        $orgManagementRoster = WACC()->getOptionPageId('acc_page_orgman-roster', 0);
 
         switch ($post_id) {
             case $orgManagementIndex:

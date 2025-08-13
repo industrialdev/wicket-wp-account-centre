@@ -82,7 +82,8 @@ class AdminSettings extends \WicketAcc\WicketAcc
         $parent_slug = 'edit.php?post_type=my-account';
 
         // Only show the 'Global Header' link if the feature is enabled in the options.
-        if (function_exists('carbon_get_theme_option') && carbon_get_theme_option('acc_global-headerbanner')) {
+        $acc_banner_enabled = WACC()->getOption('acc_global-headerbanner', false);
+        if ($acc_banner_enabled) {
             $global_header_post_id = WACC()->getGlobalHeaderBannerPageId();
 
             add_submenu_page(

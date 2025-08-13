@@ -58,12 +58,8 @@ class Helpers extends WicketAcc
      */
     public function getAccName()
     {
-        // Get from Carbon Fields with fallback to ACF
-        if (function_exists('carbon_get_theme_option')) {
-            $locale = carbon_get_theme_option('ac_localization');
-        } else {
-            $locale = get_field('ac_localization', 'option');
-        }
+        // Use centralized option helper (CF preferred, ACF fallback)
+        $locale = $this->getOption('ac_localization', '');
 
         if (empty($locale)) {
             return __('Account Centre', 'wicket-acc');
@@ -80,6 +76,89 @@ class Helpers extends WicketAcc
         }
 
         return __('Account Centre', 'wicket-acc');
+    }
+
+    /**
+     * Get a theme option value preferring Carbon Fields, fallback to ACF option.
+     *
+     * @param string $key Option key
+     * @param mixed $default Default value if neither provider is available
+     * @return mixed
+     */
+    public function getOption(string $key, $default = null)
+    {
+        if (function_exists('carbon_get_theme_option')) {
+            return carbon_get_theme_option($key);
+        }
+
+        if (function_exists('get_field')) {
+            return get_field($key, 'option');
+        }
+
+        return $default;
+    }
+
+    /**
+     * Get a Page/Post ID stored as a relation option.
+     * Handles Carbon Fields relation arrays and ACF numeric IDs.
+     *
+     * @param string $key Option key
+     * @param int $default Default ID
+     * @return int
+     */
+    public function getOptionPageId(string $key, int $default = 0): int
+    {
+        if (function_exists('carbon_get_theme_option')) {
+            $val = carbon_get_theme_option($key);
+            // CF relation may return array with first item ['id']
+            if (is_array($val)) {
+                return isset($val[0]['id']) ? (int) $val[0]['id'] : $default;
+            }
+            if (is_numeric($val)) {
+                return (int) $val;
+            }
+            return $default;
+        }
+
+        if (function_exists('get_field')) {
+            $acf = get_field($key, 'option');
+            return is_numeric($acf) ? (int) $acf : $default;
+        }
+
+        return $default;
+    }
+
+    /**
+     * Get an attachment URL from a theme option.
+     * CF typically stores attachment ID; ACF may store URL or ID.
+     *
+     * @param string $key Option key
+     * @param string $default Default URL if not resolvable
+     * @return string
+     */
+    public function getAttachmentUrlFromOption(string $key, string $default = ''): string
+    {
+        if (function_exists('carbon_get_theme_option')) {
+            $id = carbon_get_theme_option($key);
+            if (is_numeric($id)) {
+                $url = wp_get_attachment_url((int) $id);
+                return $url ?: $default;
+            }
+            return $default;
+        }
+
+        if (function_exists('get_field')) {
+            $val = get_field($key, 'option');
+            if (is_numeric($val)) {
+                $url = wp_get_attachment_url((int) $val);
+                return $url ?: $default;
+            }
+            if (is_string($val)) {
+                return $val;
+            }
+        }
+
+        return $default;
     }
 
     /**
@@ -151,12 +230,8 @@ class Helpers extends WicketAcc
     public function renderGlobalSubHeader()
     {
         $acc_global_headerbanner_page_id = WACC()->getGlobalHeaderBannerPageId();
-        // Get from Carbon Fields with fallback to ACF
-        if (function_exists('carbon_get_theme_option')) {
-            $acc_global_headerbanner_status = carbon_get_theme_option('acc_global-headerbanner');
-        } else {
-            $acc_global_headerbanner_status = get_field('acc_global-headerbanner', 'option');
-        }
+        // Read option via helper (CF first, ACF fallback)
+        $acc_global_headerbanner_status = $this->getOption('acc_global-headerbanner', false);
 
         if ($acc_global_headerbanner_page_id && $acc_global_headerbanner_status) {
             $global_banner_page = get_post($acc_global_headerbanner_page_id);

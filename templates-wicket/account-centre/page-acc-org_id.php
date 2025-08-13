@@ -26,15 +26,15 @@ if (!empty($dev_wrapper_classes)) {
     $wrapper_classes[] = $dev_wrapper_classes;
 }
 
-// ACC Options
-$acc_dashboard_id = get_field('acc_page_dashboard', 'option');
-$acc_sidebar_location = get_field('acc_sidebar_location', 'option');
-$acc_spelling = get_field('acc_localization', 'option');
+// ACC Options (CF first, ACF fallback via helper)
+$acc_dashboard_id = WACC()->getOptionPageId('acc_page_dashboard', 0);
+$acc_sidebar_location = WACC()->getOption('acc_sidebar_location', '');
+$acc_spelling = WACC()->getOption('acc_localization', '');
 $acc_display_breadcrumb = false;
 $acc_display_publish_date = false;
 $is_wc_endpoint = false;
 $acc_global_headerbanner_page_id = WACC()->getGlobalHeaderBannerPageId();
-$acc_global_headerbanner_status = get_field('acc_global-headerbanner', 'option');
+$acc_global_headerbanner_status = WACC()->getOption('acc_global-headerbanner', false);
 $current_page_id = get_the_ID();
 $default_language = 'en';
 if (function_exists('wpml_get_default_language')) {

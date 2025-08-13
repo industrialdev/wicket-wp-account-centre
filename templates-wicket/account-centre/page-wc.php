@@ -5,8 +5,7 @@
  */
 defined('ABSPATH') || exit;
 
-$acc_sidebar_location = get_field('acc_sidebar_location', 'option');
-
+$acc_sidebar_location = WACC()->getOption('acc_sidebar_location', 'right');
 if (empty($acc_sidebar_location)) {
     $acc_sidebar_location = 'right';
 }

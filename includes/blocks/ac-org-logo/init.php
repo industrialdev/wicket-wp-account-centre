@@ -34,13 +34,8 @@ class init extends Blocks
         $this->uploads_url = WICKET_ACC_UPLOADS_URL . 'organization-logos/';
         $this->pp_extensions = ['jpg', 'jpeg', 'png', 'gif'];
 
-        // Get max size from Carbon Fields setting
-        if (function_exists('carbon_get_theme_option')) {
-            $this->max_size = absint(carbon_get_theme_option('acc_profile_picture_size'));
-        } else {
-            // Fallback to ACF if Carbon Fields is not available
-            $this->max_size = absint(get_field('acc_profile_picture_size', 'option'));
-        }
+        // Get max size from centralized helper (CF preferred, ACF fallback)
+        $this->max_size = absint(WACC()->getOption('acc_profile_picture_size', 1));
 
         // Ensure we have a valid max size (minimum 1MB)
         $this->max_size = max(1, $this->max_size);
