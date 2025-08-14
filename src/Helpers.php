@@ -117,11 +117,13 @@ class Helpers extends WicketAcc
             if (is_numeric($val)) {
                 return (int) $val;
             }
+
             return $default;
         }
 
         if (function_exists('get_field')) {
             $acf = get_field($key, 'option');
+
             return is_numeric($acf) ? (int) $acf : $default;
         }
 
@@ -142,8 +144,10 @@ class Helpers extends WicketAcc
             $id = carbon_get_theme_option($key);
             if (is_numeric($id)) {
                 $url = wp_get_attachment_url((int) $id);
+
                 return $url ?: $default;
             }
+
             return $default;
         }
 
@@ -151,6 +155,7 @@ class Helpers extends WicketAcc
             $val = get_field($key, 'option');
             if (is_numeric($val)) {
                 $url = wp_get_attachment_url((int) $val);
+
                 return $url ?: $default;
             }
             if (is_string($val)) {
