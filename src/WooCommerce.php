@@ -32,7 +32,7 @@ class WooCommerce extends WicketAcc
     }
 
     /**
-     * Failsafe: prevent any redirect that would strip ACC endpoint arguments
+     * Failsafe: prevent any redirect that would strip ACC endpoint arguments.
      *
      * @param string $location
      * @param int    $status
@@ -68,7 +68,7 @@ class WooCommerce extends WicketAcc
 
     /**
      * Remove WordPress core canonical redirect for ACC endpoint URLs with args
-     * Runs very early on template_redirect before core canonical executes (priority 10)
+     * Runs very early on template_redirect before core canonical executes (priority 10).
      */
     public function disable_canonical_for_acc_endpoints(): void
     {
@@ -102,12 +102,11 @@ class WooCommerce extends WicketAcc
     public function initialize()
     {
 
-
         // Override templates
         add_filter('woocommerce_locate_template', [$this, 'override_woocommerce_template'], 10, 3);
 
         // Remove order again button
-        remove_action( 'woocommerce_order_details_after_order_table', 'woocommerce_order_again_button' );
+        remove_action('woocommerce_order_details_after_order_table', 'woocommerce_order_again_button');
 
         // Add global header banner as ACC pages
         //add_action('wicket_header_end', [$this, 'wc_add_acc_banner'], PHP_INT_MAX);
@@ -128,7 +127,6 @@ class WooCommerce extends WicketAcc
         add_filter('wc_get_page_id', [$this, 'disable_wc_page_detection'], 10, 2);
         add_filter('woocommerce_is_endpoint_url', [$this, 'disable_wc_endpoint_url_detection'], 10, 2);
 
-
     }
 
     /**
@@ -142,7 +140,6 @@ class WooCommerce extends WicketAcc
      */
     public function override_woocommerce_template($template, $template_name, $template_path)
     {
-
 
         if (is_admin()) {
             return $template;
@@ -329,45 +326,46 @@ class WooCommerce extends WicketAcc
 
     /**
      * Prevent canonical redirect that strips endpoint args from ACC URLs, e.g.,
-     * /my-account/view-order/40121/ -> /my-account/view-order/
+     * /my-account/view-order/40121/ -> /my-account/view-order/.
      *
      * @param string|false $redirect_url
      * @param string       $requested_url
      * @return string|false
      */
     public function bypass_canonical_for_acc_endpoints($redirect_url, $requested_url)
-{
-    if (!isset($_SERVER['REQUEST_URI'])) {
+    {
+        if (!isset($_SERVER['REQUEST_URI'])) {
+            return $redirect_url;
+        }
+
+        $raw_url = $requested_url ?: $_SERVER['REQUEST_URI'];
+        $path = parse_url($raw_url, PHP_URL_PATH);
+        if (!$path) {
+            return $redirect_url;
+        }
+
+        $segments = array_values(array_filter(explode('/', trim($path, '/'))));
+        if (count($segments) < 3) {
+            return $redirect_url; // need at least base/endpoint/arg
+        }
+
+        // First segment must be one of our ACC WC index slugs (localized)
+        $bases = array_values($this->acc_wc_index_slugs);
+        $base = $segments[0] ?? '';
+        if (!in_array($base, $bases, true)) {
+            return $redirect_url;
+        }
+
+        $endpoint_keys = array_keys($this->acc_wc_endpoints);
+        $second_last = $segments[count($segments) - 2];
+
+        if (in_array($second_last, $endpoint_keys, true)) {
+            // This is an ACC endpoint with an arg; do not canonicalize away the arg
+            return false;
+        }
+
         return $redirect_url;
     }
-
-    $raw_url = $requested_url ?: $_SERVER['REQUEST_URI'];
-    $path = parse_url($raw_url, PHP_URL_PATH);
-    if (!$path) {
-        return $redirect_url;
-    }
-
-    $segments = array_values(array_filter(explode('/', trim($path, '/'))));
-    if (count($segments) < 3) {
-        return $redirect_url; // need at least base/endpoint/arg
-    }
-
-    // First segment must be one of our ACC WC index slugs (localized)
-    $bases = array_values($this->acc_wc_index_slugs);
-    $base = $segments[0] ?? '';
-    if (!in_array($base, $bases, true)) {
-        return $redirect_url;
-    }
-
-    $endpoint_keys = array_keys($this->acc_wc_endpoints);
-    $second_last = $segments[count($segments) - 2];
-
-    if (in_array($second_last, $endpoint_keys, true)) {
-        // This is an ACC endpoint with an arg; do not canonicalize away the arg
-        return false;
-    }
-    return $redirect_url;
-}
 
     /**
      * On parse_request, extract endpoint argument from URL segments and inject into WP query vars
@@ -384,8 +382,6 @@ class WooCommerce extends WicketAcc
 
         $request_uri = sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI']));
         $path_segments = array_filter(explode('/', trim($request_uri, '/')));
-
-
 
         if (count($path_segments) < 3) {
             return;
@@ -451,8 +447,6 @@ class WooCommerce extends WicketAcc
         }
     }
 
-
-
     /**
      * If WP resolved to 404 for an ACC endpoint with an argument, clear 404 so our template renders.
      * This guards against stale rewrites until permalinks are flushed.
@@ -495,7 +489,7 @@ class WooCommerce extends WicketAcc
     }
 
     /**
-     * Disable WooCommerce account page detection for ACC pages
+     * Disable WooCommerce account page detection for ACC pages.
      *
      * @param bool $is_account_page
      * @return bool
@@ -512,7 +506,7 @@ class WooCommerce extends WicketAcc
     }
 
     /**
-     * Disable WooCommerce page detection for ACC pages
+     * Disable WooCommerce page detection for ACC pages.
      *
      * @param int $page_id
      * @param string $page
@@ -530,7 +524,7 @@ class WooCommerce extends WicketAcc
     }
 
     /**
-     * Disable WooCommerce endpoint URL detection for ACC pages
+     * Disable WooCommerce endpoint URL detection for ACC pages.
      *
      * @param bool $is_endpoint
      * @param string $endpoint
@@ -548,7 +542,7 @@ class WooCommerce extends WicketAcc
     }
 
     /**
-     * Temporarily hide WooCommerce query vars for ACC pages to prevent WC endpoint detection
+     * Temporarily hide WooCommerce query vars for ACC pages to prevent WC endpoint detection.
      */
     public function temporarily_hide_wc_query_vars_for_acc()
     {
@@ -579,7 +573,7 @@ class WooCommerce extends WicketAcc
     }
 
     /**
-     * Restore WooCommerce query vars for ACC pages after endpoint detection
+     * Restore WooCommerce query vars for ACC pages after endpoint detection.
      */
     public function restore_wc_query_vars_for_acc()
     {
@@ -601,7 +595,7 @@ class WooCommerce extends WicketAcc
     }
 
     /**
-     * Storage for temporarily hidden WC query vars
+     * Storage for temporarily hidden WC query vars.
      */
     private $stored_wc_query_vars = [];
 }

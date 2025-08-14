@@ -186,19 +186,25 @@ class AdminSettings extends \WicketAcc\WicketAcc
 
         // Step 1: Read WooCommerce my account page ID
         $pageId = (int) get_option('woocommerce_myaccount_page_id', 0);
-        if ($pageId <= 0) { return; }
+        if ($pageId <= 0) {
+            return;
+        }
 
         // Step 2: Read current slug and content for that page
         $currentSlug = get_post_field('post_name', $pageId);
         $postType = get_post_type($pageId);
         $content = get_post_field('post_content', $pageId) ?: '';
 
-        if (!$currentSlug || $postType !== 'page') { return; }
+        if (!$currentSlug || $postType !== 'page') {
+            return;
+        }
 
         // Step 3: Ensure page contains WooCommerce my account shortcode
         $hasShortcode = (function_exists('has_shortcode') && has_shortcode($content, 'woocommerce_my_account'))
             || str_contains($content, '[woocommerce_my_account');
-        if (!$hasShortcode) { return; }
+        if (!$hasShortcode) {
+            return;
+        }
 
         // Step 4: If slug differs from "my-account", first resolve slug conflicts then rename it
         $desiredSlug = 'my-account';
@@ -215,7 +221,9 @@ class AdminSettings extends \WicketAcc\WicketAcc
                     'post_title' => $newTitle,
                 ], true);
 
-                if (is_wp_error($conflictResult)) { return; }
+                if (is_wp_error($conflictResult)) {
+                    return;
+                }
             }
 
             $result = wp_update_post([
@@ -223,7 +231,9 @@ class AdminSettings extends \WicketAcc\WicketAcc
                 'post_name' => $desiredSlug,
             ], true);
 
-            if (is_wp_error($result)) { return; }
+            if (is_wp_error($result)) {
+                return;
+            }
 
             // Step 5: Soft refresh permalinks
             flush_rewrite_rules(false);

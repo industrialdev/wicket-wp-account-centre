@@ -2,7 +2,7 @@
 // No direct access
 defined('ABSPATH') || exit;
 
-/**
+/*
  * Template Name: ACC Page
  *
  * @package WicketAcc
@@ -69,7 +69,6 @@ if (WACC()->isWooCommerceActive()) {
     $last = end($segments) ?: '';
     $second_last = count($segments) > 1 ? $segments[count($segments) - 2] : '';
     $endpoint_arg = null;
-
 
     // If last segment is not an endpoint (e.g., numeric arg like order id), use previous segment
     if (in_array($last, array_keys($wc_endpoints), true)) {

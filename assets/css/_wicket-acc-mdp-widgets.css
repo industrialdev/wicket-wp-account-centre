@@ -1,0 +1,18 @@
+.wicket__widgets {
+  ul, li {
+    list-style: none !important;
+  }
+
+  /* Add red asterisk after "Add Address" button text */
+  .AddressList__item--add .btn-label::after {
+    content: " *";
+    color: red;
+  }
+
+  /* Add red asterisks after email, phone, and web address buttons */
+  [data-cy="uni-email_phone_web-add_btn"] .btn-label::after {
+    content: " *";
+    color: red;
+  }
+}
+
