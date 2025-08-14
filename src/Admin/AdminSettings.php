@@ -34,6 +34,10 @@ class AdminSettings extends \WicketAcc\WicketAcc
 
         // Check ACF JSON folder permissions for legacy Blocks
         add_action('admin_notices', [$this, 'checkAcfJsonFolderPermissions']);
+
+        // Sync WooCommerce "My Account" page to the ACC Dashboard when our theme options are saved
+        // Hook provides ($user_data, $container). We only act for container id 'wicket_acc_options'.
+        add_action('carbon_fields_theme_options_container_saved', [$this, 'syncWooCommerceMyAccountPage'], 10, 2);
     }
 
     /**
@@ -159,6 +163,71 @@ class AdminSettings extends \WicketAcc\WicketAcc
 
         // Mark the migration as complete
         update_option('wicket_acc_cf_migration_complete', true);
+    }
+
+    /**
+     * Ensure WooCommerce "My Account" page points to the ACC Dashboard page.
+     * Runs after saving Carbon Fields theme options.
+     */
+    public function syncWooCommerceMyAccountPage($userData = null, $container = null): void
+    {
+        $containerId = (is_object($container) && method_exists($container, 'get_id')) ? $container->get_id() : 'unknown';
+
+        // Ensure this runs only for our container
+        $expectedId = 'carbon_fields_container_wicket_acc_options';
+        if (!is_object($container) || !method_exists($container, 'get_id') || ($containerId !== $expectedId && $containerId !== 'wicket_acc_options')) {
+            return;
+        }
+
+        // Only proceed if WooCommerce is active
+        if (!\WACC()->isWooCommerceActive()) {
+            return;
+        }
+
+        // Step 1: Read WooCommerce my account page ID
+        $pageId = (int) get_option('woocommerce_myaccount_page_id', 0);
+        if ($pageId <= 0) { return; }
+
+        // Step 2: Read current slug and content for that page
+        $currentSlug = get_post_field('post_name', $pageId);
+        $postType = get_post_type($pageId);
+        $content = get_post_field('post_content', $pageId) ?: '';
+
+        if (!$currentSlug || $postType !== 'page') { return; }
+
+        // Step 3: Ensure page contains WooCommerce my account shortcode
+        $hasShortcode = (function_exists('has_shortcode') && has_shortcode($content, 'woocommerce_my_account'))
+            || str_contains($content, '[woocommerce_my_account');
+        if (!$hasShortcode) { return; }
+
+        // Step 4: If slug differs from "my-account", first resolve slug conflicts then rename it
+        $desiredSlug = 'my-account';
+        if ($currentSlug !== $desiredSlug) {
+            // Check if another PAGE already uses the desired slug and it's not our Woo page
+            $conflictPage = get_page_by_path($desiredSlug, OBJECT, 'page');
+            if ($conflictPage && (int) $conflictPage->ID !== $pageId) {
+                $oldTitle = get_post_field('post_title', (int) $conflictPage->ID) ?: '';
+                $newTitle = trim($oldTitle . ' Old');
+
+                $conflictResult = wp_update_post([
+                    'ID' => (int) $conflictPage->ID,
+                    'post_name' => 'my-account-old',
+                    'post_title' => $newTitle,
+                ], true);
+
+                if (is_wp_error($conflictResult)) { return; }
+            }
+
+            $result = wp_update_post([
+                'ID' => $pageId,
+                'post_name' => $desiredSlug,
+            ], true);
+
+            if (is_wp_error($result)) { return; }
+
+            // Step 5: Soft refresh permalinks
+            flush_rewrite_rules(false);
+        }
     }
 
     /**
