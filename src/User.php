@@ -239,13 +239,6 @@ class User extends WicketAcc
             $user->$actionMethod($role);
         }
 
-        WACC()->Log->info('Successfully updated user roles.', [
-            'source' => __METHOD__,
-            'user_id' => $user->ID,
-            'roles' => $roles,
-            'action' => $action,
-        ]);
-
         return true;
     }
 }

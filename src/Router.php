@@ -30,7 +30,7 @@ class Router extends WicketAcc
 
         // DEBUG ONLY, check environment
         if (defined('WP_ENV') && WP_ENV === 'development') {
-            flush_rewrite_rules();
+            //flush_rewrite_rules();
         }
 
         add_action('admin_init', [$this, 'initAllPages']);
@@ -300,7 +300,7 @@ class Router extends WicketAcc
                 return $single_template;
             }
 
-            if ($post->post_type == $this->acc_post_type) {
+            if ($post && $post->post_type == $this->acc_post_type) {
                 // Check if user selected a custom template
                 $custom_template = get_page_template_slug($post->ID);
 
@@ -373,6 +373,13 @@ class Router extends WicketAcc
             return;
         }
 
+        // New acc_wc_index_slugs
+        $acc_old_wc_index_slugs = [
+            'en' => 'wc-account',
+            'fr' => 'wc-compte',
+            'es' => 'wc-cuenta',
+        ];
+
         $current_lang = WACC()->Language->getCurrentLanguage();
         $acc_dashboard_id = (int) $this->getAccPageId();
         $acc_dashboard_url = get_permalink($acc_dashboard_id);
@@ -391,7 +398,7 @@ class Router extends WicketAcc
             $wc_page_slug = get_post($wc_page_id)->post_name;
 
             if ($current_lang !== 'en') {
-                $wc_page_slug = $this->acc_wc_index_slugs[$current_lang];
+                $wc_page_slug = $acc_old_wc_index_slugs[$current_lang];
             }
 
             if (!empty($acc_dashboard_slug)) {

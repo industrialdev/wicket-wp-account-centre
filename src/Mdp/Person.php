@@ -57,7 +57,6 @@ class Person extends Init
         if (empty($person_id)) {
             // getCurrentPersonUuid already logs if the user is not logged in or session is invalid.
             // We can add a specific log here if needed, but it might be redundant.
-            // WACC()->Log->debug('No current person UUID found, cannot fetch person data.', ['source' => __METHOD__]);
             return false;
         }
 
@@ -264,8 +263,7 @@ class Person extends Init
             } elseif (isset($contact_item['attributes'])) {
                 $to_return[] = $contact_item['attributes'];
             } else {
-                // Log if attributes are missing but expected
-                WACC()->Log->debug('Contact item missing attributes.', ['source' => __METHOD__, 'contact_item' => $contact_item]);
+                // Attributes missing; skip without debug logging in production
             }
         }
 

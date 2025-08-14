@@ -41,10 +41,7 @@ class Schema extends Init
                     return false;
                 }
 
-                WACC()->Log->debug('Successfully fetched JSON schemas', [
-                    'source' => __METHOD__,
-                    'schema_count' => is_countable($schemas) ? count($schemas) : 0,
-                ]);
+                // Successfully fetched JSON schemas; omit debug logging in production
             } catch (RequestException $e) {
                 $statusCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 'N/A';
                 WACC()->Log->error("Error fetching JSON schemas (HTTP {$statusCode}): " . $e->getMessage(), [

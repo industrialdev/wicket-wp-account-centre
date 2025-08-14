@@ -39,9 +39,9 @@ $acc_index_slugs = [
 Multilingual slugs for WooCommerce account pages:
 ```php
 $acc_wc_index_slugs = [
-    'en' => 'wc-account',
-    'fr' => 'wc-compte',
-    'es' => 'wc-cuenta'
+    'en' => 'my-account',
+    'fr' => 'my-compte',
+    'es' => 'my-cuenta'
 ];
 ```
 

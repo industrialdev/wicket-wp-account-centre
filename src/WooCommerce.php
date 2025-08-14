@@ -16,7 +16,84 @@ class WooCommerce extends WicketAcc
      */
     public function __construct()
     {
+        // Register early, independent of WooCommerce, so redirects and query vars are handled before canonical
+        add_filter('redirect_canonical', [$this, 'bypass_canonical_for_acc_endpoints'], 999, 2);
+        add_filter('wp_redirect', [$this, 'prevent_redirect_for_acc_endpoints'], 999, 2);
+        add_action('template_redirect', [$this, 'disable_canonical_for_acc_endpoints'], 1);
+        add_action('parse_request', [$this, 'inject_acc_endpoint_query_vars']);
+        add_action('init', [$this, 'register_acc_wc_endpoints']);
+        add_action('template_redirect', [$this, 'maybe_clear_404_for_acc_endpoints']);
+        // Temporarily hide/restore WC endpoint vars around detection
+        add_action('parse_request', [$this, 'temporarily_hide_wc_query_vars_for_acc'], 999);
+        add_action('template_redirect', [$this, 'restore_wc_query_vars_for_acc'], 15);
+
+        // Defer WC-specific integrations until WooCommerce initializes
         add_action('woocommerce_init', [$this, 'initialize']);
+    }
+
+    /**
+     * Failsafe: prevent any redirect that would strip ACC endpoint arguments
+     *
+     * @param string $location
+     * @param int    $status
+     * @return string|false
+     */
+    public function prevent_redirect_for_acc_endpoints($location, $status)
+    {
+        $request_uri = $_SERVER['REQUEST_URI'] ?? '';
+        $path = parse_url($request_uri, PHP_URL_PATH);
+        $segments = array_values(array_filter(explode('/', trim($path, '/'))));
+
+        // Need /base/endpoint/arg
+        if (count($segments) < 3) {
+            return $location;
+        }
+
+        $bases = array_values($this->acc_wc_index_slugs);
+        $base = $segments[0] ?? '';
+        if (!in_array($base, $bases, true)) {
+            return $location;
+        }
+
+        $endpoint_keys = array_keys($this->acc_wc_endpoints);
+        $second_last = $segments[count($segments) - 2] ?? '';
+        $last = end($segments) ?: '';
+
+        if ($second_last && in_array($second_last, $endpoint_keys, true) && $last !== '') {
+            return false;
+        }
+
+        return $location;
+    }
+
+    /**
+     * Remove WordPress core canonical redirect for ACC endpoint URLs with args
+     * Runs very early on template_redirect before core canonical executes (priority 10)
+     */
+    public function disable_canonical_for_acc_endpoints(): void
+    {
+        $request_uri = $_SERVER['REQUEST_URI'] ?? '';
+        $path = parse_url($request_uri, PHP_URL_PATH);
+        $segments = array_values(array_filter(explode('/', trim($path, '/'))));
+
+        if (count($segments) < 3) {
+            return;
+        }
+
+        $bases = array_values($this->acc_wc_index_slugs);
+        $base = $segments[0] ?? '';
+        if (!in_array($base, $bases, true)) {
+            return;
+        }
+
+        $endpoint_keys = array_keys($this->acc_wc_endpoints);
+        $second_last = $segments[count($segments) - 2] ?? '';
+        $last = end($segments) ?: '';
+
+        if ($second_last && in_array($second_last, $endpoint_keys, true) && $last !== '') {
+            // Stop core canonical from running at all
+            remove_action('template_redirect', 'redirect_canonical');
+        }
     }
 
     /**
@@ -24,6 +101,8 @@ class WooCommerce extends WicketAcc
      */
     public function initialize()
     {
+
+
         // Override templates
         add_filter('woocommerce_locate_template', [$this, 'override_woocommerce_template'], 10, 3);
 
@@ -43,6 +122,13 @@ class WooCommerce extends WicketAcc
 
         // Add WooCommerce endpoints to account pages
         add_filter('wicket_acc_menu_items', [$this, 'add_wc_menu_items']);
+
+        // Prevent WooCommerce from detecting ACC pages as WooCommerce endpoints
+        add_filter('woocommerce_is_account_page', [$this, 'disable_wc_account_page_detection'], 10, 1);
+        add_filter('wc_get_page_id', [$this, 'disable_wc_page_detection'], 10, 2);
+        add_filter('woocommerce_is_endpoint_url', [$this, 'disable_wc_endpoint_url_detection'], 10, 2);
+
+
     }
 
     /**
@@ -56,6 +142,8 @@ class WooCommerce extends WicketAcc
      */
     public function override_woocommerce_template($template, $template_name, $template_path)
     {
+
+
         if (is_admin()) {
             return $template;
         }
@@ -238,4 +326,282 @@ class WooCommerce extends WicketAcc
 
         return array_merge($items, $wc_items);
     }
+
+    /**
+     * Prevent canonical redirect that strips endpoint args from ACC URLs, e.g.,
+     * /my-account/view-order/40121/ -> /my-account/view-order/
+     *
+     * @param string|false $redirect_url
+     * @param string       $requested_url
+     * @return string|false
+     */
+    public function bypass_canonical_for_acc_endpoints($redirect_url, $requested_url)
+{
+    if (!isset($_SERVER['REQUEST_URI'])) {
+        return $redirect_url;
+    }
+
+    $raw_url = $requested_url ?: $_SERVER['REQUEST_URI'];
+    $path = parse_url($raw_url, PHP_URL_PATH);
+    if (!$path) {
+        return $redirect_url;
+    }
+
+    $segments = array_values(array_filter(explode('/', trim($path, '/'))));
+    if (count($segments) < 3) {
+        return $redirect_url; // need at least base/endpoint/arg
+    }
+
+    // First segment must be one of our ACC WC index slugs (localized)
+    $bases = array_values($this->acc_wc_index_slugs);
+    $base = $segments[0] ?? '';
+    if (!in_array($base, $bases, true)) {
+        return $redirect_url;
+    }
+
+    $endpoint_keys = array_keys($this->acc_wc_endpoints);
+    $second_last = $segments[count($segments) - 2];
+
+    if (in_array($second_last, $endpoint_keys, true)) {
+        // This is an ACC endpoint with an arg; do not canonicalize away the arg
+        return false;
+    }
+    return $redirect_url;
+}
+
+    /**
+     * On parse_request, extract endpoint argument from URL segments and inject into WP query vars
+     * so WooCommerce endpoint handlers receive the argument properly.
+     *
+     * @param WP $wp
+     * @return void
+     */
+    public function inject_acc_endpoint_query_vars($wp): void
+    {
+        if (!isset($_SERVER['REQUEST_URI'])) {
+            return;
+        }
+
+        $request_uri = sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI']));
+        $path_segments = array_filter(explode('/', trim($request_uri, '/')));
+
+
+
+        if (count($path_segments) < 3) {
+            return;
+        }
+
+        $acc_base = $path_segments[0] ?? '';
+        $bases = array_values($this->acc_wc_index_slugs);
+        if (!in_array($acc_base, $bases, true)) {
+            return;
+        }
+
+        $endpoint_keys = array_keys($this->acc_wc_endpoints);
+        $second_last = $path_segments[count($path_segments) - 2] ?? '';
+        $last = $path_segments[count($path_segments) - 1] ?? '';
+
+        if ($second_last && in_array($second_last, $endpoint_keys, true) && $last !== '') {
+            $value = is_numeric($last) ? absint($last) : sanitize_text_field(wp_unslash($last));
+
+            $wp->set_query_var($second_last, $value);
+            $wp->query_vars[$second_last] = $value;
+        }
+    }
+
+    /**
+     * Register rewrite endpoints so URLs like /my-account/view-order/40121/ don't 404 on CPT permalinks.
+     * We add all localized endpoint slugs.
+     *
+     * @return void
+     */
+    public function register_acc_wc_endpoints(): void
+    {
+        // Use the same endpoint mask as WooCommerce
+        $mask = EP_PAGES;
+
+        foreach ($this->acc_wc_endpoints as $endpoint_key => $localizedSlugs) {
+            foreach ($localizedSlugs as $slug) {
+                add_rewrite_endpoint($slug, $mask);
+            }
+        }
+
+        // Add custom rewrite rules for our CPT with endpoints
+        // Add rules for all endpoints that need arguments
+
+        // Define all endpoint keys that need arguments
+        $endpoint_keys = array_keys($this->acc_wc_endpoints);
+
+        // Direct endpoint patterns: /my-account/view-order/40121/
+        foreach ($endpoint_keys as $endpoint_key) {
+            add_rewrite_rule(
+                'my-account/' . $endpoint_key . '/([^/]+)/?$',
+                'index.php?my-account=' . $endpoint_key . '&' . $endpoint_key . '=$matches[1]',
+                'top'
+            );
+        }
+
+        // Nested endpoint patterns: /my-account/dashboard/view-order/40121/
+        foreach ($endpoint_keys as $endpoint_key) {
+            add_rewrite_rule(
+                'my-account/([^/]+)/' . $endpoint_key . '/([^/]+)/?$',
+                'index.php?my-account=$matches[1]&' . $endpoint_key . '=$matches[2]',
+                'top'
+            );
+        }
+    }
+
+
+
+    /**
+     * If WP resolved to 404 for an ACC endpoint with an argument, clear 404 so our template renders.
+     * This guards against stale rewrites until permalinks are flushed.
+     */
+    public function maybe_clear_404_for_acc_endpoints(): void
+    {
+        $request_uri = $_SERVER['REQUEST_URI'] ?? '';
+
+        if (!is_404()) {
+            return;
+        }
+
+        if (!isset($_SERVER['REQUEST_URI'])) {
+            return;
+        }
+        $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        if (!$path) {
+            return;
+        }
+        $segments = array_values(array_filter(explode('/', trim($path, '/'))));
+
+        if (count($segments) < 3) {
+            return;
+        }
+        $bases = array_values($this->acc_wc_index_slugs);
+        $base = $segments[0] ?? '';
+        if (!in_array($base, $bases, true)) {
+            return;
+        }
+        $endpoint_keys = array_keys($this->acc_wc_endpoints);
+        $second_last = $segments[count($segments) - 2] ?? '';
+        $last = end($segments) ?: '';
+
+        if ($second_last && in_array($second_last, $endpoint_keys, true) && $last !== '') {
+            global $wp_query;
+            if ($wp_query) {
+                $wp_query->is_404 = false;
+            }
+        }
+    }
+
+    /**
+     * Disable WooCommerce account page detection for ACC pages
+     *
+     * @param bool $is_account_page
+     * @return bool
+     */
+    public function disable_wc_account_page_detection($is_account_page)
+    {
+        global $post;
+
+        if ($post && $post->post_type === 'my-account') {
+            return false;
+        }
+
+        return $is_account_page;
+    }
+
+    /**
+     * Disable WooCommerce page detection for ACC pages
+     *
+     * @param int $page_id
+     * @param string $page
+     * @return int
+     */
+    public function disable_wc_page_detection($page_id, $page)
+    {
+        global $post;
+
+        if ($post && $post->post_type === 'my-account' && $page === 'myaccount') {
+            return -1; // Return invalid page ID to disable WC detection
+        }
+
+        return $page_id;
+    }
+
+    /**
+     * Disable WooCommerce endpoint URL detection for ACC pages
+     *
+     * @param bool $is_endpoint
+     * @param string $endpoint
+     * @return bool
+     */
+    public function disable_wc_endpoint_url_detection($is_endpoint, $endpoint = '')
+    {
+        global $post;
+
+        if ($post && $post->post_type === 'my-account') {
+            return false;
+        }
+
+        return $is_endpoint;
+    }
+
+    /**
+     * Temporarily hide WooCommerce query vars for ACC pages to prevent WC endpoint detection
+     */
+    public function temporarily_hide_wc_query_vars_for_acc()
+    {
+        global $wp;
+
+        // Check if this is an ACC URL by examining the request URI
+        $request_uri = $_SERVER['REQUEST_URI'] ?? '';
+        $path_segments = array_filter(explode('/', trim(parse_url($request_uri, PHP_URL_PATH), '/')));
+
+        // Check if this is a my-account URL
+        $bases = array_values($this->acc_wc_index_slugs);
+        $base = $path_segments[0] ?? '';
+
+        if (in_array($base, $bases, true)) {
+
+            // Store original query vars from $wp object (this is what is_wc_endpoint_url() checks)
+            $this->stored_wc_query_vars = [];
+            // Hide all registered WC endpoints dynamically so new ones (e.g., view-subscription) are included
+            $wc_endpoints = array_keys($this->acc_wc_endpoints);
+
+            foreach ($wc_endpoints as $endpoint) {
+                if (isset($wp->query_vars[$endpoint])) {
+                    $this->stored_wc_query_vars[$endpoint] = $wp->query_vars[$endpoint];
+                    unset($wp->query_vars[$endpoint]);
+                }
+            }
+        }
+    }
+
+    /**
+     * Restore WooCommerce query vars for ACC pages after endpoint detection
+     */
+    public function restore_wc_query_vars_for_acc()
+    {
+        global $wp, $wp_query;
+
+        if (!empty($this->stored_wc_query_vars)) {
+            $request_uri = $_SERVER['REQUEST_URI'] ?? '';
+
+            foreach ($this->stored_wc_query_vars as $endpoint => $value) {
+                // Restore to both $wp and $wp_query for compatibility
+                $wp->query_vars[$endpoint] = $value;
+                $wp_query->query_vars[$endpoint] = $value;
+                set_query_var($endpoint, $value);
+            }
+
+            // Clear stored vars
+            $this->stored_wc_query_vars = [];
+        }
+    }
+
+    /**
+     * Storage for temporarily hidden WC query vars
+     */
+    private $stored_wc_query_vars = [];
 }

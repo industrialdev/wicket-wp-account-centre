@@ -341,15 +341,11 @@ class Membership extends Init
         $membership_summary = [];
 
         if (!WACC()->isWooCommerceActive()) {
-            WACC()->Log->debug('WooCommerce not active, cannot fetch Woo memberships.', ['source' => __CLASS__]);
-
             return [];
         }
 
         $current_user_id = get_current_user_id();
         if (!$current_user_id) {
-            WACC()->Log->debug('No current user ID, cannot fetch Woo memberships.', ['source' => __CLASS__]);
-
             return [];
         }
 
