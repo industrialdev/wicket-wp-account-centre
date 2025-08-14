@@ -30,3 +30,15 @@ div.woocommerce:has(.wicket-acc-page),
   padding-top: 0;
   padding-bottom: 0;
 }
+
+.woocommerce {
+  .woocommerce-info {
+    .woocommerce-Button.button {
+      display: none !important;
+    }
+
+    .woocommerce-Button.wc-forward.button {
+      display: none !important;
+    }
+  }
+}

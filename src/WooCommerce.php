@@ -16,7 +16,7 @@ class WooCommerce extends WicketAcc
      */
     public function __construct()
     {
-        add_action('init', [$this, 'initialize']);
+        add_action('woocommerce_init', [$this, 'initialize']);
     }
 
     /**
@@ -24,16 +24,11 @@ class WooCommerce extends WicketAcc
      */
     public function initialize()
     {
-        // Only run if WooCommerce is active
-        if (!WACC()->isWooCommerceActive()) {
-            return;
-        }
-
         // Override templates
         add_filter('woocommerce_locate_template', [$this, 'override_woocommerce_template'], 10, 3);
 
         // Remove order again button
-        add_action('init', [$this, 'wc_remove_order_again_button']);
+        remove_action( 'woocommerce_order_details_after_order_table', 'woocommerce_order_again_button' );
 
         // Add global header banner as ACC pages
         //add_action('wicket_header_end', [$this, 'wc_add_acc_banner'], PHP_INT_MAX);
@@ -104,16 +99,6 @@ class WooCommerce extends WicketAcc
         }
 
         return $template;
-    }
-
-    /**
-     * Remove "order again" button from orders and order table inside WooCommerce my account.
-     *
-     * @return void
-     */
-    public function wc_remove_order_again_button()
-    {
-        remove_action('woocommerce_order_details_after_order_table', 'woocommerce_order_again_button');
     }
 
     /**
