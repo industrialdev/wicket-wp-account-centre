@@ -119,6 +119,28 @@
             "ui_on_text": "",
             "ui_off_text": "",
             "ui": 1
+        },
+        {
+            "key": "field_68a4327c84b37",
+            "label": "Helper Text",
+            "name": "helper_text",
+            "aria-label": "",
+            "type": "wysiwyg",
+            "instructions": "Optional. Leave it empty so as not to be shown to the user.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 2,
+            "default_value": "",
+            "allow_in_bindings": 0,
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 1,
+            "delay": 0
         }
     ],
     "location": [
@@ -140,5 +162,5 @@
     "description": "",
     "show_in_rest": 0,
     "acfml_field_group_mode": "advanced",
-    "modified": 1753269980
+    "modified": 1755591309
 }
