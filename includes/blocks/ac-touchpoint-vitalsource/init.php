@@ -68,6 +68,7 @@ class init extends Blocks
         $description = get_field('description');
         $num_results = get_field('page_results');
         $show_view_more = get_field('show_view_more');
+        $helper_text = get_field('helper_text');
 
         $total_results = 0;
         $counter = 0;
@@ -100,6 +101,7 @@ class init extends Blocks
             'touchpoints_results' => $touchpoints_results,
             'switch_link'         => $switch_link,
             'show_view_more'      => $show_view_more,
+            'helper_text'         => $helper_text,
             'is_ajax_request'     => false,
             'is_preview'          => $this->is_preview,
         ];
