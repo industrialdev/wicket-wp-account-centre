@@ -183,7 +183,8 @@ class Helpers extends WicketAcc
      * Chekc if WPML (or Polylang) are installed and active
      * Prioritize WPML, then check for Polylang.
      */
-    public function isMultiLangEnabled() {
+    public function isMultiLangEnabled()
+    {
         // WPML: check common indicators first
         if (defined('ICL_SITEPRESS_VERSION')) {
             return true;

@@ -184,6 +184,7 @@ class WooCommerce extends WicketAcc
         if (WACC()->isMultiLangEnabled() && !empty($segments) && preg_match('/^[a-z]{2}(?:-[A-Z]{2})?$/', $segments[0])) {
             array_shift($segments);
         }
+
         return $segments;
     }
 
@@ -198,6 +199,7 @@ class WooCommerce extends WicketAcc
                 return $endpoint_key;
             }
         }
+
         return '';
     }
 
