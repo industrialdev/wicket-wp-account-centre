@@ -340,8 +340,8 @@ class WooCommerce extends WicketAcc
         // grab the first element of the array
         $wc_endpoint = array_shift($wc_endpoint);
 
-        // If we are seeing a WC endpoint from $acc_prefer_wc_endpoints
-        if (in_array($wc_endpoint, $this->acc_prefer_wc_endpoints)) {
+        // If we are seeing a WC endpoint from $acc_pages_map
+        if (in_array($wc_endpoint, $this->acc_pages_map)) {
             // Only on WooCommerce pages
             if (!WACC()->is_account_page()) {
                 return $template;

@@ -433,7 +433,7 @@ class Router extends WicketAcc
         }
 
         // Redirect (some) WC endpoints (my-account endpoints are for us)
-        if (is_array($this->acc_prefer_wc_endpoints) && !empty($this->acc_prefer_wc_endpoints)) {
+        /*if (is_array($this->acc_prefer_wc_endpoints) && !empty($this->acc_prefer_wc_endpoints)) {
             $current_url = home_url(add_query_arg(null, null));
             $current_url = rtrim($current_url, '/');
             $wc_endpoint = basename($current_url);
@@ -453,6 +453,6 @@ class Router extends WicketAcc
                     $this->performRedirect($wc_endpoint_url);
                 }
             }
-        }
+        }*/
     }
 }

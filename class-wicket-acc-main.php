@@ -15,7 +15,7 @@ use WicketAcc\Services\Notification;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Custom account management system for Wicket. Provides user account features, organization management, and additional blocks and pages. Integrates with WooCommerce when available.
- * Version:           1.5.259
+ * Version:           1.5.260
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -168,7 +168,7 @@ class WicketAcc
         ],
         'add-payment-method'         => [
             'en' => 'add-payment-method',
-            'fr' => 'ajouter-mode-paiement',
+            'fr' => 'add-payment-method',
             'es' => 'agregar-medio-pago',
         ],
         'set-default-payment-method' => [
@@ -204,12 +204,12 @@ class WicketAcc
         'edit-address'               => [
             'en' => 'edit-address',
             'fr' => 'editer-adresse',
-            'es' => 'editar-dirección',
+            'es' => 'editar-direccion',
         ],
         'payment-methods'            => [
             'en' => 'payment-methods',
             'fr' => 'modes-de-paiement',
-            'es' => 'medios-de-pago',
+            'es' => 'metodos-de-pago',
         ],
         'customer-logout'            => [
             'en' => 'customer-logout',
@@ -221,12 +221,6 @@ class WicketAcc
             'fr' => 'souscriptions',
             'es' => 'suscripciones',
         ],
-    ];
-
-    protected array $acc_prefer_wc_endpoints = [
-        'add-payment-method',
-        'payment-methods',
-        'view-order',
     ];
 
     /**

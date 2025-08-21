@@ -111,15 +111,6 @@ $acc_wc_endpoints = [
 ];
 ```
 
-### Preferred WooCommerce Endpoints
-Endpoints that should use WooCommerce's implementation:
-```php
-$acc_prefer_wc_endpoints = [
-    'add-payment-method',
-    'payment-methods'
-];
-```
-
 ## Core Classes
 The plugin initializes the following classes in its `run()` method:
 
