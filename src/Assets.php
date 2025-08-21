@@ -169,14 +169,10 @@ class Assets extends WicketAcc
 
         $frontend_js_path = WICKET_ACC_PATH . 'assets/js/wicket-acc-main.js';
         $legacy_js_path = WICKET_ACC_PATH . 'assets/js/wicket-acc-legacy.js';
-        $orders_js_path = WICKET_ACC_PATH . 'assets/js/wicket-acc-orders.js';
-        $subscriptions_js_path = WICKET_ACC_PATH . 'assets/js/wicket-acc-subscriptions.js';
 
         wp_enqueue_style('wicket-acc-frontend-styles', WICKET_ACC_URL . 'assets/css/wicket-acc-main.css', [], $this->get_latest_modification_time($frontend_css_files, 'wicket_acc_frontend_css_version'));
         wp_enqueue_script('wicket-acc-frontend-scripts', WICKET_ACC_URL . 'assets/js/wicket-acc-main.js', [], file_exists($frontend_js_path) ? filemtime($frontend_js_path) : WICKET_ACC_VERSION, true);
         wp_enqueue_script('wicket-acc-frontend-legacy-scripts', WICKET_ACC_URL . 'assets/js/wicket-acc-legacy.js', [], file_exists($legacy_js_path) ? filemtime($legacy_js_path) : WICKET_ACC_VERSION, true);
-        wp_enqueue_script('wicket-acc-orders', WICKET_ACC_URL . 'assets/js/wicket-acc-orders.js', [], file_exists($orders_js_path) ? filemtime($orders_js_path) : WICKET_ACC_VERSION, true);
-        wp_enqueue_script('wicket-acc-subscriptions', WICKET_ACC_URL . 'assets/js/wicket-acc-subscriptions.js', [], file_exists($subscriptions_js_path) ? filemtime($subscriptions_js_path) : WICKET_ACC_VERSION, true);
 
         // Localize script with settings
         $localized_settings = [

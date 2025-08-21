@@ -32,6 +32,145 @@ class WooCommerce extends WicketAcc
     }
 
     /**
+     * Normalize Woo endpoint URLs by collapsing duplicated adjacent segments for
+     * known bases and endpoint slugs (handles cases like /my-account/my-account/orders/2/).
+     *
+     * @param string $url
+     * @param string $endpoint
+     * @param mixed  $value
+     * @param string $permalink
+     * @return string
+     */
+    public function normalize_endpoint_url($url, $endpoint, $value, $permalink)
+    {
+        $parsed = wp_parse_url($url);
+        $path = $parsed['path'] ?? '';
+        if ($path === '') {
+            return $url;
+        }
+
+        $segments = array_values(array_filter(explode('/', trim($path, '/'))));
+        if (empty($segments)) {
+            return $url;
+        }
+
+        // Build allowlist of segments we can safely de-duplicate
+        $allowed = [];
+        // Bases (localized)
+        foreach ((array) $this->acc_wc_index_slugs as $b) {
+            $allowed[$b] = true;
+        }
+        // Endpoint slugs (all localized variants)
+        foreach ((array) $this->acc_wc_endpoints as $slugset) {
+            foreach ((array) $slugset as $slug) {
+                $allowed[$slug] = true;
+            }
+        }
+
+        $normalized = [];
+        $prev = null;
+        foreach ($segments as $seg) {
+            if ($prev !== null && $seg === $prev && isset($allowed[$seg])) {
+                // skip duplicate allowed segment
+                continue;
+            }
+            $normalized[] = $seg;
+            $prev = $seg;
+        }
+
+        $new_path = '/' . implode('/', $normalized) . '/';
+        $new_url = home_url($new_path);
+
+        if (!empty($parsed['query'])) {
+            $new_url .= '?' . $parsed['query'];
+        }
+        if (!empty($parsed['fragment'])) {
+            $new_url .= '#' . $parsed['fragment'];
+        }
+
+        return $new_url;
+    }
+
+    /**
+     * Localize WooCommerce endpoint URLs to current language and translated base/slug.
+     * Ensures buttons like "View" on orders/subscriptions use /fr/mon-compte/voir-... when multilingual is enabled.
+     *
+     * @param string $url       The generated endpoint URL.
+     * @param string $endpoint  The endpoint key (canonical), e.g. 'view-order'.
+     * @param mixed  $value     Optional value (e.g., order ID).
+     * @param string $permalink Base permalink passed in by Woo.
+     * @return string           Localized URL when applicable.
+     */
+    public function localize_endpoint_url($url, $endpoint, $value, $permalink)
+    {
+        // Only adjust when multilingual is active and when we know about this endpoint
+        if (!WACC()->isMultiLangEnabled() || !isset($this->acc_wc_endpoints[$endpoint])) {
+            return $url;
+        }
+
+        $lang = WACC()->getLanguage();
+
+        // Determine localized base and endpoint slug
+        $base = $this->acc_wc_index_slugs[$lang] ?? ($this->acc_wc_index_slugs['en'] ?? 'my-account');
+        $localized_endpoint = $this->acc_wc_endpoints[$endpoint][$lang] ?? $endpoint;
+
+        // Parse the existing URL and rebuild conservatively
+        $parsed = wp_parse_url($url);
+        $path = $parsed['path'] ?? '';
+        if ($path === '') {
+            return $url;
+        }
+
+        $segments = array_values(array_filter(explode('/', trim($path, '/'))));
+
+        // Respect current request's language directory usage (default language may not use /en/)
+        $current_path = isset($_SERVER['REQUEST_URI']) ? (string) parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) : '';
+        $current_first = '';
+        if ($current_path !== '') {
+            $current_parts = array_values(array_filter(explode('/', trim($current_path, '/'))));
+            $current_first = $current_parts[0] ?? '';
+        }
+        $request_uses_lang_dir = ($current_first !== '' && preg_match('/^[a-z]{2}(?:-[A-Z]{2})?$/', $current_first));
+
+        // Ensure language prefix segment only if current request uses language directories
+        if ($request_uses_lang_dir) {
+            $has_lang = !empty($segments) && preg_match('/^[a-z]{2}(?:-[A-Z]{2})?$/', $segments[0]);
+            if ($has_lang) {
+                $segments[0] = $lang; // normalize to current
+            } else {
+                array_unshift($segments, $lang);
+            }
+        }
+
+        // Ensure base segment right after language
+        $base_index = 1;
+        $segments[$base_index] = $base;
+
+        // Replace endpoint slug near the end when present
+        if (!empty($segments)) {
+            // The endpoint slug is typically second-to-last if there is a value, or last if index
+            $endpoint_index = count($segments) - ((string) $value !== '' ? 2 : 1);
+            if ($endpoint_index >= 0) {
+                $segments[$endpoint_index] = $localized_endpoint;
+            }
+        }
+
+        // Reassemble URL, keep scheme/host from original or site
+        $new_path = '/' . implode('/', $segments) . '/';
+        $new_url = home_url($new_path);
+
+        // Preserve query fragment if present
+        if (!empty($parsed['query'])) {
+            $new_url .= '?' . $parsed['query'];
+        }
+        if (!empty($parsed['fragment'])) {
+            $new_url .= '#' . $parsed['fragment'];
+        }
+
+        return $new_url;
+    }
+
+    /**
      * Split current request path into segments and drop an initial language segment if present (e.g., fr or fr-CA).
      *
      * @return array
@@ -143,8 +282,14 @@ class WooCommerce extends WicketAcc
         add_filter('woocommerce_calculated_total', [$this, 'exclude_tax_cart_total'], 10, 2);
         add_filter('woocommerce_subscriptions_calculated_total', [$this, 'exclude_tax_cart_total']);
 
-        // Fix pagination URLs for orders endpoint
-        add_filter('woocommerce_get_endpoint_url', [$this, 'fix_orders_pagination_url'], 10, 4);
+        // Localize endpoint URLs (base + slug) for WPML languages
+        add_filter('woocommerce_get_endpoint_url', [$this, 'localize_endpoint_url'], 9, 4);
+
+        // Normalize duplicated segments like /my-account/my-account/ or /orders/orders/
+        add_filter('woocommerce_get_endpoint_url', [$this, 'normalize_endpoint_url'], 10, 4);
+
+        // Keep orders pagination fix after normalization
+        add_filter('woocommerce_get_endpoint_url', [$this, 'fix_orders_pagination_url'], 11, 4);
 
         // Add WooCommerce endpoints to account pages
         add_filter('wicket_acc_menu_items', [$this, 'add_wc_menu_items']);
