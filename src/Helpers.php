@@ -174,15 +174,27 @@ class Helpers extends WicketAcc
      */
     public function getLanguage()
     {
-        global $sitepress;
-
-        if (!isset($sitepress)) {
-            return 'en';
-        }
-
-        $lang = $sitepress->get_current_language();
+        $lang = wicket_get_current_language();
 
         return $lang;
+    }
+
+    /**
+     * Chekc if WPML (or Polylang) are installed and active
+     * Prioritize WPML, then check for Polylang.
+     */
+    public function isMultiLangEnabled() {
+        // WPML: check common indicators first
+        if (defined('ICL_SITEPRESS_VERSION')) {
+            return true;
+        }
+
+        // Polylang: fallback detection
+        if (defined('POLYLANG_VERSION')) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

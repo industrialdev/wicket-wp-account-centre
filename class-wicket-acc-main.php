@@ -135,6 +135,7 @@ class WicketAcc
         //'customer-logout'                => 'Logout',
         // WooCommerce subscription endpoints
         'subscriptions'              => 'Subscriptions',
+        'view-subscription'          => 'View Subscription',
     ];
 
     protected array $acc_pages_map_auto_create = [
@@ -151,6 +152,7 @@ class WicketAcc
         'downloads',
         'payment-methods',
         'subscriptions',
+        'view-subscription',
     ];
 
     protected array $acc_wc_endpoints = [

@@ -32,6 +32,37 @@ class WooCommerce extends WicketAcc
     }
 
     /**
+     * Split current request path into segments and drop an initial language segment if present (e.g., fr or fr-CA).
+     *
+     * @return array
+     */
+    private function get_language_aware_segments(): array
+    {
+        $request_uri = $_SERVER['REQUEST_URI'] ?? '';
+        $path = parse_url($request_uri, PHP_URL_PATH);
+        $segments = array_values(array_filter(explode('/', trim((string) $path, '/'))));
+        // Only strip language directory when multilingual plugins are active
+        if (WACC()->isMultiLangEnabled() && !empty($segments) && preg_match('/^[a-z]{2}(?:-[A-Z]{2})?$/', $segments[0])) {
+            array_shift($segments);
+        }
+        return $segments;
+    }
+
+    /**
+     * Given a localized endpoint slug, return its canonical endpoint key (e.g., 'voir-commande' -> 'view-order').
+     * Returns empty string if not found.
+     */
+    private function endpoint_key_from_localized_slug(string $slug): string
+    {
+        foreach ($this->acc_wc_endpoints as $endpoint_key => $localizedSlugs) {
+            if (in_array($slug, (array) $localizedSlugs, true)) {
+                return $endpoint_key;
+            }
+        }
+        return '';
+    }
+
+    /**
      * Failsafe: prevent any redirect that would strip ACC endpoint arguments.
      *
      * @param string $location
@@ -40,9 +71,7 @@ class WooCommerce extends WicketAcc
      */
     public function prevent_redirect_for_acc_endpoints($location, $status)
     {
-        $request_uri = $_SERVER['REQUEST_URI'] ?? '';
-        $path = parse_url($request_uri, PHP_URL_PATH);
-        $segments = array_values(array_filter(explode('/', trim($path, '/'))));
+        $segments = $this->get_language_aware_segments();
 
         // Need /base/endpoint/arg
         if (count($segments) < 3) {
@@ -55,11 +84,11 @@ class WooCommerce extends WicketAcc
             return $location;
         }
 
-        $endpoint_keys = array_keys($this->acc_wc_endpoints);
         $second_last = $segments[count($segments) - 2] ?? '';
         $last = end($segments) ?: '';
 
-        if ($second_last && in_array($second_last, $endpoint_keys, true) && $last !== '') {
+        $endpoint_key = $this->endpoint_key_from_localized_slug($second_last) ?: $second_last;
+        if ($second_last && array_key_exists($endpoint_key, $this->acc_wc_endpoints) && $last !== '') {
             return false;
         }
 
@@ -72,9 +101,7 @@ class WooCommerce extends WicketAcc
      */
     public function disable_canonical_for_acc_endpoints(): void
     {
-        $request_uri = $_SERVER['REQUEST_URI'] ?? '';
-        $path = parse_url($request_uri, PHP_URL_PATH);
-        $segments = array_values(array_filter(explode('/', trim($path, '/'))));
+        $segments = $this->get_language_aware_segments();
 
         if (count($segments) < 3) {
             return;
@@ -86,11 +113,11 @@ class WooCommerce extends WicketAcc
             return;
         }
 
-        $endpoint_keys = array_keys($this->acc_wc_endpoints);
         $second_last = $segments[count($segments) - 2] ?? '';
         $last = end($segments) ?: '';
 
-        if ($second_last && in_array($second_last, $endpoint_keys, true) && $last !== '') {
+        $endpoint_key = $this->endpoint_key_from_localized_slug($second_last) ?: $second_last;
+        if ($second_last && array_key_exists($endpoint_key, $this->acc_wc_endpoints) && $last !== '') {
             // Stop core canonical from running at all
             remove_action('template_redirect', 'redirect_canonical');
         }
@@ -380,8 +407,7 @@ class WooCommerce extends WicketAcc
             return;
         }
 
-        $request_uri = sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI']));
-        $path_segments = array_filter(explode('/', trim($request_uri, '/')));
+        $path_segments = $this->get_language_aware_segments();
 
         if (count($path_segments) < 3) {
             return;
@@ -393,15 +419,15 @@ class WooCommerce extends WicketAcc
             return;
         }
 
-        $endpoint_keys = array_keys($this->acc_wc_endpoints);
         $second_last = $path_segments[count($path_segments) - 2] ?? '';
         $last = $path_segments[count($path_segments) - 1] ?? '';
 
-        if ($second_last && in_array($second_last, $endpoint_keys, true) && $last !== '') {
+        $endpoint_key = $this->endpoint_key_from_localized_slug($second_last) ?: $second_last;
+        if ($second_last && array_key_exists($endpoint_key, $this->acc_wc_endpoints) && $last !== '') {
             $value = is_numeric($last) ? absint($last) : sanitize_text_field(wp_unslash($last));
 
-            $wp->set_query_var($second_last, $value);
-            $wp->query_vars[$second_last] = $value;
+            $wp->set_query_var($endpoint_key, $value);
+            $wp->query_vars[$endpoint_key] = $value;
         }
     }
 
@@ -417,7 +443,7 @@ class WooCommerce extends WicketAcc
         $mask = EP_PAGES;
 
         foreach ($this->acc_wc_endpoints as $endpoint_key => $localizedSlugs) {
-            foreach ($localizedSlugs as $slug) {
+            foreach ((array) $localizedSlugs as $slug) {
                 add_rewrite_endpoint($slug, $mask);
             }
         }
@@ -426,24 +452,26 @@ class WooCommerce extends WicketAcc
         // Add rules for all endpoints that need arguments
 
         // Define all endpoint keys that need arguments
-        $endpoint_keys = array_keys($this->acc_wc_endpoints);
+        $bases = array_values($this->acc_wc_index_slugs);
+        $langDir = '(?:[a-z]{2}(?:-[A-Z]{2})?/)?';
+        foreach ($bases as $base) {
+            foreach ($this->acc_wc_endpoints as $endpoint_key => $localizedSlugs) {
+                foreach ((array) $localizedSlugs as $slug) {
+                    // Direct: /base/slug/ID
+                    add_rewrite_rule(
+                        '^' . $langDir . preg_quote($base, '/') . '/' . preg_quote($slug, '/') . '/([^/]+)/?$',
+                        'index.php?my-account=' . $endpoint_key . '&' . $endpoint_key . '=$matches[1]',
+                        'top'
+                    );
 
-        // Direct endpoint patterns: /my-account/view-order/40121/
-        foreach ($endpoint_keys as $endpoint_key) {
-            add_rewrite_rule(
-                'my-account/' . $endpoint_key . '/([^/]+)/?$',
-                'index.php?my-account=' . $endpoint_key . '&' . $endpoint_key . '=$matches[1]',
-                'top'
-            );
-        }
-
-        // Nested endpoint patterns: /my-account/dashboard/view-order/40121/
-        foreach ($endpoint_keys as $endpoint_key) {
-            add_rewrite_rule(
-                'my-account/([^/]+)/' . $endpoint_key . '/([^/]+)/?$',
-                'index.php?my-account=$matches[1]&' . $endpoint_key . '=$matches[2]',
-                'top'
-            );
+                    // Nested: /base/child/slug/ID
+                    add_rewrite_rule(
+                        '^' . $langDir . preg_quote($base, '/') . '/([^/]+)/' . preg_quote($slug, '/') . '/([^/]+)/?$',
+                        'index.php?my-account=$matches[1]&' . $endpoint_key . '=$matches[2]',
+                        'top'
+                    );
+                }
+            }
         }
     }
 
@@ -453,20 +481,11 @@ class WooCommerce extends WicketAcc
      */
     public function maybe_clear_404_for_acc_endpoints(): void
     {
-        $request_uri = $_SERVER['REQUEST_URI'] ?? '';
-
         if (!is_404()) {
             return;
         }
 
-        if (!isset($_SERVER['REQUEST_URI'])) {
-            return;
-        }
-        $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        if (!$path) {
-            return;
-        }
-        $segments = array_values(array_filter(explode('/', trim($path, '/'))));
+        $segments = $this->get_language_aware_segments();
 
         if (count($segments) < 3) {
             return;
@@ -476,11 +495,11 @@ class WooCommerce extends WicketAcc
         if (!in_array($base, $bases, true)) {
             return;
         }
-        $endpoint_keys = array_keys($this->acc_wc_endpoints);
         $second_last = $segments[count($segments) - 2] ?? '';
         $last = end($segments) ?: '';
 
-        if ($second_last && in_array($second_last, $endpoint_keys, true) && $last !== '') {
+        $endpoint_key = $this->endpoint_key_from_localized_slug($second_last) ?: $second_last;
+        if ($second_last && array_key_exists($endpoint_key, $this->acc_wc_endpoints) && $last !== '') {
             global $wp_query;
             if ($wp_query) {
                 $wp_query->is_404 = false;
@@ -549,8 +568,7 @@ class WooCommerce extends WicketAcc
         global $wp;
 
         // Check if this is an ACC URL by examining the request URI
-        $request_uri = $_SERVER['REQUEST_URI'] ?? '';
-        $path_segments = array_filter(explode('/', trim(parse_url($request_uri, PHP_URL_PATH), '/')));
+        $path_segments = $this->get_language_aware_segments();
 
         // Check if this is a my-account URL
         $bases = array_values($this->acc_wc_index_slugs);
@@ -560,7 +578,7 @@ class WooCommerce extends WicketAcc
 
             // Store original query vars from $wp object (this is what is_wc_endpoint_url() checks)
             $this->stored_wc_query_vars = [];
-            // Hide all registered WC endpoints dynamically so new ones (e.g., view-subscription) are included
+            // Hide all registered WC endpoints dynamically (canonical keys)
             $wc_endpoints = array_keys($this->acc_wc_endpoints);
 
             foreach ($wc_endpoints as $endpoint) {
