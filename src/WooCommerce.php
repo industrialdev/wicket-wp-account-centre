@@ -11,6 +11,12 @@ defined('ABSPATH') || exit;
  */
 class WooCommerce extends WicketAcc
 {
+
+    /**
+     * Storage for temporarily hidden WC query vars.
+     */
+    private $stored_wc_query_vars = [];
+
     /**
      * Constructor.
      */
@@ -23,18 +29,13 @@ class WooCommerce extends WicketAcc
         add_action('parse_request', [$this, 'inject_acc_endpoint_query_vars']);
         add_action('init', [$this, 'register_acc_wc_endpoints']);
         add_action('template_redirect', [$this, 'maybe_clear_404_for_acc_endpoints']);
-        // Previously we hid WC endpoint vars to avoid false positives. We now want WC
-        // to detect ACC endpoints as native, so do not hide query vars here.
 
         // Defer WC-specific integrations until WooCommerce initializes
         add_action('woocommerce_init', [$this, 'initialize']);
-
-        // Minimal surface: no body class shims.
     }
 
     /**
-     * Normalize Woo endpoint URLs by collapsing duplicated adjacent segments for
-     * known bases and endpoint slugs (handles cases like /my-account/my-account/orders/2/).
+     * Normalize Woo endpoint URLs by collapsing duplicated adjacent segments for known bases and endpoint slugs (handles cases like /my-account/my-account/orders/2/).
      *
      * @param string $url
      * @param string $endpoint
@@ -316,10 +317,8 @@ class WooCommerce extends WicketAcc
         // Minimal shim: some gateways rely on this conditional specifically
         add_filter('woocommerce_is_add_payment_method_page', [$this, 'maybe_force_is_add_payment_method_page']);
 
-        // Trick Woo conditionals that rely on is_page( wc_get_page_id('myaccount') )
-        // by mapping the myaccount page id to the current ACC page id in ACC context.
+        // Trick Woo conditionals that rely on is_page( wc_get_page_id('myaccount') ) by mapping the myaccount page id to the current ACC page id in ACC context.
         add_filter('pre_option_woocommerce_myaccount_page_id', [$this, 'map_myaccount_page_id_to_acc']);
-
     }
 
     /**
@@ -916,8 +915,6 @@ class WooCommerce extends WicketAcc
         return $this->current_wc_endpoint_key() === 'add-payment-method';
     }
 
-    // Removed forced enqueues and is_add_payment_method_page shim (not needed).
-
     /**
      * Determine if current request is within ACC WooCommerce context (ACC base URL).
      */
@@ -960,8 +957,6 @@ class WooCommerce extends WicketAcc
         return array_key_exists($endpoint_key, $this->acc_wc_endpoints) ? $endpoint_key : '';
     }
 
-    // Removed body_class additions (not needed).
-
     /**
      * Map WooCommerce myaccount page id to current ACC page id so is_page( wc_get_page_id('myaccount') ) is satisfied.
      */
@@ -978,27 +973,4 @@ class WooCommerce extends WicketAcc
 
         return $value;
     }
-
-    /**
-     * Temporarily hide WooCommerce query vars for ACC pages to prevent WC endpoint detection.
-     */
-    public function temporarily_hide_wc_query_vars_for_acc()
-    {
-        // No-op: we now want WC to see endpoint vars on ACC URLs
-
-    }
-
-    /**
-     * Restore WooCommerce query vars for ACC pages after endpoint detection.
-     */
-    public function restore_wc_query_vars_for_acc()
-    {
-        // No-op: we no longer hide query vars
-
-    }
-
-    /**
-     * Storage for temporarily hidden WC query vars.
-     */
-    private $stored_wc_query_vars = [];
 }
