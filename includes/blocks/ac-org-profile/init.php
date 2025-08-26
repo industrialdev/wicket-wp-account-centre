@@ -61,7 +61,7 @@ class init extends Blocks
 
         if ($org_id) {
 
-$org = WACC()->Mdp()->Organization()->getOrganizationByUuid($org_id);
+            $org = WACC()->Mdp()->Organization()->getOrganizationByUuid($org_id);
 
         } else {
             $org_ids = [];
@@ -84,7 +84,7 @@ $org = WACC()->Mdp()->Organization()->getOrganizationByUuid($org_id);
             if (count($org_ids) == 1) {
                 $org_id = $org_ids[0];
 
-$org = WACC()->Mdp()->Organization()->getOrganizationByUuid($org_id);
+                $org = WACC()->Mdp()->Organization()->getOrganizationByUuid($org_id);
 
             }
         }

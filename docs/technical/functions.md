@@ -29,13 +29,13 @@ function WACC()
 1. **Direct Method Access**
    ```php
    // Access helper methods directly
-   WACC()->method_name();
+   WACC()->methodName();
    ```
 
 2. **Class Method Access**
    ```php
    // Access methods from registered classes
-   WACC()->className->method_name();
+   WACC()->className()->methodName();
    ```
 
 ### Architecture Notes
@@ -61,13 +61,13 @@ function WACC()
    ```php
    // Example class registration in router
    class YourHelper {
-       public function your_method() {
+       public function yourMethod() {
            // Method implementation
        }
    }
 
    // Access in code
-   WACC()->yourHelper->your_method();
+   WACC()->yourHelper()->yourMethod();
    ```
 
 ### Best Practices
@@ -144,13 +144,13 @@ function WACC()
    ```php
    // In class-wicket-acc-helpers.php
    class Helpers {
-       public function new_helper_method() {
+       public function newHelperMethod() {
            // Implementation
        }
    }
 
    // Usage
-   WACC()->new_helper_method();
+   WACC()->newHelperMethod();
    ```
 
 2. **Exposing Class Methods**

@@ -131,7 +131,9 @@ if (!empty($override_past_events_link)) {
             ];
 
 if ($single_webinar) {
-    WACC()->Blocks->render_template('touchpoint-zoom-card', $args);
+
+    WACC()->Blocks()->render_template('touchpoint-zoom-card', $args);
+
 } else {
 
     if ($display == 'upcoming' || $display == 'all') {

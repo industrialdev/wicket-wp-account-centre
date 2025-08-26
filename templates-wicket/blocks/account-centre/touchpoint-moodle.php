@@ -130,7 +130,9 @@ if (!empty($override_past_events_link)) {
             ];
 
 if ($single_event) {
-    WACC()->Blocks->render_template('touchpoint-moodle-card', $args);
+
+    WACC()->Blocks()->render_template('touchpoint-moodle-card', $args);
+
 } else {
 
     if ($display == 'upcoming' || $display == 'all') {

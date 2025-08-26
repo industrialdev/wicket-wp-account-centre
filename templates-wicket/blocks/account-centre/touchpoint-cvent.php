@@ -123,7 +123,8 @@ if (!empty($override_past_events_link)) {
                     'show_view_more_events' => $show_view_more_events,
                 ];
 
-                WACC()->Blocks->render_template('touchpoint-cvent-card', $args);
+                WACC()->Blocks()->render_template('touchpoint-cvent-card', $args);
+
             } else {
 
                 if ($display == 'upcoming' || $display == 'all') {

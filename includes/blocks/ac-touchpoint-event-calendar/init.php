@@ -146,7 +146,7 @@ class init extends Blocks
 
         // Render block
 
-WACC()->Blocks()->render_template('touchpoint-tec', $args);
+        WACC()->Blocks()->render_template('touchpoint-tec', $args);
 
     }
 
@@ -165,10 +165,8 @@ WACC()->Blocks()->render_template('touchpoint-tec', $args);
             return false;
         }
 
-
-$touchpoint_service = WACC()->Mdp()->Touchpoint()->getOrCreateServiceId($service_id);
-$touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoint_service, null, $options);
-
+        $touchpoint_service = WACC()->Mdp()->Touchpoint()->getOrCreateServiceId($service_id);
+        $touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoint_service, null, $options);
 
         return $touchpoints;
     }
@@ -224,8 +222,7 @@ $touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoin
             if (isset($tp['attributes']['data']['start_date'])) {
                 $args['tp'] = $tp;
 
-
-WACC()->Blocks()->render_template('touchpoint-tec-card', $args);
+                WACC()->Blocks()->render_template('touchpoint-tec-card', $args);
 
             }
             //endif;

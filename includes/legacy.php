@@ -24,7 +24,9 @@ defined('ABSPATH') || exit;
  */
 function wicket_get_active_memberships($iso_code = 'en')
 {
-    return WACC()->Mdp->Membership->getCurrentPersonActiveMemberships($iso_code);
+
+    return WACC()->Mdp()->Membership()->getCurrentPersonActiveMemberships($iso_code);
+
 }
 
 /**
@@ -34,7 +36,9 @@ function wicket_get_active_memberships($iso_code = 'en')
  */
 function woo_get_active_memberships()
 {
-    return WACC()->Mdp->Membership->getCurrentUserWooActiveMemberships();
+
+    return WACC()->Mdp()->Membership()->getCurrentUserWooActiveMemberships();
+
 }
 
 /**
@@ -44,7 +48,9 @@ function woo_get_active_memberships()
  */
 function wicket_get_active_memberships_relationship($org_uuid)
 {
-    return WACC()->Mdp->Membership->getActiveMembershipRelationship($org_uuid);
+
+    return WACC()->Mdp()->Membership()->getActiveMembershipRelationship($org_uuid);
+
 }
 
 /**

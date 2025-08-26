@@ -144,7 +144,7 @@ class init extends Blocks
 
         // Render block
 
-WACC()->Blocks()->render_template('touchpoint-zoom', $args);
+        WACC()->Blocks()->render_template('touchpoint-zoom', $args);
 
     }
 
@@ -161,10 +161,8 @@ WACC()->Blocks()->render_template('touchpoint-zoom', $args);
             return false;
         }
 
-
-$touchpoint_service = WACC()->Mdp()->Touchpoint()->getOrCreateServiceId($service_id);
-$touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoint_service);
-
+        $touchpoint_service = WACC()->Mdp()->Touchpoint()->getOrCreateServiceId($service_id);
+        $touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoint_service);
 
         return $touchpoints;
     }
@@ -226,8 +224,7 @@ $touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoin
             if (isset($tp['attributes']['data']['start_date'])) {
                 $args['tp'] = $tp;
 
-
-WACC()->Blocks()->render_template('touchpoint-zoom-card', $args);
+                WACC()->Blocks()->render_template('touchpoint-zoom-card', $args);
 
             }
 

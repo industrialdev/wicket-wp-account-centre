@@ -149,7 +149,7 @@ class init extends Blocks
 
         // Render block
 
-WACC()->Blocks()->render_template('touchpoint-moodle', $args);
+        WACC()->Blocks()->render_template('touchpoint-moodle', $args);
 
     }
 
@@ -166,10 +166,8 @@ WACC()->Blocks()->render_template('touchpoint-moodle', $args);
             return false;
         }
 
-
-$touchpoint_service = WACC()->Mdp()->Touchpoint()->getOrCreateServiceId($service_id);
-$touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoint_service);
-
+        $touchpoint_service = WACC()->Mdp()->Touchpoint()->getOrCreateServiceId($service_id);
+        $touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoint_service);
 
         return $touchpoints;
     }
@@ -230,8 +228,7 @@ $touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoin
 
             $args['tp'] = $tp;
 
-WACC()->Blocks()->render_template('touchpoint-moodle-card', $args);
-
+            WACC()->Blocks()->render_template('touchpoint-moodle-card', $args);
 
             // Remove current loop element from array
             unset($touchpoint_data[$key]);

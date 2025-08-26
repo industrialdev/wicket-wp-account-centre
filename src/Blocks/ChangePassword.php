@@ -61,7 +61,7 @@ class ChangePassword
 
         $attrs = get_block_wrapper_attributes([
             'class' => 'wicket wicket-acc-block wicket-acc-block-password flex flex-col gap-8',
-            'data-theme' => WACC()->Settings->getWicketCssTheme(),
+            'data-theme' => WACC()->Settings()->getWicketCssTheme(),
         ]);
 
         // Helper function to check for field errors
@@ -98,11 +98,11 @@ class ChangePassword
           <ul>
             <?php foreach ($formErrors as $index => $error): ?>
               <?php
-                                                                        $errorMap = [
-                                                                            'user.current_password' => ['Current Password', '#current_password'],
-                                                                            'user.password' => ['New Password', '#password'],
-                                                                            'user.password_confirmation' => ['Confirm Password', '#password_confirmation'],
-                                                                        ];
+                                                                            $errorMap = [
+                                                                                'user.current_password' => ['Current Password', '#current_password'],
+                                                                                'user.password' => ['New Password', '#password'],
+                                                                                'user.password_confirmation' => ['Confirm Password', '#password_confirmation'],
+                                                                            ];
 
                 if (isset($errorMap[$error->meta->field])):
                     [$prefix, $anchor] = $errorMap[$error->meta->field];
@@ -191,7 +191,7 @@ class ChangePassword
         }
 
         $errors = [];
-        $client = WACC()->Mdp->initClient();
+        $client = WACC()->Mdp()->initClient();
         $person = wicket_current_person();
 
         $current_password = sanitize_text_field($_POST['current_password'] ?? '');

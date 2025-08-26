@@ -124,8 +124,7 @@ class init extends Blocks
 
         // Render block
 
-WACC()->Blocks()->render_template('touchpoint-cvent', $args);
-
+        WACC()->Blocks()->render_template('touchpoint-cvent', $args);
 
     }
 
@@ -144,9 +143,8 @@ WACC()->Blocks()->render_template('touchpoint-cvent', $args);
 
         // Debug with person: 6d199632-1bb8-4558-9a7e-b00c824590de
 
-$touchpoint_service = WACC()->Mdp()->Touchpoint()->getOrCreateServiceId($service_id);
-$touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoint_service);
-
+        $touchpoint_service = WACC()->Mdp()->Touchpoint()->getOrCreateServiceId($service_id);
+        $touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoint_service);
 
         return $touchpoints;
     }
@@ -196,7 +194,7 @@ $touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoin
             if (isset($tp['attributes']['data']['start_time'])) {
                 $args['tp'] = $tp;
 
-WACC()->Blocks()->render_template('touchpoint-cvent-card', $args);
+                WACC()->Blocks()->render_template('touchpoint-cvent-card', $args);
 
             }
         endforeach;

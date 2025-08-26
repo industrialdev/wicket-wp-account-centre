@@ -132,7 +132,9 @@ if (!empty($override_past_events_link)) {
             ];
 
 if ($single_event) {
-    WACC()->Blocks->render_template('touchpoint-tec-card', $args);
+
+    WACC()->Blocks()->render_template('touchpoint-tec-card', $args);
+
 } else {
 
     if (
