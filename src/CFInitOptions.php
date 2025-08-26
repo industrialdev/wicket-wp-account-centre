@@ -157,7 +157,9 @@ class CFInitOptions extends WicketAcc
 
         // Use the plugin's internal method to check the connection.
         // initClient() returns false on failure, or the client object on success.
-        $client = WACC()->Mdp->initClient();
+
+$client = WACC()->Mdp()->initClient();
+
         $can_connect = $client !== false;
 
         ?>
