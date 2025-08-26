@@ -123,7 +123,8 @@ class init extends Blocks
         }
 
         // Get user profile picture
-        $organiation_logo = WACC()->OrganizationProfile->get_organization_logo($org_id);
+
+        $organiation_logo = WACC()->OrganizationProfile()->get_organization_logo($org_id);
 
         $args = [
             'organization_logo_url' => $organiation_logo,

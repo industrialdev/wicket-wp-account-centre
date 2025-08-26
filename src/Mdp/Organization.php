@@ -347,7 +347,9 @@ class Organization extends Init
         // Use the Helper class to get the resource type name by slug.
         $orgTypeName = '';
         if (!empty($orgType)) {
-            $orgTypeName = WACC()->Mdp->Helper->getResourceTypeNameBySlug($orgType);
+
+            $orgTypeName = WACC()->Mdp()->Helper()->getResourceTypeNameBySlug($orgType);
+
             // If the helper didn't find a specific name, fall back to the pretty version.
             if (empty($orgTypeName)) {
                 $orgTypeName = $orgTypePretty;

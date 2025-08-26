@@ -39,7 +39,7 @@ class init extends Blocks
     {
         global $wp;
 
-        $lang = WACC()->Language->getCurrentLanguage();
+        $lang = WACC()->Language()->getCurrentLanguage();
 
         /**------------------------------------------------------------------
          * Decide whether we are loading an ORG from the URL

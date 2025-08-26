@@ -534,7 +534,7 @@ class Membership extends Init
     public function getCurrentPersonMemberships(array $args = []): array|false
     {
         $defaults = [
-            'person_uuid' => WACC()->Mdp->Person->getCurrentPersonUuid(),
+            'person_uuid' => WACC()->Mdp()->Person()->getCurrentPersonUuid(),
             'include' => 'membership,organization_membership.organization,fusebill_subscription',
             'filter' => [
                 'active_at' => 'now',
@@ -643,7 +643,7 @@ class Membership extends Init
         extract($args);
 
         if (empty($person_uuid)) {
-            $person_uuid = WACC()->Mdp->Person->getCurrentPersonUuid();
+            $person_uuid = WACC()->Mdp()->Person()->getCurrentPersonUuid();
         }
 
         if (empty($person_uuid)) {

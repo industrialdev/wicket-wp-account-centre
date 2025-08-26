@@ -750,7 +750,8 @@ class Group extends Init
         }
 
         $formatted_groups = [];
-        $lang = WACC()->Language->getCurrentLanguage();
+
+        $lang = WACC()->Language()->getCurrentLanguage();
 
         foreach ($groups['data'] as $group) {
             if (($group['type'] ?? '') !== 'groups') {
@@ -806,7 +807,8 @@ class Group extends Init
         }
 
         $formatted_groups = [];
-        $lang = WACC()->Language->getCurrentLanguage();
+
+        $lang = WACC()->Language()->getCurrentLanguage();
 
         foreach ($response['data'] as $group_member) {
             $group_id = $group_member['relationships']['group']['data']['id'] ?? null;
