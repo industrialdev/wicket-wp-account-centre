@@ -23,12 +23,13 @@ class WooCommerce extends WicketAcc
         add_action('parse_request', [$this, 'inject_acc_endpoint_query_vars']);
         add_action('init', [$this, 'register_acc_wc_endpoints']);
         add_action('template_redirect', [$this, 'maybe_clear_404_for_acc_endpoints']);
-        // Temporarily hide/restore WC endpoint vars around detection
-        add_action('parse_request', [$this, 'temporarily_hide_wc_query_vars_for_acc'], 999);
-        add_action('template_redirect', [$this, 'restore_wc_query_vars_for_acc'], 15);
+        // Previously we hid WC endpoint vars to avoid false positives. We now want WC
+        // to detect ACC endpoints as native, so do not hide query vars here.
 
         // Defer WC-specific integrations until WooCommerce initializes
         add_action('woocommerce_init', [$this, 'initialize']);
+
+        // Minimal surface: no body class shims.
     }
 
     /**
@@ -293,14 +294,112 @@ class WooCommerce extends WicketAcc
         // Keep orders pagination fix after normalization
         add_filter('woocommerce_get_endpoint_url', [$this, 'fix_orders_pagination_url'], 11, 4);
 
+        // Ensure redirects/links to payment-methods land on ACC base in ACC context
+        add_filter('woocommerce_get_endpoint_url', [$this, 'fix_payment_methods_endpoint_base'], 12, 4);
+
         // Add WooCommerce endpoints to account pages
         add_filter('wicket_acc_menu_items', [$this, 'add_wc_menu_items']);
 
-        // Prevent WooCommerce from detecting ACC pages as WooCommerce endpoints
-        add_filter('woocommerce_is_account_page', [$this, 'disable_wc_account_page_detection'], 10, 1);
-        add_filter('wc_get_page_id', [$this, 'disable_wc_page_detection'], 10, 2);
-        add_filter('woocommerce_is_endpoint_url', [$this, 'disable_wc_endpoint_url_detection'], 10, 2);
+        // Make WooCommerce think ACC CPT endpoints are inside Woo.
+        add_filter('woocommerce_is_account_page', [$this, 'enable_wc_account_page_detection'], 10, 1);
+        add_filter('wc_get_page_id', [$this, 'enable_wc_page_detection'], 10, 2);
+        add_filter('woocommerce_is_endpoint_url', [$this, 'enable_wc_endpoint_url_detection'], 10, 2);
+        // Also ensure endpoint query vars are present when applicable
+        add_action('wp', [$this, 'maybe_flag_wc_endpoint_query']);
 
+        // Handle payment method actions early to ensure reliable redirects
+        add_action('template_redirect', [$this, 'handle_payment_method_actions_early'], 1);
+        // Also try earlier hooks in case template_redirect isn't firing
+        add_action('wp', [$this, 'handle_payment_method_actions_early'], 1);
+        add_action('parse_request', [$this, 'handle_payment_method_actions_early'], 1);
+
+        // Minimal shim: some gateways rely on this conditional specifically
+        add_filter('woocommerce_is_add_payment_method_page', [$this, 'maybe_force_is_add_payment_method_page']);
+
+        // Trick Woo conditionals that rely on is_page( wc_get_page_id('myaccount') )
+        // by mapping the myaccount page id to the current ACC page id in ACC context.
+        add_filter('pre_option_woocommerce_myaccount_page_id', [$this, 'map_myaccount_page_id_to_acc']);
+
+    }
+
+    /**
+     * Early handler for payment method actions to ensure deletion/default-set works
+     * and always redirects back to payment methods, even if headers were already sent.
+     *
+     * Runs before WooCommerce's own handler to avoid blank page if redirection fails.
+     *
+     * @return void
+     */
+    public function handle_payment_method_actions_early(): void
+    {
+        if (!$this->is_acc_wc_context()) {
+            return;
+        }
+
+        global $wp;
+
+        $delete_token_id = isset($wp->query_vars['delete-payment-method']) ? absint($wp->query_vars['delete-payment-method']) : 0;
+        $set_default_id = isset($wp->query_vars['set-default-payment-method']) ? absint($wp->query_vars['set-default-payment-method']) : 0;
+
+        if (!$delete_token_id && !$set_default_id) {
+            return;
+        }
+
+        if (!function_exists('wc_add_notice')) {
+            return;
+        }
+
+        // Process delete action
+        if ($delete_token_id) {
+            $token = \WC_Payment_Tokens::get($delete_token_id);
+            $nonce_ok = isset($_REQUEST['_wpnonce']) && wp_verify_nonce(wp_unslash($_REQUEST['_wpnonce']), 'delete-payment-method-' . $delete_token_id);
+
+            if (is_null($token) || get_current_user_id() !== $token->get_user_id() || !$nonce_ok) {
+                wc_add_notice(__('Invalid payment method.', 'woocommerce'), 'error');
+            } else {
+                \WC_Payment_Tokens::delete($delete_token_id);
+                wc_add_notice(__('Payment method deleted.', 'woocommerce'));
+            }
+
+            $this->safe_redirect_to_payment_methods();
+        }
+
+        // Process set-default action
+        if ($set_default_id) {
+            $token = \WC_Payment_Tokens::get($set_default_id);
+            $nonce_ok = isset($_REQUEST['_wpnonce']) && wp_verify_nonce(wp_unslash($_REQUEST['_wpnonce']), 'set-default-payment-method-' . $set_default_id);
+
+            if (is_null($token) || get_current_user_id() !== $token->get_user_id() || !$nonce_ok) {
+                wc_add_notice(__('Invalid payment method.', 'woocommerce'), 'error');
+            } else {
+                \WC_Payment_Tokens::set_users_default($token->get_user_id(), intval($set_default_id));
+                wc_add_notice(__('This payment method was successfully set as your default.', 'woocommerce'));
+            }
+
+            $this->safe_redirect_to_payment_methods();
+        }
+    }
+
+    /**
+     * Redirect to the account payment methods endpoint with a fallback when headers are already sent.
+     *
+     * @return void
+     */
+    private function safe_redirect_to_payment_methods(): void
+    {
+        $url = wc_get_account_endpoint_url('payment-methods');
+        wc_nocache_headers();
+        if (!headers_sent()) {
+            // Send header redirect but also print HTML fallback in case the client blocks it
+            wp_safe_redirect($url);
+        }
+        // Always print an HTML/JS fallback to guarantee navigation
+        echo '<!doctype html><html><head><meta charset="utf-8">';
+        echo '<meta http-equiv="refresh" content="0;url=' . esc_url($url) . '">';
+        echo '</head><body>';
+        echo '<script>window.location.replace(' . wp_json_encode($url) . ');</script>';
+        echo '</body></html>';
+        exit;
     }
 
     /**
@@ -460,6 +559,27 @@ class WooCommerce extends WicketAcc
     }
 
     /**
+     * Ensure wc_get_endpoint_url('payment-methods') uses the ACC base when in ACC context.
+     */
+    public function fix_payment_methods_endpoint_base($url, $endpoint, $value, $permalink)
+    {
+        if ($endpoint !== 'payment-methods' || !$this->is_acc_wc_context()) {
+            return $url;
+        }
+
+        $segments = $this->get_language_aware_segments();
+        $bases = array_values($this->acc_wc_index_slugs);
+        $base = $bases[0] ?? 'my-account';
+        if (!empty($segments) && in_array($segments[0], $bases, true)) {
+            $base = $segments[0];
+        }
+
+        $path = '/' . $base . '/payment-methods/';
+
+        return home_url($path);
+    }
+
+    /**
      * Add WooCommerce menu items to account menu.
      *
      * @param array $items Current menu items.
@@ -556,25 +676,41 @@ class WooCommerce extends WicketAcc
 
         $path_segments = $this->get_language_aware_segments();
 
-        if (count($path_segments) < 3) {
+        // Must start with our ACC WC base
+        if (count($path_segments) < 2) {
             return;
         }
-
         $acc_base = $path_segments[0] ?? '';
         $bases = array_values($this->acc_wc_index_slugs);
         if (!in_array($acc_base, $bases, true)) {
             return;
         }
 
-        $second_last = $path_segments[count($path_segments) - 2] ?? '';
-        $last = $path_segments[count($path_segments) - 1] ?? '';
+        // Handle nested endpoints like /my-account/payment-methods/delete-payment-method/58/
+        // Scan through segments to find any endpoint with its argument
+        for ($i = 1; $i < count($path_segments) - 1; $i++) {
+            $maybe_endpoint = $path_segments[$i] ?? '';
+            $next_segment = $path_segments[$i + 1] ?? '';
 
-        $endpoint_key = $this->endpoint_key_from_localized_slug($second_last) ?: $second_last;
-        if ($second_last && array_key_exists($endpoint_key, $this->acc_wc_endpoints) && $last !== '') {
-            $value = is_numeric($last) ? absint($last) : sanitize_text_field(wp_unslash($last));
+            $endpoint_key = $this->endpoint_key_from_localized_slug($maybe_endpoint) ?: $maybe_endpoint;
 
-            $wp->set_query_var($endpoint_key, $value);
-            $wp->query_vars[$endpoint_key] = $value;
+            if (array_key_exists($endpoint_key, $this->acc_wc_endpoints) && $next_segment !== '') {
+                // This is an endpoint with an argument
+                $value = is_numeric($next_segment) ? absint($next_segment) : sanitize_text_field(wp_unslash($next_segment));
+                $wp->set_query_var($endpoint_key, $value);
+                $wp->query_vars[$endpoint_key] = $value;
+                break; // Found and set the endpoint, no need to continue
+            }
+        }
+
+        // Fallback: handle simple endpoints without arguments (e.g., /my-account/add-payment-method/)
+        if (count($path_segments) === 2) {
+            $maybe_endpoint = $path_segments[1] ?? '';
+            $endpoint_key = $this->endpoint_key_from_localized_slug($maybe_endpoint) ?: $maybe_endpoint;
+            if ($maybe_endpoint && array_key_exists($endpoint_key, $this->acc_wc_endpoints)) {
+                $wp->set_query_var($endpoint_key, true);
+                $wp->query_vars[$endpoint_key] = true;
+            }
         }
     }
 
@@ -604,10 +740,15 @@ class WooCommerce extends WicketAcc
         foreach ($bases as $base) {
             foreach ($this->acc_wc_endpoints as $endpoint_key => $localizedSlugs) {
                 foreach ((array) $localizedSlugs as $slug) {
+                    // Some action endpoints should render the payment methods page
+                    $target_page_slug = in_array($endpoint_key, ['delete-payment-method', 'set-default-payment-method'], true)
+                        ? 'payment-methods'
+                        : $endpoint_key;
+
                     // Direct: /base/slug/ID
                     add_rewrite_rule(
                         '^' . $langDir . preg_quote($base, '/') . '/' . preg_quote($slug, '/') . '/([^/]+)/?$',
-                        'index.php?my-account=' . $endpoint_key . '&' . $endpoint_key . '=$matches[1]',
+                        'index.php?my-account=' . $target_page_slug . '&' . $endpoint_key . '=$matches[1]',
                         'top'
                     );
 
@@ -660,12 +801,10 @@ class WooCommerce extends WicketAcc
      * @param bool $is_account_page
      * @return bool
      */
-    public function disable_wc_account_page_detection($is_account_page)
+    public function enable_wc_account_page_detection($is_account_page)
     {
-        global $post;
-
-        if ($post && $post->post_type === 'my-account') {
-            return false;
+        if ($this->is_acc_wc_context()) {
+            return true;
         }
 
         return $is_account_page;
@@ -678,12 +817,13 @@ class WooCommerce extends WicketAcc
      * @param string $page
      * @return int
      */
-    public function disable_wc_page_detection($page_id, $page)
+    public function enable_wc_page_detection($page_id, $page)
     {
-        global $post;
+        if ($this->is_acc_wc_context() && $page === 'myaccount') {
+            // Return the actual WooCommerce my account page ID so plugins relying on it behave
+            $wc_myaccount_page_id = (int) get_option('woocommerce_myaccount_page_id');
 
-        if ($post && $post->post_type === 'my-account' && $page === 'myaccount') {
-            return -1; // Return invalid page ID to disable WC detection
+            return $wc_myaccount_page_id ?: $page_id;
         }
 
         return $page_id;
@@ -696,15 +836,147 @@ class WooCommerce extends WicketAcc
      * @param string $endpoint
      * @return bool
      */
-    public function disable_wc_endpoint_url_detection($is_endpoint, $endpoint = '')
+    public function enable_wc_endpoint_url_detection($is_endpoint, $endpoint = '')
     {
-        global $post;
-
-        if ($post && $post->post_type === 'my-account') {
-            return false;
+        if (!$this->is_acc_wc_context()) {
+            return $is_endpoint;
         }
 
-        return $is_endpoint;
+        // If a specific endpoint key is being checked, validate against our known endpoints
+        if (is_string($endpoint) && $endpoint !== '') {
+            $endpoint_key = $this->current_wc_endpoint_key();
+            if ($endpoint_key !== '' && $endpoint_key === $endpoint) {
+                return true;
+            }
+
+            return $is_endpoint;
+        }
+
+        // Generic check: any known endpoint present on current ACC URL
+        return $this->current_wc_endpoint_key() !== '';
+    }
+
+    /**
+     * If in ACC WC context and on a known endpoint, mark WP/WC query accordingly.
+     */
+    public function maybe_flag_wc_endpoint_query()
+    {
+        if (!$this->is_acc_wc_context()) {
+            return;
+        }
+
+        $endpoint_key = $this->current_wc_endpoint_key();
+        if ($endpoint_key === '') {
+            return;
+        }
+
+        // Ensure the query var is set for the endpoint value
+        global $wp, $wp_query;
+        if (isset($wp->query_vars[$endpoint_key])) {
+            $value = $wp->query_vars[$endpoint_key];
+        } elseif (isset($wp_query->query_vars[$endpoint_key])) {
+            $value = $wp_query->query_vars[$endpoint_key];
+        } else {
+            $value = true; // presence without specific value
+            $wp->query_vars[$endpoint_key] = $value;
+            $wp_query->query_vars[$endpoint_key] = $value;
+            set_query_var($endpoint_key, $value);
+        }
+
+        // Nothing else needed; WC reads from query vars.
+        // Make is_page( wc_get_page_id('myaccount') ) truthy for ACC so core
+        // is_add_payment_method_page() and similar checks pass.
+        $wc_myaccount_page_id = (int) get_option('woocommerce_myaccount_page_id');
+        if ($wc_myaccount_page_id > 0) {
+            if (isset($wp_query)) {
+                $wp_query->is_page = true;
+                $wp_query->is_singular = true;
+                $wp_query->queried_object_id = $wc_myaccount_page_id;
+                $wp_query->query_vars['page_id'] = $wc_myaccount_page_id;
+            }
+            if (isset($wp)) {
+                $wp->query_vars['page_id'] = $wc_myaccount_page_id;
+            }
+        }
+    }
+
+    /**
+     * Return true for ACC add-payment-method endpoint when WooCommerce checks this conditional.
+     */
+    public function maybe_force_is_add_payment_method_page($is)
+    {
+        if ($is) {
+            return $is;
+        }
+
+        if (!$this->is_acc_wc_context()) {
+            return $is;
+        }
+
+        return $this->current_wc_endpoint_key() === 'add-payment-method';
+    }
+
+    // Removed forced enqueues and is_add_payment_method_page shim (not needed).
+
+    /**
+     * Determine if current request is within ACC WooCommerce context (ACC base URL).
+     */
+    private function is_acc_wc_context(): bool
+    {
+        // Check by path base against translated ACC WC index slugs
+        $segments = $this->get_language_aware_segments();
+
+        if (!empty($segments)) {
+            $bases = array_values($this->acc_wc_index_slugs);
+
+            if (in_array($segments[0], $bases, true)) {
+
+                return true;
+            }
+        }
+
+        // Fallback: CPT post type check
+        global $post;
+        $post_check = ($post && $post->post_type === 'my-account');
+
+        return $post_check;
+    }
+
+    /**
+     * Get canonical WC endpoint key present in current ACC URL, or empty string if none.
+     */
+    private function current_wc_endpoint_key(): string
+    {
+        $segments = $this->get_language_aware_segments();
+        if (count($segments) < 2) {
+            return '';
+        }
+        // Prefer second-last when there is a value, otherwise last is the endpoint
+        $candidate = (count($segments) >= 3)
+            ? ($segments[count($segments) - 2] ?? '')
+            : ($segments[count($segments) - 1] ?? '');
+        $endpoint_key = $this->endpoint_key_from_localized_slug($candidate) ?: $candidate;
+
+        return array_key_exists($endpoint_key, $this->acc_wc_endpoints) ? $endpoint_key : '';
+    }
+
+    // Removed body_class additions (not needed).
+
+    /**
+     * Map WooCommerce myaccount page id to current ACC page id so is_page( wc_get_page_id('myaccount') ) is satisfied.
+     */
+    public function map_myaccount_page_id_to_acc($value)
+    {
+        if (!$this->is_acc_wc_context()) {
+            return $value;
+        }
+
+        global $post;
+        if ($post && $post->post_type === 'my-account') {
+            return (int) $post->ID;
+        }
+
+        return $value;
     }
 
     /**
@@ -712,29 +984,8 @@ class WooCommerce extends WicketAcc
      */
     public function temporarily_hide_wc_query_vars_for_acc()
     {
-        global $wp;
+        // No-op: we now want WC to see endpoint vars on ACC URLs
 
-        // Check if this is an ACC URL by examining the request URI
-        $path_segments = $this->get_language_aware_segments();
-
-        // Check if this is a my-account URL
-        $bases = array_values($this->acc_wc_index_slugs);
-        $base = $path_segments[0] ?? '';
-
-        if (in_array($base, $bases, true)) {
-
-            // Store original query vars from $wp object (this is what is_wc_endpoint_url() checks)
-            $this->stored_wc_query_vars = [];
-            // Hide all registered WC endpoints dynamically (canonical keys)
-            $wc_endpoints = array_keys($this->acc_wc_endpoints);
-
-            foreach ($wc_endpoints as $endpoint) {
-                if (isset($wp->query_vars[$endpoint])) {
-                    $this->stored_wc_query_vars[$endpoint] = $wp->query_vars[$endpoint];
-                    unset($wp->query_vars[$endpoint]);
-                }
-            }
-        }
     }
 
     /**
@@ -742,21 +993,8 @@ class WooCommerce extends WicketAcc
      */
     public function restore_wc_query_vars_for_acc()
     {
-        global $wp, $wp_query;
+        // No-op: we no longer hide query vars
 
-        if (!empty($this->stored_wc_query_vars)) {
-            $request_uri = $_SERVER['REQUEST_URI'] ?? '';
-
-            foreach ($this->stored_wc_query_vars as $endpoint => $value) {
-                // Restore to both $wp and $wp_query for compatibility
-                $wp->query_vars[$endpoint] = $value;
-                $wp_query->query_vars[$endpoint] = $value;
-                set_query_var($endpoint, $value);
-            }
-
-            // Clear stored vars
-            $this->stored_wc_query_vars = [];
-        }
     }
 
     /**

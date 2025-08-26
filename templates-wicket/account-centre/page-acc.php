@@ -147,6 +147,9 @@ if ($acc_global_headerbanner_page_id && $acc_global_headerbanner_status) {
 ?>
 
     <div class="woocommerce-wicket--account-centre wicket-acc-page wicket-acc-page-acc <?php echo $wc_wrapper_class; ?>">
+        <?php if (function_exists('wc_print_notices')) {
+            wc_print_notices();
+        } ?>
         <?php
     // ACC page
     if (have_posts()) {
