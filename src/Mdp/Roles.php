@@ -37,7 +37,7 @@ class Roles extends Init
     public function assignRole(string $personUuid, string $roleName, string $orgUuid = ''): bool
     {
         if (empty($personUuid) || empty($roleName)) {
-            WACC()->Log->warning('Person UUID and Role Name cannot be empty.', ['source' => __METHOD__]);
+            WACC()->Log()->warning('Person UUID and Role Name cannot be empty.', ['source' => __METHOD__]);
 
             return false;
         }
@@ -69,7 +69,7 @@ class Roles extends Init
         } catch (RequestException $e) {
             $response_code = $e->hasResponse() ? $e->getResponse()->getStatusCode() : null;
             $response_body = $e->hasResponse() ? (string) $e->getResponse()->getBody() : '';
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'RequestException while assigning role to person.',
                 [
                     'source' => __METHOD__,
@@ -82,7 +82,7 @@ class Roles extends Init
                 ]
             );
         } catch (Exception $e) {
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'Generic Exception while assigning role to person.',
                 [
                     'source' => __METHOD__,
@@ -109,7 +109,7 @@ class Roles extends Init
     public function removeRole(string $personUuid, string $roleName): bool
     {
         if (empty($personUuid) || empty($roleName)) {
-            WACC()->Log->warning('Person UUID and Role Name cannot be empty.', ['source' => __METHOD__]);
+            WACC()->Log()->warning('Person UUID and Role Name cannot be empty.', ['source' => __METHOD__]);
 
             return false;
         }
@@ -120,9 +120,11 @@ class Roles extends Init
         }
 
         // Fetch person data to find the role ID
-        $person = WACC()->Mdp->Person->getPersonByUuid($personUuid);
+
+        $person = WACC()->Mdp()->Person()->getPersonByUuid($personUuid);
+
         if (!$person || !isset($person->data->id)) { // Ensure person data is valid
-            WACC()->Log->warning(
+            WACC()->Log()->warning(
                 'Failed to retrieve person or person data is invalid for role removal.',
                 [
                     'source' => __METHOD__,
@@ -152,7 +154,7 @@ class Roles extends Init
         }
 
         if (empty($roleId)) {
-            WACC()->Log->info(
+            WACC()->Log()->info(
                 'Role not found on person or could not be identified for removal.',
                 [
                     'source' => __METHOD__,
@@ -180,7 +182,7 @@ class Roles extends Init
         } catch (RequestException $e) {
             $response_code = $e->hasResponse() ? $e->getResponse()->getStatusCode() : null;
             $response_body = $e->hasResponse() ? (string) $e->getResponse()->getBody() : '';
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'RequestException while removing role from person.',
                 [
                     'source' => __METHOD__,
@@ -193,7 +195,7 @@ class Roles extends Init
                 ]
             );
         } catch (Exception $e) {
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'Generic Exception while removing role from person.',
                 [
                     'source' => __METHOD__,
@@ -273,7 +275,8 @@ class Roles extends Init
         }
 
         // Remove roles from WordPress.
-        WACC()->User->removeWpRoles($updateRolePersonUuid, $rolesToRemove);
+
+        WACC()->User()->removeWpRoles($updateRolePersonUuid, $rolesToRemove);
 
         // Add new roles to MDP.
         foreach ($newRoles as $roleToAdd) {
@@ -281,7 +284,8 @@ class Roles extends Init
         }
 
         // Add new roles to WordPress.
-        WACC()->User->assignWpRoles($updateRolePersonUuid, $newRoles);
+
+        WACC()->User()->assignWpRoles($updateRolePersonUuid, $newRoles);
 
         // Create Touchpoint.
         $touchpointParams = [
@@ -290,9 +294,13 @@ class Roles extends Init
             'details'   => "Person's role was updated from '" . esc_html(json_encode($personCurrentRoles)) . "' to '" . esc_html(json_encode($newRoles)) . "' on " . date('c', time()),
             'data'      => ['org_id' => $orgId],
         ];
-        $serviceId = WACC()->Mdp->Touchpoint->getOrCreateServiceId('Roster Manage', 'Updated member role');
+
+        $serviceId = WACC()->Mdp()->Touchpoint()->getOrCreateServiceId('Roster Manage', 'Updated member role');
+
         if ($serviceId) {
-            WACC()->Mdp->Touchpoint->writeTouchpoint($touchpointParams, $serviceId);
+
+            WACC()->Mdp()->Touchpoint()->writeTouchpoint($touchpointParams, $serviceId);
+
         }
 
         $response = [

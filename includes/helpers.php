@@ -19,19 +19,21 @@ defined('ABSPATH') || exit;
  * ---- USAGE ----
  *
  * To call a helper method (from the Helpers class):
- * WACC()->my_helper_method();
+ * WACC()->myHelperMethod();
  *
  * To access a plugin component (e.g., Profile, Mdp):
- * WACC()->className->method_name();
+ * WACC()->className()->methodName();
  *
  */
 
 /**
- * Magic wrapper Class for WACC() helpers.
+ * Get the main WACC plugin instance.
  *
- * @return WicketAcc
+ * Provides access to all plugin components and helper methods using method-based approach.
+ *
+ * @return WicketAcc The main plugin instance
  */
-function WACC()
+function WACC(): WicketAcc
 {
     return WicketAcc::get_instance();
 }
@@ -45,13 +47,5 @@ function WACC()
  *
  * The WACC() function returns the main plugin instance, which provides
  * access to all plugin components and helper methods.
- *
- * ---- USAGE ----
- *
- * To call a helper method (from the Helpers class):
- * WACC()->my_helper_method();
- *
- * To access a plugin component (e.g., Profile, Mdp):
- * WACC()->className->method_name();
  *
  */

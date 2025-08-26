@@ -32,7 +32,7 @@ class Group extends Init
     {
         $client = $this->initClient();
         if (!$client) {
-            WACC()->Log->error('Failed to initialize Wicket API client.', ['source' => 'Mdp-Group']);
+            WACC()->Log()->error('Failed to initialize Wicket API client.', ['source' => 'Mdp-Group']);
 
             return false;
         }
@@ -44,14 +44,14 @@ class Group extends Init
             return $groupsApiResponse;
         } catch (RequestException $e) {
             $statusCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 'N/A';
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'RequestException while fetching groups. Status: ' . $statusCode . '. Message: ' . $e->getMessage(),
                 ['source' => 'Mdp-Group']
             );
 
             return false;
         } catch (\Exception $e) {
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'Generic Exception while fetching groups: ' . $e->getMessage(),
                 ['source' => 'Mdp-Group']
             );
@@ -89,7 +89,7 @@ class Group extends Init
         }
 
         if (empty($personUuid)) {
-            WACC()->Log->warning('Person UUID is empty, cannot fetch groups.', ['source' => 'Mdp-Group']);
+            WACC()->Log()->warning('Person UUID is empty, cannot fetch groups.', ['source' => 'Mdp-Group']);
 
             return false;
         }
@@ -129,7 +129,7 @@ class Group extends Init
             ]);
 
             if (!isset($response['data']) || empty($response['data'])) {
-                WACC()->Log->info(
+                WACC()->Log()->info(
                     'No group data found for person.',
                     [
                         'source' => 'Mdp-Group',
@@ -152,7 +152,7 @@ class Group extends Init
                 'status_code' => $statusCode,
             ];
             $log_context['exception_trace'] = $e->getTraceAsString();
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'RequestException while fetching person groups: ' . $e->getMessage(),
                 $log_context
             );
@@ -166,7 +166,7 @@ class Group extends Init
             ];
             $log_context['exception_class'] = get_class($e);
             $log_context['exception_trace'] = $e->getTraceAsString();
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'Generic Exception while fetching person groups: ' . $e->getMessage(),
                 $log_context
             );
@@ -197,7 +197,7 @@ class Group extends Init
         $args = wp_parse_args($args, $defaults);
 
         if (empty($orgUuid)) {
-            WACC()->Log->warning('Organization UUID is empty, cannot fetch groups.', ['source' => 'Mdp-Group']);
+            WACC()->Log()->warning('Organization UUID is empty, cannot fetch groups.', ['source' => 'Mdp-Group']);
 
             return false;
         }
@@ -231,7 +231,7 @@ class Group extends Init
             ]);
 
             if (!isset($response['data']) || empty($response['data'])) {
-                WACC()->Log->info(
+                WACC()->Log()->info(
                     'No groups found for organization.',
                     [
                         'source'   => 'Mdp-Group',
@@ -253,7 +253,7 @@ class Group extends Init
                 'status_code' => $statusCode,
                 'exception_trace' => $e->getTraceAsString(),
             ];
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'RequestException while fetching organization groups: ' . $e->getMessage(),
                 $log_context
             );
@@ -267,7 +267,7 @@ class Group extends Init
                 'exception_class' => get_class($e),
                 'exception_trace' => $e->getTraceAsString(),
             ];
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'Generic Exception while fetching organization groups: ' . $e->getMessage(),
                 $log_context
             );
@@ -294,7 +294,7 @@ class Group extends Init
     {
         // Validate required parameters
         if (empty($personId) || empty($groupUuid) || empty($groupRoleSlug)) {
-            WACC()->Log->warning(
+            WACC()->Log()->warning(
                 'Missing required parameter(s) for addGroupMember.',
                 ['source' => 'Mdp-Group', 'personId' => $personId, 'groupUuid' => $groupUuid, 'role' => $groupRoleSlug]
             );
@@ -319,7 +319,7 @@ class Group extends Init
                         ($membership['relationships']['group']['data']['id'] ?? '') === $groupUuid
                         && ($membership['attributes']['type'] ?? '') === $groupRoleSlug
                     ) {
-                        WACC()->Log->info(
+                        WACC()->Log()->info(
                             'User is already a member of the group with the same role. Skipping.',
                             ['source' => 'Mdp-Group', 'personId' => $personId, 'groupUuid' => $groupUuid]
                         );
@@ -371,7 +371,7 @@ class Group extends Init
                 'payload'     => $payload, // Log the payload for debugging
                 'exception_trace' => $e->getTraceAsString(),
             ];
-            WACC()->Log->error('RequestException while adding group member: ' . $e->getMessage(), $logContext);
+            WACC()->Log()->error('RequestException while adding group member: ' . $e->getMessage(), $logContext);
 
             return false;
         } catch (\Exception $e) {
@@ -384,7 +384,7 @@ class Group extends Init
                 'exception_class' => get_class($e),
                 'exception_trace' => $e->getTraceAsString(),
             ];
-            WACC()->Log->error('Generic Exception while adding group member: ' . $e->getMessage(), $logContext);
+            WACC()->Log()->error('Generic Exception while adding group member: ' . $e->getMessage(), $logContext);
 
             return false;
         }
@@ -400,7 +400,7 @@ class Group extends Init
     public function removeGroupMember(string $groupMembershipId): bool
     {
         if (empty($groupMembershipId)) {
-            WACC()->Log->warning('Group membership ID is empty, cannot remove member.', ['source' => 'Mdp-Group']);
+            WACC()->Log()->warning('Group membership ID is empty, cannot remove member.', ['source' => 'Mdp-Group']);
 
             return false;
         }
@@ -413,7 +413,7 @@ class Group extends Init
 
         try {
             $client->delete("/group_members/{$groupMembershipId}");
-            WACC()->Log->info(
+            WACC()->Log()->info(
                 'Successfully removed group member.',
                 ['source' => 'Mdp-Group', 'groupMembershipId' => $groupMembershipId]
             );
@@ -427,7 +427,7 @@ class Group extends Init
                 'status_code'         => $statusCode,
                 'exception_trace'     => $e->getTraceAsString(),
             ];
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'RequestException while removing group member: ' . $e->getMessage(),
                 $log_context
             );
@@ -440,7 +440,7 @@ class Group extends Init
                 'exception_class'     => get_class($e),
                 'exception_trace'     => $e->getTraceAsString(),
             ];
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'Generic Exception while removing group member: ' . $e->getMessage(),
                 $log_context
             );
@@ -459,7 +459,7 @@ class Group extends Init
     public function getGroup(string $uuid): array|false
     {
         if (empty($uuid)) {
-            WACC()->Log->warning('Group UUID is empty, cannot fetch group.', ['source' => 'Mdp-Group']);
+            WACC()->Log()->warning('Group UUID is empty, cannot fetch group.', ['source' => 'Mdp-Group']);
 
             return false;
         }
@@ -474,7 +474,7 @@ class Group extends Init
             $response = $client->get("groups/{$uuid}");
 
             if (empty($response['data'])) {
-                WACC()->Log->info(
+                WACC()->Log()->info(
                     'Group not found or no data returned.',
                     ['source' => 'Mdp-Group', 'groupUuid' => $uuid]
                 );
@@ -493,9 +493,9 @@ class Group extends Init
             ];
             // Specifically log 404 as info, others as error
             if ($statusCode === 404) {
-                WACC()->Log->info('Group not found (404).', $logContext);
+                WACC()->Log()->info('Group not found (404).', $logContext);
             } else {
-                WACC()->Log->error('RequestException while fetching group: ' . $e->getMessage(), $logContext);
+                WACC()->Log()->error('RequestException while fetching group: ' . $e->getMessage(), $logContext);
             }
 
             return false;
@@ -506,7 +506,7 @@ class Group extends Init
                 'exception_class' => get_class($e),
                 'exception_trace' => $e->getTraceAsString(),
             ];
-            WACC()->Log->error('Generic Exception while fetching group: ' . $getMessage(), $logContext);
+            WACC()->Log()->error('Generic Exception while fetching group: ' . $getMessage(), $logContext);
 
             return false;
         }
@@ -527,7 +527,7 @@ class Group extends Init
     public function getGroupMembers(string $groupUuid, array $args = []): array|false
     {
         if (empty($groupUuid)) {
-            WACC()->Log->warning('Group UUID is empty, cannot fetch group members.', ['source' => 'Mdp-Group']);
+            WACC()->Log()->warning('Group UUID is empty, cannot fetch group members.', ['source' => 'Mdp-Group']);
 
             return false;
         }
@@ -573,7 +573,7 @@ class Group extends Init
             $response = $client->get($endpoint, ['query' => $queryParams]);
 
             if (empty($response['data']) && empty($response['included'])) {
-                WACC()->Log->info(
+                WACC()->Log()->info(
                     'No members found for group or no data returned.',
                     ['source' => 'Mdp-Group', 'groupUuid' => $groupUuid, 'args' => $args]
                 );
@@ -605,7 +605,7 @@ class Group extends Init
                 'response_body' => $e->hasResponse() ? (string) $e->getResponse()->getBody() : null,
                 'exception_trace' => $e->getTraceAsString(),
             ];
-            WACC()->Log->error($errorMessageDetail, $logContext);
+            WACC()->Log()->error($errorMessageDetail, $logContext);
 
             return false;
         } catch (\Exception $e) {
@@ -616,7 +616,7 @@ class Group extends Init
                 'exception_class' => get_class($e),
                 'exception_trace' => $e->getTraceAsString(),
             ];
-            WACC()->Log->error('Generic Exception while fetching group members: ' . $e->getMessage(), $logContext);
+            WACC()->Log()->error('Generic Exception while fetching group members: ' . $e->getMessage(), $logContext);
 
             return false;
         }
@@ -638,7 +638,7 @@ class Group extends Init
     public function searchGroupMembers(string $groupUuid, string $searchQuery, array $args = []): array|false
     {
         if (empty($groupUuid) || empty($searchQuery)) {
-            WACC()->Log->warning(
+            WACC()->Log()->warning(
                 'Group UUID or search query is empty.',
                 ['source' => 'Mdp-Group', 'groupUuid' => $groupUuid, 'searchQuery' => $searchQuery]
             );
@@ -690,7 +690,7 @@ class Group extends Init
         try {
             $response = $client->get($endpoint, ['query' => $queryParams]);
             if (empty($response['data']) && empty($response['included'])) {
-                WACC()->Log->info(
+                WACC()->Log()->info(
                     'Search returned no members for group.',
                     ['source' => 'Mdp-Group', 'groupUuid' => $groupUuid, 'searchQuery' => $searchQuery, 'args' => $args]
                 );
@@ -717,7 +717,7 @@ class Group extends Init
                 'response_body' => $e->hasResponse() ? (string) $e->getResponse()->getBody() : null,
                 'exception_trace' => $e->getTraceAsString(),
             ];
-            WACC()->Log->error($errorMessageDetail, $logContext);
+            WACC()->Log()->error($errorMessageDetail, $logContext);
 
             return false;
         } catch (\Exception $e) {
@@ -729,7 +729,7 @@ class Group extends Init
                 'exception_class' => get_class($e),
                 'exception_trace' => $e->getTraceAsString(),
             ];
-            WACC()->Log->error('Generic Exception while searching group members: ' . $e->getMessage(), $logContext);
+            WACC()->Log()->error('Generic Exception while searching group members: ' . $e->getMessage(), $logContext);
 
             return false;
         }
@@ -744,13 +744,14 @@ class Group extends Init
     public function formatGroupsForSelector(array $groups = []): array|false
     {
         if (empty($groups['data'])) {
-            WACC()->Log->info('Input for group formatting is empty or invalid.', ['source' => 'Mdp-Group', 'groups_data' => $groups]);
+            WACC()->Log()->info('Input for group formatting is empty or invalid.', ['source' => 'Mdp-Group', 'groups_data' => $groups]);
 
             return false;
         }
 
         $formatted_groups = [];
-        $lang = WACC()->Language->getCurrentLanguage();
+
+        $lang = WACC()->Language()->getCurrentLanguage();
 
         foreach ($groups['data'] as $group) {
             if (($group['type'] ?? '') !== 'groups') {
@@ -786,7 +787,7 @@ class Group extends Init
     public function formatPersonGroupsForSelector(array $response = []): array|false
     {
         if (empty($response['data']) || empty($response['included'])) {
-            WACC()->Log->info('Input for person group formatting is empty or invalid.', ['source' => 'Mdp-Group', 'response_data' => $response]);
+            WACC()->Log()->info('Input for person group formatting is empty or invalid.', ['source' => 'Mdp-Group', 'response_data' => $response]);
 
             return false;
         }
@@ -800,13 +801,14 @@ class Group extends Init
         }
 
         if (empty($group_map)) {
-            WACC()->Log->info('No group data found in the included section of the response.', ['source' => 'Mdp-Group']);
+            WACC()->Log()->info('No group data found in the included section of the response.', ['source' => 'Mdp-Group']);
 
             return false;
         }
 
         $formatted_groups = [];
-        $lang = WACC()->Language->getCurrentLanguage();
+
+        $lang = WACC()->Language()->getCurrentLanguage();
 
         foreach ($response['data'] as $group_member) {
             $group_id = $group_member['relationships']['group']['data']['id'] ?? null;

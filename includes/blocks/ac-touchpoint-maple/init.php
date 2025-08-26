@@ -123,7 +123,9 @@ class init extends Blocks
         ];
 
         // Render block
-        WACC()->Blocks->render_template('touchpoint-maple', $args);
+
+WACC()->Blocks()->render_template('touchpoint-maple', $args);
+
     }
 
     /**
@@ -147,8 +149,10 @@ class init extends Blocks
         $action = $action === 'enrolled' ? 'Enrolled in a course' : 'Completed a course';
 
         // Debug with person: 6d199632-1bb8-4558-9a7e-b00c824590de
-        $touchpoint_service = WACC()->Mdp->Touchpoint->getOrCreateServiceId($service_id);
-        $touchpoints = WACC()->Mdp->Touchpoint->getCurrentUserTouchpoints($touchpoint_service);
+
+$touchpoint_service = WACC()->Mdp()->Touchpoint()->getOrCreateServiceId($service_id);
+$touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoint_service);
+
 
         // Filter touchpoints by action
         $fitered_touchpoints = self::filter_touchpoints_by_action($touchpoints, $action);
@@ -200,7 +204,9 @@ class init extends Blocks
         $touchpoint_action = get_field('touchpoint_action');
 
         foreach ($display_data as $course) :
-            WACC()->Blocks->render_template('touchpoint-maple-card', $course);
+
+WACC()->Blocks()->render_template('touchpoint-maple-card', $course);
+
         endforeach;
 
         // Show more button only if not an AJAX request and there are more results

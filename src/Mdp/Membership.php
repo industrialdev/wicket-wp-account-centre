@@ -38,14 +38,14 @@ class Membership extends Init
     public function getOrganizationMembershipByUuid(?string $uuid): array|false
     {
         if (empty($uuid)) {
-            WACC()->Log->warning('UUID cannot be empty.', ['source' => __CLASS__]);
+            WACC()->Log()->warning('UUID cannot be empty.', ['source' => __CLASS__]);
 
             return false;
         }
 
         $client = $this->initClient();
         if (!$client) {
-            WACC()->Log->error('Failed to initialize API client.', ['source' => __CLASS__, 'uuid' => $uuid]);
+            WACC()->Log()->error('Failed to initialize API client.', ['source' => __CLASS__, 'uuid' => $uuid]);
 
             return false;
         }
@@ -54,7 +54,7 @@ class Membership extends Init
             // Assuming the Wicket SDK client's 'get' method returns an array or throws an exception.
             return $client->get("organization_memberships/{$uuid}");
         } catch (Exception $e) {
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'API Exception while fetching organization membership by UUID.',
                 [
                     'source' => __CLASS__,
@@ -84,14 +84,14 @@ class Membership extends Init
     public function getOrganizationMemberships(string $org_uuid): array|false
     {
         if (empty($org_uuid)) {
-            WACC()->Log->warning('Organization UUID cannot be empty.', ['source' => __CLASS__]);
+            WACC()->Log()->warning('Organization UUID cannot be empty.', ['source' => __CLASS__]);
 
             return false;
         }
 
         $client = $this->initClient();
         if (!$client) {
-            WACC()->Log->error('Failed to initialize API client.', ['source' => __CLASS__, 'org_uuid' => $org_uuid]);
+            WACC()->Log()->error('Failed to initialize API client.', ['source' => __CLASS__, 'org_uuid' => $org_uuid]);
 
             return false;
         }
@@ -100,7 +100,7 @@ class Membership extends Init
             $org_memberships_response = $client->get("/organizations/{$org_uuid}/membership_entries?sort=-ends_at&include=membership");
 
             if (!isset($org_memberships_response['data'])) {
-                WACC()->Log->warning(
+                WACC()->Log()->warning(
                     'API response for organization memberships did not contain a data key.',
                     ['source' => __CLASS__, 'org_uuid' => $org_uuid, 'response' => $org_memberships_response]
                 );
@@ -135,7 +135,7 @@ class Membership extends Init
 
             return $memberships;
         } catch (Exception $e) {
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'API Exception while fetching organization memberships.',
                 [
                     'source' => __CLASS__,
@@ -192,7 +192,7 @@ class Membership extends Init
 
             return true;
         } catch (RequestException $e) {
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'API Exception while assigning person to organization membership.',
                 [
                     'source' => __CLASS__,
@@ -226,7 +226,7 @@ class Membership extends Init
 
             return true;
         } catch (RequestException $e) {
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'API Exception while unassigning person from organization membership.',
                 [
                     'source' => __CLASS__,
@@ -385,7 +385,7 @@ class Membership extends Init
     public function getOrganizationMembershipData(string $membershipUuid): array|false
     {
         if (empty($membershipUuid)) {
-            WACC()->Log->warning('Membership UUID cannot be empty.', ['source' => __CLASS__]);
+            WACC()->Log()->warning('Membership UUID cannot be empty.', ['source' => __CLASS__]);
 
             return false;
         }
@@ -407,7 +407,7 @@ class Membership extends Init
             $response = $client->get($endpoint, $params);
 
             if (empty($response['data'])) {
-                WACC()->Log->info('No data found for the given organization membership UUID.', [
+                WACC()->Log()->info('No data found for the given organization membership UUID.', [
                     'source' => __CLASS__,
                     'membership_uuid' => $membershipUuid,
                 ]);
@@ -418,7 +418,7 @@ class Membership extends Init
             return $response;
         } catch (RequestException $e) {
             $response_code = $e->hasResponse() ? $e->getResponse()->getStatusCode() : null;
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'RequestException while fetching organization membership data.',
                 [
                     'source' => __CLASS__,
@@ -430,7 +430,7 @@ class Membership extends Init
 
             return false;
         } catch (Exception $e) {
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'Generic Exception while fetching organization membership data.',
                 [
                     'source' => __CLASS__,
@@ -456,7 +456,7 @@ class Membership extends Init
     public function getOrganizationMembershipMembers(string $membershipUuid, array $args = []): array|false
     {
         if (empty($membershipUuid)) {
-            WACC()->Log->warning('Membership UUID cannot be empty.', ['source' => __CLASS__]);
+            WACC()->Log()->warning('Membership UUID cannot be empty.', ['source' => __CLASS__]);
 
             return false;
         }
@@ -485,7 +485,7 @@ class Membership extends Init
             $response = $client->get($endpoint, $params);
 
             if (!isset($response['data'])) {
-                WACC()->Log->info('No data found for the given organization membership members.', [
+                WACC()->Log()->info('No data found for the given organization membership members.', [
                     'source' => __CLASS__,
                     'membership_uuid' => $membershipUuid,
                 ]);
@@ -496,7 +496,7 @@ class Membership extends Init
             return $response;
         } catch (RequestException $e) {
             $response_code = $e->hasResponse() ? $e->getResponse()->getStatusCode() : null;
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'RequestException while fetching organization membership members.',
                 [
                     'source' => __CLASS__,
@@ -508,7 +508,7 @@ class Membership extends Init
 
             return false;
         } catch (Exception $e) {
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'Generic Exception while fetching organization membership members.',
                 [
                     'source' => __CLASS__,
@@ -534,7 +534,7 @@ class Membership extends Init
     public function getCurrentPersonMemberships(array $args = []): array|false
     {
         $defaults = [
-            'person_uuid' => WACC()->Mdp->Person->getCurrentPersonUuid(),
+            'person_uuid' => WACC()->Mdp()->Person()->getCurrentPersonUuid(),
             'include' => 'membership,organization_membership.organization,fusebill_subscription',
             'filter' => [
                 'active_at' => 'now',
@@ -545,14 +545,14 @@ class Membership extends Init
         $uuid = $args['person_uuid'];
 
         if (empty($uuid)) {
-            WACC()->Log->warning('Person UUID cannot be empty for membership entries.', ['source' => __CLASS__]);
+            WACC()->Log()->warning('Person UUID cannot be empty for membership entries.', ['source' => __CLASS__]);
 
             return false;
         }
 
         $client = $this->initClient();
         if (!$client) {
-            WACC()->Log->error('Failed to initialize API client.', ['source' => __CLASS__, 'person_uuid' => $uuid]);
+            WACC()->Log()->error('Failed to initialize API client.', ['source' => __CLASS__, 'person_uuid' => $uuid]);
 
             return false;
         }
@@ -588,7 +588,7 @@ class Membership extends Init
                 return $memberships;
             }
 
-            WACC()->Log->info('No membership entries found for person.', [
+            WACC()->Log()->info('No membership entries found for person.', [
                 'source' => __CLASS__,
                 'person_uuid' => $uuid,
             ]);
@@ -597,7 +597,7 @@ class Membership extends Init
         } catch (RequestException $e) {
             $response_code = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 'unknown';
 
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'RequestException while fetching person membership entries.',
                 [
                     'source' => __CLASS__,
@@ -609,7 +609,7 @@ class Membership extends Init
 
             return false;
         } catch (Exception $e) {
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'Generic Exception while fetching person membership entries.',
                 [
                     'source' => __CLASS__,
@@ -643,18 +643,18 @@ class Membership extends Init
         extract($args);
 
         if (empty($person_uuid)) {
-            $person_uuid = WACC()->Mdp->Person->getCurrentPersonUuid();
+            $person_uuid = WACC()->Mdp()->Person()->getCurrentPersonUuid();
         }
 
         if (empty($person_uuid)) {
-            WACC()->Log->warning('Person UUID cannot be empty for max end date.', ['source' => __CLASS__]);
+            WACC()->Log()->warning('Person UUID cannot be empty for max end date.', ['source' => __CLASS__]);
 
             return false;
         }
 
         $client = $this->initClient();
         if (!$client) {
-            WACC()->Log->error('Failed to initialize API client.', ['source' => __CLASS__, 'person_uuid' => $person_uuid]);
+            WACC()->Log()->error('Failed to initialize API client.', ['source' => __CLASS__, 'person_uuid' => $person_uuid]);
 
             return false;
         }
@@ -694,7 +694,7 @@ class Membership extends Init
                 }
             }
 
-            WACC()->Log->info('No max end date found for person.', [
+            WACC()->Log()->info('No max end date found for person.', [
                 'source' => __CLASS__,
                 'person_uuid' => $person_uuid,
             ]);
@@ -703,7 +703,7 @@ class Membership extends Init
         } catch (RequestException $e) {
             $response_code = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 'unknown';
 
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'RequestException while fetching person max end date.',
                 [
                     'source' => __CLASS__,
@@ -715,7 +715,7 @@ class Membership extends Init
 
             return false;
         } catch (Exception $e) {
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'Generic Exception while fetching person max end date.',
                 [
                     'source' => __CLASS__,

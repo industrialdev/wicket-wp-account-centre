@@ -32,7 +32,7 @@ class Address extends Init
     public function getAddressByUuid(string $uuid): object|false
     {
         if (empty($uuid)) {
-            WACC()->Log->warning('Address UUID cannot be empty.', ['source' => __METHOD__]);
+            WACC()->Log()->warning('Address UUID cannot be empty.', ['source' => __METHOD__]);
 
             return false;
         }
@@ -47,7 +47,7 @@ class Address extends Init
             return $client->addresses->fetch($uuid);
         } catch (RequestException $e) {
             $response_code = $e->hasResponse() ? $e->getResponse()->getStatusCode() : null;
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'RequestException while fetching address by UUID.',
                 [
                     'source' => __METHOD__,
@@ -59,7 +59,7 @@ class Address extends Init
 
             return false;
         } catch (Exception $e) {
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'Generic Exception while fetching address by UUID.',
                 [
                     'source' => __METHOD__,
@@ -157,12 +157,12 @@ class Address extends Init
                     $context['statusCode'] = $e->getResponse()->getStatusCode();
                     $context['responseBody'] = $e->getResponse()->getBody()->getContents();
                 }
-                WACC()->Log->error("Failed to update address (UUID: {$addressUuid}).", $context);
+                WACC()->Log()->error("Failed to update address (UUID: {$addressUuid}).", $context);
                 $results['failed'][] = ['uuid' => $addressUuid, 'error' => $errorMsg];
                 $overallSuccess = false;
             } catch (Exception $e) {
                 $errorMsg = 'Generic Exception: ' . $e->getMessage();
-                WACC()->Log->error("Generic exception during address update (UUID: {$addressUuid}).", ['source' => __METHOD__, 'address_uuid' => $addressUuid, 'message' => $e->getMessage()]);
+                WACC()->Log()->error("Generic exception during address update (UUID: {$addressUuid}).", ['source' => __METHOD__, 'address_uuid' => $addressUuid, 'message' => $e->getMessage()]);
                 $results['failed'][] = ['uuid' => $addressUuid, 'error' => $errorMsg];
                 $overallSuccess = false;
             }

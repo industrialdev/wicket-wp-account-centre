@@ -380,7 +380,8 @@ class Router extends WicketAcc
             'es' => 'wc-cuenta',
         ];
 
-        $current_lang = WACC()->Language->getCurrentLanguage();
+        $current_lang = WACC()->Language()->getCurrentLanguage();
+
         $acc_dashboard_id = (int) $this->getAccPageId();
         $acc_dashboard_url = get_permalink($acc_dashboard_id);
         $acc_dashboard_slug = get_post($acc_dashboard_id)->post_name;

@@ -32,9 +32,9 @@ class Notification
     public function sendPersonToTeamAssignmentEmail(WP_User $user, string $orgUuid): bool
     {
         // Fetch organization details, including emails
-        $org = WACC()->Mdp->Organization->getOrganizationByUuid($orgUuid, 'emails');
+        $org = WACC()->Mdp()->Organization()->getOrganizationByUuid($orgUuid, 'emails');
         if (empty($org['data'])) {
-            WACC()->Log->error('Failed to retrieve organization data for notification.', [
+            WACC()->Log()->error('Failed to retrieve organization data for notification.', [
                 'source' => __METHOD__,
                 'orgUuid' => $orgUuid,
             ]);
@@ -43,9 +43,9 @@ class Notification
         }
 
         // Fetch person details using the user's login, which is the person UUID
-        $person = WACC()->Mdp->Person->getPersonByUuid($user->user_login);
+        $person = WACC()->Mdp()->Person()->getPersonByUuid($user->user_login);
         if (empty($person)) {
-            WACC()->Log->error('Failed to retrieve person data for notification.', [
+            WACC()->Log()->error('Failed to retrieve person data for notification.', [
                 'source' => __METHOD__,
                 'personUuid' => $user->user_login,
             ]);
@@ -54,7 +54,7 @@ class Notification
         }
 
         // Determine language for localized content
-        $lang = WACC()->Language->getCurrentLanguage();
+        $lang = WACC()->Language()->getCurrentLanguage();
         $organizationName = $org['data']['attributes']["legal_name_{$lang}"] ?? $org['data']['attributes']['legal_name'] ?? 'your organization';
 
         // Prepare email content
@@ -79,7 +79,7 @@ class Notification
         $sent = wp_mail($to, $subject, $body, $headers);
 
         if (!$sent) {
-            WACC()->Log->error('Failed to send team assignment email.', [
+            WACC()->Log()->error('Failed to send team assignment email.', [
                 'source' => __METHOD__,
                 'to' => $to,
                 'personUuid' => $user->user_login,
@@ -104,9 +104,9 @@ class Notification
     public function sendNewPersonToTeamAssignmentEmail(string $firstName, string $lastName, string $email, string $orgUuid): bool
     {
         // Fetch organization details, including emails
-        $org = WACC()->Mdp->Organization->getOrganizationByUuid($orgUuid, 'emails');
+        $org = WACC()->Mdp()->Organization()->getOrganizationByUuid($orgUuid, 'emails');
         if (empty($org['data'])) {
-            WACC()->Log->error('Failed to retrieve organization data for new person notification.', [
+            WACC()->Log()->error('Failed to retrieve organization data for new person notification.', [
                 'source' => __METHOD__,
                 'orgUuid' => $orgUuid,
             ]);
@@ -115,7 +115,7 @@ class Notification
         }
 
         // Determine language for localized content
-        $lang = WACC()->Language->getCurrentLanguage();
+        $lang = WACC()->Language()->getCurrentLanguage();
         $organizationName = $org['data']['attributes']["legal_name_{$lang}"] ?? $org['data']['attributes']['legal_name'] ?? 'your organization';
 
         // Prepare email content
@@ -139,7 +139,7 @@ class Notification
         $sent = wp_mail($to, $subject, $body, $headers);
 
         if (!$sent) {
-            WACC()->Log->error('Failed to send new person team assignment email.', [
+            WACC()->Log()->error('Failed to send new person team assignment email.', [
                 'source' => __METHOD__,
                 'to' => $to,
                 'orgUuid' => $orgUuid,
@@ -195,7 +195,7 @@ class Notification
         $sent = wp_mail($to, $subject, $body, $headers);
 
         if (!$sent) {
-            WACC()->Log->error('Failed to send membership approval required email.', [
+            WACC()->Log()->error('Failed to send membership approval required email.', [
                 'source' => __METHOD__,
                 'to' => $to,
             ]);
@@ -213,12 +213,12 @@ class Notification
      */
     public function sendPersonToOrgAssignmentEmail(string $personUuid, string $orgUuid): void
     {
-        $lang = WACC()->Language->getCurrentLanguage();
-        $person = WACC()->Mdp->Person->getPerson($personUuid);
-        $org = WACC()->Mdp->Organization->getOrganizationInfo($orgUuid);
+        $lang = WACC()->Language()->getCurrentLanguage();
+        $person = WACC()->Mdp()->Person()->getPerson($personUuid);
+        $org = WACC()->Mdp()->Organization()->getOrganizationInfo($orgUuid);
 
         if (!$person || !$org) {
-            WACC()->Log->error('Failed to send assignment email: Invalid person or organization.', [
+            WACC()->Log()->error('Failed to send assignment email: Invalid person or organization.', [
                 'source' => __METHOD__, 'personUuid' => $personUuid, 'orgUuid' => $orgUuid,
             ]);
 
@@ -232,7 +232,7 @@ class Notification
 
         $to = $person['primary_email_address'] ?? '';
         if (empty($to)) {
-            WACC()->Log->error('Failed to send assignment email: Person has no primary email address.', [
+            WACC()->Log()->error('Failed to send assignment email: Person has no primary email address.', [
                 'source' => __METHOD__, 'personUuid' => $personUuid,
             ]);
 
@@ -275,7 +275,7 @@ $organization_name";
         $requiredKeys = ['orgUuid', 'subject', 'body', 'lang'];
         foreach ($requiredKeys as $key) {
             if (empty($emailData[$key])) {
-                WACC()->Log->error("Email notification missing required data: `{$key}`.", [
+                WACC()->Log()->error("Email notification missing required data: `{$key}`.", [
                     'source' => __METHOD__, 'emailData' => $emailData,
                 ]);
 
@@ -283,10 +283,10 @@ $organization_name";
             }
         }
 
-        $orgInfo = WACC()->Mdp->Organization->getOrganizationInfoExtended($emailData['orgUuid'], $emailData['lang']);
+        $orgInfo = WACC()->Mdp()->Organization()->getOrganizationInfoExtended($emailData['orgUuid'], $emailData['lang']);
 
         if (!$orgInfo) {
-            WACC()->Log->error('Failed to send notification: Invalid organization.', [
+            WACC()->Log()->error('Failed to send notification: Invalid organization.', [
                 'source' => __METHOD__, 'orgUuid' => $emailData['orgUuid'],
             ]);
 
@@ -295,7 +295,7 @@ $organization_name";
 
         $to = $emailData['to'] ?? $orgInfo['org_meta']['main_email']['address'] ?? '';
         if (empty($to)) {
-            WACC()->Log->error('Failed to send notification: No recipient email address found.', [
+            WACC()->Log()->error('Failed to send notification: No recipient email address found.', [
                 'source' => __METHOD__, 'orgUuid' => $emailData['orgUuid'],
             ]);
 

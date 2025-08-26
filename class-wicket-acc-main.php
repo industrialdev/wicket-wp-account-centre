@@ -15,7 +15,7 @@ use WicketAcc\Services\Notification;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Custom account management system for Wicket. Provides user account features, organization management, and additional blocks and pages. Integrates with WooCommerce when available.
- * Version:           1.5.260
+ * Version:           1.5.264
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -57,6 +57,34 @@ add_action(
 
 /**
  * The main Wicket Account Centre class.
+ *
+ * Provides method-based access to all services:
+ * - WACC()->Mdp() - MDP integration service
+ * - WACC()->Profile() - User profile management
+ * - WACC()->OrganizationManagement() - Organization management
+ * - WACC()->OrganizationProfile() - Organization profile management
+ * - WACC()->OrganizationRoster() - Organization roster management
+ * - WACC()->Blocks() - Custom blocks
+ * - WACC()->User() - User management
+ * - WACC()->Log() - Logging service
+ * - WACC()->Language() - Language/localization
+ * - WACC()->Notification() - Notification service
+ * - WACC()->Settings() - Plugin settings
+ * - WACC()->WooCommerce() - WooCommerce integration (if active)
+ *
+ * @method Mdp Mdp() Get MDP integration service
+ * @method Profile Profile() Get user profile management service
+ * @method OrganizationManagement OrganizationManagement() Get organization management service
+ * @method OrganizationProfile OrganizationProfile() Get organization profile service
+ * @method OrganizationRoster OrganizationRoster() Get organization roster service
+ * @method Blocks Blocks() Get custom blocks service
+ * @method User User() Get user management service
+ * @method Log Log() Get logging service
+ * @method Language Language() Get language/localization service
+ * @method Notification Notification() Get notification service
+ * @method Settings Settings() Get plugin settings service
+ * @method WooCommerce WooCommerce() Get WooCommerce integration service
+ * @method Helpers Helpers() Get helpers service
  */
 class WicketAcc
 {
@@ -244,40 +272,17 @@ class WicketAcc
     public function __construct() {}
 
     /**
-     * Get the instance of a class.
+     * Magic method to provide method-based access to service instances and helper methods.
      *
-     * @param string $name
+     * Supports two patterns:
+     * 1. Service access: WACC()->ServiceName() returns the service instance
+     * 2. Helper methods: WACC()->helperMethod() calls methods from the Helpers class
      *
-     * @return object|Blocks|Mdp|OrganizationProfile|Profile|User|Log|WooCommerce|Language|OrganizationManagement|OrganizationRoster|Settings|Helpers
-     * @throws \Exception
-     */
-    public function __get($name): Blocks|Mdp|OrganizationProfile|Profile|User|Log|WooCommerce|Language|OrganizationManagement|OrganizationRoster|Settings|Helpers
-    {
-        // Handle MdpApi alias for backward compatibility
-        if ($name === 'MdpApi') {
-            $name = 'Mdp';
-        }
-
-        // Handle Helpers alias for backward compatibility
-        if ($name === 'Helpers') {
-            return $this->getHelpers();
-        }
-
-        if (isset($this->instances[$name])) {
-            return $this->instances[$name];
-        }
-
-        throw new \Exception("Class instance $name does not exist.");
-    }
-
-    /**
-     * Call magic method for class instances.
+     * @param string $name Method name (service name or helper method)
+     * @param array $arguments Method arguments
      *
-     * @param string $name
-     * @param array $arguments
-     *
-     * @return object|mixed
-     * @throws \Exception
+     * @return object|mixed Service instance or helper method result
+     * @throws \Exception When method/service doesn't exist
      */
     public function __call($name, $arguments)
     {
@@ -288,12 +293,22 @@ class WicketAcc
             return call_user_func_array([$helpers, $name], $arguments);
         }
 
-        // Handle dynamic class instance call
+        // Handle MdpApi alias for backward compatibility
+        if ($name === 'MdpApi') {
+            $name = 'Mdp';
+        }
+
+        // Handle Helpers alias for backward compatibility
+        if ($name === 'Helpers') {
+            return $this->getHelpers();
+        }
+
+        // Handle service instance access via method calls
         if (isset($this->instances[$name])) {
             return $this->instances[$name];
         }
 
-        throw new \Exception("Method or class instance '$name' does not exist. Available instances: " . implode(', ', array_keys($this->instances)));
+        throw new \Exception("Method or service '$name' does not exist. Available services: " . implode(', ', array_keys($this->instances)));
     }
 
     /**

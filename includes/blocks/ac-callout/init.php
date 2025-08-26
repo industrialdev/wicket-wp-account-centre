@@ -53,13 +53,18 @@ class init extends Blocks
         $this->capture_use_query_string = (bool) get_field('capture_use_query_string');
 
         // Initialize ISO code for language using WACC Language helper
-        $iso_code = WACC()->Language->getCurrentLanguage();
+
+        $iso_code = WACC()->Language()->getCurrentLanguage();
 
         // Get Wicket memberships using the new Mdp method
-        $memberships = WACC()->Mdp->Membership->getCurrentPersonActiveMemberships($iso_code);
+
+$memberships = WACC()->Mdp()->Membership()->getCurrentPersonActiveMemberships($iso_code);
+
 
         // Get WooCommerce memberships using the new Mdp method
-        $woo_memberships = WACC()->Mdp->Membership->getCurrentUserWooActiveMemberships();
+
+$woo_memberships = WACC()->Mdp()->Membership()->getCurrentUserWooActiveMemberships();
+
 
         if ($this->is_preview) {
             if ($block_logic == '') {

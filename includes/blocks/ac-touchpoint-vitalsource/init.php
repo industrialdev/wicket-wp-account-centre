@@ -107,7 +107,9 @@ class init extends Blocks
         ];
 
         // Render block
-        WACC()->Blocks->render_template('touchpoint-vitalsource', $args);
+
+WACC()->Blocks()->render_template('touchpoint-vitalsource', $args);
+
     }
 
     /**
@@ -123,8 +125,10 @@ class init extends Blocks
             return false;
         }
 
-        $touchpoint_service = WACC()->Mdp->Touchpoint->getOrCreateServiceId($service_id);
-        $touchpoints = WACC()->Mdp->Touchpoint->getCurrentUserTouchpoints($touchpoint_service, null, ['mode' => 'past']);
+
+$touchpoint_service = WACC()->Mdp()->Touchpoint()->getOrCreateServiceId($service_id);
+$touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoint_service, null, ['mode' => 'past']);
+
         $action = get_field('action') ?? 'eBook Fulfillment';
 
         // Filter touchpoints by action
@@ -172,7 +176,9 @@ class init extends Blocks
         foreach ($display_data as $tp) :
             if (isset($tp['attributes']['data']['product_name'])) {
                 $args['tp'] = $tp;
-                WACC()->Blocks->render_template('touchpoint-vitalsource-card', $args);
+
+WACC()->Blocks()->render_template('touchpoint-vitalsource-card', $args);
+
             }
         endforeach;
 

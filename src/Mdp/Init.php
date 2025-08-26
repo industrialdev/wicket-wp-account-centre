@@ -13,8 +13,8 @@ defined('ABSPATH') || exit;
 /**
  * Class Init
  * Base class for MDP API interactions and gateway to specialized API handlers.
- * Provides access to specialized API classes like Person, Organization, etc., via magic __get().
- * Example: WACC()->Mdp->Person->getCurrentPerson();.
+ * Provides access to specialized API classes like Person, Organization, etc., via magic __get() and __call().
+ * Example: WACC()->Mdp()->Person()->getCurrentPerson();.
  */
 class Init
 {
@@ -290,5 +290,19 @@ class Init
         trigger_error('Undefined property: ' . __CLASS__ . "::\\$$name", E_USER_NOTICE);
 
         return null;
+    }
+
+    /**
+     * Magic method call handler for method-based access to specialized API classes.
+     *
+     * @param string $name The name of the specialized class method call.
+     * @param array $arguments The arguments passed to the method.
+     * @return object The specialized API class instance.
+     * @throws Exception If the requested class cannot be found/instantiated.
+     */
+    public function __call(string $name, array $arguments)
+    {
+        // Support method-based access like WACC()->Mdp()->Person() instead of WACC()->Mdp->Person
+        return $this->__get($name);
     }
 }

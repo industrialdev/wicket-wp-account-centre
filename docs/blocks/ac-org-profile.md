@@ -35,7 +35,7 @@ ac-org-profile/
 
 3. **Language Support**
    ```php
-   $lang = WACC()->Language->getCurrentLanguage();
+   $lang = WACC()->Language()->getCurrentLanguage();
    ```
    - Centralized language detection (WPML, Polylang, WP User/Site Locale)
    - Consistent language handling via `Language` class

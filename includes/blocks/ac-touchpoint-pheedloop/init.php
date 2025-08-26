@@ -124,7 +124,9 @@ class init extends Blocks
         ];
 
         // Render block
-        WACC()->Blocks->render_template('touchpoint-pheedloop', $args);
+
+WACC()->Blocks()->render_template('touchpoint-pheedloop', $args);
+
 
     }
 
@@ -142,8 +144,10 @@ class init extends Blocks
         }
 
         // Debug with person: 6d199632-1bb8-4558-9a7e-b00c824590de
-        $touchpoint_service = WACC()->Mdp->Touchpoint->getOrCreateServiceId($service_id);
-        $touchpoints = WACC()->Mdp->Touchpoint->getCurrentUserTouchpoints($touchpoint_service);
+
+$touchpoint_service = WACC()->Mdp()->Touchpoint()->getOrCreateServiceId($service_id);
+$touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoint_service);
+
 
         return $touchpoints;
     }
@@ -192,7 +196,9 @@ class init extends Blocks
         foreach ($display_data as $tp) :
             if (isset($tp['attributes']['data']['event_start'])) {
                 $args['tp'] = $tp;
-                WACC()->Blocks->render_template('touchpoint-pheedloop-card', $args);
+
+WACC()->Blocks()->render_template('touchpoint-pheedloop-card', $args);
+
             }
         endforeach;
 

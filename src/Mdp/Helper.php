@@ -32,7 +32,7 @@ class Helper extends Init
     public function getIntervalById(int|string $uuid): object|false
     {
         if (empty($uuid)) {
-            WACC()->Log->warning('Interval ID cannot be empty.', ['source' => __METHOD__]);
+            WACC()->Log()->warning('Interval ID cannot be empty.', ['source' => __METHOD__]);
 
             return false;
         }
@@ -47,7 +47,7 @@ class Helper extends Init
             return $client->intervals->fetch($uuid);
         } catch (RequestException $e) {
             $response_code = $e->hasResponse() ? $e->getResponse()->getStatusCode() : null;
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'RequestException while fetching interval by ID.',
                 [
                     'source' => __METHOD__,
@@ -59,7 +59,7 @@ class Helper extends Init
 
             return false;
         } catch (Exception $e) {
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'Generic Exception while fetching interval by ID.',
                 [
                     'source' => __METHOD__,
@@ -84,14 +84,14 @@ class Helper extends Init
     public function getResourceTypeNameBySlug(string $slug): string|false
     {
         if (empty($slug)) {
-            WACC()->Log->warning('Slug cannot be empty.', ['source' => __METHOD__]);
+            WACC()->Log()->warning('Slug cannot be empty.', ['source' => __METHOD__]);
 
             return false;
         }
 
-        $client = WACC()->Mdp->initClient();
+        $client = WACC()->Mdp()->initClient();
         if (!$client) {
-            WACC()->Log->error('Failed to initialize API client.', ['source' => __METHOD__]);
+            WACC()->Log()->error('Failed to initialize API client.', ['source' => __METHOD__]);
 
             return false;
         }
@@ -99,7 +99,7 @@ class Helper extends Init
         try {
             $response = $client->get('resource_types');
         } catch (RequestException $e) {
-            WACC()->Log->error(
+            WACC()->Log()->error(
                 'API request to /resource_types failed.',
                 [
                     'source' => __METHOD__,
@@ -112,7 +112,7 @@ class Helper extends Init
         }
 
         if (empty($response['data']) || !is_array($response['data'])) {
-            WACC()->Log->warning(
+            WACC()->Log()->warning(
                 'No data or invalid data format in /resource_types response.',
                 ['source' => __METHOD__, 'response' => $response]
             );
@@ -130,7 +130,7 @@ class Helper extends Init
             }
         }
 
-        WACC()->Log->info(
+        WACC()->Log()->info(
             'Resource type name not found for slug.',
             ['source' => __METHOD__, 'slug' => $slug]
         );
@@ -169,14 +169,14 @@ class Helper extends Init
             switch ($type) {
                 case 'array':
                     if (empty(array_filter($value))) {
-                        WACC()->Log->info('Skipped processing data field.', ['source' => __METHOD__, 'field' => $field, 'schema' => $schema, 'reason' => 'Empty array value submitted']);
+                        WACC()->Log()->info('Skipped processing data field.', ['source' => __METHOD__, 'field' => $field, 'schema' => $schema, 'reason' => 'Empty array value submitted']);
 
                         return;
                     }
                     break;
                 case 'string':
                     if ($value === '') {
-                        WACC()->Log->info('Skipped processing data field.', ['source' => __METHOD__, 'field' => $field, 'schema' => $schema, 'reason' => 'Empty string value submitted']);
+                        WACC()->Log()->info('Skipped processing data field.', ['source' => __METHOD__, 'field' => $field, 'schema' => $schema, 'reason' => 'Empty string value submitted']);
 
                         return;
                     }
@@ -187,7 +187,7 @@ class Helper extends Init
                     } elseif ($value === '0') {
                         $value = false;
                     } else {
-                        WACC()->Log->info('Skipped processing data field.', ['source' => __METHOD__, 'field' => $field, 'schema' => $schema, 'reason' => 'Empty boolean value submitted']);
+                        WACC()->Log()->info('Skipped processing data field.', ['source' => __METHOD__, 'field' => $field, 'schema' => $schema, 'reason' => 'Empty boolean value submitted']);
 
                         return;
                     }
@@ -196,7 +196,7 @@ class Helper extends Init
                     if ($value) {
                         $value = (int) $value;
                     } else {
-                        WACC()->Log->info('Skipped processing data field.', ['source' => __METHOD__, 'field' => $field, 'schema' => $schema, 'reason' => 'Empty integer value submitted']);
+                        WACC()->Log()->info('Skipped processing data field.', ['source' => __METHOD__, 'field' => $field, 'schema' => $schema, 'reason' => 'Empty integer value submitted']);
 
                         return;
                     }
@@ -216,12 +216,12 @@ class Helper extends Init
             } elseif ($type === 'readonly' && $entity) {
                 $value = $this->getReadOnlyValue($field, $schema, $entity);
                 if ($value === null) {
-                    WACC()->Log->info('Skipped processing data field.', ['source' => __METHOD__, 'field' => $field, 'schema' => $schema, 'reason' => 'Readonly field with no existing value']);
+                    WACC()->Log()->info('Skipped processing data field.', ['source' => __METHOD__, 'field' => $field, 'schema' => $schema, 'reason' => 'Readonly field with no existing value']);
 
                     return;
                 }
             } else {
-                WACC()->Log->info('Skipped processing data field.', ['source' => __METHOD__, 'field' => $field, 'schema' => $schema, 'reason' => 'Field not present in submission']);
+                WACC()->Log()->info('Skipped processing data field.', ['source' => __METHOD__, 'field' => $field, 'schema' => $schema, 'reason' => 'Field not present in submission']);
 
                 return;
             }
