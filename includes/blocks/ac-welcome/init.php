@@ -44,7 +44,7 @@ class init extends Blocks
         $renewal_date = get_field('renewal_date');
         $display_mdp_id = get_field('display_mdp_id');
         $image_url = get_avatar_url($current_user->ID, ['size' => '300']);
-        $active_memberships = WACC()->Mdp->Membership->getCurrentPersonActiveMemberships($current_lang);
+        $active_memberships = WACC()->Mdp()->Membership()->getCurrentPersonActiveMemberships($current_lang);
 
         // We need to find these at the MDP at some point
         $relationship_translations = [
@@ -117,7 +117,7 @@ class init extends Blocks
                             // Create a unique key based on membership name and organization (if present)
                             $membership_key = $membership['name'];
                             if ($membership['type'] == 'organization') {
-                                $org_main_info = WACC()->Mdp->Membership->getOrganizationMembershipByUuid(
+                                $org_main_info = WACC()->Mdp()->Membership()->getOrganizationMembershipByUuid(
                                     $membership['organization_membership_id']
                                 );
                                 $org_uuid =
@@ -149,14 +149,14 @@ class init extends Blocks
                                     </p>
 
                                     <?php if ($membership['type'] == 'organization'):
-                                        $org_main_info = WACC()->Mdp->Membership->getOrganizationMembershipByUuid(
+                                        $org_main_info = WACC()->Mdp()->Membership()->getOrganizationMembershipByUuid(
                                             $membership['organization_membership_id']
                                         );
 
                                         $org_uuid =
                                             $org_main_info['data']['relationships']['organization']['data']['id'];
 
-                                        $org_info = WACC()->Mdp->Membership->getActiveMembershipRelationship($org_uuid);
+                                        $org_info = WACC()->Mdp()->Membership()->getActiveMembershipRelationship($org_uuid);
 
                                         $english_relationship = $org_info['relationship'];
                                         $display_relationship = ($current_lang === 'fr' && isset($relationship_translations[$english_relationship]))
@@ -176,13 +176,13 @@ class init extends Blocks
                                         $individual_relationship = '';
                                         if (isset($membership['organization_membership_id'])) {
                                             // Get the organization membership info to find the organization
-                                            $org_main_info = WACC()->Mdp->Membership->getOrganizationMembershipByUuid(
+                                            $org_main_info = WACC()->Mdp()->Membership()->getOrganizationMembershipByUuid(
                                                 $membership['organization_membership_id']
                                             );
 
                                             if (isset($org_main_info['data']['relationships']['organization']['data']['id'])) {
                                                 $org_uuid = $org_main_info['data']['relationships']['organization']['data']['id'];
-                                                $org_info = WACC()->Mdp->Membership->getActiveMembershipRelationship($org_uuid);
+                                                $org_info = WACC()->Mdp()->Membership()->getActiveMembershipRelationship($org_uuid);
                                                 $individual_relationship = $org_info['relationship'] ?? '';
 
                                                 // Apply translation if needed
@@ -230,7 +230,7 @@ class init extends Blocks
 
                                     <?php if ($renewal_date):
                                         // Get the max end date for the person's memberships
-                                        $max_end_date = WACC()->Mdp->Membership->getPersonMaxEndDate(['person_uuid' => $person->id]);
+                                        $max_end_date = WACC()->Mdp()->Membership()->getPersonMaxEndDate(['person_uuid' => $person->id]);
                                         if ($max_end_date && strtotime($max_end_date)): ?>
                                             <p class="wicket-welcome-renewal mb-0">
                                                 <?php echo __('Renewal Date:', 'wicket-acc'); ?>

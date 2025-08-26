@@ -132,7 +132,9 @@ class init extends Blocks
         ];
 
         // Render block
-        WACC()->Blocks->render_template('touchpoint-microspec', $args);
+
+WACC()->Blocks()->render_template('touchpoint-microspec', $args);
+
 
     }
 
@@ -150,8 +152,10 @@ class init extends Blocks
         }
 
         // Debug with person: 9e0093fb-6df8-4da3-bf62-e6c135c1e4b0
-        $touchpoint_service = WACC()->Mdp->Touchpoint->getOrCreateServiceId($service_id);
-        $touchpoints = WACC()->Mdp->Touchpoint->getCurrentUserTouchpoints($touchpoint_service);
+
+$touchpoint_service = WACC()->Mdp()->Touchpoint()->getOrCreateServiceId($service_id);
+$touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoint_service);
+
 
         return $touchpoints;
     }
@@ -199,7 +203,9 @@ class init extends Blocks
             if (isset($tp['attributes']['data']['StartDate'])) {
                 $args['tp'] = $tp;
 
-                WACC()->Blocks->render_template('touchpoint-microspec-card', $args);
+
+WACC()->Blocks()->render_template('touchpoint-microspec-card', $args);
+
             }
             //endif;
 

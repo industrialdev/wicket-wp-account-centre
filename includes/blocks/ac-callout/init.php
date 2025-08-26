@@ -57,10 +57,14 @@ class init extends Blocks
         $iso_code = WACC()->Language()->getCurrentLanguage();
 
         // Get Wicket memberships using the new Mdp method
-        $memberships = WACC()->Mdp->Membership->getCurrentPersonActiveMemberships($iso_code);
+
+$memberships = WACC()->Mdp()->Membership()->getCurrentPersonActiveMemberships($iso_code);
+
 
         // Get WooCommerce memberships using the new Mdp method
-        $woo_memberships = WACC()->Mdp->Membership->getCurrentUserWooActiveMemberships();
+
+$woo_memberships = WACC()->Mdp()->Membership()->getCurrentUserWooActiveMemberships();
+
 
         if ($this->is_preview) {
             if ($block_logic == '') {

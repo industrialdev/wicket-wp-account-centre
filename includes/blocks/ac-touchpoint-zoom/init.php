@@ -143,7 +143,9 @@ class init extends Blocks
         ];
 
         // Render block
-        WACC()->Blocks->render_template('touchpoint-zoom', $args);
+
+WACC()->Blocks()->render_template('touchpoint-zoom', $args);
+
     }
 
     /**
@@ -159,8 +161,10 @@ class init extends Blocks
             return false;
         }
 
-        $touchpoint_service = WACC()->Mdp->Touchpoint->getOrCreateServiceId($service_id);
-        $touchpoints = WACC()->Mdp->Touchpoint->getCurrentUserTouchpoints($touchpoint_service);
+
+$touchpoint_service = WACC()->Mdp()->Touchpoint()->getOrCreateServiceId($service_id);
+$touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoint_service);
+
 
         return $touchpoints;
     }
@@ -222,7 +226,9 @@ class init extends Blocks
             if (isset($tp['attributes']['data']['start_date'])) {
                 $args['tp'] = $tp;
 
-                WACC()->Blocks->render_template('touchpoint-zoom-card', $args);
+
+WACC()->Blocks()->render_template('touchpoint-zoom-card', $args);
+
             }
 
             // Remove current loop element from array
