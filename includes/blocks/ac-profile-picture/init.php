@@ -82,8 +82,9 @@ class init extends Blocks
         }
 
         // Get user profile picture
-        $pp_profile_picture = WACC()->Profile->getProfilePicture();
-        $pp_is_custom = WACC()->Profile->isCustomProfilePicture($pp_profile_picture);
+
+        $pp_profile_picture = WACC()->Profile()->getProfilePicture();
+        $pp_is_custom = WACC()->Profile()->isCustomProfilePicture($pp_profile_picture);
 
         $args = [
             'is_custom'   => $pp_is_custom,
