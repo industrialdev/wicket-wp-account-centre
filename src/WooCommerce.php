@@ -11,7 +11,6 @@ defined('ABSPATH') || exit;
  */
 class WooCommerce extends WicketAcc
 {
-
     /**
      * Storage for temporarily hidden WC query vars.
      */
