@@ -30,7 +30,7 @@ class WooCommerce extends WicketAcc
         add_action('template_redirect', [$this, 'maybe_clear_404_for_acc_endpoints']);
 
         // Defer WC-specific integrations until WooCommerce initializes
-        add_action('woocommerce_init', [$this, 'initialize']);
+        add_action('woocommerce_init', [$this, 'wooInitialize']);
     }
 
     /**
@@ -213,6 +213,10 @@ class WooCommerce extends WicketAcc
      */
     public function prevent_redirect_for_acc_endpoints($location, $status)
     {
+        if (is_admin()) {
+            return $location;
+        }
+
         $segments = $this->get_language_aware_segments();
 
         // Need /base/endpoint/arg
@@ -243,6 +247,10 @@ class WooCommerce extends WicketAcc
      */
     public function disable_canonical_for_acc_endpoints(): void
     {
+        if (is_admin()) {
+            return;
+        }
+
         $segments = $this->get_language_aware_segments();
 
         if (count($segments) < 3) {
@@ -268,8 +276,11 @@ class WooCommerce extends WicketAcc
     /**
      * Initialize hooks and filters for WooCommerce integration.
      */
-    public function initialize()
+    public function wooInitialize()
     {
+        if (is_admin()) {
+            return;
+        }
 
         // Override templates
         add_filter('woocommerce_locate_template', [$this, 'override_woocommerce_template'], 10, 3);
@@ -626,6 +637,10 @@ class WooCommerce extends WicketAcc
      */
     public function bypass_canonical_for_acc_endpoints($redirect_url, $requested_url)
     {
+        if (is_admin()) {
+            return $redirect_url;
+        }
+
         if (!isset($_SERVER['REQUEST_URI'])) {
             return $redirect_url;
         }
@@ -668,6 +683,10 @@ class WooCommerce extends WicketAcc
      */
     public function inject_acc_endpoint_query_vars($wp): void
     {
+        if (is_admin()) {
+            return;
+        }
+
         if (!isset($_SERVER['REQUEST_URI'])) {
             return;
         }
@@ -720,6 +739,10 @@ class WooCommerce extends WicketAcc
      */
     public function register_acc_wc_endpoints(): void
     {
+        if (is_admin()) {
+            return;
+        }
+
         // Use the same endpoint mask as WooCommerce
         $mask = EP_PAGES;
 
@@ -767,6 +790,10 @@ class WooCommerce extends WicketAcc
      */
     public function maybe_clear_404_for_acc_endpoints(): void
     {
+        if (is_admin()) {
+            return;
+        }
+
         if (!is_404()) {
             return;
         }
