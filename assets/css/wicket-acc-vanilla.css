@@ -1,0 +1,12 @@
+/* Wicket's Vanilla CSS */
+.wicket {
+  /* Gravity Forms */
+  .gform_wrapper {
+    /* Gravity Forms Step Styling */
+    .gf_step_number,
+    .gf_step_label {
+      color: var(--pico-primary);
+    }
+  }
+}
+
