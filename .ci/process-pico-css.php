@@ -1,11 +1,13 @@
 <?php
+
 /**
- * Script to process Pico CSS files and rename .pico class to .wicket
+ * Script to process Pico CSS files and scope styles under .wicket
  *
  * This script:
- * 1. Copies pico.conditional.zinc.css to assets/css/wicket-pico.css
- * 2. Copies pico.fluid.classless.conditional.zinc.css to assets/css/wicket-pico-fluid.css
- * 3. Renames all instances of .pico class to .wicket (but leaves --pico-* CSS variables unchanged)
+ * 1. Copies pico.classless.zinc.css to assets/css/wicket-pico.css
+ * 2. Copies pico.fluid.classless.zinc.css to assets/css/wicket-pico-fluid.css
+ * 3. Scopes all rules under the .wicket class
+ * 4. Renames all CSS variable prefixes from --pico- to --wicket-
  */
 
 // Define paths
@@ -37,13 +39,14 @@ foreach ($cssFiles as $file) {
 }
 
 /**
- * Process a CSS file by copying it and replacing .pico class names with .wicket
+ * Process a CSS file by copying it, updating CSS variable prefixes, and scoping under .wicket
  *
  * @param string $sourceFile Path to the source CSS file
  * @param string $targetFile Path to the target CSS file
  * @return void
  */
-function processCssFile($sourceFile, $targetFile) {
+function processCssFile($sourceFile, $targetFile)
+{
     // Check if source file exists
     if (!file_exists($sourceFile)) {
         echo "Error: Source file does not exist: $sourceFile\n";
@@ -67,6 +70,10 @@ function processCssFile($sourceFile, $targetFile) {
         $header = $matches[1];
         $mainContent = substr($content, strlen($header));
     }
+
+    // Replace CSS variable prefix --pico- with --wicket-
+    // This affects both declarations (e.g., :root { --pico-color: ... }) and usages (e.g., color: var(--pico-color))
+    $mainContent = str_replace('--pico-', '--wicket-', $mainContent);
 
     // Wrap the main content in .wicket class for scoping
     $scopedContent = ".wicket {\n" . trim($mainContent) . "\n}";
