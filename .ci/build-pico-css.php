@@ -6,7 +6,8 @@ $root = __DIR__ . '/..';
 $scss = __DIR__ . '/scss/wicket-pico.fluid.classless.zinc.scss';
 $outDir = $root . '/assets/css';
 $outCss = $outDir . '/_wicket-pico-fluid.classless.zinc.css';
-$loadPath = $root . '/vendor/picocss/pico/scss';
+$vendorLoadPath = $root . '/vendor/picocss/pico/scss';
+$localLoadPath  = __DIR__ . '/scss';
 
 if (!is_dir($outDir) && !mkdir($outDir, 0755, true)) {
     fwrite(STDERR, "Error: Unable to create output directory: {$outDir}\n");
@@ -24,7 +25,8 @@ if ($sassBin === '') {
 
 $missing = [];
 if (!file_exists($scss)) { $missing[] = $scss; }
-if (!is_dir($loadPath)) { $missing[] = $loadPath; }
+if (!is_dir($vendorLoadPath)) { $missing[] = $vendorLoadPath; }
+if (!is_dir($localLoadPath)) { $missing[] = $localLoadPath; }
 if ($missing) {
     fwrite(STDERR, "Error: Missing required paths:\n- " . implode("\n- ", $missing) . "\n");
     exit(1);
@@ -33,7 +35,9 @@ if ($missing) {
 $cmd = escapeshellcmd($sassBin) . ' ' .
     '--style=compressed ' .
     '--no-source-map ' .
-    '--load-path ' . escapeshellarg($loadPath) . ' ' .
+    // Prefer local overrides before vendor
+    '--load-path ' . escapeshellarg($localLoadPath) . ' ' .
+    '--load-path ' . escapeshellarg($vendorLoadPath) . ' ' .
     escapeshellarg($scss) . ' ' . escapeshellarg($outCss);
 
 exec($cmd, $out, $code);
