@@ -25,11 +25,11 @@ if (!is_dir($targetDir)) {
 $cssFiles = [
     [
         'source' => __DIR__ . '/../vendor/picocss/pico/css/pico.classless.zinc.css',
-        'target' => $targetDir . '/wicket-pico.css'
+        'target' => $targetDir . '/_wicket-pico.css'
     ],
     [
         'source' => __DIR__ . '/../vendor/picocss/pico/css/pico.fluid.classless.zinc.css',
-        'target' => $targetDir . '/wicket-pico-fluid.css'
+        'target' => $targetDir . '/_wicket-pico-fluid.css'
     ]
 ];
 
@@ -73,7 +73,7 @@ function processCssFile($sourceFile, $targetFile)
 
     // Replace CSS variable prefix --pico- with --wicket-
     // This affects both declarations (e.g., :root { --pico-color: ... }) and usages (e.g., color: var(--pico-color))
-    $mainContent = str_replace('--pico-', '--wicket-', $mainContent);
+    //$mainContent = str_replace('--pico-', '--wicket-', $mainContent);
 
     // Wrap the main content in .wicket class for scoping
     $scopedContent = ".wicket {\n" . trim($mainContent) . "\n}";

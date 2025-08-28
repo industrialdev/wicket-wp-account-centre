@@ -1,4 +1,5 @@
 /* Wicket's Vanilla CSS */
+@import "_wicket-pico-fluid.css";
 .wicket {
   /* Gravity Forms */
   .gform_wrapper {

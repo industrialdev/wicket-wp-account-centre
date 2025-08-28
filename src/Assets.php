@@ -119,7 +119,6 @@ class Assets extends WicketAcc
         $should_enqueue_wicket_styles = apply_filters('wicket/acc/should_enqueue_wicket_styles', true);
 
         if (!$is_wicket_theme && $should_enqueue_wicket_styles) {
-            wp_enqueue_style('wicket-acc-pico', WICKET_ACC_URL . 'assets/css/wicket-pico-fluid.css', [], WICKET_ACC_VERSION);
             wp_enqueue_style('wicket-acc-vanilla', WICKET_ACC_URL . 'assets/css/wicket-acc-vanilla.css', [], WICKET_ACC_VERSION);
         }
 
