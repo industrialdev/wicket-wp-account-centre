@@ -15,7 +15,7 @@ use WicketAcc\Services\Notification;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Custom account management system for Wicket. Provides user account features, organization management, and additional blocks and pages. Integrates with WooCommerce when available.
- * Version:           1.5.274
+ * Version:           1.5.280
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -45,8 +45,8 @@ define('WICKET_ACC_USER_TEMPLATE_URL', get_stylesheet_directory_uri() . '/templa
 define('WICKET_ACC_TEMPLATES_FOLDER', 'account-centre');
 
 // Composer Autoloader
-if (file_exists(WICKET_ACC_PATH . 'vendor-dist/autoload.php')) {
-    require_once WICKET_ACC_PATH . 'vendor-dist/autoload.php';
+if (file_exists(WICKET_ACC_PATH . 'vendor-prefixed/autoload.php')) {
+    require_once WICKET_ACC_PATH . 'vendor-prefixed/autoload.php';
 }
 
 // Initialize the plugin when all plugins are loaded

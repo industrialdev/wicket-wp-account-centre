@@ -12,11 +12,6 @@ defined('ABSPATH') || exit;
 class WooCommerce extends WicketAcc
 {
     /**
-     * Storage for temporarily hidden WC query vars.
-     */
-    private $stored_wc_query_vars = [];
-
-    /**
      * Constructor.
      */
     public function __construct()
@@ -28,13 +23,13 @@ class WooCommerce extends WicketAcc
         add_action('parse_request', [$this, 'inject_acc_endpoint_query_vars']);
         add_action('init', [$this, 'register_acc_wc_endpoints']);
         add_action('template_redirect', [$this, 'maybe_clear_404_for_acc_endpoints']);
-
         // Defer WC-specific integrations until WooCommerce initializes
         add_action('woocommerce_init', [$this, 'wooInitialize']);
     }
 
     /**
-     * Normalize Woo endpoint URLs by collapsing duplicated adjacent segments for known bases and endpoint slugs (handles cases like /my-account/my-account/orders/2/).
+     * Normalize Woo endpoint URLs by collapsing duplicated adjacent segments for
+     * known bases and endpoint slugs (handles cases like /my-account/my-account/orders/2/).
      *
      * @param string $url
      * @param string $endpoint
@@ -93,6 +88,55 @@ class WooCommerce extends WicketAcc
     }
 
     /**
+     * Build a localized endpoint URL based on current request language directory usage.
+     * Emits a clean path like /<lang?>/<base>/<endpoint>/<value?>.
+     *
+     * @param string $endpoint Canonical endpoint key (e.g., 'payment-methods').
+     * @param mixed  $value    Optional value.
+     * @return string          Fully qualified localized URL.
+     */
+    private function build_localized_endpoint_url(string $endpoint, $value = ''): string
+    {
+        // Determine if current request uses a language directory prefix and capture it
+        $current_path = isset($_SERVER['REQUEST_URI']) ? (string) parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) : '';
+        $request_uses_lang_dir = false;
+        $lang_from_path = '';
+        if ($current_path !== '') {
+            $current_parts = array_values(array_filter(explode('/', trim($current_path, '/'))));
+            $first_seg = $current_parts[0] ?? '';
+            if ($first_seg !== '' && preg_match('/^[a-z]{2}(?:-[A-Z]{2})?$/', $first_seg)) {
+                $request_uses_lang_dir = true;
+                $lang_from_path = $first_seg;
+            }
+        }
+
+        // Prefer language from path when present; fallback to app language
+        $lang = $lang_from_path !== '' ? $lang_from_path : WACC()->getLanguage();
+
+        // Choose base slug by that language; fallback to EN
+        $base = $this->acc_wc_index_slugs[$lang] ?? ($this->acc_wc_index_slugs['en'] ?? 'my-account');
+
+        // For payment-methods, enforce canonical slug across languages
+        $localized_endpoint = ($endpoint === 'payment-methods')
+            ? 'payment-methods'
+            : ($this->acc_wc_endpoints[$endpoint][$lang] ?? $endpoint);
+
+        $segments = [];
+        if ($request_uses_lang_dir && $lang !== '') {
+            $segments[] = $lang;
+        }
+        $segments[] = $base;
+        $segments[] = $localized_endpoint;
+        if ((string) $value !== '') {
+            $segments[] = rawurlencode((string) $value);
+        }
+
+        $path = '/' . implode('/', $segments) . '/';
+
+        return home_url($path);
+    }
+
+    /**
      * Localize WooCommerce endpoint URLs to current language and translated base/slug.
      * Ensures buttons like "View" on orders/subscriptions use /fr/mon-compte/voir-... when multilingual is enabled.
      *
@@ -115,52 +159,30 @@ class WooCommerce extends WicketAcc
         $base = $this->acc_wc_index_slugs[$lang] ?? ($this->acc_wc_index_slugs['en'] ?? 'my-account');
         $localized_endpoint = $this->acc_wc_endpoints[$endpoint][$lang] ?? $endpoint;
 
-        // Parse the existing URL and rebuild conservatively
-        $parsed = wp_parse_url($url);
-        $path = $parsed['path'] ?? '';
-        if ($path === '') {
-            return $url;
-        }
-
-        $segments = array_values(array_filter(explode('/', trim($path, '/'))));
-
         // Respect current request's language directory usage (default language may not use /en/)
         $current_path = isset($_SERVER['REQUEST_URI']) ? (string) parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) : '';
-        $current_first = '';
+        $request_uses_lang_dir = false;
         if ($current_path !== '') {
             $current_parts = array_values(array_filter(explode('/', trim($current_path, '/'))));
-            $current_first = $current_parts[0] ?? '';
+            $first_seg = $current_parts[0] ?? '';
+            $request_uses_lang_dir = ($first_seg !== '' && preg_match('/^[a-z]{2}(?:-[A-Z]{2})?$/', $first_seg));
         }
-        $request_uses_lang_dir = ($current_first !== '' && preg_match('/^[a-z]{2}(?:-[A-Z]{2})?$/', $current_first));
 
-        // Ensure language prefix segment only if current request uses language directories
+        /* Build a clean, non-nested endpoint path: /<lang?>/<base>/<endpoint>/<value?> */
+        $new_segments = [];
         if ($request_uses_lang_dir) {
-            $has_lang = !empty($segments) && preg_match('/^[a-z]{2}(?:-[A-Z]{2})?$/', $segments[0]);
-            if ($has_lang) {
-                $segments[0] = $lang; // normalize to current
-            } else {
-                array_unshift($segments, $lang);
-            }
+            $new_segments[] = $lang;
+        }
+        $new_segments[] = $base;
+        $new_segments[] = $localized_endpoint;
+        if ((string) $value !== '') {
+            $new_segments[] = rawurlencode((string) $value);
         }
 
-        // Ensure base segment right after language
-        $base_index = 1;
-        $segments[$base_index] = $base;
-
-        // Replace endpoint slug near the end when present
-        if (!empty($segments)) {
-            // The endpoint slug is typically second-to-last if there is a value, or last if index
-            $endpoint_index = count($segments) - ((string) $value !== '' ? 2 : 1);
-            if ($endpoint_index >= 0) {
-                $segments[$endpoint_index] = $localized_endpoint;
-            }
-        }
-
-        // Reassemble URL, keep scheme/host from original or site
-        $new_path = '/' . implode('/', $segments) . '/';
+        $new_path = '/' . implode('/', $new_segments) . '/';
+        // Preserve query and fragment from original URL
+        $parsed = wp_parse_url($url);
         $new_url = home_url($new_path);
-
-        // Preserve query fragment if present
         if (!empty($parsed['query'])) {
             $new_url .= '?' . $parsed['query'];
         }
@@ -213,10 +235,6 @@ class WooCommerce extends WicketAcc
      */
     public function prevent_redirect_for_acc_endpoints($location, $status)
     {
-        if (is_admin()) {
-            return $location;
-        }
-
         $segments = $this->get_language_aware_segments();
 
         // Need /base/endpoint/arg
@@ -247,10 +265,6 @@ class WooCommerce extends WicketAcc
      */
     public function disable_canonical_for_acc_endpoints(): void
     {
-        if (is_admin()) {
-            return;
-        }
-
         $segments = $this->get_language_aware_segments();
 
         if (count($segments) < 3) {
@@ -327,8 +341,15 @@ class WooCommerce extends WicketAcc
         // Minimal shim: some gateways rely on this conditional specifically
         add_filter('woocommerce_is_add_payment_method_page', [$this, 'maybe_force_is_add_payment_method_page']);
 
-        // Trick Woo conditionals that rely on is_page( wc_get_page_id('myaccount') ) by mapping the myaccount page id to the current ACC page id in ACC context.
+        // Trick Woo conditionals that rely on is_page( wc_get_page_id('myaccount') )
+        // by mapping the myaccount page id to the current ACC page id in ACC context.
         add_filter('pre_option_woocommerce_myaccount_page_id', [$this, 'map_myaccount_page_id_to_acc']);
+
+        // TEMP DEBUG: Log whether Stripe UPE scripts are enqueued on add-payment-method pages
+        add_action('wp_enqueue_scripts', [$this, 'debug_stripe_enqueue_state'], 99);
+
+        // Force any late redirects after payment method actions to localized payment methods
+        add_filter('wp_redirect', [$this, 'force_payment_methods_redirect_in_acc'], 999, 2);
     }
 
     /**
@@ -396,7 +417,11 @@ class WooCommerce extends WicketAcc
      */
     private function safe_redirect_to_payment_methods(): void
     {
-        $url = wc_get_account_endpoint_url('payment-methods');
+        // Use localized builder to ensure redirect matches current language (e.g., FR)
+        $url = $this->build_localized_endpoint_url('payment-methods', '');
+        if (!$url) {
+            $url = wc_get_account_endpoint_url('payment-methods');
+        }
         wc_nocache_headers();
         if (!headers_sent()) {
             // Send header redirect but also print HTML fallback in case the client blocks it
@@ -409,6 +434,46 @@ class WooCommerce extends WicketAcc
         echo '<script>window.location.replace(' . wp_json_encode($url) . ');</script>';
         echo '</body></html>';
         exit;
+    }
+
+    /**
+     * As a safety net, if anything else attempts a redirect after payment method actions,
+     * force it to the localized payment methods URL while in ACC WC context.
+     *
+     * @param string $location
+     * @param int    $status
+     * @return string
+     */
+    public function force_payment_methods_redirect_in_acc($location, $status)
+    {
+        if (is_admin()) {
+            return;
+        }
+
+        if (!$this->is_acc_wc_context()) {
+            return $location;
+        }
+
+        // Detect current request pertains to payment method actions
+        $segments = $this->get_language_aware_segments();
+        $count = count($segments);
+        if ($count < 2) {
+            return $location;
+        }
+
+        $last = $segments[$count - 1] ?? '';
+        $second_last = $segments[$count - 2] ?? '';
+        $last_key = $this->endpoint_key_from_localized_slug($last) ?: $last;
+        $second_key = $this->endpoint_key_from_localized_slug($second_last) ?: $second_last;
+
+        $action_endpoints = ['delete-payment-method', 'set-default-payment-method'];
+        $is_action = in_array($last_key, $action_endpoints, true) || in_array($second_key, $action_endpoints, true);
+        if (!$is_action) {
+            return $location;
+        }
+
+        // Override to localized payment methods URL
+        return $this->build_localized_endpoint_url('payment-methods');
     }
 
     /**
@@ -583,6 +648,7 @@ class WooCommerce extends WicketAcc
             $base = $segments[0];
         }
 
+        // Use canonical slug for payment methods across languages
         $path = '/' . $base . '/payment-methods/';
 
         return home_url($path);
@@ -637,10 +703,6 @@ class WooCommerce extends WicketAcc
      */
     public function bypass_canonical_for_acc_endpoints($redirect_url, $requested_url)
     {
-        if (is_admin()) {
-            return $redirect_url;
-        }
-
         if (!isset($_SERVER['REQUEST_URI'])) {
             return $redirect_url;
         }
@@ -683,10 +745,6 @@ class WooCommerce extends WicketAcc
      */
     public function inject_acc_endpoint_query_vars($wp): void
     {
-        if (is_admin()) {
-            return;
-        }
-
         if (!isset($_SERVER['REQUEST_URI'])) {
             return;
         }
@@ -727,6 +785,16 @@ class WooCommerce extends WicketAcc
             if ($maybe_endpoint && array_key_exists($endpoint_key, $this->acc_wc_endpoints)) {
                 $wp->set_query_var($endpoint_key, true);
                 $wp->query_vars[$endpoint_key] = true;
+            }
+        }
+
+        // Also handle nested endpoints without arguments (e.g., /my-account/payment-methods/add-payment-method/)
+        if (count($path_segments) >= 3) {
+            $last_seg = $path_segments[count($path_segments) - 1] ?? '';
+            $last_key = $this->endpoint_key_from_localized_slug($last_seg) ?: $last_seg;
+            if ($last_seg && array_key_exists($last_key, $this->acc_wc_endpoints)) {
+                $wp->set_query_var($last_key, true);
+                $wp->query_vars[$last_key] = true;
             }
         }
     }
@@ -790,10 +858,6 @@ class WooCommerce extends WicketAcc
      */
     public function maybe_clear_404_for_acc_endpoints(): void
     {
-        if (is_admin()) {
-            return;
-        }
-
         if (!is_404()) {
             return;
         }
@@ -941,6 +1005,8 @@ class WooCommerce extends WicketAcc
         return $this->current_wc_endpoint_key() === 'add-payment-method';
     }
 
+    // Removed forced enqueues and is_add_payment_method_page shim (not needed).
+
     /**
      * Determine if current request is within ACC WooCommerce context (ACC base URL).
      */
@@ -974,14 +1040,21 @@ class WooCommerce extends WicketAcc
         if (count($segments) < 2) {
             return '';
         }
-        // Prefer second-last when there is a value, otherwise last is the endpoint
-        $candidate = (count($segments) >= 3)
-            ? ($segments[count($segments) - 2] ?? '')
-            : ($segments[count($segments) - 1] ?? '');
-        $endpoint_key = $this->endpoint_key_from_localized_slug($candidate) ?: $candidate;
+        // Try last segment first (handles nested endpoint without arg, e.g., /payment-methods/add-payment-method/)
+        $last = $segments[count($segments) - 1] ?? '';
+        $last_key = $this->endpoint_key_from_localized_slug($last) ?: $last;
+        if ($last && array_key_exists($last_key, $this->acc_wc_endpoints)) {
+            return $last_key;
+        }
 
-        return array_key_exists($endpoint_key, $this->acc_wc_endpoints) ? $endpoint_key : '';
+        // Fallback: prefer second-last when there is a value (e.g., /view-order/123/)
+        $second_last = $segments[count($segments) - 2] ?? '';
+        $second_key = $this->endpoint_key_from_localized_slug($second_last) ?: $second_last;
+
+        return array_key_exists($second_key, $this->acc_wc_endpoints) ? $second_key : '';
     }
+
+    // Removed body_class additions (not needed).
 
     /**
      * Map WooCommerce myaccount page id to current ACC page id so is_page( wc_get_page_id('myaccount') ) is satisfied.
@@ -999,4 +1072,57 @@ class WooCommerce extends WicketAcc
 
         return $value;
     }
+
+    /**
+     * TEMP DEBUG: Log enqueue state for Stripe UPE on add-payment-method pages.
+     */
+    public function debug_stripe_enqueue_state(): void
+    {
+        if (!$this->is_acc_wc_context()) {
+            return;
+        }
+
+        $endpoint = $this->current_wc_endpoint_key();
+        if ($endpoint !== 'add-payment-method') {
+            return;
+        }
+
+        if (!function_exists('wc_get_logger')) {
+            return;
+        }
+
+        $logger = wc_get_logger();
+        $lang = WACC()->getLanguage();
+        $is_add_page = function_exists('is_add_payment_method_page') ? is_add_payment_method_page() : false;
+        $upe_enqueued = wp_script_is('wc-stripe-upe-classic', 'enqueued') ? 'yes' : 'no';
+        $upe_registered = wp_script_is('wc-stripe-upe-classic', 'registered') ? 'yes' : 'no';
+
+        $logger->debug(
+            'ACC DEBUG Stripe UPE enqueue: lang=' . $lang . ' endpoint=' . $endpoint . ' is_add_payment_method_page=' . ($is_add_page ? 'yes' : 'no') . ' script_registered=' . $upe_registered . ' script_enqueued=' . $upe_enqueued,
+            ['source' => 'wicket-acc']
+        );
+    }
+
+    /**
+     * Temporarily hide WooCommerce query vars for ACC pages to prevent WC endpoint detection.
+     */
+    public function temporarily_hide_wc_query_vars_for_acc()
+    {
+        // No-op: we now want WC to see endpoint vars on ACC URLs
+
+    }
+
+    /**
+     * Restore WooCommerce query vars for ACC pages after endpoint detection.
+     */
+    public function restore_wc_query_vars_for_acc()
+    {
+        // No-op: we no longer hide query vars
+
+    }
+
+    /**
+     * Storage for temporarily hidden WC query vars.
+     */
+    private $stored_wc_query_vars = [];
 }

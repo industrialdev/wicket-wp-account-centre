@@ -1,7 +1,7 @@
 {
     "name": "industrialdev/wicket-wp-account-centre",
     "description": "Wicket's Account Centre for WordPress",
-    "version": "1.5.274",
+    "version": "1.5.280",
     "keywords": [
         "wordpress",
         "wicket",
@@ -44,9 +44,9 @@
         "remove-ci-folder": "@php -r \"if (getenv('COMPOSER_DEV_MODE') === '0') { system('rm -rf ./.ci'); }\"",
         "prefix-namespaces": [
             "strauss",
-            "cp -R vendor/htmlburger/carbon-fields/assets vendor-dist/htmlburger/carbon-fields/",
-            "cp -R vendor/htmlburger/carbon-fields/build vendor-dist/htmlburger/carbon-fields/",
-            "cp -R vendor/htmlburger/carbon-fields/templates vendor-dist/htmlburger/carbon-fields/",
+            "cp -R vendor/htmlburger/carbon-fields/assets vendor-prefixed/htmlburger/carbon-fields/",
+            "cp -R vendor/htmlburger/carbon-fields/build vendor-prefixed/htmlburger/carbon-fields/",
+            "cp -R vendor/htmlburger/carbon-fields/templates vendor-prefixed/htmlburger/carbon-fields/",
             "@dump-autoload-prod"
         ],
         "post-install-cmd": [
@@ -78,7 +78,7 @@
     },
     "extra": {
         "strauss": {
-            "target_directory": "vendor-dist",
+            "target_directory": "vendor-prefixed",
             "override_autoload": {
                 "htmlburger/carbon-fields": {
                     "psr-4": {
