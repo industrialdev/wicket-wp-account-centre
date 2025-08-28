@@ -2,6 +2,10 @@
 @import "_wicket-pico-fluid.classless.zinc.css";
 
 .wicket {
+  p {
+    color: var(--wicket-contrast-inverse);
+  }
+
   /* Gravity Forms */
   .gform_wrapper {
     /* Gravity Forms Step Styling */
@@ -23,7 +27,7 @@
       background-color: var(--wicket-secondary);
       color: var(--wicket-secondary-inverse);
       border: 1px solid var(--wicket-secondary);
-      padding: var(--wicket-spacing) var(--wicket-spacing-2);
+      padding: var(--wicket-form-element-spacing-vertical) var(--wicket-form-element-spacing-horizontal);
       border-radius: var(--wicket-border-radius);
       text-decoration: none;
       cursor: pointer;
@@ -44,6 +48,124 @@
           border-color: var(--wicket-primary-hover);
         }
       }
+    }
+  }
+
+  /* MDP JS Widgets: Dropdown Fixes */
+  .Select {
+    .Select-control {
+      position: relative;
+
+      .Select-input {
+        position: relative;
+        display: flex;
+        align-items: center;
+        min-height: 1.2em;
+
+        input[role="combobox"] {
+          width: 100% !important;
+          min-width: 100px;
+          box-sizing: border-box !important;
+          position: relative !important;
+          left: 0 !important;
+          top: -10px !important;
+          visibility: visible !important;
+          height: auto !important;
+          overflow: visible !important;
+          white-space: normal !important;
+          font-size: inherit !important;
+          font-family: inherit !important;
+          font-weight: inherit !important;
+          font-style: inherit !important;
+          letter-spacing: inherit !important;
+          text-transform: inherit !important;
+          padding: var(--wicket-form-element-spacing-vertical) var(--wicket-form-element-spacing-horizontal);
+          border: none;
+          background: transparent;
+          outline: none;
+        }
+      }
+    }
+  }
+
+  /* MDP JS Widgets: Preferences Fields Group Styling */
+  .PreferencesFieldsGroup {
+    .PreferencesFieldsGroup__option {
+      .checkbox {
+        label {
+          input[type="checkbox"] {
+            margin-right: var(--wicket-spacing);
+
+            &:not(:checked) {
+              background-color: transparent;
+              border-color: var(--wicket-muted-color);
+            }
+          }
+
+          .PreferencesFieldsGroup__option-label-content {
+            color: var(--wicket-contrast-inverse);
+            margin-left: calc(var(--wicket-spacing) * 0.5);
+            font-weight: 500;
+
+            span {
+              color: var(--wicket-contrast-inverse);
+              font-weight: 500;
+            }
+
+            .PreferencesFieldsGroup__help {
+              color: var(--wicket-muted-color);
+              font-weight: 400;
+              margin-top: calc(var(--wicket-spacing) * 0.5);
+
+              p {
+                margin: 0;
+                font-size: 0.9em;
+                line-height: 1.4;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /* MDP JS Widgets: CheckboxGrid Styling */
+  .CheckboxGrid {
+    .checkboxes {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--wicket-spacing);
+
+      .checkbox {
+        label {
+          span {
+            color: var(--wicket-contrast-inverse);
+            font-weight: 500;
+            line-height: 1.4;
+            margin-left: calc(var(--wicket-spacing) * 0.5);
+          }
+
+          input[type="checkbox"] {
+            margin-right: var(--wicket-spacing);
+            vertical-align: top;
+            margin-top: 2px;
+
+            &:not(:checked) {
+              background-color: transparent;
+              border-color: var(--wicket-muted-color);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /* MDP JS Widgets: Additional Info Styling */
+  .AdditionalInfoProfile {
+    .control-label {
+      color: var(--wicket-contrast-inverse) !important;
+      font-weight: 500;
+      margin-bottom: var(--wicket-spacing);
     }
   }
 }
