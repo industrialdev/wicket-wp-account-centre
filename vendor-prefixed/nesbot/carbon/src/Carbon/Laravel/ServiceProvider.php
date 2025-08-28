@@ -11,16 +11,16 @@
 
 namespace WicketAcc\Carbon\Laravel;
 
-use Illuminate\Events\Dispatcher;
-use Illuminate\Events\EventDispatcher;
-use Throwable;
 use WicketAcc\Carbon\Carbon;
 use WicketAcc\Carbon\CarbonImmutable;
 use WicketAcc\Carbon\CarbonInterval;
 use WicketAcc\Carbon\CarbonPeriod;
 use WicketAcc\Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
+use Illuminate\Events\Dispatcher;
+use Illuminate\Events\EventDispatcher;
 use WicketAcc\Illuminate\Support\Carbon as IlluminateCarbon;
 use WicketAcc\Illuminate\Support\Facades\Date;
+use Throwable;
 
 class ServiceProvider extends \WicketAcc\Illuminate\Support\ServiceProvider
 {

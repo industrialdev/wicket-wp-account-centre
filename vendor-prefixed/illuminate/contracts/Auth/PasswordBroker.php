@@ -45,7 +45,7 @@ interface PasswordBroker
      * Send a password reset link to a user.
      *
      * @param  array  $credentials
-     * @param  Closure|null  $callback
+     * @param  \Closure|null  $callback
      * @return string
      */
     public function sendResetLink(array $credentials, ?Closure $callback = null);
@@ -54,7 +54,7 @@ interface PasswordBroker
      * Reset the password for the given token.
      *
      * @param  array  $credentials
-     * @param  Closure  $callback
+     * @param  \Closure  $callback
      * @return mixed
      */
     public function reset(array $credentials, Closure $callback);

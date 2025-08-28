@@ -4,18 +4,16 @@ namespace WicketAcc\Illuminate\Support;
 
 use ArrayAccess;
 use Closure;
-use JsonSerializable;
-use Symfony\Component\VarDumper\VarDumper;
 use WicketAcc\Illuminate\Support\Facades\Date;
 use WicketAcc\Illuminate\Support\Traits\Conditionable;
 use WicketAcc\Illuminate\Support\Traits\Macroable;
 use WicketAcc\Illuminate\Support\Traits\Tappable;
+use JsonSerializable;
+use Symfony\Component\VarDumper\VarDumper;
 
 class Stringable implements JsonSerializable, ArrayAccess
 {
-    use Conditionable;
-    use Macroable;
-    use Tappable;
+    use Conditionable, Macroable, Tappable;
 
     /**
      * The underlying string value.
@@ -65,7 +63,7 @@ class Stringable implements JsonSerializable, ArrayAccess
      */
     public function append(...$values)
     {
-        return new static($this->value . implode('', $values));
+        return new static($this->value.implode('', $values));
     }
 
     /**
@@ -239,12 +237,12 @@ class Stringable implements JsonSerializable, ArrayAccess
     /**
      * Determine if the string is an exact match with the given value.
      *
-     * @param  Stringable|string  $value
+     * @param  \WicketAcc\Illuminate\Support\Stringable|string  $value
      * @return bool
      */
     public function exactly($value)
     {
-        if ($value instanceof self) {
+        if ($value instanceof Stringable) {
             $value = $value->toString();
         }
 
@@ -291,7 +289,7 @@ class Stringable implements JsonSerializable, ArrayAccess
 
         $segments = preg_split($pattern, $this->value, $limit, $flags);
 
-        return !empty($segments) ? wicketacc_collect($segments) : wicketacc_collect();
+        return ! empty($segments) ? wicketacc_collect($segments) : wicketacc_collect();
     }
 
     /**
@@ -383,7 +381,7 @@ class Stringable implements JsonSerializable, ArrayAccess
      */
     public function isNotEmpty()
     {
-        return !$this->isEmpty();
+        return ! $this->isEmpty();
     }
 
     /**
@@ -491,7 +489,7 @@ class Stringable implements JsonSerializable, ArrayAccess
      * Get the string matching the given pattern.
      *
      * @param  string  $pattern
-     * @return Collection
+     * @return \WicketAcc\Illuminate\Support\Collection
      */
     public function matchAll($pattern)
     {
@@ -610,7 +608,7 @@ class Stringable implements JsonSerializable, ArrayAccess
      */
     public function prepend(...$values)
     {
-        return new static(implode('', $values) . $this->value);
+        return new static(implode('', $values).$this->value);
     }
 
     /**
@@ -723,7 +721,7 @@ class Stringable implements JsonSerializable, ArrayAccess
      * Replace the patterns matching the given regular expression.
      *
      * @param  array|string  $pattern
-     * @param  Closure|string  $replace
+     * @param  \Closure|string  $replace
      * @param  int  $limit
      * @return static
      */
@@ -740,7 +738,7 @@ class Stringable implements JsonSerializable, ArrayAccess
      * Parse input from a string to a collection, according to a format.
      *
      * @param  string  $format
-     * @return Collection
+     * @return \WicketAcc\Illuminate\Support\Collection
      */
     public function scan($format)
     {
@@ -1100,7 +1098,7 @@ class Stringable implements JsonSerializable, ArrayAccess
      */
     public function whenNotExactly($value, $callback, $default = null)
     {
-        return $this->when(!$this->exactly($value), $callback, $default);
+        return $this->when(! $this->exactly($value), $callback, $default);
     }
 
     /**
@@ -1241,7 +1239,7 @@ class Stringable implements JsonSerializable, ArrayAccess
     /**
      * Convert the string into a `HtmlString` instance.
      *
-     * @return HtmlString
+     * @return \WicketAcc\Illuminate\Support\HtmlString
      */
     public function toHtmlString()
     {
@@ -1351,7 +1349,7 @@ class Stringable implements JsonSerializable, ArrayAccess
      *
      * @param  string|null  $format
      * @param  string|null  $tz
-     * @return Carbon
+     * @return \WicketAcc\Illuminate\Support\Carbon
      *
      * @throws \WicketAcc\Carbon\Exceptions\InvalidFormatException
      */

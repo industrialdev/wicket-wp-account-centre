@@ -194,7 +194,7 @@ class Translator implements TranslatorInterface, TranslatorBagInterface, LocaleA
 
         $len = \strlen(MessageCatalogue::INTL_DOMAIN_SUFFIX);
         if ($this->hasIntlFormatter
-            && ($catalogue->defines($id, $domain . MessageCatalogue::INTL_DOMAIN_SUFFIX)
+            && ($catalogue->defines($id, $domain.MessageCatalogue::INTL_DOMAIN_SUFFIX)
             || (\strlen($domain) > $len && 0 === substr_compare($domain, MessageCatalogue::INTL_DOMAIN_SUFFIX, -$len, $len)))
         ) {
             return $this->formatter->formatIntl($catalogue->get($id, $domain), $locale, $parameters);
@@ -270,8 +270,7 @@ class Translator implements TranslatorInterface, TranslatorBagInterface, LocaleA
         }
 
         $this->assertValidLocale($locale);
-        $cache = $this->getConfigCacheFactory()->cache(
-            $this->getCatalogueCachePath($locale),
+        $cache = $this->getConfigCacheFactory()->cache($this->getCatalogueCachePath($locale),
             function (ConfigCacheInterface $cache) use ($locale) {
                 $this->dumpCatalogue($locale, $cache);
             }
@@ -291,18 +290,17 @@ class Translator implements TranslatorInterface, TranslatorBagInterface, LocaleA
         $this->initializeCatalogue($locale);
         $fallbackContent = $this->getFallbackContent($this->catalogues[$locale]);
 
-        $content = \sprintf(
-            <<<EOF
-                <?php
+        $content = \sprintf(<<<EOF
+<?php
 
-                use WicketAcc\Symfony\Component\Translation\MessageCatalogue;
+use WicketAcc\Symfony\Component\Translation\MessageCatalogue;
 
-                \$catalogue = new MessageCatalogue('%s', %s);
+\$catalogue = new MessageCatalogue('%s', %s);
 
-                %s
-                return \$catalogue;
+%s
+return \$catalogue;
 
-                EOF
+EOF
             ,
             $locale,
             var_export($this->getAllMessages($this->catalogues[$locale]), true),
@@ -323,12 +321,11 @@ class Translator implements TranslatorInterface, TranslatorBagInterface, LocaleA
             $fallbackSuffix = ucfirst(preg_replace($replacementPattern, '_', $fallback));
             $currentSuffix = ucfirst(preg_replace($replacementPattern, '_', $current));
 
-            $fallbackContent .= \sprintf(
-                <<<'EOF'
-                    $catalogue%s = new MessageCatalogue('%s', %s);
-                    $catalogue%s->addFallbackCatalogue($catalogue%s);
+            $fallbackContent .= \sprintf(<<<'EOF'
+$catalogue%s = new MessageCatalogue('%s', %s);
+$catalogue%s->addFallbackCatalogue($catalogue%s);
 
-                    EOF
+EOF
                 ,
                 $fallbackSuffix,
                 $fallback,
@@ -345,7 +342,7 @@ class Translator implements TranslatorInterface, TranslatorBagInterface, LocaleA
 
     private function getCatalogueCachePath(string $locale): string
     {
-        return $this->cacheDir . '/catalogue.' . $locale . '.' . strtr(substr(base64_encode(hash('sha256', serialize($this->cacheVary), true)), 0, 7), '/', '_') . '.php';
+        return $this->cacheDir.'/catalogue.'.$locale.'.'.strtr(substr(base64_encode(hash('sha256', serialize($this->cacheVary), true)), 0, 7), '/', '_').'.php';
     }
 
     /**
@@ -392,7 +389,7 @@ class Translator implements TranslatorInterface, TranslatorBagInterface, LocaleA
      */
     protected function computeFallbackLocales(string $locale)
     {
-        $this->parentLocales ??= json_decode(file_get_contents(__DIR__ . '/Resources/data/parents.json'), true);
+        $this->parentLocales ??= json_decode(file_get_contents(__DIR__.'/Resources/data/parents.json'), true);
 
         $originLocale = $locale;
         $locales = [];
@@ -461,8 +458,8 @@ class Translator implements TranslatorInterface, TranslatorBagInterface, LocaleA
         $allMessages = [];
 
         foreach ($catalogue->all() as $domain => $messages) {
-            if ($intlMessages = $catalogue->all($domain . MessageCatalogue::INTL_DOMAIN_SUFFIX)) {
-                $allMessages[$domain . MessageCatalogue::INTL_DOMAIN_SUFFIX] = $intlMessages;
+            if ($intlMessages = $catalogue->all($domain.MessageCatalogue::INTL_DOMAIN_SUFFIX)) {
+                $allMessages[$domain.MessageCatalogue::INTL_DOMAIN_SUFFIX] = $intlMessages;
                 $messages = array_diff_key($messages, $intlMessages);
             }
             if ($messages) {

@@ -2,64 +2,61 @@
 
 namespace Carbon_Fields\Service;
 
-abstract class Service
-{
-    /**
-     * Service enabled state.
-     *
-     * @var bool
-     */
-    protected $enabled = false;
+abstract class Service {
 
-    /**
-     * Check whether the service is enabled.
-     */
-    public function is_enabled()
-    {
-        return $this->enabled;
-    }
+	/**
+	 * Service enabled state
+	 *
+	 * @var boolean
+	 */
+	protected $enabled = false;
 
-    /**
-     * Enable the service.
-     *
-     * @return bool
-     */
-    public function enable()
-    {
-        if ($this->is_enabled()) {
-            return false;
-        }
-        $this->enabled = true;
+	/**
+	 * Check whether the service is enabled
+	 */
+	public function is_enabled() {
+		return $this->enabled;
+	}
 
-        $this->enabled();
+	/**
+	 * Enable the service
+	 *
+	 * @return bool
+	 */
+	public function enable() {
+		if ( $this->is_enabled() ) {
+			return false;
+		}
+		$this->enabled = true;
 
-        return true;
-    }
+		$this->enabled();
 
-    /**
-     * Enable actions for inheriting classes.
-     */
-    abstract protected function enabled();
+		return true;
+	}
 
-    /**
-     * Disable the service.
-     *
-     * @return bool
-     */
-    public function disable()
-    {
-        if (!$this->is_enabled()) {
-            return false;
-        }
-        $this->enabled = false;
+	/**
+	 * Enable actions for inheriting classes
+	 */
+	abstract protected function enabled();
 
-        $this->disabled();
+	/**
+	 * Disable the service
+	 *
+	 * @return bool
+	 */
+	public function disable() {
+		if ( ! $this->is_enabled() ) {
+			return false;
+		}
+		$this->enabled = false;
 
-        return true;
-    }
+		$this->disabled();
 
-    /**
-     * Disable actions for inheriting classes.
-     */
-    abstract protected function disabled();
+		return true;
+	}
+
+	/**
+	 * Disable actions for inheriting classes
+	 */
+	abstract protected function disabled();
 }

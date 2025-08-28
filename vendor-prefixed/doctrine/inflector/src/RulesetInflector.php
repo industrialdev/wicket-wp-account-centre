@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace WicketAcc\Doctrine\Inflector;
 
-use function array_merge;
-
 use WicketAcc\Doctrine\Inflector\Rules\Ruleset;
+
+use function array_merge;
 
 /**
  * Inflects based on multiple rulesets.

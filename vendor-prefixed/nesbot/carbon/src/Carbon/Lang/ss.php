@@ -49,7 +49,7 @@ return [
     'ordinal' => function ($number) {
         $lastDigit = $number % 10;
 
-        return $number . (
+        return $number.(
             ((int) ($number % 100 / 10) === 1) ? 'e' : (
                 ($lastDigit === 1 || $lastDigit === 2) ? 'a' : 'e'
             )

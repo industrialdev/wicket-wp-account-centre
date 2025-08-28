@@ -2,169 +2,158 @@
 
 namespace Carbon_Fields\REST_API;
 
-use Carbon_Fields\Container\Repository as ContainerRepository;
 use Carbon_Fields\Helper\Helper;
+use Carbon_Fields\Container\Repository as ContainerRepository;
 
 /**
- * Decorate default REST routes with extra information provided by Carbon Fields.
+ * Decorate default REST routes with extra information provided by Carbon Fields
  */
-class Decorator
-{
-    /**
-     * ContainerRepository instance.
-     *
-     * @var ContainerRepository
-     */
-    protected $container_repository;
+class Decorator {
 
-    /**
-     * @param ContainerRepository $container_repository
-     */
-    public function __construct(ContainerRepository $container_repository)
-    {
-        $this->container_repository = $container_repository;
-    }
+	/**
+	 * ContainerRepository instance
+	 *
+	 * @var ContainerRepository
+	 */
+	protected $container_repository;
 
-    /**
-     * Boot up functionality.
-     */
-    public function boot()
-    {
-        add_action('rest_api_init', [$this, 'register_fields']);
-    }
+	/**
+	 * @param ContainerRepository $container_repository
+	 */
+	public function __construct( ContainerRepository $container_repository ) {
+		$this->container_repository = $container_repository;
+	}
 
-    /**
-     * Register Carbon Fields using the register_rest_field() function.
-     */
-    public function register_fields()
-    {
+	/**
+	 * Boot up functionality
+	 */
+	public function boot() {
+		add_action( 'rest_api_init', array( $this, 'register_fields' ) );
+	}
 
-        $containers = $this->container_repository->get_containers();
-        $containers = array_filter($containers, function ($container) {
-            return  $container->type !== 'theme_options';
-        });
+	/**
+	 * Register Carbon Fields using the register_rest_field() function
+	 */
+	public function register_fields() {
 
-        foreach ($containers as $container) {
-            $fields = $container->get_fields();
-            $context = $container->type;
-            $type_callable = [__CLASS__, "get_{$context}_container_settings"];
-            if (!is_callable($type_callable)) {
-                continue; // unsupported container type
-            }
-            $types = call_user_func($type_callable, $container);
+		$containers = $this->container_repository->get_containers();
+		$containers = array_filter( $containers, function( $container ) {
+			return ( $container->type !== 'theme_options' );
+		} );
 
-            foreach ($fields as $field) {
-                if (!$field->get_visible_in_rest_api()) {
-                    continue;
-                }
+		foreach ( $containers as $container ) {
+			$fields = $container->get_fields();
+			$context = $container->type;
+			$type_callable = array( __CLASS__, "get_{$context}_container_settings" );
+			if ( ! is_callable( $type_callable ) ) {
+				continue; // unsupported container type
+			}
+			$types = call_user_func( $type_callable, $container );
 
-                $getter = function ($object, $field_name) use ($container) {
-                    $object_id = self::get_object_id($object, $container->type);
+			foreach ( $fields as $field ) {
+				if ( ! $field->get_visible_in_rest_api() ) {
+					continue;
+				}
 
-                    $value = Helper::get_value($object_id, $container->type, '', $field_name);
-                    $field = Helper::get_field($container->type, $container->id, $field_name);
+				$getter = function( $object, $field_name ) use ( $container ) {
+					$object_id = self::get_object_id( $object, $container->type );
 
-                    if (apply_filters('carbon_fields_rest_api_return_attachments_as_urls', false, $value, $field, $object_id)) {
+					$value = Helper::get_value( $object_id, $container->type, '', $field_name );
+					$field = Helper::get_field( $container->type, $container->id, $field_name );
+
+					if ( apply_filters( 'carbon_fields_rest_api_return_attachments_as_urls', false, $value, $field, $object_id ) ) {
                         $attachments_class = [
                             "Carbon_Fields\Field\Media_Gallery_Field",
                             "Carbon_Fields\Field\File_Field",
-                            "Carbon_Fields\Field\Image_Field",
+                            "Carbon_Fields\Field\Image_Field"
                         ];
 
-                        if (in_array(get_class($field), $attachments_class)) {
+                        if ( in_array( get_class( $field ), $attachments_class ) ) {
                             $value = Helper::get_attachments_urls($value);
                         }
                     }
 
-                    return $value;
-                };
+					return $value;
+				};
 
-                $setter = function ($value, $object, $field_name) use ($container) {
-                    $object_id = self::get_object_id($object, $container->type);
-                    Helper::set_value($object_id, $container->type, '', $field_name, $value);
-                };
+				$setter = function( $value, $object, $field_name ) use ( $container ) {
+					$object_id = self::get_object_id( $object, $container->type );
+					Helper::set_value( $object_id, $container->type, '', $field_name, $value );
+				};
 
-                register_rest_field(
-                    $types,
-                    $field->get_base_name(),
-                    [
-                        'get_callback'    => $getter,
-                        'update_callback' => $setter,
-                        'schema'          => null,
-                    ]
-                );
-            }
-        }
-    }
+				register_rest_field( $types,
+					$field->get_base_name(), array(
+						'get_callback'    => $getter,
+						'update_callback' => $setter,
+						'schema'          => null,
+					)
+				);
+			}
+		}
+	}
 
-    /**
-     * Get Post Meta Container visibility settings.
-     *
-     * @param \Carbon_Fields\Container\Post_Meta_Container $container
-     * @return array
-     */
-    public static function get_post_meta_container_settings($container)
-    {
-        return $container->get_post_type_visibility();
-    }
+	/**
+	 * Get Post Meta Container visibility settings
+	 *
+	 * @param \Carbon_Fields\Container\Post_Meta_Container $container
+	 * @return array
+	 */
+	public static function get_post_meta_container_settings( $container ) {
+		return $container->get_post_type_visibility();
+	}
 
-    /**
-     * Get Term Meta Container visibility settings.
-     *
-     * @param \Carbon_Fields\Container\Term_Meta_Container $container
-     * @return array
-     */
-    public static function get_term_meta_container_settings($container)
-    {
-        return $container->get_taxonomy_visibility();
-    }
+	/**
+	 * Get Term Meta Container visibility settings
+	 *
+	 * @param \Carbon_Fields\Container\Term_Meta_Container $container
+	 * @return array
+	 */
+	public static function get_term_meta_container_settings( $container ) {
+		return $container->get_taxonomy_visibility();
+	}
 
-    /**
-     * Get User Meta Container visibility settings.
-     *
-     * @param \Carbon_Fields\Container\User_Meta_Container $container
-     * @return string
-     */
-    public static function get_user_meta_container_settings($container)
-    {
-        return 'user';
-    }
+	/**
+	 * Get User Meta Container visibility settings
+	 *
+	 * @param \Carbon_Fields\Container\User_Meta_Container $container
+	 * @return string
+	 */
+	public static function get_user_meta_container_settings( $container ) {
+		return 'user';
+	}
 
-    /**
-     * Get Comment Meta Container visibility settings.
-     *
-     * @param \Carbon_Fields\Container\Comment_Meta_Container $container
-     * @return string
-     */
-    public static function get_comment_meta_container_settings($container)
-    {
-        return 'comment';
-    }
+	/**
+	 * Get Comment Meta Container visibility settings
+	 *
+	 * @param \Carbon_Fields\Container\Comment_Meta_Container $container
+	 * @return string
+	 */
+	public static function get_comment_meta_container_settings( $container ) {
+		return 'comment';
+	}
 
-    /**
-     * Retrieve ID from object based on $context.
-     *
-     * @param object $object
-     * @param string $container_type
-     * @return null|int
-     */
-    public static function get_object_id($object, $container_type)
-    {
-        $object = is_array($object) ? (object) $object : $object;
-        $container_type = Helper::normalize_type($container_type);
-        switch ($container_type) {
-            case 'post_meta': // fallthrough intended
-            case 'user_meta':
-                return $object->id ?? $object->ID;
-                break;
-            case 'term_meta':
-                return $object->id ?? $object->term_id;
-                break;
-            case 'comment_meta':
-                return $object->id ?? $object->comment_ID;
-                break;
-        }
-
-        return null;
-    }
+	/**
+	 * Retrieve ID from object based on $context
+	 *
+	 * @param object $object
+	 * @param string $container_type
+	 * @return null|int
+	 */
+	public static function get_object_id( $object, $container_type ) {
+		$object = is_array( $object ) ? (object) $object : $object;
+		$container_type = Helper::normalize_type( $container_type );
+		switch ( $container_type ) {
+			case 'post_meta': // fallthrough intended
+			case 'user_meta':
+				return isset( $object->id ) ? $object->id : $object->ID;
+				break;
+			case 'term_meta':
+				return isset( $object->id ) ? $object->id : $object->term_id;
+				break;
+			case 'comment_meta':
+				return isset( $object->id ) ? $object->id : $object->comment_ID;
+				break;
+		}
+		return null;
+	}
 }

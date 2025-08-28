@@ -2,11 +2,11 @@
 
 namespace WicketAcc\Illuminate\Support;
 
-use JsonSerializable;
 use WicketAcc\Illuminate\Contracts\Support\Arrayable;
 use WicketAcc\Illuminate\Contracts\Support\Jsonable;
 use WicketAcc\Illuminate\Contracts\Support\MessageBag as MessageBagContract;
 use WicketAcc\Illuminate\Contracts\Support\MessageProvider;
+use JsonSerializable;
 
 class MessageBag implements Jsonable, JsonSerializable, MessageBagContract, MessageProvider
 {
@@ -89,13 +89,13 @@ class MessageBag implements Jsonable, JsonSerializable, MessageBagContract, Mess
     {
         $messages = (array) $this->messages;
 
-        return !isset($messages[$key]) || !in_array($message, $messages[$key]);
+        return ! isset($messages[$key]) || ! in_array($message, $messages[$key]);
     }
 
     /**
      * Merge a new array of messages into the message bag.
      *
-     * @param  MessageProvider|array  $messages
+     * @param  \WicketAcc\Illuminate\Contracts\Support\MessageProvider|array  $messages
      * @return $this
      */
     public function merge($messages)
@@ -169,7 +169,7 @@ class MessageBag implements Jsonable, JsonSerializable, MessageBagContract, Mess
     {
         $keys = is_array($key) ? $key : func_get_args();
 
-        return !$this->hasAny($keys);
+        return ! $this->hasAny($keys);
     }
 
     /**
@@ -202,9 +202,7 @@ class MessageBag implements Jsonable, JsonSerializable, MessageBagContract, Mess
         // all the messages that match the given key and output it as an array.
         if (array_key_exists($key, $this->messages)) {
             return $this->transform(
-                $this->messages[$key],
-                $this->checkFormat($format),
-                $key
+                $this->messages[$key], $this->checkFormat($format), $key
             );
         }
 
@@ -230,9 +228,7 @@ class MessageBag implements Jsonable, JsonSerializable, MessageBagContract, Mess
                 })
                 ->map(function ($messages, $messageKey) use ($format) {
                     return $this->transform(
-                        $messages,
-                        $this->checkFormat($format),
-                        $messageKey
+                        $messages, $this->checkFormat($format), $messageKey
                     );
                 })->all();
     }
@@ -337,7 +333,7 @@ class MessageBag implements Jsonable, JsonSerializable, MessageBagContract, Mess
     /**
      * Get the messages for the instance.
      *
-     * @return MessageBag
+     * @return \WicketAcc\Illuminate\Support\MessageBag
      */
     public function getMessageBag()
     {
@@ -358,7 +354,7 @@ class MessageBag implements Jsonable, JsonSerializable, MessageBagContract, Mess
      * Set the default message format.
      *
      * @param  string  $format
-     * @return MessageBag
+     * @return \WicketAcc\Illuminate\Support\MessageBag
      */
     public function setFormat($format = ':message')
     {
@@ -374,7 +370,7 @@ class MessageBag implements Jsonable, JsonSerializable, MessageBagContract, Mess
      */
     public function isEmpty()
     {
-        return !$this->any();
+        return ! $this->any();
     }
 
     /**

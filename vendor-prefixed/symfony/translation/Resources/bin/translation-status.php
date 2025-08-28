@@ -13,29 +13,29 @@ if ('cli' !== \PHP_SAPI) {
     throw new Exception('This script must be run from the command line.');
 }
 
-$usageInstructions = <<<'END'
+$usageInstructions = <<<END
 
-      Usage instructions
-      -------------------------------------------------------------------------------
+  Usage instructions
+  -------------------------------------------------------------------------------
 
-      $ cd symfony-code-root-directory/
+  $ cd symfony-code-root-directory/
 
-      # show the translation status of all locales
-      $ php translation-status.php
+  # show the translation status of all locales
+  $ php translation-status.php
 
-      # only show the translation status of incomplete or erroneous locales
-      $ php translation-status.php --incomplete
+  # only show the translation status of incomplete or erroneous locales
+  $ php translation-status.php --incomplete
 
-      # show the translation status of all locales, all their missing translations and mismatches between trans-unit id and source
-      $ php translation-status.php -v
+  # show the translation status of all locales, all their missing translations and mismatches between trans-unit id and source
+  $ php translation-status.php -v
 
-      # show the status of a single locale
-      $ php translation-status.php fr
+  # show the status of a single locale
+  $ php translation-status.php fr
 
-      # show the status of a single locale, missing translations and mismatches between trans-unit id and source
-      $ php translation-status.php fr -v
+  # show the status of a single locale, missing translations and mismatches between trans-unit id and source
+  $ php translation-status.php fr -v
 
-    END;
+END;
 
 $config = [
     // if TRUE, the full list of missing translations is displayed
@@ -103,7 +103,7 @@ function wicketacc_findTranslationFiles($originalFilePath, $localeToAnalyze): ar
     $originalFileName = basename($originalFilePath);
     $translationFileNamePattern = str_replace('.en.', '.*.', $originalFileName);
 
-    $translationFiles = glob($translationsDir . '/' . $translationFileNamePattern, \GLOB_NOSORT);
+    $translationFiles = glob($translationsDir.'/'.$translationFileNamePattern, \GLOB_NOSORT);
     sort($translationFiles);
     foreach ($translationFiles as $filePath) {
         $locale = wicketacc_extractLocaleFromFilePath($filePath);
@@ -149,7 +149,7 @@ function wicketacc_printTranslationStatus($originalFilePath, $translationStatus,
 {
     wicketacc_printTitle($originalFilePath);
     wicketacc_printTable($translationStatus, $verboseOutput, $includeCompletedLanguages);
-    echo \PHP_EOL . \PHP_EOL;
+    echo \PHP_EOL.\PHP_EOL;
 }
 
 function wicketacc_extractLocaleFromFilePath($filePath)
@@ -198,8 +198,8 @@ function wicketacc_findTransUnitMismatches(array $baseTranslationKeys, array $tr
 
 function wicketacc_printTitle($title)
 {
-    echo $title . \PHP_EOL;
-    echo str_repeat('=', strlen($title)) . \PHP_EOL . \PHP_EOL;
+    echo $title.\PHP_EOL;
+    echo str_repeat('=', strlen($title)).\PHP_EOL.\PHP_EOL;
 }
 
 function wicketacc_printTable($translations, $verboseOutput, bool $includeCompletedLanguages)
@@ -225,35 +225,35 @@ function wicketacc_printTable($translations, $verboseOutput, bool $includeComple
         }
 
         echo sprintf(
-            '|  Locale: %-' . $longestLocaleNameLength . 's  |  Translated: %2d/%2d  |  Mismatches: %d  |',
+            '|  Locale: %-'.$longestLocaleNameLength.'s  |  Translated: %2d/%2d  |  Mismatches: %d  |',
             $locale,
             $translation['translated'],
             $translation['total'],
             count($translation['mismatches'])
-        ) . \PHP_EOL;
+        ).\PHP_EOL;
 
         wicketacc_textColorNormal();
 
         $shouldBeClosed = false;
         if (true === $verboseOutput && count($translation['missingKeys']) > 0) {
-            echo '|    Missing Translations:' . \PHP_EOL;
+            echo '|    Missing Translations:'.\PHP_EOL;
 
             foreach ($translation['missingKeys'] as $id => $content) {
-                echo sprintf('|      (id=%s) %s', $id, $content) . \PHP_EOL;
+                echo sprintf('|      (id=%s) %s', $id, $content).\PHP_EOL;
             }
             $shouldBeClosed = true;
         }
         if (true === $verboseOutput && count($translation['mismatches']) > 0) {
-            echo '|    Mismatches between trans-unit id and source:' . \PHP_EOL;
+            echo '|    Mismatches between trans-unit id and source:'.\PHP_EOL;
 
             foreach ($translation['mismatches'] as $id => $content) {
-                echo sprintf('|      (id=%s) Expected: %s', $id, $content['expected']) . \PHP_EOL;
-                echo sprintf('|              Found:    %s', $content['found']) . \PHP_EOL;
+                echo sprintf('|      (id=%s) Expected: %s', $id, $content['expected']).\PHP_EOL;
+                echo sprintf('|              Found:    %s', $content['found']).\PHP_EOL;
             }
             $shouldBeClosed = true;
         }
         if ($shouldBeClosed) {
-            echo str_repeat('-', 80) . \PHP_EOL;
+            echo str_repeat('-', 80).\PHP_EOL;
         }
     }
 }

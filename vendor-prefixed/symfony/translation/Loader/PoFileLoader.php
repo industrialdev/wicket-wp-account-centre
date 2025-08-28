@@ -127,7 +127,7 @@ class PoFileLoader extends FileLoader
         if (!empty($item['ids']['singular'])) {
             $id = stripcslashes($item['ids']['singular']);
             if (isset($item['ids']['plural'])) {
-                $id .= '|' . stripcslashes($item['ids']['plural']);
+                $id .= '|'.stripcslashes($item['ids']['plural']);
             }
 
             $translated = (array) $item['translated'];

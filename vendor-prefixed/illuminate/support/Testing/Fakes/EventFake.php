@@ -4,24 +4,23 @@ namespace WicketAcc\Illuminate\Support\Testing\Fakes;
 
 use Closure;
 use Illuminate\Container\Container;
-use PHPUnit\Framework\Assert as PHPUnit;
-use ReflectionFunction;
 use WicketAcc\Illuminate\Contracts\Events\Dispatcher;
 use WicketAcc\Illuminate\Contracts\Events\ShouldDispatchAfterCommit;
 use WicketAcc\Illuminate\Support\Arr;
 use WicketAcc\Illuminate\Support\Str;
 use WicketAcc\Illuminate\Support\Traits\ForwardsCalls;
 use WicketAcc\Illuminate\Support\Traits\ReflectsClosures;
+use PHPUnit\Framework\Assert as PHPUnit;
+use ReflectionFunction;
 
 class EventFake implements Dispatcher, Fake
 {
-    use ForwardsCalls;
-    use ReflectsClosures;
+    use ForwardsCalls, ReflectsClosures;
 
     /**
      * The original event dispatcher.
      *
-     * @var Dispatcher
+     * @var \WicketAcc\Illuminate\Contracts\Events\Dispatcher
      */
     public $dispatcher;
 
@@ -49,7 +48,7 @@ class EventFake implements Dispatcher, Fake
     /**
      * Create a new event fake instance.
      *
-     * @param  Dispatcher  $dispatcher
+     * @param  \WicketAcc\Illuminate\Contracts\Events\Dispatcher  $dispatcher
      * @param  array|string  $eventsToFake
      * @return void
      */
@@ -128,7 +127,7 @@ class EventFake implements Dispatcher, Fake
     /**
      * Assert if an event was dispatched based on a truth-test callback.
      *
-     * @param  string|Closure  $event
+     * @param  string|\Closure  $event
      * @param  callable|int|null  $callback
      * @return void
      */
@@ -160,8 +159,7 @@ class EventFake implements Dispatcher, Fake
         $count = $this->dispatched($event)->count();
 
         PHPUnit::assertSame(
-            $times,
-            $count,
+            $times, $count,
             "The expected [{$event}] event was dispatched {$count} times instead of {$times} times."
         );
     }
@@ -169,7 +167,7 @@ class EventFake implements Dispatcher, Fake
     /**
      * Determine if an event was dispatched based on a truth-test callback.
      *
-     * @param  string|Closure  $event
+     * @param  string|\Closure  $event
      * @param  callable|null  $callback
      * @return void
      */
@@ -180,8 +178,7 @@ class EventFake implements Dispatcher, Fake
         }
 
         PHPUnit::assertCount(
-            0,
-            $this->dispatched($event, $callback),
+            0, $this->dispatched($event, $callback),
             "The unexpected [{$event}] event was dispatched."
         );
     }
@@ -196,8 +193,7 @@ class EventFake implements Dispatcher, Fake
         $count = count(Arr::flatten($this->events));
 
         PHPUnit::assertSame(
-            0,
-            $count,
+            0, $count,
             "{$count} unexpected events were dispatched."
         );
     }
@@ -211,7 +207,7 @@ class EventFake implements Dispatcher, Fake
      */
     public function dispatched($event, $callback = null)
     {
-        if (!$this->hasDispatched($event)) {
+        if (! $this->hasDispatched($event)) {
             return wicketacc_collect();
         }
 
@@ -230,13 +226,13 @@ class EventFake implements Dispatcher, Fake
      */
     public function hasDispatched($event)
     {
-        return isset($this->events[$event]) && !empty($this->events[$event]);
+        return isset($this->events[$event]) && ! empty($this->events[$event]);
     }
 
     /**
      * Register an event listener with the dispatcher.
      *
-     * @param  Closure|string|array  $events
+     * @param  \Closure|string|array  $events
      * @param  mixed  $listener
      * @return void
      */

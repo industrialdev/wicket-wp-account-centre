@@ -4,21 +4,20 @@ namespace WicketAcc\Illuminate\Support\Testing\Fakes;
 
 use Closure;
 use Exception;
-use Illuminate\Notifications\AnonymousNotifiable;
-use PHPUnit\Framework\Assert as PHPUnit;
 use WicketAcc\Illuminate\Contracts\Notifications\Dispatcher as NotificationDispatcher;
 use WicketAcc\Illuminate\Contracts\Notifications\Factory as NotificationFactory;
 use WicketAcc\Illuminate\Contracts\Queue\ShouldQueue;
 use WicketAcc\Illuminate\Contracts\Translation\HasLocalePreference;
+use Illuminate\Notifications\AnonymousNotifiable;
 use WicketAcc\Illuminate\Support\Collection;
 use WicketAcc\Illuminate\Support\Str;
 use WicketAcc\Illuminate\Support\Traits\Macroable;
 use WicketAcc\Illuminate\Support\Traits\ReflectsClosures;
+use PHPUnit\Framework\Assert as PHPUnit;
 
 class NotificationFake implements Fake, NotificationDispatcher, NotificationFactory
 {
-    use Macroable;
-    use ReflectsClosures;
+    use Macroable, ReflectsClosures;
 
     /**
      * All of the notifications that have been sent.
@@ -44,26 +43,26 @@ class NotificationFake implements Fake, NotificationDispatcher, NotificationFact
     /**
      * Assert if a notification was sent on-demand based on a truth-test callback.
      *
-     * @param  string|Closure  $notification
+     * @param  string|\Closure  $notification
      * @param  callable|null  $callback
      * @return void
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function assertSentOnDemand($notification, $callback = null)
     {
-        $this->assertSentTo(new AnonymousNotifiable(), $notification, $callback);
+        $this->assertSentTo(new AnonymousNotifiable, $notification, $callback);
     }
 
     /**
      * Assert if a notification was sent based on a truth-test callback.
      *
      * @param  mixed  $notifiable
-     * @param  string|Closure  $notification
+     * @param  string|\Closure  $notification
      * @param  callable|null  $callback
      * @return void
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function assertSentTo($notifiable, $notification, $callback = null)
     {
@@ -102,7 +101,7 @@ class NotificationFake implements Fake, NotificationDispatcher, NotificationFact
      */
     public function assertSentOnDemandTimes($notification, $times = 1)
     {
-        return $this->assertSentToTimes(new AnonymousNotifiable(), $notification, $times);
+        return $this->assertSentToTimes(new AnonymousNotifiable, $notification, $times);
     }
 
     /**
@@ -118,8 +117,7 @@ class NotificationFake implements Fake, NotificationDispatcher, NotificationFact
         $count = $this->sent($notifiable, $notification)->count();
 
         PHPUnit::assertSame(
-            $times,
-            $count,
+            $times, $count,
             "Expected [{$notification}] to be sent {$times} times, but was sent {$count} times."
         );
     }
@@ -128,11 +126,11 @@ class NotificationFake implements Fake, NotificationDispatcher, NotificationFact
      * Determine if a notification was sent based on a truth-test callback.
      *
      * @param  mixed  $notifiable
-     * @param  string|Closure  $notification
+     * @param  string|\Closure  $notification
      * @param  callable|null  $callback
      * @return void
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function assertNotSentTo($notifiable, $notification, $callback = null)
     {
@@ -153,8 +151,7 @@ class NotificationFake implements Fake, NotificationDispatcher, NotificationFact
         }
 
         PHPUnit::assertCount(
-            0,
-            $this->sent($notifiable, $notification, $callback),
+            0, $this->sent($notifiable, $notification, $callback),
             "The unexpected [{$notification}] notification was sent."
         );
     }
@@ -175,7 +172,7 @@ class NotificationFake implements Fake, NotificationDispatcher, NotificationFact
      * @param  mixed  $notifiable
      * @return void
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function assertNothingSentTo($notifiable)
     {
@@ -211,8 +208,7 @@ class NotificationFake implements Fake, NotificationDispatcher, NotificationFact
             ->reduce(fn ($count, $sent) => $count + count($sent[$notification] ?? []), 0);
 
         PHPUnit::assertSame(
-            $expectedCount,
-            $actualCount,
+            $expectedCount, $actualCount,
             "Expected [{$notification}] to be sent {$expectedCount} times, but was sent {$actualCount} times."
         );
     }
@@ -228,8 +224,7 @@ class NotificationFake implements Fake, NotificationDispatcher, NotificationFact
         $actualCount = wicketacc_collect($this->notifications)->flatten(3)->count();
 
         PHPUnit::assertSame(
-            $expectedCount,
-            $actualCount,
+            $expectedCount, $actualCount,
             "Expected {$expectedCount} notifications to be sent, but {$actualCount} were sent."
         );
     }
@@ -240,11 +235,11 @@ class NotificationFake implements Fake, NotificationDispatcher, NotificationFact
      * @param  mixed  $notifiable
      * @param  string  $notification
      * @param  callable|null  $callback
-     * @return Collection
+     * @return \WicketAcc\Illuminate\Support\Collection
      */
     public function sent($notifiable, $notification, $callback = null)
     {
-        if (!$this->hasSent($notifiable, $notification)) {
+        if (! $this->hasSent($notifiable, $notification)) {
             return wicketacc_collect();
         }
 
@@ -266,7 +261,7 @@ class NotificationFake implements Fake, NotificationDispatcher, NotificationFact
      */
     public function hasSent($notifiable, $notification)
     {
-        return !empty($this->notificationsFor($notifiable, $notification));
+        return ! empty($this->notificationsFor($notifiable, $notification));
     }
 
     /**
@@ -284,7 +279,7 @@ class NotificationFake implements Fake, NotificationDispatcher, NotificationFact
     /**
      * Send the given notification to the given notifiable entities.
      *
-     * @param  Collection|array|mixed  $notifiables
+     * @param  \WicketAcc\Illuminate\Support\Collection|array|mixed  $notifiables
      * @param  mixed  $notification
      * @return void
      */
@@ -296,19 +291,19 @@ class NotificationFake implements Fake, NotificationDispatcher, NotificationFact
     /**
      * Send the given notification immediately.
      *
-     * @param  Collection|array|mixed  $notifiables
+     * @param  \WicketAcc\Illuminate\Support\Collection|array|mixed  $notifiables
      * @param  mixed  $notification
      * @param  array|null  $channels
      * @return void
      */
     public function sendNow($notifiables, $notification, ?array $channels = null)
     {
-        if (!$notifiables instanceof Collection && !is_array($notifiables)) {
+        if (! $notifiables instanceof Collection && ! is_array($notifiables)) {
             $notifiables = [$notifiables];
         }
 
         foreach ($notifiables as $notifiable) {
-            if (!$notification->id) {
+            if (! $notification->id) {
                 $notification->id = Str::uuid()->toString();
             }
 

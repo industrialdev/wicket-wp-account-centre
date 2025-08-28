@@ -34,7 +34,7 @@ use WicketAcc\Carbon\Exceptions\UnknownUnitException;
 trait Boundaries
 {
     /**
-     * Resets the time to 00:00:00 start of day.
+     * Resets the time to 00:00:00 start of day
      *
      * @example
      * ```
@@ -49,7 +49,7 @@ trait Boundaries
     }
 
     /**
-     * Resets the time to 23:59:59.999999 end of day.
+     * Resets the time to 23:59:59.999999 end of day
      *
      * @example
      * ```
@@ -64,7 +64,7 @@ trait Boundaries
     }
 
     /**
-     * Resets the date to the first day of the month and the time to 00:00:00.
+     * Resets the date to the first day of the month and the time to 00:00:00
      *
      * @example
      * ```
@@ -79,7 +79,7 @@ trait Boundaries
     }
 
     /**
-     * Resets the date to end of the month and time to 23:59:59.999999.
+     * Resets the date to end of the month and time to 23:59:59.999999
      *
      * @example
      * ```
@@ -94,7 +94,7 @@ trait Boundaries
     }
 
     /**
-     * Resets the date to the first day of the quarter and the time to 00:00:00.
+     * Resets the date to the first day of the quarter and the time to 00:00:00
      *
      * @example
      * ```
@@ -111,7 +111,7 @@ trait Boundaries
     }
 
     /**
-     * Resets the date to end of the quarter and time to 23:59:59.999999.
+     * Resets the date to end of the quarter and time to 23:59:59.999999
      *
      * @example
      * ```
@@ -126,7 +126,7 @@ trait Boundaries
     }
 
     /**
-     * Resets the date to the first day of the year and the time to 00:00:00.
+     * Resets the date to the first day of the year and the time to 00:00:00
      *
      * @example
      * ```
@@ -141,7 +141,7 @@ trait Boundaries
     }
 
     /**
-     * Resets the date to end of the year and time to 23:59:59.999999.
+     * Resets the date to end of the year and time to 23:59:59.999999
      *
      * @example
      * ```
@@ -156,7 +156,7 @@ trait Boundaries
     }
 
     /**
-     * Resets the date to the first day of the decade and the time to 00:00:00.
+     * Resets the date to the first day of the decade and the time to 00:00:00
      *
      * @example
      * ```
@@ -173,7 +173,7 @@ trait Boundaries
     }
 
     /**
-     * Resets the date to end of the decade and time to 23:59:59.999999.
+     * Resets the date to end of the decade and time to 23:59:59.999999
      *
      * @example
      * ```
@@ -190,7 +190,7 @@ trait Boundaries
     }
 
     /**
-     * Resets the date to the first day of the century and the time to 00:00:00.
+     * Resets the date to the first day of the century and the time to 00:00:00
      *
      * @example
      * ```
@@ -207,7 +207,7 @@ trait Boundaries
     }
 
     /**
-     * Resets the date to end of the century and time to 23:59:59.999999.
+     * Resets the date to end of the century and time to 23:59:59.999999
      *
      * @example
      * ```
@@ -224,7 +224,7 @@ trait Boundaries
     }
 
     /**
-     * Resets the date to the first day of the millennium and the time to 00:00:00.
+     * Resets the date to the first day of the millennium and the time to 00:00:00
      *
      * @example
      * ```
@@ -241,7 +241,7 @@ trait Boundaries
     }
 
     /**
-     * Resets the date to end of the millennium and time to 23:59:59.999999.
+     * Resets the date to end of the millennium and time to 23:59:59.999999
      *
      * @example
      * ```
@@ -258,7 +258,7 @@ trait Boundaries
     }
 
     /**
-     * Resets the date to the first day of week (defined in $weekStartsAt) and the time to 00:00:00.
+     * Resets the date to the first day of week (defined in $weekStartsAt) and the time to 00:00:00
      *
      * @example
      * ```
@@ -277,7 +277,7 @@ trait Boundaries
     }
 
     /**
-     * Resets the date to end of week (defined in $weekEndsAt) and time to 23:59:59.999999.
+     * Resets the date to end of week (defined in $weekEndsAt) and time to 23:59:59.999999
      *
      * @example
      * ```
@@ -296,7 +296,7 @@ trait Boundaries
     }
 
     /**
-     * Modify to start of current hour, minutes and seconds become 0.
+     * Modify to start of current hour, minutes and seconds become 0
      *
      * @example
      * ```
@@ -311,7 +311,7 @@ trait Boundaries
     }
 
     /**
-     * Modify to end of current hour, minutes and seconds become 59.
+     * Modify to end of current hour, minutes and seconds become 59
      *
      * @example
      * ```
@@ -326,7 +326,7 @@ trait Boundaries
     }
 
     /**
-     * Modify to start of current minute, seconds become 0.
+     * Modify to start of current minute, seconds become 0
      *
      * @example
      * ```
@@ -341,7 +341,7 @@ trait Boundaries
     }
 
     /**
-     * Modify to end of current minute, seconds become 59.
+     * Modify to end of current minute, seconds become 59
      *
      * @example
      * ```
@@ -356,7 +356,7 @@ trait Boundaries
     }
 
     /**
-     * Modify to start of current second, microseconds become 0.
+     * Modify to start of current second, microseconds become 0
      *
      * @example
      * ```
@@ -373,7 +373,7 @@ trait Boundaries
     }
 
     /**
-     * Modify to end of current second, microseconds become 999999.
+     * Modify to end of current second, microseconds become 999999
      *
      * @example
      * ```

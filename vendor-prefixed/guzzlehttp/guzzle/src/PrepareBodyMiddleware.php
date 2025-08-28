@@ -4,7 +4,6 @@ namespace WicketAcc\GuzzleHttp;
 
 use WicketAcc\GuzzleHttp\Promise\PromiseInterface;
 use WicketAcc\Psr\Http\Message\RequestInterface;
-
 /**
  * Prepares requests that contain a body, adding the Content-Length,
  * Content-Type, and Expect headers.
@@ -17,7 +16,6 @@ class PrepareBodyMiddleware
      * @var callable(RequestInterface, array): PromiseInterface
      */
     private $nextHandler;
-
     /**
      * @param callable(RequestInterface, array): PromiseInterface $nextHandler Next handler to invoke.
      */
@@ -25,7 +23,6 @@ class PrepareBodyMiddleware
     {
         $this->nextHandler = $nextHandler;
     }
-
     public function __invoke(RequestInterface $request, array $options): PromiseInterface
     {
         $fn = $this->nextHandler;
@@ -37,7 +34,7 @@ class PrepareBodyMiddleware
         // Add a default content-type if possible.
         if (!$request->hasHeader('Content-Type')) {
             if ($uri = $request->getBody()->getMetadata('uri')) {
-                if (is_string($uri) && $type = Psr7\MimeType::fromFilename($uri)) {
+                if (is_string($uri) && $type = \WicketAcc\GuzzleHttp\Psr7\MimeType::fromFilename($uri)) {
                     $modify['set_headers']['Content-Type'] = $type;
                 }
             }
@@ -53,12 +50,10 @@ class PrepareBodyMiddleware
         }
         // Add the expect header if needed.
         $this->addExpectHeader($request, $options, $modify);
-
-        return $fn(Psr7\Utils::modifyRequest($request, $modify), $options);
+        return $fn(\WicketAcc\GuzzleHttp\Psr7\Utils::modifyRequest($request, $modify), $options);
     }
-
     /**
-     * Add expect header.
+     * Add expect header
      */
     private function addExpectHeader(RequestInterface $request, array $options, array &$modify): void
     {
@@ -74,7 +69,6 @@ class PrepareBodyMiddleware
         // The expect header is unconditionally enabled
         if ($expect === true) {
             $modify['set_headers']['Expect'] = '100-Continue';
-
             return;
         }
         // By default, send the expect header when the payload is > 1mb

@@ -10,15 +10,15 @@ class PendingBatchFake extends PendingBatch
     /**
      * The fake bus instance.
      *
-     * @var BusFake
+     * @var \WicketAcc\Illuminate\Support\Testing\Fakes\BusFake
      */
     protected $bus;
 
     /**
      * Create a new pending batch instance.
      *
-     * @param  BusFake  $bus
-     * @param  Collection  $jobs
+     * @param  \WicketAcc\Illuminate\Support\Testing\Fakes\BusFake  $bus
+     * @param  \WicketAcc\Illuminate\Support\Collection  $jobs
      * @return void
      */
     public function __construct(BusFake $bus, Collection $jobs)

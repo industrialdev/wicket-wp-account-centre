@@ -13,6 +13,7 @@ use UnexpectedValueException;
  * PHP version 5
  *
  * @category Authentication
+ * @package  Authentication_JWT
  * @author   Bui Sy Nguyen <nguyenbs@gmail.com>
  * @license  http://opensource.org/licenses/BSD-3-Clause 3-clause BSD
  * @link     https://github.com/firebase/php-jwt
@@ -37,7 +38,7 @@ class JWK
     ];
 
     /**
-     * Parse a set of JWK keys.
+     * Parse a set of JWK keys
      *
      * @param array<mixed> $jwks The JSON Web Key Set as an associative array
      * @param string       $defaultAlg The algorithm for the Key object if "alg" is not set in the
@@ -64,7 +65,7 @@ class JWK
         }
 
         foreach ($jwks['keys'] as $k => $v) {
-            $kid = $v['kid'] ?? $k;
+            $kid = isset($v['kid']) ? $v['kid'] : $k;
             if ($key = self::parseKey($v, $defaultAlg)) {
                 $keys[(string) $kid] = $key;
             }
@@ -78,7 +79,7 @@ class JWK
     }
 
     /**
-     * Parse a JWK key.
+     * Parse a JWK key
      *
      * @param array<mixed> $jwk An individual JWK
      * @param string       $defaultAlg The algorithm for the Key object if "alg" is not set in the
@@ -129,7 +130,6 @@ class JWK
                         'OpenSSL error: ' . \openssl_error_string()
                     );
                 }
-
                 return new Key($publicKey, $jwk['alg']);
             case 'EC':
                 if (isset($jwk['d'])) {
@@ -150,7 +150,6 @@ class JWK
                 }
 
                 $publicKey = self::createPemFromCrvAndXYCoordinates($jwk['crv'], $jwk['x'], $jwk['y']);
-
                 return new Key($publicKey, $jwk['alg']);
             case 'OKP':
                 if (isset($jwk['d'])) {
@@ -172,7 +171,6 @@ class JWK
 
                 // This library works internally with EdDSA keys (Ed25519) encoded in standard base64.
                 $publicKey = JWT::convertBase64urlToBase64($jwk['x']);
-
                 return new Key($publicKey, $jwk['alg']);
             case 'oct':
                 if (!isset($jwk['k'])) {
@@ -227,7 +225,7 @@ class JWK
     }
 
     /**
-     * Create a public key represented in PEM format from RSA modulus and exponent information.
+     * Create a public key represented in PEM format from RSA modulus and exponent information
      *
      * @param string $n The RSA modulus encoded in Base64
      * @param string $e The RSA exponent encoded in Base64
@@ -272,7 +270,7 @@ class JWK
     }
 
     /**
-     * DER-encode the length.
+     * DER-encode the length
      *
      * DER supports lengths up to (2**8)**127, however, we'll only support lengths up to (2**8)**4.  See
      * {@link http://itu.int/ITU-T/studygroups/com17/languages/X.690-0207.pdf#p=13 X.690 paragraph 8.1.3} for more information.
@@ -293,7 +291,7 @@ class JWK
 
     /**
      * Encodes a value into a DER object.
-     * Also defined in Firebase\JWT\JWT.
+     * Also defined in Firebase\JWT\JWT
      *
      * @param   int     $type DER tag
      * @param   string  $value the value to encode

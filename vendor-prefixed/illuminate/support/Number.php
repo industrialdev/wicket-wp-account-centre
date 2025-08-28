@@ -2,9 +2,9 @@
 
 namespace WicketAcc\Illuminate\Support;
 
+use WicketAcc\Illuminate\Support\Traits\Macroable;
 use NumberFormatter;
 use RuntimeException;
-use WicketAcc\Illuminate\Support\Traits\Macroable;
 
 class Number
 {
@@ -32,9 +32,9 @@ class Number
 
         $formatter = new NumberFormatter($locale ?? static::$locale, NumberFormatter::DECIMAL);
 
-        if (!is_null($maxPrecision)) {
+        if (! is_null($maxPrecision)) {
             $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $maxPrecision);
-        } elseif (!is_null($precision)) {
+        } elseif (! is_null($precision)) {
             $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, $precision);
         }
 
@@ -54,11 +54,11 @@ class Number
     {
         static::ensureIntlExtensionIsInstalled();
 
-        if (!is_null($after) && $number <= $after) {
+        if (! is_null($after) && $number <= $after) {
             return static::format($number, locale: $locale);
         }
 
-        if (!is_null($until) && $number >= $until) {
+        if (! is_null($until) && $number >= $until) {
             return static::format($number, locale: $locale);
         }
 
@@ -98,7 +98,7 @@ class Number
 
         $formatter = new NumberFormatter($locale ?? static::$locale, NumberFormatter::PERCENT);
 
-        if (!is_null($maxPrecision)) {
+        if (! is_null($maxPrecision)) {
             $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $maxPrecision);
         } else {
             $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, $precision);
@@ -209,7 +209,7 @@ class Number
             case $number < 0:
                 return sprintf('-%s', static::summarize(abs($number), $precision, $maxPrecision, $units));
             case $number >= 1e15:
-                return sprintf('%s' . end($units), static::summarize($number / 1e15, $precision, $maxPrecision, $units));
+                return sprintf('%s'.end($units), static::summarize($number / 1e15, $precision, $maxPrecision, $units));
         }
 
         $numberExponent = floor(log10($number));
@@ -266,10 +266,10 @@ class Number
      */
     protected static function ensureIntlExtensionIsInstalled()
     {
-        if (!extension_loaded('intl')) {
+        if (! extension_loaded('intl')) {
             $method = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'];
 
-            throw new RuntimeException('The "intl" PHP extension is required to use the [' . $method . '] method.');
+            throw new RuntimeException('The "intl" PHP extension is required to use the ['.$method.'] method.');
         }
     }
 }

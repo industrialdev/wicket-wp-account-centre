@@ -44,7 +44,7 @@ class ArrayLoader implements LoaderInterface
             if (\is_array($value)) {
                 foreach ($this->flatten($value) as $k => $v) {
                     if (null !== $v) {
-                        $result[$key . '.' . $k] = $v;
+                        $result[$key.'.'.$k] = $v;
                     }
                 }
             } elseif (null !== $value) {

@@ -11,7 +11,7 @@ use WicketAcc\Psr\Http\Message\UploadedFileInterface;
 use WicketAcc\Psr\Http\Message\UriInterface;
 
 /**
- * Server-side HTTP request.
+ * Server-side HTTP request
  *
  * Extends the Request definition to add methods for accessing incoming data,
  * specifically server parameters, cookies, matched path parameters, query
@@ -171,7 +171,7 @@ class ServerRequest extends Request implements ServerRequestInterface
         $body = new CachingStream(new LazyOpenStream('php://input', 'r+'));
         $protocol = isset($_SERVER['SERVER_PROTOCOL']) ? str_replace('HTTP/', '', $_SERVER['SERVER_PROTOCOL']) : '1.1';
 
-        $serverRequest = new self($method, $uri, $headers, $body, $protocol, $_SERVER);
+        $serverRequest = new ServerRequest($method, $uri, $headers, $body, $protocol, $_SERVER);
 
         return $serverRequest
             ->withCookieParams($_COOKIE)
@@ -182,7 +182,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     private static function extractHostAndPortFromAuthority(string $authority): array
     {
-        $uri = 'http://' . $authority;
+        $uri = 'http://'.$authority;
         $parts = parse_url($uri);
         if (false === $parts) {
             return [null, null];

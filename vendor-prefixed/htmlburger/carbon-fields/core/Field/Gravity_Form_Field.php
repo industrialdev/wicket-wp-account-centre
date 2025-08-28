@@ -3,67 +3,62 @@
 namespace Carbon_Fields\Field;
 
 /**
- * Gravity Form selection field class.
+ * Gravity Form selection field class
  */
-class Gravity_Form_Field extends Select_Field
-{
-    /**
-     * Whether the Gravity Forms plugin is installed and activated.
-     *
-     * @return bool
-     */
-    public function is_plugin_active()
-    {
-        if (class_exists('\RGFormsModel') && method_exists('\RGFormsModel', 'get_forms')) {
-            return true;
-        }
+class Gravity_Form_Field extends Select_Field {
 
-        return false;
-    }
+	/**
+	 * Whether the Gravity Forms plugin is installed and activated.
+	 *
+	 * @return bool
+	 */
+	public function is_plugin_active() {
+		if ( class_exists( '\RGFormsModel' ) && method_exists( '\RGFormsModel', 'get_forms' ) ) {
+			return true;
+		}
 
-    /**
-     * @inheritDoc
-     */
-    protected function load_options()
-    {
-        return $this->get_gravity_form_options();
-    }
+		return false;
+	}
 
-    /**
-     * Set the available forms as field options.
-     *
-     * @return array
-     */
-    protected function get_gravity_form_options()
-    {
-        if (!$this->is_plugin_active()) {
-            return [];
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function load_options() {
+		return $this->get_gravity_form_options();
+	}
 
-        $forms = \RGFormsModel::get_forms(null, 'title');
+	/**
+	 * Set the available forms as field options
+	 *
+	 * @return array
+	 */
+	protected function get_gravity_form_options() {
+		if ( ! $this->is_plugin_active() ) {
+			return array();
+		}
 
-        if (!is_array($forms) || empty($forms)) {
-            return [];
-        }
+		$forms = \RGFormsModel::get_forms( null, 'title' );
 
-        $options = [
-            '' => __('No form', 'carbon-fields'),
-        ];
+		if ( ! is_array( $forms ) || empty( $forms ) ) {
+			return array();
+		}
 
-        foreach ($forms as $form) {
-            $options[$form->id] = $form->title;
-        }
+		$options = array(
+			'' => __( 'No form', 'carbon-fields' ),
+		);
 
-        return apply_filters('carbon_fields_gravity_form_options', $options);
-    }
+		foreach ( $forms as $form ) {
+			$options[ $form->id ] = $form->title;
+		}
 
-    /**
-     * @inheritDoc
-     */
-    public function to_json($load)
-    {
-        $this->set_options($this->get_options());
+		return apply_filters( 'carbon_fields_gravity_form_options', $options );
+	}
 
-        return parent::to_json($load);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public function to_json( $load ) {
+		$this->set_options( $this->get_options() );
+		return parent::to_json( $load );
+	}
 }

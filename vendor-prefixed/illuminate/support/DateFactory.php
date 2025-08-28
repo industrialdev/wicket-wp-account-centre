@@ -2,8 +2,8 @@
 
 namespace WicketAcc\Illuminate\Support;
 
-use InvalidArgumentException;
 use WicketAcc\Carbon\Factory;
+use InvalidArgumentException;
 
 /**
  * @see https://carbon.nesbot.com/docs/
@@ -117,7 +117,7 @@ class DateFactory
      * @param  mixed  $handler
      * @return mixed
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public static function use($handler)
     {

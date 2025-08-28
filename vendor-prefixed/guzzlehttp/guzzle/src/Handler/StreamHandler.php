@@ -229,7 +229,7 @@ class StreamHandler
     }
 
     /**
-     * Create a resource and check to ensure it was created successfully.
+     * Create a resource and check to ensure it was created successfully
      *
      * @param callable $callback Callable that returns stream resource
      *
@@ -260,7 +260,7 @@ class StreamHandler
             $message = 'Error creating resource: ';
             foreach ($errors as $err) {
                 foreach ($err as $key => $value) {
-                    $message .= "[$key] $value" . \PHP_EOL;
+                    $message .= "[$key] $value".\PHP_EOL;
                 }
             }
             throw new \RuntimeException(\trim($message));
@@ -379,7 +379,7 @@ class StreamHandler
                     throw new ConnectException(\sprintf("Could not resolve IPv6 address for host '%s'", $uri->getHost()), $request);
                 }
 
-                return $uri->withHost('[' . $records[0]['ipv6'] . ']');
+                return $uri->withHost('['.$records[0]['ipv6'].']');
             }
         }
 
@@ -597,13 +597,13 @@ class StreamHandler
         static $args = ['severity', 'message', 'message_code', 'bytes_transferred', 'bytes_max'];
 
         $value = Utils::debugResource($value);
-        $ident = $request->getMethod() . ' ' . $request->getUri()->withFragment('');
+        $ident = $request->getMethod().' '.$request->getUri()->withFragment('');
         self::addNotification(
             $params,
             static function (int $code, ...$passed) use ($ident, $value, $map, $args): void {
                 \fprintf($value, '<%s> [%s] ', $ident, $map[$code]);
                 foreach (\array_filter($passed) as $i => $v) {
-                    \fwrite($value, $args[$i] . ': "' . $v . '" ');
+                    \fwrite($value, $args[$i].': "'.$v.'" ');
                 }
                 \fwrite($value, "\n");
             }

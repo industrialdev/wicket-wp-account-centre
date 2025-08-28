@@ -2,33 +2,33 @@
 
 namespace Carbon_Fields\Event;
 
-interface Listener
-{
-    /**
-     * Get the listener's callable.
-     *
-     * @return callable
-     */
-    public function get_callable();
+interface Listener {
 
-    /**
-     * Set the listener's callable.
-     *
-     * @param callable $callable
-     */
-    public function set_callable($callable);
+	/**
+	 * Get the listener's callable
+	 *
+	 * @return callable
+	 */
+	public function get_callable();
 
-    /**
-     * Get if the listener is valid.
-     *
-     * @return bool
-     */
-    public function is_valid();
+	/**
+	 * Set the listener's callable
+	 *
+	 * @param callable $callable
+	 */
+	public function set_callable( $callable );
 
-    /**
-     * Notify the listener that the event has been broadcasted.
-     *
-     * @return mixed
-     */
-    public function notify();
+	/**
+	 * Get if the listener is valid
+	 *
+	 * @return boolean
+	 */
+	public function is_valid();
+
+	/**
+	 * Notify the listener that the event has been broadcasted
+	 *
+	 * @return mixed
+	 */
+	public function notify();
 }

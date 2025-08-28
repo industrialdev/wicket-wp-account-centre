@@ -132,7 +132,7 @@ abstract class AbstractMacro implements BuiltinMethodReflection
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getDeclaringClass(): ReflectionClass
     {
@@ -140,7 +140,7 @@ abstract class AbstractMacro implements BuiltinMethodReflection
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function isPrivate(): bool
     {
@@ -148,7 +148,7 @@ abstract class AbstractMacro implements BuiltinMethodReflection
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function isPublic(): bool
     {
@@ -156,7 +156,7 @@ abstract class AbstractMacro implements BuiltinMethodReflection
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function isFinal(): bool
     {
@@ -164,7 +164,7 @@ abstract class AbstractMacro implements BuiltinMethodReflection
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function isInternal(): bool
     {
@@ -172,7 +172,7 @@ abstract class AbstractMacro implements BuiltinMethodReflection
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function isAbstract(): bool
     {
@@ -180,7 +180,7 @@ abstract class AbstractMacro implements BuiltinMethodReflection
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function isStatic(): bool
     {
@@ -188,7 +188,7 @@ abstract class AbstractMacro implements BuiltinMethodReflection
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getDocComment(): ?string
     {
@@ -196,7 +196,7 @@ abstract class AbstractMacro implements BuiltinMethodReflection
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getName(): string
     {
@@ -204,7 +204,7 @@ abstract class AbstractMacro implements BuiltinMethodReflection
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getParameters(): array
     {
@@ -212,7 +212,7 @@ abstract class AbstractMacro implements BuiltinMethodReflection
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getReturnType(): ?ReflectionType
     {
@@ -226,7 +226,7 @@ abstract class AbstractMacro implements BuiltinMethodReflection
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function isDeprecated(): TrinaryLogic
     {
@@ -237,7 +237,7 @@ abstract class AbstractMacro implements BuiltinMethodReflection
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function isVariadic(): bool
     {
@@ -245,7 +245,7 @@ abstract class AbstractMacro implements BuiltinMethodReflection
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getPrototype(): BuiltinMethodReflection
     {

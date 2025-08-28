@@ -59,10 +59,10 @@ trait Conditionable
         }
 
         if (func_num_args() === 1) {
-            return (new HigherOrderWhenProxy($this))->condition(!$value);
+            return (new HigherOrderWhenProxy($this))->condition(! $value);
         }
 
-        if (!$value) {
+        if (! $value) {
             return $callback($this, $value) ?? $this;
         } elseif ($default) {
             return $default($this, $value) ?? $this;

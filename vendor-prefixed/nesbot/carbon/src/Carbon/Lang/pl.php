@@ -54,7 +54,7 @@ return [
     's' => ':count sek.',
     'ago' => ':time temu',
     'from_now' => static function ($time) {
-        return 'za ' . strtr($time, [
+        return 'za '.strtr($time, [
             'godzina' => 'godzinę',
             'minuta' => 'minutę',
             'sekunda' => 'sekundę',

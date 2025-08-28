@@ -8,13 +8,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace WicketAcc\Carbon;
 
 use Closure;
 use DateTimeInterface;
 use ReflectionMethod;
-
 /**
  * A factory to generate Carbon instances with common settings.
  *
@@ -72,7 +70,7 @@ use ReflectionMethod;
  * @method array                                              getFormatsToIsoReplacements()                                                                                                List of replacements from date() format to isoFormat().
  * @method int                                                getHumanDiffOptions()                                                                                                        Return default humanDiff() options (merged flags as integer).
  * @method array                                              getIsoUnits()                                                                                                                Returns list of locale units for ISO formatting.
- * @method array                                              getLastErrors()
+ * @method array                                              getLastErrors()                                                                                                              {@inheritdoc}
  * @method string                                             getLocale()                                                                                                                  Get the current translator locale.
  * @method callable|null                                      getMacro($name)                                                                                                              Get the raw callable macro registered globally for a given name.
  * @method int                                                getMidDayAt()                                                                                                                get midday/noon hour
@@ -243,7 +241,6 @@ class Factory
 {
     protected $className = Carbon::class;
     protected $settings = [];
-
     public function __construct(array $settings = [], ?string $className = null)
     {
         if ($className) {
@@ -251,48 +248,37 @@ class Factory
         }
         $this->settings = $settings;
     }
-
     public function getClassName()
     {
         return $this->className;
     }
-
     public function setClassName(string $className)
     {
         $this->className = $className;
-
         return $this;
     }
-
     public function className(?string $className = null)
     {
         return $className === null ? $this->getClassName() : $this->setClassName($className);
     }
-
     public function getSettings()
     {
         return $this->settings;
     }
-
     public function setSettings(array $settings)
     {
         $this->settings = $settings;
-
         return $this;
     }
-
     public function settings(?array $settings = null)
     {
         return $settings === null ? $this->getSettings() : $this->setSettings($settings);
     }
-
     public function mergeSettings(array $settings)
     {
         $this->settings = array_merge($this->settings, $settings);
-
         return $this;
     }
-
     public function __call($name, $arguments)
     {
         $method = new ReflectionMethod($this->className, $name);
@@ -313,7 +299,6 @@ class Factory
             }
         }
         $result = $this->className::$name(...$arguments);
-
         return $result instanceof CarbonInterface && !empty($settings) ? $result->settings($settings) : $result;
     }
 }

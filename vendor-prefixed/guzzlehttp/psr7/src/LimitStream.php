@@ -55,7 +55,7 @@ final class LimitStream implements StreamInterface
     }
 
     /**
-     * Returns the size of the limited subset of data.
+     * Returns the size of the limited subset of data
      */
     public function getSize(): ?int
     {
@@ -69,7 +69,7 @@ final class LimitStream implements StreamInterface
     }
 
     /**
-     * Allow for a bounded seek on the read limited stream.
+     * Allow for a bounded seek on the read limited stream
      */
     public function seek($offset, $whence = SEEK_SET): void
     {
@@ -93,7 +93,7 @@ final class LimitStream implements StreamInterface
     }
 
     /**
-     * Give a relative tell().
+     * Give a relative tell()
      */
     public function tell(): int
     {
@@ -101,7 +101,7 @@ final class LimitStream implements StreamInterface
     }
 
     /**
-     * Set the offset to start limiting from.
+     * Set the offset to start limiting from
      *
      * @param int $offset Offset to seek to and begin byte limiting from
      *

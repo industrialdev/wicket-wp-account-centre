@@ -15,7 +15,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\MockHttpClient;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 use WicketAcc\Symfony\Component\Translation\Dumper\XliffFileDumper;
 use WicketAcc\Symfony\Component\Translation\Exception\IncompleteDsnException;
 use WicketAcc\Symfony\Component\Translation\Exception\UnsupportedSchemeException;
@@ -23,6 +22,7 @@ use WicketAcc\Symfony\Component\Translation\Loader\LoaderInterface;
 use WicketAcc\Symfony\Component\Translation\Provider\Dsn;
 use WicketAcc\Symfony\Component\Translation\Provider\ProviderFactoryInterface;
 use WicketAcc\Symfony\Component\Translation\TranslatorBagInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
  * A test case to ease testing a translation provider factory.

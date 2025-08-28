@@ -8,15 +8,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace WicketAcc\Carbon;
 
+use WicketAcc\Carbon\Traits\Date;
+use WicketAcc\Carbon\Traits\DeprecatedProperties;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
-use WicketAcc\Carbon\Traits\Date;
-use WicketAcc\Carbon\Traits\DeprecatedProperties;
-
 /**
  * A simple API extension for DateTimeImmutable.
  *
@@ -512,14 +510,12 @@ class CarbonImmutable extends DateTimeImmutable implements CarbonInterface
     use Date {
         __clone as dateTraitClone;
     }
-
     public function __clone()
     {
         $this->dateTraitClone();
         $this->endOfTime = false;
         $this->startOfTime = false;
     }
-
     /**
      * Create a very old date representing start of time.
      *
@@ -529,10 +525,8 @@ class CarbonImmutable extends DateTimeImmutable implements CarbonInterface
     {
         $date = static::parse('0001-01-01')->years(self::getStartOfTimeYear());
         $date->startOfTime = true;
-
         return $date;
     }
-
     /**
      * Create a very far date representing end of time.
      *
@@ -542,10 +536,8 @@ class CarbonImmutable extends DateTimeImmutable implements CarbonInterface
     {
         $date = static::parse('9999-12-31 23:59:59.999999')->years(self::getEndOfTimeYear());
         $date->endOfTime = true;
-
         return $date;
     }
-
     /**
      * @codeCoverageIgnore
      */
@@ -558,10 +550,8 @@ class CarbonImmutable extends DateTimeImmutable implements CarbonInterface
         if (version_compare(PHP_VERSION, '8.1.0-dev', '>=')) {
             return 1118290769066902787;
         }
-
         return PHP_INT_MAX;
     }
-
     /**
      * @codeCoverageIgnore
      */
@@ -574,7 +564,6 @@ class CarbonImmutable extends DateTimeImmutable implements CarbonInterface
         if (version_compare(PHP_VERSION, '8.1.0-dev', '>=')) {
             return -1118290769066898816;
         }
-
         return max(PHP_INT_MIN, -9223372036854773760);
     }
 }

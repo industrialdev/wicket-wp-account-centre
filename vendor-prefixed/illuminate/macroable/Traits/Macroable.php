@@ -44,7 +44,7 @@ trait Macroable
         );
 
         foreach ($methods as $method) {
-            if ($replace || !static::hasMacro($method->name)) {
+            if ($replace || ! static::hasMacro($method->name)) {
                 static::macro($method->name, $method->invoke($mixin));
             }
         }
@@ -78,15 +78,13 @@ trait Macroable
      * @param  array  $parameters
      * @return mixed
      *
-     * @throws BadMethodCallException
+     * @throws \BadMethodCallException
      */
     public static function __callStatic($method, $parameters)
     {
-        if (!static::hasMacro($method)) {
+        if (! static::hasMacro($method)) {
             throw new BadMethodCallException(sprintf(
-                'Method %s::%s does not exist.',
-                static::class,
-                $method
+                'Method %s::%s does not exist.', static::class, $method
             ));
         }
 
@@ -106,15 +104,13 @@ trait Macroable
      * @param  array  $parameters
      * @return mixed
      *
-     * @throws BadMethodCallException
+     * @throws \BadMethodCallException
      */
     public function __call($method, $parameters)
     {
-        if (!static::hasMacro($method)) {
+        if (! static::hasMacro($method)) {
             throw new BadMethodCallException(sprintf(
-                'Method %s::%s does not exist.',
-                static::class,
-                $method
+                'Method %s::%s does not exist.', static::class, $method
             ));
         }
 

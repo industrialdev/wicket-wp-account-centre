@@ -2,13 +2,13 @@
 
 namespace WicketAcc\GuzzleHttp;
 
-use Psr\Log\LoggerInterface;
 use WicketAcc\GuzzleHttp\Cookie\CookieJarInterface;
 use WicketAcc\GuzzleHttp\Exception\RequestException;
 use WicketAcc\GuzzleHttp\Promise as P;
 use WicketAcc\GuzzleHttp\Promise\PromiseInterface;
 use WicketAcc\Psr\Http\Message\RequestInterface;
 use WicketAcc\Psr\Http\Message\ResponseInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Functions used to create and wrap handlers with handler middleware.

@@ -4,12 +4,12 @@ namespace WicketAcc\Illuminate\Support\Testing\Fakes;
 
 use BadMethodCallException;
 use Closure;
+use WicketAcc\Illuminate\Contracts\Queue\Queue;
 use Illuminate\Queue\CallQueuedClosure;
 use Illuminate\Queue\QueueManager;
-use PHPUnit\Framework\Assert as PHPUnit;
-use WicketAcc\Illuminate\Contracts\Queue\Queue;
 use WicketAcc\Illuminate\Support\Collection;
 use WicketAcc\Illuminate\Support\Traits\ReflectsClosures;
+use PHPUnit\Framework\Assert as PHPUnit;
 
 class QueueFake extends QueueManager implements Fake, Queue
 {
@@ -18,21 +18,21 @@ class QueueFake extends QueueManager implements Fake, Queue
     /**
      * The original queue manager.
      *
-     * @var Queue
+     * @var \WicketAcc\Illuminate\Contracts\Queue\Queue
      */
     public $queue;
 
     /**
      * The job types that should be intercepted instead of pushed to the queue.
      *
-     * @var Collection
+     * @var \WicketAcc\Illuminate\Support\Collection
      */
     protected $jobsToFake;
 
     /**
      * The job types that should be pushed to the queue and not intercepted.
      *
-     * @var Collection
+     * @var \WicketAcc\Illuminate\Support\Collection
      */
     protected $jobsToBeQueued;
 
@@ -55,7 +55,7 @@ class QueueFake extends QueueManager implements Fake, Queue
      *
      * @param  \WicketAcc\Illuminate\Contracts\Foundation\Application  $app
      * @param  array  $jobsToFake
-     * @param  QueueManager|null  $queue
+     * @param  \Illuminate\Queue\QueueManager|null  $queue
      * @return void
      */
     public function __construct($app, $jobsToFake = [], $queue = null)
@@ -83,7 +83,7 @@ class QueueFake extends QueueManager implements Fake, Queue
     /**
      * Assert if a job was pushed based on a truth-test callback.
      *
-     * @param  string|Closure  $job
+     * @param  string|\Closure  $job
      * @param  callable|int|null  $callback
      * @return void
      */
@@ -115,8 +115,7 @@ class QueueFake extends QueueManager implements Fake, Queue
         $count = $this->pushed($job)->count();
 
         PHPUnit::assertSame(
-            $times,
-            $count,
+            $times, $count,
             "The expected [{$job}] job was pushed {$count} times instead of {$times} times."
         );
     }
@@ -125,7 +124,7 @@ class QueueFake extends QueueManager implements Fake, Queue
      * Assert if a job was pushed based on a truth-test callback.
      *
      * @param  string  $queue
-     * @param  string|Closure  $job
+     * @param  string|\Closure  $job
      * @param  callable|null  $callback
      * @return void
      */
@@ -223,8 +222,7 @@ class QueueFake extends QueueManager implements Fake, Queue
         });
 
         PHPUnit::assertTrue(
-            $matching->isNotEmpty(),
-            'The expected chain was not pushed.'
+            $matching->isNotEmpty(), 'The expected chain was not pushed.'
         );
     }
 
@@ -258,13 +256,13 @@ class QueueFake extends QueueManager implements Fake, Queue
      */
     protected function isChainOfObjects($chain)
     {
-        return !wicketacc_collect($chain)->contains(fn ($job) => !is_object($job));
+        return ! wicketacc_collect($chain)->contains(fn ($job) => ! is_object($job));
     }
 
     /**
      * Determine if a job was pushed based on a truth-test callback.
      *
-     * @param  string|Closure  $job
+     * @param  string|\Closure  $job
      * @param  callable|null  $callback
      * @return void
      */
@@ -275,8 +273,7 @@ class QueueFake extends QueueManager implements Fake, Queue
         }
 
         PHPUnit::assertCount(
-            0,
-            $this->pushed($job, $callback),
+            0, $this->pushed($job, $callback),
             "The unexpected [{$job}] job was pushed."
         );
     }
@@ -292,8 +289,7 @@ class QueueFake extends QueueManager implements Fake, Queue
         $actualCount = wicketacc_collect($this->jobs)->flatten(1)->count();
 
         PHPUnit::assertSame(
-            $expectedCount,
-            $actualCount,
+            $expectedCount, $actualCount,
             "Expected {$expectedCount} jobs to be pushed, but found {$actualCount} instead."
         );
     }
@@ -313,11 +309,11 @@ class QueueFake extends QueueManager implements Fake, Queue
      *
      * @param  string  $job
      * @param  callable|null  $callback
-     * @return Collection
+     * @return \WicketAcc\Illuminate\Support\Collection
      */
     public function pushed($job, $callback = null)
     {
-        if (!$this->hasPushed($job)) {
+        if (! $this->hasPushed($job)) {
             return wicketacc_collect();
         }
 
@@ -336,14 +332,14 @@ class QueueFake extends QueueManager implements Fake, Queue
      */
     public function hasPushed($job)
     {
-        return isset($this->jobs[$job]) && !empty($this->jobs[$job]);
+        return isset($this->jobs[$job]) && ! empty($this->jobs[$job]);
     }
 
     /**
      * Resolve a queue connection instance.
      *
      * @param  mixed  $value
-     * @return Queue
+     * @return \WicketAcc\Illuminate\Contracts\Queue\Queue
      */
     public function connection($value = null)
     {
@@ -570,14 +566,12 @@ class QueueFake extends QueueManager implements Fake, Queue
      * @param  array  $parameters
      * @return mixed
      *
-     * @throws BadMethodCallException
+     * @throws \BadMethodCallException
      */
     public function __call($method, $parameters)
     {
         throw new BadMethodCallException(sprintf(
-            'Call to undefined method %s::%s()',
-            static::class,
-            $method
+            'Call to undefined method %s::%s()', static::class, $method
         ));
     }
 }

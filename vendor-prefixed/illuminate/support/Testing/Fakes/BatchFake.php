@@ -2,9 +2,9 @@
 
 namespace WicketAcc\Illuminate\Support\Testing\Fakes;
 
+use WicketAcc\Carbon\CarbonImmutable;
 use Illuminate\Bus\Batch;
 use Illuminate\Bus\UpdatedBatchJobCounts;
-use WicketAcc\Carbon\CarbonImmutable;
 use WicketAcc\Illuminate\Support\Carbon;
 use WicketAcc\Illuminate\Support\Collection;
 
@@ -34,23 +34,22 @@ class BatchFake extends Batch
      * @param  int  $failedJobs
      * @param  array  $failedJobIds
      * @param  array  $options
-     * @param  CarbonImmutable  $createdAt
-     * @param  CarbonImmutable|null  $cancelledAt
-     * @param  CarbonImmutable|null  $finishedAt
+     * @param  \WicketAcc\Carbon\CarbonImmutable  $createdAt
+     * @param  \WicketAcc\Carbon\CarbonImmutable|null  $cancelledAt
+     * @param  \WicketAcc\Carbon\CarbonImmutable|null  $finishedAt
      * @return void
      */
-    public function __construct(
-        string $id,
-        string $name,
-        int $totalJobs,
-        int $pendingJobs,
-        int $failedJobs,
-        array $failedJobIds,
-        array $options,
-        CarbonImmutable $createdAt,
-        ?CarbonImmutable $cancelledAt = null,
-        ?CarbonImmutable $finishedAt = null
-    ) {
+    public function __construct(string $id,
+                                string $name,
+                                int $totalJobs,
+                                int $pendingJobs,
+                                int $failedJobs,
+                                array $failedJobIds,
+                                array $options,
+                                CarbonImmutable $createdAt,
+                                ?CarbonImmutable $cancelledAt = null,
+                                ?CarbonImmutable $finishedAt = null)
+    {
         $this->id = $id;
         $this->name = $name;
         $this->totalJobs = $totalJobs;
@@ -105,7 +104,7 @@ class BatchFake extends Batch
      * Decrement the pending jobs for the batch.
      *
      * @param  string  $jobId
-     * @return UpdatedBatchJobCounts
+     * @return \Illuminate\Bus\UpdatedBatchJobCounts
      */
     public function decrementPendingJobs(string $jobId)
     {
@@ -128,11 +127,11 @@ class BatchFake extends Batch
      * Increment the failed jobs for the batch.
      *
      * @param  string  $jobId
-     * @return UpdatedBatchJobCounts
+     * @return \Illuminate\Bus\UpdatedBatchJobCounts
      */
     public function incrementFailedJobs(string $jobId)
     {
-        return new UpdatedBatchJobCounts();
+        return new UpdatedBatchJobCounts;
     }
 
     /**

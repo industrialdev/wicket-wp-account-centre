@@ -11,22 +11,22 @@
 
 namespace WicketAcc\Carbon\PHPStan;
 
+use WicketAcc\Carbon\CarbonInterface;
 use PHPStan\Reflection\ReflectionProvider;
 use ReflectionClass;
 use ReflectionException;
-use WicketAcc\Carbon\CarbonInterface;
 
 final class MacroScanner
 {
     /**
-     * @var ReflectionProvider
+     * @var \PHPStan\Reflection\ReflectionProvider
      */
     private $reflectionProvider;
 
     /**
      * MacroScanner constructor.
      *
-     * @param ReflectionProvider $reflectionProvider
+     * @param \PHPStan\Reflection\ReflectionProvider $reflectionProvider
      */
     public function __construct(ReflectionProvider $reflectionProvider)
     {

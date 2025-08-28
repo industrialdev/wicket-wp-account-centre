@@ -152,7 +152,7 @@ class TranslatorTest extends TestCase
     {
         $translator = $this->getTranslator();
 
-        $this->assertEquals($expected, $translator->trans($interval . ' foo|[1,Inf[ bar', ['%count%' => $number]));
+        $this->assertEquals($expected, $translator->trans($interval.' foo|[1,Inf[ bar', ['%count%' => $number]));
     }
 
     public static function getInterval()
@@ -387,7 +387,7 @@ class TranslatorTest extends TestCase
 
         $matrix = [];
         foreach ($langCodes as $langCode) {
-            for ($count = 0; $count < 200; $count++) {
+            for ($count = 0; $count < 200; ++$count) {
                 $plural = $translator->getPluralizationRule($count, $langCode);
                 $matrix[$langCode][$count] = $plural;
             }

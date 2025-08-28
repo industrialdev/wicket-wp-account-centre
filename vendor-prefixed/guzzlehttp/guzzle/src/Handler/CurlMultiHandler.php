@@ -181,7 +181,7 @@ class CurlMultiHandler
     }
 
     /**
-     * Runs \curl_multi_exec() inside the event loop, to prevent busy looping.
+     * Runs \curl_multi_exec() inside the event loop, to prevent busy looping
      */
     private function tickInQueue(): void
     {

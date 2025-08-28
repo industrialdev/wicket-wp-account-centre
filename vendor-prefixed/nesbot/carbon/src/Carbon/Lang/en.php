@@ -71,7 +71,7 @@ return [
     'ordinal' => function ($number) {
         $lastDigit = $number % 10;
 
-        return $number . (
+        return $number.(
             ((int) ($number % 100 / 10) === 1) ? 'th' : (
                 ($lastDigit === 1) ? 'st' : (
                     ($lastDigit === 2) ? 'nd' : (

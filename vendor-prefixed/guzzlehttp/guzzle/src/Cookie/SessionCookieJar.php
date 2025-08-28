@@ -3,7 +3,7 @@
 namespace WicketAcc\GuzzleHttp\Cookie;
 
 /**
- * Persists cookies in the client session.
+ * Persists cookies in the client session
  */
 class SessionCookieJar extends CookieJar
 {
@@ -18,7 +18,7 @@ class SessionCookieJar extends CookieJar
     private $storeSessionCookies;
 
     /**
-     * Create a new SessionCookieJar object.
+     * Create a new SessionCookieJar object
      *
      * @param string $sessionKey          Session key name to store the cookie
      *                                    data in session
@@ -34,7 +34,7 @@ class SessionCookieJar extends CookieJar
     }
 
     /**
-     * Saves cookies to session when shutting down.
+     * Saves cookies to session when shutting down
      */
     public function __destruct()
     {
@@ -42,7 +42,7 @@ class SessionCookieJar extends CookieJar
     }
 
     /**
-     * Save cookies to the client session.
+     * Save cookies to the client session
      */
     public function save(): void
     {
@@ -58,7 +58,7 @@ class SessionCookieJar extends CookieJar
     }
 
     /**
-     * Load the contents of the client session into the data array.
+     * Load the contents of the client session into the data array
      */
     protected function load(): void
     {

@@ -44,7 +44,7 @@ class RetryMiddleware
     {
         $this->decider = $decider;
         $this->nextHandler = $nextHandler;
-        $this->delay = $delay ?: __CLASS__ . '::exponentialDelay';
+        $this->delay = $delay ?: __CLASS__.'::exponentialDelay';
     }
 
     /**
@@ -73,7 +73,7 @@ class RetryMiddleware
     }
 
     /**
-     * Execute fulfilled closure.
+     * Execute fulfilled closure
      */
     private function onFulfilled(RequestInterface $request, array $options): callable
     {
@@ -92,7 +92,7 @@ class RetryMiddleware
     }
 
     /**
-     * Execute rejected closure.
+     * Execute rejected closure
      */
     private function onRejected(RequestInterface $req, array $options): callable
     {

@@ -55,11 +55,11 @@ class XliffFileLoader implements LoaderInterface
                 $dom = XmlUtils::loadFile($resource);
             }
         } catch (\InvalidArgumentException|XmlParsingException|InvalidXmlException $e) {
-            throw new InvalidResourceException(\sprintf('Unable to load "%s": ', $resource) . $e->getMessage(), $e->getCode(), $e);
+            throw new InvalidResourceException(\sprintf('Unable to load "%s": ', $resource).$e->getMessage(), $e->getCode(), $e);
         }
 
         if ($errors = XliffUtils::validateSchema($dom)) {
-            throw new InvalidResourceException(\sprintf('Invalid resource provided: "%s"; Errors: ', $resource) . XliffUtils::getErrorsAsString($errors));
+            throw new InvalidResourceException(\sprintf('Invalid resource provided: "%s"; Errors: ', $resource).XliffUtils::getErrorsAsString($errors));
         }
 
         $catalogue = new MessageCatalogue($locale);

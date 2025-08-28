@@ -1,5 +1,4 @@
 <?php
-
 namespace WicketAcc\Firebase\JWT;
 
 interface JWTExceptionWithPayloadInterface

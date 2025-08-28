@@ -9,7 +9,7 @@ use WicketAcc\Doctrine\Inflector\Rules\Ruleset;
 interface LanguageInflectorFactory
 {
     /**
-     * Applies custom rules for singularisation.
+     * Applies custom rules for singularisation
      *
      * @param bool $reset If true, will unset default inflections for all new rules
      *
@@ -18,7 +18,7 @@ interface LanguageInflectorFactory
     public function withSingularRules(?Ruleset $singularRules, bool $reset = false): self;
 
     /**
-     * Applies custom rules for pluralisation.
+     * Applies custom rules for pluralisation
      *
      * @param bool $reset If true, will unset default inflections for all new rules
      *
@@ -27,7 +27,7 @@ interface LanguageInflectorFactory
     public function withPluralRules(?Ruleset $pluralRules, bool $reset = false): self;
 
     /**
-     * Builds the inflector instance with all applicable rules.
+     * Builds the inflector instance with all applicable rules
      */
     public function build(): Inflector;
 }

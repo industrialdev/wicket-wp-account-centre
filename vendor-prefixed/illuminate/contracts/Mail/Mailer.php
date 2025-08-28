@@ -32,7 +32,7 @@ interface Mailer
     /**
      * Send a new message using a view.
      *
-     * @param  Mailable|string|array  $view
+     * @param  \WicketAcc\Illuminate\Contracts\Mail\Mailable|string|array  $view
      * @param  array  $data
      * @param  \Closure|string|null  $callback
      * @return \Illuminate\Mail\SentMessage|null

@@ -83,7 +83,7 @@ class Env
      * @param  string  $key
      * @return mixed
      *
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     public static function getOrFail($key)
     {
@@ -94,7 +94,7 @@ class Env
      * Get the possible option for this environment variable.
      *
      * @param  string  $key
-     * @return Option|\PhpOption\Some
+     * @return \PhpOption\Option|\PhpOption\Some
      */
     protected static function getOption($key)
     {

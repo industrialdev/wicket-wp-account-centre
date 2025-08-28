@@ -8,7 +8,6 @@ use WicketAcc\GuzzleHttp\Handler\CurlMultiHandler;
 use WicketAcc\GuzzleHttp\Handler\Proxy;
 use WicketAcc\GuzzleHttp\Handler\StreamHandler;
 use WicketAcc\Psr\Http\Message\UriInterface;
-
 final class Utils
 {
     /**
@@ -32,11 +31,9 @@ final class Utils
                 // normalize float vs double
                 /** @var string $varDumpContent */
                 $varDumpContent = \ob_get_clean();
-
                 return \str_replace('double(', 'float(', \rtrim($varDumpContent));
         }
     }
-
     /**
      * Parses an array of header lines into an associative array of headers.
      *
@@ -50,10 +47,8 @@ final class Utils
             $parts = \explode(':', $line, 2);
             $headers[\trim($parts[0])][] = isset($parts[1]) ? \trim($parts[1]) : null;
         }
-
         return $headers;
     }
-
     /**
      * Returns a debug stream based on the provided variable.
      *
@@ -69,10 +64,8 @@ final class Utils
         if (\defined('STDOUT')) {
             return \STDOUT;
         }
-
-        return Psr7\Utils::tryFopen('php://output', 'w');
+        return \WicketAcc\GuzzleHttp\Psr7\Utils::tryFopen('php://output', 'w');
     }
-
     /**
      * Chooses and creates a default handler to use based on the environment.
      *
@@ -99,10 +92,8 @@ final class Utils
         } elseif (!$handler) {
             throw new \RuntimeException('GuzzleHttp requires cURL, the allow_url_fopen ini setting, or a custom HTTP handler.');
         }
-
         return $handler;
     }
-
     /**
      * Get the default User-Agent string to use with Guzzle.
      */
@@ -110,7 +101,6 @@ final class Utils
     {
         return sprintf('GuzzleHttp/%d', ClientInterface::MAJOR_VERSION);
     }
-
     /**
      * Returns the default cacert bundle for the current system.
      *
@@ -160,21 +150,20 @@ final class Utils
                 return $cached = $filename;
             }
         }
-        throw new \RuntimeException(<<<'EOT'
-            No system CA bundle could be found in any of the the common system locations.
-            PHP versions earlier than 5.6 are not properly configured to use the system's
-            CA bundle by default. In order to verify peer certificates, you will need to
-            supply the path on disk to a certificate bundle to the 'verify' request
-            option: https://docs.guzzlephp.org/en/latest/request-options.html#verify. If
-            you do not need a specific certificate bundle, then Mozilla provides a commonly
-            used CA bundle which can be downloaded here (provided by the maintainer of
-            cURL): https://curl.haxx.se/ca/cacert.pem. Once you have a CA bundle available
-            on disk, you can set the 'openssl.cafile' PHP ini setting to point to the path
-            to the file, allowing you to omit the 'verify' request option. See
-            https://curl.haxx.se/docs/sslcerts.html for more information.
-            EOT);
+        throw new \RuntimeException(<<<EOT
+        No system CA bundle could be found in any of the the common system locations.
+        PHP versions earlier than 5.6 are not properly configured to use the system's
+        CA bundle by default. In order to verify peer certificates, you will need to
+        supply the path on disk to a certificate bundle to the 'verify' request
+        option: https://docs.guzzlephp.org/en/latest/request-options.html#verify. If
+        you do not need a specific certificate bundle, then Mozilla provides a commonly
+        used CA bundle which can be downloaded here (provided by the maintainer of
+        cURL): https://curl.haxx.se/ca/cacert.pem. Once you have a CA bundle available
+        on disk, you can set the 'openssl.cafile' PHP ini setting to point to the path
+        to the file, allowing you to omit the 'verify' request option. See
+        https://curl.haxx.se/docs/sslcerts.html for more information.
+        EOT);
     }
-
     /**
      * Creates an associative array of lowercase header names to the actual
      * header casing.
@@ -185,10 +174,8 @@ final class Utils
         foreach (\array_keys($headers) as $key) {
             $result[\strtolower($key)] = $key;
         }
-
         return $result;
     }
-
     /**
      * Returns true if the provided host matches any of the no proxy areas.
      *
@@ -235,10 +222,8 @@ final class Utils
                 return true;
             }
         }
-
         return false;
     }
-
     /**
      * Wrapper for json_decode that throws when an error occurs.
      *
@@ -260,10 +245,8 @@ final class Utils
         if (\JSON_ERROR_NONE !== \json_last_error()) {
             throw new InvalidArgumentException('json_decode error: ' . \json_last_error_msg());
         }
-
         return $data;
     }
-
     /**
      * Wrapper for JSON encoding that throws when an error occurs.
      *
@@ -281,14 +264,12 @@ final class Utils
         if (\JSON_ERROR_NONE !== \json_last_error()) {
             throw new InvalidArgumentException('json_encode error: ' . \json_last_error_msg());
         }
-
-        /* @var string */
+        /** @var string */
         return $json;
     }
-
     /**
      * Wrapper for the hrtime() or microtime() functions
-     * (depending on the PHP version, one of the two is used).
+     * (depending on the PHP version, one of the two is used)
      *
      * @return float UNIX timestamp
      *
@@ -298,7 +279,6 @@ final class Utils
     {
         return (float) \function_exists('hrtime') ? \hrtime(true) / 1000000000.0 : \microtime(true);
     }
-
     /**
      * @throws InvalidArgumentException
      *
@@ -330,10 +310,8 @@ final class Utils
                 $uri = $uri->withHost($asciiHost);
             }
         }
-
         return $uri;
     }
-
     /**
      * @internal
      */
@@ -345,10 +323,8 @@ final class Utils
         if (\PHP_SAPI === 'cli' && ($value = \getenv($name)) !== false && $value !== null) {
             return (string) $value;
         }
-
         return null;
     }
-
     /**
      * @return string|false
      */

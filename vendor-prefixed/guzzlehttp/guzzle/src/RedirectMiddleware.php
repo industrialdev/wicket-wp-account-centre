@@ -8,7 +8,6 @@ use WicketAcc\GuzzleHttp\Promise\PromiseInterface;
 use WicketAcc\Psr\Http\Message\RequestInterface;
 use WicketAcc\Psr\Http\Message\ResponseInterface;
 use WicketAcc\Psr\Http\Message\UriInterface;
-
 /**
  * Request redirect middleware.
  *
@@ -29,7 +28,6 @@ class RedirectMiddleware
      * @var callable(RequestInterface, array): PromiseInterface
      */
     private $nextHandler;
-
     /**
      * @param callable(RequestInterface, array): PromiseInterface $nextHandler Next handler to invoke.
      */
@@ -37,7 +35,6 @@ class RedirectMiddleware
     {
         $this->nextHandler = $nextHandler;
     }
-
     public function __invoke(RequestInterface $request, array $options): PromiseInterface
     {
         $fn = $this->nextHandler;
@@ -55,12 +52,10 @@ class RedirectMiddleware
         if (empty($options['allow_redirects']['max'])) {
             return $fn($request, $options);
         }
-
         return $fn($request, $options)->then(function (ResponseInterface $response) use ($request, $options) {
             return $this->checkRedirect($request, $options, $response);
         });
     }
-
     /**
      * @return ResponseInterface|PromiseInterface
      */
@@ -72,7 +67,7 @@ class RedirectMiddleware
         $this->guardMax($request, $response, $options);
         $nextRequest = $this->modifyRequest($request, $options, $response);
         // If authorization is handled by curl, unset it if URI is cross-origin.
-        if (Psr7\UriComparator::isCrossOrigin($request->getUri(), $nextRequest->getUri()) && defined('\CURLOPT_HTTPAUTH')) {
+        if (\WicketAcc\GuzzleHttp\Psr7\UriComparator::isCrossOrigin($request->getUri(), $nextRequest->getUri()) && defined('\CURLOPT_HTTPAUTH')) {
             unset($options['curl'][\CURLOPT_HTTPAUTH], $options['curl'][\CURLOPT_USERPWD]);
         }
         if (isset($options['allow_redirects']['on_redirect'])) {
@@ -83,10 +78,8 @@ class RedirectMiddleware
         if (!empty($options['allow_redirects']['track_redirects'])) {
             return $this->withTracking($promise, (string) $nextRequest->getUri(), $response->getStatusCode());
         }
-
         return $promise;
     }
-
     /**
      * Enable tracking on promise.
      */
@@ -100,11 +93,9 @@ class RedirectMiddleware
             $statusHeader = $response->getHeader(self::STATUS_HISTORY_HEADER);
             \array_unshift($historyHeader, $uri);
             \array_unshift($statusHeader, (string) $statusCode);
-
             return $response->withHeader(self::HISTORY_HEADER, $historyHeader)->withHeader(self::STATUS_HISTORY_HEADER, $statusHeader);
         });
     }
-
     /**
      * Check for too many redirects.
      *
@@ -119,7 +110,6 @@ class RedirectMiddleware
             throw new TooManyRedirectsException("Will not follow more than {$max} redirects", $request, $response);
         }
     }
-
     public function modifyRequest(RequestInterface $request, array $options, ResponseInterface $response): RequestInterface
     {
         // Request modifications to apply.
@@ -141,7 +131,7 @@ class RedirectMiddleware
             $uri = Utils::idnUriConvert($uri, $idnOptions);
         }
         $modify['uri'] = $uri;
-        Psr7\Message::rewindBody($request);
+        \WicketAcc\GuzzleHttp\Psr7\Message::rewindBody($request);
         // Add the Referer header if it is told to do so and only
         // add the header if we are not redirecting from https to http.
         if ($options['allow_redirects']['referer'] && $modify['uri']->getScheme() === $request->getUri()->getScheme()) {
@@ -151,25 +141,22 @@ class RedirectMiddleware
             $modify['remove_headers'][] = 'Referer';
         }
         // Remove Authorization and Cookie headers if URI is cross-origin.
-        if (Psr7\UriComparator::isCrossOrigin($request->getUri(), $modify['uri'])) {
+        if (\WicketAcc\GuzzleHttp\Psr7\UriComparator::isCrossOrigin($request->getUri(), $modify['uri'])) {
             $modify['remove_headers'][] = 'Authorization';
             $modify['remove_headers'][] = 'Cookie';
         }
-
-        return Psr7\Utils::modifyRequest($request, $modify);
+        return \WicketAcc\GuzzleHttp\Psr7\Utils::modifyRequest($request, $modify);
     }
-
     /**
      * Set the appropriate URL on the request based on the location header.
      */
     private static function redirectUri(RequestInterface $request, ResponseInterface $response, array $protocols): UriInterface
     {
-        $location = Psr7\UriResolver::resolve($request->getUri(), new Psr7\Uri($response->getHeaderLine('Location')));
+        $location = \WicketAcc\GuzzleHttp\Psr7\UriResolver::resolve($request->getUri(), new Psr7\Uri($response->getHeaderLine('Location')));
         // Ensure that the redirect URI is allowed based on the protocols.
         if (!\in_array($location->getScheme(), $protocols)) {
             throw new BadResponseException(\sprintf('Redirect URI, %s, does not use one of the allowed redirect protocols: %s', $location, \implode(', ', $protocols)), $request, $response);
         }
-
         return $location;
     }
 }

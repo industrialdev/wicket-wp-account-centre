@@ -11,13 +11,13 @@
 
 namespace WicketAcc\Carbon\Traits;
 
-use Closure;
 use WicketAcc\Carbon\CarbonInterface;
 use WicketAcc\Carbon\Exceptions\InvalidTypeException;
 use WicketAcc\Carbon\Exceptions\NotLocaleAwareException;
 use WicketAcc\Carbon\Language;
 use WicketAcc\Carbon\Translator;
 use WicketAcc\Carbon\TranslatorStrongTypeInterface;
+use Closure;
 use WicketAcc\Symfony\Component\Translation\TranslatorBagInterface;
 use WicketAcc\Symfony\Component\Translation\TranslatorInterface;
 use WicketAcc\Symfony\Contracts\Translation\LocaleAwareInterface;
@@ -44,14 +44,14 @@ trait Localization
     /**
      * Default translator.
      *
-     * @var TranslatorInterface
+     * @var \WicketAcc\Symfony\Component\Translation\TranslatorInterface
      */
     protected static $translator;
 
     /**
      * Specific translator of the current instance.
      *
-     * @var TranslatorInterface
+     * @var \WicketAcc\Symfony\Component\Translation\TranslatorInterface
      */
     protected $localTranslator;
 
@@ -111,7 +111,7 @@ trait Localization
     /**
      * Get the default translator instance in use.
      *
-     * @return TranslatorInterface
+     * @return \WicketAcc\Symfony\Component\Translation\TranslatorInterface
      */
     public static function getTranslator()
     {
@@ -121,7 +121,7 @@ trait Localization
     /**
      * Set the default translator instance to use.
      *
-     * @param TranslatorInterface $translator
+     * @param \WicketAcc\Symfony\Component\Translation\TranslatorInterface $translator
      *
      * @return void
      */
@@ -143,7 +143,7 @@ trait Localization
     /**
      * Get the translator of the current instance or the default if none set.
      *
-     * @return TranslatorInterface
+     * @return \WicketAcc\Symfony\Component\Translation\TranslatorInterface
      */
     public function getLocalTranslator()
     {
@@ -153,7 +153,7 @@ trait Localization
     /**
      * Set the translator for the current instance.
      *
-     * @param TranslatorInterface $translator
+     * @param \WicketAcc\Symfony\Component\Translation\TranslatorInterface $translator
      *
      * @return $this
      */
@@ -167,7 +167,7 @@ trait Localization
     /**
      * Returns raw translation message for a given key.
      *
-     * @param TranslatorInterface $translator the translator to use
+     * @param \WicketAcc\Symfony\Component\Translation\TranslatorInterface $translator the translator to use
      * @param string                                             $key        key to find
      * @param string|null                                        $locale     current locale used if null
      * @param string|null                                        $default    default value if translation returns the key
@@ -178,8 +178,8 @@ trait Localization
     {
         if (!($translator instanceof TranslatorBagInterface && $translator instanceof TranslatorInterface)) {
             throw new InvalidTypeException(
-                'Translator does not implement ' . TranslatorInterface::class . ' and ' . TranslatorBagInterface::class . '. ' .
-                (\is_object($translator) ? \get_class($translator) : \gettype($translator)) . ' has been given.'
+                'Translator does not implement '.TranslatorInterface::class.' and '.TranslatorBagInterface::class.'. '.
+                (\is_object($translator) ? \get_class($translator) : \gettype($translator)).' has been given.'
             );
         }
 
@@ -198,7 +198,7 @@ trait Localization
      * @param string                                             $key        key to find
      * @param string|null                                        $locale     current locale used if null
      * @param string|null                                        $default    default value if translation returns the key
-     * @param TranslatorInterface $translator an optional translator to use
+     * @param \WicketAcc\Symfony\Component\Translation\TranslatorInterface $translator an optional translator to use
      *
      * @return string
      */
@@ -210,7 +210,7 @@ trait Localization
     /**
      * Translate using translation string or callback available.
      *
-     * @param TranslatorInterface $translator
+     * @param \WicketAcc\Symfony\Component\Translation\TranslatorInterface $translator
      * @param string                                             $key
      * @param array                                              $parameters
      * @param null                                               $number
@@ -246,7 +246,7 @@ trait Localization
      * @param string                                                  $key
      * @param array                                                   $parameters
      * @param string|int|float|null                                   $number
-     * @param TranslatorInterface|null $translator
+     * @param \WicketAcc\Symfony\Component\Translation\TranslatorInterface|null $translator
      * @param bool                                                    $altNumbers
      *
      * @return string
@@ -285,13 +285,13 @@ trait Localization
                 if ($number >= $exp && $number < $exp * 10 && ($pow = $this->translate($key)) !== $key) {
                     $unit = floor($number / $exp);
                     $number -= $unit * $exp;
-                    $start .= ($unit > 1 ? $this->translate("alt_numbers.$unit") : '') . $pow;
+                    $start .= ($unit > 1 ? $this->translate("alt_numbers.$unit") : '').$pow;
                 }
             }
             $result = '';
             while ($number) {
                 $chunk = $number % 100;
-                $result = $this->translate("alt_numbers.$chunk") . $result;
+                $result = $this->translate("alt_numbers.$chunk").$result;
                 $number = floor($number / 100);
             }
 
@@ -302,7 +302,7 @@ trait Localization
             $result = '';
             while ($number) {
                 $chunk = $number % 10;
-                $result = $this->translate("alt_numbers.$chunk") . $result;
+                $result = $this->translate("alt_numbers.$chunk").$result;
                 $number = floor($number / 10);
             }
 
@@ -353,7 +353,7 @@ trait Localization
                 return $timeString;
             }
 
-            $translationKey = $key . 'Translations';
+            $translationKey = $key.'Translations';
             $messages = $translations[$language];
             $months = $messages['months'] ?? [];
             $weekdays = $messages['weekdays'] ?? [];
@@ -368,11 +368,11 @@ trait Localization
 
             if ($key === 'from') {
                 foreach (['months', 'weekdays'] as $variable) {
-                    $list = $messages[$variable . '_standalone'] ?? null;
+                    $list = $messages[$variable.'_standalone'] ?? null;
 
                     if ($list) {
                         foreach ($$variable as $index => &$name) {
-                            $name .= '|' . $messages[$variable . '_standalone'][$index];
+                            $name .= '|'.$messages[$variable.'_standalone'][$index];
                         }
                     }
                 }
@@ -410,7 +410,7 @@ trait Localization
             );
         }
 
-        return substr(preg_replace_callback('/(?<=[\d\s+.\/,_-])(' . implode('|', $fromTranslations) . ')(?=[\d\s+.\/,_-])/iu', function ($match) use ($fromTranslations, $toTranslations) {
+        return substr(preg_replace_callback('/(?<=[\d\s+.\/,_-])('.implode('|', $fromTranslations).')(?=[\d\s+.\/,_-])/iu', function ($match) use ($fromTranslations, $toTranslations) {
             [$chunk] = $match;
 
             foreach ($fromTranslations as $index => $word) {
@@ -663,7 +663,7 @@ trait Localization
 
     /**
      * Returns the list of internally available locales and already loaded custom locales.
-     * (It will ignore custom translator dynamic loading.).
+     * (It will ignore custom translator dynamic loading.)
      *
      * @return array
      */
@@ -695,7 +695,7 @@ trait Localization
     /**
      * Initialize the default translator instance if necessary.
      *
-     * @return TranslatorInterface
+     * @return \WicketAcc\Symfony\Component\Translation\TranslatorInterface
      */
     protected static function translator()
     {
@@ -788,8 +788,8 @@ trait Localization
     private static function translateWordsByKeys($keys, $messages, $key): array
     {
         return array_map(function ($wordKey) use ($messages, $key) {
-            $message = $key === 'from' && isset($messages[$wordKey . '_regexp'])
-                ? $messages[$wordKey . '_regexp']
+            $message = $key === 'from' && isset($messages[$wordKey.'_regexp'])
+                ? $messages[$wordKey.'_regexp']
                 : ($messages[$wordKey] ?? null);
 
             if (!$message) {
@@ -800,7 +800,7 @@ trait Localization
 
             return $key === 'to'
                 ? self::cleanWordFromTranslationString(end($parts))
-                : '(?:' . implode('|', array_map([static::class, 'cleanWordFromTranslationString'], $parts)) . ')';
+                : '(?:'.implode('|', array_map([static::class, 'cleanWordFromTranslationString'], $parts)).')';
         }, $keys);
     }
 

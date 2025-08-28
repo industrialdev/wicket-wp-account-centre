@@ -37,7 +37,7 @@ class Promise implements PromiseInterface
         ?callable $onRejected = null
     ): PromiseInterface {
         if ($this->state === self::PENDING) {
-            $p = new self(null, [$this, 'cancel']);
+            $p = new Promise(null, [$this, 'cancel']);
             $this->handlers[] = [$p, $onFulfilled, $onRejected];
             $p->waitList = $this->waitList;
             $p->waitList[] = $this;
@@ -104,7 +104,7 @@ class Promise implements PromiseInterface
         }
 
         // Reject the promise only if it wasn't rejected in a then callback.
-        /* @psalm-suppress RedundantCondition */
+        /** @psalm-suppress RedundantCondition */
         if ($this->state === self::PENDING) {
             $this->reject(new CancellationException('Promise has been cancelled'));
         }
@@ -158,7 +158,7 @@ class Promise implements PromiseInterface
                     self::callHandler($id, $value, $handler);
                 }
             });
-        } elseif ($value instanceof self && Is::pending($value)) {
+        } elseif ($value instanceof Promise && Is::pending($value)) {
             // We can just merge our handlers onto the next promise.
             $value->handlers = array_merge($value->handlers, $handlers);
         } else {
@@ -230,14 +230,14 @@ class Promise implements PromiseInterface
         } else {
             // If there's no wait function, then reject the promise.
             $this->reject('Cannot wait on a promise that has '
-                . 'no internal wait function. You must provide a wait '
-                . 'function when constructing the promise to be able to '
-                . 'wait on a promise.');
+                .'no internal wait function. You must provide a wait '
+                .'function when constructing the promise to be able to '
+                .'wait on a promise.');
         }
 
         Utils::queue()->run();
 
-        /* @psalm-suppress RedundantCondition */
+        /** @psalm-suppress RedundantCondition */
         if ($this->state === self::PENDING) {
             $this->reject('Invoking the wait callback did not resolve the promise');
         }
@@ -271,7 +271,7 @@ class Promise implements PromiseInterface
             do {
                 $result->waitIfPending();
                 $result = $result->result;
-            } while ($result instanceof self);
+            } while ($result instanceof Promise);
 
             if ($result instanceof PromiseInterface) {
                 $result->wait(false);

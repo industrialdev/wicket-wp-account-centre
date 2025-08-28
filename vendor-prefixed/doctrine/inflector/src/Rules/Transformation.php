@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace WicketAcc\Doctrine\Inflector\Rules;
 
-use function preg_replace;
-
 use WicketAcc\Doctrine\Inflector\WordInflector;
+
+use function preg_replace;
 
 final class Transformation implements WordInflector
 {
@@ -18,7 +18,7 @@ final class Transformation implements WordInflector
 
     public function __construct(Pattern $pattern, string $replacement)
     {
-        $this->pattern = $pattern;
+        $this->pattern     = $pattern;
         $this->replacement = $replacement;
     }
 

@@ -16,4 +16,6 @@ namespace WicketAcc\Symfony\Component\Translation\Exception;
  *
  * @author Abdellatif Ait boudad <a.aitboudad@gmail.com>
  */
-class RuntimeException extends \RuntimeException implements ExceptionInterface {}
+class RuntimeException extends \RuntimeException implements ExceptionInterface
+{
+}

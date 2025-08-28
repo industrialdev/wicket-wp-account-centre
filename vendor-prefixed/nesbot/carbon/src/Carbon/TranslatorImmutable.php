@@ -11,8 +11,8 @@
 
 namespace WicketAcc\Carbon;
 
-use Symfony\Component\Config\ConfigCacheFactoryInterface;
 use WicketAcc\Carbon\Exceptions\ImmutableException;
+use Symfony\Component\Config\ConfigCacheFactoryInterface;
 use WicketAcc\Symfony\Component\Translation\Formatter\MessageFormatterInterface;
 
 class TranslatorImmutable extends Translator
@@ -93,7 +93,7 @@ class TranslatorImmutable extends Translator
     private function disallowMutation($method)
     {
         if ($this->constructed) {
-            throw new ImmutableException($method . ' not allowed on ' . static::class);
+            throw new ImmutableException($method.' not allowed on '.static::class);
         }
     }
 }

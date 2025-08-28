@@ -82,7 +82,7 @@ abstract class AbstractOperation implements OperationInterface
                 foreach ($catalogue->getDomains() as $domain) {
                     $domains[$domain] = $domain;
 
-                    if ($catalogue->all($domainIcu = $domain . MessageCatalogueInterface::INTL_DOMAIN_SUFFIX)) {
+                    if ($catalogue->all($domainIcu = $domain.MessageCatalogueInterface::INTL_DOMAIN_SUFFIX)) {
                         $domains[$domainIcu] = $domainIcu;
                     }
                 }
@@ -155,7 +155,7 @@ abstract class AbstractOperation implements OperationInterface
         }
 
         foreach ($this->getDomains() as $domain) {
-            $intlDomain = $domain . MessageCatalogueInterface::INTL_DOMAIN_SUFFIX;
+            $intlDomain = $domain.MessageCatalogueInterface::INTL_DOMAIN_SUFFIX;
             $messages = match ($batch) {
                 self::OBSOLETE_BATCH => $this->getObsoleteMessages($domain),
                 self::NEW_BATCH => $this->getNewMessages($domain),

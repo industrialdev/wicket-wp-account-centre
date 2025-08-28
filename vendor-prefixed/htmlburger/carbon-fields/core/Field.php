@@ -35,45 +35,41 @@ namespace Carbon_Fields;
  * @method static \Carbon_Fields\Field\Time_Field make_time( string $name, string $label = null )
  * @method static \Carbon_Fields\Field\Block_Preview_Field make_html( string $name, string $label = null )
  */
-class Field
-{
-    /**
-     * A proxy for the abstract field factory method.
-     *
-     * @see    \Carbon_Fields\Field\Field::factory()
-     * @return Field\Field
-     */
-    public static function factory()
-    {
-        return call_user_func_array(['\Carbon_Fields\Field\Field', 'factory'], func_get_args());
-    }
+class Field {
 
-    /**
-     * An alias of factory().
-     *
-     * @see    \Carbon_Fields\Field\Field::factory()
-     * @return Field\Field
-     */
-    public static function make()
-    {
-        return call_user_func_array([static::class, 'factory'], func_get_args());
-    }
+	/**
+	 * A proxy for the abstract field factory method.
+	 *
+	 * @see    \Carbon_Fields\Field\Field::factory()
+	 * @return \Carbon_Fields\Field\Field
+	 */
+	public static function factory() {
+		return call_user_func_array( array( '\Carbon_Fields\Field\Field', 'factory' ), func_get_args() );
+	}
 
-    /**
-     * @param string $method
-     * @param array $arguments
-     *
-     * @return mixed
-     */
-    public static function __callStatic($method, $arguments)
-    {
-        if (strpos($method, 'make_') === 0) {
-            $raw_type = substr_replace($method, '', 0, 5);
-            array_unshift($arguments, $raw_type);
+	/**
+	 * An alias of factory().
+	 *
+	 * @see    \Carbon_Fields\Field\Field::factory()
+	 * @return \Carbon_Fields\Field\Field
+	 */
+	public static function make() {
+		return call_user_func_array( array( static::class, 'factory' ), func_get_args() );
+	}
 
-            return call_user_func_array([static::class, 'factory'], $arguments);
-        } else {
-            trigger_error(sprintf('Call to undefined function: %s::%s().', static::class, $method), E_USER_ERROR);
-        }
-    }
+	/**
+	 * @param string $method
+	 * @param array $arguments
+	 *
+	 * @return mixed
+	 */
+	public static function __callStatic( $method, $arguments ) {
+		if ( strpos( $method, 'make_' ) === 0 ) {
+			$raw_type = substr_replace( $method, '', 0, 5 );
+			array_unshift( $arguments, $raw_type );
+			return call_user_func_array( array( static::class, 'factory' ), $arguments );
+		} else {
+			trigger_error( sprintf( 'Call to undefined function: %s::%s().', static::class, $method ), E_USER_ERROR );
+		}
+	}
 }

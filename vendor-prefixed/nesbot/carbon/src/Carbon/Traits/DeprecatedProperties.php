@@ -16,7 +16,7 @@ namespace WicketAcc\Carbon\Traits;
 trait DeprecatedProperties
 {
     /**
-     * the day of week in current locale LC_TIME.
+     * the day of week in current locale LC_TIME
      *
      * @var string
      *
@@ -27,7 +27,7 @@ trait DeprecatedProperties
     public $localeDayOfWeek;
 
     /**
-     * the abbreviated day of week in current locale LC_TIME.
+     * the abbreviated day of week in current locale LC_TIME
      *
      * @var string
      *
@@ -38,7 +38,7 @@ trait DeprecatedProperties
     public $shortLocaleDayOfWeek;
 
     /**
-     * the month in current locale LC_TIME.
+     * the month in current locale LC_TIME
      *
      * @var string
      *
@@ -49,7 +49,7 @@ trait DeprecatedProperties
     public $localeMonth;
 
     /**
-     * the abbreviated month in current locale LC_TIME.
+     * the abbreviated month in current locale LC_TIME
      *
      * @var string
      *

@@ -51,7 +51,7 @@ final class MacroExtension implements MethodsClassReflectionExtension
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function hasMethod(ClassReflection $classReflection, string $methodName): bool
     {
@@ -59,7 +59,7 @@ final class MacroExtension implements MethodsClassReflectionExtension
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getMethod(ClassReflection $classReflection, string $methodName): MethodReflection
     {

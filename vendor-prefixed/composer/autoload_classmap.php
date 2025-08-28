@@ -5,7 +5,7 @@
 $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
-return [
+return array(
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
     'Carbon_Fields\\Block' => $vendorDir . '/htmlburger/carbon-fields/core/Block.php',
     'Carbon_Fields\\Carbon_Fields' => $vendorDir . '/htmlburger/carbon-fields/core/Carbon_Fields.php',
@@ -648,4 +648,4 @@ return [
     'WicketAcc\\Wicket\\Version' => $vendorDir . '/industrialdev/wicket-sdk-php/src/Version.php',
     'WicketAcc\\Wicket\\WicketCollection' => $vendorDir . '/industrialdev/wicket-sdk-php/src/WicketCollection.php',
     'WicketAcc\\WooCommerce' => $baseDir . '/src/WooCommerce.php',
-];
+);

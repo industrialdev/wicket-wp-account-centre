@@ -92,7 +92,7 @@ class TranslatorPathsPass extends AbstractRecursivePass
     {
         if ($value instanceof Reference) {
             if ('translator' === (string) $value) {
-                for ($i = $this->level - 1; $i >= 0; $i--) {
+                for ($i = $this->level - 1; $i >= 0; --$i) {
                     $class = $this->definitions[$i]->getClass();
 
                     if (ServiceLocator::class === $class) {

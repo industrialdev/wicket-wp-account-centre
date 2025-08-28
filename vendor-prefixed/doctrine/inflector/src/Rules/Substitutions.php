@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace WicketAcc\Doctrine\Inflector\Rules;
 
+use WicketAcc\Doctrine\Inflector\WordInflector;
+
 use function strtolower;
 use function strtoupper;
 use function substr;
-
-use WicketAcc\Doctrine\Inflector\WordInflector;
 
 class Substitutions implements WordInflector
 {
@@ -22,7 +22,7 @@ class Substitutions implements WordInflector
         }
     }
 
-    public function getFlippedSubstitutions(): self
+    public function getFlippedSubstitutions(): Substitutions
     {
         $substitutions = [];
 
@@ -33,7 +33,7 @@ class Substitutions implements WordInflector
             );
         }
 
-        return new self(...$substitutions);
+        return new Substitutions(...$substitutions);
     }
 
     public function inflect(string $word): string

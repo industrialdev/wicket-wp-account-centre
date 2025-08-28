@@ -5,7 +5,7 @@ namespace WicketAcc\GuzzleHttp\Cookie;
 use WicketAcc\GuzzleHttp\Utils;
 
 /**
- * Persists non-session cookies using a JSON formatted file.
+ * Persists non-session cookies using a JSON formatted file
  */
 class FileCookieJar extends CookieJar
 {
@@ -20,7 +20,7 @@ class FileCookieJar extends CookieJar
     private $storeSessionCookies;
 
     /**
-     * Create a new FileCookieJar object.
+     * Create a new FileCookieJar object
      *
      * @param string $cookieFile          File to store the cookie data
      * @param bool   $storeSessionCookies Set to true to store session cookies
@@ -40,7 +40,7 @@ class FileCookieJar extends CookieJar
     }
 
     /**
-     * Saves the file when shutting down.
+     * Saves the file when shutting down
      */
     public function __destruct()
     {

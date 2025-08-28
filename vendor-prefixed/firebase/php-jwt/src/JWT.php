@@ -19,6 +19,7 @@ use UnexpectedValueException;
  * PHP version 5
  *
  * @category Authentication
+ * @package  Authentication_JWT
  * @author   Neuman Vong <neuman@twilio.com>
  * @author   Anant Narayanan <anant@php.net>
  * @license  http://opensource.org/licenses/BSD-3-Clause 3-clause BSD
@@ -107,7 +108,7 @@ class JWT
         if (\count($tks) !== 3) {
             throw new UnexpectedValueException('Wrong number of segments');
         }
-        [$headb64, $bodyb64, $cryptob64] = $tks;
+        list($headb64, $bodyb64, $cryptob64) = $tks;
         $headerRaw = static::urlsafeB64Decode($headb64);
         if (null === ($header = static::jsonDecode($headerRaw))) {
             throw new UnexpectedValueException('Invalid header encoding');
@@ -241,13 +242,12 @@ class JWT
         if (empty(static::$supported_algs[$alg])) {
             throw new DomainException('Algorithm not supported');
         }
-        [$function, $algorithm] = static::$supported_algs[$alg];
+        list($function, $algorithm) = static::$supported_algs[$alg];
         switch ($function) {
             case 'hash_hmac':
                 if (!\is_string($key)) {
                     throw new InvalidArgumentException('key must be a string when using hmac');
                 }
-
                 return \hash_hmac($algorithm, $msg, $key, true);
             case 'openssl':
                 $signature = '';
@@ -263,7 +263,6 @@ class JWT
                 } elseif ($alg === 'ES384') {
                     $signature = self::signatureFromDER($signature, 384);
                 }
-
                 return $signature;
             case 'sodium_crypto':
                 if (!\function_exists('sodium_crypto_sign_detached')) {
@@ -279,7 +278,6 @@ class JWT
                     if (\strlen($key) === 0) {
                         throw new DomainException('Key cannot be empty string');
                     }
-
                     return sodium_crypto_sign_detached($msg, $key);
                 } catch (Exception $e) {
                     throw new DomainException($e->getMessage(), 0, $e);
@@ -312,7 +310,7 @@ class JWT
             throw new DomainException('Algorithm not supported');
         }
 
-        [$function, $algorithm] = static::$supported_algs[$alg];
+        list($function, $algorithm) = static::$supported_algs[$alg];
         switch ($function) {
             case 'openssl':
                 $success = \openssl_verify($msg, $signature, $keyMaterial, $algorithm); // @phpstan-ignore-line
@@ -343,7 +341,6 @@ class JWT
                     if (\strlen($signature) === 0) {
                         throw new DomainException('Signature cannot be empty string');
                     }
-
                     return sodium_crypto_sign_verify_detached($signature, $msg, $key);
                 } catch (Exception $e) {
                     throw new DomainException($e->getMessage(), 0, $e);
@@ -354,7 +351,6 @@ class JWT
                     throw new InvalidArgumentException('key must be a string when using hmac');
                 }
                 $hash = \hash_hmac($algorithm, $msg, $keyMaterial, true);
-
                 return self::constantTimeEquals($hash, $signature);
         }
     }
@@ -377,7 +373,6 @@ class JWT
         } elseif ($obj === null && $input !== 'null') {
             throw new DomainException('Null result with non-null input');
         }
-
         return $obj;
     }
 
@@ -401,7 +396,6 @@ class JWT
         if ($json === false) {
             throw new DomainException('Provided object could not be encoded to valid JSON');
         }
-
         return $json;
     }
 
@@ -436,7 +430,6 @@ class JWT
             $padlen = 4 - $remainder;
             $input .= \str_repeat('=', $padlen);
         }
-
         return \strtr($input, '-_', '+/');
     }
 
@@ -452,8 +445,9 @@ class JWT
         return \str_replace('=', '', \strtr(\base64_encode($input), '+/', '-_'));
     }
 
+
     /**
-     * Determine if an algorithm has been provided for each Key.
+     * Determine if an algorithm has been provided for each Key
      *
      * @param Key|ArrayAccess<string,Key>|array<string,Key> $keyOrKeyArray
      * @param string|null            $kid
@@ -504,7 +498,7 @@ class JWT
         }
         $status |= (self::safeStrlen($left) ^ self::safeStrlen($right));
 
-        return $status === 0;
+        return ($status === 0);
     }
 
     /**
@@ -523,11 +517,12 @@ class JWT
             JSON_ERROR_STATE_MISMATCH => 'Invalid or malformed JSON',
             JSON_ERROR_CTRL_CHAR => 'Unexpected control character found',
             JSON_ERROR_SYNTAX => 'Syntax error, malformed JSON',
-            JSON_ERROR_UTF8 => 'Malformed UTF-8 characters', //PHP >= 5.3.3
+            JSON_ERROR_UTF8 => 'Malformed UTF-8 characters' //PHP >= 5.3.3
         ];
         throw new DomainException(
-            $messages[$errno]
-            ?? 'Unknown JSON error: ' . $errno
+            isset($messages[$errno])
+            ? $messages[$errno]
+            : 'Unknown JSON error: ' . $errno
         );
     }
 
@@ -543,12 +538,11 @@ class JWT
         if (\function_exists('mb_strlen')) {
             return \mb_strlen($str, '8bit');
         }
-
         return \strlen($str);
     }
 
     /**
-     * Convert an ECDSA signature to an ASN.1 DER sequence.
+     * Convert an ECDSA signature to an ASN.1 DER sequence
      *
      * @param   string $sig The ECDSA signature to convert
      * @return  string The encoded DER object
@@ -557,7 +551,7 @@ class JWT
     {
         // Separate the signature into r-value and s-value
         $length = max(1, (int) (\strlen($sig) / 2));
-        [$r, $s] = \str_split($sig, $length);
+        list($r, $s) = \str_split($sig, $length);
 
         // Trim leading zeros
         $r = \ltrim($r, "\x00");
@@ -614,9 +608,9 @@ class JWT
     private static function signatureFromDER(string $der, int $keySize): string
     {
         // OpenSSL returns the ECDSA signatures as a binary ASN.1 DER SEQUENCE
-        [$offset, $_] = self::readDER($der);
-        [$offset, $r] = self::readDER($der, $offset);
-        [$offset, $s] = self::readDER($der, $offset);
+        list($offset, $_) = self::readDER($der);
+        list($offset, $r) = self::readDER($der, $offset);
+        list($offset, $s) = self::readDER($der, $offset);
 
         // Convert r-value and s-value from signed two's compliment to unsigned
         // big-endian integers
@@ -631,7 +625,7 @@ class JWT
     }
 
     /**
-     * Reads binary DER-encoded data and decodes into a single object.
+     * Reads binary DER-encoded data and decodes into a single object
      *
      * @param string $der the binary data in DER format
      * @param int $offset the offset of the data stream containing the object

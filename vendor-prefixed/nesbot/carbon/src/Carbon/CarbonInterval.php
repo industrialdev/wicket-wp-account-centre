@@ -8,20 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace WicketAcc\Carbon;
 
-use Closure;
-use DateInterval;
-use DateMalformedIntervalStringException;
-use DateTimeInterface;
-use DateTimeZone;
-use Exception;
-use InvalidArgumentException;
-use ReflectionException;
-use ReturnTypeWillChange;
-use RuntimeException;
-use Throwable;
 use WicketAcc\Carbon\Exceptions\BadFluentConstructorException;
 use WicketAcc\Carbon\Exceptions\BadFluentSetterException;
 use WicketAcc\Carbon\Exceptions\InvalidCastException;
@@ -38,7 +26,17 @@ use WicketAcc\Carbon\Traits\MagicParameter;
 use WicketAcc\Carbon\Traits\Mixin;
 use WicketAcc\Carbon\Traits\Options;
 use WicketAcc\Carbon\Traits\ToStringFormat;
-
+use Closure;
+use DateInterval;
+use DateMalformedIntervalStringException;
+use DateTimeInterface;
+use DateTimeZone;
+use Exception;
+use InvalidArgumentException;
+use ReflectionException;
+use ReturnTypeWillChange;
+use RuntimeException;
+use Throwable;
 /**
  * A simple API extension for DateInterval.
  * The implementation provides helpers to handle weeks but only days are saved.
@@ -197,7 +195,7 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     use Options;
     use ToStringFormat;
     /**
-     * Interval spec period designators.
+     * Interval spec period designators
      */
     public const PERIOD_PREFIX = 'P';
     public const PERIOD_YEARS = 'Y';
@@ -208,7 +206,7 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     public const PERIOD_MINUTES = 'M';
     public const PERIOD_SECONDS = 'S';
     /**
-     * A translator to ... er ... translate stuff.
+     * A translator to ... er ... translate stuff
      *
      * @var \WicketAcc\Symfony\Component\Translation\TranslatorInterface
      */
@@ -241,37 +239,32 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
      * @var mixed
      */
     protected $tzName;
-
     /**
      * Set the instance's timezone from a string or object.
      *
-     * @param DateTimeZone|string $tzName
+     * @param \DateTimeZone|string $tzName
      *
      * @return static
      */
     public function setTimezone($tzName)
     {
         $this->tzName = $tzName;
-
         return $this;
     }
-
     /**
      * @internal
      *
      * Set the instance's timezone from a string or object and add/subtract the offset difference.
      *
-     * @param DateTimeZone|string $tzName
+     * @param \DateTimeZone|string $tzName
      *
      * @return static
      */
     public function shiftTimezone($tzName)
     {
         $this->tzName = $tzName;
-
         return $this;
     }
-
     /**
      * Mapping of units and factors for cascading.
      *
@@ -283,19 +276,15 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return static::$cascadeFactors ?: static::getDefaultCascadeFactors();
     }
-
     protected static function getDefaultCascadeFactors(): array
     {
         return ['milliseconds' => [Carbon::MICROSECONDS_PER_MILLISECOND, 'microseconds'], 'seconds' => [Carbon::MILLISECONDS_PER_SECOND, 'milliseconds'], 'minutes' => [Carbon::SECONDS_PER_MINUTE, 'seconds'], 'hours' => [Carbon::MINUTES_PER_HOUR, 'minutes'], 'dayz' => [Carbon::HOURS_PER_DAY, 'hours'], 'weeks' => [Carbon::DAYS_PER_WEEK, 'dayz'], 'months' => [Carbon::WEEKS_PER_MONTH, 'weeks'], 'years' => [Carbon::MONTHS_PER_YEAR, 'months']];
     }
-
     private static function standardizeUnit($unit)
     {
         $unit = rtrim($unit, 'sz') . 's';
-
         return $unit === 'days' ? 'dayz' : $unit;
     }
-
     private static function getFlipCascadeFactors()
     {
         if (!self::$flipCascadeFactors) {
@@ -304,10 +293,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
                 self::$flipCascadeFactors[self::standardizeUnit($from)] = [self::standardizeUnit($to), $factor];
             }
         }
-
         return self::$flipCascadeFactors;
     }
-
     /**
      * Set default cascading factors for ->cascade() method.
      *
@@ -318,7 +305,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
         self::$flipCascadeFactors = null;
         static::$cascadeFactors = $cascadeFactors;
     }
-
     /**
      * This option allow you to opt-in for the Carbon 3 behavior where float
      * values will no longer be cast to integer (so truncated).
@@ -331,7 +317,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         self::$floatSettersEnabled = $floatSettersEnabled;
     }
-
     ///////////////////////////////////////////////////////////////////
     //////////////////////////// CONSTRUCTORS /////////////////////////
     ///////////////////////////////////////////////////////////////////
@@ -359,7 +344,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
             parent::__construct(static::getDateIntervalSpec($years));
             $this->f = $years->f;
             self::copyNegativeUnits($years, $this);
-
             return;
         }
         $spec = $years;
@@ -436,7 +420,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
             $this->f = $microseconds / Carbon::MICROSECONDS_PER_SECOND;
         }
     }
-
     /**
      * Returns the factor for a given source-to-target couple.
      *
@@ -455,13 +438,10 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
             if ($to === $target) {
                 return $factor;
             }
-
             return $factor * static::getFactor($to, $target);
         }
-
         return null;
     }
-
     /**
      * Returns the factor for a given source-to-target couple if set,
      * else try to find the appropriate constant as the factor, such as Carbon::DAYS_PER_WEEK.
@@ -478,10 +458,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
             return $factor;
         }
         static $defaults = ['month' => ['year' => Carbon::MONTHS_PER_YEAR], 'week' => ['month' => Carbon::WEEKS_PER_MONTH], 'day' => ['week' => Carbon::DAYS_PER_WEEK], 'hour' => ['day' => Carbon::HOURS_PER_DAY], 'minute' => ['hour' => Carbon::MINUTES_PER_HOUR], 'second' => ['minute' => Carbon::SECONDS_PER_MINUTE], 'millisecond' => ['second' => Carbon::MILLISECONDS_PER_SECOND], 'microsecond' => ['millisecond' => Carbon::MICROSECONDS_PER_MILLISECOND]];
-
         return $defaults[$source][$target] ?? null;
     }
-
     /**
      * Returns current config for days per week.
      *
@@ -491,7 +469,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return static::getFactor('dayz', 'weeks') ?: Carbon::DAYS_PER_WEEK;
     }
-
     /**
      * Returns current config for hours per day.
      *
@@ -501,7 +478,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return static::getFactor('hours', 'dayz') ?: Carbon::HOURS_PER_DAY;
     }
-
     /**
      * Returns current config for minutes per hour.
      *
@@ -511,7 +487,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return static::getFactor('minutes', 'hours') ?: Carbon::MINUTES_PER_HOUR;
     }
-
     /**
      * Returns current config for seconds per minute.
      *
@@ -521,7 +496,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return static::getFactor('seconds', 'minutes') ?: Carbon::SECONDS_PER_MINUTE;
     }
-
     /**
      * Returns current config for microseconds per second.
      *
@@ -531,7 +505,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return static::getFactor('milliseconds', 'seconds') ?: Carbon::MILLISECONDS_PER_SECOND;
     }
-
     /**
      * Returns current config for microseconds per second.
      *
@@ -541,7 +514,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return static::getFactor('microseconds', 'milliseconds') ?: Carbon::MICROSECONDS_PER_MILLISECOND;
     }
-
     /**
      * Create a new CarbonInterval instance from specific values.
      * This is an alias for the constructor that allows better fluent
@@ -565,7 +537,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return new static($years, $months, $weeks, $days, $hours, $minutes, $seconds, $microseconds);
     }
-
     /**
      * Parse a string into a new CarbonInterval object according to the specified format.
      *
@@ -577,7 +548,7 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
      * @param string      $format   Format of the $interval input string
      * @param string|null $interval Input string to convert into an interval
      *
-     * @throws ParseErrorException when the $interval cannot be parsed as an interval.
+     * @throws \WicketAcc\Carbon\Exceptions\ParseErrorException when the $interval cannot be parsed as an interval.
      *
      * @return static
      */
@@ -591,7 +562,7 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
             $interval[$index] = str_pad($interval[$index], $match[2] === 'v' ? 3 : 6, '0');
             $interval = implode($match[1], $interval);
         }
-        $interval ??= '';
+        $interval = $interval ?? '';
         for ($index = 0; $index < $length; $index++) {
             $expected = mb_substr($format, $index, 1);
             $nextCharacter = mb_substr($interval, 0, 1);
@@ -612,10 +583,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
         if ($interval !== '') {
             throw new ParseErrorException('end of string', $interval);
         }
-
         return $instance;
     }
-
     /**
      * Get a copy of the instance.
      *
@@ -626,10 +595,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
         $date = new static(0);
         $date->copyProperties($this);
         $date->step = $this->step;
-
         return $date;
     }
-
     /**
      * Get a copy of the instance.
      *
@@ -639,7 +606,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->copy();
     }
-
     /**
      * Provide static helpers to create instances.  Allows CarbonInterval::years(3).
      *
@@ -661,17 +627,14 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
                 return $interval->callMacro($method, $parameters);
             }) : $interval->{$method}(...$parameters);
             $interval->localStrictModeEnabled = $localStrictModeEnabled;
-
             return $result;
         } catch (BadFluentSetterException $exception) {
             if (Carbon::isStrictModeEnabled()) {
                 throw new BadFluentConstructorException($method, 0, $exception);
             }
-
             return null;
         }
     }
-
     /**
      * Evaluate the PHP generated by var_export() and recreate the exported CarbonInterval instance.
      *
@@ -685,10 +648,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
         /** @noinspection PhpVoidFunctionResultUsedInspection */
         /** @var DateInterval $dateInterval */
         $dateInterval = parent::__set_state($dump);
-
         return static::instance($dateInterval);
     }
-
     /**
      * Return the current context from inside a macro callee or a new one if static.
      *
@@ -698,7 +659,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return end(static::$macroContextStack) ?: new static(0);
     }
-
     /**
      * Creates a CarbonInterval from string.
      *
@@ -843,10 +803,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
                     throw new InvalidIntervalException(\sprintf('Invalid part %s in definition %s', $part, $intervalDefinition));
             }
         }
-
         return new static($years, $months, $weeks, $days, $hours, $minutes, $seconds, $milliseconds * Carbon::MICROSECONDS_PER_MILLISECOND + $microseconds);
     }
-
     /**
      * Creates a CarbonInterval from string using a different locale.
      *
@@ -859,7 +817,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return static::fromString(Carbon::translateTimeString($interval, $locale ?: static::getLocale(), 'en'));
     }
-
     private static function castIntervalToClass(DateInterval $interval, string $className, array $skip = [])
     {
         $mainClass = DateInterval::class;
@@ -875,10 +832,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
             self::copyStep($interval, $instance);
         }
         self::copyNegativeUnits($interval, $instance);
-
         return $instance;
     }
-
     private static function copyNegativeUnits(DateInterval $from, DateInterval $to): void
     {
         $to->invert = $from->invert;
@@ -888,12 +843,10 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
             }
         }
     }
-
     private static function copyStep(self $from, self $to): void
     {
         $to->setStep($from->getStep());
     }
-
     /**
      * Cast the current instance into the given class.
      *
@@ -905,7 +858,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return self::castIntervalToClass($this, $className);
     }
-
     /**
      * Create a CarbonInterval instance from a DateInterval one.  Can not instance
      * DateInterval objects created from DateTime::diff() as you can't externally
@@ -923,10 +875,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
         if ($skipCopy && $interval instanceof static) {
             return $interval;
         }
-
         return self::castIntervalToClass($interval, static::class, $skip);
     }
-
     /**
      * Make a CarbonInterval instance from given variable if possible.
      *
@@ -955,10 +905,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
         if (!\is_string($interval)) {
             return null;
         }
-
         return static::makeFromString($interval);
     }
-
     protected static function makeFromString(string $interval)
     {
         $interval = preg_replace('/\s+/', ' ', trim($interval));
@@ -975,20 +923,16 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
         } catch (DateMalformedIntervalStringException $e) {
             return null;
         }
-
         // @codeCoverageIgnoreEnd
         return !$interval || $interval->isEmpty() ? null : $interval;
     }
-
     protected function resolveInterval($interval)
     {
         if (!$interval instanceof self) {
             return self::make($interval);
         }
-
         return $interval;
     }
-
     /**
      * Sets up a DateInterval from the relative parts of the string.
      *
@@ -1005,10 +949,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
         if ($interval instanceof DateInterval) {
             $interval = static::instance($interval);
         }
-
         return $interval;
     }
-
     ///////////////////////////////////////////////////////////////////
     ///////////////////////// GETTERS AND SETTERS /////////////////////
     ///////////////////////////////////////////////////////////////////
@@ -1058,7 +1000,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
                 throw new UnknownGetterException($name);
         }
     }
-
     /**
      * Get a part of the CarbonInterval object.
      *
@@ -1072,7 +1013,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->get($name);
     }
-
     /**
      * Set a part of the CarbonInterval object.
      *
@@ -1148,10 +1088,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
                     $this->{$key} = $value;
             }
         }
-
         return $this;
     }
-
     /**
      * Set a part of the CarbonInterval object.
      *
@@ -1164,7 +1102,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         $this->set($name, $value);
     }
-
     /**
      * Allow setting of weeks and days to be cumulative.
      *
@@ -1176,10 +1113,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     public function weeksAndDays($weeks, $days)
     {
         $this->dayz = $weeks * static::getDaysPerWeek() + $days;
-
         return $this;
     }
-
     /**
      * Returns true if the interval is empty for each unit.
      *
@@ -1189,7 +1124,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->years === 0 && $this->months === 0 && $this->dayz === 0 && !$this->days && $this->hours === 0 && $this->minutes === 0 && $this->seconds === 0 && $this->microseconds === 0;
     }
-
     /**
      * Register a custom macro.
      *
@@ -1210,7 +1144,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         static::$macros[$name] = $macro;
     }
-
     /**
      * Register macros from a mixin object.
      *
@@ -1248,7 +1181,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         static::baseMixin($mixin);
     }
-
     /**
      * Check if macro is registered.
      *
@@ -1260,7 +1192,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return isset(static::$macros[$name]);
     }
-
     /**
      * Call given macro.
      *
@@ -1274,13 +1205,10 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
         $macro = static::$macros[$name];
         if ($macro instanceof Closure) {
             $boundMacro = @$macro->bindTo($this, static::class) ?: @$macro->bindTo(null, static::class);
-
             return ($boundMacro ?: $macro)(...$parameters);
         }
-
         return $macro(...$parameters);
     }
-
     /**
      * Allow fluent calls on the setters... CarbonInterval::years(3)->months(5)->day().
      *
@@ -1307,7 +1235,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
         }
         if (preg_match('/^(?<method>add|sub)(?<unit>[A-Z].*)$/', $method, $match)) {
             $value = $this->getMagicParameter($parameters, 0, Carbon::pluralUnit($match['unit']), 0);
-
             return $this->{$match['method']}($value, $match['unit']);
         }
         $value = $this->getMagicParameter($parameters, 0, Carbon::pluralUnit($method), 1);
@@ -1318,10 +1245,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
                 throw new BadFluentSetterException($method, 0, $exception);
             }
         }
-
         return $this;
     }
-
     protected function getForHumansInitialVariables($syntax, $short)
     {
         if (\is_array($syntax)) {
@@ -1333,10 +1258,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
         if (\is_bool($syntax)) {
             return ['short' => $syntax, 'syntax' => CarbonInterface::DIFF_ABSOLUTE];
         }
-
         return [];
     }
-
     /**
      * @param mixed $syntax
      * @param mixed $short
@@ -1386,7 +1309,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
                     return implode('', $list);
                 }
                 $end = array_pop($list);
-
                 return implode($default, $list) . $last . $end;
             };
         }
@@ -1400,10 +1322,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
             };
         }
         $interpolations = [':optional-space' => $optionalSpace];
-
         return [$syntax, $short, $parts, $options, $join, $aUnit, $altNumbers, $interpolations, $minimumUnit, $skip];
     }
-
     protected static function getRoundingMethodFromOptions(int $options): ?string
     {
         if ($options & CarbonInterface::ROUND) {
@@ -1415,10 +1335,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
         if ($options & CarbonInterface::FLOOR) {
             return 'floor';
         }
-
         return null;
     }
-
     /**
      * Returns interval values as an array where key are the unit names and values the counts.
      *
@@ -1428,7 +1346,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return ['years' => $this->years, 'months' => $this->months, 'weeks' => $this->weeks, 'days' => $this->daysExcludeWeeks, 'hours' => $this->hours, 'minutes' => $this->minutes, 'seconds' => $this->seconds, 'microseconds' => $this->microseconds];
     }
-
     /**
      * Returns interval non-zero values as an array where key are the unit names and values the counts.
      *
@@ -1438,7 +1355,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return array_filter($this->toArray(), 'intval');
     }
-
     /**
      * Returns interval values as an array where key are the unit names and values the counts
      * from the biggest non-zero one the the smallest non-zero one.
@@ -1467,10 +1383,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
                 $record = false;
             }
         }
-
         return $values;
     }
-
     /**
      * Get the current interval in a human readable format in the current locale.
      *
@@ -1532,7 +1446,7 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
         $translator = $this->getLocalTranslator();
         $handleDeclensions = function ($unit, $count, $index = 0, $parts = 1) use ($interpolations, $transId, $translator, $altNumbers, $absolute, &$declensionMode) {
             if (!$absolute) {
-                $declensionMode ??= $this->translate($transId . '_mode');
+                $declensionMode = $declensionMode ?? $this->translate($transId . '_mode');
                 if ($this->needsDeclension($declensionMode, $index, $parts)) {
                     // Some languages have special pluralization for past and future tense.
                     $key = $unit . '_' . $transId;
@@ -1546,7 +1460,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
             if ($result !== $unit) {
                 return $result;
             }
-
             return null;
         };
         $intervalValues = $this;
@@ -1588,7 +1501,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
             if (!$absolute) {
                 return $handleDeclensions($unitData['unit'], $count, $index, $parts);
             }
-
             return $this->translate($unitData['unit'], $interpolations, $count, $translator, $altNumbers);
         };
         $fallbackUnit = ['second', 's'];
@@ -1655,10 +1567,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
             $time = ($aTime ?: $handleDeclensions($unit, $count)) ?: $time;
         }
         $time = [':time' => $time];
-
         return $this->translate($transId, array_merge($time, $interpolations, $time), null, $translator);
     }
-
     /**
      * Format the instance as a string using the forHumans() function.
      *
@@ -1675,10 +1585,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
         if ($format instanceof Closure) {
             return $format($this);
         }
-
         return $this->format($format);
     }
-
     /**
      * Return native DateInterval PHP object matching the current instance.
      *
@@ -1693,7 +1601,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return self::castIntervalToClass($this, DateInterval::class);
     }
-
     /**
      * Convert the interval to a CarbonPeriod.
      *
@@ -1709,10 +1616,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
                 array_unshift($params, $tz);
             }
         }
-
         return CarbonPeriod::create($this, ...$params);
     }
-
     /**
      * Invert the interval.
      *
@@ -1724,10 +1629,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     public function invert($inverted = null)
     {
         $this->invert = (\func_num_args() === 0 ? !$this->invert : $inverted) ? 1 : 0;
-
         return $this;
     }
-
     protected function solveNegativeInterval()
     {
         if (!$this->isEmpty() && $this->years <= 0 && $this->months <= 0 && $this->dayz <= 0 && $this->hours <= 0 && $this->minutes <= 0 && $this->seconds <= 0 && $this->microseconds <= 0) {
@@ -1740,10 +1643,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
             $this->microseconds *= -1;
             $this->invert();
         }
-
         return $this;
     }
-
     /**
      * Add the passed interval to the current instance.
      *
@@ -1777,10 +1678,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
         $this->seconds += $interval->s * $sign;
         $this->microseconds += $interval->microseconds * $sign;
         $this->solveNegativeInterval();
-
         return $this;
     }
-
     /**
      * Subtract the passed interval to the current instance.
      *
@@ -1794,10 +1693,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
         if (is_numeric($unit)) {
             [$value, $unit] = [$unit, $value];
         }
-
         return $this->add($unit, -(float) $value);
     }
-
     /**
      * Subtract the passed interval to the current instance.
      *
@@ -1810,7 +1707,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->sub($unit, $value);
     }
-
     /**
      * Add given parameters to the current interval.
      *
@@ -1829,7 +1725,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->add("\n            {$years} years {$months} months {$weeks} weeks {$days} days\n            {$hours} hours {$minutes} minutes {$seconds} seconds {$microseconds} microseconds\n        ");
     }
-
     /**
      * Add given parameters to the current interval.
      *
@@ -1848,7 +1743,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->sub("\n            {$years} years {$months} months {$weeks} weeks {$days} days\n            {$hours} hours {$minutes} minutes {$seconds} seconds {$microseconds} microseconds\n        ");
     }
-
     /**
      * Multiply current instance given number of times. times() is naive, it multiplies each unit
      * (so day can be greater than 31, hour can be greater than 23, etc.) and the result is rounded
@@ -1877,10 +1771,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
         $this->minutes = (int) round($this->minutes * $factor);
         $this->seconds = (int) round($this->seconds * $factor);
         $this->microseconds = (int) round($this->microseconds * $factor);
-
         return $this;
     }
-
     /**
      * Divide current instance by a given divider. shares() is naive, it divides each unit separately
      * and the result is rounded for each unit. So 5 hours and 20 minutes shared by 3 becomes 2 hours
@@ -1900,7 +1792,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->times(1 / $divider);
     }
-
     protected function copyProperties(self $interval, $ignoreSign = false)
     {
         $this->years = $interval->years;
@@ -1913,10 +1804,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
         if (!$ignoreSign) {
             $this->invert = $interval->invert;
         }
-
         return $this;
     }
-
     /**
      * Multiply and cascade current instance by a given factor.
      *
@@ -1935,10 +1824,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
         if ($yearPart) {
             $this->years -= $yearPart / $factor;
         }
-
         return $this->copyProperties(static::create($yearPart)->microseconds(abs($this->totalMicroseconds) * $factor)->cascade(), true);
     }
-
     /**
      * Divide and cascade current instance by a given divider.
      *
@@ -1950,7 +1837,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->multiply(1 / $divider);
     }
-
     /**
      * Get the interval_spec string of a date interval.
      *
@@ -1979,10 +1865,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
                 $specString .= $value . $key;
             }
         }
-
         return $specString === static::PERIOD_PREFIX ? 'PT0S' : $specString;
     }
-
     /**
      * Get the interval_spec string.
      *
@@ -1992,7 +1876,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return static::getDateIntervalSpec($this, $microseconds);
     }
-
     /**
      * Comparing 2 date intervals.
      *
@@ -2012,10 +1895,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
         if ($current > $passed) {
             return 1;
         }
-
         return 0;
     }
-
     /**
      * Comparing with passed interval.
      *
@@ -2027,14 +1908,12 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return static::compareDateIntervals($this, $interval);
     }
-
     private function invertCascade(array $values)
     {
         return $this->set(array_map(function ($value) {
             return -$value;
         }, $values))->doCascade(true)->invert();
     }
-
     private function doCascade(bool $deep)
     {
         $originalData = $this->toArray();
@@ -2084,10 +1963,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
                 }
             }
         }
-
         return $this->set($newData)->solveNegativeInterval();
     }
-
     /**
      * Convert overflowed values into bigger units.
      *
@@ -2097,7 +1974,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->doCascade(false);
     }
-
     public function hasNegativeValues(): bool
     {
         foreach ($this->toArray() as $value) {
@@ -2105,10 +1981,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
                 return true;
             }
         }
-
         return false;
     }
-
     public function hasPositiveValues(): bool
     {
         foreach ($this->toArray() as $value) {
@@ -2116,10 +1990,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
                 return true;
             }
         }
-
         return false;
     }
-
     /**
      * Get amount of given unit equivalent to the interval.
      *
@@ -2185,13 +2057,11 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
         if ($unit === 'weeks') {
             $result /= $daysPerWeek;
         }
-
         // Cast as int numbers with no decimal part
         return fmod($result, 1) === 0.0 ? (int) $result : $result;
     }
-
     /**
-     * Determines if the instance is equal to another.
+     * Determines if the instance is equal to another
      *
      * @param \CarbonInterval|DateInterval|mixed $interval
      *
@@ -2203,9 +2073,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->equalTo($interval);
     }
-
     /**
-     * Determines if the instance is equal to another.
+     * Determines if the instance is equal to another
      *
      * @param \CarbonInterval|DateInterval|mixed $interval
      *
@@ -2214,12 +2083,10 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     public function equalTo($interval): bool
     {
         $interval = $this->resolveInterval($interval);
-
         return $interval !== null && $this->totalMicroseconds === $interval->totalMicroseconds;
     }
-
     /**
-     * Determines if the instance is not equal to another.
+     * Determines if the instance is not equal to another
      *
      * @param \CarbonInterval|DateInterval|mixed $interval
      *
@@ -2231,9 +2098,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->notEqualTo($interval);
     }
-
     /**
-     * Determines if the instance is not equal to another.
+     * Determines if the instance is not equal to another
      *
      * @param \CarbonInterval|DateInterval|mixed $interval
      *
@@ -2243,9 +2109,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return !$this->eq($interval);
     }
-
     /**
-     * Determines if the instance is greater (longer) than another.
+     * Determines if the instance is greater (longer) than another
      *
      * @param \CarbonInterval|DateInterval|mixed $interval
      *
@@ -2257,9 +2122,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->greaterThan($interval);
     }
-
     /**
-     * Determines if the instance is greater (longer) than another.
+     * Determines if the instance is greater (longer) than another
      *
      * @param \CarbonInterval|DateInterval|mixed $interval
      *
@@ -2268,12 +2132,10 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     public function greaterThan($interval): bool
     {
         $interval = $this->resolveInterval($interval);
-
         return $interval === null || $this->totalMicroseconds > $interval->totalMicroseconds;
     }
-
     /**
-     * Determines if the instance is greater (longer) than or equal to another.
+     * Determines if the instance is greater (longer) than or equal to another
      *
      * @param \CarbonInterval|DateInterval|mixed $interval
      *
@@ -2285,9 +2147,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->greaterThanOrEqualTo($interval);
     }
-
     /**
-     * Determines if the instance is greater (longer) than or equal to another.
+     * Determines if the instance is greater (longer) than or equal to another
      *
      * @param \CarbonInterval|DateInterval|mixed $interval
      *
@@ -2297,9 +2158,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->greaterThan($interval) || $this->equalTo($interval);
     }
-
     /**
-     * Determines if the instance is less (shorter) than another.
+     * Determines if the instance is less (shorter) than another
      *
      * @param \CarbonInterval|DateInterval|mixed $interval
      *
@@ -2311,9 +2171,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->lessThan($interval);
     }
-
     /**
-     * Determines if the instance is less (shorter) than another.
+     * Determines if the instance is less (shorter) than another
      *
      * @param \CarbonInterval|DateInterval|mixed $interval
      *
@@ -2322,12 +2181,10 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     public function lessThan($interval): bool
     {
         $interval = $this->resolveInterval($interval);
-
         return $interval !== null && $this->totalMicroseconds < $interval->totalMicroseconds;
     }
-
     /**
-     * Determines if the instance is less (shorter) than or equal to another.
+     * Determines if the instance is less (shorter) than or equal to another
      *
      * @param \CarbonInterval|DateInterval|mixed $interval
      *
@@ -2339,9 +2196,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->lessThanOrEqualTo($interval);
     }
-
     /**
-     * Determines if the instance is less (shorter) than or equal to another.
+     * Determines if the instance is less (shorter) than or equal to another
      *
      * @param \CarbonInterval|DateInterval|mixed $interval
      *
@@ -2351,7 +2207,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->lessThan($interval) || $this->equalTo($interval);
     }
-
     /**
      * Determines if the instance is between two others.
      *
@@ -2377,7 +2232,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $equal ? $this->greaterThanOrEqualTo($interval1) && $this->lessThanOrEqualTo($interval2) : $this->greaterThan($interval1) && $this->lessThan($interval2);
     }
-
     /**
      * Determines if the instance is between two others, bounds excluded.
      *
@@ -2397,7 +2251,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->between($interval1, $interval2, true);
     }
-
     /**
      * Determines if the instance is between two others, bounds excluded.
      *
@@ -2417,9 +2270,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->between($interval1, $interval2, false);
     }
-
     /**
-     * Determines if the instance is between two others.
+     * Determines if the instance is between two others
      *
      * @example
      * ```
@@ -2439,7 +2291,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->between($interval1, $interval2, $equal);
     }
-
     /**
      * Round the current instance at the given unit with given precision if specified and the given function.
      *
@@ -2456,7 +2307,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
         if (static::getCascadeFactors() !== static::getDefaultCascadeFactors()) {
             $value = $function($this->total($unit) / $precision) * $precision;
             $inverted = $value < 0;
-
             return $this->copyProperties(self::fromString(number_format(abs($value), 12, '.', '') . ' ' . $unit)->invert($inverted)->cascade());
         }
         $base = CarbonImmutable::parse('2000-01-01 00:00:00', 'UTC')->roundUnit($unit, $precision, $function);
@@ -2466,10 +2316,8 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
             $next = $base->sub($this);
         }
         $this->copyProperties($next->roundUnit($unit, $precision, $function)->diffAsCarbonInterval($base));
-
         return $this->invert($inverted);
     }
-
     /**
      * Truncate the current instance at the given unit with given precision if specified.
      *
@@ -2484,7 +2332,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->roundUnit($unit, $precision, 'floor');
     }
-
     /**
      * Ceil the current instance at the given unit with given precision if specified.
      *
@@ -2499,7 +2346,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->roundUnit($unit, $precision, 'ceil');
     }
-
     /**
      * Round the current instance second with given precision if specified.
      *
@@ -2514,7 +2360,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->roundWith($precision, $function);
     }
-
     /**
      * Round the current instance second with given precision if specified.
      *
@@ -2528,7 +2373,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->round($precision, 'floor');
     }
-
     /**
      * Ceil the current instance second with given precision if specified.
      *
@@ -2542,7 +2386,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
     {
         return $this->round($precision, 'ceil');
     }
-
     private function needsDeclension(string $mode, int $index, int $parts): bool
     {
         switch ($mode) {
@@ -2552,7 +2395,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
                 return true;
         }
     }
-
     private function checkIntegerValue(string $name, $value)
     {
         if (\is_int($value)) {
@@ -2567,7 +2409,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
             @trigger_error("Since 2.70.0, it's deprecated to pass {$type} value for {$name}.\n" . "It's truncated when stored as an integer interval unit.\n" . "From 3.0.0, decimal part will no longer be truncated and will be cascaded to smaller units.\n" . "- To maintain the current behavior, use explicit cast: {$name}((int) \$value)\n" . "- To adopt the new behavior globally, call CarbonInterval::enableFloatSetters()\n", \E_USER_DEPRECATED);
         }
     }
-
     /**
      * Throw an exception if precision loss when storing the given value as an integer would be >= 1.0.
      */
@@ -2577,7 +2418,6 @@ class CarbonInterval extends DateInterval implements CarbonConverterInterface
             throw new OutOfRangeException($name, -0x7fffffffffffffff, 0x7fffffffffffffff, $value);
         }
     }
-
     private function handleDecimalPart(string $unit, $value, $integerValue)
     {
         if (self::$floatSettersEnabled) {

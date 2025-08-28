@@ -7,7 +7,7 @@ namespace WicketAcc\GuzzleHttp\Psr7;
 use WicketAcc\Psr\Http\Message\StreamInterface;
 
 /**
- * Stream decorator trait.
+ * Stream decorator trait
  *
  * @property StreamInterface $stream
  */
@@ -62,7 +62,7 @@ trait StreamDecoratorTrait
     }
 
     /**
-     * Allow decorators to implement custom methods.
+     * Allow decorators to implement custom methods
      *
      * @return mixed
      */

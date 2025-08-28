@@ -109,7 +109,7 @@ interface Application extends Container
     /**
      * Get an instance of the maintenance mode manager implementation.
      *
-     * @return MaintenanceMode
+     * @return \WicketAcc\Illuminate\Contracts\Foundation\MaintenanceMode
      */
     public function maintenanceMode();
 
@@ -241,7 +241,7 @@ interface Application extends Container
      * Register a terminating callback with the application.
      *
      * @param  callable|string  $callback
-     * @return Application
+     * @return \WicketAcc\Illuminate\Contracts\Foundation\Application
      */
     public function terminating($callback);
 

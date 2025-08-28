@@ -16,4 +16,6 @@ namespace WicketAcc\Symfony\Component\Translation\Exception;
  *
  * @author Abdellatif Ait boudad <a.aitboudad@gmail.com>
  */
-class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface {}
+class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface
+{
+}

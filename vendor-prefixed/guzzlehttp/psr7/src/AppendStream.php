@@ -53,7 +53,7 @@ final class AppendStream implements StreamInterface
     }
 
     /**
-     * Add a stream to the AppendStream.
+     * Add a stream to the AppendStream
      *
      * @param StreamInterface $stream Stream to append. Must be readable.
      *
@@ -169,7 +169,7 @@ final class AppendStream implements StreamInterface
                 $stream->rewind();
             } catch (\Exception $e) {
                 throw new \RuntimeException('Unable to seek stream '
-                    . $i . ' of the AppendStream', 0, $e);
+                    .$i.' of the AppendStream', 0, $e);
             }
         }
 
@@ -199,7 +199,7 @@ final class AppendStream implements StreamInterface
                 if ($this->current === $total) {
                     break;
                 }
-                $this->current++;
+                ++$this->current;
             }
 
             $result = $this->streams[$this->current]->read($remaining);

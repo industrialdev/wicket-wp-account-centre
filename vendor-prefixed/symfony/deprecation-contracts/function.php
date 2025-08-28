@@ -22,6 +22,6 @@ if (!function_exists('wicketacc_trigger_deprecation')) {
      */
     function wicketacc_trigger_deprecation(string $package, string $version, string $message, mixed ...$args): void
     {
-        @trigger_error(($package || $version ? "Since $package $version: " : '') . ($args ? vsprintf($message, $args) : $message), \E_USER_DEPRECATED);
+        @trigger_error(($package || $version ? "Since $package $version: " : '').($args ? vsprintf($message, $args) : $message), \E_USER_DEPRECATED);
     }
 }

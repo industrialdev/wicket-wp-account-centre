@@ -3,9 +3,9 @@
 namespace WicketAcc\Illuminate\Support;
 
 use ArrayAccess;
-use JsonSerializable;
 use WicketAcc\Illuminate\Contracts\Support\Arrayable;
 use WicketAcc\Illuminate\Contracts\Support\Jsonable;
+use JsonSerializable;
 
 /**
  * @template TKey of array-key

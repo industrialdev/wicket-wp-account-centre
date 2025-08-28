@@ -11,13 +11,13 @@
 
 namespace WicketAcc\Carbon\Traits;
 
+use WicketAcc\Carbon\CarbonInterface;
+use WicketAcc\Carbon\CarbonTimeZone;
 use Closure;
 use DateTimeImmutable;
 use DateTimeInterface;
 use InvalidArgumentException;
 use Throwable;
-use WicketAcc\Carbon\CarbonInterface;
-use WicketAcc\Carbon\CarbonTimeZone;
 
 trait Test
 {
@@ -215,10 +215,10 @@ trait Test
             $suggestion = @CarbonTimeZone::create($timezone)->toRegionName($date);
 
             throw new InvalidArgumentException(
-                "Timezone ID '$timezone' is invalid" .
-                ($suggestion && $suggestion !== $timezone ? ", did you mean '$suggestion'?" : '.') . "\n" .
-                "It must be one of the IDs from DateTimeZone::listIdentifiers(),\n" .
-                'For the record, hours/minutes offset are relevant only for a particular moment, ' .
+                "Timezone ID '$timezone' is invalid".
+                ($suggestion && $suggestion !== $timezone ? ", did you mean '$suggestion'?" : '.')."\n".
+                "It must be one of the IDs from DateTimeZone::listIdentifiers(),\n".
+                'For the record, hours/minutes offset are relevant only for a particular moment, '.
                 'but not as a default timezone.',
                 0,
                 $previous

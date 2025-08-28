@@ -49,7 +49,7 @@ interface ResponseInterface extends MessageInterface
      * @return static
      * @throws \InvalidArgumentException For invalid status code arguments.
      */
-    public function withStatus(int $code, string $reasonPhrase = ''): self;
+    public function withStatus(int $code, string $reasonPhrase = ''): ResponseInterface;
 
     /**
      * Gets the response reason phrase associated with the status code.

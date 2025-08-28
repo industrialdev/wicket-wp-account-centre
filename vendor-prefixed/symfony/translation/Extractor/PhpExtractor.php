@@ -186,11 +186,11 @@ class PhpExtractor extends AbstractFileExtractor implements ExtractorInterface
             $t = $tokenIterator->current();
 
             if ('[' === $t[0] || '(' === $t[0]) {
-                $openBraces++;
+                ++$openBraces;
             }
 
             if (']' === $t[0] || ')' === $t[0]) {
-                $openBraces--;
+                --$openBraces;
             }
 
             if ((0 === $openBraces && ',' === $t[0]) || (-1 === $openBraces && ')' === $t[0])) {
@@ -268,7 +268,7 @@ class PhpExtractor extends AbstractFileExtractor implements ExtractorInterface
     {
         $tokenIterator = new \ArrayIterator($tokens);
 
-        for ($key = 0; $key < $tokenIterator->count(); $key++) {
+        for ($key = 0; $key < $tokenIterator->count(); ++$key) {
             foreach ($this->sequences as $sequence) {
                 $message = '';
                 $domain = 'messages';
@@ -301,10 +301,10 @@ class PhpExtractor extends AbstractFileExtractor implements ExtractorInterface
                 }
 
                 if ($message) {
-                    $catalog->set($message, $this->prefix . $message, $domain);
+                    $catalog->set($message, $this->prefix.$message, $domain);
                     $metadata = $catalog->getMetadata($message, $domain) ?? [];
                     $normalizedFilename = preg_replace('{[\\\\/]+}', '/', $filename);
-                    $metadata['sources'][] = $normalizedFilename . ':' . $tokens[$key][2];
+                    $metadata['sources'][] = $normalizedFilename.':'.$tokens[$key][2];
                     $catalog->setMetadata($message, $metadata, $domain);
                     break;
                 }

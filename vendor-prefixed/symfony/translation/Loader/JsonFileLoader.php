@@ -27,7 +27,7 @@ class JsonFileLoader extends FileLoader
             $messages = json_decode($data, true);
 
             if (0 < $errorCode = json_last_error()) {
-                throw new InvalidResourceException('Error parsing JSON: ' . $this->getJSONErrorMessage($errorCode));
+                throw new InvalidResourceException('Error parsing JSON: '.$this->getJSONErrorMessage($errorCode));
             }
         }
 

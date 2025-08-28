@@ -16,4 +16,6 @@ namespace WicketAcc\Symfony\Component\Translation\Exception;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class InvalidResourceException extends \InvalidArgumentException implements ExceptionInterface {}
+class InvalidResourceException extends \InvalidArgumentException implements ExceptionInterface
+{
+}

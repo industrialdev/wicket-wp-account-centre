@@ -8,15 +8,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace WicketAcc\Carbon;
 
+use WicketAcc\Carbon\Traits\Date;
+use WicketAcc\Carbon\Traits\DeprecatedProperties;
 use DateTime;
 use DateTimeInterface;
 use DateTimeZone;
-use WicketAcc\Carbon\Traits\Date;
-use WicketAcc\Carbon\Traits\DeprecatedProperties;
-
 /**
  * A simple API extension for DateTime.
  *
@@ -510,7 +508,6 @@ use WicketAcc\Carbon\Traits\DeprecatedProperties;
 class Carbon extends DateTime implements CarbonInterface
 {
     use Date;
-
     /**
      * Returns true if the current class/instance is mutable.
      *

@@ -53,19 +53,19 @@ abstract class FileDumper implements DumperInterface
 
         // save a file for each domain
         foreach ($messages->getDomains() as $domain) {
-            $fullpath = $options['path'] . '/' . $this->getRelativePath($domain, $messages->getLocale());
+            $fullpath = $options['path'].'/'.$this->getRelativePath($domain, $messages->getLocale());
             if (!file_exists($fullpath)) {
                 $directory = \dirname($fullpath);
-                if (!file_exists($directory) && !@mkdir($directory, 0o777, true)) {
+                if (!file_exists($directory) && !@mkdir($directory, 0777, true)) {
                     throw new RuntimeException(\sprintf('Unable to create directory "%s".', $directory));
                 }
             }
 
-            $intlDomain = $domain . MessageCatalogue::INTL_DOMAIN_SUFFIX;
+            $intlDomain = $domain.MessageCatalogue::INTL_DOMAIN_SUFFIX;
             $intlMessages = $messages->all($intlDomain);
 
             if ($intlMessages) {
-                $intlPath = $options['path'] . '/' . $this->getRelativePath($intlDomain, $messages->getLocale());
+                $intlPath = $options['path'].'/'.$this->getRelativePath($intlDomain, $messages->getLocale());
                 file_put_contents($intlPath, $this->formatCatalogue($messages, $intlDomain, $options));
 
                 $messages->replace([], $intlDomain);

@@ -11,9 +11,9 @@
 
 namespace WicketAcc\Carbon\Traits;
 
+use WicketAcc\Carbon\Exceptions\InvalidFormatException;
 use ReturnTypeWillChange;
 use Throwable;
-use WicketAcc\Carbon\Exceptions\InvalidFormatException;
 
 /**
  * Trait Serialization.
@@ -285,7 +285,7 @@ trait Serialization
      * foreach ($date as $_) {}
      * serializer($date)
      * var_export($date)
-     * get_object_vars($date).
+     * get_object_vars($date)
      */
     public function cleanupDumpProperties()
     {

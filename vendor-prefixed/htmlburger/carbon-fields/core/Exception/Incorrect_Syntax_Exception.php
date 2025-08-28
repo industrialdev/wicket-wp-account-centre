@@ -2,45 +2,43 @@
 
 namespace Carbon_Fields\Exception;
 
-class Incorrect_Syntax_Exception extends \Exception
-{
-    public static $errors = [];
-    public static $throw_errors = WP_DEBUG;
+class Incorrect_Syntax_Exception extends \Exception {
 
-    /**
-     * Throw an exception when WP_DEBUG is enabled, and show a friendly admin notice otherwise.
-     *
-     * @param string $message
-     * @param int    $code    (optional)
-     */
-    public static function raise($message, $code = 0)
-    {
-        if (empty(static::$errors)) {
-            add_action('admin_notices', [__NAMESPACE__ . '\\Incorrect_Syntax_Exception', 'print_errors']);
-            add_action('network_admin_notices', [__NAMESPACE__ . '\\Incorrect_Syntax_Exception', 'print_errors']);
-        }
+	public static $errors = array();
+	public static $throw_errors = WP_DEBUG;
 
-        $exception = new self($message, $code);
+	/**
+	 * Throw an exception when WP_DEBUG is enabled, and show a friendly admin notice otherwise
+	 *
+	 * @param string $message
+	 * @param int    $code    (optional)
+	 */
+	public static function raise( $message, $code = 0 ) {
+		if ( empty( static::$errors ) ) {
+			add_action( 'admin_notices', array( __NAMESPACE__ . '\\Incorrect_Syntax_Exception', 'print_errors' ) );
+			add_action( 'network_admin_notices', array( __NAMESPACE__ . '\\Incorrect_Syntax_Exception', 'print_errors' ) );
+		}
 
-        if (static::$throw_errors) {
-            throw $exception;
-        } else {
-            static::$errors[] = $exception;
-        }
-    }
+		$exception = new self( $message, $code );
 
-    public static function print_errors()
-    {
-        $hideErrorsCookieName = 'crbErrHide';
+		if ( static::$throw_errors ) {
+			throw $exception;
+		} else {
+			static::$errors[] = $exception;
+		}
+	}
 
-        // Disable cookies
-        if (isset($_COOKIE[$hideErrorsCookieName])) {
-            return;
-        }
+	public static function print_errors() {
+		$hideErrorsCookieName = 'crbErrHide';
 
-        $errors = static::$errors;
-        $plural = count($errors) === 1 ? '' : 's';
+		// Disable cookies
+		if ( isset( $_COOKIE[ $hideErrorsCookieName ] ) ) {
+			return;
+		}
 
-        include \Carbon_Fields\DIR . '/templates/Exception/incorrect-syntax.php';
-    }
+		$errors = static::$errors;
+		$plural = count( $errors ) === 1 ? '' : 's';
+
+		include \Carbon_Fields\DIR . '/templates/Exception/incorrect-syntax.php';
+	}
 }

@@ -51,7 +51,7 @@ interface StreamInterface
     public function getSize(): ?int;
 
     /**
-     * Returns the current position of the file read/write pointer.
+     * Returns the current position of the file read/write pointer
      *
      * @return int Position of the file pointer
      * @throws \RuntimeException on error.
@@ -134,7 +134,7 @@ interface StreamInterface
     public function read(int $length): string;
 
     /**
-     * Returns the remaining contents in a string.
+     * Returns the remaining contents in a string
      *
      * @return string
      * @throws \RuntimeException if unable to read or an error occurs while

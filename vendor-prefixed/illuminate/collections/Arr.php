@@ -4,8 +4,8 @@ namespace WicketAcc\Illuminate\Support;
 
 use ArgumentCountError;
 use ArrayAccess;
-use InvalidArgumentException;
 use WicketAcc\Illuminate\Support\Traits\Macroable;
+use InvalidArgumentException;
 
 class Arr
 {
@@ -52,7 +52,7 @@ class Arr
         foreach ($array as $values) {
             if ($values instanceof Collection) {
                 $values = $values->all();
-            } elseif (!is_array($values)) {
+            } elseif (! is_array($values)) {
                 continue;
             }
 
@@ -112,10 +112,10 @@ class Arr
         $results = [];
 
         foreach ($array as $key => $value) {
-            if (is_array($value) && !empty($value)) {
-                $results = array_merge($results, static::dot($value, $prepend . $key . '.'));
+            if (is_array($value) && ! empty($value)) {
+                $results = array_merge($results, static::dot($value, $prepend.$key.'.'));
             } else {
-                $results[$prepend . $key] = $value;
+                $results[$prepend.$key] = $value;
             }
         }
 
@@ -156,7 +156,7 @@ class Arr
     /**
      * Determine if the given key exists in the provided array.
      *
-     * @param  ArrayAccess|array  $array
+     * @param  \ArrayAccess|array  $array
      * @param  string|int  $key
      * @return bool
      */
@@ -255,7 +255,7 @@ class Arr
         foreach ($array as $item) {
             $item = $item instanceof Collection ? $item->all() : $item;
 
-            if (!is_array($item)) {
+            if (! is_array($item)) {
                 $result[] = $item;
             } else {
                 $values = $depth === 1
@@ -318,14 +318,14 @@ class Arr
     /**
      * Get an item from an array using "dot" notation.
      *
-     * @param  ArrayAccess|array  $array
+     * @param  \ArrayAccess|array  $array
      * @param  string|int|null  $key
      * @param  mixed  $default
      * @return mixed
      */
     public static function get($array, $key, $default = null)
     {
-        if (!static::accessible($array)) {
+        if (! static::accessible($array)) {
             return wicketacc_value($default);
         }
 
@@ -337,7 +337,7 @@ class Arr
             return $array[$key];
         }
 
-        if (!str_contains($key, '.')) {
+        if (! str_contains($key, '.')) {
             return $array[$key] ?? wicketacc_value($default);
         }
 
@@ -355,7 +355,7 @@ class Arr
     /**
      * Check if an item or items exist in an array using "dot" notation.
      *
-     * @param  ArrayAccess|array  $array
+     * @param  \ArrayAccess|array  $array
      * @param  string|array  $keys
      * @return bool
      */
@@ -363,7 +363,7 @@ class Arr
     {
         $keys = (array) $keys;
 
-        if (!$array || $keys === []) {
+        if (! $array || $keys === []) {
             return false;
         }
 
@@ -389,7 +389,7 @@ class Arr
     /**
      * Determine if any of the keys exist in an array using "dot" notation.
      *
-     * @param  ArrayAccess|array  $array
+     * @param  \ArrayAccess|array  $array
      * @param  string|array  $keys
      * @return bool
      */
@@ -401,7 +401,7 @@ class Arr
 
         $keys = (array) $keys;
 
-        if (!$array) {
+        if (! $array) {
             return false;
         }
 
@@ -428,7 +428,7 @@ class Arr
      */
     public static function isAssoc(array $array)
     {
-        return !array_is_list($array);
+        return ! array_is_list($array);
     }
 
     /**
@@ -468,7 +468,7 @@ class Arr
 
         $finalItem = array_pop($array);
 
-        return implode($glue, $array) . $finalGlue . $finalItem;
+        return implode($glue, $array).$finalGlue.$finalItem;
     }
 
     /**
@@ -492,7 +492,7 @@ class Arr
      */
     public static function prependKeysWith($array, $prependWith)
     {
-        return static::mapWithKeys($array, fn ($item, $key) => [$prependWith . $key => $item]);
+        return static::mapWithKeys($array, fn ($item, $key) => [$prependWith.$key => $item]);
     }
 
     /**
@@ -689,7 +689,7 @@ class Arr
      * @param  bool  $preserveKeys
      * @return mixed
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public static function random($array, $number = null, $preserveKeys = false)
     {
@@ -756,7 +756,7 @@ class Arr
             // If the key doesn't exist at this depth, we will just create an empty array
             // to hold the next value, allowing us to create the arrays to hold final
             // values at the correct depth. Then we'll keep digging into the array.
-            if (!isset($array[$key]) || !is_array($array[$key])) {
+            if (! isset($array[$key]) || ! is_array($array[$key])) {
                 $array[$key] = [];
             }
 
@@ -828,7 +828,7 @@ class Arr
             }
         }
 
-        if (!array_is_list($array)) {
+        if (! array_is_list($array)) {
             $descending
                     ? krsort($array, $options)
                     : ksort($array, $options);
@@ -919,7 +919,7 @@ class Arr
      */
     public static function whereNotNull($array)
     {
-        return static::where($array, fn ($value) => !is_null($value));
+        return static::where($array, fn ($value) => ! is_null($value));
     }
 
     /**

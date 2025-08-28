@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace WicketAcc\GuzzleHttp\Psr7;
 
 use InvalidArgumentException;
-use RuntimeException;
 use WicketAcc\Psr\Http\Message\StreamInterface;
 use WicketAcc\Psr\Http\Message\UploadedFileInterface;
+use RuntimeException;
 
 class UploadedFile implements UploadedFileInterface
 {
@@ -78,7 +78,7 @@ class UploadedFile implements UploadedFileInterface
     }
 
     /**
-     * Depending on the value set file or stream variable.
+     * Depending on the value set file or stream variable
      *
      * @param StreamInterface|string|resource $streamOrFile
      *
@@ -104,7 +104,7 @@ class UploadedFile implements UploadedFileInterface
      */
     private function setError(int $error): void
     {
-        if (!isset(self::ERROR_MAP[$error])) {
+        if (!isset(UploadedFile::ERROR_MAP[$error])) {
             throw new InvalidArgumentException(
                 'Invalid error status for UploadedFile'
             );
@@ -119,7 +119,7 @@ class UploadedFile implements UploadedFileInterface
     }
 
     /**
-     * Return true if there is no upload error.
+     * Return true if there is no upload error
      */
     private function isOk(): bool
     {

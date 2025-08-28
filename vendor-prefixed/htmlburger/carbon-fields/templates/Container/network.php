@@ -1,4 +1,3 @@
 <?php
-
 $container_css_class = 'network';
-require 'common/options-page.php';
+require( 'common/options-page.php' );

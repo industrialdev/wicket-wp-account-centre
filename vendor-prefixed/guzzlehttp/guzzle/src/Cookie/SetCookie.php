@@ -3,7 +3,7 @@
 namespace WicketAcc\GuzzleHttp\Cookie;
 
 /**
- * Set-Cookie object.
+ * Set-Cookie object
  */
 class SetCookie
 {
@@ -138,13 +138,13 @@ class SetCookie
 
     public function __toString()
     {
-        $str = $this->data['Name'] . '=' . ($this->data['Value'] ?? '') . '; ';
+        $str = $this->data['Name'].'='.($this->data['Value'] ?? '').'; ';
         foreach ($this->data as $k => $v) {
             if ($k !== 'Name' && $k !== 'Value' && $v !== null && $v !== false) {
                 if ($k === 'Expires') {
-                    $str .= 'Expires=' . \gmdate('D, d M Y H:i:s \G\M\T', $v) . '; ';
+                    $str .= 'Expires='.\gmdate('D, d M Y H:i:s \G\M\T', $v).'; ';
                 } else {
-                    $str .= ($v === true ? $k : "{$k}={$v}") . '; ';
+                    $str .= ($v === true ? $k : "{$k}={$v}").'; ';
                 }
             }
         }
@@ -440,7 +440,7 @@ class SetCookie
             return false;
         }
 
-        return (bool) \preg_match('/\.' . \preg_quote($cookieDomain, '/') . '$/', $domain);
+        return (bool) \preg_match('/\.'.\preg_quote($cookieDomain, '/').'$/', $domain);
     }
 
     /**
@@ -469,8 +469,8 @@ class SetCookie
             $name
         )) {
             return 'Cookie name must not contain invalid characters: ASCII '
-                . 'Control characters (0-31;127), space, tab and the '
-                . 'following characters: ()<>@,;:\"/?={}';
+                .'Control characters (0-31;127), space, tab and the '
+                .'following characters: ()<>@,;:\"/?={}';
         }
 
         // Value must not be null. 0 and empty string are valid. Empty strings

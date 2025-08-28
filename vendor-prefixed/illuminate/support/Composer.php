@@ -14,7 +14,7 @@ class Composer
     /**
      * The filesystem instance.
      *
-     * @var Filesystem
+     * @var \Illuminate\Filesystem\Filesystem
      */
     protected $files;
 
@@ -28,7 +28,7 @@ class Composer
     /**
      * Create a new Composer manager instance.
      *
-     * @param  Filesystem  $files
+     * @param  \Illuminate\Filesystem\Filesystem  $files
      * @param  string|null  $workingPath
      * @return void
      */
@@ -59,7 +59,7 @@ class Composer
      *
      * @param  array<int, string>  $packages
      * @param  bool  $dev
-     * @param  Closure|OutputInterface|null  $output
+     * @param  \Closure|\Symfony\Component\Console\Output\OutputInterface|null  $output
      * @param  string|null  $composerBinary
      * @return bool
      */
@@ -78,7 +78,7 @@ class Composer
             ->run(
                 $output instanceof OutputInterface
                     ? function ($type, $line) use ($output) {
-                        $output->write('    ' . $line);
+                        $output->write('    '.$line);
                     } : $output
             );
     }
@@ -88,7 +88,7 @@ class Composer
      *
      * @param  array<int, string>  $packages
      * @param  bool  $dev
-     * @param  Closure|OutputInterface|null  $output
+     * @param  \Closure|\Symfony\Component\Console\Output\OutputInterface|null  $output
      * @param  string|null  $composerBinary
      * @return bool
      */
@@ -107,7 +107,7 @@ class Composer
             ->run(
                 $output instanceof OutputInterface
                     ? function ($type, $line) use ($output) {
-                        $output->write('    ' . $line);
+                        $output->write('    '.$line);
                     } : $output
             );
     }
@@ -170,9 +170,9 @@ class Composer
      */
     public function findComposer($composerBinary = null)
     {
-        if (!is_null($composerBinary) && $this->files->exists($composerBinary)) {
+        if (! is_null($composerBinary) && $this->files->exists($composerBinary)) {
             return [$this->phpBinary(), $composerBinary];
-        } elseif ($this->files->exists($this->workingPath . '/composer.phar')) {
+        } elseif ($this->files->exists($this->workingPath.'/composer.phar')) {
             return [$this->phpBinary(), 'composer.phar'];
         }
 
@@ -190,7 +190,7 @@ class Composer
     {
         $composerFile = "{$this->workingPath}/composer.json";
 
-        if (!file_exists($composerFile)) {
+        if (! file_exists($composerFile)) {
             throw new RuntimeException("Unable to locate `composer.json` file at [{$this->workingPath}].");
         }
 
@@ -204,7 +204,7 @@ class Composer
      */
     protected function phpBinary()
     {
-        return ProcessUtils::escapeArgument((new PhpExecutableFinder())->find(false));
+        return ProcessUtils::escapeArgument((new PhpExecutableFinder)->find(false));
     }
 
     /**
@@ -212,7 +212,7 @@ class Composer
      *
      * @param  array  $command
      * @param  array  $env
-     * @return Process
+     * @return \Symfony\Component\Process\Process
      */
     protected function getProcess(array $command, array $env = [])
     {

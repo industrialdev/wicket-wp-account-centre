@@ -93,7 +93,7 @@ abstract class MultipleInstanceManager
      * @param  string  $name
      * @return mixed
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     protected function resolve($name)
     {
@@ -103,14 +103,14 @@ abstract class MultipleInstanceManager
             throw new InvalidArgumentException("Instance [{$name}] is not defined.");
         }
 
-        if (!array_key_exists('driver', $config)) {
+        if (! array_key_exists('driver', $config)) {
             throw new RuntimeException("Instance [{$name}] does not specify a driver.");
         }
 
         if (isset($this->customCreators[$config['driver']])) {
             return $this->callCustomCreator($config);
         } else {
-            $driverMethod = 'create' . ucfirst($config['driver']) . 'Driver';
+            $driverMethod = 'create'.ucfirst($config['driver']).'Driver';
 
             if (method_exists($this, $driverMethod)) {
                 return $this->{$driverMethod}($config);
@@ -167,7 +167,7 @@ abstract class MultipleInstanceManager
      * Register a custom instance creator Closure.
      *
      * @param  string  $name
-     * @param  Closure  $callback
+     * @param  \Closure  $callback
      * @return $this
      */
     public function extend($name, Closure $callback)

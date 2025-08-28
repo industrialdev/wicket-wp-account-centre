@@ -17,22 +17,22 @@ trait CapsuleManagerTrait
     /**
      * The container instance.
      *
-     * @var Container
+     * @var \WicketAcc\Illuminate\Contracts\Container\Container
      */
     protected $container;
 
     /**
      * Setup the IoC container instance.
      *
-     * @param  Container  $container
+     * @param  \WicketAcc\Illuminate\Contracts\Container\Container  $container
      * @return void
      */
     protected function setupContainer(Container $container)
     {
         $this->container = $container;
 
-        if (!$this->container->bound('config')) {
-            $this->container->instance('config', new Fluent());
+        if (! $this->container->bound('config')) {
+            $this->container->instance('config', new Fluent);
         }
     }
 
@@ -49,7 +49,7 @@ trait CapsuleManagerTrait
     /**
      * Get the IoC container instance.
      *
-     * @return Container
+     * @return \WicketAcc\Illuminate\Contracts\Container\Container
      */
     public function getContainer()
     {
@@ -59,7 +59,7 @@ trait CapsuleManagerTrait
     /**
      * Set the IoC container instance.
      *
-     * @param  Container  $container
+     * @param  \WicketAcc\Illuminate\Contracts\Container\Container  $container
      * @return void
      */
     public function setContainer(Container $container)

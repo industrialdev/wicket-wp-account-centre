@@ -2,11 +2,11 @@
 
 namespace WicketAcc\Illuminate\Support;
 
+use WicketAcc\Carbon\CarbonInterval;
 use DateInterval;
+use WicketAcc\Illuminate\Support\Traits\Macroable;
 use PHPUnit\Framework\Assert as PHPUnit;
 use RuntimeException;
-use WicketAcc\Carbon\CarbonInterval;
-use WicketAcc\Illuminate\Support\Traits\Macroable;
 
 class Sleep
 {
@@ -29,7 +29,7 @@ class Sleep
     /**
      * The total duration to sleep.
      *
-     * @var CarbonInterval
+     * @var \WicketAcc\Carbon\CarbonInterval
      */
     public $duration;
 
@@ -64,7 +64,7 @@ class Sleep
     /**
      * Create a new class instance.
      *
-     * @param  int|float|DateInterval  $duration
+     * @param  int|float|\DateInterval  $duration
      * @return void
      */
     public function __construct($duration)
@@ -75,7 +75,7 @@ class Sleep
     /**
      * Sleep for the given duration.
      *
-     * @param  DateInterval|int|float  $duration
+     * @param  \DateInterval|int|float  $duration
      * @return static
      */
     public static function for($duration)
@@ -123,12 +123,12 @@ class Sleep
     /**
      * Sleep for the given duration. Replaces any previously defined duration.
      *
-     * @param  DateInterval|int|float  $duration
+     * @param  \DateInterval|int|float  $duration
      * @return $this
      */
     protected function duration($duration)
     {
-        if (!$duration instanceof DateInterval) {
+        if (! $duration instanceof DateInterval) {
             $this->duration = CarbonInterval::microsecond(0);
 
             $this->pending = $duration;
@@ -254,7 +254,7 @@ class Sleep
      */
     public function __destruct()
     {
-        if (!$this->shouldSleep) {
+        if (! $this->shouldSleep) {
             return;
         }
 
@@ -457,7 +457,7 @@ class Sleep
      */
     public function unless($condition)
     {
-        return $this->when(!wicketacc_value($condition, $this));
+        return $this->when(! wicketacc_value($condition, $this));
     }
 
     /**

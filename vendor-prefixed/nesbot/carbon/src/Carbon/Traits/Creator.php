@@ -11,13 +11,6 @@
 
 namespace WicketAcc\Carbon\Traits;
 
-use Closure;
-use DateMalformedStringException;
-use DateTimeImmutable;
-use DateTimeInterface;
-use DateTimeZone;
-use Exception;
-use ReturnTypeWillChange;
 use WicketAcc\Carbon\Carbon;
 use WicketAcc\Carbon\CarbonImmutable;
 use WicketAcc\Carbon\CarbonInterface;
@@ -25,6 +18,13 @@ use WicketAcc\Carbon\Exceptions\InvalidDateException;
 use WicketAcc\Carbon\Exceptions\InvalidFormatException;
 use WicketAcc\Carbon\Exceptions\OutOfRangeException;
 use WicketAcc\Carbon\Translator;
+use Closure;
+use DateMalformedStringException;
+use DateTimeImmutable;
+use DateTimeInterface;
+use DateTimeZone;
+use Exception;
+use ReturnTypeWillChange;
 
 /**
  * Trait Creator.
@@ -195,7 +195,7 @@ trait Creator
             // @codeCoverageIgnoreEnd
 
             if (!$date) {
-                throw new InvalidFormatException("Could not parse '$time': " . $exception->getMessage(), 0, $exception);
+                throw new InvalidFormatException("Could not parse '$time': ".$exception->getMessage(), 0, $exception);
             }
 
             return $date;
@@ -398,11 +398,11 @@ trait Creator
             return $defaults[$unit];
         };
 
-        $year ??= $getDefault('year');
-        $month ??= $getDefault('month');
-        $day ??= $getDefault('day');
-        $hour ??= $getDefault('hour');
-        $minute ??= $getDefault('minute');
+        $year = $year ?? $getDefault('year');
+        $month = $month ?? $getDefault('month');
+        $day = $day ?? $getDefault('day');
+        $hour = $hour ?? $getDefault('hour');
+        $minute = $minute ?? $getDefault('minute');
         $second = (float) ($second ?? $getDefault('second'));
 
         self::assertBetween('month', $month, 0, 99);
@@ -421,7 +421,7 @@ trait Creator
             $year = 9999;
         }
 
-        $second = ($second < 10 ? '0' : '') . number_format($second, 6);
+        $second = ($second < 10 ? '0' : '').number_format($second, 6);
         $instance = static::rawCreateFromFormat('!Y-n-j G:i:s.u', \sprintf('%s-%s-%s %s:%02s:%02s', $year, $month, $day, $hour, $minute, $second), $tz);
 
         if ($fixYear !== null) {
@@ -649,7 +649,7 @@ trait Creator
         // First attempt to create an instance, so that error messages are based on the unmodified format.
         $date = self::createFromFormatAndTimezone($format, $time, $tz);
         $lastErrors = parent::getLastErrors();
-        /** @var CarbonImmutable|Carbon|null $mock */
+        /** @var \WicketAcc\Carbon\CarbonImmutable|\WicketAcc\Carbon\Carbon|null $mock */
         $mock = static::getMockedTestNow($tz);
 
         if ($mock && $date instanceof DateTimeInterface) {
@@ -671,8 +671,8 @@ trait Creator
                     $mock = $mock->setTime(0, 0);
                 }
 
-                $format = static::MOCK_DATETIME_FORMAT . ' ' . $format;
-                $time = ($mock instanceof self ? $mock->rawFormat(static::MOCK_DATETIME_FORMAT) : $mock->format(static::MOCK_DATETIME_FORMAT)) . ' ' . $time;
+                $format = static::MOCK_DATETIME_FORMAT.' '.$format;
+                $time = ($mock instanceof self ? $mock->rawFormat(static::MOCK_DATETIME_FORMAT) : $mock->format(static::MOCK_DATETIME_FORMAT)).' '.$time;
             }
 
             // Regenerate date from the modified format to base result on the mocked instance instead of now.
@@ -762,7 +762,7 @@ trait Creator
             );
         }, $format);
 
-        $format = preg_replace_callback('/(?<!\\\\)(\\\\{2})*(' . CarbonInterface::ISO_FORMAT_REGEXP . '|[A-Za-z])/', function ($match) {
+        $format = preg_replace_callback('/(?<!\\\\)(\\\\{2})*('.CarbonInterface::ISO_FORMAT_REGEXP.'|[A-Za-z])/', function ($match) {
             [$code] = $match;
 
             static $replacements = null;
@@ -965,7 +965,7 @@ trait Creator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @return array
      */

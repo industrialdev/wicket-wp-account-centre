@@ -15,7 +15,7 @@ trait Localizable
      */
     public function withLocale($locale, $callback)
     {
-        if (!$locale) {
+        if (! $locale) {
             return $callback();
         }
 

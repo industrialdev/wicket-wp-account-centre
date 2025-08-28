@@ -18,7 +18,7 @@ interface Factory
      * @param  string  $path
      * @param  \WicketAcc\Illuminate\Contracts\Support\Arrayable|array  $data
      * @param  array  $mergeData
-     * @return View
+     * @return \WicketAcc\Illuminate\Contracts\View\View
      */
     public function file($path, $data = [], $mergeData = []);
 
@@ -28,7 +28,7 @@ interface Factory
      * @param  string  $view
      * @param  \WicketAcc\Illuminate\Contracts\Support\Arrayable|array  $data
      * @param  array  $mergeData
-     * @return View
+     * @return \WicketAcc\Illuminate\Contracts\View\View
      */
     public function make($view, $data = [], $mergeData = []);
 

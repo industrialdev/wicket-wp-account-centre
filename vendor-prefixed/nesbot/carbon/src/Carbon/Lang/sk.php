@@ -37,11 +37,11 @@
 use WicketAcc\Carbon\CarbonInterface;
 
 $fromNow = function ($time) {
-    return 'o ' . strtr($time, [
-        'hodina' => 'hodinu',
-        'minúta' => 'minútu',
-        'sekunda' => 'sekundu',
-    ]);
+    return 'o '.strtr($time, [
+            'hodina' => 'hodinu',
+            'minúta' => 'minútu',
+            'sekunda' => 'sekundu',
+        ]);
 };
 
 $ago = function ($time) {

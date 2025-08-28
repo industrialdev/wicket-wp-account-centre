@@ -86,7 +86,7 @@ class Language implements JsonSerializable
     public static function all()
     {
         if (!static::$languagesNames) {
-            static::$languagesNames = require __DIR__ . '/List/languages.php';
+            static::$languagesNames = require __DIR__.'/List/languages.php';
         }
 
         return static::$languagesNames;
@@ -100,7 +100,7 @@ class Language implements JsonSerializable
     public static function regions()
     {
         if (!static::$regionsNames) {
-            static::$regionsNames = require __DIR__ . '/List/regions.php';
+            static::$regionsNames = require __DIR__.'/List/regions.php';
         }
 
         return static::$regionsNames;
@@ -277,7 +277,7 @@ class Language implements JsonSerializable
         $region = $this->getRegionName();
         $variant = $this->getVariantName();
 
-        return $this->getIsoName() . ($region ? ' (' . $region . ')' : '') . ($variant ? ' (' . $variant . ')' : '');
+        return $this->getIsoName().($region ? ' ('.$region.')' : '').($variant ? ' ('.$variant.')' : '');
     }
 
     /**
@@ -290,7 +290,7 @@ class Language implements JsonSerializable
         $region = $this->getRegionName();
         $variant = $this->getVariantName();
 
-        return $this->getNativeName() . ($region ? ' (' . $region . ')' : '') . ($variant ? ' (' . $variant . ')' : '');
+        return $this->getNativeName().($region ? ' ('.$region.')' : '').($variant ? ' ('.$variant.')' : '');
     }
 
     /**
@@ -303,7 +303,7 @@ class Language implements JsonSerializable
         $region = $this->getRegionName();
         $variant = $this->getVariantName();
 
-        return $this->getFullIsoName() . ($region ? ' (' . $region . ')' : '') . ($variant ? ' (' . $variant . ')' : '');
+        return $this->getFullIsoName().($region ? ' ('.$region.')' : '').($variant ? ' ('.$variant.')' : '');
     }
 
     /**
@@ -316,7 +316,7 @@ class Language implements JsonSerializable
         $region = $this->getRegionName();
         $variant = $this->getVariantName();
 
-        return $this->getFullNativeName() . ($region ? ' (' . $region . ')' : '') . ($variant ? ' (' . $variant . ')' : '');
+        return $this->getFullNativeName().($region ? ' ('.$region.')' : '').($variant ? ' ('.$variant.')' : '');
     }
 
     /**

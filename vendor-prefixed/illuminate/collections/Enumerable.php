@@ -4,11 +4,11 @@ namespace WicketAcc\Illuminate\Support;
 
 use CachingIterator;
 use Countable;
+use WicketAcc\Illuminate\Contracts\Support\Arrayable;
+use WicketAcc\Illuminate\Contracts\Support\Jsonable;
 use IteratorAggregate;
 use JsonSerializable;
 use Traversable;
-use WicketAcc\Illuminate\Contracts\Support\Arrayable;
-use WicketAcc\Illuminate\Contracts\Support\Jsonable;
 
 /**
  * @template TKey of array-key
@@ -405,7 +405,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * Filter items by the given key value pair.
      *
      * @param  string  $key
-     * @param  Arrayable|iterable  $values
+     * @param  \WicketAcc\Illuminate\Contracts\Support\Arrayable|iterable  $values
      * @param  bool  $strict
      * @return static
      */
@@ -415,7 +415,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * Filter items by the given key value pair using strict comparison.
      *
      * @param  string  $key
-     * @param  Arrayable|iterable  $values
+     * @param  \WicketAcc\Illuminate\Contracts\Support\Arrayable|iterable  $values
      * @return static
      */
     public function whereInStrict($key, $values);
@@ -424,7 +424,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * Filter items such that the value of the given key is between the given values.
      *
      * @param  string  $key
-     * @param  Arrayable|iterable  $values
+     * @param  \WicketAcc\Illuminate\Contracts\Support\Arrayable|iterable  $values
      * @return static
      */
     public function whereBetween($key, $values);
@@ -433,7 +433,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * Filter items such that the value of the given key is not between the given values.
      *
      * @param  string  $key
-     * @param  Arrayable|iterable  $values
+     * @param  \WicketAcc\Illuminate\Contracts\Support\Arrayable|iterable  $values
      * @return static
      */
     public function whereNotBetween($key, $values);
@@ -442,7 +442,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * Filter items by the given key value pair.
      *
      * @param  string  $key
-     * @param  Arrayable|iterable  $values
+     * @param  \WicketAcc\Illuminate\Contracts\Support\Arrayable|iterable  $values
      * @param  bool  $strict
      * @return static
      */
@@ -452,7 +452,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * Filter items by the given key value pair using strict comparison.
      *
      * @param  string  $key
-     * @param  Arrayable|iterable  $values
+     * @param  \WicketAcc\Illuminate\Contracts\Support\Arrayable|iterable  $values
      * @return static
      */
     public function whereNotInStrict($key, $values);
@@ -928,8 +928,8 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * @param  mixed  $value
      * @return TValue
      *
-     * @throws ItemNotFoundException
-     * @throws MultipleItemsFoundException
+     * @throws \WicketAcc\Illuminate\Support\ItemNotFoundException
+     * @throws \WicketAcc\Illuminate\Support\MultipleItemsFoundException
      */
     public function sole($key = null, $operator = null, $value = null);
 
@@ -941,7 +941,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * @param  mixed  $value
      * @return TValue
      *
-     * @throws ItemNotFoundException
+     * @throws \WicketAcc\Illuminate\Support\ItemNotFoundException
      */
     public function firstOrFail($key = null, $operator = null, $value = null);
 
@@ -1224,7 +1224,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * Get a CachingIterator instance.
      *
      * @param  int  $flags
-     * @return CachingIterator
+     * @return \CachingIterator
      */
     public function getCachingIterator($flags = CachingIterator::CALL_TOSTRING);
 

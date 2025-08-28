@@ -11,10 +11,10 @@
 
 namespace WicketAcc\Carbon;
 
+use WicketAcc\Carbon\MessageFormatter\MessageFormatterMapper;
 use Closure;
 use ReflectionException;
 use ReflectionFunction;
-use WicketAcc\Carbon\MessageFormatter\MessageFormatterMapper;
 use WicketAcc\Symfony\Component\Translation;
 use WicketAcc\Symfony\Component\Translation\Formatter\MessageFormatterInterface;
 use WicketAcc\Symfony\Component\Translation\Loader\ArrayLoader;
@@ -69,7 +69,7 @@ abstract class AbstractTranslator extends Translation\Translator
     public static function get($locale = null)
     {
         $locale = $locale ?: 'en';
-        $key = static::class === Translator::class ? $locale : static::class . '|' . $locale;
+        $key = static::class === Translator::class ? $locale : static::class.'|'.$locale;
 
         if (!isset(static::$singletons[$key])) {
             static::$singletons[$key] = new static($locale);
@@ -82,7 +82,7 @@ abstract class AbstractTranslator extends Translation\Translator
     {
         parent::setLocale($locale);
         $this->initializing = true;
-        $this->directories = [__DIR__ . '/Lang'];
+        $this->directories = [__DIR__.'/Lang'];
         $this->addLoader('array', new ArrayLoader());
         parent::__construct($locale, new MessageFormatterMapper($formatter), $cacheDir, $debug);
         $this->initializing = false;
@@ -199,7 +199,7 @@ abstract class AbstractTranslator extends Translation\Translator
 
     /**
      * Returns the list of internally available locales and already loaded custom locales.
-     * (It will ignore custom translator dynamic loading.).
+     * (It will ignore custom translator dynamic loading.)
      *
      * @param string $prefix prefix required to filter result
      *
@@ -302,7 +302,7 @@ abstract class AbstractTranslator extends Translation\Translator
     }
 
     /**
-     * Set the current translator locale and indicate if the source locale file exists.
+     * Set the current translator locale and indicate if the source locale file exists
      *
      * @param string $locale locale ex. en
      *
@@ -318,7 +318,7 @@ abstract class AbstractTranslator extends Translation\Translator
                 return "_$upper";
             }
 
-            return '_' . ucfirst($matches[1]);
+            return '_'.ucfirst($matches[1]);
         }, strtolower($locale));
 
         $previousLocale = $this->getLocale();

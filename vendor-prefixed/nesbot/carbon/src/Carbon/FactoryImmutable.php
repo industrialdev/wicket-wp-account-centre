@@ -8,14 +8,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace WicketAcc\Carbon;
 
 use Closure;
 use DateTimeImmutable;
 use DateTimeZone;
 use WicketAcc\Psr\Clock\ClockInterface;
-
 /**
  * A factory to generate CarbonImmutable instances with common settings.
  *
@@ -242,7 +240,6 @@ use WicketAcc\Psr\Clock\ClockInterface;
 class FactoryImmutable extends Factory implements ClockInterface
 {
     protected $className = CarbonImmutable::class;
-
     /**
      * Get a Carbon instance for the current date and time.
      *
@@ -253,7 +250,6 @@ class FactoryImmutable extends Factory implements ClockInterface
     public function now($tz = null): DateTimeImmutable
     {
         $className = $this->className;
-
         return new $className(null, $tz);
     }
 }

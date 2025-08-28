@@ -49,7 +49,7 @@ class QtFileLoader implements LoaderInterface
         libxml_clear_errors();
 
         $xpath = new \DOMXPath($dom);
-        $nodes = $xpath->evaluate('//TS/context/name[text()="' . $domain . '"]');
+        $nodes = $xpath->evaluate('//TS/context/name[text()="'.$domain.'"]');
 
         $catalogue = new MessageCatalogue($locale);
         if (1 == $nodes->length) {

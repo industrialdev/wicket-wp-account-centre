@@ -1,17 +1,16 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace WicketAcc\Carbon\Doctrine;
 
+use WicketAcc\Carbon\Carbon;
+use DateTime;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\VarDateTimeType;
-
 class DateTimeType extends VarDateTimeType implements CarbonDoctrineType
 {
     /** @use \CarbonTypeConverter<WicketAcc\Carbon> */
     use CarbonTypeConverter;
-
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */

@@ -78,7 +78,7 @@ interface Queue
      * Pop the next job off of the queue.
      *
      * @param  string|null  $queue
-     * @return Job|null
+     * @return \WicketAcc\Illuminate\Contracts\Queue\Job|null
      */
     public function pop($queue = null);
 

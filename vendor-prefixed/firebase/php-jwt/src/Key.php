@@ -36,7 +36,7 @@ class Key
     }
 
     /**
-     * Return the algorithm valid for this key.
+     * Return the algorithm valid for this key
      *
      * @return string
      */

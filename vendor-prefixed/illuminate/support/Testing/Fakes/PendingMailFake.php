@@ -2,15 +2,15 @@
 
 namespace WicketAcc\Illuminate\Support\Testing\Fakes;
 
-use Illuminate\Mail\PendingMail;
 use WicketAcc\Illuminate\Contracts\Mail\Mailable;
+use Illuminate\Mail\PendingMail;
 
 class PendingMailFake extends PendingMail
 {
     /**
      * Create a new instance.
      *
-     * @param  MailFake  $mailer
+     * @param  \WicketAcc\Illuminate\Support\Testing\Fakes\MailFake  $mailer
      * @return void
      */
     public function __construct($mailer)
@@ -21,7 +21,7 @@ class PendingMailFake extends PendingMail
     /**
      * Send a new mailable message instance.
      *
-     * @param  Mailable  $mailable
+     * @param  \WicketAcc\Illuminate\Contracts\Mail\Mailable  $mailable
      * @return void
      */
     public function send(Mailable $mailable)
@@ -32,7 +32,7 @@ class PendingMailFake extends PendingMail
     /**
      * Push the given mailable onto the queue.
      *
-     * @param  Mailable  $mailable
+     * @param  \WicketAcc\Illuminate\Contracts\Mail\Mailable  $mailable
      * @return mixed
      */
     public function queue(Mailable $mailable)

@@ -12,7 +12,7 @@
 use WicketAcc\Carbon\CarbonInterface;
 
 $processHoursFunction = function (CarbonInterface $date, string $format) {
-    return $format . 'о' . ($date->hour === 11 ? 'б' : '') . '] LT';
+    return $format.'о'.($date->hour === 11 ? 'б' : '').'] LT';
 };
 
 /*
@@ -162,9 +162,9 @@ return [
             case 'DDD':
             case 'w':
             case 'W':
-                return $number . '-й';
+                return $number.'-й';
             case 'D':
-                return $number . '-го';
+                return $number.'-го';
             default:
                 return $number;
         }
@@ -193,7 +193,7 @@ return [
             'genitive' => ['неділі', 'понеділка', 'вівторка', 'середи', 'четверга', 'п’ятниці', 'суботи'],
         ];
 
-        $format ??= '';
+        $format = $format ?? '';
         $nounCase = preg_match('/(\[(В|в|У|у)\])\s+dddd/u', $format)
             ? 'accusative'
             : (

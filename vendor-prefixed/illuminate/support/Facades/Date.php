@@ -85,7 +85,7 @@ use WicketAcc\Illuminate\Support\DateFactory;
  * @method static void useYearsOverflow($yearsOverflow = true)
  * @method static \WicketAcc\Illuminate\Support\Carbon yesterday($tz = null)
  *
- * @see DateFactory
+ * @see \WicketAcc\Illuminate\Support\DateFactory
  */
 class Date extends Facade
 {
@@ -111,10 +111,10 @@ class Date extends Facade
      */
     protected static function resolveFacadeInstance($name)
     {
-        if (!isset(static::$resolvedInstance[$name]) && !isset(static::$app, static::$app[$name])) {
+        if (! isset(static::$resolvedInstance[$name]) && ! isset(static::$app, static::$app[$name])) {
             $class = static::DEFAULT_FACADE;
 
-            static::swap(new $class());
+            static::swap(new $class);
         }
 
         return parent::resolveFacadeInstance($name);

@@ -5,7 +5,6 @@ namespace WicketAcc\GuzzleHttp;
 use WicketAcc\Psr\Http\Message\MessageInterface;
 use WicketAcc\Psr\Http\Message\RequestInterface;
 use WicketAcc\Psr\Http\Message\ResponseInterface;
-
 /**
  * Formats log messages using variable substitutions for requests, responses,
  * and other transactional data.
@@ -51,7 +50,6 @@ class MessageFormatter implements MessageFormatterInterface
      * @var string Template used to format log messages
      */
     private $template;
-
     /**
      * @param string $template Log message template
      */
@@ -59,7 +57,6 @@ class MessageFormatter implements MessageFormatterInterface
     {
         $this->template = $template ?: self::CLF;
     }
-
     /**
      * Returns a formatted message string.
      *
@@ -70,8 +67,7 @@ class MessageFormatter implements MessageFormatterInterface
     public function format(RequestInterface $request, ?ResponseInterface $response = null, ?\Throwable $error = null): string
     {
         $cache = [];
-
-        /* @var string */
+        /** @var string */
         return \preg_replace_callback('/{\s*([A-Za-z_\-\.0-9]+)\s*}/', function (array $matches) use ($request, $response, $error, &$cache) {
             if (isset($cache[$matches[1]])) {
                 return $cache[$matches[1]];
@@ -79,10 +75,10 @@ class MessageFormatter implements MessageFormatterInterface
             $result = '';
             switch ($matches[1]) {
                 case 'request':
-                    $result = Psr7\Message::toString($request);
+                    $result = \WicketAcc\GuzzleHttp\Psr7\Message::toString($request);
                     break;
                 case 'response':
-                    $result = $response ? Psr7\Message::toString($response) : '';
+                    $result = $response ? \WicketAcc\GuzzleHttp\Psr7\Message::toString($response) : '';
                     break;
                 case 'req_headers':
                     $result = \trim($request->getMethod() . ' ' . $request->getRequestTarget()) . ' HTTP/' . $request->getProtocolVersion() . "\r\n" . $this->headers($request);
@@ -155,13 +151,11 @@ class MessageFormatter implements MessageFormatterInterface
                     }
             }
             $cache[$matches[1]] = $result;
-
             return $result;
         }, $this->template);
     }
-
     /**
-     * Get headers from message as string.
+     * Get headers from message as string
      */
     private function headers(MessageInterface $message): string
     {
@@ -169,7 +163,6 @@ class MessageFormatter implements MessageFormatterInterface
         foreach ($message->getHeaders() as $name => $values) {
             $result .= $name . ': ' . \implode(', ', $values) . "\r\n";
         }
-
         return \trim($result);
     }
 }

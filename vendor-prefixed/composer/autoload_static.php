@@ -4,9 +4,9 @@
 
 namespace WicketAcc\Composer\Autoload;
 
-class autoload_static
+class ComposerStaticInit7ee41b9611d1a347bc07ab449f2075ff
 {
-    public static $files = [
+    public static $files = array (
         '68b4fe79160f6d3cf61ecdf7d7bc06bc' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         'a905f042d7b8a2fa6f1e42d752744f1f' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         'e5c7c9f11db8ea6b2d24af61817f0b72' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
@@ -15,13 +15,15 @@ class autoload_static
         'b2fdce20cb0f05630859c19a9bf17c95' => __DIR__ . '/..' . '/illuminate/collections/helpers.php',
         'cc42e32ef0c367b92176a7e66435cd58' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '16c9ca11085e531b6b8a5ab1fbfa5657' => __DIR__ . '/..' . '/illuminate/support/helpers.php',
-    ];
+    );
 
-    public static $prefixLengthsPsr4 = [
-        'v' => [
+    public static $prefixLengthsPsr4 = array (
+        'v' => 
+        array (
             'voku\\' => 5,
-        ],
-        'W' => [
+        ),
+        'W' => 
+        array (
             'WicketAcc\\Wicket\\' => 17,
             'WicketAcc\\Symfony\\Polyfill\\Php80\\' => 33,
             'WicketAcc\\Symfony\\Polyfill\\Mbstring\\' => 36,
@@ -42,92 +44,117 @@ class autoload_static
             'WicketAcc\\Carbon\\' => 17,
             'WicketAcc\\Admin\\' => 16,
             'WicketAcc\\' => 10,
-        ],
-        'I' => [
+        ),
+        'I' => 
+        array (
             'Illuminate\\Contracts\\' => 21,
-        ],
-        'C' => [
+        ),
+        'C' => 
+        array (
             'Carbon_Fields\\' => 14,
-        ],
-    ];
+        ),
+    );
 
-    public static $prefixDirsPsr4 = [
-        'voku\\' => [
+    public static $prefixDirsPsr4 = array (
+        'voku\\' => 
+        array (
             0 => __DIR__ . '/..' . '/voku/portable-ascii/src/voku',
-        ],
-        'WicketAcc\\Wicket\\' => [
+        ),
+        'WicketAcc\\Wicket\\' => 
+        array (
             0 => __DIR__ . '/..' . '/industrialdev/wicket-sdk-php/src',
-        ],
-        'WicketAcc\\Symfony\\Polyfill\\Php80\\' => [
+        ),
+        'WicketAcc\\Symfony\\Polyfill\\Php80\\' => 
+        array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
-        ],
-        'WicketAcc\\Symfony\\Polyfill\\Mbstring\\' => [
+        ),
+        'WicketAcc\\Symfony\\Polyfill\\Mbstring\\' => 
+        array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
-        ],
-        'WicketAcc\\Symfony\\Contracts\\Translation\\' => [
+        ),
+        'WicketAcc\\Symfony\\Contracts\\Translation\\' => 
+        array (
             0 => __DIR__ . '/..' . '/symfony/translation-contracts',
-        ],
-        'WicketAcc\\Symfony\\Component\\Translation\\' => [
+        ),
+        'WicketAcc\\Symfony\\Component\\Translation\\' => 
+        array (
             0 => __DIR__ . '/..' . '/symfony/translation',
-        ],
-        'WicketAcc\\Psr\\SimpleCache\\' => [
+        ),
+        'WicketAcc\\Psr\\SimpleCache\\' => 
+        array (
             0 => __DIR__ . '/..' . '/psr/simple-cache/src',
-        ],
-        'WicketAcc\\Psr\\Http\\Message\\' => [
+        ),
+        'WicketAcc\\Psr\\Http\\Message\\' => 
+        array (
             0 => __DIR__ . '/..' . '/psr/http-factory/src',
             1 => __DIR__ . '/..' . '/psr/http-message/src',
-        ],
-        'WicketAcc\\Psr\\Http\\Client\\' => [
+        ),
+        'WicketAcc\\Psr\\Http\\Client\\' => 
+        array (
             0 => __DIR__ . '/..' . '/psr/http-client/src',
-        ],
-        'WicketAcc\\Psr\\Container\\' => [
+        ),
+        'WicketAcc\\Psr\\Container\\' => 
+        array (
             0 => __DIR__ . '/..' . '/psr/container/src',
-        ],
-        'WicketAcc\\Psr\\Clock\\' => [
+        ),
+        'WicketAcc\\Psr\\Clock\\' => 
+        array (
             0 => __DIR__ . '/..' . '/psr/clock/src',
-        ],
-        'WicketAcc\\Illuminate\\Support\\' => [
+        ),
+        'WicketAcc\\Illuminate\\Support\\' => 
+        array (
             0 => __DIR__ . '/..' . '/illuminate/support',
             1 => __DIR__ . '/..' . '/illuminate/collections',
             2 => __DIR__ . '/..' . '/illuminate/macroable',
             3 => __DIR__ . '/..' . '/illuminate/conditionable',
-        ],
-        'WicketAcc\\GuzzleHttp\\Psr7\\' => [
+        ),
+        'WicketAcc\\GuzzleHttp\\Psr7\\' => 
+        array (
             0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
-        ],
-        'WicketAcc\\GuzzleHttp\\Promise\\' => [
+        ),
+        'WicketAcc\\GuzzleHttp\\Promise\\' => 
+        array (
             0 => __DIR__ . '/..' . '/guzzlehttp/promises/src',
-        ],
-        'WicketAcc\\GuzzleHttp\\' => [
+        ),
+        'WicketAcc\\GuzzleHttp\\' => 
+        array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
-        ],
-        'WicketAcc\\Firebase\\JWT\\' => [
+        ),
+        'WicketAcc\\Firebase\\JWT\\' => 
+        array (
             0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
-        ],
-        'WicketAcc\\Doctrine\\Inflector\\' => [
+        ),
+        'WicketAcc\\Doctrine\\Inflector\\' => 
+        array (
             0 => __DIR__ . '/..' . '/doctrine/inflector/src',
-        ],
-        'WicketAcc\\Carbon\\Doctrine\\' => [
+        ),
+        'WicketAcc\\Carbon\\Doctrine\\' => 
+        array (
             0 => __DIR__ . '/..' . '/carbonphp/carbon-doctrine-types/src/Carbon/Doctrine',
-        ],
-        'WicketAcc\\Carbon\\' => [
+        ),
+        'WicketAcc\\Carbon\\' => 
+        array (
             0 => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon',
-        ],
-        'WicketAcc\\Admin\\' => [
+        ),
+        'WicketAcc\\Admin\\' => 
+        array (
             0 => __DIR__ . '/../..' . '/src/admin',
-        ],
-        'WicketAcc\\' => [
+        ),
+        'WicketAcc\\' => 
+        array (
             0 => __DIR__ . '/../..' . '/src',
-        ],
-        'Illuminate\\Contracts\\' => [
+        ),
+        'Illuminate\\Contracts\\' => 
+        array (
             0 => __DIR__ . '/..' . '/illuminate/contracts',
-        ],
-        'Carbon_Fields\\' => [
+        ),
+        'Carbon_Fields\\' => 
+        array (
             0 => __DIR__ . '/..' . '/htmlburger/carbon-fields/core',
-        ],
-    ];
+        ),
+    );
 
-    public static $classMap = [
+    public static $classMap = array (
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Carbon_Fields\\Block' => __DIR__ . '/..' . '/htmlburger/carbon-fields/core/Block.php',
         'Carbon_Fields\\Carbon_Fields' => __DIR__ . '/..' . '/htmlburger/carbon-fields/core/Carbon_Fields.php',
@@ -770,14 +797,14 @@ class autoload_static
         'WicketAcc\\Wicket\\Version' => __DIR__ . '/..' . '/industrialdev/wicket-sdk-php/src/Version.php',
         'WicketAcc\\Wicket\\WicketCollection' => __DIR__ . '/..' . '/industrialdev/wicket-sdk-php/src/WicketCollection.php',
         'WicketAcc\\WooCommerce' => __DIR__ . '/../..' . '/src/WooCommerce.php',
-    ];
+    );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit25b1eff86541e9e47c69f912bcb70ad8::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit25b1eff86541e9e47c69f912bcb70ad8::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit25b1eff86541e9e47c69f912bcb70ad8::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit7ee41b9611d1a347bc07ab449f2075ff::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit7ee41b9611d1a347bc07ab449f2075ff::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit7ee41b9611d1a347bc07ab449f2075ff::$classMap;
 
         }, null, ClassLoader::class);
     }

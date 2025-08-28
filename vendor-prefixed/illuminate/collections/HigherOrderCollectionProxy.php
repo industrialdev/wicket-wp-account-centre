@@ -10,7 +10,7 @@ class HigherOrderCollectionProxy
     /**
      * The collection being operated on.
      *
-     * @var Enumerable
+     * @var \WicketAcc\Illuminate\Support\Enumerable
      */
     protected $collection;
 
@@ -24,7 +24,7 @@ class HigherOrderCollectionProxy
     /**
      * Create a new proxy instance.
      *
-     * @param  Enumerable  $collection
+     * @param  \WicketAcc\Illuminate\Support\Enumerable  $collection
      * @param  string  $method
      * @return void
      */

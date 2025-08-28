@@ -4,11 +4,11 @@ namespace WicketAcc\Illuminate\Support;
 
 use Closure;
 use Illuminate\Console\Application as Artisan;
-use Illuminate\Database\Eloquent\Factory as ModelFactory;
-use Illuminate\View\Compilers\BladeCompiler;
 use WicketAcc\Illuminate\Contracts\Foundation\CachesConfiguration;
 use WicketAcc\Illuminate\Contracts\Foundation\CachesRoutes;
 use WicketAcc\Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Database\Eloquent\Factory as ModelFactory;
+use Illuminate\View\Compilers\BladeCompiler;
 
 abstract class ServiceProvider
 {
@@ -71,7 +71,7 @@ abstract class ServiceProvider
     /**
      * Register a booting callback to be run before the "boot" method is called.
      *
-     * @param  Closure  $callback
+     * @param  \Closure  $callback
      * @return void
      */
     public function booting(Closure $callback)
@@ -82,7 +82,7 @@ abstract class ServiceProvider
     /**
      * Register a booted callback to be run after the "boot" method is called.
      *
-     * @param  Closure  $callback
+     * @param  \Closure  $callback
      * @return void
      */
     public function booted(Closure $callback)
@@ -131,12 +131,11 @@ abstract class ServiceProvider
      */
     protected function mergeConfigFrom($path, $key)
     {
-        if (!($this->app instanceof CachesConfiguration && $this->app->configurationIsCached())) {
+        if (! ($this->app instanceof CachesConfiguration && $this->app->configurationIsCached())) {
             $config = $this->app->make('config');
 
             $config->set($key, array_merge(
-                require $path,
-                $config->get($key, [])
+                require $path, $config->get($key, [])
             ));
         }
     }
@@ -149,7 +148,7 @@ abstract class ServiceProvider
      */
     protected function loadRoutesFrom($path)
     {
-        if (!($this->app instanceof CachesRoutes && $this->app->routesAreCached())) {
+        if (! ($this->app instanceof CachesRoutes && $this->app->routesAreCached())) {
             require $path;
         }
     }
@@ -167,7 +166,7 @@ abstract class ServiceProvider
             if (isset($this->app->config['view']['paths']) &&
                 is_array($this->app->config['view']['paths'])) {
                 foreach ($this->app->config['view']['paths'] as $viewPath) {
-                    if (is_dir($appPath = $viewPath . '/vendor/' . $namespace)) {
+                    if (is_dir($appPath = $viewPath.'/vendor/'.$namespace)) {
                         $view->addNamespace($namespace, $appPath);
                     }
                 }
@@ -294,7 +293,7 @@ abstract class ServiceProvider
      */
     protected function ensurePublishArrayInitialized($class)
     {
-        if (!array_key_exists($class, static::$publishes)) {
+        if (! array_key_exists($class, static::$publishes)) {
             static::$publishes[$class] = [];
         }
     }
@@ -308,13 +307,12 @@ abstract class ServiceProvider
      */
     protected function addPublishGroup($group, $paths)
     {
-        if (!array_key_exists($group, static::$publishGroups)) {
+        if (! array_key_exists($group, static::$publishGroups)) {
             static::$publishGroups[$group] = [];
         }
 
         static::$publishGroups[$group] = array_merge(
-            static::$publishGroups[$group],
-            $paths
+            static::$publishGroups[$group], $paths
         );
     }
 
@@ -327,7 +325,7 @@ abstract class ServiceProvider
      */
     public static function pathsToPublish($provider = null, $group = null)
     {
-        if (!is_null($paths = static::pathsForProviderOrGroup($provider, $group))) {
+        if (! is_null($paths = static::pathsForProviderOrGroup($provider, $group))) {
             return $paths;
         }
 
@@ -365,7 +363,7 @@ abstract class ServiceProvider
      */
     protected static function pathsForProviderAndGroup($provider, $group)
     {
-        if (!empty(static::$publishes[$provider]) && !empty(static::$publishGroups[$group])) {
+        if (! empty(static::$publishes[$provider]) && ! empty(static::$publishGroups[$group])) {
             return array_intersect_key(static::$publishes[$provider], static::$publishGroups[$group]);
         }
 
@@ -440,10 +438,10 @@ abstract class ServiceProvider
     /**
      * Get the default providers for a Laravel application.
      *
-     * @return DefaultProviders
+     * @return \WicketAcc\Illuminate\Support\DefaultProviders
      */
     public static function defaultProviders()
     {
-        return new DefaultProviders();
+        return new DefaultProviders;
     }
 }

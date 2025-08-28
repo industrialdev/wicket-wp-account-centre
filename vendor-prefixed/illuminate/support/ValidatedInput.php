@@ -3,11 +3,11 @@
 namespace WicketAcc\Illuminate\Support;
 
 use ArrayIterator;
+use WicketAcc\Illuminate\Contracts\Support\ValidatedData;
+use WicketAcc\Illuminate\Support\Facades\Date;
 use stdClass;
 use Symfony\Component\VarDumper\VarDumper;
 use Traversable;
-use WicketAcc\Illuminate\Contracts\Support\ValidatedData;
-use WicketAcc\Illuminate\Support\Facades\Date;
 
 class ValidatedInput implements ValidatedData
 {
@@ -40,7 +40,7 @@ class ValidatedInput implements ValidatedData
         $keys = is_array($keys) ? $keys : func_get_args();
 
         foreach ($keys as $key) {
-            if (!Arr::has($this->all(), $key)) {
+            if (! Arr::has($this->all(), $key)) {
                 return false;
             }
         }
@@ -56,7 +56,7 @@ class ValidatedInput implements ValidatedData
      */
     public function missing($keys)
     {
-        return !$this->has($keys);
+        return ! $this->has($keys);
     }
 
     /**
@@ -71,7 +71,7 @@ class ValidatedInput implements ValidatedData
 
         $input = $this->all();
 
-        $placeholder = new stdClass();
+        $placeholder = new stdClass;
 
         foreach (is_array($keys) ? $keys : func_get_args() as $key) {
             $value = wicketacc_data_get($input, $key, $placeholder);
@@ -116,7 +116,7 @@ class ValidatedInput implements ValidatedData
      * Get the input as a collection.
      *
      * @param  array|string|null  $key
-     * @return Collection
+     * @return \WicketAcc\Illuminate\Support\Collection
      */
     public function wicketacc_collect($key = null)
     {
@@ -239,7 +239,7 @@ class ValidatedInput implements ValidatedData
     /**
      * Get an iterator for the input.
      *
-     * @return ArrayIterator
+     * @return \ArrayIterator
      */
     public function getIterator(): Traversable
     {
@@ -323,7 +323,7 @@ class ValidatedInput implements ValidatedData
         $keys = is_array($key) ? $key : func_get_args();
 
         foreach ($keys as $value) {
-            if (!$this->isEmptyString($value)) {
+            if (! $this->isEmptyString($value)) {
                 return false;
             }
         }
@@ -402,7 +402,7 @@ class ValidatedInput implements ValidatedData
     {
         $value = $this->input($key);
 
-        return !is_bool($value) && !is_array($value) && trim((string) $value) === '';
+        return ! is_bool($value) && ! is_array($value) && trim((string) $value) === '';
     }
 
     /**
@@ -425,9 +425,7 @@ class ValidatedInput implements ValidatedData
     public function input($key = null, $default = null)
     {
         return wicketacc_data_get(
-            $this->all(),
-            $key,
-            $default
+            $this->all(), $key, $default
         );
     }
 
@@ -436,7 +434,7 @@ class ValidatedInput implements ValidatedData
      *
      * @param  string  $key
      * @param  mixed  $default
-     * @return Stringable
+     * @return \WicketAcc\Illuminate\Support\Stringable
      */
     public function wicketacc_str($key, $default = null)
     {
@@ -448,7 +446,7 @@ class ValidatedInput implements ValidatedData
      *
      * @param  string  $key
      * @param  mixed  $default
-     * @return Stringable
+     * @return \WicketAcc\Illuminate\Support\Stringable
      */
     public function string($key, $default = null)
     {
@@ -499,7 +497,7 @@ class ValidatedInput implements ValidatedData
      * @param  string  $key
      * @param  string|null  $format
      * @param  string|null  $tz
-     * @return Carbon|null
+     * @return \WicketAcc\Illuminate\Support\Carbon|null
      *
      * @throws \WicketAcc\Carbon\Exceptions\InvalidFormatException
      */
@@ -528,8 +526,8 @@ class ValidatedInput implements ValidatedData
     public function enum($key, $enumClass)
     {
         if ($this->isNotFilled($key) ||
-            !enum_exists($enumClass) ||
-            !method_exists($enumClass, 'tryFrom')) {
+            ! enum_exists($enumClass) ||
+            ! method_exists($enumClass, 'tryFrom')) {
             return null;
         }
 

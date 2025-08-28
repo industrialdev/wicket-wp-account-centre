@@ -71,7 +71,7 @@ interface Repository extends CacheInterface
      * @template TCacheValue
      *
      * @param  string  $key
-     * @param  \DateTimeInterface|\DateInterval|Closure|int|null  $ttl
+     * @param  \DateTimeInterface|\DateInterval|\Closure|int|null  $ttl
      * @param  \Closure(): TCacheValue  $callback
      * @return TCacheValue
      */
@@ -110,7 +110,7 @@ interface Repository extends CacheInterface
     /**
      * Get the cache store implementation.
      *
-     * @return Store
+     * @return \WicketAcc\Illuminate\Contracts\Cache\Store
      */
     public function getStore();
 }

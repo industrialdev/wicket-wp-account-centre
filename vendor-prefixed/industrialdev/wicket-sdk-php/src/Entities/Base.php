@@ -4,7 +4,9 @@ namespace WicketAcc\Wicket\Entities;
 
 /**
  * Class Base
- * Maybe checkout \Illuminate\Database\Eloquent\Model for a little motivation for the BaseClass.
+ * Maybe checkout \Illuminate\Database\Eloquent\Model for a little motivation for the BaseClass
+ *
+ * @package \WicketAcc\Wicket\Entities
  */
 class Base
 {
@@ -14,7 +16,6 @@ class Base
     protected $relationships;
     protected $included;
     protected $meta;
-
     /**
      * Base constructor.
      * @param array|null $attributes
@@ -27,7 +28,6 @@ class Base
         $this->type = $type;
         $this->id = $id;
     }
-
     /**
      * Given a response block from JsonAPI, convert it into a Wicket entity.
      *
@@ -39,7 +39,6 @@ class Base
     {
         return Factory::create($input, $related);
     }
-
     /**
      * Dynamically retrieve attributes on the model.
      *
@@ -50,7 +49,6 @@ class Base
     {
         return $this->getAttribute($key);
     }
-
     /**
      * Dynamically set attributes on the model.
      *
@@ -62,7 +60,6 @@ class Base
     {
         $this->setAttribute($key, $value);
     }
-
     /**
      * Get an attribute from the model.
      *
@@ -75,7 +72,6 @@ class Base
             return $this->attributes[$key];
         }
     }
-
     /**
      * Set a given attribute on the model.
      *
@@ -86,21 +82,18 @@ class Base
     public function setAttribute($key, $value)
     {
         $this->attributes[$key] = $value;
-
         return $this;
     }
-
     /**
      * Add entity relationship with explicit type control.
      *
      * @param $type
      * @param Base $entity
      */
-    public function addRelationship($type, self $entity)
+    public function addRelationship($type, Base $entity)
     {
         $this->relationships[$type][] = $entity;
     }
-
     /**
      * Add entity included with explicit type control.
      *
@@ -111,17 +104,15 @@ class Base
     {
         $this->included = wicketacc_collect($included);
     }
-
     /**
      * Add entity relationship using implicit entity type.
      *
      * @param Base $entity
      */
-    public function attach(self $entity)
+    public function attach(Base $entity)
     {
         $this->relationships[$entity->type][] = $entity;
     }
-
     /**
      * @param $name
      * @return array|null
@@ -129,10 +120,8 @@ class Base
     public function relationship($name)
     {
         $relationship = !empty($this->relationships[$name]) ? $this->relationships[$name] : null;
-
         return $relationship;
     }
-
     /**
      * @return array|null
      */
@@ -140,7 +129,6 @@ class Base
     {
         return $this->included;
     }
-
     public function toJsonAPI()
     {
         $data = [];
@@ -149,10 +137,8 @@ class Base
         if ($relationships) {
             $data['data']['relationships'] = $relationships;
         }
-
         return $data;
     }
-
     private function relationshipsJsonAPI()
     {
         $encodable = [];
@@ -165,7 +151,6 @@ class Base
                 $encodable[$type] = ['data' => $tattrs->toArray()];
             }
         }
-
         return $encodable;
     }
 }

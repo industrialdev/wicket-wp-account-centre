@@ -2,11 +2,11 @@
 
 namespace WicketAcc\Illuminate\Support\Testing\Fakes;
 
+use WicketAcc\Carbon\CarbonImmutable;
 use Closure;
 use Illuminate\Bus\BatchRepository;
 use Illuminate\Bus\PendingBatch;
 use Illuminate\Bus\UpdatedBatchJobCounts;
-use WicketAcc\Carbon\CarbonImmutable;
 use WicketAcc\Illuminate\Support\Str;
 
 class BatchRepositoryFake implements BatchRepository
@@ -44,7 +44,7 @@ class BatchRepositoryFake implements BatchRepository
     /**
      * Store a new pending batch.
      *
-     * @param  PendingBatch  $batch
+     * @param  \Illuminate\Bus\PendingBatch  $batch
      * @return \Illuminate\Bus\Batch
      */
     public function store(PendingBatch $batch)
@@ -84,11 +84,11 @@ class BatchRepositoryFake implements BatchRepository
      *
      * @param  string  $batchId
      * @param  string  $jobId
-     * @return UpdatedBatchJobCounts
+     * @return \Illuminate\Bus\UpdatedBatchJobCounts
      */
     public function decrementPendingJobs(string $batchId, string $jobId)
     {
-        return new UpdatedBatchJobCounts();
+        return new UpdatedBatchJobCounts;
     }
 
     /**
@@ -96,11 +96,11 @@ class BatchRepositoryFake implements BatchRepository
      *
      * @param  string  $batchId
      * @param  string  $jobId
-     * @return UpdatedBatchJobCounts
+     * @return \Illuminate\Bus\UpdatedBatchJobCounts
      */
     public function incrementFailedJobs(string $batchId, string $jobId)
     {
-        return new UpdatedBatchJobCounts();
+        return new UpdatedBatchJobCounts;
     }
 
     /**
@@ -143,7 +143,7 @@ class BatchRepositoryFake implements BatchRepository
     /**
      * Execute the given Closure within a storage specific transaction.
      *
-     * @param  Closure  $callback
+     * @param  \Closure  $callback
      * @return mixed
      */
     public function transaction(Closure $callback)

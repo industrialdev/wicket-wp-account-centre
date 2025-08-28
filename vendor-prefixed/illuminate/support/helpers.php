@@ -9,7 +9,7 @@ use WicketAcc\Illuminate\Support\Optional;
 use WicketAcc\Illuminate\Support\Sleep;
 use WicketAcc\Illuminate\Support\Str;
 
-if (!function_exists('wicketacc_append_config')) {
+if (! function_exists('wicketacc_append_config')) {
     /**
      * Assign high numeric IDs to a config item to force appending.
      *
@@ -32,7 +32,7 @@ if (!function_exists('wicketacc_append_config')) {
     }
 }
 
-if (!function_exists('wicketacc_blank')) {
+if (! function_exists('wicketacc_blank')) {
     /**
      * Determine if the given value is "blank".
      *
@@ -61,7 +61,7 @@ if (!function_exists('wicketacc_blank')) {
     }
 }
 
-if (!function_exists('wicketacc_class_basename')) {
+if (! function_exists('wicketacc_class_basename')) {
     /**
      * Get the class "basename" of the given object / class.
      *
@@ -76,7 +76,7 @@ if (!function_exists('wicketacc_class_basename')) {
     }
 }
 
-if (!function_exists('wicketacc_class_uses_recursive')) {
+if (! function_exists('wicketacc_class_uses_recursive')) {
     /**
      * Returns all traits used by a class, its parent classes and trait of their traits.
      *
@@ -99,11 +99,11 @@ if (!function_exists('wicketacc_class_uses_recursive')) {
     }
 }
 
-if (!function_exists('wicketacc_e')) {
+if (! function_exists('wicketacc_e')) {
     /**
      * Encode HTML special characters in a string.
      *
-     * @param  DeferringDisplayableValue|Htmlable|BackedEnum|string|null  $value
+     * @param  \WicketAcc\Illuminate\Contracts\Support\DeferringDisplayableValue|\WicketAcc\Illuminate\Contracts\Support\Htmlable|\BackedEnum|string|null  $value
      * @param  bool  $doubleEncode
      * @return string
      */
@@ -125,7 +125,7 @@ if (!function_exists('wicketacc_e')) {
     }
 }
 
-if (!function_exists('wicketacc_env')) {
+if (! function_exists('wicketacc_env')) {
     /**
      * Gets the value of an environment variable.
      *
@@ -139,7 +139,7 @@ if (!function_exists('wicketacc_env')) {
     }
 }
 
-if (!function_exists('wicketacc_filled')) {
+if (! function_exists('wicketacc_filled')) {
     /**
      * Determine if a value is "filled".
      *
@@ -148,11 +148,11 @@ if (!function_exists('wicketacc_filled')) {
      */
     function wicketacc_filled($value)
     {
-        return !wicketacc_blank($value);
+        return ! wicketacc_blank($value);
     }
 }
 
-if (!function_exists('wicketacc_laravel_cloud')) {
+if (! function_exists('wicketacc_laravel_cloud')) {
     /**
      * Determine if the application is running on Laravel Cloud.
      *
@@ -165,7 +165,7 @@ if (!function_exists('wicketacc_laravel_cloud')) {
     }
 }
 
-if (!function_exists('wicketacc_object_get')) {
+if (! function_exists('wicketacc_object_get')) {
     /**
      * Get an item from an object using "dot" notation.
      *
@@ -181,7 +181,7 @@ if (!function_exists('wicketacc_object_get')) {
         }
 
         foreach (explode('.', $key) as $segment) {
-            if (!is_object($object) || !isset($object->{$segment})) {
+            if (! is_object($object) || ! isset($object->{$segment})) {
                 return wicketacc_value($default);
             }
 
@@ -192,7 +192,7 @@ if (!function_exists('wicketacc_object_get')) {
     }
 }
 
-if (!function_exists('wicketacc_optional')) {
+if (! function_exists('wicketacc_optional')) {
     /**
      * Provide access to optional objects.
      *
@@ -204,13 +204,13 @@ if (!function_exists('wicketacc_optional')) {
     {
         if (is_null($callback)) {
             return new Optional($value);
-        } elseif (!is_null($value)) {
+        } elseif (! is_null($value)) {
             return $callback($value);
         }
     }
 }
 
-if (!function_exists('wicketacc_preg_replace_array')) {
+if (! function_exists('wicketacc_preg_replace_array')) {
     /**
      * Replace a given pattern with each value in the array in sequentially.
      *
@@ -229,17 +229,17 @@ if (!function_exists('wicketacc_preg_replace_array')) {
     }
 }
 
-if (!function_exists('wicketacc_retry')) {
+if (! function_exists('wicketacc_retry')) {
     /**
      * Retry an operation a given number of times.
      *
      * @param  int|array  $times
      * @param  callable  $callback
-     * @param  int|Closure  $sleepMilliseconds
+     * @param  int|\Closure  $sleepMilliseconds
      * @param  callable|null  $when
      * @return mixed
      *
-     * @throws Exception
+     * @throws \Exception
      */
     function wicketacc_retry($times, callable $callback, $sleepMilliseconds = 0, $when = null)
     {
@@ -260,7 +260,7 @@ if (!function_exists('wicketacc_retry')) {
         try {
             return $callback($attempts);
         } catch (Exception $e) {
-            if ($times < 1 || ($when && !$when($e))) {
+            if ($times < 1 || ($when && ! $when($e))) {
                 throw $e;
             }
 
@@ -275,17 +275,18 @@ if (!function_exists('wicketacc_retry')) {
     }
 }
 
-if (!function_exists('wicketacc_str')) {
+if (! function_exists('wicketacc_str')) {
     /**
      * Get a new stringable object from the given string.
      *
      * @param  string|null  $string
-     * @return WicketAcc\Illuminate\Support\Stringable|mixed
+     * @return \WicketAcc\Illuminate\Support\Stringable|mixed
      */
     function wicketacc_str($string = null)
     {
         if (func_num_args() === 0) {
-            return new class {
+            return new class
+            {
                 public function __call($method, $parameters)
                 {
                     return Str::$method(...$parameters);
@@ -302,7 +303,7 @@ if (!function_exists('wicketacc_str')) {
     }
 }
 
-if (!function_exists('wicketacc_tap')) {
+if (! function_exists('wicketacc_tap')) {
     /**
      * Call the given Closure with the given value then return the value.
      *
@@ -322,7 +323,7 @@ if (!function_exists('wicketacc_tap')) {
     }
 }
 
-if (!function_exists('wicketacc_throw_if')) {
+if (! function_exists('wicketacc_throw_if')) {
     /**
      * Throw the given exception if the given condition is true.
      *
@@ -349,7 +350,7 @@ if (!function_exists('wicketacc_throw_if')) {
     }
 }
 
-if (!function_exists('wicketacc_throw_unless')) {
+if (! function_exists('wicketacc_throw_unless')) {
     /**
      * Throw the given exception unless the given condition is true.
      *
@@ -364,13 +365,13 @@ if (!function_exists('wicketacc_throw_unless')) {
      */
     function wicketacc_throw_unless($condition, $exception = 'RuntimeException', ...$parameters)
     {
-        wicketacc_throw_if(!$condition, $exception, ...$parameters);
+        wicketacc_throw_if(! $condition, $exception, ...$parameters);
 
         return $condition;
     }
 }
 
-if (!function_exists('wicketacc_trait_uses_recursive')) {
+if (! function_exists('wicketacc_trait_uses_recursive')) {
     /**
      * Returns all traits used by a trait and its traits.
      *
@@ -389,7 +390,7 @@ if (!function_exists('wicketacc_trait_uses_recursive')) {
     }
 }
 
-if (!function_exists('wicketacc_transform')) {
+if (! function_exists('wicketacc_transform')) {
     /**
      * Transform the given value if it is present.
      *
@@ -416,7 +417,7 @@ if (!function_exists('wicketacc_transform')) {
     }
 }
 
-if (!function_exists('wicketacc_windows_os')) {
+if (! function_exists('wicketacc_windows_os')) {
     /**
      * Determine whether the current environment is Windows based.
      *
@@ -428,7 +429,7 @@ if (!function_exists('wicketacc_windows_os')) {
     }
 }
 
-if (!function_exists('wicketacc_with')) {
+if (! function_exists('wicketacc_with')) {
     /**
      * Return the given value, optionally passed through the given callback.
      *

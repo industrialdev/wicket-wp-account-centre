@@ -5,6 +5,12 @@ namespace WicketAcc\Illuminate\Support\Traits;
 use CachingIterator;
 use Closure;
 use Exception;
+use WicketAcc\Illuminate\Contracts\Support\Arrayable;
+use WicketAcc\Illuminate\Contracts\Support\Jsonable;
+use WicketAcc\Illuminate\Support\Arr;
+use WicketAcc\Illuminate\Support\Collection;
+use WicketAcc\Illuminate\Support\Enumerable;
+use WicketAcc\Illuminate\Support\HigherOrderCollectionProxy;
 use InvalidArgumentException;
 use JsonSerializable;
 use Symfony\Component\VarDumper\VarDumper;
@@ -12,12 +18,6 @@ use Traversable;
 use UnexpectedValueException;
 use UnitEnum;
 use WeakMap;
-use WicketAcc\Illuminate\Contracts\Support\Arrayable;
-use WicketAcc\Illuminate\Contracts\Support\Jsonable;
-use WicketAcc\Illuminate\Support\Arr;
-use WicketAcc\Illuminate\Support\Collection;
-use WicketAcc\Illuminate\Support\Enumerable;
-use WicketAcc\Illuminate\Support\HigherOrderCollectionProxy;
 
 /**
  * @template TKey of array-key
@@ -167,7 +167,7 @@ trait EnumeratesValues
     public static function times($number, ?callable $callback = null)
     {
         if ($number < 1) {
-            return new static();
+            return new static;
         }
 
         return static::range(1, $number)
@@ -274,7 +274,7 @@ trait EnumeratesValues
             $callback = $this->valueRetriever($key);
 
             foreach ($this as $k => $v) {
-                if (!$callback($v, $k)) {
+                if (! $callback($v, $k)) {
                     return false;
                 }
             }
@@ -324,7 +324,7 @@ trait EnumeratesValues
      * @param  class-string<TEnsureOfType>|array<array-key, class-string<TEnsureOfType>>  $type
      * @return static<TKey, TEnsureOfType>
      *
-     * @throws UnexpectedValueException
+     * @throws \UnexpectedValueException
      */
     public function ensure($type)
     {
@@ -352,7 +352,7 @@ trait EnumeratesValues
      */
     public function isNotEmpty()
     {
-        return !$this->isEmpty();
+        return ! $this->isEmpty();
     }
 
     /**
@@ -428,7 +428,7 @@ trait EnumeratesValues
         $callback = $this->valueRetriever($callback);
 
         return $this->map(fn ($value) => $callback($value))
-            ->filter(fn ($value) => !is_null($value))
+            ->filter(fn ($value) => ! is_null($value))
             ->reduce(fn ($result, $value) => is_null($result) || $value < $result ? $value : $result);
     }
 
@@ -442,7 +442,7 @@ trait EnumeratesValues
     {
         $callback = $this->valueRetriever($callback);
 
-        return $this->filter(fn ($value) => !is_null($value))->reduce(function ($result, $item) use ($callback) {
+        return $this->filter(fn ($value) => ! is_null($value))->reduce(function ($result, $item) use ($callback) {
             $value = $callback($item);
 
             return is_null($result) || $value > $result ? $value : $result;
@@ -632,7 +632,7 @@ trait EnumeratesValues
      * Filter items by the given key value pair.
      *
      * @param  string  $key
-     * @param  Arrayable|iterable  $values
+     * @param  \WicketAcc\Illuminate\Contracts\Support\Arrayable|iterable  $values
      * @param  bool  $strict
      * @return static
      */
@@ -647,7 +647,7 @@ trait EnumeratesValues
      * Filter items by the given key value pair using strict comparison.
      *
      * @param  string  $key
-     * @param  Arrayable|iterable  $values
+     * @param  \WicketAcc\Illuminate\Contracts\Support\Arrayable|iterable  $values
      * @return static
      */
     public function whereInStrict($key, $values)
@@ -659,7 +659,7 @@ trait EnumeratesValues
      * Filter items such that the value of the given key is between the given values.
      *
      * @param  string  $key
-     * @param  Arrayable|iterable  $values
+     * @param  \WicketAcc\Illuminate\Contracts\Support\Arrayable|iterable  $values
      * @return static
      */
     public function whereBetween($key, $values)
@@ -671,7 +671,7 @@ trait EnumeratesValues
      * Filter items such that the value of the given key is not between the given values.
      *
      * @param  string  $key
-     * @param  Arrayable|iterable  $values
+     * @param  \WicketAcc\Illuminate\Contracts\Support\Arrayable|iterable  $values
      * @return static
      */
     public function whereNotBetween($key, $values)
@@ -685,7 +685,7 @@ trait EnumeratesValues
      * Filter items by the given key value pair.
      *
      * @param  string  $key
-     * @param  Arrayable|iterable  $values
+     * @param  \WicketAcc\Illuminate\Contracts\Support\Arrayable|iterable  $values
      * @param  bool  $strict
      * @return static
      */
@@ -700,7 +700,7 @@ trait EnumeratesValues
      * Filter items by the given key value pair using strict comparison.
      *
      * @param  string  $key
-     * @param  Arrayable|iterable  $values
+     * @param  \WicketAcc\Illuminate\Contracts\Support\Arrayable|iterable  $values
      * @return static
      */
     public function whereNotInStrict($key, $values)
@@ -801,7 +801,7 @@ trait EnumeratesValues
      * @param  mixed  ...$initial
      * @return array
      *
-     * @throws UnexpectedValueException
+     * @throws \UnexpectedValueException
      */
     public function reduceSpread(callable $callback, ...$initial)
     {
@@ -810,11 +810,10 @@ trait EnumeratesValues
         foreach ($this as $key => $value) {
             $result = call_user_func_array($callback, array_merge($result, [$value, $key]));
 
-            if (!is_array($result)) {
+            if (! is_array($result)) {
                 throw new UnexpectedValueException(sprintf(
                     "%s::reduceSpread expects reducer to return an array, but got a '%s' instead.",
-                    wicketacc_class_basename(static::class),
-                    gettype($result)
+                    wicketacc_class_basename(static::class), gettype($result)
                 ));
             }
         }
@@ -849,7 +848,7 @@ trait EnumeratesValues
 
         return $this->filter(function ($value, $key) use ($callback, $useAsCallable) {
             return $useAsCallable
-                ? !$callback($value, $key)
+                ? ! $callback($value, $key)
                 : $value != $callback;
         });
     }
@@ -955,7 +954,7 @@ trait EnumeratesValues
      * Get a CachingIterator instance.
      *
      * @param  int  $flags
-     * @return CachingIterator
+     * @return \CachingIterator
      */
     public function getCachingIterator($flags = CachingIterator::CALL_TOSTRING)
     {
@@ -1004,11 +1003,11 @@ trait EnumeratesValues
      * @param  string  $key
      * @return mixed
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function __get($key)
     {
-        if (!in_array($key, static::$proxies)) {
+        if (! in_array($key, static::$proxies)) {
             throw new Exception("Property [{$key}] does not exist on this collection instance.");
         }
 
@@ -1045,7 +1044,7 @@ trait EnumeratesValues
      * @param  callable|string  $key
      * @param  string|null  $operator
      * @param  mixed  $value
-     * @return Closure
+     * @return \Closure
      */
     protected function operatorForWhere($key, $operator = null, $value = null)
     {
@@ -1101,7 +1100,7 @@ trait EnumeratesValues
      */
     protected function useAsCallable($value)
     {
-        return !is_string($value) && is_callable($value);
+        return ! is_string($value) && is_callable($value);
     }
 
     /**
@@ -1133,12 +1132,12 @@ trait EnumeratesValues
     /**
      * Make a function using another function, by negating its result.
      *
-     * @param  Closure  $callback
-     * @return Closure
+     * @param  \Closure  $callback
+     * @return \Closure
      */
     protected function negate(Closure $callback)
     {
-        return fn (...$params) => !$callback(...$params);
+        return fn (...$params) => ! $callback(...$params);
     }
 
     /**

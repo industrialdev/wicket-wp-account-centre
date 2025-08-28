@@ -25,7 +25,7 @@ interface MessageBag extends Arrayable, Countable
     /**
      * Merge a new array of messages into the bag.
      *
-     * @param  MessageProvider|array  $messages
+     * @param  \WicketAcc\Illuminate\Contracts\Support\MessageProvider|array  $messages
      * @return $this
      */
     public function merge($messages);

@@ -189,7 +189,7 @@ interface UriInterface
      * @return static A new instance with the specified scheme.
      * @throws \InvalidArgumentException for invalid or unsupported schemes.
      */
-    public function withScheme(string $scheme): self;
+    public function withScheme(string $scheme): UriInterface;
 
     /**
      * Return an instance with the specified user information.
@@ -205,7 +205,7 @@ interface UriInterface
      * @param null|string $password The password associated with $user.
      * @return static A new instance with the specified user information.
      */
-    public function withUserInfo(string $user, ?string $password = null): self;
+    public function withUserInfo(string $user, ?string $password = null): UriInterface;
 
     /**
      * Return an instance with the specified host.
@@ -219,7 +219,7 @@ interface UriInterface
      * @return static A new instance with the specified host.
      * @throws \InvalidArgumentException for invalid hostnames.
      */
-    public function withHost(string $host): self;
+    public function withHost(string $host): UriInterface;
 
     /**
      * Return an instance with the specified port.
@@ -238,7 +238,7 @@ interface UriInterface
      * @return static A new instance with the specified port.
      * @throws \InvalidArgumentException for invalid ports.
      */
-    public function withPort(?int $port): self;
+    public function withPort(?int $port): UriInterface;
 
     /**
      * Return an instance with the specified path.
@@ -262,7 +262,7 @@ interface UriInterface
      * @return static A new instance with the specified path.
      * @throws \InvalidArgumentException for invalid paths.
      */
-    public function withPath(string $path): self;
+    public function withPath(string $path): UriInterface;
 
     /**
      * Return an instance with the specified query string.
@@ -279,7 +279,7 @@ interface UriInterface
      * @return static A new instance with the specified query string.
      * @throws \InvalidArgumentException for invalid query strings.
      */
-    public function withQuery(string $query): self;
+    public function withQuery(string $query): UriInterface;
 
     /**
      * Return an instance with the specified URI fragment.
@@ -295,7 +295,7 @@ interface UriInterface
      * @param string $fragment The fragment to use with the new instance.
      * @return static A new instance with the specified fragment.
      */
-    public function withFragment(string $fragment): self;
+    public function withFragment(string $fragment): UriInterface;
 
     /**
      * Return the string representation as a URI reference.

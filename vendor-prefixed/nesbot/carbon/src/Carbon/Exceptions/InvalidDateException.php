@@ -42,7 +42,7 @@ class InvalidDateException extends BaseInvalidArgumentException implements Inval
     {
         $this->field = $field;
         $this->value = $value;
-        parent::__construct($field . ' : ' . $value . ' is not a valid value.', $code, $previous);
+        parent::__construct($field.' : '.$value.' is not a valid value.', $code, $previous);
     }
 
     /**

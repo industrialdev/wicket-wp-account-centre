@@ -28,7 +28,7 @@ class IcuResFileDumper extends FileDumper
 
         foreach ($messages->all($domain) as $source => $target) {
             $indexes .= pack('v', \strlen($data) + 28);
-            $data .= $source . "\0";
+            $data .= $source."\0";
         }
 
         $data .= $this->writePadding($data);
@@ -39,21 +39,22 @@ class IcuResFileDumper extends FileDumper
             $resources .= pack('V', $this->getPosition($data));
 
             $data .= pack('V', \strlen($target))
-                . mb_convert_encoding($target . "\0", 'UTF-16LE', 'UTF-8')
-                . $this->writePadding($data);
+                .mb_convert_encoding($target."\0", 'UTF-16LE', 'UTF-8')
+                .$this->writePadding($data)
+            ;
         }
 
         $resOffset = $this->getPosition($data);
 
         $data .= pack('v', \count($messages->all($domain)))
-            . $indexes
-            . $this->writePadding($data)
-            . $resources;
+            .$indexes
+            .$this->writePadding($data)
+            .$resources
+        ;
 
         $bundleTop = $this->getPosition($data);
 
-        $root = pack(
-            'V7',
+        $root = pack('V7',
             $resOffset + (2 << 28), // Resource Offset + Resource Type
             6,                      // Index length
             $keyTop,                        // Index keys top
@@ -63,30 +64,16 @@ class IcuResFileDumper extends FileDumper
             0                               // Index attributes
         );
 
-        $header = pack(
-            'vC2v4C12@32',
+        $header = pack('vC2v4C12@32',
             32,                     // Header size
-            0xDA,
-            0x27,             // Magic number 1 and 2
-            20,
-            0,
-            0,
-            2,            // Rest of the header, ..., Size of a char
-            0x52,
-            0x65,
-            0x73,
-            0x42, // Data format identifier
-            1,
-            2,
-            0,
-            0,             // Data version
-            1,
-            4,
-            0,
-            0              // Unicode version
+            0xDA, 0x27,             // Magic number 1 and 2
+            20, 0, 0, 2,            // Rest of the header, ..., Size of a char
+            0x52, 0x65, 0x73, 0x42, // Data format identifier
+            1, 2, 0, 0,             // Data version
+            1, 4, 0, 0              // Unicode version
         );
 
-        return $header . $root . $data;
+        return $header.$root.$data;
     }
 
     private function writePadding(string $data): ?string

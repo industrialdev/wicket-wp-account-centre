@@ -11,10 +11,10 @@
 
 namespace WicketAcc\Symfony\Component\Translation\Dumper;
 
-use Symfony\Component\Yaml\Yaml;
 use WicketAcc\Symfony\Component\Translation\Exception\LogicException;
 use WicketAcc\Symfony\Component\Translation\MessageCatalogue;
 use WicketAcc\Symfony\Component\Translation\Util\ArrayConverter;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * YamlFileDumper generates yaml files from a message catalogue.

@@ -4,14 +4,14 @@ namespace WicketAcc\Illuminate\Support\Facades;
 
 use Closure;
 use Illuminate\Database\Eloquent\Model;
-use Mockery;
-use Mockery\LegacyMockInterface;
-use RuntimeException;
 use WicketAcc\Illuminate\Support\Arr;
 use WicketAcc\Illuminate\Support\Js;
 use WicketAcc\Illuminate\Support\Number;
 use WicketAcc\Illuminate\Support\Str;
 use WicketAcc\Illuminate\Support\Testing\Fakes\Fake;
+use Mockery;
+use Mockery\LegacyMockInterface;
+use RuntimeException;
 
 abstract class Facade
 {
@@ -39,7 +39,7 @@ abstract class Facade
     /**
      * Run a Closure when the facade has been resolved.
      *
-     * @param  Closure  $callback
+     * @param  \Closure  $callback
      * @return void
      */
     public static function resolved(Closure $callback)
@@ -58,11 +58,11 @@ abstract class Facade
     /**
      * Convert the facade into a Mockery spy.
      *
-     * @return Mockery\MockInterface
+     * @return \Mockery\MockInterface
      */
     public static function spy()
     {
-        if (!static::isMock()) {
+        if (! static::isMock()) {
             $class = static::getMockableClass();
 
             return wicketacc_tap($class ? Mockery::spy($class) : Mockery::spy(), function ($spy) {
@@ -74,7 +74,7 @@ abstract class Facade
     /**
      * Initiate a partial mock on the facade.
      *
-     * @return Mockery\MockInterface
+     * @return \Mockery\MockInterface
      */
     public static function partialMock()
     {
@@ -90,7 +90,7 @@ abstract class Facade
     /**
      * Initiate a mock expectation on the facade.
      *
-     * @return Mockery\Expectation
+     * @return \Mockery\Expectation
      */
     public static function shouldReceive()
     {
@@ -106,7 +106,7 @@ abstract class Facade
     /**
      * Initiate a mock expectation on the facade.
      *
-     * @return Mockery\Expectation
+     * @return \Mockery\Expectation
      */
     public static function expects()
     {
@@ -122,7 +122,7 @@ abstract class Facade
     /**
      * Create a fresh mock instance for the given class.
      *
-     * @return Mockery\MockInterface
+     * @return \Mockery\MockInterface
      */
     protected static function createFreshMockInstance()
     {
@@ -136,7 +136,7 @@ abstract class Facade
     /**
      * Create a fresh mock instance for the given class.
      *
-     * @return Mockery\MockInterface
+     * @return \Mockery\MockInterface
      */
     protected static function createMock()
     {
@@ -213,7 +213,7 @@ abstract class Facade
      *
      * @return string
      *
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     protected static function getFacadeAccessor()
     {
@@ -342,13 +342,13 @@ abstract class Facade
      * @param  array  $args
      * @return mixed
      *
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     public static function __callStatic($method, $args)
     {
         $instance = static::getFacadeRoot();
 
-        if (!$instance) {
+        if (! $instance) {
             throw new RuntimeException('A facade root has not been set.');
         }
 

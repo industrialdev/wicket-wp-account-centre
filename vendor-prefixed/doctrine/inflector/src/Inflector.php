@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace WicketAcc\Doctrine\Inflector;
 
+use RuntimeException;
+
 use function chr;
 use function function_exists;
 use function lcfirst;
@@ -11,9 +13,6 @@ use function mb_strtolower;
 use function ord;
 use function preg_match;
 use function preg_replace;
-
-use RuntimeException;
-
 use function sprintf;
 use function str_replace;
 use function strlen;
@@ -224,7 +223,7 @@ class Inflector
     public function __construct(WordInflector $singularizer, WordInflector $pluralizer)
     {
         $this->singularizer = $singularizer;
-        $this->pluralizer = $pluralizer;
+        $this->pluralizer   = $pluralizer;
     }
 
     /**
@@ -440,7 +439,7 @@ class Inflector
 
     /**
      * Convert any passed string to a url friendly string.
-     * Converts 'My first blog post' to 'my-first-blog-post'.
+     * Converts 'My first blog post' to 'my-first-blog-post'
      *
      * @param  string $string String to urlize.
      *

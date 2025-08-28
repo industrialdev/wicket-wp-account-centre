@@ -68,7 +68,7 @@ class Pool implements PromisorInterface
     }
 
     /**
-     * Get promise.
+     * Get promise
      */
     public function promise(): PromiseInterface
     {
@@ -86,7 +86,7 @@ class Pool implements PromisorInterface
      * @param ClientInterface $client   Client used to send the requests
      * @param array|\Iterator $requests Requests to send concurrently.
      * @param array           $options  Passes through the options available in
-     *                                  @see Pool::__construct
+     *                                  {@see Pool::__construct}
      *
      * @return array Returns an array containing the response or an exception
      *               in the same order that the requests were sent.
@@ -106,7 +106,7 @@ class Pool implements PromisorInterface
     }
 
     /**
-     * Execute callback(s).
+     * Execute callback(s)
      */
     private static function cmpCallback(array &$options, string $name, array &$results): void
     {

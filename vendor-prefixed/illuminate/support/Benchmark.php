@@ -9,7 +9,7 @@ class Benchmark
     /**
      * Measure a callable or array of callables over the given number of iterations.
      *
-     * @param  Closure|array  $benchmarkables
+     * @param  \Closure|array  $benchmarkables
      * @param  int  $iterations
      * @return array|float
      */
@@ -54,14 +54,14 @@ class Benchmark
     /**
      * Measure a callable or array of callables over the given number of iterations, then dump and die.
      *
-     * @param  Closure|array  $benchmarkables
+     * @param  \Closure|array  $benchmarkables
      * @param  int  $iterations
      * @return never
      */
     public static function dd(Closure|array $benchmarkables, int $iterations = 1): void
     {
         $result = wicketacc_collect(static::measure(Arr::wrap($benchmarkables), $iterations))
-            ->map(fn ($average) => number_format($average, 3) . 'ms')
+            ->map(fn ($average) => number_format($average, 3).'ms')
             ->when($benchmarkables instanceof Closure, fn ($c) => $c->first(), fn ($c) => $c->all());
 
         dd($result);

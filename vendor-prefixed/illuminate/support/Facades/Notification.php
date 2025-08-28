@@ -38,19 +38,19 @@ use WicketAcc\Illuminate\Support\Testing\Fakes\NotificationFake;
  * @method static bool hasMacro(string $name)
  * @method static void flushMacros()
  *
- * @see ChannelManager
- * @see NotificationFake
+ * @see \Illuminate\Notifications\ChannelManager
+ * @see \WicketAcc\Illuminate\Support\Testing\Fakes\NotificationFake
  */
 class Notification extends Facade
 {
     /**
      * Replace the bound instance with a fake.
      *
-     * @return NotificationFake
+     * @return \WicketAcc\Illuminate\Support\Testing\Fakes\NotificationFake
      */
     public static function fake()
     {
-        return wicketacc_tap(new NotificationFake(), function ($fake) {
+        return wicketacc_tap(new NotificationFake, function ($fake) {
             static::swap($fake);
         });
     }
@@ -59,11 +59,11 @@ class Notification extends Facade
      * Begin sending a notification to an anonymous notifiable on the given channels.
      *
      * @param  array  $channels
-     * @return AnonymousNotifiable
+     * @return \Illuminate\Notifications\AnonymousNotifiable
      */
     public static function routes(array $channels)
     {
-        $notifiable = new AnonymousNotifiable();
+        $notifiable = new AnonymousNotifiable;
 
         foreach ($channels as $channel => $route) {
             $notifiable->route($channel, $route);
@@ -77,11 +77,11 @@ class Notification extends Facade
      *
      * @param  string  $channel
      * @param  mixed  $route
-     * @return AnonymousNotifiable
+     * @return \Illuminate\Notifications\AnonymousNotifiable
      */
     public static function route($channel, $route)
     {
-        return (new AnonymousNotifiable())->route($channel, $route);
+        return (new AnonymousNotifiable)->route($channel, $route);
     }
 
     /**

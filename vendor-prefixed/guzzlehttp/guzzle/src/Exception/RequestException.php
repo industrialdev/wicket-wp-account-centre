@@ -9,7 +9,7 @@ use WicketAcc\Psr\Http\Message\RequestInterface;
 use WicketAcc\Psr\Http\Message\ResponseInterface;
 
 /**
- * HTTP Request exception.
+ * HTTP Request exception
  */
 class RequestException extends TransferException implements RequestExceptionInterface
 {
@@ -44,15 +44,15 @@ class RequestException extends TransferException implements RequestExceptionInte
     }
 
     /**
-     * Wrap non-RequestExceptions with a RequestException.
+     * Wrap non-RequestExceptions with a RequestException
      */
-    public static function wrapException(RequestInterface $request, \Throwable $e): self
+    public static function wrapException(RequestInterface $request, \Throwable $e): RequestException
     {
-        return $e instanceof self ? $e : new self($e->getMessage(), $request, null, $e);
+        return $e instanceof RequestException ? $e : new RequestException($e->getMessage(), $request, null, $e);
     }
 
     /**
-     * Factory method to create a new exception with a normalized error message.
+     * Factory method to create a new exception with a normalized error message
      *
      * @param RequestInterface             $request        Request sent
      * @param ResponseInterface            $response       Response received
@@ -112,7 +112,7 @@ class RequestException extends TransferException implements RequestExceptionInte
     }
 
     /**
-     * Get the request that caused the exception.
+     * Get the request that caused the exception
      */
     public function getRequest(): RequestInterface
     {
@@ -120,7 +120,7 @@ class RequestException extends TransferException implements RequestExceptionInte
     }
 
     /**
-     * Get the associated response.
+     * Get the associated response
      */
     public function getResponse(): ?ResponseInterface
     {
@@ -128,7 +128,7 @@ class RequestException extends TransferException implements RequestExceptionInte
     }
 
     /**
-     * Check if a response was received.
+     * Check if a response was received
      */
     public function hasResponse(): bool
     {

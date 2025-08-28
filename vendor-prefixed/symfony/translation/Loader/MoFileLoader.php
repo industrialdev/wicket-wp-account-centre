@@ -71,7 +71,7 @@ class MoFileLoader extends FileLoader
 
         $messages = [];
 
-        for ($i = 0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; ++$i) {
             $pluralId = null;
             $translated = null;
 
@@ -112,7 +112,7 @@ class MoFileLoader extends FileLoader
             if (!empty($item['ids']['singular'])) {
                 $id = $item['ids']['singular'];
                 if (isset($item['ids']['plural'])) {
-                    $id .= '|' . $item['ids']['plural'];
+                    $id .= '|'.$item['ids']['plural'];
                 }
                 $messages[$id] = stripcslashes(implode('|', (array) $item['translated']));
             }

@@ -3,36 +3,32 @@
 namespace WicketAcc\Wicket;
 
 use Exception;
-use Prophecy\Exception\Doubler\ClassNotFoundException;
 use WicketAcc\Illuminate\Support\Collection;
 use WicketAcc\Illuminate\Support\Str;
+use Prophecy\Exception\Doubler\ClassNotFoundException;
 use WicketAcc\Wicket\Entities\Base;
 use WicketAcc\Wicket\Entities\Factory;
-
 class ApiResource
 {
     private $client;
     private $entity;
-
     /**
      * ApiResource constructor.
-     * @param Client $client
+     * @param \WicketAcc\Wicket\Client $client
      * @param $entity
      */
     public function __construct(Client $client, $entity)
     {
         $this->client = $client;
-        $entity_class = implode('\\', [__NAMESPACE__, 'Entities', Str::studly($entity)]);
+        $entity_class = join('\\', [__NAMESPACE__, 'Entities', Str::studly($entity)]);
         try {
             $entity_class = new $entity_class();
             $this->entity = $entity;
         } catch (Exception $e) {
             throw new ClassNotFoundException($e->getMessage(), $entity_class);
         }
-
         return $entity_class;
     }
-
     /**
      * @return \WicketCollection A WicketCollection that may be pageable.
      */
@@ -40,10 +36,8 @@ class ApiResource
     {
         $response = $this->client->get($this->entity, $args);
         $response = new WicketCollection($response, $this->client);
-
         return $response;
     }
-
     public function fetch($id)
     {
         $result = $this->client->get($this->entity . '/' . $id);
@@ -56,10 +50,8 @@ class ApiResource
         if (!empty($included)) {
             $result->addIncluded($included);
         }
-
         return $result;
     }
-
     public function create(Base $entity, $parent_tree = null)
     {
         $entity_create_url = '';
@@ -77,10 +69,8 @@ class ApiResource
         $entity_create_url .= '/' . $entity->type;
         $payload = ['json' => $entity->toJsonAPI()];
         $res = $this->client->post(ltrim($entity_create_url, '/'), $payload);
-
         return $res;
     }
-
     public function update(Base $entity, $parent_tree = null)
     {
         $entity_create_url = '';
@@ -98,10 +88,8 @@ class ApiResource
         $entity_create_url .= '/' . $entity->type;
         $payload = ['json' => $entity->toJsonAPI()];
         $res = $this->client->patch(ltrim($entity_create_url, '/') . '/' . $entity->id, $payload);
-
         return $res;
     }
-
     public function delete()
     {
         // TODO: Implement delete() method.

@@ -11,9 +11,9 @@
 
 namespace WicketAcc\Carbon\Traits;
 
+use WicketAcc\Carbon\CarbonInterface;
 use DateTimeInterface;
 use Throwable;
-use WicketAcc\Carbon\CarbonInterface;
 
 /**
  * Trait Options.
@@ -250,7 +250,7 @@ trait Options
 
     /**
      * Returns true if the strict mode is globally in use, false else.
-     * (It can be overridden in specific instances.).
+     * (It can be overridden in specific instances.)
      *
      * @return bool
      */
@@ -358,7 +358,7 @@ trait Options
      *  - locale: string|null
      *  - timezone: \DateTimeZone|string|int|null
      *  - macros: array|null
-     *  - genericMacros: array|null.
+     *  - genericMacros: array|null
      *
      * @param array $settings
      *

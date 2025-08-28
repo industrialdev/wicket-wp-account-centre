@@ -90,7 +90,7 @@ use Illuminate\Http\Client\Factory;
  * @method static \Illuminate\Http\Client\PendingRequest|mixed when(\Closure|mixed|null $value = null, callable|null $callback = null, callable|null $default = null)
  * @method static \Illuminate\Http\Client\PendingRequest|mixed unless(\Closure|mixed|null $value = null, callable|null $callback = null, callable|null $default = null)
  *
- * @see Factory
+ * @see \Illuminate\Http\Client\Factory
  */
 class Http extends Facade
 {
@@ -108,7 +108,7 @@ class Http extends Facade
      * Register a stub callable that will intercept requests and be able to return stub responses.
      *
      * @param  \Closure|array  $callback
-     * @return Factory
+     * @return \Illuminate\Http\Client\Factory
      */
     public static function fake($callback = null)
     {
@@ -135,7 +135,7 @@ class Http extends Facade
     /**
      * Indicate that an exception should be thrown if any request is not faked.
      *
-     * @return Factory
+     * @return \Illuminate\Http\Client\Factory
      */
     public static function preventStrayRequests()
     {
@@ -149,7 +149,7 @@ class Http extends Facade
      *
      * @param  string  $url
      * @param  \Illuminate\Http\Client\Response|\WicketAcc\GuzzleHttp\Promise\PromiseInterface|callable  $callback
-     * @return Factory
+     * @return \Illuminate\Http\Client\Factory
      */
     public static function stubUrl($url, $callback)
     {

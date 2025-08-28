@@ -45,7 +45,7 @@ use Illuminate\Process\Factory;
  * @method static mixed macroCall(string $method, array $parameters)
  *
  * @see \Illuminate\Process\PendingProcess
- * @see Factory
+ * @see \Illuminate\Process\Factory
  */
 class Process extends Facade
 {
@@ -62,8 +62,8 @@ class Process extends Facade
     /**
      * Indicate that the process factory should fake processes.
      *
-     * @param  Closure|array|null  $callback
-     * @return Factory
+     * @param  \Closure|array|null  $callback
+     * @return \Illuminate\Process\Factory
      */
     public static function fake(Closure|array|null $callback = null)
     {

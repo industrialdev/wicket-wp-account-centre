@@ -3,8 +3,8 @@
 namespace WicketAcc\Illuminate\Support\Facades;
 
 use Illuminate\Bus\BatchRepository;
-use Illuminate\Foundation\Bus\PendingChain;
 use WicketAcc\Illuminate\Contracts\Bus\Dispatcher as BusDispatcherContract;
+use Illuminate\Foundation\Bus\PendingChain;
 use WicketAcc\Illuminate\Support\Testing\Fakes\BusFake;
 
 /**
@@ -49,7 +49,7 @@ use WicketAcc\Illuminate\Support\Testing\Fakes\BusFake;
  * @method static \WicketAcc\Illuminate\Support\Testing\Fakes\BusFake serializeAndRestore(bool $serializeAndRestore = true)
  *
  * @see \Illuminate\Bus\Dispatcher
- * @see BusFake
+ * @see \WicketAcc\Illuminate\Support\Testing\Fakes\BusFake
  */
 class Bus extends Facade
 {
@@ -57,8 +57,8 @@ class Bus extends Facade
      * Replace the bound instance with a fake.
      *
      * @param  array|string  $jobsToFake
-     * @param  BatchRepository|null  $batchRepository
-     * @return BusFake
+     * @param  \Illuminate\Bus\BatchRepository|null  $batchRepository
+     * @return \WicketAcc\Illuminate\Support\Testing\Fakes\BusFake
      */
     public static function fake($jobsToFake = [], ?BatchRepository $batchRepository = null)
     {

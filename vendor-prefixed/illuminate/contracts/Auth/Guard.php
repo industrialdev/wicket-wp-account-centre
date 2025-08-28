@@ -21,7 +21,7 @@ interface Guard
     /**
      * Get the currently authenticated user.
      *
-     * @return Authenticatable|null
+     * @return \WicketAcc\Illuminate\Contracts\Auth\Authenticatable|null
      */
     public function user();
 
@@ -50,7 +50,7 @@ interface Guard
     /**
      * Set the current user.
      *
-     * @param  Authenticatable  $user
+     * @param  \WicketAcc\Illuminate\Contracts\Auth\Authenticatable  $user
      * @return void
      */
     public function setUser(Authenticatable $user);

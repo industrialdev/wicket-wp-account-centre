@@ -11,9 +11,9 @@
 
 namespace WicketAcc\Carbon\Traits;
 
-use DateInterval;
 use WicketAcc\Carbon\CarbonInterval;
 use WicketAcc\Carbon\Exceptions\InvalidIntervalException;
+use DateInterval;
 
 /**
  * Trait to call rounding methods to interval or the interval of a period.
@@ -29,7 +29,7 @@ trait IntervalRounding
         }
 
         if (\in_array($action, ['round', 'floor', 'ceil'])) {
-            return $this->{$action . 'Unit'}(substr($method, \strlen($action)), ...$parameters);
+            return $this->{$action.'Unit'}(substr($method, \strlen($action)), ...$parameters);
         }
 
         return null;

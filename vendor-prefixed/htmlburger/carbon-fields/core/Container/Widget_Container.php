@@ -5,117 +5,108 @@ namespace Carbon_Fields\Container;
 use Carbon_Fields\Helper\Helper;
 
 /**
- * Widget container class.
+ * Widget container class
  */
-class Widget_Container extends Container
-{
-    /**
-     * @inheritDoc
-     */
-    public function __construct($id, $title, $type, $condition_collection, $condition_translator)
-    {
-        parent::__construct($id, $title, $type, $condition_collection, $condition_translator);
+class Widget_Container extends Container {
 
-        $this->title = '';
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public function __construct( $id, $title, $type, $condition_collection, $condition_translator ) {
+		parent::__construct( $id, $title, $type, $condition_collection, $condition_translator );
 
-    /**
-     * Perform instance initialization.
-     */
-    public function init()
-    {
-        $this->_attach();
+		$this->title = '';
+	}
 
-        return $this;
-    }
+	/**
+	 * Perform instance initialization
+	 */
+	public function init() {
+		$this->_attach();
 
-    /**
-     * Get environment array for page request (in admin).
-     *
-     * @return array
-     */
-    protected function get_environment_for_request()
-    {
-        return [];
-    }
+		return $this;
+	}
 
-    /**
-     * Perform checks whether the container should be attached during the current request.
-     *
-     * @return bool True if the container is allowed to be attached
-     */
-    public function is_valid_attach_for_request()
-    {
-        if ((did_action('rest_api_init') || doing_action('rest_api_init')) && !defined('WP_ADMIN')) {
-            // Widgets should be attached in REST API only outside the Administration area
-            // Several 3rd party plugins register REST API in the Administration area, which causes issues
-            // with the widgets initialization
-            return true;
-        }
+	/**
+	 * Get environment array for page request (in admin)
+	 *
+	 * @return array
+	 */
+	protected function get_environment_for_request() {
+		return array();
+	}
 
-        $screen = get_current_screen();
-        $input = Helper::input();
-        $request_action = $input['action'] ?? '';
-        $is_widget_save = ($request_action === 'save-widget');
+	/**
+	 * Perform checks whether the container should be attached during the current request
+	 *
+	 * @return bool True if the container is allowed to be attached
+	 */
+	public function is_valid_attach_for_request() {
+		if ( ( did_action( 'rest_api_init' ) || doing_action( 'rest_api_init' ) ) && ! defined( 'WP_ADMIN' ) ) {
+			// Widgets should be attached in REST API only outside the Administration area
+			// Several 3rd party plugins register REST API in the Administration area, which causes issues
+			// with the widgets initialization
+			return true;
+		}
 
-        if ((!$screen || !in_array($screen->id, ['widgets', 'customize'])) && !$is_widget_save) {
-            return false;
-        }
+		$screen = get_current_screen();
+		$input = Helper::input();
+		$request_action = isset( $input['action'] ) ? $input['action'] : '';
+		$is_widget_save = ( $request_action === 'save-widget' );
 
-        return $this->static_conditions_pass();
-    }
+		if ( ( ! $screen || ! in_array( $screen->id, array( 'widgets', 'customize' ) ) ) && ! $is_widget_save ) {
+			return false;
+		}
 
-    /**
-     * Get environment array for object id.
-     *
-     * @return array
-     */
-    protected function get_environment_for_object($object_id)
-    {
-        return [];
-    }
+		return $this->static_conditions_pass();
+	}
 
-    /**
-     * Check container attachment rules against object id.
-     *
-     * @param int $object_id
-     * @return bool
-     */
-    public function is_valid_attach_for_object($object_id = null)
-    {
-        return $this->all_conditions_pass(intval($object_id));
-    }
+	/**
+	 * Get environment array for object id
+	 *
+	 * @return array
+	 */
+	protected function get_environment_for_object( $object_id ) {
+		return array();
+	}
 
-    /* Checks whether the current save request is valid
-     *
-     * @return bool
-     */
-    public function is_valid_save()
-    {
-        if (!$this->is_valid_attach_for_request()) {
-            return false;
-        }
-        $params = func_get_args();
+	/**
+	 * Check container attachment rules against object id
+	 *
+	 * @param int $object_id
+	 * @return bool
+	 */
+	public function is_valid_attach_for_object( $object_id = null ) {
+		return $this->all_conditions_pass( intval( $object_id ) );
+	}
 
-        return $this->is_valid_attach_for_object($params[0]);
-    }
+	/* Checks whether the current save request is valid
+	 *
+	 * @return bool
+	 */
+	public function is_valid_save() {
+		if ( ! $this->is_valid_attach_for_request() ) {
+			return false;
+		}
+		$params = func_get_args();
+		return $this->is_valid_attach_for_object( $params[0] );
+	}
 
-    /**
-     * Output the container markup.
-     */
-    public function render()
-    {
-        include \Carbon_Fields\DIR . '/templates/Container/widget.php';
-    }
+	/**
+	 * Output the container markup
+	 */
+	public function render() {
+		include \Carbon_Fields\DIR . '/templates/Container/widget.php';
+	}
 
-    /**
-     * Returns an array that holds the container data, suitable for JSON representation.
-     *
-     * @param bool $load  Should the value be loaded from the database or use the value from the current instance.
-     * @return array
-     */
-    public function to_json($load)
-    {
-        return parent::to_json(false);
-    }
+	/**
+	 * Returns an array that holds the container data, suitable for JSON representation.
+	 *
+	 * @param bool $load  Should the value be loaded from the database or use the value from the current instance.
+	 * @return array
+	 */
+	public function to_json( $load ) {
+		return parent::to_json( false );
+	}
 }
+

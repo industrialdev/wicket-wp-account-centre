@@ -11,14 +11,14 @@ class PendingChainFake extends PendingChain
     /**
      * The fake bus instance.
      *
-     * @var BusFake
+     * @var \WicketAcc\Illuminate\Support\Testing\Fakes\BusFake
      */
     protected $bus;
 
     /**
      * Create a new pending chain instance.
      *
-     * @param  BusFake  $bus
+     * @param  \WicketAcc\Illuminate\Support\Testing\Fakes\BusFake  $bus
      * @param  mixed  $job
      * @param  array  $chain
      * @return void

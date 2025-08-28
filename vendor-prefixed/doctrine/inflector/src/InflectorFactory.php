@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace WicketAcc\Doctrine\Inflector;
 
-use InvalidArgumentException;
-
-use function sprintf;
-
 use WicketAcc\Doctrine\Inflector\Rules\English;
 use WicketAcc\Doctrine\Inflector\Rules\Esperanto;
 use WicketAcc\Doctrine\Inflector\Rules\French;
@@ -16,6 +12,9 @@ use WicketAcc\Doctrine\Inflector\Rules\NorwegianBokmal;
 use WicketAcc\Doctrine\Inflector\Rules\Portuguese;
 use WicketAcc\Doctrine\Inflector\Rules\Spanish;
 use WicketAcc\Doctrine\Inflector\Rules\Turkish;
+use InvalidArgumentException;
+
+use function sprintf;
 
 final class InflectorFactory
 {

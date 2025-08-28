@@ -11,11 +11,11 @@
 
 namespace WicketAcc\Symfony\Component\Translation\Loader;
 
+use WicketAcc\Symfony\Component\Translation\Exception\InvalidResourceException;
+use WicketAcc\Symfony\Component\Translation\Exception\LogicException;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Parser as YamlParser;
 use Symfony\Component\Yaml\Yaml;
-use WicketAcc\Symfony\Component\Translation\Exception\InvalidResourceException;
-use WicketAcc\Symfony\Component\Translation\Exception\LogicException;
 
 /**
  * YamlFileLoader loads translations from Yaml files.
@@ -39,7 +39,7 @@ class YamlFileLoader extends FileLoader
         try {
             $messages = $this->yamlParser->parseFile($resource, Yaml::PARSE_CONSTANT);
         } catch (ParseException $e) {
-            throw new InvalidResourceException(\sprintf('The file "%s" does not contain valid YAML: ', $resource) . $e->getMessage(), 0, $e);
+            throw new InvalidResourceException(\sprintf('The file "%s" does not contain valid YAML: ', $resource).$e->getMessage(), 0, $e);
         }
 
         if (null !== $messages && !\is_array($messages)) {

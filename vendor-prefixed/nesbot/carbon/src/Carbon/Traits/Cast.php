@@ -11,8 +11,8 @@
 
 namespace WicketAcc\Carbon\Traits;
 
-use DateTimeInterface;
 use WicketAcc\Carbon\Exceptions\InvalidCastException;
+use DateTimeInterface;
 
 /**
  * Trait Cast.

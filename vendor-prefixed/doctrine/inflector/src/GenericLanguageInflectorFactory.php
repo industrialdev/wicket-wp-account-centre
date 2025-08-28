@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace WicketAcc\Doctrine\Inflector;
 
-use function array_unshift;
-
 use WicketAcc\Doctrine\Inflector\Rules\Ruleset;
+
+use function array_unshift;
 
 abstract class GenericLanguageInflectorFactory implements LanguageInflectorFactory
 {
@@ -19,7 +19,7 @@ abstract class GenericLanguageInflectorFactory implements LanguageInflectorFacto
     final public function __construct()
     {
         $this->singularRulesets[] = $this->getSingularRuleset();
-        $this->pluralRulesets[] = $this->getPluralRuleset();
+        $this->pluralRulesets[]   = $this->getPluralRuleset();
     }
 
     final public function build(): Inflector

@@ -33,7 +33,7 @@ final class TranslationProviderCollection
 
     public function __toString(): string
     {
-        return '[' . implode(',', array_keys($this->providers)) . ']';
+        return '['.implode(',', array_keys($this->providers)).']';
     }
 
     public function has(string $name): bool

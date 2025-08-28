@@ -23,7 +23,8 @@ final class ConstraintVisitor extends AbstractVisitor implements NodeVisitor
 {
     public function __construct(
         private readonly array $constraintClassNames = [],
-    ) {}
+    ) {
+    }
 
     public function beforeTraverse(array $nodes): ?Node
     {

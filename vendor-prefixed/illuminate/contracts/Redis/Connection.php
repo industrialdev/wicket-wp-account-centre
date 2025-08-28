@@ -10,7 +10,7 @@ interface Connection
      * Subscribe to a set of given channels for messages.
      *
      * @param  array|string  $channels
-     * @param  Closure  $callback
+     * @param  \Closure  $callback
      * @return void
      */
     public function subscribe($channels, Closure $callback);
@@ -19,7 +19,7 @@ interface Connection
      * Subscribe to a set of given channels with wildcards.
      *
      * @param  array|string  $channels
-     * @param  Closure  $callback
+     * @param  \Closure  $callback
      * @return void
      */
     public function psubscribe($channels, Closure $callback);

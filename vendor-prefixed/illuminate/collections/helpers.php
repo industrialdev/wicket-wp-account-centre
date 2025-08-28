@@ -3,7 +3,7 @@
 use WicketAcc\Illuminate\Support\Arr;
 use WicketAcc\Illuminate\Support\Collection;
 
-if (!function_exists('wicketacc_collect')) {
+if (! function_exists('wicketacc_collect')) {
     /**
      * Create a collection from the given value.
      *
@@ -19,7 +19,7 @@ if (!function_exists('wicketacc_collect')) {
     }
 }
 
-if (!function_exists('wicketacc_data_fill')) {
+if (! function_exists('wicketacc_data_fill')) {
     /**
      * Fill in data where it's missing.
      *
@@ -34,7 +34,7 @@ if (!function_exists('wicketacc_data_fill')) {
     }
 }
 
-if (!function_exists('wicketacc_data_get')) {
+if (! function_exists('wicketacc_data_get')) {
     /**
      * Get an item from an array or object using "dot" notation.
      *
@@ -61,7 +61,7 @@ if (!function_exists('wicketacc_data_get')) {
             if ($segment === '*') {
                 if ($target instanceof Collection) {
                     $target = $target->all();
-                } elseif (!is_iterable($target)) {
+                } elseif (! is_iterable($target)) {
                     return wicketacc_value($default);
                 }
 
@@ -87,7 +87,7 @@ if (!function_exists('wicketacc_data_get')) {
     }
 }
 
-if (!function_exists('wicketacc_data_set')) {
+if (! function_exists('wicketacc_data_set')) {
     /**
      * Set an item on an array or object using dot notation.
      *
@@ -102,7 +102,7 @@ if (!function_exists('wicketacc_data_set')) {
         $segments = is_array($key) ? $key : explode('.', $key);
 
         if (($segment = array_shift($segments)) === '*') {
-            if (!Arr::accessible($target)) {
+            if (! Arr::accessible($target)) {
                 $target = [];
             }
 
@@ -117,22 +117,22 @@ if (!function_exists('wicketacc_data_set')) {
             }
         } elseif (Arr::accessible($target)) {
             if ($segments) {
-                if (!Arr::exists($target, $segment)) {
+                if (! Arr::exists($target, $segment)) {
                     $target[$segment] = [];
                 }
 
                 wicketacc_data_set($target[$segment], $segments, $value, $overwrite);
-            } elseif ($overwrite || !Arr::exists($target, $segment)) {
+            } elseif ($overwrite || ! Arr::exists($target, $segment)) {
                 $target[$segment] = $value;
             }
         } elseif (is_object($target)) {
             if ($segments) {
-                if (!isset($target->{$segment})) {
+                if (! isset($target->{$segment})) {
                     $target->{$segment} = [];
                 }
 
                 wicketacc_data_set($target->{$segment}, $segments, $value, $overwrite);
-            } elseif ($overwrite || !isset($target->{$segment})) {
+            } elseif ($overwrite || ! isset($target->{$segment})) {
                 $target->{$segment} = $value;
             }
         } else {
@@ -149,7 +149,7 @@ if (!function_exists('wicketacc_data_set')) {
     }
 }
 
-if (!function_exists('wicketacc_data_forget')) {
+if (! function_exists('wicketacc_data_forget')) {
     /**
      * Remove / unset an item from an array or object using "dot" notation.
      *
@@ -185,7 +185,7 @@ if (!function_exists('wicketacc_data_forget')) {
     }
 }
 
-if (!function_exists('wicketacc_head')) {
+if (! function_exists('wicketacc_head')) {
     /**
      * Get the first element of an array. Useful for method chaining.
      *
@@ -198,7 +198,7 @@ if (!function_exists('wicketacc_head')) {
     }
 }
 
-if (!function_exists('wicketacc_last')) {
+if (! function_exists('wicketacc_last')) {
     /**
      * Get the last element from an array.
      *
@@ -211,7 +211,7 @@ if (!function_exists('wicketacc_last')) {
     }
 }
 
-if (!function_exists('wicketacc_value')) {
+if (! function_exists('wicketacc_value')) {
     /**
      * Return the default value of the given value.
      *

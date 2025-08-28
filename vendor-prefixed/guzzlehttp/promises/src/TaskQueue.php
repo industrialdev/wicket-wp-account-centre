@@ -48,7 +48,7 @@ class TaskQueue implements TaskQueueInterface
     public function run(): void
     {
         while ($task = array_shift($this->queue)) {
-            /* @var callable $task */
+            /** @var callable $task */
             $task();
         }
     }

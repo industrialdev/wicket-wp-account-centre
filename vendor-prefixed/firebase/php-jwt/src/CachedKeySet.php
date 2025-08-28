@@ -8,10 +8,10 @@ use LogicException;
 use OutOfBoundsException;
 use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
-use RuntimeException;
-use UnexpectedValueException;
 use WicketAcc\Psr\Http\Client\ClientInterface;
 use WicketAcc\Psr\Http\Message\RequestFactoryInterface;
+use RuntimeException;
+use UnexpectedValueException;
 
 /**
  * @implements ArrayAccess<string, Key>
@@ -103,7 +103,6 @@ class CachedKeySet implements ArrayAccess
         if (!$this->keyIdExists($keyId)) {
             throw new OutOfBoundsException('Key ID not found');
         }
-
         return JWK::parseKey($this->keySet[$keyId], $this->defaultAlg);
     }
 
@@ -150,7 +149,7 @@ class CachedKeySet implements ArrayAccess
 
         $keys = [];
         foreach ($jwks['keys'] as $k => $v) {
-            $kid = $v['kid'] ?? $k;
+            $kid = isset($v['kid']) ? $v['kid'] : $k;
             $keys[(string) $kid] = $v;
         }
 
@@ -181,8 +180,7 @@ class CachedKeySet implements ArrayAccess
             $jwksResponse = $this->httpClient->sendRequest($request);
             if ($jwksResponse->getStatusCode() !== 200) {
                 throw new UnexpectedValueException(
-                    \sprintf(
-                        'HTTP Error: %d %s for URI "%s"',
+                    \sprintf('HTTP Error: %d %s for URI "%s"',
                         $jwksResponse->getStatusCode(),
                         $jwksResponse->getReasonPhrase(),
                         $this->jwksUri,
@@ -230,7 +228,6 @@ class CachedKeySet implements ArrayAccess
         $cacheItem->set(['expiry' => $expiry, 'callsPerMinute' => $callsPerMinute]);
         $cacheItem->expiresAt($expiry);
         $this->cache->save($cacheItem);
-
         return false;
     }
 

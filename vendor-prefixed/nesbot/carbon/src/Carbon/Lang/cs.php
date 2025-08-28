@@ -32,7 +32,7 @@
  * - Karel Sommer (calvera)
  */
 $za = function ($time) {
-    return 'za ' . strtr($time, [
+    return 'za '.strtr($time, [
         'hodina' => 'hodinu',
         'minuta' => 'minutu',
         'sekunda' => 'sekundu',

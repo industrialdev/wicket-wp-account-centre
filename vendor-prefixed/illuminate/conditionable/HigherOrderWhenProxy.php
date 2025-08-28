@@ -76,10 +76,10 @@ class HigherOrderWhenProxy
      */
     public function __get($key)
     {
-        if (!$this->hasCondition) {
+        if (! $this->hasCondition) {
             $condition = $this->target->{$key};
 
-            return $this->condition($this->negateConditionOnCapture ? !$condition : $condition);
+            return $this->condition($this->negateConditionOnCapture ? ! $condition : $condition);
         }
 
         return $this->condition
@@ -96,10 +96,10 @@ class HigherOrderWhenProxy
      */
     public function __call($method, $parameters)
     {
-        if (!$this->hasCondition) {
+        if (! $this->hasCondition) {
             $condition = $this->target->{$method}(...$parameters);
 
-            return $this->condition($this->negateConditionOnCapture ? !$condition : $condition);
+            return $this->condition($this->negateConditionOnCapture ? ! $condition : $condition);
         }
 
         return $this->condition

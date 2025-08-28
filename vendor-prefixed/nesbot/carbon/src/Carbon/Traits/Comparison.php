@@ -12,9 +12,9 @@
 namespace WicketAcc\Carbon\Traits;
 
 use BadMethodCallException;
-use InvalidArgumentException;
 use WicketAcc\Carbon\CarbonInterface;
 use WicketAcc\Carbon\Exceptions\BadComparisonUnitException;
+use InvalidArgumentException;
 
 /**
  * Trait Comparison.
@@ -39,7 +39,7 @@ trait Comparison
     protected $startOfTime = false;
 
     /**
-     * Determines if the instance is equal to another.
+     * Determines if the instance is equal to another
      *
      * @example
      * ```
@@ -60,7 +60,7 @@ trait Comparison
     }
 
     /**
-     * Determines if the instance is equal to another.
+     * Determines if the instance is equal to another
      *
      * @example
      * ```
@@ -82,7 +82,7 @@ trait Comparison
     }
 
     /**
-     * Determines if the instance is not equal to another.
+     * Determines if the instance is not equal to another
      *
      * @example
      * ```
@@ -103,7 +103,7 @@ trait Comparison
     }
 
     /**
-     * Determines if the instance is not equal to another.
+     * Determines if the instance is not equal to another
      *
      * @example
      * ```
@@ -122,7 +122,7 @@ trait Comparison
     }
 
     /**
-     * Determines if the instance is greater (after) than another.
+     * Determines if the instance is greater (after) than another
      *
      * @example
      * ```
@@ -143,7 +143,7 @@ trait Comparison
     }
 
     /**
-     * Determines if the instance is greater (after) than another.
+     * Determines if the instance is greater (after) than another
      *
      * @example
      * ```
@@ -165,7 +165,7 @@ trait Comparison
     }
 
     /**
-     * Determines if the instance is greater (after) than another.
+     * Determines if the instance is greater (after) than another
      *
      * @example
      * ```
@@ -186,7 +186,7 @@ trait Comparison
     }
 
     /**
-     * Determines if the instance is greater (after) than or equal to another.
+     * Determines if the instance is greater (after) than or equal to another
      *
      * @example
      * ```
@@ -207,7 +207,7 @@ trait Comparison
     }
 
     /**
-     * Determines if the instance is greater (after) than or equal to another.
+     * Determines if the instance is greater (after) than or equal to another
      *
      * @example
      * ```
@@ -229,7 +229,7 @@ trait Comparison
     }
 
     /**
-     * Determines if the instance is less (before) than another.
+     * Determines if the instance is less (before) than another
      *
      * @example
      * ```
@@ -250,7 +250,7 @@ trait Comparison
     }
 
     /**
-     * Determines if the instance is less (before) than another.
+     * Determines if the instance is less (before) than another
      *
      * @example
      * ```
@@ -272,7 +272,7 @@ trait Comparison
     }
 
     /**
-     * Determines if the instance is less (before) than another.
+     * Determines if the instance is less (before) than another
      *
      * @example
      * ```
@@ -293,7 +293,7 @@ trait Comparison
     }
 
     /**
-     * Determines if the instance is less (before) or equal to another.
+     * Determines if the instance is less (before) or equal to another
      *
      * @example
      * ```
@@ -314,7 +314,7 @@ trait Comparison
     }
 
     /**
-     * Determines if the instance is less (before) or equal to another.
+     * Determines if the instance is less (before) or equal to another
      *
      * @example
      * ```
@@ -413,7 +413,7 @@ trait Comparison
     }
 
     /**
-     * Determines if the instance is between two others.
+     * Determines if the instance is between two others
      *
      * @example
      * ```
@@ -694,7 +694,7 @@ trait Comparison
      */
     public function isCurrentUnit($unit)
     {
-        return $this->{'isSame' . ucfirst($unit)}();
+        return $this->{'isSame'.ucfirst($unit)}();
     }
 
     /**
@@ -758,7 +758,7 @@ trait Comparison
      */
     public function isDayOfWeek($dayOfWeek)
     {
-        if (\is_string($dayOfWeek) && \defined($constant = static::class . '::' . strtoupper($dayOfWeek))) {
+        if (\is_string($dayOfWeek) && \defined($constant = static::class.'::'.strtoupper($dayOfWeek))) {
             $dayOfWeek = \constant($constant);
         }
 
@@ -786,7 +786,7 @@ trait Comparison
     }
 
     /**
-     * Check if today is the last day of the Month.
+     * Check if today is the last day of the Month
      *
      * @example
      * ```
@@ -887,7 +887,7 @@ trait Comparison
     public function isMidday()
     {
         /* @var CarbonInterface $this */
-        return $this->rawFormat('G:i:s') === static::$midDayAt . ':00:00';
+        return $this->rawFormat('G:i:s') === static::$midDayAt.':00:00';
     }
 
     /**
@@ -1003,7 +1003,7 @@ trait Comparison
         }
 
         if (preg_match('/^\d{1,2}-\d{1,2}$/', $tester)) {
-            return $this->isSameDay(static::parse($this->year . '-' . $tester));
+            return $this->isSameDay(static::parse($this->year.'-'.$tester));
         }
 
         $modifier = preg_replace('/(\d)h$/i', '$1:00', $tester);
@@ -1079,9 +1079,9 @@ trait Comparison
         $regex = str_replace('\\\\', '\\', $format);
         // Replace not-escaped letters
         $regex = preg_replace_callback(
-            '/(?<!\\\\)((?:\\\\{2})*)([' . implode('', array_keys($replacements)) . '])/',
+            '/(?<!\\\\)((?:\\\\{2})*)(['.implode('', array_keys($replacements)).'])/',
             function ($match) use ($replacements) {
-                return $match[1] . strtr($match[2], $replacements);
+                return $match[1].strtr($match[2], $replacements);
             },
             $regex
         );
@@ -1090,11 +1090,11 @@ trait Comparison
         // Escape not escaped slashes
         $regex = preg_replace('#(?<!\\\\)((?:\\\\{2})*)/#', '$1\\/', $regex);
 
-        return (bool) @preg_match('/^' . $regex . '$/', $date);
+        return (bool) @preg_match('/^'.$regex.'$/', $date);
     }
 
     /**
-     * Returns true if the date was created using CarbonImmutable::startOfTime().
+     * Returns true if the date was created using CarbonImmutable::startOfTime()
      *
      * @return bool
      */
@@ -1104,7 +1104,7 @@ trait Comparison
     }
 
     /**
-     * Returns true if the date was created using CarbonImmutable::endOfTime().
+     * Returns true if the date was created using CarbonImmutable::endOfTime()
      *
      * @return bool
      */

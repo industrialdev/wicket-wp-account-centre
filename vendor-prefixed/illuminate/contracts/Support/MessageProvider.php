@@ -7,7 +7,7 @@ interface MessageProvider
     /**
      * Get the messages for the instance.
      *
-     * @return MessageBag
+     * @return \WicketAcc\Illuminate\Contracts\Support\MessageBag
      */
     public function getMessageBag();
 }

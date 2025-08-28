@@ -6,7 +6,7 @@ use WicketAcc\Psr\Http\Message\RequestInterface;
 use WicketAcc\Psr\Http\Message\ResponseInterface;
 
 /**
- * Cookie jar that stores cookies as an array.
+ * Cookie jar that stores cookies as an array
  */
 class CookieJar implements CookieJarInterface
 {
@@ -79,7 +79,7 @@ class CookieJar implements CookieJarInterface
     }
 
     /**
-     * Finds and returns the cookie based on the name.
+     * Finds and returns the cookie based on the name
      *
      * @param string $name cookie name to search for
      *
@@ -159,7 +159,7 @@ class CookieJar implements CookieJarInterface
         $result = $cookie->validate();
         if ($result !== true) {
             if ($this->strictMode) {
-                throw new \RuntimeException('Invalid cookie: ' . $result);
+                throw new \RuntimeException('Invalid cookie: '.$result);
             }
             $this->removeCookieIfEmpty($cookie);
 
@@ -241,7 +241,7 @@ class CookieJar implements CookieJarInterface
     }
 
     /**
-     * Computes cookie path following RFC 6265 section 5.1.4.
+     * Computes cookie path following RFC 6265 section 5.1.4
      *
      * @see https://datatracker.ietf.org/doc/html/rfc6265#section-5.1.4
      */
@@ -279,8 +279,8 @@ class CookieJar implements CookieJarInterface
                 && !$cookie->isExpired()
                 && (!$cookie->getSecure() || $scheme === 'https')
             ) {
-                $values[] = $cookie->getName() . '='
-                    . $cookie->getValue();
+                $values[] = $cookie->getName().'='
+                    .$cookie->getValue();
             }
         }
 

@@ -41,7 +41,7 @@ final class StreamWrapper
             $mode = 'w';
         } else {
             throw new \InvalidArgumentException('The stream must be readable, '
-                . 'writable, or both.');
+                .'writable, or both.');
         }
 
         return fopen('guzzle://stream', $mode, false, self::createStreamContext($stream));
@@ -60,7 +60,7 @@ final class StreamWrapper
     }
 
     /**
-     * Registers the stream wrapper if needed.
+     * Registers the stream wrapper if needed
      */
     public static function register(): void
     {

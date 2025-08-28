@@ -11,9 +11,9 @@
 
 namespace WicketAcc\Carbon\Exceptions;
 
+use WicketAcc\Carbon\CarbonInterface;
 use InvalidArgumentException as BaseInvalidArgumentException;
 use Throwable;
-use WicketAcc\Carbon\CarbonInterface;
 
 class NotACarbonClassException extends BaseInvalidArgumentException implements InvalidArgumentException
 {

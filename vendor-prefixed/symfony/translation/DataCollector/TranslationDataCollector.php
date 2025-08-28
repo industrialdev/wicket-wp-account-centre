@@ -15,8 +15,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 use Symfony\Component\HttpKernel\DataCollector\LateDataCollectorInterface;
-use Symfony\Component\VarDumper\Cloner\Data;
 use WicketAcc\Symfony\Component\Translation\DataCollectorTranslator;
+use Symfony\Component\VarDumper\Cloner\Data;
 
 /**
  * @author Abdellatif Ait boudad <a.aitboudad@gmail.com>
@@ -95,7 +95,7 @@ class TranslationDataCollector extends DataCollector implements LateDataCollecto
     {
         $result = [];
         foreach ($messages as $key => $message) {
-            $messageId = $message['locale'] . $message['domain'] . $message['id'];
+            $messageId = $message['locale'].$message['domain'].$message['id'];
 
             if (!isset($result[$messageId])) {
                 $message['count'] = 1;
@@ -107,7 +107,7 @@ class TranslationDataCollector extends DataCollector implements LateDataCollecto
                     $result[$messageId]['parameters'][] = $message['parameters'];
                 }
 
-                $result[$messageId]['count']++;
+                ++$result[$messageId]['count'];
             }
 
             unset($messages[$key]);
@@ -125,7 +125,7 @@ class TranslationDataCollector extends DataCollector implements LateDataCollecto
         ];
 
         foreach ($messages as $message) {
-            $count[$message['state']]++;
+            ++$count[$message['state']];
         }
 
         return $count;
@@ -137,10 +137,10 @@ class TranslationDataCollector extends DataCollector implements LateDataCollecto
 
         if (false !== $encoding = mb_detect_encoding($string, null, true)) {
             if (mb_strlen($string, $encoding) > $length) {
-                return mb_substr($string, 0, $length - 3, $encoding) . '...';
+                return mb_substr($string, 0, $length - 3, $encoding).'...';
             }
         } elseif (\strlen($string) > $length) {
-            return substr($string, 0, $length - 3) . '...';
+            return substr($string, 0, $length - 3).'...';
         }
 
         return $string;

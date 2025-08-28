@@ -29,7 +29,7 @@ interface PromiseInterface
     public function then(
         ?callable $onFulfilled = null,
         ?callable $onRejected = null
-    ): self;
+    ): PromiseInterface;
 
     /**
      * Appends a rejection handler callback to the promise, and returns a new
@@ -39,7 +39,7 @@ interface PromiseInterface
      *
      * @param callable $onRejected Invoked when the promise is rejected.
      */
-    public function otherwise(callable $onRejected): self;
+    public function otherwise(callable $onRejected): PromiseInterface;
 
     /**
      * Get the state of the promise ("pending", "rejected", or "fulfilled").

@@ -97,7 +97,7 @@ class PhpStringTokenParser
     public static function parseEscapeSequences(string $str, ?string $quote = null): string
     {
         if (null !== $quote) {
-            $str = str_replace('\\' . $quote, $quote, $str);
+            $str = str_replace('\\'.$quote, $quote, $str);
         }
 
         return preg_replace_callback(

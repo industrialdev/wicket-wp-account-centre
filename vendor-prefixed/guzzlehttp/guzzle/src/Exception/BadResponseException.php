@@ -6,7 +6,7 @@ use WicketAcc\Psr\Http\Message\RequestInterface;
 use WicketAcc\Psr\Http\Message\ResponseInterface;
 
 /**
- * Exception when an HTTP error occurs (4xx or 5xx error).
+ * Exception when an HTTP error occurs (4xx or 5xx error)
  */
 class BadResponseException extends RequestException
 {
@@ -33,7 +33,7 @@ class BadResponseException extends RequestException
      */
     public function getResponse(): ResponseInterface
     {
-        /* @var ResponseInterface */
+        /** @var ResponseInterface */
         return parent::getResponse();
     }
 }

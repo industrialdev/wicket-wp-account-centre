@@ -49,7 +49,7 @@ final class MultipartStream implements StreamInterface
     }
 
     /**
-     * Get the headers needed before transferring the content of a POST file.
+     * Get the headers needed before transferring the content of a POST file
      *
      * @param string[] $headers
      */
@@ -60,11 +60,11 @@ final class MultipartStream implements StreamInterface
             $str .= "{$key}: {$value}\r\n";
         }
 
-        return "--{$this->boundary}\r\n" . trim($str) . "\r\n\r\n";
+        return "--{$this->boundary}\r\n".trim($str)."\r\n\r\n";
     }
 
     /**
-     * Create the aggregate stream that will be used to upload the POST data.
+     * Create the aggregate stream that will be used to upload the POST data
      */
     protected function createStream(array $elements = []): StreamInterface
     {

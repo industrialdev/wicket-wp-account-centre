@@ -2,18 +2,18 @@
 
 namespace WicketAcc\Illuminate\Support;
 
-use Ramsey\Uuid\Uuid;
-use Symfony\Component\Uid\Ulid;
 use WicketAcc\Carbon\Carbon as BaseCarbon;
 use WicketAcc\Carbon\CarbonImmutable as BaseCarbonImmutable;
 use WicketAcc\Illuminate\Support\Traits\Conditionable;
+use Ramsey\Uuid\Uuid;
+use Symfony\Component\Uid\Ulid;
 
 class Carbon extends BaseCarbon
 {
     use Conditionable;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function setTestNow($testNow = null)
     {
@@ -24,8 +24,8 @@ class Carbon extends BaseCarbon
     /**
      * Create a Carbon instance from a given ordered UUID or ULID.
      *
-     * @param  Uuid|Ulid|string  $id
-     * @return Carbon
+     * @param  \Ramsey\Uuid\Uuid|\Symfony\Component\Uid\Ulid|string  $id
+     * @return \WicketAcc\Illuminate\Support\Carbon
      */
     public static function createFromId($id)
     {

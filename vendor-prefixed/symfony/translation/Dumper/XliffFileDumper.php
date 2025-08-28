@@ -23,7 +23,8 @@ class XliffFileDumper extends FileDumper
 {
     public function __construct(
         private string $extension = 'xlf',
-    ) {}
+    ) {
+    }
 
     public function formatCatalogue(MessageCatalogue $messages, string $domain, array $options = []): string
     {
@@ -149,9 +150,9 @@ class XliffFileDumper extends FileDumper
 
         $xliffFile = $xliff->appendChild($dom->createElement('file'));
         if (str_ends_with($domain, MessageCatalogue::INTL_DOMAIN_SUFFIX)) {
-            $xliffFile->setAttribute('id', substr($domain, 0, -\strlen(MessageCatalogue::INTL_DOMAIN_SUFFIX)) . '.' . $messages->getLocale());
+            $xliffFile->setAttribute('id', substr($domain, 0, -\strlen(MessageCatalogue::INTL_DOMAIN_SUFFIX)).'.'.$messages->getLocale());
         } else {
-            $xliffFile->setAttribute('id', $domain . '.' . $messages->getLocale());
+            $xliffFile->setAttribute('id', $domain.'.'.$messages->getLocale());
         }
 
         if ($catalogueMetadata = $messages->getCatalogueMetadata('', $domain) ?? []) {

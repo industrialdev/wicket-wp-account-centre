@@ -9,7 +9,7 @@ interface Mailable
     /**
      * Send the message using the given mailer.
      *
-     * @param  Factory|Mailer  $mailer
+     * @param  \WicketAcc\Illuminate\Contracts\Mail\Factory|\WicketAcc\Illuminate\Contracts\Mail\Mailer  $mailer
      * @return \Illuminate\Mail\SentMessage|null
      */
     public function send($mailer);
@@ -17,7 +17,7 @@ interface Mailable
     /**
      * Queue the given message.
      *
-     * @param  Queue  $queue
+     * @param  \WicketAcc\Illuminate\Contracts\Queue\Factory  $queue
      * @return mixed
      */
     public function queue(Queue $queue);
@@ -26,7 +26,7 @@ interface Mailable
      * Deliver the queued message after (n) seconds.
      *
      * @param  \DateTimeInterface|\DateInterval|int  $delay
-     * @param  Queue  $queue
+     * @param  \WicketAcc\Illuminate\Contracts\Queue\Factory  $queue
      * @return mixed
      */
     public function later($delay, Queue $queue);

@@ -33,10 +33,10 @@ abstract class AbstractVisitor
     protected function addMessageToCatalogue(string $message, ?string $domain, int $line): void
     {
         $domain ??= 'messages';
-        $this->catalogue->set($message, $this->messagePrefix . $message, $domain);
+        $this->catalogue->set($message, $this->messagePrefix.$message, $domain);
         $metadata = $this->catalogue->getMetadata($message, $domain) ?? [];
         $normalizedFilename = preg_replace('{[\\\\/]+}', '/', $this->file);
-        $metadata['sources'][] = $normalizedFilename . ':' . $line;
+        $metadata['sources'][] = $normalizedFilename.':'.$line;
         $this->catalogue->setMetadata($message, $metadata, $domain);
     }
 
@@ -112,7 +112,7 @@ abstract class AbstractVisitor
                 return null;
             }
 
-            return $left . $right;
+            return $left.$right;
         }
 
         if ($node instanceof Node\Expr\Assign && $node->expr instanceof Node\Scalar\String_) {

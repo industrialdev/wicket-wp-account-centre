@@ -16,4 +16,6 @@ namespace WicketAcc\Symfony\Component\Translation\Exception;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-interface ExceptionInterface extends \Throwable {}
+interface ExceptionInterface extends \Throwable
+{
+}

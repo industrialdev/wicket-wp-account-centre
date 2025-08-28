@@ -55,7 +55,7 @@ use WicketAcc\Illuminate\Support\Testing\Fakes\QueueFake;
  *
  * @see \Illuminate\Queue\QueueManager
  * @see \Illuminate\Queue\Queue
- * @see QueueFake
+ * @see \WicketAcc\Illuminate\Support\Testing\Fakes\QueueFake
  */
 class Queue extends Facade
 {
@@ -75,7 +75,7 @@ class Queue extends Facade
      * Replace the bound instance with a fake.
      *
      * @param  array|string  $jobsToFake
-     * @return QueueFake
+     * @return \WicketAcc\Illuminate\Support\Testing\Fakes\QueueFake
      */
     public static function fake($jobsToFake = [])
     {

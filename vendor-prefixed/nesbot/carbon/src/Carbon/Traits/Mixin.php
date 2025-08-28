@@ -11,15 +11,15 @@
 
 namespace WicketAcc\Carbon\Traits;
 
+use WicketAcc\Carbon\CarbonInterface;
+use WicketAcc\Carbon\CarbonInterval;
+use WicketAcc\Carbon\CarbonPeriod;
 use Closure;
 use Generator;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
 use Throwable;
-use WicketAcc\Carbon\CarbonInterface;
-use WicketAcc\Carbon\CarbonInterval;
-use WicketAcc\Carbon\CarbonPeriod;
 
 /**
  * Trait Mixin.
@@ -169,7 +169,7 @@ trait Mixin
 
     private static function getAnonymousClassCodeForTrait(string $trait)
     {
-        return 'return new class() extends ' . static::class . ' {use ' . $trait . ';};';
+        return 'return new class() extends '.static::class.' {use '.$trait.';};';
     }
 
     private static function getMixableMethods(self $context): Generator

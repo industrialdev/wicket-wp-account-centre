@@ -57,14 +57,14 @@ use WicketAcc\Illuminate\Support\Testing\Fakes\MailFake;
  * @method static bool hasQueued(string $mailable)
  *
  * @see \Illuminate\Mail\MailManager
- * @see MailFake
+ * @see \WicketAcc\Illuminate\Support\Testing\Fakes\MailFake
  */
 class Mail extends Facade
 {
     /**
      * Replace the bound instance with a fake.
      *
-     * @return MailFake
+     * @return \WicketAcc\Illuminate\Support\Testing\Fakes\MailFake
      */
     public static function fake()
     {

@@ -28,7 +28,7 @@ trait ToStringFormat
     protected static $toStringFormat;
 
     /**
-     * Reset the format used to the default when type juggling a Carbon instance to a string.
+     * Reset the format used to the default when type juggling a Carbon instance to a string
      *
      * @return void
      */

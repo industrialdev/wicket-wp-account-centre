@@ -7,51 +7,49 @@ use Carbon_Fields\Field\Field;
 /**
  * Term meta datastore class.
  */
-class Term_Meta_Datastore extends Meta_Datastore
-{
-    /**
-     * Initialization tasks.
-     */
-    public function init()
-    {
-        global $wpdb;
+class Term_Meta_Datastore extends Meta_Datastore {
 
-        // Setup termmeta table and hooks only once
-        if (!empty($wpdb->termmeta)) {
-            return;
-        }
+	/**
+	 * Initialization tasks.
+	 */
+	public function init() {
+		global $wpdb;
 
-        $wpdb->termmeta = $wpdb->prefix . 'termmeta';
+		// Setup termmeta table and hooks only once
+		if ( ! empty( $wpdb->termmeta ) ) {
+			return;
+		}
 
-        static::create_table();
+		$wpdb->termmeta = $wpdb->prefix . 'termmeta';
 
-        // Delete all meta associated with the deleted term
-        add_action('delete_term', [__CLASS__, 'on_delete_term'], 10, 3);
-    }
+		static::create_table();
 
-    /**
-     * Create term meta database table (for WP < 4.4).
-     */
-    public static function create_table()
-    {
-        global $wpdb;
+		// Delete all meta associated with the deleted term
+		add_action( 'delete_term', array( __CLASS__, 'on_delete_term' ), 10, 3 );
+	}
 
-        $tables = $wpdb->get_results('SHOW TABLES LIKE "' . $wpdb->prefix . 'termmeta"');
+	/**
+	 * Create term meta database table (for WP < 4.4)
+	 */
+	public static function create_table() {
+		global $wpdb;
 
-        if (!empty($tables)) {
-            return;
-        }
+		$tables = $wpdb->get_results( 'SHOW TABLES LIKE "' . $wpdb->prefix . 'termmeta"' );
 
-        $charset_collate = '';
-        if (!empty($wpdb->charset)) {
-            $charset_collate = 'DEFAULT CHARACTER SET ' . $wpdb->charset;
-        }
+		if ( ! empty( $tables ) ) {
+			return;
+		}
 
-        if (!empty($wpdb->collate)) {
-            $charset_collate .= ' COLLATE ' . $wpdb->collate;
-        }
+		$charset_collate = '';
+		if ( ! empty( $wpdb->charset ) ) {
+			$charset_collate = 'DEFAULT CHARACTER SET ' . $wpdb->charset;
+		}
 
-        $wpdb->query('CREATE TABLE ' . $wpdb->prefix . 'termmeta (
+		if ( ! empty( $wpdb->collate ) ) {
+			$charset_collate .= ' COLLATE ' . $wpdb->collate;
+		}
+
+		$wpdb->query( 'CREATE TABLE ' . $wpdb->prefix . 'termmeta (
 			meta_id bigint(20) unsigned NOT NULL auto_increment,
 			term_id bigint(20) unsigned NOT NULL default "0",
 			meta_key varchar(255) default NULL,
@@ -59,55 +57,50 @@ class Term_Meta_Datastore extends Meta_Datastore
 			PRIMARY KEY	(meta_id),
 			KEY term_id (term_id),
 			KEY meta_key (meta_key)
-		) ' . $charset_collate . ';');
-    }
+		) ' . $charset_collate . ';' );
+	}
 
-    /**
-     * Delete term meta on term deletion.
-     * Useful for WP < 4.4.
-     *
-     * @param  int $term_id  Term ID.
-     * @return bool Result of the deletion operation.
-     */
-    public static function on_delete_term($term_id)
-    {
-        global $wpdb;
+	/**
+	 * Delete term meta on term deletion.
+	 * Useful for WP < 4.4.
+	 *
+	 * @param  int $term_id  Term ID.
+	 * @return bool Result of the deletion operation.
+	 */
+	public static function on_delete_term( $term_id ) {
+		global $wpdb;
 
-        return $wpdb->query('
+		return $wpdb->query( '
 			DELETE FROM ' . $wpdb->termmeta . '
-			WHERE `term_id` = "' . intval($term_id) . '"
-		');
-    }
+			WHERE `term_id` = "' . intval( $term_id ) . '"
+		' );
+	}
 
-    /**
-     * Retrieve the type of meta data.
-     *
-     * @return string
-     */
-    public function get_meta_type()
-    {
-        return 'term';
-    }
+	/**
+	 * Retrieve the type of meta data.
+	 *
+	 * @return string
+	 */
+	public function get_meta_type() {
+		return 'term';
+	}
 
-    /**
-     * Retrieve the meta table name to query.
-     *
-     * @return string
-     */
-    public function get_table_name()
-    {
-        global $wpdb;
+	/**
+	 * Retrieve the meta table name to query.
+	 *
+	 * @return string
+	 */
+	public function get_table_name() {
+		global $wpdb;
+		return $wpdb->termmeta;
+	}
 
-        return $wpdb->termmeta;
-    }
-
-    /**
-     * Retrieve the meta table field name to query by.
-     *
-     * @return string
-     */
-    public function get_table_field_name()
-    {
-        return 'term_id';
-    }
+	/**
+	 * Retrieve the meta table field name to query by.
+	 *
+	 * @return string
+	 */
+	public function get_table_field_name() {
+		return 'term_id';
+	}
 }

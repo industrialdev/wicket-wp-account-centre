@@ -125,7 +125,7 @@ final class PseudoLocalizationTranslator implements TranslatorInterface
         $useInternalErrors = libxml_use_internal_errors(true);
 
         $dom = new \DOMDocument();
-        $dom->loadHTML('<trans>' . $html . '</trans>');
+        $dom->loadHTML('<trans>'.$html.'</trans>');
 
         libxml_clear_errors();
         libxml_use_internal_errors($useInternalErrors);
@@ -144,11 +144,11 @@ final class PseudoLocalizationTranslator implements TranslatorInterface
                 continue;
             }
 
-            $parts[] = [false, false, '<' . $childNode->tagName];
+            $parts[] = [false, false, '<'.$childNode->tagName];
 
             /** @var \DOMAttr $attribute */
             foreach ($childNode->attributes as $attribute) {
-                $parts[] = [false, false, ' ' . $attribute->nodeName . '="'];
+                $parts[] = [false, false, ' '.$attribute->nodeName.'="'];
 
                 $localizableAttribute = \in_array($attribute->nodeName, $this->localizableHTMLAttributes, true);
                 foreach (preg_split('/(&(?:amp|quot|#039|lt|gt);+)/', htmlspecialchars($attribute->nodeValue, \ENT_QUOTES, 'UTF-8'), -1, \PREG_SPLIT_DELIM_CAPTURE) as $i => $match) {
@@ -166,7 +166,7 @@ final class PseudoLocalizationTranslator implements TranslatorInterface
 
             $parts = array_merge($parts, $this->parseNode($childNode, $parts));
 
-            $parts[] = [false, false, '</' . $childNode->tagName . '>'];
+            $parts[] = [false, false, '</'.$childNode->tagName.'>'];
         }
 
         return $parts;
@@ -302,12 +302,12 @@ final class PseudoLocalizationTranslator implements TranslatorInterface
                 $words[$wordLength] = 0;
             }
 
-            $words[$wordLength]++;
-            $wordsCount++;
+            ++$words[$wordLength];
+            ++$wordsCount;
         }
 
         if (!$words) {
-            $trans .= 1 === $missingLength ? self::EXPANSION_CHARACTER : ' ' . str_repeat(self::EXPANSION_CHARACTER, $missingLength - 1);
+            $trans .= 1 === $missingLength ? self::EXPANSION_CHARACTER : ' '.str_repeat(self::EXPANSION_CHARACTER, $missingLength - 1);
 
             return;
         }
@@ -326,7 +326,7 @@ final class PseudoLocalizationTranslator implements TranslatorInterface
                 }
             }
 
-            $trans .= ' ' . str_repeat(self::EXPANSION_CHARACTER, $length);
+            $trans .= ' '.str_repeat(self::EXPANSION_CHARACTER, $length);
 
             $missingLength -= $length + 1;
 
@@ -339,7 +339,7 @@ final class PseudoLocalizationTranslator implements TranslatorInterface
                 unset($words[$longestWordLength]);
 
                 if (!$words) {
-                    $trans .= 1 === $missingLength ? self::EXPANSION_CHARACTER : ' ' . str_repeat(self::EXPANSION_CHARACTER, $missingLength - 1);
+                    $trans .= 1 === $missingLength ? self::EXPANSION_CHARACTER : ' '.str_repeat(self::EXPANSION_CHARACTER, $missingLength - 1);
 
                     return;
                 }
@@ -355,7 +355,7 @@ final class PseudoLocalizationTranslator implements TranslatorInterface
             return;
         }
 
-        $trans = '[' . $trans . ']';
+        $trans = '['.$trans.']';
     }
 
     private function strlen(string $s): int

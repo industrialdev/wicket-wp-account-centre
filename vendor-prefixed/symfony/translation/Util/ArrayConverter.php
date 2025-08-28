@@ -89,9 +89,9 @@ class ArrayConverter
 
         foreach ($node as $id => $value) {
             if (\is_string($value)) {
-                $tree[$prefix . $id] = $value;
+                $tree[$prefix.$id] = $value;
             } else {
-                self::cancelExpand($tree, $prefix . $id, $value);
+                self::cancelExpand($tree, $prefix.$id, $value);
             }
         }
     }
@@ -128,7 +128,7 @@ class ArrayConverter
             }
 
             if ($buffer) {
-                $result[] = $buffer . $part;
+                $result[] = $buffer.$part;
                 $buffer = '';
 
                 continue;

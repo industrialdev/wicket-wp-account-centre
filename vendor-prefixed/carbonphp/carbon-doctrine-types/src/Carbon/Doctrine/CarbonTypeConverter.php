@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace WicketAcc\Carbon\Doctrine;
 
+use WicketAcc\Carbon\Carbon;
+use WicketAcc\Carbon\CarbonInterface;
 use DateTimeInterface;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Platforms\DB2Platform;
@@ -13,8 +15,6 @@ use Doctrine\DBAL\Platforms\SQLServerPlatform;
 use Doctrine\DBAL\Types\Exception\InvalidType;
 use Doctrine\DBAL\Types\Exception\ValueNotConvertible;
 use Exception;
-use WicketAcc\Carbon\Carbon;
-use WicketAcc\Carbon\CarbonInterface;
 
 /**
  * @template T of CarbonInterface
@@ -104,7 +104,7 @@ trait CarbonTypeConverter
             throw ValueNotConvertible::new(
                 $value,
                 static::class,
-                'Y-m-d H:i:s.u or any format supported by ' . $class . '::parse()',
+                'Y-m-d H:i:s.u or any format supported by '.$class.'::parse()',
                 $error
             );
         }
