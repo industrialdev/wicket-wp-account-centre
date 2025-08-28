@@ -1,13 +1,49 @@
 /* Wicket's Vanilla CSS */
-@import "_wicket-pico-fluid.css";
+@import "_wicket-pico-fluid.classless.zinc.css";
+
 .wicket {
   /* Gravity Forms */
   .gform_wrapper {
     /* Gravity Forms Step Styling */
     .gf_step_number,
     .gf_step_label {
-      color: var(--pico-primary);
+      color: var(--wicket-primary);
+    }
+  }
+
+  /* Form Actions */
+  .form-actions {
+    display: flex;
+    gap: var(--wicket-spacing);
+    align-items: center;
+    justify-content: space-between;
+
+    /* Button Styling */
+    .btn {
+      background-color: var(--wicket-secondary);
+      color: var(--wicket-secondary-inverse);
+      border: 1px solid var(--wicket-secondary);
+      padding: var(--wicket-spacing) var(--wicket-spacing-2);
+      border-radius: var(--wicket-border-radius);
+      text-decoration: none;
+      cursor: pointer;
+      transition: all var(--wicket-transition);
+
+      &:hover {
+        background-color: var(--wicket-secondary-hover);
+        border-color: var(--wicket-secondary-hover);
+      }
+
+      &-primary {
+        background-color: var(--wicket-primary);
+        color: var(--wicket-primary-inverse);
+        border-color: var(--wicket-primary);
+
+        &:hover {
+          background-color: var(--wicket-primary-hover);
+          border-color: var(--wicket-primary-hover);
+        }
+      }
     }
   }
 }
-

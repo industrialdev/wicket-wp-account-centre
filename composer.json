@@ -1,7 +1,7 @@
 {
     "name": "industrialdev/wicket-wp-account-centre",
     "description": "Wicket's Account Centre for WordPress",
-    "version": "1.5.283",
+    "version": "1.5.284",
     "keywords": [
         "wordpress",
         "wicket",
@@ -53,19 +53,19 @@
             "@remove-ci-folder",
             "@cs:fix",
             "@prefix-namespaces",
-            "@process-pico-css"
+            "@build-pico-css"
         ],
         "post-update-cmd": [
             "@remove-ci-folder",
             "@cs:fix",
             "@prefix-namespaces",
-            "@process-pico-css"
+            "@build-pico-css"
         ],
         "version-bump": [
             "@php ./.ci/version-bump.php",
             "@cs:fix"
         ],
-        "process-pico-css": "@php ./.ci/process-pico-css.php",
+        "build-pico-css": "@php ./.ci/build-pico-css.php",
         "cs:fix": "@php -r \"system(PHP_OS_FAMILY === 'Windows' ? './.ci/php.exe ./.ci/php-cs-fixer.phar fix' : (PHP_OS_FAMILY === 'Darwin' ? './.ci/php-macos ./.ci/php-cs-fixer.phar fix' : './.ci/php-linux ./.ci/php-cs-fixer.phar fix'));\"",
         "post-autoload-dump": [
             "strauss include-autoloader"
