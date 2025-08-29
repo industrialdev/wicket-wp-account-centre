@@ -9,6 +9,9 @@ defined('ABSPATH') || exit;
  * WooCommerce Integration Class
  * Handles WooCommerce functionality when available.
  *
+ * WooCommerce endpoints are located at $acc_wc_endpoints on main class.
+ * They are the index, not the two letter lang or their translation. Just the indexes.
+ *
  * Special URLs to take care of:
  * https://localhost/my-account/orders/
  * https://localhost/fr/mon-compte/orders/
@@ -379,9 +382,6 @@ class WooCommerce extends WicketAcc
         // by mapping the myaccount page id to the current ACC page id in ACC context.
         add_filter('pre_option_woocommerce_myaccount_page_id', [$this, 'map_myaccount_page_id_to_acc']);
 
-        // TEMP DEBUG: Log whether Stripe UPE scripts are enqueued on add-payment-method pages
-        add_action('wp_enqueue_scripts', [$this, 'debug_stripe_enqueue_state'], 99);
-
         // Force any late redirects after payment method actions to localized payment methods
         add_filter('wp_redirect', [$this, 'force_payment_methods_redirect_in_acc'], 999, 2);
     }
@@ -521,7 +521,6 @@ class WooCommerce extends WicketAcc
      */
     public function override_woocommerce_template($template, $template_name, $template_path)
     {
-
         if (is_admin()) {
             return $template;
         }
@@ -554,31 +553,16 @@ class WooCommerce extends WicketAcc
                 return $template;
             }
 
-            // Handle parameterized endpoints that require WooCommerce native rendering
-            // Use all endpoint keys from the centralized definition
-            $parameterized_endpoints = array_keys($this->acc_wc_endpoints);
-            if (in_array($wc_endpoint, $parameterized_endpoints)) {
-                // Get the endpoint value from query vars
-                global $wp;
-                $endpoint_value = '';
-                if (isset($wp->query_vars[$wc_endpoint])) {
-                    $endpoint_value = $wp->query_vars[$wc_endpoint];
-                }
+            // Always use page-wc.php for ACC endpoints to ensure consistent rendering
+            $plugin_template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/page-wc.php';
+            $user_template = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/page-wc.php';
 
-                // Call WooCommerce endpoint action hook with the endpoint value
-                do_action("woocommerce_account_{$wc_endpoint}_endpoint", $endpoint_value);
-
-                // Return empty template to prevent double rendering
-                return WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/empty.php';
+            if (file_exists($user_template)) {
+                return $user_template;
             }
 
-            // For other endpoints, load the content of the post with slug $wc_endpoint from CPT my-account
-            $acc_post_id = WACC()->getOptionPageId('acc_page_' . $wc_endpoint, 0);
-
-            if ($acc_post_id) {
-                // Get post content and display it
-                $acc_post_content = get_post($acc_post_id)->post_content;
-                echo $acc_post_content;
+            if (file_exists($plugin_template)) {
+                return $plugin_template;
             }
         }
 
@@ -932,6 +916,7 @@ class WooCommerce extends WicketAcc
             global $wp_query;
             if ($wp_query) {
                 $wp_query->is_404 = false;
+                status_header(200);
             }
         }
     }
@@ -1057,8 +1042,6 @@ class WooCommerce extends WicketAcc
         return $this->getCurrentEndpointKey() === 'add-payment-method';
     }
 
-    // Removed forced enqueues and is_add_payment_method_page shim (not needed).
-
     /**
      * Determine if current request is within ACC WooCommerce context (ACC base URL).
      */
@@ -1091,9 +1074,11 @@ class WooCommerce extends WicketAcc
     public function getCurrentEndpointKey(): string
     {
         $segments = $this->get_language_aware_segments();
+
         if (count($segments) < 2) {
             return '';
         }
+
         // Try last segment first (handles nested endpoint without arg, e.g., /payment-methods/add-payment-method/)
         $last = $segments[count($segments) - 1] ?? '';
         $last_key = $this->endpoint_key_from_localized_slug($last) ?: $last;
@@ -1118,8 +1103,6 @@ class WooCommerce extends WicketAcc
         return $this->getCurrentEndpointKey() !== '';
     }
 
-    // Removed body_class additions (not needed).
-
     /**
      * Map WooCommerce myaccount page id to current ACC page id so is_page( wc_get_page_id('myaccount') ) is satisfied.
      */
@@ -1135,36 +1118,6 @@ class WooCommerce extends WicketAcc
         }
 
         return $value;
-    }
-
-    /**
-     * TEMP DEBUG: Log enqueue state for Stripe UPE on add-payment-method pages.
-     */
-    public function debug_stripe_enqueue_state(): void
-    {
-        if (!$this->is_acc_wc_context()) {
-            return;
-        }
-
-        $endpoint = $this->getCurrentEndpointKey();
-        if ($endpoint !== 'add-payment-method') {
-            return;
-        }
-
-        if (!function_exists('wc_get_logger')) {
-            return;
-        }
-
-        $logger = wc_get_logger();
-        $lang = WACC()->getLanguage();
-        $is_add_page = function_exists('is_add_payment_method_page') ? is_add_payment_method_page() : false;
-        $upe_enqueued = wp_script_is('wc-stripe-upe-classic', 'enqueued') ? 'yes' : 'no';
-        $upe_registered = wp_script_is('wc-stripe-upe-classic', 'registered') ? 'yes' : 'no';
-
-        $logger->debug(
-            'ACC DEBUG Stripe UPE enqueue: lang=' . $lang . ' endpoint=' . $endpoint . ' is_add_payment_method_page=' . ($is_add_page ? 'yes' : 'no') . ' script_registered=' . $upe_registered . ' script_enqueued=' . $upe_enqueued,
-            ['source' => 'wicket-acc']
-        );
     }
 
     /**

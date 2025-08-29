@@ -47,7 +47,8 @@ $wc_endpoint = WACC()->WooCommerce()->getCurrentEndpointKey();
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $segments = array_values(array_filter(explode('/', trim($path, '/'))));
 
-if (count($segments) >= 3) {
+// Guard: only set query var when we have a valid endpoint key
+if ($wc_endpoint && count($segments) >= 3) {
     $endpoint_arg = $segments[count($segments) - 1];
 
     // Populate WP query var so Woo endpoint handlers receive the argument
@@ -94,12 +95,8 @@ if ($acc_global_headerbanner_page_id && $acc_global_headerbanner_status) {
 
     <div class="woocommerce-wicket--account-centre wicket-acc-page wicket-acc-page-acc <?php echo $wc_wrapper_class; ?>">
         <!--<div class="woocommerce-MyAccount-content">-->
-            <?php
-        /**
-         * My Account content.
-         *
-         * @since 2.6.0
-         */
+        <?php
+        // Render the WooCommerce account content (includes notices and endpoint content)
         do_action('woocommerce_account_content');
 ?>
         <!--</div>-->

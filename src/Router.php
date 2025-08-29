@@ -335,6 +335,22 @@ class Router extends WicketAcc
 
             return $single_template;
         });
+
+        // Also hook into template_include to handle WooCommerce endpoints
+        add_filter('template_include', function ($template) {
+            // Only for ACC WC context (e.g. /my-account/* URLs)
+            if (!WACC()->isWooCommerceActive() || !WACC()->WooCommerce()->isWooCommerceEndpoint()) {
+                return $template;
+            }
+
+            // Use the same template selection logic as for CPT posts
+            $acc_template = $this->getWicketAccTemplate();
+            if ($acc_template) {
+                return $acc_template;
+            }
+
+            return $template;
+        }, 100);
     }
 
     /**
