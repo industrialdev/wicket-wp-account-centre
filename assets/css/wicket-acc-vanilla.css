@@ -1,6 +1,4 @@
 /* Wicket's Vanilla CSS */
-@import "_wicket-pico-fluid.classless.zinc.css";
-
 .wicket {
   p {
     color: var(--wpico-contrast-inverse);
