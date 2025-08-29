@@ -1,5 +1,3 @@
 module.exports = {
-  plugins: [
-    require('postcss-scope')('.wicket'),
-  ],
+    plugins: [require("postcss-scope")(".wicket")],
 };

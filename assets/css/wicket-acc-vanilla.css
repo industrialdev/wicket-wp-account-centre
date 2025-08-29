@@ -1,7 +1,7 @@
 /* Wicket's Vanilla CSS */
 .wicket {
   p {
-    color: var(--wpico-contrast-inverse);
+    color: var(--pico-contrast-inverse);
   }
 
   /* Gravity Forms */
@@ -9,42 +9,41 @@
     /* Gravity Forms Step Styling */
     .gf_step_number,
     .gf_step_label {
-      color: var(--wpico-primary);
+      color: var(--pico-primary);
     }
   }
 
-    /* MDP JS Widgets */
-  /* Form Actions */
+        /* MDP JS Widgets: Form Actions */
   .form-actions {
     display: flex;
-    gap: var(--wpico-spacing);
+    gap: var(--pico-spacing);
     align-items: center;
     justify-content: space-between;
 
     /* Button Styling */
     .btn {
-      background-color: var(--wpico-secondary);
-        color: var(--wpico-secondary-inverse);
-        border: 1px solid var(--wpico-secondary);
-        padding: var(--wpico-form-element-spacing-vertical) var(--wpico-form-element-spacing-horizontal);
-        border-radius: var(--wpico-border-radius);
+      background-color: var(--pico-secondary);
+        color: var(--pico-secondary-inverse);
+        border: 1px solid var(--pico-secondary);
+        padding: var(--pico-form-element-spacing-vertical) var(--pico-form-element-spacing-horizontal);
+        border-radius: var(--pico-border-radius);
       text-decoration: none;
       cursor: pointer;
-      transition: all var(--wpico-transition);
+      transition: all var(--pico-transition);
 
       &:hover {
-        background-color: var(--wpico-secondary-hover);
-          border-color: var(--wpico-secondary-hover);
+        background-color: var(--pico-secondary-hover);
+          border-color: var(--pico-secondary-hover);
       }
 
       &-primary {
-        background-color: var(--wpico-primary);
-          color: var(--wpico-primary-inverse);
-          border-color: var(--wpico-primary);
+        background-color: var(--pico-primary);
+          color: var(--pico-primary-inverse);
+          border-color: var(--pico-primary);
 
         &:hover {
-          background-color: var(--wpico-primary-hover);
-            border-color: var(--wpico-primary-hover);
+          background-color: var(--pico-primary-hover);
+            border-color: var(--pico-primary-hover);
         }
       }
     }
@@ -78,7 +77,7 @@
           font-style: inherit !important;
           letter-spacing: inherit !important;
           text-transform: inherit !important;
-          padding: var(--wpico-form-element-spacing-vertical) var(--wpico-form-element-spacing-horizontal);
+          padding: var(--pico-form-element-spacing-vertical) var(--pico-form-element-spacing-horizontal);
           border: none;
           background: transparent;
           outline: none;
@@ -93,28 +92,28 @@
       .checkbox {
         label {
           input[type="checkbox"] {
-            margin-right: var(--wpico-spacing);
+            margin-right: var(--pico-spacing);
 
             &:not(:checked) {
               background-color: transparent;
-              border-color: var(--wpico-muted-color);
+              border-color: var(--pico-muted-color);
             }
           }
 
           .PreferencesFieldsGroup__option-label-content {
-            color: var(--wpico-contrast-inverse);
-              margin-left: calc(var(--wpico-spacing) * 0.5);
+            color: var(--pico-contrast-inverse);
+              margin-left: calc(var(--pico-spacing) * 0.5);
             font-weight: 500;
 
             span {
-              color: var(--wpico-contrast-inverse);
+              color: var(--pico-contrast-inverse);
               font-weight: 500;
             }
 
             .PreferencesFieldsGroup__help {
-              color: var(--wpico-muted-color);
+              color: var(--pico-muted-color);
               font-weight: 400;
-              margin-top: calc(var(--wpico-spacing) * 0.5);
+              margin-top: calc(var(--pico-spacing) * 0.5);
 
               p {
                 margin: 0;
@@ -133,25 +132,25 @@
     .checkboxes {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: var(--wpico-spacing);
+      gap: var(--pico-spacing);
 
       .checkbox {
         label {
           span {
-            color: var(--wpico-contrast-inverse);
+            color: var(--pico-contrast-inverse);
             font-weight: 500;
             line-height: 1.4;
-            margin-left: calc(var(--wpico-spacing) * 0.5);
+            margin-left: calc(var(--pico-spacing) * 0.5);
           }
 
           input[type="checkbox"] {
-            margin-right: var(--wpico-spacing);
+            margin-right: var(--pico-spacing);
             vertical-align: top;
             margin-top: 2px;
 
             &:not(:checked) {
               background-color: transparent;
-              border-color: var(--wpico-muted-color);
+              border-color: var(--pico-muted-color);
             }
           }
         }
@@ -162,9 +161,34 @@
   /* MDP JS Widgets: Additional Info Styling */
   .AdditionalInfoProfile {
     .control-label {
-      color: var(--wpico-contrast-inverse) !important;
+      color: var(--pico-contrast-inverse) !important;
       font-weight: 500;
-      margin-bottom: var(--wpico-spacing);
-    }
+      margin-bottom: var(--pico-spacing);
+      }
+      }
+      
+      /* MDP JS Widgets: Profile Form Buttons */
+      .MembersDetailsProfile {
+        .pull-right {
+          display: flex;
+          gap: var(--pico-spacing);
+          align-items: center;
+          justify-content: flex-end;
+          width: 100%;
+        }
+      
+        .pull-right .btn {
+          flex: 1;
+          margin-left: 0;
+          margin-right: 0;
+        }
+      
+        .pull-right .btn.pull-left {
+          margin-right: var(--pico-spacing);
+        }
+      }
+.MembersDetailsProfile__section,
+.form-vertical {
+  margin: var(--pico-spacing) 0 calc(var(--pico-spacing) * 1.5);
   }
 }

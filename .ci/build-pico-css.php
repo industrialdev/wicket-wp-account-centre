@@ -7,22 +7,22 @@ function executeCommand($command) {
     $output = [];
     $returnCode = 0;
     exec($command, $output, $returnCode);
-    
+
     if ($returnCode !== 0) {
         echo "Error executing command: $command\n";
         echo "Output: " . implode("\n", $output) . "\n";
         exit(1);
     }
-    
+
     return $output;
 }
 
 $root = __DIR__;
-$scss = $root . '/scss/wicket-pico.fluid.classless.zinc.scss';
+$scss = $root . '/wicket-pico.fluid.classless.zinc.scss';
 $outDir = $root . '/../assets/css';
 $outCss = $outDir . '/_wicket-pico-fluid.classless.zinc.css';
 $vendorLoadPath = $root . '/../vendor/picocss/pico/scss';
-$localLoadPath  = $root . '/scss';
+$localLoadPath  = $root . '/';
 
 if (!is_dir($outDir) && !mkdir($outDir, 0755, true)) {
     fwrite(STDERR, "Error: Unable to create output directory: {$outDir}\n");
@@ -50,11 +50,11 @@ if ($missing) {
 // Define paths
 $pluginDir = __DIR__;
 $projectRoot = dirname($pluginDir);
-$scssFile = $root . '/scss/wicket-pico.fluid.classless.zinc.scss';
+$scssFile = $root . '/wicket-pico.fluid.classless.zinc.scss';
 $cssOutputFile = $outCss;
 
 // Compile SCSS to CSS using Dart Sass CLI with local overrides taking precedence
-$sassCommand = "sass --load-path={$root}/scss --load-path={$root}/../vendor/picocss/pico/scss {$scssFile} {$cssOutputFile}";
+$sassCommand = "sass --no-source-map --load-path={$root}/ --load-path={$root}/../vendor/picocss/pico/scss {$scssFile} {$cssOutputFile}";
 executeCommand($sassCommand);
 
 // Run PostCSS to scope all selectors under .wicket
