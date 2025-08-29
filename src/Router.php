@@ -210,6 +210,25 @@ class Router extends WicketAcc
      */
     private function getWicketAccTemplate($post_id = null)
     {
+        // Check if this is a WooCommerce endpoint
+        if (WACC()->isWooCommerceActive()) {
+            // Get the current endpoint
+            $current_endpoint = $this->getCurrentWooCommerceEndpoint();
+
+            if ($current_endpoint) {
+                // Use the WooCommerce template for WooCommerce endpoints
+                $user_template = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/page-wc.php';
+                $plugin_template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/page-wc.php';
+
+                if (file_exists($user_template)) {
+                    return $user_template;
+                } elseif (file_exists($plugin_template)) {
+                    return $plugin_template;
+                }
+            }
+        }
+
+        // Default to the regular ACC template
         $user_template = WICKET_ACC_USER_TEMPLATE_PATH . 'account-centre/page-acc.php';
         $plugin_template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/page-acc.php';
 
@@ -412,10 +431,12 @@ class Router extends WicketAcc
         // Combined redirect logic for ACC index pages
         if ($server_request_uri === '/' . $acc_dashboard_slug . '/') {
             $this->performRedirect($acc_dashboard_url);
-        } elseif (defined('ICL_SITEPRESS_VERSION') &&
-                  $current_lang !== 'en' &&
-                  isset($acc_myaccount_slug_translation) &&
-                  $server_request_uri === '/' . $current_lang . '/' . $acc_myaccount_slug_translation . '/') {
+        } elseif (
+            defined('ICL_SITEPRESS_VERSION') &&
+            $current_lang !== 'en' &&
+            isset($acc_myaccount_slug_translation) &&
+            $server_request_uri === '/' . $current_lang . '/' . $acc_myaccount_slug_translation . '/'
+        ) {
             $this->performRedirect($acc_dashboard_url_translation);
         }
 
@@ -455,5 +476,19 @@ class Router extends WicketAcc
                 }
             }
         }*/
+    }
+
+    /**
+     * Get the current WooCommerce endpoint if we're on a WooCommerce endpoint page.
+     *
+     * @return string|false The endpoint key or false if not on a WooCommerce endpoint
+     */
+    private function getCurrentWooCommerceEndpoint()
+    {
+        // Use the WooCommerce class method to get the current endpoint key
+        $endpoint_key = WACC()->WooCommerce()->getCurrentEndpointKey();
+
+        // Return the endpoint key if found, false otherwise
+        return $endpoint_key ?: false;
     }
 }

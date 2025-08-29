@@ -8,9 +8,43 @@ defined('ABSPATH') || exit;
 /**
  * WooCommerce Integration Class
  * Handles WooCommerce functionality when available.
+ *
+ * Special URLs to take care of:
+ * https://localhost/my-account/orders/
+ * https://localhost/fr/mon-compte/orders/
+ * https://localhost/es/mi-cuenta/orders/
+ *
+ * https://localhost/my-account/view-order/40141/
+ * https://localhost/fr/mon-compte/view-order/40141/
+ * https://localhost/es/mi-cuenta/view-order/40141/
+ *
+ * https://localhost/my-account/subscriptions/
+ * https://localhost/fr/mon-compte/subscriptions/
+ * https://localhost/es/mi-cuenta/subscriptions/
+ *
+ * https://localhost/my-account/view-subscription/40142/
+ * https://localhost/fr/mon-compte/view-subscription/40142/
+ * https://localhost/es/mi-cuenta/view-subscription/40142/
+ *
+ * https://localhost/my-account/payment-methods/
+ * https://localhost/fr/mon-compte/payment-methods/
+ * https://localhost/es/mi-cuenta/payment-methods/
+ *
+ * https://localhost/my-account/add-payment-method/
+ * https://localhost/fr/mon-compte/add-payment-method/
+ * https://localhost/es/mi-cuenta/add-payment-method/
+ *
+ * https://localhost/my-account/delete-payment-method/56/?_wpnonce=bf3ee98a23
+ * https://localhost/fr/mon-compte/delete-payment-method/56/?_wpnonce=bf3ee98a23
+ * https://localhost/es/mi-cuenta/delete-payment-method/56/?_wpnonce=bf3ee98a23
  */
 class WooCommerce extends WicketAcc
 {
+    /**
+     * Storage for temporarily hidden WC query vars.
+     */
+    private $stored_wc_query_vars = [];
+
     /**
      * Constructor.
      */
@@ -520,7 +554,25 @@ class WooCommerce extends WicketAcc
                 return $template;
             }
 
-            // We need to load the content of the post with slug $wc_endpoint from CPT my-account
+            // Handle parameterized endpoints that require WooCommerce native rendering
+            // Use all endpoint keys from the centralized definition
+            $parameterized_endpoints = array_keys($this->acc_wc_endpoints);
+            if (in_array($wc_endpoint, $parameterized_endpoints)) {
+                // Get the endpoint value from query vars
+                global $wp;
+                $endpoint_value = '';
+                if (isset($wp->query_vars[$wc_endpoint])) {
+                    $endpoint_value = $wp->query_vars[$wc_endpoint];
+                }
+
+                // Call WooCommerce endpoint action hook with the endpoint value
+                do_action("woocommerce_account_{$wc_endpoint}_endpoint", $endpoint_value);
+
+                // Return empty template to prevent double rendering
+                return WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/empty.php';
+            }
+
+            // For other endpoints, load the content of the post with slug $wc_endpoint from CPT my-account
             $acc_post_id = WACC()->getOptionPageId('acc_page_' . $wc_endpoint, 0);
 
             if ($acc_post_id) {
@@ -933,7 +985,7 @@ class WooCommerce extends WicketAcc
 
         // If a specific endpoint key is being checked, validate against our known endpoints
         if (is_string($endpoint) && $endpoint !== '') {
-            $endpoint_key = $this->current_wc_endpoint_key();
+            $endpoint_key = $this->getCurrentEndpointKey();
             if ($endpoint_key !== '' && $endpoint_key === $endpoint) {
                 return true;
             }
@@ -942,7 +994,7 @@ class WooCommerce extends WicketAcc
         }
 
         // Generic check: any known endpoint present on current ACC URL
-        return $this->current_wc_endpoint_key() !== '';
+        return $this->getCurrentEndpointKey() !== '';
     }
 
     /**
@@ -954,7 +1006,7 @@ class WooCommerce extends WicketAcc
             return;
         }
 
-        $endpoint_key = $this->current_wc_endpoint_key();
+        $endpoint_key = $this->getCurrentEndpointKey();
         if ($endpoint_key === '') {
             return;
         }
@@ -1002,7 +1054,7 @@ class WooCommerce extends WicketAcc
             return $is;
         }
 
-        return $this->current_wc_endpoint_key() === 'add-payment-method';
+        return $this->getCurrentEndpointKey() === 'add-payment-method';
     }
 
     // Removed forced enqueues and is_add_payment_method_page shim (not needed).
@@ -1032,9 +1084,11 @@ class WooCommerce extends WicketAcc
     }
 
     /**
-     * Get canonical WC endpoint key present in current ACC URL, or empty string if none.
+     * Get the current WooCommerce endpoint key from the URL.
+     *
+     * @return string The endpoint key or empty string if not found
      */
-    private function current_wc_endpoint_key(): string
+    public function getCurrentEndpointKey(): string
     {
         $segments = $this->get_language_aware_segments();
         if (count($segments) < 2) {
@@ -1052,6 +1106,16 @@ class WooCommerce extends WicketAcc
         $second_key = $this->endpoint_key_from_localized_slug($second_last) ?: $second_last;
 
         return array_key_exists($second_key, $this->acc_wc_endpoints) ? $second_key : '';
+    }
+
+    /**
+     * Check if the current request is a WooCommerce endpoint.
+     *
+     * @return bool True if the current request is a WooCommerce endpoint, false otherwise
+     */
+    public function isWooCommerceEndpoint(): bool
+    {
+        return $this->getCurrentEndpointKey() !== '';
     }
 
     // Removed body_class additions (not needed).
@@ -1082,7 +1146,7 @@ class WooCommerce extends WicketAcc
             return;
         }
 
-        $endpoint = $this->current_wc_endpoint_key();
+        $endpoint = $this->getCurrentEndpointKey();
         if ($endpoint !== 'add-payment-method') {
             return;
         }
@@ -1104,25 +1168,12 @@ class WooCommerce extends WicketAcc
     }
 
     /**
-     * Temporarily hide WooCommerce query vars for ACC pages to prevent WC endpoint detection.
+     * Get the WooCommerce endpoints.
+     *
+     * @return array
      */
-    public function temporarily_hide_wc_query_vars_for_acc()
+    public function getEndpoints()
     {
-        // No-op: we now want WC to see endpoint vars on ACC URLs
-
+        return $this->acc_wc_endpoints;
     }
-
-    /**
-     * Restore WooCommerce query vars for ACC pages after endpoint detection.
-     */
-    public function restore_wc_query_vars_for_acc()
-    {
-        // No-op: we no longer hide query vars
-
-    }
-
-    /**
-     * Storage for temporarily hidden WC query vars.
-     */
-    private $stored_wc_query_vars = [];
 }

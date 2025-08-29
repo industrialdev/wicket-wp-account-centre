@@ -41,39 +41,6 @@ if (function_exists('wpml_get_default_language')) {
     $default_language = wpml_get_default_language();
 }
 
-// WooCommerce endpoints
-$wc_endpoints = WC()->query->get_query_vars();
-$current_url = $_SERVER['REQUEST_URI'];
-$wc_endpoint = basename(rtrim($current_url, '/'));
-$wc_wrapper_class = '';
-
-if (in_array($wc_endpoint, $wc_endpoints)) {
-    $is_wc_endpoint = true;
-    $wc_wrapper_class = 'woocommerce';
-}
-
-// WPML enabled?
-if (defined('ICL_SITEPRESS_VERSION')) {
-    // Not in default language
-    if ($default_language !== WACC()->Language()->getCurrentLanguage()) {
-        // We are in a translation, get the current page translation parent
-        $original_page_id = apply_filters(
-            'wpml_object_id',
-            $current_page_id,
-            'my-account',
-            true,
-            $default_language
-        );
-
-        // Get the correct WC endpoint slug
-        $wc_endpoint = get_post($original_page_id)->post_name;
-
-        if (in_array($wc_endpoint, $wc_endpoints)) {
-            $is_wc_endpoint = true;
-        }
-    }
-}
-
 if (empty($acc_sidebar_location)) {
     $acc_sidebar_location = 'right';
 }
