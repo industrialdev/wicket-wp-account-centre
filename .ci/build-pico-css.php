@@ -33,7 +33,7 @@ if ($missing) {
 }
 
 $cmd = escapeshellcmd($sassBin) . ' ' .
-    '--style=compressed ' .
+    '--style=expanded ' .
     '--no-source-map ' .
     // Prefer local overrides before vendor
     '--load-path ' . escapeshellarg($localLoadPath) . ' ' .
@@ -46,4 +46,23 @@ if ($code !== 0) {
     exit($code);
 }
 
-echo "Built Pico CSS:\n{$outCss}\n";
+// Run PostCSS to scope global rules to .wicket
+$postcssBin = trim(shell_exec('command -v postcss') ?? '');
+if ($postcssBin === '') {
+    fwrite(STDERR, "Error: 'postcss' CLI not found. Please install postcss-cli globally and re-run.\n");
+    fwrite(STDERR, "npm install -g postcss-cli\n");
+    exit(1);
+}
+
+$postcssCmd = escapeshellcmd($postcssBin) . ' ' .
+    escapeshellarg($outCss) . ' ' .
+    '--config ' . escapeshellarg(__DIR__ . '/postcss.config.js') . ' ' .
+    '--replace';
+
+exec($postcssCmd, $postcssOut, $postcssCode);
+if ($postcssCode !== 0) {
+    fwrite(STDERR, "Error: postcss failed with code {$postcssCode}.\n");
+    exit($postcssCode);
+}
+
+echo "Built and scoped Pico CSS:\n{$outCss}\n";
