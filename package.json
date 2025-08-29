@@ -1,6 +1,6 @@
 {
   "devDependencies": {
     "postcss": "^8.5.6",
-    "postcss-prefixer": "^3.0.0"
+    "postcss-scope": "^1.7.4"
   }
 }

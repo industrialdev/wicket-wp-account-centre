@@ -6,8 +6,7 @@
 /**
  * Styles
  */
-:root,
-:host {
+.wicket {
   --wpico-font-family-emoji: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --wpico-font-family-sans-serif: system-ui, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, Helvetica, Arial, "Helvetica Neue", sans-serif, var(--wpico-font-family-emoji);
   --wpico-font-family-monospace: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace, var(--wpico-font-family-emoji);
@@ -45,143 +44,138 @@
   --wpico-icon-loading: url("data:image/svg+xml,%3Csvg fill='none' height='24' width='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' %3E%3Cstyle%3E g %7B animation: rotate 2s linear infinite; transform-origin: center center; %7D circle %7B stroke-dasharray: 75,100; stroke-dashoffset: -5; animation: dash 1.5s ease-in-out infinite; stroke-linecap: round; %7D @keyframes rotate %7B 0%25 %7B transform: rotate(0deg); %7D 100%25 %7B transform: rotate(360deg); %7D %7D @keyframes dash %7B 0%25 %7B stroke-dasharray: 1,100; stroke-dashoffset: 0; %7D 50%25 %7B stroke-dasharray: 44.5,100; stroke-dashoffset: -17.5; %7D 100%25 %7B stroke-dasharray: 44.5,100; stroke-dashoffset: -62; %7D %7D %3C/style%3E%3Cg%3E%3Ccircle cx='12' cy='12' r='10' fill='none' stroke='rgb(136, 145, 164)' stroke-width='4' /%3E%3C/g%3E%3C/svg%3E");
 }
 @media (min-width: 576px) {
-  :root,
-  :host {
+  .wicket {
     --wpico-font-size: 106.25%;
   }
 }
 @media (min-width: 768px) {
-  :root,
-  :host {
+  .wicket {
     --wpico-font-size: 112.5%;
   }
 }
 @media (min-width: 1024px) {
-  :root,
-  :host {
+  .wicket {
     --wpico-font-size: 118.75%;
   }
 }
 @media (min-width: 1280px) {
-  :root,
-  :host {
+  .wicket {
     --wpico-font-size: 125%;
   }
 }
 @media (min-width: 1536px) {
-  :root,
-  :host {
+  .wicket {
     --wpico-font-size: 131.25%;
   }
 }
 
-a {
+.wicket a {
   --wpico-text-decoration: underline;
 }
 
-small {
+.wicket small {
   --wpico-font-size: 0.875em;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+.wicket h1,
+.wicket h2,
+.wicket h3,
+.wicket h4,
+.wicket h5,
+.wicket h6 {
   --wpico-font-weight: 700;
 }
 
-h1 {
+.wicket h1 {
   --wpico-font-size: 2rem;
   --wpico-line-height: 1.125;
   --wpico-typography-spacing-top: 3rem;
 }
 
-h2 {
+.wicket h2 {
   --wpico-font-size: 1.75rem;
   --wpico-line-height: 1.15;
   --wpico-typography-spacing-top: 2.625rem;
 }
 
-h3 {
+.wicket h3 {
   --wpico-font-size: 1.5rem;
   --wpico-line-height: 1.175;
   --wpico-typography-spacing-top: 2.25rem;
 }
 
-h4 {
+.wicket h4 {
   --wpico-font-size: 1.25rem;
   --wpico-line-height: 1.2;
   --wpico-typography-spacing-top: 1.874rem;
 }
 
-h5 {
+.wicket h5 {
   --wpico-font-size: 1.125rem;
   --wpico-line-height: 1.225;
   --wpico-typography-spacing-top: 1.6875rem;
 }
 
-h6 {
+.wicket h6 {
   --wpico-font-size: 1rem;
   --wpico-line-height: 1.25;
   --wpico-typography-spacing-top: 1.5rem;
 }
 
-thead th,
-thead td,
-tfoot th,
-tfoot td {
+.wicket thead th,
+.wicket thead td,
+.wicket tfoot th,
+.wicket tfoot td {
   --wpico-font-weight: 600;
   --wpico-border-width: 0.1875rem;
 }
 
-pre,
-code,
-kbd,
-samp {
+.wicket pre,
+.wicket code,
+.wicket kbd,
+.wicket samp {
   --wpico-font-family: var(--wpico-font-family-monospace);
 }
 
-kbd {
+.wicket kbd {
   --wpico-font-weight: bolder;
 }
 
-input:not([type=submit],
+.wicket input:not([type=submit],
 [type=button],
 [type=reset],
 [type=checkbox],
 [type=radio],
 [type=file]),
-:where(select, textarea) {
+.wicket :where(select, textarea) {
   --wpico-outline-width: 0.0625rem;
 }
 
-[type=search] {
+.wicket [type=search] {
   --wpico-border-radius: 5rem;
 }
 
-[type=checkbox],
-[type=radio] {
+.wicket [type=checkbox],
+.wicket [type=radio] {
   --wpico-border-width: 0.125rem;
 }
 
-[type=checkbox][role=switch] {
+.wicket [type=checkbox][role=switch] {
   --wpico-border-width: 0.1875rem;
 }
 
-[role=search] {
+.wicket [role=search] {
   --wpico-border-radius: 5rem;
 }
 
-[role=search] button,
-[role=search] [type=submit],
-[role=search] [type=button],
-[role=search] [role=button],
-[role=group] button,
-[role=group] [type=submit],
-[role=group] [type=button],
-[role=group] [role=button] {
+.wicket [role=search] button,
+.wicket [role=search] [type=submit],
+.wicket [role=search] [type=button],
+.wicket [role=search] [role=button],
+.wicket [role=group] button,
+.wicket [role=group] [type=submit],
+.wicket [role=group] [type=button],
+.wicket [role=group] [role=button] {
   --wpico-form-element-spacing-horizontal: 2rem;
 }
 
@@ -196,9 +190,9 @@ input:not([type=submit],
 /**
  * Color schemes
  */
-[data-theme=light],
-:root:not([data-theme=dark]),
-:host(:not([data-theme=dark])) {
+.wicket [data-theme=light],
+.wicket :root:not([data-theme=dark]),
+.wicket:not([data-theme=dark]) {
   color-scheme: light;
   --wpico-background-color: #fff;
   --wpico-color: #373c44;
@@ -297,30 +291,13 @@ input:not([type=submit],
   --wpico-icon-valid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(76, 154.5, 137.5)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
   --wpico-icon-invalid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(200.25, 79.25, 72.25)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cline x1='12' y1='8' x2='12' y2='12'%3E%3C/line%3E%3Cline x1='12' y1='16' x2='12.01' y2='16'%3E%3C/line%3E%3C/svg%3E");
 }
-[data-theme=light] input:is([type=submit],
-[type=button],
-[type=reset],
-[type=checkbox],
-[type=radio],
-[type=file]),
-:root:not([data-theme=dark]) input:is([type=submit],
-[type=button],
-[type=reset],
-[type=checkbox],
-[type=radio],
-[type=file]),
-:host(:not([data-theme=dark])) input:is([type=submit],
-[type=button],
-[type=reset],
-[type=checkbox],
-[type=radio],
-[type=file]) {
+.wicket [data-theme=light] input:is([type=submit], [type=button], [type=reset], [type=checkbox], [type=radio], [type=file]) {  --wpico-form-element-focus-color: var(--wpico-primary-focus);} :root:not([data-theme=dark]) input:is([type=submit], [type=button], [type=reset], [type=checkbox], [type=radio], [type=file]) {  --wpico-form-element-focus-color: var(--wpico-primary-focus);}
+.wicket:not([data-theme=dark]) input:is([type=submit], [type=button], [type=reset], [type=checkbox], [type=radio], [type=file]) {
   --wpico-form-element-focus-color: var(--wpico-primary-focus);
 }
 
 @media only screen and (prefers-color-scheme: dark) {
-  :root:not([data-theme]),
-  :host(:not([data-theme])) {
+  .wicket:not([data-theme=dark]) {
     color-scheme: dark;
     --wpico-background-color: rgb(19, 22.5, 30.5);
     --wpico-color: #c2c7d0;
@@ -419,13 +396,13 @@ input:not([type=submit],
     --wpico-icon-valid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(42, 123, 111)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
     --wpico-icon-invalid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(149.5, 74, 80)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cline x1='12' y1='8' x2='12' y2='12'%3E%3C/line%3E%3Cline x1='12' y1='16' x2='12.01' y2='16'%3E%3C/line%3E%3C/svg%3E");
   }
-  :root:not([data-theme]) input:is([type=submit],
+  .wicket:not([data-theme=dark]) input:is([type=submit],
   [type=button],
   [type=reset],
   [type=checkbox],
   [type=radio],
   [type=file]),
-  :host(:not([data-theme])) input:is([type=submit],
+  .wicket:not([data-theme=dark]) input:is([type=submit],
   [type=button],
   [type=reset],
   [type=checkbox],
@@ -433,8 +410,7 @@ input:not([type=submit],
   [type=file]) {
     --wpico-form-element-focus-color: var(--wpico-primary-focus);
   }
-}
-[data-theme=dark] {
+.wicket [data-theme=dark] {
   color-scheme: dark;
   --wpico-background-color: rgb(19, 22.5, 30.5);
   --wpico-color: #c2c7d0;
@@ -533,7 +509,7 @@ input:not([type=submit],
   --wpico-icon-valid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(42, 123, 111)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
   --wpico-icon-invalid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(149.5, 74, 80)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cline x1='12' y1='8' x2='12' y2='12'%3E%3C/line%3E%3Cline x1='12' y1='16' x2='12.01' y2='16'%3E%3C/line%3E%3C/svg%3E");
 }
-[data-theme=dark] input:is([type=submit],
+.wicket [data-theme=dark] input:is([type=submit],
 [type=button],
 [type=reset],
 [type=checkbox],
@@ -553,21 +529,20 @@ input:not([type=submit],
  * Document
  * Content-box & Responsive typography
  */
-*,
-*::before,
-*::after {
+.wicket *,
+.wicket *::before,
+.wicket *::after {
   box-sizing: border-box;
   background-repeat: no-repeat;
 }
 
-::before,
-::after {
+.wicket ::before,
+.wicket ::after {
   text-decoration: inherit;
   vertical-align: inherit;
 }
 
-:where(:root),
-:where(:host) {
+.wicket :where(:root :where(.wicket)) {
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -586,18 +561,18 @@ input:not([type=submit],
 /**
  * Landmarks
  */
-body {
+.wicket {
   width: 100%;
   margin: 0;
 }
 
-main {
+.wicket main {
   display: block;
 }
 
-.wicket body > header,
-.wicket body > main,
-.wicket body > footer {
+.wicket > header,
+body > main,
+body > footer {
   width: 100%;
   margin-right: auto;
   margin-left: auto;
@@ -779,8 +754,7 @@ main {
   text-underline-offset: 0.125em;
   transition: background-color var(--wpico-transition), color var(--wpico-transition), text-decoration var(--wpico-transition), box-shadow var(--wpico-transition);
 }
-.wicket :where(a:not([role=button])):is([aria-current]:not([aria-current=false]), :hover, :active, :focus),
-.wicket [role=link]:is([aria-current]:not([aria-current=false]), :hover, :active, :focus) {
+.wicket :where(a:not([role=button])):is([aria-current]:not([aria-current=false]), :hover, :active, :focus), .wicket [role=link]:is([aria-current]:not([aria-current=false]), :hover, :active, :focus) {
   --wpico-color: var(--wpico-primary-hover);
   --wpico-underline: var(--wpico-primary-hover-underline);
   --wpico-text-decoration: underline;
@@ -837,33 +811,13 @@ main {
   user-select: none;
   transition: background-color var(--wpico-transition), border-color var(--wpico-transition), color var(--wpico-transition), box-shadow var(--wpico-transition);
 }
-.wicket button:is([aria-current]:not([aria-current=false])), .wicket button:is(:hover, :active, :focus),
-.wicket [type=submit]:is([aria-current]:not([aria-current=false])),
-.wicket [type=submit]:is(:hover, :active, :focus),
-.wicket [type=reset]:is([aria-current]:not([aria-current=false])),
-.wicket [type=reset]:is(:hover, :active, :focus),
-.wicket [type=button]:is([aria-current]:not([aria-current=false])),
-.wicket [type=button]:is(:hover, :active, :focus),
-.wicket [type=file]::file-selector-button:is([aria-current]:not([aria-current=false])),
-.wicket [type=file]::file-selector-button:is(:hover, :active, :focus),
-.wicket [role=button]:is([aria-current]:not([aria-current=false])),
-.wicket [role=button]:is(:hover, :active, :focus) {
+.wicket button:is([aria-current]:not([aria-current=false])), .wicket button:is(:hover, :active, :focus), .wicket [type=submit]:is([aria-current]:not([aria-current=false])), .wicket [type=submit]:is(:hover, :active, :focus), .wicket [type=reset]:is([aria-current]:not([aria-current=false])), .wicket [type=reset]:is(:hover, :active, :focus), .wicket [type=button]:is([aria-current]:not([aria-current=false])), .wicket [type=button]:is(:hover, :active, :focus), .wicket [type=file]::file-selector-button:is([aria-current]:not([aria-current=false])), .wicket [type=file]::file-selector-button:is(:hover, :active, :focus), .wicket [role=button]:is([aria-current]:not([aria-current=false])), .wicket [role=button]:is(:hover, :active, :focus) {
   --wpico-background-color: var(--wpico-primary-hover-background);
   --wpico-border-color: var(--wpico-primary-hover-border);
   --wpico-box-shadow: var(--wpico-button-hover-box-shadow, 0 0 0 rgba(0, 0, 0, 0));
   --wpico-color: var(--wpico-primary-inverse);
 }
-.wicket button:focus, .wicket button:is([aria-current]:not([aria-current=false])):focus,
-.wicket [type=submit]:focus,
-.wicket [type=submit]:is([aria-current]:not([aria-current=false])):focus,
-.wicket [type=reset]:focus,
-.wicket [type=reset]:is([aria-current]:not([aria-current=false])):focus,
-.wicket [type=button]:focus,
-.wicket [type=button]:is([aria-current]:not([aria-current=false])):focus,
-.wicket [type=file]::file-selector-button:focus,
-.wicket [type=file]::file-selector-button:is([aria-current]:not([aria-current=false])):focus,
-.wicket [role=button]:focus,
-.wicket [role=button]:is([aria-current]:not([aria-current=false])):focus {
+.wicket button:focus, .wicket button:is([aria-current]:not([aria-current=false])):focus, .wicket [type=submit]:focus, .wicket [type=submit]:is([aria-current]:not([aria-current=false])):focus, .wicket [type=reset]:focus, .wicket [type=reset]:is([aria-current]:not([aria-current=false])):focus, .wicket [type=button]:focus, .wicket [type=button]:is([aria-current]:not([aria-current=false])):focus, .wicket [type=file]::file-selector-button:focus, .wicket [type=file]::file-selector-button:is([aria-current]:not([aria-current=false])):focus, .wicket [role=button]:focus, .wicket [role=button]:is([aria-current]:not([aria-current=false])):focus {
   --wpico-box-shadow: var(--wpico-button-hover-box-shadow, 0 0 0 rgba(0, 0, 0, 0)), 0 0 0 var(--wpico-outline-width) var(--wpico-primary-focus);
 }
 
@@ -880,8 +834,7 @@ main {
   --wpico-color: var(--wpico-secondary-inverse);
   cursor: pointer;
 }
-.wicket [type=reset]:is([aria-current]:not([aria-current=false]), :hover, :active, :focus),
-.wicket [type=file]::file-selector-button:is([aria-current]:not([aria-current=false]), :hover, :active, :focus) {
+.wicket [type=reset]:is([aria-current]:not([aria-current=false]), :hover, :active, :focus), .wicket [type=file]::file-selector-button:is([aria-current]:not([aria-current=false]), :hover, :active, :focus) {
   --wpico-background-color: var(--wpico-secondary-hover-background);
   --wpico-border-color: var(--wpico-secondary-hover-border);
   --wpico-color: var(--wpico-secondary-inverse);
@@ -891,8 +844,7 @@ main {
   --wpico-box-shadow: var(--wpico-button-hover-box-shadow, 0 0 0 rgba(0, 0, 0, 0)), 0 0 0 var(--wpico-outline-width) var(--wpico-secondary-focus);
 }
 
-.wicket :where(button, [type=submit], [type=reset], [type=button], [role=button])[disabled],
-.wicket :where(fieldset[disabled]) :is(button, [type=submit], [type=button], [type=reset], [role=button]) {
+.wicket :where(button, [type=submit], [type=reset], [type=button], [role=button])[disabled], .wicket :where(fieldset[disabled]) :is(button, [type=submit], [type=button], [type=reset], [role=button]) {
   opacity: 0.5;
   pointer-events: none;
 }
@@ -924,8 +876,8 @@ main {
   border-bottom: 0;
 }
 
-.wicket table.\.wicketstriped tbody tr:nth-child(odd) th,
-.wicket table.\.wicketstriped tbody tr:nth-child(odd) td {
+.wicket table.striped tbody tr:nth-child(odd) th,
+.wicket table.striped tbody tr:nth-child(odd) td {
   background-color: var(--wpico-table-row-stripped-background-color);
 }
 
@@ -961,7 +913,7 @@ main {
 }
 
 .wicket svg:not(:root),
-.wicket svg:not(:host) {
+.wicket svg:not(.wicket) {
   overflow: hidden;
 }
 
@@ -1161,16 +1113,11 @@ main {
   margin-bottom: calc(var(--wpico-spacing) * 0.5);
 }
 
-.wicket input:not([type=checkbox], [type=radio]),
-.wicket button[type=submit],
-.wicket select,
-.wicket textarea {
+.wicket input:not([type=checkbox], [type=radio]), .wicket button[type=submit], .wicket select, .wicket textarea {
   width: 100%;
 }
 
-.wicket input:not([type=checkbox], [type=radio], [type=range], [type=file]),
-.wicket select,
-.wicket textarea {
+.wicket input:not([type=checkbox], [type=radio], [type=range], [type=file]), .wicket select, .wicket textarea {
   appearance: none;
   padding: var(--wpico-form-element-spacing-vertical) var(--wpico-form-element-spacing-horizontal);
 }
@@ -1202,8 +1149,7 @@ main {
   --wpico-background-color: var(--wpico-form-element-active-background-color);
 }
 
-.wicket input:not([type=submit], [type=button], [type=reset], [role=switch], [readonly]):is(:active, :focus),
-.wicket :where(select, textarea):not([readonly]):is(:active, :focus) {
+.wicket input:not([type=submit], [type=button], [type=reset], [role=switch], [readonly]):is(:active, :focus), .wicket :where(select, textarea):not([readonly]):is(:active, :focus) {
   --wpico-border-color: var(--wpico-form-element-active-border-color);
 }
 
@@ -1217,11 +1163,7 @@ main {
   --wpico-box-shadow: 0 0 0 var(--wpico-outline-width) var(--wpico-form-element-focus-color);
 }
 
-.wicket input:not([type=submit], [type=button], [type=reset])[disabled],
-.wicket select[disabled],
-.wicket textarea[disabled],
-.wicket label[aria-disabled=true],
-.wicket :where(fieldset[disabled]) :is(input:not([type=submit], [type=button], [type=reset]), select, textarea) {
+.wicket input:not([type=submit], [type=button], [type=reset])[disabled], .wicket select[disabled], .wicket textarea[disabled], .wicket label[aria-disabled=true], .wicket :where(fieldset[disabled]) :is(input:not([type=submit], [type=button], [type=reset]), select, textarea) {
   opacity: var(--wpico-form-element-disabled-opacity);
   pointer-events: none;
 }
@@ -1285,7 +1227,7 @@ main {
   --wpico-box-shadow: 0 0 0 var(--wpico-outline-width) var(--wpico-form-element-invalid-focus-color) !important;
 }
 
-[dir=rtl] .wicket :where(input, select, textarea):not([type=checkbox], [type=radio]):is([aria-invalid], [aria-invalid=true], [aria-invalid=false]) {
+.wicket [dir=rtl] :where(input, select, textarea):not([type=checkbox], [type=radio]):is([aria-invalid], [aria-invalid=true], [aria-invalid=false]) {
   background-position: center left 0.75rem;
 }
 
@@ -1298,9 +1240,7 @@ main {
   opacity: 1;
 }
 
-.wicket input:not([type=checkbox], [type=radio]),
-.wicket select,
-.wicket textarea {
+.wicket input:not([type=checkbox], [type=radio]), .wicket select, .wicket textarea {
   margin-bottom: var(--wpico-spacing);
 }
 
@@ -1323,7 +1263,7 @@ main {
   color: var(--wpico-form-element-color);
 }
 
-[dir=rtl] .wicket select:not([multiple], [size]) {
+.wicket [dir=rtl] select:not([multiple], [size]) {
   background-position: center left 0.75rem;
 }
 
@@ -1380,10 +1320,7 @@ main {
 .wicket [type=radio]::-ms-check {
   display: none;
 }
-.wicket [type=checkbox]:checked, .wicket [type=checkbox]:checked:active, .wicket [type=checkbox]:checked:focus,
-.wicket [type=radio]:checked,
-.wicket [type=radio]:checked:active,
-.wicket [type=radio]:checked:focus {
+.wicket [type=checkbox]:checked, .wicket [type=checkbox]:checked:active, .wicket [type=checkbox]:checked:focus, .wicket [type=radio]:checked, .wicket [type=radio]:checked:active, .wicket [type=radio]:checked:focus {
   --wpico-background-color: var(--wpico-primary-background);
   --wpico-border-color: var(--wpico-primary-border);
   background-image: var(--wpico-icon-checkbox);
@@ -1459,35 +1396,17 @@ main {
   --wpico-background-color: var(--wpico-border-color);
 }
 
-.wicket [type=checkbox][aria-invalid=false]:checked, .wicket [type=checkbox][aria-invalid=false]:checked:active, .wicket [type=checkbox][aria-invalid=false]:checked:focus,
-.wicket [type=checkbox][role=switch][aria-invalid=false]:checked,
-.wicket [type=checkbox][role=switch][aria-invalid=false]:checked:active,
-.wicket [type=checkbox][role=switch][aria-invalid=false]:checked:focus {
+.wicket [type=checkbox][aria-invalid=false]:checked, .wicket [type=checkbox][aria-invalid=false]:checked:active, .wicket [type=checkbox][aria-invalid=false]:checked:focus, .wicket [type=checkbox][role=switch][aria-invalid=false]:checked, .wicket [type=checkbox][role=switch][aria-invalid=false]:checked:active, .wicket [type=checkbox][role=switch][aria-invalid=false]:checked:focus {
   --wpico-background-color: var(--wpico-form-element-valid-border-color);
 }
-.wicket [type=checkbox]:checked[aria-invalid=true], .wicket [type=checkbox]:checked:active[aria-invalid=true], .wicket [type=checkbox]:checked:focus[aria-invalid=true],
-.wicket [type=checkbox][role=switch]:checked[aria-invalid=true],
-.wicket [type=checkbox][role=switch]:checked:active[aria-invalid=true],
-.wicket [type=checkbox][role=switch]:checked:focus[aria-invalid=true] {
+.wicket [type=checkbox]:checked[aria-invalid=true], .wicket [type=checkbox]:checked:active[aria-invalid=true], .wicket [type=checkbox]:checked:focus[aria-invalid=true], .wicket [type=checkbox][role=switch]:checked[aria-invalid=true], .wicket [type=checkbox][role=switch]:checked:active[aria-invalid=true], .wicket [type=checkbox][role=switch]:checked:focus[aria-invalid=true] {
   --wpico-background-color: var(--wpico-form-element-invalid-border-color);
 }
 
-.wicket [type=checkbox][aria-invalid=false]:checked, .wicket [type=checkbox][aria-invalid=false]:checked:active, .wicket [type=checkbox][aria-invalid=false]:checked:focus,
-.wicket [type=radio][aria-invalid=false]:checked,
-.wicket [type=radio][aria-invalid=false]:checked:active,
-.wicket [type=radio][aria-invalid=false]:checked:focus,
-.wicket [type=checkbox][role=switch][aria-invalid=false]:checked,
-.wicket [type=checkbox][role=switch][aria-invalid=false]:checked:active,
-.wicket [type=checkbox][role=switch][aria-invalid=false]:checked:focus {
+.wicket [type=checkbox][aria-invalid=false]:checked, .wicket [type=checkbox][aria-invalid=false]:checked:active, .wicket [type=checkbox][aria-invalid=false]:checked:focus, .wicket [type=radio][aria-invalid=false]:checked, .wicket [type=radio][aria-invalid=false]:checked:active, .wicket [type=radio][aria-invalid=false]:checked:focus, .wicket [type=checkbox][role=switch][aria-invalid=false]:checked, .wicket [type=checkbox][role=switch][aria-invalid=false]:checked:active, .wicket [type=checkbox][role=switch][aria-invalid=false]:checked:focus {
   --wpico-border-color: var(--wpico-form-element-valid-border-color);
 }
-.wicket [type=checkbox]:checked[aria-invalid=true], .wicket [type=checkbox]:checked:active[aria-invalid=true], .wicket [type=checkbox]:checked:focus[aria-invalid=true],
-.wicket [type=radio]:checked[aria-invalid=true],
-.wicket [type=radio]:checked:active[aria-invalid=true],
-.wicket [type=radio]:checked:focus[aria-invalid=true],
-.wicket [type=checkbox][role=switch]:checked[aria-invalid=true],
-.wicket [type=checkbox][role=switch]:checked:active[aria-invalid=true],
-.wicket [type=checkbox][role=switch]:checked:focus[aria-invalid=true] {
+.wicket [type=checkbox]:checked[aria-invalid=true], .wicket [type=checkbox]:checked:active[aria-invalid=true], .wicket [type=checkbox]:checked:focus[aria-invalid=true], .wicket [type=radio]:checked[aria-invalid=true], .wicket [type=radio]:checked:active[aria-invalid=true], .wicket [type=radio]:checked:focus[aria-invalid=true], .wicket [type=checkbox][role=switch]:checked[aria-invalid=true], .wicket [type=checkbox][role=switch]:checked:active[aria-invalid=true], .wicket [type=checkbox][role=switch]:checked:focus[aria-invalid=true] {
   --wpico-border-color: var(--wpico-form-element-invalid-border-color);
 }
 
@@ -1546,7 +1465,7 @@ main {
     background-image: none !important;
   }
 }
-[dir=rtl] .wicket :is([type=date], [type=datetime-local], [type=month], [type=time], [type=week]) {
+.wicket [dir=rtl] :is([type=date], [type=datetime-local], [type=month], [type=time], [type=week]) {
   text-align: right;
 }
 
@@ -1674,10 +1593,10 @@ main {
   background-image: var(--wpico-icon-search), var(--wpico-icon-invalid);
 }
 
-[dir=rtl] .wicket :where(input):not([type=checkbox], [type=radio], [type=range], [type=file])[type=search] {
+.wicket [dir=rtl] :where(input):not([type=checkbox], [type=radio], [type=range], [type=file])[type=search] {
   background-position: center right 1.125rem;
 }
-[dir=rtl] .wicket :where(input):not([type=checkbox], [type=radio], [type=range], [type=file])[type=search][aria-invalid] {
+.wicket [dir=rtl] :where(input):not([type=checkbox], [type=radio], [type=range], [type=file])[type=search][aria-invalid] {
   background-position: center right 1.125rem, center left 0.75rem;
 }
 
@@ -1748,10 +1667,10 @@ main {
   transform: rotate(0);
 }
 
-[dir=rtl] .wicket details summary {
+.wicket [dir=rtl] details summary {
   text-align: right;
 }
-[dir=rtl] .wicket details summary::after {
+.wicket [dir=rtl] details summary::after {
   float: left;
   background-position: left center;
 }
@@ -1868,28 +1787,16 @@ main {
   width: auto;
 }
 @supports selector(:has(*)) {
-  .wicket [role=search]:has(button:focus, [type=submit]:focus, [type=button]:focus, [role=button]:focus),
-  .wicket [role=group]:has(button:focus, [type=submit]:focus, [type=button]:focus, [role=button]:focus) {
+  .wicket [role=search]:has(button:focus, [type=submit]:focus, [type=button]:focus, [role=button]:focus), .wicket [role=group]:has(button:focus, [type=submit]:focus, [type=button]:focus, [role=button]:focus) {
     --wpico-group-box-shadow: var(--wpico-group-box-shadow-focus-with-button);
   }
-  .wicket [role=search]:has(button:focus, [type=submit]:focus, [type=button]:focus, [role=button]:focus) input:not([type=checkbox], [type=radio]),
-  .wicket [role=search]:has(button:focus, [type=submit]:focus, [type=button]:focus, [role=button]:focus) select,
-  .wicket [role=group]:has(button:focus, [type=submit]:focus, [type=button]:focus, [role=button]:focus) input:not([type=checkbox], [type=radio]),
-  .wicket [role=group]:has(button:focus, [type=submit]:focus, [type=button]:focus, [role=button]:focus) select {
+  .wicket [role=search]:has(button:focus, [type=submit]:focus, [type=button]:focus, [role=button]:focus) input:not([type=checkbox], [type=radio]), .wicket [role=search]:has(button:focus, [type=submit]:focus, [type=button]:focus, [role=button]:focus) select, .wicket [role=group]:has(button:focus, [type=submit]:focus, [type=button]:focus, [role=button]:focus) input:not([type=checkbox], [type=radio]), .wicket [role=group]:has(button:focus, [type=submit]:focus, [type=button]:focus, [role=button]:focus) select {
     border-color: transparent;
   }
-  .wicket [role=search]:has(input:not([type=submit], [type=button]):focus, select:focus),
-  .wicket [role=group]:has(input:not([type=submit], [type=button]):focus, select:focus) {
+  .wicket [role=search]:has(input:not([type=submit], [type=button]):focus, select:focus), .wicket [role=group]:has(input:not([type=submit], [type=button]):focus, select:focus) {
     --wpico-group-box-shadow: var(--wpico-group-box-shadow-focus-with-input);
   }
-  .wicket [role=search]:has(input:not([type=submit], [type=button]):focus, select:focus) button,
-  .wicket [role=search]:has(input:not([type=submit], [type=button]):focus, select:focus) [type=submit],
-  .wicket [role=search]:has(input:not([type=submit], [type=button]):focus, select:focus) [type=button],
-  .wicket [role=search]:has(input:not([type=submit], [type=button]):focus, select:focus) [role=button],
-  .wicket [role=group]:has(input:not([type=submit], [type=button]):focus, select:focus) button,
-  .wicket [role=group]:has(input:not([type=submit], [type=button]):focus, select:focus) [type=submit],
-  .wicket [role=group]:has(input:not([type=submit], [type=button]):focus, select:focus) [type=button],
-  .wicket [role=group]:has(input:not([type=submit], [type=button]):focus, select:focus) [role=button] {
+  .wicket [role=search]:has(input:not([type=submit], [type=button]):focus, select:focus) button, .wicket [role=search]:has(input:not([type=submit], [type=button]):focus, select:focus) [type=submit], .wicket [role=search]:has(input:not([type=submit], [type=button]):focus, select:focus) [type=button], .wicket [role=search]:has(input:not([type=submit], [type=button]):focus, select:focus) [role=button], .wicket [role=group]:has(input:not([type=submit], [type=button]):focus, select:focus) button, .wicket [role=group]:has(input:not([type=submit], [type=button]):focus, select:focus) [type=submit], .wicket [role=group]:has(input:not([type=submit], [type=button]):focus, select:focus) [type=button], .wicket [role=group]:has(input:not([type=submit], [type=button]):focus, select:focus) [role=button] {
     --wpico-button-box-shadow: 0 0 0 var(--wpico-border-width) var(--wpico-primary-border);
     --wpico-button-hover-box-shadow: 0 0 0 var(--wpico-border-width) var(--wpico-primary-hover-border);
   }
@@ -1951,8 +1858,7 @@ main {
 /**
  * Modal (<dialog>)
  */
-:root,
-:host {
+.wicket {
   --wpico-scrollbar-width: 0px;
 }
 
@@ -2038,7 +1944,7 @@ main {
 /**
  * Nav
  */
-:where(nav li)::before {
+.wicket :where(nav li)::before {
   float: left;
   content: "​";
 }
@@ -2137,7 +2043,7 @@ main {
   margin: inherit;
 }
 
-[dir=rtl] .wicket nav[aria-label=breadcrumb] ul li:not(:last-child) ::after {
+.wicket [dir=rtl] nav[aria-label=breadcrumb] ul li:not(:last-child) ::after {
   content: "\\";
 }
 
@@ -2188,7 +2094,7 @@ main {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  [dir=rtl] .wicket progress:indeterminate {
+  .wicket [dir=rtl] progress:indeterminate {
     animation-direction: reverse;
   }
 }
@@ -2395,4 +2301,7 @@ main {
     transition-delay: 0s !important;
     transition-duration: 0s !important;
   }
+}
+
+/*# sourceMappingURL=_wicket-pico-fluid.classless.zinc.css.map */
 }

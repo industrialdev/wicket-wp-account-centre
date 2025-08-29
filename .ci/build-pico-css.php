@@ -2,12 +2,27 @@
 
 // Build Pico CSS (fluid classless, zinc theme, --wicket- prefix) using Dart Sass CLI.
 
-$root = __DIR__ . '/..';
-$scss = __DIR__ . '/scss/wicket-pico.fluid.classless.zinc.scss';
-$outDir = $root . '/assets/css';
+// Function to execute shell commands and handle errors
+function executeCommand($command) {
+    $output = [];
+    $returnCode = 0;
+    exec($command, $output, $returnCode);
+    
+    if ($returnCode !== 0) {
+        echo "Error executing command: $command\n";
+        echo "Output: " . implode("\n", $output) . "\n";
+        exit(1);
+    }
+    
+    return $output;
+}
+
+$root = __DIR__;
+$scss = $root . '/scss/wicket-pico.fluid.classless.zinc.scss';
+$outDir = $root . '/../assets/css';
 $outCss = $outDir . '/_wicket-pico-fluid.classless.zinc.css';
-$vendorLoadPath = $root . '/vendor/picocss/pico/scss';
-$localLoadPath  = __DIR__ . '/scss';
+$vendorLoadPath = $root . '/../vendor/picocss/pico/scss';
+$localLoadPath  = $root . '/scss';
 
 if (!is_dir($outDir) && !mkdir($outDir, 0755, true)) {
     fwrite(STDERR, "Error: Unable to create output directory: {$outDir}\n");
@@ -32,37 +47,50 @@ if ($missing) {
     exit(1);
 }
 
-$cmd = escapeshellcmd($sassBin) . ' ' .
-    '--style=expanded ' .
-    '--no-source-map ' .
-    // Prefer local overrides before vendor
-    '--load-path ' . escapeshellarg($localLoadPath) . ' ' .
-    '--load-path ' . escapeshellarg($vendorLoadPath) . ' ' .
-    escapeshellarg($scss) . ' ' . escapeshellarg($outCss);
+// Define paths
+$pluginDir = __DIR__;
+$projectRoot = dirname($pluginDir);
+$scssFile = $root . '/scss/wicket-pico.fluid.classless.zinc.scss';
+$cssOutputFile = $outCss;
 
-exec($cmd, $out, $code);
-if ($code !== 0) {
-    fwrite(STDERR, "Error: sass build failed with code {$code}.\n");
-    exit($code);
+// Compile SCSS to CSS using Dart Sass CLI with local overrides taking precedence
+$sassCommand = "sass --load-path={$root}/scss --load-path={$root}/../vendor/picocss/pico/scss {$scssFile} {$cssOutputFile}";
+executeCommand($sassCommand);
+
+// Run PostCSS to scope all selectors under .wicket
+$postcssCommand = "postcss {$cssOutputFile} --config {$pluginDir}/.ci/postcss.config.js --replace";
+executeCommand($postcssCommand);
+
+// Manually replace any remaining :host selectors with .wicket
+$cssContent = file_get_contents($cssOutputFile);
+$cssContent = str_replace(':host', '.wicket', $cssContent);
+// Fix redundant .wicket selectors
+$cssContent = preg_replace('/\.wicket[\s,]*\.wicket/', '.wicket', $cssContent);
+// Fix redundant .wicket selectors with parentheses
+$cssContent = preg_replace('/\.wicket\(([\s\S]*?)\)[\s,]*\.wicket/', '.wicket$1', $cssContent);
+// Fix malformed selectors with extra closing parenthesis
+$cssContent = preg_replace('/\.wicket:not\(\[data-theme=light\]\)\)/', '.wicket:not([data-theme=light])', $cssContent);
+$cssContent = preg_replace('/\.wicket:not\(\[data-theme=dark\]\)\)/', '.wicket:not([data-theme=dark])', $cssContent);
+// Fix malformed selectors missing theme value
+$cssContent = preg_replace('/\.wicket:not\(\[data-theme\]\)/', '.wicket:not([data-theme=dark])', $cssContent);
+// Fix specific malformed selector in dark theme section
+$cssContent = preg_replace('/\.wicket:not\(\[data-theme\]\(:not\(\[data-theme\]\)/', '.wicket:not([data-theme=dark])', $cssContent);
+// Fix extra closing parenthesis in dark theme selector
+$cssContent = preg_replace('/\.wicket:not\(\[data-theme=dark\]\)\)\s*\{/', '.wicket:not([data-theme=dark]) {', $cssContent);
+// Fix the specific malformed selector pattern we're seeing
+$cssContent = preg_replace('/\.wicket\s*\[data-theme=light\]\s*input:is\(\[type=submit\],\s*\[type=button\],\s*\[type=reset\],\s*\[type=checkbox\],\s*\[type=radio\],\s*\[type=file\]\s*:root:not\(\[data-theme=dark\]\)\s*input:is\(\[type=submit\],\s*\[type=button\],\s*\[type=reset\],\s*\[type=checkbox\],\s*\[type=radio\],\s*\[type=file\]\),/', '.wicket [data-theme=light] input:is([type=submit], [type=button], [type=reset], [type=checkbox], [type=radio], [type=file]) {  --wpico-form-element-focus-color: var(--wpico-primary-focus);} :root:not([data-theme=dark]) input:is([type=submit], [type=button], [type=reset], [type=checkbox], [type=radio], [type=file]) {  --wpico-form-element-focus-color: var(--wpico-primary-focus);}', $cssContent);
+// Fix the remaining malformed selector
+$cssContent = preg_replace('/\.wicket:not\(\[data-theme=dark\]\)\s*input:is\(\[type=submit\],\s*\[type=button\],\s*\[type=reset\],\s*\[type=checkbox\],\s*\[type=radio\],\s*\[type=file\]\)\s*\{/', '.wicket:not([data-theme=dark]) input:is([type=submit], [type=button], [type=reset], [type=checkbox], [type=radio], [type=file]) {', $cssContent);
+// Fix extra closing parenthesis in dark theme selector
+$cssContent = preg_replace('/\.wicket:not\(\[data-theme=dark\]\)\)\s*input:is\(\[type=submit\],/', '.wicket:not([data-theme=dark]) input:is([type=submit],', $cssContent);
+// Fix extra closing brace
+$cssContent = preg_replace('/\}\s*\.wicket\s*\[data-theme=dark\]\s*\{/', '.wicket [data-theme=dark] {', $cssContent);
+// Fix missing closing parenthesis in :where selector
+$cssContent = preg_replace('/\.wicket :where\(:root :where\(.wicket\)\s*\{/', '.wicket :where(:root :where(.wicket)) {', $cssContent);
+// Ensure the file ends with the proper closing brace for the main .wicket block
+if (substr($cssContent, -3) !== '\n}\n') {
+    $cssContent = rtrim($cssContent, "\n") . "\n}\n";
 }
+file_put_contents($cssOutputFile, $cssContent);
 
-// Run PostCSS to scope global rules to .wicket
-$postcssBin = trim(shell_exec('command -v postcss') ?? '');
-if ($postcssBin === '') {
-    fwrite(STDERR, "Error: 'postcss' CLI not found. Please install postcss-cli globally and re-run.\n");
-    fwrite(STDERR, "npm install -g postcss-cli\n");
-    exit(1);
-}
-
-$postcssCmd = escapeshellcmd($postcssBin) . ' ' .
-    escapeshellarg($outCss) . ' ' .
-    '--config ' . escapeshellarg(__DIR__ . '/postcss.config.js') . ' ' .
-    '--replace';
-
-exec($postcssCmd, $postcssOut, $postcssCode);
-if ($postcssCode !== 0) {
-    fwrite(STDERR, "Error: postcss failed with code {$postcssCode}.\n");
-    exit($postcssCode);
-}
-
-echo "Built and scoped Pico CSS:\n{$outCss}\n";
+echo "Built and scoped Pico CSS: " . realpath($cssOutputFile) . "\n";
