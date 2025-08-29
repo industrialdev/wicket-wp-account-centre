@@ -12,9 +12,18 @@
       color: var(--pico-primary);
     }
   }
+}
 
-        /* MDP JS Widgets: Form Actions */
-  .form-actions {
+/* MDP JS Widgets: any widget */
+.wicket__widgets {
+  fieldset {
+    legend {
+      color: var(--pico-contrast-inverse);
+    }
+  }
+
+  /* MDP JS Widgets: Form Actions */
+  .form-actions, .col-sm-12 {
     display: flex;
     gap: var(--pico-spacing);
     align-items: center;
@@ -164,31 +173,95 @@
       color: var(--pico-contrast-inverse) !important;
       font-weight: 500;
       margin-bottom: var(--pico-spacing);
-      }
-      }
-      
-      /* MDP JS Widgets: Profile Form Buttons */
-      .MembersDetailsProfile {
-        .pull-right {
-          display: flex;
-          gap: var(--pico-spacing);
+    }
+  }
+
+  /* MDP JS Widgets: Profile Form Buttons */
+  .MembersDetailsProfile {
+    .pull-right {
+      display: flex;
+      gap: var(--pico-spacing);
+      align-items: center;
+      justify-content: flex-end;
+      width: 100%;
+    }
+
+    .pull-right .btn {
+      flex: 1;
+      margin-left: 0;
+      margin-right: 0;
+      min-width: 140px;
+    }
+
+    .pull-right .btn.pull-left {
+      margin-right: var(--pico-spacing);
+    }
+  }
+
+  .MembersDetailsProfile__section,
+  .form-vertical {
+    margin: var(--pico-spacing) 0 calc(var(--pico-spacing) * 1.5);
+  }
+
+  /* Address */
+  .form-vertical {
+    .checkboxes-inline {
+      display: flex;
+      gap: var(--pico-spacing);
+      align-items: center;
+
+      .checkbox {
+        label {
+          display: inline-flex;
           align-items: center;
-          justify-content: flex-end;
-          width: 100%;
+          gap: calc(var(--pico-spacing) * 0.5);
         }
-      
-        .pull-right .btn {
-          flex: 1;
-          margin-left: 0;
-          margin-right: 0;
+
+        input[type="checkbox"] {
+          margin: 0;
+          vertical-align: middle;
+          margin-left: -20px;
+          margin-top: -5px;
+
+          &:not(:checked) {
+            background-color: transparent;
+            border-color: var(--pico-muted-color);
+          }
         }
-      
-        .pull-right .btn.pull-left {
-          margin-right: var(--pico-spacing);
+
+        span {
+          color: var(--pico-contrast-inverse);
+          font-weight: 500;
+          white-space: nowrap;
+          line-height: 1.2;
+          margin-left: 5px;
         }
       }
-.MembersDetailsProfile__section,
-.form-vertical {
-  margin: var(--pico-spacing) 0 calc(var(--pico-spacing) * 1.5);
+    }
+  }
+
+  .TypeableResourceForm {
+    .btn {
+      max-width: 30%;
+    }
+
+    .btn.btn-link {
+      background-color: var(--pico-secondary);
+      color: var(--pico-secondary-inverse);
+      border: 1px solid var(--pico-secondary);
+      padding: var(--pico-form-element-spacing-vertical) var(--pico-form-element-spacing-horizontal);
+      border-radius: var(--pico-border-radius);
+      text-decoration: none;
+      cursor: pointer;
+      transition: all var(--pico-transition);
+
+      &:hover,
+      &:focus {
+        background-color: var(--pico-secondary-hover);
+        border-color: var(--pico-secondary-hover);
+        color: var(--pico-secondary-inverse);
+        text-decoration: none;
+      }
+    }
   }
 }
