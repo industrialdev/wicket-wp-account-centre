@@ -3,7 +3,7 @@
 
 .wicket {
   p {
-    color: var(--wicket-contrast-inverse);
+    color: var(--wpico-contrast-inverse);
   }
 
   /* Gravity Forms */
@@ -11,41 +11,41 @@
     /* Gravity Forms Step Styling */
     .gf_step_number,
     .gf_step_label {
-      color: var(--wicket-primary);
+      color: var(--wpico-primary);
     }
   }
 
   /* Form Actions */
   .form-actions {
     display: flex;
-    gap: var(--wicket-spacing);
+    gap: var(--wpico-spacing);
     align-items: center;
     justify-content: space-between;
 
     /* Button Styling */
     .btn {
-      background-color: var(--wicket-secondary);
-      color: var(--wicket-secondary-inverse);
-      border: 1px solid var(--wicket-secondary);
-      padding: var(--wicket-form-element-spacing-vertical) var(--wicket-form-element-spacing-horizontal);
-      border-radius: var(--wicket-border-radius);
+      background-color: var(--wpico-secondary);
+        color: var(--wpico-secondary-inverse);
+        border: 1px solid var(--wpico-secondary);
+        padding: var(--wpico-form-element-spacing-vertical) var(--wpico-form-element-spacing-horizontal);
+        border-radius: var(--wpico-border-radius);
       text-decoration: none;
       cursor: pointer;
-      transition: all var(--wicket-transition);
+      transition: all var(--wpico-transition);
 
       &:hover {
-        background-color: var(--wicket-secondary-hover);
-        border-color: var(--wicket-secondary-hover);
+        background-color: var(--wpico-secondary-hover);
+          border-color: var(--wpico-secondary-hover);
       }
 
       &-primary {
-        background-color: var(--wicket-primary);
-        color: var(--wicket-primary-inverse);
-        border-color: var(--wicket-primary);
+        background-color: var(--wpico-primary);
+          color: var(--wpico-primary-inverse);
+          border-color: var(--wpico-primary);
 
         &:hover {
-          background-color: var(--wicket-primary-hover);
-          border-color: var(--wicket-primary-hover);
+          background-color: var(--wpico-primary-hover);
+            border-color: var(--wpico-primary-hover);
         }
       }
     }
@@ -79,7 +79,7 @@
           font-style: inherit !important;
           letter-spacing: inherit !important;
           text-transform: inherit !important;
-          padding: var(--wicket-form-element-spacing-vertical) var(--wicket-form-element-spacing-horizontal);
+          padding: var(--wpico-form-element-spacing-vertical) var(--wpico-form-element-spacing-horizontal);
           border: none;
           background: transparent;
           outline: none;
@@ -94,28 +94,28 @@
       .checkbox {
         label {
           input[type="checkbox"] {
-            margin-right: var(--wicket-spacing);
+            margin-right: var(--wpico-spacing);
 
             &:not(:checked) {
               background-color: transparent;
-              border-color: var(--wicket-muted-color);
+              border-color: var(--wpico-muted-color);
             }
           }
 
           .PreferencesFieldsGroup__option-label-content {
-            color: var(--wicket-contrast-inverse);
-            margin-left: calc(var(--wicket-spacing) * 0.5);
+            color: var(--wpico-contrast-inverse);
+              margin-left: calc(var(--wpico-spacing) * 0.5);
             font-weight: 500;
 
             span {
-              color: var(--wicket-contrast-inverse);
+              color: var(--wpico-contrast-inverse);
               font-weight: 500;
             }
 
             .PreferencesFieldsGroup__help {
-              color: var(--wicket-muted-color);
+              color: var(--wpico-muted-color);
               font-weight: 400;
-              margin-top: calc(var(--wicket-spacing) * 0.5);
+              margin-top: calc(var(--wpico-spacing) * 0.5);
 
               p {
                 margin: 0;
@@ -134,25 +134,25 @@
     .checkboxes {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: var(--wicket-spacing);
+      gap: var(--wpico-spacing);
 
       .checkbox {
         label {
           span {
-            color: var(--wicket-contrast-inverse);
+            color: var(--wpico-contrast-inverse);
             font-weight: 500;
             line-height: 1.4;
-            margin-left: calc(var(--wicket-spacing) * 0.5);
+            margin-left: calc(var(--wpico-spacing) * 0.5);
           }
 
           input[type="checkbox"] {
-            margin-right: var(--wicket-spacing);
+            margin-right: var(--wpico-spacing);
             vertical-align: top;
             margin-top: 2px;
 
             &:not(:checked) {
               background-color: transparent;
-              border-color: var(--wicket-muted-color);
+              border-color: var(--wpico-muted-color);
             }
           }
         }
@@ -163,9 +163,9 @@
   /* MDP JS Widgets: Additional Info Styling */
   .AdditionalInfoProfile {
     .control-label {
-      color: var(--wicket-contrast-inverse) !important;
+      color: var(--wpico-contrast-inverse) !important;
       font-weight: 500;
-      margin-bottom: var(--wicket-spacing);
+      margin-bottom: var(--wpico-spacing);
     }
   }
 }
