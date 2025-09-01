@@ -21,7 +21,7 @@
 }
 
 .wicket :where(:root),
-.wicket :where(.wicket) {
+.wicket :where(:host) {
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -392,7 +392,7 @@ body > footer {
 }
 
 .wicket svg:not(:root),
-.wicket svg:not(.wicket) {
+.wicket svg:not(:host) {
   overflow: hidden;
 }
 
@@ -1337,7 +1337,8 @@ body > footer {
 /**
  * Modal (<dialog>)
  */
-.wicket {
+.wicket,
+:host {
   --pico-scrollbar-width: 0px;
 }
 
@@ -1780,5 +1781,4 @@ body > footer {
     transition-delay: 0s !important;
     transition-duration: 0s !important;
   }
-}
 }
