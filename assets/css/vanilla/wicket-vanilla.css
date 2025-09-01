@@ -1,0 +1,7 @@
+/* Wicket's Vanilla CSS */
+/* ALWAYS nest all styles inside .wicket */
+
+@import "_wicket-vanilla-global.css";
+@import "_wicket-vanilla-mdp-js-widgets.css";
+@import "_wicket-vanilla-gravityforms.css";
+

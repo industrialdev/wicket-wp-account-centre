@@ -119,8 +119,8 @@ class Assets extends WicketAcc
         $should_enqueue_wicket_styles = apply_filters('wicket/acc/should_enqueue_wicket_styles', true);
 
         if (!$is_wicket_theme && $should_enqueue_wicket_styles) {
-            wp_enqueue_style('wicket-acc-pico-fluid', WICKET_ACC_URL . 'assets/css/_wicket-pico-fluid.classless.zinc.css', [], WICKET_ACC_VERSION);
-            wp_enqueue_style('wicket-acc-vanilla', WICKET_ACC_URL . 'assets/css/wicket-acc-vanilla.css', ['wicket-acc-pico-fluid'], WICKET_ACC_VERSION);
+            wp_enqueue_style('wicket-pico-fluid', WICKET_ACC_URL . 'assets/css/vanilla/_wicket-pico-fluid.classless.light.zinc.css', [], WICKET_ACC_VERSION);
+            wp_enqueue_style('wicket-vanilla', WICKET_ACC_URL . 'assets/css/vanilla/wicket-vanilla.css', ['wicket-pico-fluid'], WICKET_ACC_VERSION);
         }
 
         // Determine if assets should be enqueued based on context.

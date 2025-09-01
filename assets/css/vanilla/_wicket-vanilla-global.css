@@ -1,0 +1,8 @@
+/* Wicket's Vanilla CSS */
+/* ALWAYS nest all styles inside .wicket */
+
+.wicket {
+  p {
+    color: var(--pico-contrast-inverse);
+  }
+}

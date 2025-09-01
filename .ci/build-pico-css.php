@@ -18,9 +18,9 @@ function executeCommand($command) {
 }
 
 $root = __DIR__;
-$scss = $root . '/wicket-pico.fluid.classless.zinc.scss';
+$scss = $root . '/build-pico-css.scss';
 $outDir = $root . '/../assets/css';
-$outCss = $outDir . '/_wicket-pico-fluid.classless.zinc.css';
+$outCss = $outDir . '/vanilla/_wicket-pico-fluid.classless.light.zinc.css';
 $vendorLoadPath = $root . '/../vendor/picocss/pico/scss';
 $localLoadPath  = $root . '/';
 
@@ -50,7 +50,7 @@ if ($missing) {
 // Define paths
 $pluginDir = __DIR__;
 $projectRoot = dirname($pluginDir);
-$scssFile = $root . '/wicket-pico.fluid.classless.zinc.scss';
+$scssFile = $root . '/build-pico-css.scss';
 $cssOutputFile = $outCss;
 
 // Compile SCSS to CSS using Dart Sass CLI with local overrides taking precedence

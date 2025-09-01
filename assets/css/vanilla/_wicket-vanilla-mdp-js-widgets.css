@@ -1,18 +1,6 @@
 /* Wicket's Vanilla CSS */
-.wicket {
-  p {
-    color: var(--pico-contrast-inverse);
-  }
-
-  /* Gravity Forms */
-  .gform_wrapper {
-    /* Gravity Forms Step Styling */
-    .gf_step_number,
-    .gf_step_label {
-      color: var(--pico-primary);
-    }
-  }
-}
+/* MDP JS widgets doesn't adhere to everything under .wicket */
+/* But they provide another class we can target: .wicket__widgets */
 
 /* MDP JS Widgets: any widget */
 .wicket__widgets {
