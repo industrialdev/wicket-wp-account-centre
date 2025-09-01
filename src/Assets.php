@@ -176,11 +176,6 @@ class Assets extends WicketAcc
         wp_enqueue_script('wicket-acc-frontend-scripts', WICKET_ACC_URL . 'assets/js/wicket-acc-main.js', [], file_exists($frontend_js_path) ? filemtime($frontend_js_path) : WICKET_ACC_VERSION, true);
         wp_enqueue_script('wicket-acc-frontend-legacy-scripts', WICKET_ACC_URL . 'assets/js/wicket-acc-legacy.js', [], file_exists($legacy_js_path) ? filemtime($legacy_js_path) : WICKET_ACC_VERSION, true);
 
-        // Add inline script to set data-theme="light" on HTML tag
-        if (!$is_wicket_theme && $should_enqueue_wicket_styles) {
-            wp_add_inline_script('wicket-acc-frontend-scripts', 'document.addEventListener("DOMContentLoaded", function() { document.documentElement.setAttribute("data-theme", "light"); });');
-        }
-
         // Localize script with settings
         $localized_settings = [
             'wicket_theme' => $this->wicketTheme,
