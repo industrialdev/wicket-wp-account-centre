@@ -105,7 +105,7 @@ class CFInitOptions extends WicketAcc
             ]
         );
 
-        if (!class_exists('Wicket_Main')) {
+        if (!class_exists('WicketWP')) {
             $datastore = new CFWicketSettingsDatastore();
 
             $main_options_container->add_tab(
