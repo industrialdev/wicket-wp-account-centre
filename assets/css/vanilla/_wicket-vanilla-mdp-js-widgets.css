@@ -6,7 +6,7 @@
 .wicket__widgets {
   fieldset {
     legend {
-      color: var(--pico-contrast-inverse);
+      color: var(--pico-contrast);
     }
   }
 
@@ -98,12 +98,12 @@
           }
 
           .PreferencesFieldsGroup__option-label-content {
-            color: var(--pico-contrast-inverse);
+            color: var(--pico-contrast);
               margin-left: calc(var(--pico-spacing) * 0.5);
             font-weight: 500;
 
             span {
-              color: var(--pico-contrast-inverse);
+              color: var(--pico-contrast);
               font-weight: 500;
             }
 
@@ -134,7 +134,7 @@
       .checkbox {
         label {
           span {
-            color: var(--pico-contrast-inverse);
+            color: var(--pico-contrast);
             font-weight: 500;
             line-height: 1.4;
             margin-left: calc(var(--pico-spacing) * 0.5);
@@ -158,7 +158,7 @@
   /* MDP JS Widgets: Additional Info Styling */
   .AdditionalInfoProfile {
     .control-label {
-      color: var(--pico-contrast-inverse) !important;
+      color: var(--pico-contrast) !important;
       font-weight: 500;
       margin-bottom: var(--pico-spacing);
     }
@@ -218,7 +218,7 @@
         }
 
         span {
-          color: var(--pico-contrast-inverse);
+          color: var(--pico-contrast);
           font-weight: 500;
           white-space: nowrap;
           line-height: 1.2;

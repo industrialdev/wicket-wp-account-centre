@@ -3,6 +3,6 @@
 
 .wicket {
   p {
-    color: var(--pico-contrast-inverse);
+    color: var(--pico-contrast);
   }
 }
