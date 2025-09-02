@@ -41,6 +41,13 @@ class init extends Blocks
         $relationship_mode = get_field('orgss_relationship_mode');
         $new_org_type_override = get_field('orgss_new_org_type_override');
 
+        // Check if we should automatically filter by the relationship type upon org creation
+        $enable_relationship_filtering = get_field('orgss_enable_relationship_filtering');
+        $relationship_type_filter = '';
+        if ($enable_relationship_filtering !== false) {
+            $relationship_type_filter = $relationship_type_upon_org_creation;
+        }
+
         $disable_ability_to_create_new_orgentity = get_field('orgss_disable_ability_to_create_new_orgentity');
         $disable_ability_to_select_orgs_with_active_membership = get_field('orgss_disable_ability_to_select_orgs_with_active_membership');
         $grant_roster_management_on_next_purchase = get_field('orgss_grant_roster_management_on_next_purchase');
@@ -62,6 +69,7 @@ class init extends Blocks
             'search_org_type'                     => $search_org_type,
             'relationship_type_upon_org_creation' => $relationship_type_upon_org_creation,
             'relationship_mode'                   => $relationship_mode,
+            'relationship_type_filter'            => $relationship_type_filter,
             'new_org_type_override'               => $new_org_type_override,
             'disable_create_org_ui'               => $disable_ability_to_create_new_orgentity,
             'disable_selecting_orgs_with_active_membership' => $disable_ability_to_select_orgs_with_active_membership,
