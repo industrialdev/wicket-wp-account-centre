@@ -202,6 +202,27 @@
             "ui": 1
         },
         {
+            "key": "field_6716a3605be16",
+            "label": "Enable Relationship Filtering",
+            "name": "orgss_enable_relationship_filtering",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "Enable filtering of relationships by the selected relationship type. When enabled, only relationships of the type specified in 'Relationship Type Upon Org Creation' will be displayed.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 0,
+            "allow_in_bindings": 0,
+            "ui_on_text": "",
+            "ui_off_text": "",
+            "ui": 1
+        },
+        {
             "key": "field_6716a1c15f5e9",
             "label": "Visual: Text, Messages, and Elements",
             "name": "",
@@ -446,27 +467,6 @@
             "placeholder": "E.g. choice_5_12_1",
             "prepend": "",
             "append": ""
-        },
-        {
-            "key": "field_6716a3605be16",
-            "label": "Enable Relationship Filtering",
-            "name": "orgss_enable_relationship_filtering",
-            "aria-label": "",
-            "type": "true_false",
-            "instructions": "Enable filtering of relationships by the selected relationship type. When enabled, only relationships of the type specified in 'Relationship Type Upon Org Creation' will be displayed.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "message": "",
-            "default_value": 0,
-            "allow_in_bindings": 0,
-            "ui_on_text": "",
-            "ui_off_text": "",
-            "ui": 1
         }
     ],
     "location": [
@@ -494,5 +494,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1756838343
+    "modified": 1756841702
 }

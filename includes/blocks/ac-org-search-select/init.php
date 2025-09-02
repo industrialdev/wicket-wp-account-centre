@@ -42,9 +42,9 @@ class init extends Blocks
         $new_org_type_override = get_field('orgss_new_org_type_override');
 
         // Check if we should automatically filter by the relationship type upon org creation
-        $enable_relationship_filtering = get_field('orgss_enable_relationship_filtering');
+        $enable_relationship_filtering = (bool) get_field('orgss_enable_relationship_filtering');
         $relationship_type_filter = '';
-        if ($enable_relationship_filtering !== false) {
+        if ($enable_relationship_filtering && !empty($relationship_type_upon_org_creation)) {
             $relationship_type_filter = $relationship_type_upon_org_creation;
         }
 
@@ -70,6 +70,7 @@ class init extends Blocks
             'relationship_type_upon_org_creation' => $relationship_type_upon_org_creation,
             'relationship_mode'                   => $relationship_mode,
             'relationship_type_filter'            => $relationship_type_filter,
+            'enable_relationship_filtering'       => $enable_relationship_filtering,
             'new_org_type_override'               => $new_org_type_override,
             'disable_create_org_ui'               => $disable_ability_to_create_new_orgentity,
             'disable_selecting_orgs_with_active_membership' => $disable_ability_to_select_orgs_with_active_membership,
