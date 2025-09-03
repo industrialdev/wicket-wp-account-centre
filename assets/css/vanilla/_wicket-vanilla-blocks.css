@@ -1,0 +1,4 @@
+.wicket-acc-block.wicket-acc-block-welcome {
+  /* Lightened from secondary background using CSS-only color mixing */
+  background-color: color-mix(in srgb, var(--pico-secondary-background) 15%, var(--pico-background-color));
+}
