@@ -960,12 +960,14 @@ class WooCommerce extends WicketAcc
             if ($page === 'myaccount') {
                 // Return the actual WooCommerce my account page ID so plugins relying on it behave
                 $wc_myaccount_page_id = (int) get_option('woocommerce_myaccount_page_id');
+
                 return $wc_myaccount_page_id ?: $page_id;
             }
 
             // For order-pay endpoint, also return checkout page ID for proper WC context
             if ($page === 'checkout' && $this->getCurrentEndpointKey() === 'order-pay') {
                 $wc_checkout_page_id = (int) get_option('woocommerce_checkout_page_id');
+
                 return $wc_checkout_page_id ?: $page_id;
             }
         }
@@ -1122,7 +1124,7 @@ class WooCommerce extends WicketAcc
             // Preserve any existing query parameters
             if (!empty($_GET)) {
                 $query_params = array_merge($_GET, [
-                    'pay_for_order' => 'true'
+                    'pay_for_order' => 'true',
                 ]);
                 $canonical_url = add_query_arg($query_params, $canonical_url);
             } else {
