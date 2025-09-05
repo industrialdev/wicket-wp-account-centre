@@ -48,5 +48,13 @@ div.woocommerce:has(.wicket-acc-page),
   .woocommerce {
     max-width: var(--wicket-acc-container-width);
     margin: 0 auto;
+
+    .woocommerce-order {
+      .container {
+        .max-w-5xl {
+          max-width: 100% !important;
+        }
+      }
+    }
   }
 }
