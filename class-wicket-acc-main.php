@@ -156,6 +156,7 @@ class WicketAcc
         'set-default-payment-method' => 'Set Default Payment Method',
         'orders'                     => 'Orders',
         'view-order'                 => 'View Order',
+        'order-pay'                  => 'Order Pay',
         'downloads'                  => 'Downloads',
         'edit-account'               => 'Edit Account',
         'edit-address'               => 'Edit Address',
@@ -177,6 +178,7 @@ class WicketAcc
         'set-default-payment-method',
         'orders',
         'view-order',
+        'order-pay',
         'downloads',
         'payment-methods',
         'subscriptions',
@@ -364,7 +366,6 @@ class WicketAcc
             }
         }
 
-        // Instantiate services
         // Instantiate services
         $this->instances = [
             'Mdp'                    => new Mdp(),
