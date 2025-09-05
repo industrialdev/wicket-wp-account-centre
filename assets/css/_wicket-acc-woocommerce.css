@@ -42,3 +42,11 @@ div.woocommerce:has(.wicket-acc-page),
     }
   }
 }
+
+/* This pages won't live inside ACC. They need a proper container separately */
+.woocommerce-checkout, .woocommerce-cart, .woocommerce-order-pay {
+  .woocommerce {
+    max-width: var(--wicket-acc-container-width);
+    margin: 0 auto;
+  }
+}

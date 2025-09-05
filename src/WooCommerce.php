@@ -12,7 +12,8 @@ defined('ABSPATH') || exit;
  * WooCommerce endpoints are located at $acc_wc_endpoints on main class.
  * They are the index, not the two letter lang or their translation. Just the indexes.
  *
- * Special URLs to take care of:
+ * WooCommerce enpoints URLs we want to be inside ACC:
+ *
  * https://localhost/my-account/orders/
  * https://localhost/fr/mon-compte/orders/
  * https://localhost/es/mi-cuenta/orders/
@@ -40,6 +41,10 @@ defined('ABSPATH') || exit;
  * https://localhost/my-account/delete-payment-method/56/?_wpnonce=bf3ee98a23
  * https://localhost/fr/mon-compte/delete-payment-method/56/?_wpnonce=bf3ee98a23
  * https://localhost/es/mi-cuenta/delete-payment-method/56/?_wpnonce=bf3ee98a23
+ *
+ * WooCommerce endpoints we DON'T want to touch:
+ * /cart/
+ * /checkout/(.*)
  */
 class WooCommerce extends WicketAcc
 {
@@ -359,6 +364,9 @@ class WooCommerce extends WicketAcc
         // Ensure redirects/links to payment-methods land on ACC base in ACC context
         add_filter('woocommerce_get_endpoint_url', [$this, 'fix_payment_methods_endpoint_base'], 12, 4);
 
+        // Force order-pay URLs to use checkout base instead of my-account
+        add_filter('woocommerce_get_endpoint_url', [$this, 'force_order_pay_to_checkout'], 13, 4);
+
         // Add WooCommerce endpoints to account pages
         add_filter('wicket_acc_menu_items', [$this, 'add_wc_menu_items']);
 
@@ -375,14 +383,8 @@ class WooCommerce extends WicketAcc
         add_action('wp', [$this, 'handle_payment_method_actions_early'], 1);
         add_action('parse_request', [$this, 'handle_payment_method_actions_early'], 1);
 
-        // Handle order-pay parameter validation and redirect
-        add_action('template_redirect', [$this, 'handle_order_pay_validation'], 1);
-
         // Minimal shim: some gateways rely on this conditional specifically
         add_filter('woocommerce_is_add_payment_method_page', [$this, 'maybe_force_is_add_payment_method_page']);
-
-        // Add order-pay page conditional support
-        add_filter('woocommerce_is_checkout', [$this, 'maybe_force_is_checkout_page']);
 
         // Trick Woo conditionals that rely on is_page( wc_get_page_id('myaccount') )
         // by mapping the myaccount page id to the current ACC page id in ACC context.
@@ -517,6 +519,40 @@ class WooCommerce extends WicketAcc
     }
 
     /**
+     * Force order-pay URLs to use checkout base instead of my-account.
+     * Prevents WooCommerce from generating /my-account/order-pay/ URLs.
+     *
+     * @param string $url The URL.
+     * @param string $endpoint The endpoint.
+     * @param mixed $value The value.
+     * @param string $permalink The permalink.
+     *
+     * @return string The fixed URL.
+     */
+    public function force_order_pay_to_checkout($url, $endpoint, $value, $permalink)
+    {
+        if ($endpoint !== 'order-pay') {
+            return $url;
+        }
+
+        // Always force order-pay to use checkout base
+        $checkout_url = wc_get_checkout_url();
+        $order_pay_url = rtrim($checkout_url, '/') . '/order-pay/';
+
+        if ($value) {
+            $order_pay_url .= absint($value) . '/';
+        }
+
+        // Preserve query parameters from original URL
+        $parsed = wp_parse_url($url);
+        if (!empty($parsed['query'])) {
+            $order_pay_url .= '?' . $parsed['query'];
+        }
+
+        return $order_pay_url;
+    }
+
+    /**
      * Override WooCommerce templates.
      *
      * @param string $template
@@ -546,9 +582,7 @@ class WooCommerce extends WicketAcc
         }
 
         // Don't override order-pay template - let WooCommerce handle checkout/form-pay.php
-        if ($this->getCurrentEndpointKey() === 'order-pay') {
-            return $template;
-        }
+        // (This endpoint should remain under /checkout/, not /my-account/)
 
         // Determine the endpoint name from $template_name (ex: myaccount/payment-methods.php = payment-methods)
         $wc_endpoint = explode('/', $template_name);
@@ -956,20 +990,11 @@ class WooCommerce extends WicketAcc
      */
     public function enable_wc_page_detection($page_id, $page)
     {
-        if ($this->is_acc_wc_context()) {
-            if ($page === 'myaccount') {
-                // Return the actual WooCommerce my account page ID so plugins relying on it behave
-                $wc_myaccount_page_id = (int) get_option('woocommerce_myaccount_page_id');
+        if ($this->is_acc_wc_context() && $page === 'myaccount') {
+            // Return the actual WooCommerce my account page ID so plugins relying on it behave
+            $wc_myaccount_page_id = (int) get_option('woocommerce_myaccount_page_id');
 
-                return $wc_myaccount_page_id ?: $page_id;
-            }
-
-            // For order-pay endpoint, also return checkout page ID for proper WC context
-            if ($page === 'checkout' && $this->getCurrentEndpointKey() === 'order-pay') {
-                $wc_checkout_page_id = (int) get_option('woocommerce_checkout_page_id');
-
-                return $wc_checkout_page_id ?: $page_id;
-            }
+            return $wc_myaccount_page_id ?: $page_id;
         }
 
         return $page_id;
@@ -1029,32 +1054,18 @@ class WooCommerce extends WicketAcc
             set_query_var($endpoint_key, $value);
         }
 
-        // For order-pay endpoint, also set checkout page context
-        if ($endpoint_key === 'order-pay') {
-            $wc_checkout_page_id = (int) get_option('woocommerce_checkout_page_id');
-            if ($wc_checkout_page_id > 0 && isset($wp_query)) {
+        // Make is_page( wc_get_page_id('myaccount') ) truthy for ACC so core
+        // is_add_payment_method_page() and similar checks pass.
+        $wc_myaccount_page_id = (int) get_option('woocommerce_myaccount_page_id');
+        if ($wc_myaccount_page_id > 0) {
+            if (isset($wp_query)) {
                 $wp_query->is_page = true;
                 $wp_query->is_singular = true;
-                $wp_query->queried_object_id = $wc_checkout_page_id;
-                $wp_query->query_vars['page_id'] = $wc_checkout_page_id;
+                $wp_query->queried_object_id = $wc_myaccount_page_id;
+                $wp_query->query_vars['page_id'] = $wc_myaccount_page_id;
             }
-            if (isset($wp) && $wc_checkout_page_id > 0) {
-                $wp->query_vars['page_id'] = $wc_checkout_page_id;
-            }
-        } else {
-            // Make is_page( wc_get_page_id('myaccount') ) truthy for ACC so core
-            // is_add_payment_method_page() and similar checks pass.
-            $wc_myaccount_page_id = (int) get_option('woocommerce_myaccount_page_id');
-            if ($wc_myaccount_page_id > 0) {
-                if (isset($wp_query)) {
-                    $wp_query->is_page = true;
-                    $wp_query->is_singular = true;
-                    $wp_query->queried_object_id = $wc_myaccount_page_id;
-                    $wp_query->query_vars['page_id'] = $wc_myaccount_page_id;
-                }
-                if (isset($wp)) {
-                    $wp->query_vars['page_id'] = $wc_myaccount_page_id;
-                }
+            if (isset($wp)) {
+                $wp->query_vars['page_id'] = $wc_myaccount_page_id;
             }
         }
     }
@@ -1073,67 +1084,6 @@ class WooCommerce extends WicketAcc
         }
 
         return $this->getCurrentEndpointKey() === 'add-payment-method';
-    }
-
-    /**
-     * Return true for ACC order-pay endpoint when WooCommerce checks is_checkout().
-     *
-     * @param bool $is_checkout
-     * @return bool
-     */
-    public function maybe_force_is_checkout_page($is_checkout)
-    {
-        if ($is_checkout) {
-            return $is_checkout;
-        }
-
-        if (!$this->is_acc_wc_context()) {
-            return $is_checkout;
-        }
-
-        return $this->getCurrentEndpointKey() === 'order-pay';
-    }
-
-    /**
-     * Handle order-pay parameter validation and redirect.
-     * Ensures required query parameters are present for payment processing.
-     *
-     * @return void
-     */
-    public function handle_order_pay_validation(): void
-    {
-        if (!$this->is_acc_wc_context() || $this->getCurrentEndpointKey() !== 'order-pay') {
-            return;
-        }
-
-        global $wp;
-        $order_id = isset($wp->query_vars['order-pay']) ? absint($wp->query_vars['order-pay']) : 0;
-
-        if (!$order_id) {
-            return;
-        }
-
-        // Check if required payment parameters are present
-        $pay_for_order = isset($_GET['pay_for_order']) ? sanitize_text_field(wp_unslash($_GET['pay_for_order'])) : '';
-        $order_key = isset($_GET['key']) ? sanitize_text_field(wp_unslash($_GET['key'])) : '';
-
-        // If parameters are missing, redirect to canonical WooCommerce order-pay URL
-        if (empty($pay_for_order) || empty($order_key)) {
-            $canonical_url = wc_get_checkout_url() . 'order-pay/' . $order_id . '/';
-
-            // Preserve any existing query parameters
-            if (!empty($_GET)) {
-                $query_params = array_merge($_GET, [
-                    'pay_for_order' => 'true',
-                ]);
-                $canonical_url = add_query_arg($query_params, $canonical_url);
-            } else {
-                $canonical_url = add_query_arg('pay_for_order', 'true', $canonical_url);
-            }
-
-            wp_safe_redirect($canonical_url);
-            exit;
-        }
     }
 
     /**

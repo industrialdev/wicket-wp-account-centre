@@ -15,7 +15,7 @@ use WicketAcc\Services\Notification;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Custom account management system for Wicket. Provides user account features, organization management, and additional blocks and pages. Integrates with WooCommerce when available.
- * Version:           1.5.312
+ * Version:           1.5.400
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -150,13 +150,12 @@ class WicketAcc
         'organization-members'       => 'Organization Members',
         'acc_global-headerbanner'    => 'Global Header-Banner',
         // WooCommerce endpoints https://developer.woocommerce.com/docs/woocommerce-endpoints/
-        //'order-pay'                      => 'Order Pay',
+        //'order-pay'                      => 'Order Pay', // Handled by checkout, not account
         //'order-received'                 => 'Order Received',
         'add-payment-method'         => 'Add Payment Method',
         'set-default-payment-method' => 'Set Default Payment Method',
         'orders'                     => 'Orders',
         'view-order'                 => 'View Order',
-        'order-pay'                  => 'Order Pay',
         'downloads'                  => 'Downloads',
         'edit-account'               => 'Edit Account',
         'edit-address'               => 'Edit Address',
@@ -178,7 +177,6 @@ class WicketAcc
         'set-default-payment-method',
         'orders',
         'view-order',
-        'order-pay',
         'downloads',
         'payment-methods',
         'subscriptions',
@@ -193,11 +191,6 @@ class WicketAcc
      * @var array
      */
     protected array $acc_wc_endpoints = [
-        'order-pay'                  => [
-            'en' => 'order-pay',
-            'fr' => 'ordre-paiement',
-            'es' => 'orden-pago',
-        ],
         'add-payment-method'         => [
             'en' => 'add-payment-method',
             'fr' => 'add-payment-method',
@@ -257,11 +250,6 @@ class WicketAcc
             'en' => 'subscriptions',
             'fr' => 'souscriptions',
             'es' => 'suscripciones',
-        ],
-        'downloads'                 => [
-            'en' => 'downloads',
-            'fr' => 'telechargements',
-            'es' => 'descargas',
         ],
     ];
 
