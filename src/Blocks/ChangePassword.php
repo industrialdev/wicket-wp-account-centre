@@ -98,11 +98,11 @@ class ChangePassword
           <ul>
             <?php foreach ($formErrors as $index => $error): ?>
               <?php
-                                                                            $errorMap = [
-                                                                                'user.current_password' => ['Current Password', '#current_password'],
-                                                                                'user.password' => ['New Password', '#password'],
-                                                                                'user.password_confirmation' => ['Confirm Password', '#password_confirmation'],
-                                                                            ];
+                                                                                $errorMap = [
+                                                                                    'user.current_password' => ['Current Password', '#current_password'],
+                                                                                    'user.password' => ['New Password', '#password'],
+                                                                                    'user.password_confirmation' => ['Confirm Password', '#password_confirmation'],
+                                                                                ];
 
                 if (isset($errorMap[$error->meta->field])):
                     [$prefix, $anchor] = $errorMap[$error->meta->field];

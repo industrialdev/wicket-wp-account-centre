@@ -62,7 +62,7 @@ class Touchpoint extends Init
             ];
 
             // Date-based filtering
-            $today = '2025-07-23';
+            $today = gmdate('Y-m-d');
             $mode = $options['mode'] ?? 'upcoming';
             if ($mode === 'past') {
                 $params['filter[end_date]'] = $today;
