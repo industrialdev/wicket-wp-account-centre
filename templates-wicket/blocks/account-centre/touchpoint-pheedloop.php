@@ -39,6 +39,7 @@ $override_past_events_link_text = $args['override_past_events_link_text'];
 $past_events_link_text = __('See Past Registered Events', 'wicket-acc');
 $show_view_more_events = $args['show_view_more_events'];
 $use_x_columns = absint($args['use_x_columns']);
+$service_id = $args['service_id'];
 $is_ajax_request = $args['is_ajax_request'];
 // @formatter:on
 
@@ -129,11 +130,12 @@ if (!empty($override_past_events_link)) {
 
                 if ($display == 'upcoming' || $display == 'all') {
                     TouchpointPheedloop::display_touchpoints(
-                        (isset($touchpoints_results['data']) && is_array($touchpoints_results['data']) && !empty($touchpoints_results['data'])) ? $touchpoints_results['data'] : [],
+                        (isset($touchpoints_results) && is_array($touchpoints_results) && !empty($touchpoints_results)) ? $touchpoints_results : [],
                         'upcoming',
                         $num_results,
                         false,
-                        $args
+                        $args,
+                        $service_id
                     );
 
                     $close++;
@@ -141,11 +143,12 @@ if (!empty($override_past_events_link)) {
 
                 if ($display == 'past' || $display == 'all') {
                     TouchpointPheedloop::display_touchpoints(
-                        (isset($touchpoints_results['data']) && is_array($touchpoints_results['data']) && !empty($touchpoints_results['data'])) ? $touchpoints_results['data'] : [],
+                        (isset($touchpoints_results) && is_array($touchpoints_results) && !empty($touchpoints_results)) ? $touchpoints_results : [],
                         'past',
                         $num_results,
                         false,
-                        $args
+                        $args,
+                        $service_id
                     );
 
                     $close++;

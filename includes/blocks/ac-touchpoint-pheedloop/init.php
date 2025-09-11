@@ -119,6 +119,7 @@ class init extends Blocks
             'override_past_events_link_text' => $override_past_events_link_text,
             'show_view_more_events'          => $show_view_more_events,
             'use_x_columns'                  => $use_x_columns,
+            'service_id'                     => $service_id,
             'is_ajax_request'                => false,
             'is_preview'                     => $this->is_preview,
         ];
@@ -158,10 +159,11 @@ class init extends Blocks
      * @param int $num_results Number of results to display
      * @param bool $ajax Is ajax request?
      * @param array $config show_view_more_events(bool), use_x_columns(int)
+     * @param string $service_id Service ID for touchpoint data
      *
      * @return void
      */
-    public static function display_touchpoints($touchpoint_data = [], $display_type = 'upcoming', $num_results = 5, $ajax = false, $config = [])
+    public static function display_touchpoints($touchpoint_data = [], $display_type = 'upcoming', $num_results = 5, $ajax = false, $config = [], $service_id = '')
     {
 
         // Config defaults
@@ -202,7 +204,7 @@ class init extends Blocks
 
         // Show more button only if not an AJAX request and there are more results
         if ($ajax === false && $config['show_view_more_events'] && ($offset + $num_results) < $total_results) {
-            self::load_more_results($touchpoint_data, $num_results, $total_results, $offset, $display_type);
+            self::load_more_results($touchpoint_data, $num_results, $total_results, $offset, $display_type, $service_id);
         }
     }
 
@@ -253,14 +255,15 @@ class init extends Blocks
      * @param int $total_results Total results
      * @param int $offset Offset of displayed results
      * @param string $display_type Touchpoint display type: upcoming, past, all
+     * @param string $service_id Service ID for touchpoint data
      *
      * @return void
      */
-    public static function load_more_results($touchpoint_data = [], $num_results = 5, $total_results = 0, $offset = 0, $display_type = 'upcoming')
+    public static function load_more_results($touchpoint_data = [], $num_results = 5, $total_results = 0, $offset = 0, $display_type = 'upcoming', $service_id = '')
     {
         ?>
 		<div x-data="ajaxFormHandler()">
-            <div class="wicket-ac-touchpoint__pheedloop-results container">
+			<div class="wicket-ac-touchpoint__pheedloop-results container">
 				<div class="events-list grid gap-6" x-html="responseMessage"></div>
 			</div>
 
@@ -272,6 +275,7 @@ class init extends Blocks
 					<input type="hidden" name="total_results" value="<?php echo $total_results; ?>">
 					<input type="hidden" name="type" value="<?php echo $display_type; ?>">
 					<input type="hidden" name="offset" value="<?php echo $offset + $num_results; ?>">
+					<input type="hidden" name="service_id" value="<?php echo esc_attr($service_id); ?>">
 					<?php wp_nonce_field('wicket_ac_touchpoint_pheedloop_results'); ?>
 
 					<div x-show="loading" class="wicket-ac-touchpoint__loader flex justify-center items-center self-center">
@@ -302,33 +306,33 @@ class init extends Blocks
 							method: 'POST',
 							body: formData,
 						})
-						.then(response => response.text())
-						.then(data => {
-							this.loading = false;
-							if (data) {
-                                this.responseMessage += data;
-								// Find the events list and load more container
-								const loadMoreContainer = document.querySelector('.load-more-container');
+							.then(response => response.text())
+							.then(data => {
+								this.loading = false;
+								if (data) {
+									this.responseMessage += data;
+									// Find the events list and load more container
+									const loadMoreContainer = document.querySelector('.load-more-container');
 
 
-								// Update the offset for the next request
-								const offset = parseInt(form.querySelector('[name="offset"]').value);
-								const numResults = parseInt(form.querySelector('[name="num_results"]').value);
-								const totalResults = parseInt(form.querySelector('[name="total_results"]').value);
+									// Update the offset for the next request
+									const offset = parseInt(form.querySelector('[name="offset"]').value);
+									const numResults = parseInt(form.querySelector('[name="num_results"]').value);
+									const totalResults = parseInt(form.querySelector('[name="total_results"]').value);
 
-								// Update offset for next request
-								form.querySelector('[name="offset"]').value = offset + numResults;
+									// Update offset for next request
+									form.querySelector('[name="offset"]').value = offset + numResults;
 
-								// Hide "Show More" if we've loaded all results
-								if (offset + numResults >= totalResults) {
-									loadMoreContainer.style.display = 'none';
+									// Hide "Show More" if we've loaded all results
+									if (offset + numResults >= totalResults) {
+										loadMoreContainer.style.display = 'none';
+									}
 								}
-							}
-						})
-						.catch(error => {
-							this.loading = false;
-							console.error('Error:', error);
-						});
+							})
+							.catch(error => {
+								this.loading = false;
+								console.error('Error:', error);
+							});
 					}
 				};
 			}

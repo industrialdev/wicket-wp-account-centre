@@ -44,16 +44,19 @@ class ajax extends init
         $total_results = absint($_POST['total_results']);
         $offset = absint($_POST['offset']);
         $display_type = sanitize_text_field($_POST['type']);
+        $service_id = sanitize_text_field($_POST['service_id']);
 
-        $pheedloop_results = $this->get_touchpoints_results('Aptify Conversion');
+        // Get touchpoints data
+        $pheedloop_results = $this->get_touchpoints_results($service_id);
 
         ob_start();
         $this->display_touchpoints(
-            $pheedloop_results['data'],
+            $pheedloop_results,
             $display_type,
             $num_results,
             true,
-            ['show_view_more_events' => false] // Don't show the "Show More" button in AJAX responses
+            ['show_view_more_events' => false], // Don't show the "Show More" button in AJAX responses
+            $service_id
         );
         $results = ob_get_clean();
 
