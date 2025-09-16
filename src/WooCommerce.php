@@ -42,6 +42,10 @@ defined('ABSPATH') || exit;
  * https://localhost/fr/mon-compte/delete-payment-method/56/?_wpnonce=bf3ee98a23
  * https://localhost/es/mi-cuenta/delete-payment-method/56/?_wpnonce=bf3ee98a23
  *
+ * https://localhost/my-account/subscription-payment-method/120873/
+ * https://localhost/fr/mon-compte/subscription-payment-method/120873/
+ * https://localhost/es/mi-cuenta/subscription-payment-method/120873/
+ *
  * WooCommerce endpoints we DON'T want to touch:
  * /cart/
  * /checkout/(.*)
@@ -404,7 +408,12 @@ class WooCommerce extends WicketAcc
      */
     public function handle_payment_method_actions_early(): void
     {
+        // Add logging to debug blank page issue
+        $logger = wc_get_logger();
+
         if (!$this->is_acc_wc_context()) {
+            $logger->info('Not in ACC WC context, returning early', ['source' => 'wicket-acc']);
+
             return;
         }
 
@@ -413,41 +422,69 @@ class WooCommerce extends WicketAcc
         $delete_token_id = isset($wp->query_vars['delete-payment-method']) ? absint($wp->query_vars['delete-payment-method']) : 0;
         $set_default_id = isset($wp->query_vars['set-default-payment-method']) ? absint($wp->query_vars['set-default-payment-method']) : 0;
 
+        $logger->info('Payment method action IDs', [
+            'delete_token_id' => $delete_token_id,
+            'set_default_id' => $set_default_id,
+            'source' => 'wicket-acc',
+        ]);
+
         if (!$delete_token_id && !$set_default_id) {
+            $logger->info('No payment method actions to process, returning early', ['source' => 'wicket-acc']);
+
             return;
         }
 
         if (!function_exists('wc_add_notice')) {
+            $logger->info('wc_add_notice function not available, returning early', ['source' => 'wicket-acc']);
+
             return;
         }
 
         // Process delete action
         if ($delete_token_id) {
+            $logger->info('Processing delete payment method action', ['token_id' => $delete_token_id, 'source' => 'wicket-acc']);
             $token = \WC_Payment_Tokens::get($delete_token_id);
             $nonce_ok = isset($_REQUEST['_wpnonce']) && wp_verify_nonce(wp_unslash($_REQUEST['_wpnonce']), 'delete-payment-method-' . $delete_token_id);
 
             if (is_null($token) || get_current_user_id() !== $token->get_user_id() || !$nonce_ok) {
+                $logger->info('Invalid payment method for deletion', [
+                    'token_null' => is_null($token),
+                    'user_id_match' => get_current_user_id() === $token->get_user_id(),
+                    'nonce_ok' => $nonce_ok,
+                    'source' => 'wicket-acc',
+                ]);
                 wc_add_notice(__('Invalid payment method.', 'woocommerce'), 'error');
             } else {
+                $logger->info('Deleting payment method', ['token_id' => $delete_token_id, 'source' => 'wicket-acc']);
                 \WC_Payment_Tokens::delete($delete_token_id);
                 wc_add_notice(__('Payment method deleted.', 'woocommerce'));
             }
 
+            $logger->info('Redirecting to payment methods after delete', ['source' => 'wicket-acc']);
             $this->safe_redirect_to_payment_methods();
         }
 
         // Process set-default action
         if ($set_default_id) {
+            $logger->info('Processing set default payment method action', ['token_id' => $set_default_id, 'source' => 'wicket-acc']);
             $token = \WC_Payment_Tokens::get($set_default_id);
             $nonce_ok = isset($_REQUEST['_wpnonce']) && wp_verify_nonce(wp_unslash($_REQUEST['_wpnonce']), 'set-default-payment-method-' . $set_default_id);
 
             if (is_null($token) || get_current_user_id() !== $token->get_user_id() || !$nonce_ok) {
+                $logger->info('Invalid payment method for setting default', [
+                    'token_null' => is_null($token),
+                    'user_id_match' => get_current_user_id() === $token->get_user_id(),
+                    'nonce_ok' => $nonce_ok,
+                    'source' => 'wicket-acc',
+                ]);
                 wc_add_notice(__('Invalid payment method.', 'woocommerce'), 'error');
             } else {
+                $logger->info('Setting payment method as default', ['token_id' => $set_default_id, 'source' => 'wicket-acc']);
                 \WC_Payment_Tokens::set_users_default($token->get_user_id(), intval($set_default_id));
                 wc_add_notice(__('This payment method was successfully set as your default.', 'woocommerce'));
             }
 
+            $logger->info('Redirecting to payment methods after set default', ['source' => 'wicket-acc']);
             $this->safe_redirect_to_payment_methods();
         }
     }
@@ -459,16 +496,25 @@ class WooCommerce extends WicketAcc
      */
     private function safe_redirect_to_payment_methods(): void
     {
+        // Add logging to debug blank page issue
+        $logger = wc_get_logger();
+
         // Use localized builder to ensure redirect matches current language (e.g., FR)
         $url = $this->build_localized_endpoint_url('payment-methods', '');
+
         if (!$url) {
             $url = wc_get_account_endpoint_url('payment-methods');
+            $logger->info('Falling back to WC endpoint URL', ['url' => $url, 'source' => 'wicket-acc']);
         }
+
         wc_nocache_headers();
+
         if (!headers_sent()) {
             // Send header redirect but also print HTML fallback in case the client blocks it
+            $logger->info('Headers not sent, performing wp_safe_redirect', ['url' => $url, 'source' => 'wicket-acc']);
             wp_safe_redirect($url);
         }
+
         // Always print an HTML/JS fallback to guarantee navigation
         echo '<!doctype html><html><head><meta charset="utf-8">';
         echo '<meta http-equiv="refresh" content="0;url=' . esc_url($url) . '">';
@@ -590,6 +636,11 @@ class WooCommerce extends WicketAcc
         $wc_endpoint = explode('.', $wc_endpoint);
         // grab the first element of the array
         $wc_endpoint = array_shift($wc_endpoint);
+
+        // Never override subscription-payment-method endpoint
+        if ($wc_endpoint === 'subscription-payment-method') {
+            return $template;
+        }
 
         // If we are seeing a WC endpoint from $acc_pages_map
         if (in_array($wc_endpoint, $this->acc_pages_map)) {
@@ -836,8 +887,10 @@ class WooCommerce extends WicketAcc
         if (count($path_segments) < 2) {
             return;
         }
+
         $acc_base = $path_segments[0] ?? '';
         $bases = array_values($this->acc_wc_index_slugs);
+
         if (!in_array($acc_base, $bases, true)) {
             return;
         }
@@ -853,6 +906,7 @@ class WooCommerce extends WicketAcc
             if (array_key_exists($endpoint_key, $this->acc_wc_endpoints) && $next_segment !== '') {
                 // This is an endpoint with an argument
                 $value = is_numeric($next_segment) ? absint($next_segment) : sanitize_text_field(wp_unslash($next_segment));
+
                 $wp->set_query_var($endpoint_key, $value);
                 $wp->query_vars[$endpoint_key] = $value;
                 break; // Found and set the endpoint, no need to continue
@@ -864,6 +918,7 @@ class WooCommerce extends WicketAcc
             $maybe_endpoint = $path_segments[1] ?? '';
             $endpoint_key = $this->endpoint_key_from_localized_slug($maybe_endpoint) ?: $maybe_endpoint;
             if ($maybe_endpoint && array_key_exists($endpoint_key, $this->acc_wc_endpoints)) {
+
                 $wp->set_query_var($endpoint_key, true);
                 $wp->query_vars[$endpoint_key] = true;
             }
@@ -1098,7 +1153,6 @@ class WooCommerce extends WicketAcc
             $bases = array_values($this->acc_wc_index_slugs);
 
             if (in_array($segments[0], $bases, true)) {
-
                 return true;
             }
         }
