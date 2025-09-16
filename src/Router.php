@@ -28,7 +28,6 @@ class Router extends WicketAcc
             return;
         }
 
-        add_action('admin_init', [$this, 'initAllPages']);
         add_action('init', [$this, 'accPagesTemplate']);
         add_filter('archive_template', [$this, 'customArchiveTemplate']);
         add_action('init', [$this, 'accRedirects']);
