@@ -132,7 +132,6 @@ class AdminSettings extends \WicketAcc\WicketAcc
         update_option('wicket_acc_cf_migration_complete', true);
     }
 
-
     /**
      * Enqueue scripts and styles for admin.
      */

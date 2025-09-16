@@ -258,6 +258,7 @@ class Router extends WicketAcc
         foreach ($acc_old_slugs as $old_slug) {
             if (str_starts_with($server_request_uri, $old_slug)) {
                 $this->performRedirect($dashboard_url);
+
                 return; // Exit after first redirect
             }
         }
@@ -265,6 +266,7 @@ class Router extends WicketAcc
         // Redirect archive page of 'my-account' CPT to the dashboard
         if (is_post_type_archive($this->acc_post_type)) {
             $this->performRedirect($dashboard_url);
+
             return;
         }
     }

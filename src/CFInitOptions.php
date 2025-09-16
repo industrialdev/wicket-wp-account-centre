@@ -71,7 +71,6 @@ class CFInitOptions extends WicketAcc
             ]
         );
 
-
         if (!class_exists('WicketWP')) {
             $datastore = new CFWicketSettingsDatastore();
 
