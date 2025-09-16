@@ -481,12 +481,7 @@ class WooCommerce extends WicketAcc
      */
     public function handle_payment_method_actions_early(): void
     {
-        // Add logging to debug blank page issue
-        $logger = wc_get_logger();
-
         if (!$this->is_acc_wc_context()) {
-            $logger->info('Not in ACC WC context, returning early', ['source' => 'wicket-acc-woo']);
-
             return;
         }
 
@@ -495,69 +490,41 @@ class WooCommerce extends WicketAcc
         $delete_token_id = isset($wp->query_vars['delete-payment-method']) ? absint($wp->query_vars['delete-payment-method']) : 0;
         $set_default_id = isset($wp->query_vars['set-default-payment-method']) ? absint($wp->query_vars['set-default-payment-method']) : 0;
 
-        $logger->info('Payment method action IDs', [
-            'delete_token_id' => $delete_token_id,
-            'set_default_id' => $set_default_id,
-            'source' => 'wicket-acc-woo',
-        ]);
-
         if (!$delete_token_id && !$set_default_id) {
-            $logger->info('No payment method actions to process, returning early', ['source' => 'wicket-acc-woo']);
-
             return;
         }
 
         if (!function_exists('wc_add_notice')) {
-            $logger->info('wc_add_notice function not available, returning early', ['source' => 'wicket-acc-woo']);
-
             return;
         }
 
         // Process delete action
         if ($delete_token_id) {
-            $logger->info('Processing delete payment method action', ['token_id' => $delete_token_id, 'source' => 'wicket-acc-woo']);
             $token = \WC_Payment_Tokens::get($delete_token_id);
             $nonce_ok = isset($_REQUEST['_wpnonce']) && wp_verify_nonce(wp_unslash($_REQUEST['_wpnonce']), 'delete-payment-method-' . $delete_token_id);
 
             if (is_null($token) || get_current_user_id() !== $token->get_user_id() || !$nonce_ok) {
-                $logger->info('Invalid payment method for deletion', [
-                    'token_null' => is_null($token),
-                    'user_id_match' => get_current_user_id() === $token->get_user_id(),
-                    'nonce_ok' => $nonce_ok,
-                    'source' => 'wicket-acc-woo',
-                ]);
                 wc_add_notice(__('Invalid payment method.', 'woocommerce'), 'error');
             } else {
-                $logger->info('Deleting payment method', ['token_id' => $delete_token_id, 'source' => 'wicket-acc-woo']);
                 \WC_Payment_Tokens::delete($delete_token_id);
                 wc_add_notice(__('Payment method deleted.', 'woocommerce'));
             }
 
-            $logger->info('Redirecting to payment methods after delete', ['source' => 'wicket-acc-woo']);
             $this->safe_redirect_to_payment_methods();
         }
 
         // Process set-default action
         if ($set_default_id) {
-            $logger->info('Processing set default payment method action', ['token_id' => $set_default_id, 'source' => 'wicket-acc-woo']);
             $token = \WC_Payment_Tokens::get($set_default_id);
             $nonce_ok = isset($_REQUEST['_wpnonce']) && wp_verify_nonce(wp_unslash($_REQUEST['_wpnonce']), 'set-default-payment-method-' . $set_default_id);
 
             if (is_null($token) || get_current_user_id() !== $token->get_user_id() || !$nonce_ok) {
-                $logger->info('Invalid payment method for setting default', [
-                    'token_null' => is_null($token),
-                    'user_id_match' => get_current_user_id() === $token->get_user_id(),
-                    'nonce_ok' => $nonce_ok,
-                    'source' => 'wicket-acc-woo',
-                ]);
                 wc_add_notice(__('Invalid payment method.', 'woocommerce'), 'error');
             } else {
-                $logger->info('Setting payment method as default', ['token_id' => $set_default_id, 'source' => 'wicket-acc-woo']);
                 \WC_Payment_Tokens::set_users_default($token->get_user_id(), intval($set_default_id));
                 wc_add_notice(__('This payment method was successfully set as your default.', 'woocommerce'));
             }
 
-            $logger->info('Redirecting to payment methods after set default', ['source' => 'wicket-acc-woo']);
             $this->safe_redirect_to_payment_methods();
         }
     }
