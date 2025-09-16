@@ -15,7 +15,7 @@ use WicketAcc\Services\Notification;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Custom account management system for Wicket. Provides user account features, organization management, and additional blocks and pages. Integrates with WooCommerce when available.
- * Version:           1.5.402
+ * Version:           1.5.403
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -140,15 +140,15 @@ class WicketAcc
 
     protected array $acc_pages_map = [
         // Wicket pages
-        'edit-profile'               => 'Edit Profile',
-        'events'                     => 'My Events',
-        'jobs'                       => 'My Jobs',
-        'job-post'                   => 'Post a Job',
-        'change-password'            => 'Change Password',
-        'organization-management'    => 'Organization Management',
-        'organization-profile'       => 'Organization Profile',
-        'organization-members'       => 'Organization Members',
-        'acc_global-headerbanner'    => 'Global Header-Banner',
+        'edit-profile'            => 'Edit Profile',
+        'events'                  => 'My Events',
+        'jobs'                    => 'My Jobs',
+        'job-post'                => 'Post a Job',
+        'change-password'         => 'Change Password',
+        'organization-management' => 'Organization Management',
+        'organization-profile'    => 'Organization Profile',
+        'organization-members'    => 'Organization Members',
+        'acc_global-headerbanner' => 'Global Header-Banner',
         // WooCommerce endpoints https://developer.woocommerce.com/docs/woocommerce-endpoints/
         //'order-pay'                      => 'Order Pay', // Handled by checkout, not account
         //'order-received'                 => 'Order Received',
@@ -162,11 +162,13 @@ class WicketAcc
         'payment-methods'            => 'Payment Methods',
         //'customer-logout'                => 'Logout',
         // WooCommerce subscription endpoints
-        'subscriptions'              => 'Subscriptions',
-        'view-subscription'          => 'View Subscription',
+        'subscriptions'               => 'Subscriptions',
+        'view-subscription'           => 'View Subscription',
+        'subscription-payment-method' => 'Subscription Payment Method',
     ];
 
     protected array $acc_pages_map_auto_create = [
+        'dashboard',
         'edit-profile',
         'change-password',
         'organization-management',
@@ -181,6 +183,7 @@ class WicketAcc
         'payment-methods',
         'subscriptions',
         'view-subscription',
+        'subscription-payment-method',
     ];
 
     /**
@@ -220,6 +223,11 @@ class WicketAcc
             'en' => 'view-subscription',
             'fr' => 'voir-abonnement',
             'es' => 'ver-suscripcion',
+        ],
+        'subscription-payment-method' => [
+            'en' => 'subscription-payment-method',
+            'fr' => 'abonnement-mode-de-paiement',
+            'es' => 'suscripcion-metodo-de-pago',
         ],
         'downloads'                  => [
             'en' => 'downloads',
@@ -380,11 +388,7 @@ class WicketAcc
         if (is_admin()) {
             new AdminSettings();
             new Tweaks();
-
-            // Only initialize safeguard on non-development environments
-            if (!defined('WP_ENVIRONMENT_TYPE') || WP_ENVIRONMENT_TYPE !== 'development') {
-                new Safeguards(); // Initialize the safeguard class for admin tasks
-            }
+            new Safeguards(); // Initialize the safeguard class for admin tasks
         }
 
         // Load WooCommerce integration if active

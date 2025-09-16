@@ -235,8 +235,8 @@ class AdminSettings extends \WicketAcc\WicketAcc
                 return;
             }
 
-            // Step 5: Soft refresh permalinks
-            flush_rewrite_rules(false);
+            // Step 5: Refresh permalinks
+            flush_rewrite_rules();
         }
     }
 

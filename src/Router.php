@@ -28,11 +28,6 @@ class Router extends WicketAcc
             return;
         }
 
-        // DEBUG ONLY, check environment
-        if (defined('WP_ENV') && WP_ENV === 'development') {
-            //flush_rewrite_rules();
-        }
-
         add_action('admin_init', [$this, 'initAllPages']);
         add_action('init', [$this, 'accPagesTemplate']);
         add_filter('archive_template', [$this, 'customArchiveTemplate']);
@@ -44,162 +39,6 @@ class Router extends WicketAcc
      *
      * @return int
      */
-    public function getAccPageId()
-    {
-        if ($this->acc_page_id_cache === null) {
-            $this->acc_page_id_cache = WACC()->getOptionPageId('acc_page_dashboard', 0);
-        }
-
-        // Still null or empty?
-        if (empty($this->acc_page_id_cache)) {
-            // Check if we have a page with slug 'dashboard'
-            $this->acc_page_id_cache = $this->getPageIdBySlug('dashboard');
-        }
-
-        return $this->acc_page_id_cache;
-    }
-
-    /**
-     * Get ACC page Slug.
-     *
-     * @return string
-     */
-    public function getAccSlug()
-    {
-        if ($this->acc_slug_cache === null) {
-            $acc_page_id = $this->getAccPageId();
-            $this->acc_slug_cache = get_post($acc_page_id)->post_name;
-        }
-
-        return $this->acc_slug_cache;
-    }
-
-    /**
-     * Create page for ACC
-     * Index, Edit Profile, Events, Event Single, etc.
-     *
-     * @param string $slug
-     * @param string $name
-     *
-     * @return mixed    ID of created page or false
-     */
-    public function createPage($slug, $name)
-    {
-        // Let's ensure our setting option doesn't have a page defined yet
-        $page_id = WACC()->getOptionPageId('acc_page_' . $slug, 0);
-
-        if ($page_id) {
-            return $page_id;
-        }
-
-        $page_id = $this->getPageIdBySlug($slug);
-
-        if ($page_id) {
-            update_field('acc_page_' . $slug, $page_id, 'option');
-
-            return $page_id;
-        }
-
-        // Create requested page as a child of ACC index page
-        $page_id = wp_insert_post(
-            [
-                'post_type'      => $this->acc_post_type,
-                'post_author'    => wp_get_current_user()->ID,
-                'post_title'     => $name,
-                'post_name'      => $slug,
-                'post_status'    => 'publish',
-                'comment_status' => 'closed',
-                'post_content'   => '',
-            ]
-        );
-
-        if ($page_id) {
-            // Save ACF option field
-            update_field('acc_page_' . $slug, $page_id, 'option');
-
-            return $page_id;
-        }
-
-        return false;
-    }
-
-    /**
-     * Get ACC page ID by slug.
-     *
-     * @param string $slug
-     *
-     * @return int|bool Page ID or false if not found
-     */
-    public function getPageIdBySlug($slug)
-    {
-        global $wpdb;
-
-        $page_id = $wpdb->get_var(
-            $wpdb->prepare(
-                "SELECT ID FROM $wpdb->posts WHERE post_name = %s AND post_type = %s AND post_status = 'publish'",
-                $slug,
-                $this->acc_post_type
-            )
-        );
-
-        // If page not found or is not a number, return false
-        if (empty($page_id) || !is_numeric($page_id)) {
-            return false;
-        }
-
-        return $page_id;
-    }
-
-    /**
-     * Create all ACC pages
-     * Run only once.
-     *
-     * @return void
-     */
-    public function initAllPages()
-    {
-        // Check if we've already created the main page
-        if (get_option('wicket_acc_created_dashboard_page')) {
-            return;
-        }
-
-        // Filter acc_pages_map against acc_pages_map_auto_create. Remove any page that doesn't exist in acc_pages_map_auto_create
-        $pagesToCreate = array_intersect_key($this->acc_pages_map, array_flip($this->acc_pages_map_auto_create));
-
-        // Create all other pages
-        foreach ($pagesToCreate as $slug => $name) {
-            $this->createPage($slug, $name);
-        }
-
-        $this->maybeCreateAccDashboardPage();
-    }
-
-    /**
-     * Maybe create ACC page.
-     *
-     * return void
-     */
-    public function maybeCreateAccDashboardPage()
-    {
-        // Check if we've already created the main page
-        if (get_option('wicket_acc_created_dashboard_page')) {
-            return;
-        }
-
-        $set_slug = 'dashboard';
-        $set_name = WACC()->getAccName();
-
-        // Empty?
-        if (empty($set_slug) || empty($set_name)) {
-            return;
-        }
-
-        // Create page
-        $this->createPage($set_slug, $set_name);
-
-        // Save option to track that we've created the page
-        update_option('wicket_acc_created_dashboard_page', true);
-    }
 
     /**
      * Get Wicket ACC template.
@@ -469,29 +308,6 @@ class Router extends WicketAcc
                 }
             }
         }
-
-        // Redirect (some) WC endpoints (my-account endpoints are for us)
-        /*if (is_array($this->acc_prefer_wc_endpoints) && !empty($this->acc_prefer_wc_endpoints)) {
-            $current_url = home_url(add_query_arg(null, null));
-            $current_url = rtrim($current_url, '/');
-            $wc_endpoint = basename($current_url);
-
-            if ($current_lang !== 'en') {
-                foreach ($this->acc_wc_endpoints as $endpoint_key => $translations) {
-                    if (isset($translations[$current_lang]) && $translations[$current_lang] === $wc_endpoint) {
-                        $wc_endpoint = $translations['en'];
-                        break;
-                    }
-                }
-            }
-
-            if (in_array($wc_endpoint, $this->acc_prefer_wc_endpoints)) {
-                if (!str_contains($server_request_uri, $wc_page_slug)) {
-                    $wc_endpoint_url = home_url(wc_get_endpoint_url($wc_endpoint, '', $wc_page_slug));
-                    $this->performRedirect($wc_endpoint_url);
-                }
-            }
-        }*/
     }
 
     /**

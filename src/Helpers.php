@@ -180,6 +180,56 @@ class Helpers extends WicketAcc
     }
 
     /**
+     * Get ACC page ID by slug.
+     * Centralized helper so other classes can call $this->getPageIdBySlug($slug)
+     * (resolved via __call to Helpers) and keep logic DRY.
+     *
+     * @param string $slug
+     * @param string $cpt (Optional) Default to: my-account
+     *
+     * @return int|false Page ID or false if not found
+     */
+    public function getPageIdBySlug(string $slug, string $cpt = 'my-account')
+    {
+        global $wpdb;
+
+        $page_id = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT ID FROM {$wpdb->posts} WHERE post_name = %s AND post_type = %s AND post_status = 'publish'",
+                $slug,
+                $this->acc_post_type
+            )
+        );
+
+        if (empty($page_id) || !is_numeric($page_id)) {
+            return false;
+        }
+
+        return (int) $page_id;
+    }
+
+    /**
+     * Get ACC dashboard page ID.
+     * Returns the configured page ID from options, or falls back to the 'dashboard' slug.
+     *
+     * @return int
+     */
+    public function getAccPageId(): int
+    {
+        // Primary source: option configured via Carbon Fields/ACF
+        $pageId = (int) $this->getOptionPageId('acc_page_dashboard', 0);
+
+        if ($pageId > 0) {
+            return $pageId;
+        }
+
+        // Fallback to slug lookup
+        $fallback = $this->getPageIdBySlug('dashboard');
+
+        return $fallback ? (int) $fallback : 0;
+    }
+
+    /**
      * Chekc if WPML (or Polylang) are installed and active
      * Prioritize WPML, then check for Polylang.
      */
