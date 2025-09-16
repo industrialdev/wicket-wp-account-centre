@@ -67,33 +67,18 @@ class OrganizationManagement extends WicketAcc
      */
     public function getPageUrl(string $slug = '', bool $noParams = false): string
     {
-        // TODO: Refactor to remove dependency on this global variable.
-        global $orgman_pages_slugs;
-
         if (empty($slug)) {
-            return home_url();
+            return home_url('/');
         }
 
-        // Valid slug?
-        if (empty($orgman_pages_slugs) || !in_array($slug, $orgman_pages_slugs)) {
-            return home_url();
-        }
+        // Construct the full slug for lookup
+        $page_slug = 'organization-' . sanitize_text_field($slug);
 
-        // Prefer centralized helper (CF first, ACF fallback); then fallback to get_option
-        $pageId = WACC()->getOptionPageId('acc_page_orgman-' . sanitize_text_field($slug), 0);
+        // Find the page ID using the helper
+        $pageId = $this->getPageIdBySlug($page_slug);
+
         if (!$pageId) {
-            $pageId = (int) get_option('acc_page_orgman-' . sanitize_text_field($slug));
-        }
-
-        // Not found? Try to found the page by slug: organization-{slug}
-        if (!$pageId) {
-            $page = get_page_by_path('organization-' . sanitize_text_field($slug), OBJECT, 'my-account');
-            $pageId = $page ? $page->ID : false;
-        }
-
-        // Not found again?
-        if (!$pageId) {
-            return home_url();
+            return home_url('/');
         }
 
         $pageUrl = get_permalink($pageId);

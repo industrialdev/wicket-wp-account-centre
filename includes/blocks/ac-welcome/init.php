@@ -64,12 +64,8 @@ class init extends Blocks
             !is_array($edit_profile_button_link)
         ) {
             // Use ACC mapping
-            $acc_editprofile_page = get_field(
-                'acc_page_edit-profile',
-                'option'
-            );
-            $editprofile_page_link = get_permalink($acc_editprofile_page);
-            $editprofile_page_title = get_the_title($acc_editprofile_page);
+            $editprofile_page_link = WACC()->get_account_page_url('edit-profile');
+            $editprofile_page_title = __('Edit Profile', 'wicket-acc');
         } else {
             // Use user defined URL
             $editprofile_page_link = $edit_profile_button_link['url'];

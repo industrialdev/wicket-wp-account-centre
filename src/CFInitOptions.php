@@ -71,39 +71,6 @@ class CFInitOptions extends WicketAcc
             ]
         );
 
-        $main_options_container->add_tab(
-            __('ACC Pages'),
-            [
-                Field::make('association', 'acc_page_dashboard', __('Page: Account Centre Dashboard'))
-                    ->set_types([['type' => 'post', 'post_type' => 'my-account']]),
-                Field::make('association', 'acc_page_edit-profile', __('Page: Edit Profile'))
-                    ->set_types([['type' => 'post', 'post_type' => 'my-account']]),
-                Field::make('association', 'acc_page_events', __('Page: My Events'))
-                    ->set_types([['type' => 'post', 'post_type' => 'my-account']]),
-                Field::make('association', 'acc_page_events-past', __('Page: Past Events'))
-                    ->set_types([['type' => 'post', 'post_type' => 'my-account']]),
-                Field::make('association', 'acc_page_jobs', __('Page: Jobs'))
-                    ->set_types([['type' => 'post', 'post_type' => 'my-account']]),
-                Field::make('association', 'acc_page_job-post', __('Page: Post a Job'))
-                    ->set_types([['type' => 'post', 'post_type' => 'my-account']]),
-                Field::make('association', 'acc_page_payments-methods', __('Page: Payments Methods'))
-                    ->set_types([['type' => 'post', 'post_type' => 'my-account']]),
-                Field::make('association', 'acc_page_subscriptions', __('Page: Subscriptions'))
-                    ->set_types([['type' => 'post', 'post_type' => 'my-account']]),
-                Field::make('association', 'acc_page_membership-history', __('Page: Membership History'))
-                    ->set_types([['type' => 'post', 'post_type' => 'my-account']]),
-                Field::make('association', 'acc_page_purchase-history', __('Page: Purchase History'))
-                    ->set_types([['type' => 'post', 'post_type' => 'my-account']]),
-                Field::make('association', 'acc_page_change-password', __('Page: Change Password'))
-                    ->set_types([['type' => 'post', 'post_type' => 'my-account']]),
-                Field::make('association', 'acc_page_orgman-index', __('Page: Organization Management Index'))
-                    ->set_types([['type' => 'post', 'post_type' => 'my-account']]),
-                Field::make('association', 'acc_page_orgman-profile', __('Page: Organization Management Profile'))
-                    ->set_types([['type' => 'post', 'post_type' => 'my-account']]),
-                Field::make('association', 'acc_page_orgman-members', __('Page: Organization Management Members'))
-                    ->set_types([['type' => 'post', 'post_type' => 'my-account']]),
-            ]
-        );
 
         if (!class_exists('WicketWP')) {
             $datastore = new CFWicketSettingsDatastore();

@@ -106,29 +106,6 @@ class Helpers extends WicketAcc
      * @param int $default Default ID
      * @return int
      */
-    public function getOptionPageId(string $key, int $default = 0): int
-    {
-        if (function_exists('carbon_get_theme_option')) {
-            $val = carbon_get_theme_option($key);
-            // CF relation may return array with first item ['id']
-            if (is_array($val)) {
-                return isset($val[0]['id']) ? (int) $val[0]['id'] : $default;
-            }
-            if (is_numeric($val)) {
-                return (int) $val;
-            }
-
-            return $default;
-        }
-
-        if (function_exists('get_field')) {
-            $acf = get_field($key, 'option');
-
-            return is_numeric($acf) ? (int) $acf : $default;
-        }
-
-        return $default;
-    }
 
     /**
      * Get an attachment URL from a theme option.
@@ -197,7 +174,7 @@ class Helpers extends WicketAcc
             $wpdb->prepare(
                 "SELECT ID FROM {$wpdb->posts} WHERE post_name = %s AND post_type = %s AND post_status = 'publish'",
                 $slug,
-                $this->acc_post_type
+                $cpt
             )
         );
 
@@ -216,17 +193,9 @@ class Helpers extends WicketAcc
      */
     public function getAccPageId(): int
     {
-        // Primary source: option configured via Carbon Fields/ACF
-        $pageId = (int) $this->getOptionPageId('acc_page_dashboard', 0);
+        $page_id = $this->getPageIdBySlug('dashboard');
 
-        if ($pageId > 0) {
-            return $pageId;
-        }
-
-        // Fallback to slug lookup
-        $fallback = $this->getPageIdBySlug('dashboard');
-
-        return $fallback ? (int) $fallback : 0;
+        return $page_id ? (int) $page_id : 0;
     }
 
     /**
@@ -329,17 +298,18 @@ class Helpers extends WicketAcc
      */
     public function get_account_page_url($endpoint = '')
     {
-        $account_page = get_page_by_path($this->getAccSlug());
-        if (!$account_page) {
-            return home_url();
+        $dashboard_page_id = $this->getAccPageId();
+        if (!$dashboard_page_id) {
+            return home_url('/');
         }
 
-        $url = get_permalink($account_page);
-        if ($endpoint) {
-            $url = trailingslashit($url) . $endpoint;
+        $base_url = get_permalink($dashboard_page_id);
+
+        if ($endpoint && $endpoint !== 'dashboard') {
+            return trailingslashit($base_url) . $endpoint;
         }
 
-        return $url;
+        return $base_url;
     }
 
     /**
@@ -352,7 +322,7 @@ class Helpers extends WicketAcc
         $items = [
             'dashboard' => [
                 'title' => __('Dashboard', 'wicket-acc'),
-                'url' => $this->get_account_page_url(),
+                'url' => $this->get_account_page_url('dashboard'),
             ],
             'edit-profile' => [
                 'title' => __('Edit Profile', 'wicket-acc'),
@@ -364,7 +334,7 @@ class Helpers extends WicketAcc
             ],
             'organization-management' => [
                 'title' => __('Organization Management', 'wicket-acc'),
-                'url' => $this->get_account_page_url('organization-management'),
+                'url' => $this->get_account_page_url('org-management'),
             ],
         ];
 

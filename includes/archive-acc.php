@@ -8,14 +8,7 @@ defined('ABSPATH') || exit;
  */
 
 // We will just redirect user to my-account dashboard
-$acc_dashboard_id = WACC()->getOptionPageId('acc_page_dashboard', 0);
-
-if ($acc_dashboard_id) {
-    $redirect_url = get_permalink($acc_dashboard_id);
-} else {
-    // Or to the home
-    $redirect_url = home_url();
-}
+$redirect_url = WACC()->get_account_page_url('dashboard');
 
 /*
  * Some websites have improper HTML output before the get_header() call (bad plugins, old theme, etc.), so we need to redirect them without a PHP's header redirect.

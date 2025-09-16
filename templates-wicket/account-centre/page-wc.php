@@ -25,7 +25,7 @@ if (!empty($dev_wrapper_classes)) {
 }
 
 // ACC Options (CF first, ACF fallback via helper)
-$acc_dashboard_id = WACC()->getOptionPageId('acc_page_dashboard', 0);
+$acc_dashboard_id = WACC()->getAccPageId();
 $acc_sidebar_location = WACC()->getOption('acc_sidebar_location', '');
 $acc_spelling = WACC()->getOption('acc_localization', '');
 $acc_display_breadcrumb = false;

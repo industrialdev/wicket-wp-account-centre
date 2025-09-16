@@ -14,9 +14,6 @@ defined('ABSPATH') || exit;
  */
 class Router extends WicketAcc
 {
-    private $acc_page_id_cache = null;
-    private $acc_slug_cache = null;
-
     /**
      * Constructor.
      *
@@ -97,10 +94,10 @@ class Router extends WicketAcc
      */
     private function isOrgmanagementPage($post_id)
     {
-        $orgManagementIndex = WACC()->getOptionPageId('acc_page_orgman-index', 0);
-        $orgManagementProfile = WACC()->getOptionPageId('acc_page_orgman-profile', 0);
-        $orgManagementMembers = WACC()->getOptionPageId('acc_page_orgman-members', 0);
-        $orgManagementRoster = WACC()->getOptionPageId('acc_page_orgman-roster', 0);
+        $orgManagementIndex = $this->getPageIdBySlug('org-management');
+        $orgManagementProfile = $this->getPageIdBySlug('org-management-profile');
+        $orgManagementMembers = $this->getPageIdBySlug('org-management-members');
+        $orgManagementRoster = $this->getPageIdBySlug('org-management-roster');
 
         switch ($post_id) {
             case $orgManagementIndex:
@@ -246,66 +243,29 @@ class Router extends WicketAcc
             return;
         }
 
-        // New acc_wc_index_slugs
-        $acc_old_wc_index_slugs = [
-            'en' => 'wc-account',
-            'fr' => 'wc-compte',
-            'es' => 'wc-cuenta',
-        ];
-
-        $current_lang = WACC()->Language()->getCurrentLanguage();
-
-        $acc_dashboard_id = (int) $this->getAccPageId();
-        $acc_dashboard_url = get_permalink($acc_dashboard_id);
-        $acc_dashboard_slug = get_post($acc_dashboard_id)->post_name;
-        $acc_myaccount_slug = get_query_var('term');
-
-        // WPML compatibility
-        if (defined('ICL_SITEPRESS_VERSION')) {
-            $acc_dashboard_id_translation = apply_filters('wpml_object_id', $acc_dashboard_id, 'post', true, $current_lang);
-            $acc_dashboard_url_translation = get_permalink($acc_dashboard_id_translation);
-            $acc_myaccount_slug_translation = apply_filters('wpml_get_translated_slug', $this->acc_post_type, $this->acc_post_type, $current_lang, 'post');
-        }
-
-        if (WACC()->isWooCommerceActive()) {
-            $wc_page_id = wc_get_page_id('myaccount');
-            $wc_page_slug = get_post($wc_page_id)->post_name;
-
-            if ($current_lang !== 'en') {
-                $wc_page_slug = $acc_old_wc_index_slugs[$current_lang];
-            }
-
-            if (!empty($acc_dashboard_slug)) {
-                $acc_dashboard_slug = $wc_page_slug;
-            }
-        }
-
+        $dashboard_url = $this->get_account_page_url('dashboard');
         $server_request_uri = $_SERVER['REQUEST_URI'];
 
-        // Combined redirect logic for ACC index pages
-        if ($server_request_uri === '/' . $acc_dashboard_slug . '/') {
-            $this->performRedirect($acc_dashboard_url);
-        } elseif (
-            defined('ICL_SITEPRESS_VERSION') &&
-            $current_lang !== 'en' &&
-            isset($acc_myaccount_slug_translation) &&
-            $server_request_uri === '/' . $current_lang . '/' . $acc_myaccount_slug_translation . '/'
-        ) {
-            $this->performRedirect($acc_dashboard_url_translation);
-        }
-
-        // Redirect old ACC slugs
+        // Redirect old ACC slugs to the main dashboard URL
         $acc_old_slugs = [
             '/account-centre',
             '/account-center',
+            '/wc-account',
+            '/wc-compte',
+            '/wc-cuenta',
         ];
 
-        if (is_array($acc_old_slugs) && !empty($acc_old_slugs)) {
-            foreach ($acc_old_slugs as $old_slug) {
-                if (str_contains($server_request_uri, $old_slug)) {
-                    $this->performRedirect($acc_dashboard_url);
-                }
+        foreach ($acc_old_slugs as $old_slug) {
+            if (str_starts_with($server_request_uri, $old_slug)) {
+                $this->performRedirect($dashboard_url);
+                return; // Exit after first redirect
             }
+        }
+
+        // Redirect archive page of 'my-account' CPT to the dashboard
+        if (is_post_type_archive($this->acc_post_type)) {
+            $this->performRedirect($dashboard_url);
+            return;
         }
     }
 

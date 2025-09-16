@@ -20,7 +20,7 @@ class Safeguards extends \WicketAcc\WicketAcc
         add_action('admin_init', [$this, 'deleteUnwantedFolders']);
 
         // Hook to run page initialization when Carbon Fields theme options are saved
-        add_action('carbon_fields_theme_options_container_saved', [$this, 'maybeInitAllPages'], 10, 2);
+        add_action('carbon_fields_theme_options_container_saved', [$this, 'accSafeguards']);
     }
 
     /**
@@ -92,7 +92,7 @@ class Safeguards extends \WicketAcc\WicketAcc
      *
      * @return void
      */
-    public function maybeInitAllPages()
+    public function accSafeguards()
     {
         global $wpdb;
 
@@ -174,13 +174,16 @@ class Safeguards extends \WicketAcc\WicketAcc
 
         // Resolve slug conflict and set slug if needed
         if ($currentSlug !== $desiredSlug) {
-            // Soft delete conflicting page using desired slug
+            // Soft delete conflicting page using desired slug, but only if it's not one of our CPT pages
             $conflictPage = get_page_by_path($desiredSlug, OBJECT, 'page');
             if ($conflictPage && (int) $conflictPage->ID !== $pageId) {
-                wp_update_post([
-                    'ID'         => (int) $conflictPage->ID,
-                    'post_status'=> 'trash',
-                ]);
+                // Extra safeguard: Do NOT delete if the conflicting page is one of ours.
+                if ($conflictPage->post_type !== $this->acc_post_type) {
+                    wp_update_post([
+                        'ID'         => (int) $conflictPage->ID,
+                        'post_status'=> 'trash',
+                    ]);
+                }
             }
             $update['post_name'] = $desiredSlug;
             $update['post_title'] = $desiredTitle;
@@ -203,8 +206,6 @@ class Safeguards extends \WicketAcc\WicketAcc
         $page_id = $this->getPageIdBySlug($slug);
 
         if ($page_id) {
-            update_field('acc_page_' . $slug, $page_id, 'option');
-
             return $page_id;
         }
 
@@ -222,9 +223,6 @@ class Safeguards extends \WicketAcc\WicketAcc
         );
 
         if ($page_id) {
-            // Save ACF option field
-            update_field('acc_page_' . $slug, $page_id, 'option');
-
             return $page_id;
         }
 
