@@ -342,6 +342,7 @@ class WooCommerce extends WicketAcc
                     return $location;
                 }
             }
+
             return false;
         }
 
@@ -457,7 +458,7 @@ class WooCommerce extends WicketAcc
         if (isset($params['has_payment_gateway']) && false === $params['has_payment_gateway']) {
             // Check if the customer already has saved tokens
             $customer_id = get_current_user_id();
-            $tokens = class_exists('\\WC_Payment_Tokens') ? \\WC_Payment_Tokens::get_customer_tokens($customer_id) : [];
+            $tokens = class_exists('\\WC_Payment_Tokens') ? \WC_Payment_Tokens::get_customer_tokens($customer_id) : [];
             $has_tokens = is_array($tokens) && !empty($tokens);
 
             if (!$has_tokens) {
