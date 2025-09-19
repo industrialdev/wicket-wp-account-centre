@@ -47,7 +47,7 @@ class ajax extends init
         $service_id = sanitize_text_field($_POST['service_id']);
 
         // Get touchpoints data
-        $pheedloop_results = $this->get_touchpoints_results($service_id);
+        $pheedloop_results = $this->get_touchpoints_results($service_id, ['mode' => $display_type]);
 
         ob_start();
         $this->display_touchpoints(

@@ -67,9 +67,7 @@ class init extends Blocks
         $counter = 0;
         $display_type = 'upcoming';
 
-        $touchpoints_results = $this->get_touchpoints_results($service_id);
-
-        // Get query vars
+        // Get query vars first, before calling get_touchpoints_results
         $display = isset($_REQUEST['show']) ? sanitize_text_field($_REQUEST['show']) : $display;
         $num_results = isset($_REQUEST['num_results']) ? absint($_REQUEST['num_results']) : $num_results;
 
@@ -87,6 +85,9 @@ class init extends Blocks
         if (!in_array($display, $valid_display)) {
             $display = 'upcoming';
         }
+
+        // Now get touchpoints with the processed display mode
+        $touchpoints_results = $this->get_touchpoints_results($service_id, ['mode' => $display]);
 
         // Switch link
         $display_other = $display == 'upcoming' ? 'past' : 'upcoming';
@@ -134,19 +135,21 @@ class init extends Blocks
      * Get touchpoints results.
      *
      * $service_id - Touchpoint service id
+     * $options - Optional array of options for filtering (e.g., ['mode' => 'upcoming'|'past'])
      *
+     * @param string $service_id Touchpoint service id
+     * @param array  $options    Optional. Array of options for filtering
      * @return mixed Array of touchpoints or false on error
      */
-    protected function get_touchpoints_results($service_id = '')
+    protected function get_touchpoints_results($service_id = '', $options = [])
     {
         if (empty($service_id)) {
             return false;
         }
-
         // Debug with person: 6d199632-1bb8-4558-9a7e-b00c824590de
 
         $touchpoint_service = WACC()->Mdp()->Touchpoint()->getOrCreateServiceId($service_id);
-        $touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoint_service);
+        $touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoint_service, null, $options);
 
         return $touchpoints;
     }
