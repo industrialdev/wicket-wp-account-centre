@@ -165,7 +165,7 @@
             ],
             "install-path": "../doctrine/inflector"
         },
-        "8": {
+        "9": {
             "name": "firebase/php-jwt",
             "version": "v6.11.1",
             "version_normalized": "6.11.1.0",
@@ -231,7 +231,7 @@
             },
             "install-path": "../firebase/php-jwt"
         },
-        "10": {
+        "11": {
             "name": "guzzlehttp/guzzle",
             "version": "7.10.0",
             "version_normalized": "7.10.0.0",
@@ -360,7 +360,7 @@
             ],
             "install-path": "../guzzlehttp/guzzle"
         },
-        "11": {
+        "12": {
             "name": "guzzlehttp/promises",
             "version": "2.3.0",
             "version_normalized": "2.3.0.0",
@@ -446,7 +446,7 @@
             ],
             "install-path": "../guzzlehttp/promises"
         },
-        "12": {
+        "13": {
             "name": "guzzlehttp/psr7",
             "version": "2.8.0",
             "version_normalized": "2.8.0.0",
@@ -565,7 +565,7 @@
             ],
             "install-path": "../guzzlehttp/psr7"
         },
-        "13": {
+        "14": {
             "name": "htmlburger/carbon-fields",
             "version": "v3.6.9",
             "version_normalized": "3.6.9.0",
@@ -708,19 +708,19 @@
             },
             "install-path": "../htmlburger/carbon-fields"
         },
-        "14": {
+        "15": {
             "name": "illuminate/collections",
-            "version": "v10.48.28",
-            "version_normalized": "10.48.28.0",
+            "version": "v10.49.0",
+            "version_normalized": "10.49.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/collections.git",
-                "reference": "48de3d6bc6aa779112ddcb608a3a96fc975d89d8"
+                "reference": "6ae9c74fa92d4e1824d1b346cd435e8eacdc3232"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/collections/zipball/48de3d6bc6aa779112ddcb608a3a96fc975d89d8",
-                "reference": "48de3d6bc6aa779112ddcb608a3a96fc975d89d8",
+                "url": "https://api.github.com/repos/illuminate/collections/zipball/6ae9c74fa92d4e1824d1b346cd435e8eacdc3232",
+                "reference": "6ae9c74fa92d4e1824d1b346cd435e8eacdc3232",
                 "shasum": ""
             },
             "require": {
@@ -732,7 +732,7 @@
             "suggest": {
                 "symfony/var-dumper": "Required to use the dump method (^6.2)."
             },
-            "time": "2024-11-21T14:02:44+00:00",
+            "time": "2025-09-08T19:05:53+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -766,25 +766,25 @@
             },
             "install-path": "../illuminate/collections"
         },
-        "15": {
+        "16": {
             "name": "illuminate/conditionable",
-            "version": "v10.48.28",
-            "version_normalized": "10.48.28.0",
+            "version": "v10.49.0",
+            "version_normalized": "10.49.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/conditionable.git",
-                "reference": "3ee34ac306fafc2a6f19cd7cd68c9af389e432a5"
+                "reference": "47c700320b7a419f0d188d111f3bbed978fcbd3f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/conditionable/zipball/3ee34ac306fafc2a6f19cd7cd68c9af389e432a5",
-                "reference": "3ee34ac306fafc2a6f19cd7cd68c9af389e432a5",
+                "url": "https://api.github.com/repos/illuminate/conditionable/zipball/47c700320b7a419f0d188d111f3bbed978fcbd3f",
+                "reference": "47c700320b7a419f0d188d111f3bbed978fcbd3f",
                 "shasum": ""
             },
             "require": {
                 "php": "^8.0.2"
             },
-            "time": "2024-11-21T14:02:44+00:00",
+            "time": "2025-03-24T11:47:24+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -815,19 +815,19 @@
             },
             "install-path": "../illuminate/conditionable"
         },
-        "16": {
+        "17": {
             "name": "illuminate/contracts",
-            "version": "v10.48.28",
-            "version_normalized": "10.48.28.0",
+            "version": "v10.49.0",
+            "version_normalized": "10.49.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/contracts.git",
-                "reference": "f90663a69f926105a70b78060a31f3c64e2d1c74"
+                "reference": "2393ef579e020d88e24283913c815c3e2c143323"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/contracts/zipball/f90663a69f926105a70b78060a31f3c64e2d1c74",
-                "reference": "f90663a69f926105a70b78060a31f3c64e2d1c74",
+                "url": "https://api.github.com/repos/illuminate/contracts/zipball/2393ef579e020d88e24283913c815c3e2c143323",
+                "reference": "2393ef579e020d88e24283913c815c3e2c143323",
                 "shasum": ""
             },
             "require": {
@@ -835,7 +835,7 @@
                 "psr/container": "^1.1.1|^2.0.1",
                 "psr/simple-cache": "^1.0|^2.0|^3.0"
             },
-            "time": "2024-11-21T14:02:44+00:00",
+            "time": "2025-03-24T11:47:24+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -866,10 +866,10 @@
             },
             "install-path": "../illuminate/contracts"
         },
-        "17": {
+        "18": {
             "name": "illuminate/macroable",
-            "version": "v10.48.28",
-            "version_normalized": "10.48.28.0",
+            "version": "v10.49.0",
+            "version_normalized": "10.49.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/macroable.git",
@@ -915,19 +915,19 @@
             },
             "install-path": "../illuminate/macroable"
         },
-        "18": {
+        "19": {
             "name": "illuminate/support",
-            "version": "v10.48.28",
-            "version_normalized": "10.48.28.0",
+            "version": "v10.49.0",
+            "version_normalized": "10.49.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/support.git",
-                "reference": "6d09b480d34846245d9288f4dcefb17a73ce6e6a"
+                "reference": "28b505e671dbe119e4e32a75c78f87189d046e39"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/support/zipball/6d09b480d34846245d9288f4dcefb17a73ce6e6a",
-                "reference": "6d09b480d34846245d9288f4dcefb17a73ce6e6a",
+                "url": "https://api.github.com/repos/illuminate/support/zipball/28b505e671dbe119e4e32a75c78f87189d046e39",
+                "reference": "28b505e671dbe119e4e32a75c78f87189d046e39",
                 "shasum": ""
             },
             "require": {
@@ -955,7 +955,7 @@
                 "symfony/var-dumper": "Required to use the dd function (^6.2).",
                 "vlucas/phpdotenv": "Required to use the Env class and env helper (^5.4.1)."
             },
-            "time": "2024-12-10T14:47:55+00:00",
+            "time": "2025-09-08T19:05:53+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -989,7 +989,7 @@
             },
             "install-path": "../illuminate/support"
         },
-        "19": {
+        "20": {
             "name": "industrialdev/wicket-sdk-php",
             "version": "dev-master",
             "version_normalized": "dev-master",
@@ -1033,7 +1033,7 @@
             "description": "A PHP library for the Wicket Core API. https://wicket.io/technology",
             "install-path": "../industrialdev/wicket-sdk-php"
         },
-        "20": {
+        "21": {
             "name": "nesbot/carbon",
             "version": "2.73.0",
             "version_normalized": "2.73.0.0",
@@ -1143,7 +1143,7 @@
             ],
             "install-path": "../nesbot/carbon"
         },
-        "22": {
+        "23": {
             "name": "psr/clock",
             "version": "1.0.0",
             "version_normalized": "1.0.0.0",
@@ -1194,7 +1194,7 @@
             },
             "install-path": "../psr/clock"
         },
-        "23": {
+        "24": {
             "name": "psr/container",
             "version": "2.0.2",
             "version_normalized": "2.0.2.0",
@@ -1250,7 +1250,7 @@
             },
             "install-path": "../psr/container"
         },
-        "25": {
+        "26": {
             "name": "psr/http-client",
             "version": "1.0.3",
             "version_normalized": "1.0.3.0",
@@ -1305,7 +1305,7 @@
             },
             "install-path": "../psr/http-client"
         },
-        "26": {
+        "27": {
             "name": "psr/http-factory",
             "version": "1.1.0",
             "version_normalized": "1.1.0.0",
@@ -1363,7 +1363,7 @@
             },
             "install-path": "../psr/http-factory"
         },
-        "27": {
+        "28": {
             "name": "psr/http-message",
             "version": "2.0",
             "version_normalized": "2.0.0.0",
@@ -1419,7 +1419,7 @@
             },
             "install-path": "../psr/http-message"
         },
-        "29": {
+        "30": {
             "name": "psr/simple-cache",
             "version": "3.0.0",
             "version_normalized": "3.0.0.0",
@@ -1473,7 +1473,7 @@
             },
             "install-path": "../psr/simple-cache"
         },
-        "30": {
+        "31": {
             "name": "ralouphie/getallheaders",
             "version": "3.0.3",
             "version_normalized": "3.0.3.0",
@@ -1520,7 +1520,7 @@
             },
             "install-path": "../ralouphie/getallheaders"
         },
-        "40": {
+        "41": {
             "name": "symfony/deprecation-contracts",
             "version": "v3.6.0",
             "version_normalized": "3.6.0.0",
@@ -1590,7 +1590,7 @@
             ],
             "install-path": "../symfony/deprecation-contracts"
         },
-        "49": {
+        "50": {
             "name": "symfony/polyfill-mbstring",
             "version": "v1.33.0",
             "version_normalized": "1.33.0.0",
@@ -1678,7 +1678,7 @@
             ],
             "install-path": "../symfony/polyfill-mbstring"
         },
-        "50": {
+        "51": {
             "name": "symfony/polyfill-php80",
             "version": "v1.33.0",
             "version_normalized": "1.33.0.0",
@@ -1765,7 +1765,7 @@
             ],
             "install-path": "../symfony/polyfill-php80"
         },
-        "56": {
+        "57": {
             "name": "symfony/translation",
             "version": "v6.4.24",
             "version_normalized": "6.4.24.0",
@@ -1867,7 +1867,7 @@
             ],
             "install-path": "../symfony/translation"
         },
-        "57": {
+        "58": {
             "name": "symfony/translation-contracts",
             "version": "v3.6.0",
             "version_normalized": "3.6.0.0",
@@ -1948,7 +1948,7 @@
             ],
             "install-path": "../symfony/translation-contracts"
         },
-        "58": {
+        "59": {
             "name": "voku/portable-ascii",
             "version": "2.0.3",
             "version_normalized": "2.0.3.0",

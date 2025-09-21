@@ -619,6 +619,7 @@ class ComposerStaticInitd76a2a1babd2917c8a3ce489b49ec6a0
         'WicketAcc\\Illuminate\\Support\\Traits\\Conditionable' => __DIR__ . '/..' . '/illuminate/conditionable/Traits/Conditionable.php',
         'WicketAcc\\Illuminate\\Support\\Traits\\EnumeratesValues' => __DIR__ . '/..' . '/illuminate/collections/Traits/EnumeratesValues.php',
         'WicketAcc\\Illuminate\\Support\\Traits\\ForwardsCalls' => __DIR__ . '/..' . '/illuminate/support/Traits/ForwardsCalls.php',
+        'WicketAcc\\Illuminate\\Support\\Traits\\InteractsWithData' => __DIR__ . '/..' . '/illuminate/support/Traits/InteractsWithData.php',
         'WicketAcc\\Illuminate\\Support\\Traits\\Localizable' => __DIR__ . '/..' . '/illuminate/support/Traits/Localizable.php',
         'WicketAcc\\Illuminate\\Support\\Traits\\Macroable' => __DIR__ . '/..' . '/illuminate/macroable/Traits/Macroable.php',
         'WicketAcc\\Illuminate\\Support\\Traits\\ReflectsClosures' => __DIR__ . '/..' . '/illuminate/support/Traits/ReflectsClosures.php',

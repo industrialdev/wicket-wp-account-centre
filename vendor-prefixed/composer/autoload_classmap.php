@@ -470,6 +470,7 @@ return array(
     'WicketAcc\\Illuminate\\Support\\Traits\\Conditionable' => $vendorDir . '/illuminate/conditionable/Traits/Conditionable.php',
     'WicketAcc\\Illuminate\\Support\\Traits\\EnumeratesValues' => $vendorDir . '/illuminate/collections/Traits/EnumeratesValues.php',
     'WicketAcc\\Illuminate\\Support\\Traits\\ForwardsCalls' => $vendorDir . '/illuminate/support/Traits/ForwardsCalls.php',
+    'WicketAcc\\Illuminate\\Support\\Traits\\InteractsWithData' => $vendorDir . '/illuminate/support/Traits/InteractsWithData.php',
     'WicketAcc\\Illuminate\\Support\\Traits\\Localizable' => $vendorDir . '/illuminate/support/Traits/Localizable.php',
     'WicketAcc\\Illuminate\\Support\\Traits\\Macroable' => $vendorDir . '/illuminate/macroable/Traits/Macroable.php',
     'WicketAcc\\Illuminate\\Support\\Traits\\ReflectsClosures' => $vendorDir . '/illuminate/support/Traits/ReflectsClosures.php',
