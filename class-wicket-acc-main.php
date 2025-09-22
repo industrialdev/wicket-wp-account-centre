@@ -28,32 +28,47 @@ use WicketAcc\Services\Notification;
  */
 
 if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly.
+    exit(); // Exit if accessed directly.
 }
 
 // Constants
-define('WICKET_ACC_VERSION', get_file_data(__FILE__, ['Version' => 'Version'], false)['Version']);
+define(
+    'WICKET_ACC_VERSION',
+    get_file_data(__FILE__, ['Version' => 'Version'], false)['Version'],
+);
 define('WICKET_ACC_PATH', plugin_dir_path(__FILE__));
 define('WICKET_ACC_URL', plugin_dir_url(__FILE__));
 define('WICKET_ACC_BASENAME', plugin_basename(__FILE__));
-define('WICKET_ACC_UPLOADS_PATH', wp_get_upload_dir()['basedir'] . '/wicket-account-center/');
-define('WICKET_ACC_UPLOADS_URL', wp_get_upload_dir()['baseurl'] . '/wicket-account-center/');
-define('WICKET_ACC_PLUGIN_TEMPLATE_PATH', WICKET_ACC_PATH . 'templates-wicket/');
+define(
+    'WICKET_ACC_UPLOADS_PATH',
+    wp_get_upload_dir()['basedir'] . '/wicket-account-center/',
+);
+define(
+    'WICKET_ACC_UPLOADS_URL',
+    wp_get_upload_dir()['baseurl'] . '/wicket-account-center/',
+);
+define(
+    'WICKET_ACC_PLUGIN_TEMPLATE_PATH',
+    WICKET_ACC_PATH . 'templates-wicket/',
+);
 define('WICKET_ACC_PLUGIN_TEMPLATE_URL', WICKET_ACC_URL . 'templates-wicket/');
-define('WICKET_ACC_USER_TEMPLATE_PATH', get_stylesheet_directory() . '/templates-wicket/');
-define('WICKET_ACC_USER_TEMPLATE_URL', get_stylesheet_directory_uri() . '/templates-wicket/');
+define(
+    'WICKET_ACC_USER_TEMPLATE_PATH',
+    get_stylesheet_directory() . '/templates-wicket/',
+);
+define(
+    'WICKET_ACC_USER_TEMPLATE_URL',
+    get_stylesheet_directory_uri() . '/templates-wicket/',
+);
 define('WICKET_ACC_TEMPLATES_FOLDER', 'account-centre');
 
 // Composer Autoloader
-if (file_exists(WICKET_ACC_PATH . 'vendor-prefixed/autoload.php')) {
-    require_once WICKET_ACC_PATH . 'vendor-prefixed/autoload.php';
+if (file_exists(WICKET_ACC_PATH . 'vendor/autoload.php')) {
+    require_once WICKET_ACC_PATH . 'vendor/autoload.php';
 }
 
 // Initialize the plugin when all plugins are loaded
-add_action(
-    'plugins_loaded',
-    [WicketAcc::get_instance(), 'plugin_setup']
-);
+add_action('plugins_loaded', [WicketAcc::get_instance(), 'plugin_setup']);
 
 /**
  * The main Wicket Account Centre class.
@@ -140,30 +155,30 @@ class WicketAcc
 
     protected array $acc_pages_map = [
         // Wicket pages
-        'edit-profile'            => 'Edit Profile',
-        'events'                  => 'My Events',
-        'jobs'                    => 'My Jobs',
-        'job-post'                => 'Post a Job',
-        'change-password'         => 'Change Password',
+        'edit-profile' => 'Edit Profile',
+        'events' => 'My Events',
+        'jobs' => 'My Jobs',
+        'job-post' => 'Post a Job',
+        'change-password' => 'Change Password',
         'organization-management' => 'Organization Management',
-        'organization-profile'    => 'Organization Profile',
-        'organization-members'    => 'Organization Members',
+        'organization-profile' => 'Organization Profile',
+        'organization-members' => 'Organization Members',
         'acc_global-headerbanner' => 'Global Header-Banner',
         // WooCommerce endpoints https://developer.woocommerce.com/docs/woocommerce-endpoints/
         //'order-pay'                      => 'Order Pay', // Handled by checkout, not account
         //'order-received'                 => 'Order Received',
-        'add-payment-method'         => 'Add Payment Method',
+        'add-payment-method' => 'Add Payment Method',
         'set-default-payment-method' => 'Set Default Payment Method',
-        'orders'                     => 'Orders',
-        'view-order'                 => 'View Order',
-        'downloads'                  => 'Downloads',
-        'edit-account'               => 'Edit Account',
-        'edit-address'               => 'Edit Address',
-        'payment-methods'            => 'Payment Methods',
+        'orders' => 'Orders',
+        'view-order' => 'View Order',
+        'downloads' => 'Downloads',
+        'edit-account' => 'Edit Account',
+        'edit-address' => 'Edit Address',
+        'payment-methods' => 'Payment Methods',
         //'customer-logout'                => 'Logout',
         // WooCommerce subscription endpoints
-        'subscriptions'               => 'Subscriptions',
-        'view-subscription'           => 'View Subscription',
+        'subscriptions' => 'Subscriptions',
+        'view-subscription' => 'View Subscription',
         'subscription-payment-method' => 'Subscription Payment Method',
     ];
 
@@ -194,7 +209,7 @@ class WicketAcc
      * @var array
      */
     protected array $acc_wc_endpoints = [
-        'add-payment-method'         => [
+        'add-payment-method' => [
             'en' => 'add-payment-method',
             'fr' => 'add-payment-method',
             'es' => 'agregar-medio-pago',
@@ -204,22 +219,22 @@ class WicketAcc
             'fr' => 'definir-mode-paiement-defaut',
             'es' => 'establecer-medio-pago-principal',
         ],
-        'delete-payment-method'      => [
+        'delete-payment-method' => [
             'en' => 'delete-payment-method',
             'fr' => 'supprimer-mode-paiement',
             'es' => 'eliminar-medio-pago',
         ],
-        'orders'                     => [
+        'orders' => [
             'en' => 'orders',
             'fr' => 'commandes',
             'es' => 'ordenes',
         ],
-        'view-order'                 => [
+        'view-order' => [
             'en' => 'view-order',
             'fr' => 'afficher-commande',
             'es' => 'ver-orden',
         ],
-        'view-subscription'          => [
+        'view-subscription' => [
             'en' => 'view-subscription',
             'fr' => 'voir-abonnement',
             'es' => 'ver-suscripcion',
@@ -229,32 +244,32 @@ class WicketAcc
             'fr' => 'abonnement-mode-de-paiement',
             'es' => 'suscripcion-metodo-de-pago',
         ],
-        'downloads'                  => [
+        'downloads' => [
             'en' => 'downloads',
             'fr' => 'telechargements',
             'es' => 'descargas',
         ],
-        'edit-account'               => [
+        'edit-account' => [
             'en' => 'edit-account',
             'fr' => 'editer-compte',
             'es' => 'editar-cuenta',
         ],
-        'edit-address'               => [
+        'edit-address' => [
             'en' => 'edit-address',
             'fr' => 'editer-adresse',
             'es' => 'editar-direccion',
         ],
-        'payment-methods'            => [
+        'payment-methods' => [
             'en' => 'payment-methods',
             'fr' => 'modes-de-paiement',
             'es' => 'metodos-de-pago',
         ],
-        'customer-logout'            => [
+        'customer-logout' => [
             'en' => 'customer-logout',
             'fr' => 'deconnexion',
             'es' => 'cerrar-sesion',
         ],
-        'subscriptions'              => [
+        'subscriptions' => [
             'en' => 'subscriptions',
             'fr' => 'souscriptions',
             'es' => 'suscripciones',
@@ -269,7 +284,7 @@ class WicketAcc
      */
     public static function get_instance()
     {
-        null === self::$instance and self::$instance = new self();
+        null === self::$instance and (self::$instance = new self());
 
         return self::$instance;
     }
@@ -318,7 +333,10 @@ class WicketAcc
             return $this->instances[$name];
         }
 
-        throw new \Exception("Method or service '$name' does not exist. Available services: " . implode(', ', array_keys($this->instances)));
+        throw new \Exception(
+            "Method or service '$name' does not exist. Available services: " .
+                implode(', ', array_keys($this->instances)),
+        );
     }
 
     /**
@@ -349,13 +367,15 @@ class WicketAcc
 
         Log::registerFatalErrorHandler();
 
-        add_filter('wp_dropdown_pages', 'wicket_acc_alter_wp_job_manager_pages', 10, 3);
+        add_filter(
+            'wp_dropdown_pages',
+            'wicket_acc_alter_wp_job_manager_pages',
+            10,
+            3,
+        );
 
         // Load global helper files
-        $includes_global = [
-            'includes/helpers.php',
-            'includes/legacy.php',
-        ];
+        $includes_global = ['includes/helpers.php', 'includes/legacy.php'];
         foreach ($includes_global as $global_file_path) {
             if (file_exists($this->plugin_path . $global_file_path)) {
                 include_once $this->plugin_path . $global_file_path;
@@ -364,21 +384,22 @@ class WicketAcc
 
         // Instantiate services
         $this->instances = [
-            'Mdp'                    => new Mdp(),
-            'Profile'                => new Profile(),
+            'Mdp' => new Mdp(),
+            'Profile' => new Profile(),
             'OrganizationManagement' => new OrganizationManagement(),
-            'OrganizationProfile'    => new OrganizationProfile(),
-            'OrganizationRoster'     => new OrganizationRoster(),
-            'Blocks'                 => new Blocks(),
-            'User'                   => new User(),
-            'Log'                    => new Log(),
-            'Language'               => new Language(),
-            'Notification'           => new Notification(),
-            'Settings'               => new Settings(),
+            'OrganizationProfile' => new OrganizationProfile(),
+            'OrganizationRoster' => new OrganizationRoster(),
+            'Blocks' => new Blocks(),
+            'User' => new User(),
+            'Log' => new Log(),
+            'Language' => new Language(),
+            'Notification' => new Notification(),
+            'Settings' => new Settings(),
         ];
 
         // Instantiate classes for their hooks
         new CFInitOptions(); // Options always should be first, it bootstraps Carbon Fields
+        new HyperFieldsInit(); // Initialize HyperFields options page
         new CFInitBlocks();
         new Router();
         new Shortcodes();

@@ -24,15 +24,16 @@
             "no-api": true
         }
     ],
+    "minimum-stability": "RC",
     "require": {
         "php": ">=8.1.0",
         "industrialdev/wicket-sdk-php": "dev-master",
-        "htmlburger/carbon-fields": "^3.6",
-        "picocss/pico": "^2.1",
-        "estebanforge/hyperpress": "^1.3"
+        "htmlburger/carbon-fields": "^3",
+        "picocss/pico": "^2",
+        "estebanforge/hyperpress": "^3"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.64"
+        "friendsofphp/php-cs-fixer": "^3"
     },
     "autoload": {
         "psr-4": {
@@ -43,23 +44,14 @@
     "scripts": {
         "dump-autoload-prod": "@php composer dump-autoload --optimize --no-dev",
         "remove-ci-folder": "@php -r \"if (getenv('COMPOSER_DEV_MODE') === '0') { system('rm -rf ./.ci'); }\"",
-        "prefix-namespaces": [
-            "strauss",
-            "cp -R vendor/htmlburger/carbon-fields/assets vendor-prefixed/htmlburger/carbon-fields/",
-            "cp -R vendor/htmlburger/carbon-fields/build vendor-prefixed/htmlburger/carbon-fields/",
-            "cp -R vendor/htmlburger/carbon-fields/templates vendor-prefixed/htmlburger/carbon-fields/",
-            "@dump-autoload-prod"
-        ],
         "post-install-cmd": [
             "@remove-ci-folder",
             "@cs:fix",
-            "@prefix-namespaces",
             "@build-pico-css"
         ],
         "post-update-cmd": [
             "@remove-ci-folder",
             "@cs:fix",
-            "@prefix-namespaces",
             "@build-pico-css"
         ],
         "version-bump": [
@@ -68,46 +60,12 @@
         ],
         "build-pico-css": "@php ./.ci/build-pico-css.php",
         "cs:fix": "@php -r \"system(PHP_OS_FAMILY === 'Windows' ? './.ci/php.exe ./.ci/php-cs-fixer.phar fix' : (PHP_OS_FAMILY === 'Darwin' ? './.ci/php-macos ./.ci/php-cs-fixer.phar fix' : './.ci/php-linux ./.ci/php-cs-fixer.phar fix'));\"",
-        "post-autoload-dump": [
-            "strauss include-autoloader"
-        ]
+        "post-autoload-dump": []
     },
     "config": {
         "platform": {
             "php": "8.1.0"
         }
     },
-    "extra": {
-        "strauss": {
-            "target_directory": "vendor-prefixed",
-            "override_autoload": {
-                "htmlburger/carbon-fields": {
-                    "psr-4": {
-                        "Carbon_Fields\\": "core/"
-                    },
-                    "files": [
-                        "config.php",
-                        "core/functions.php"
-                    ]
-                }
-            },
-            "namespace_prefix": "WicketAcc\\",
-            "classmap_prefix": "WicketAcc_",
-            "constant_prefix": "",
-            "classmap_output": true,
-            "packages": [],
-            "exclude_from_prefix": {
-                "packages": [
-                    "htmlburger/carbon-fields",
-                    "estebanforge/hyperpress"
-                ],
-                "namespaces": [
-                    "Carbon_Fields",
-                    "HyperPress"
-                ],
-                "file_patterns": []
-            },
-            "delete_vendor_packages": false
-        }
-    }
+    "extra": {}
 }
