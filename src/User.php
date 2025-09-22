@@ -105,7 +105,7 @@ class User extends WicketAcc
     public function createOrUpdateWpUser(?string $uuid, ?string $firstName = null, ?string $lastName = null, ?string $email = null): int|false
     {
         if (empty($uuid)) {
-            WACC()->Log()->warning('createOrUpdateWpUser called with an empty UUID.', ['source' => __METHOD__]);
+            WACC()->Log()->warning('createOrUpdateWpUser called with an empty UUID.', ['source' => __CLASS__]);
 
             return false;
         }
@@ -114,7 +114,7 @@ class User extends WicketAcc
         if (is_null($firstName) || is_null($lastName) || is_null($email)) {
             $mdp_person = WACC()->Mdp()->Person()->getPersonByUuid($uuid);
             if (!$mdp_person || !isset($mdp_person->attributes)) {
-                WACC()->Log()->error('Failed to retrieve person data from MDP for user creation/update.', ['source' => __METHOD__, 'uuid' => $uuid]);
+                WACC()->Log()->error('Failed to retrieve person data from MDP for user creation/update.', ['source' => __CLASS__, 'uuid' => $uuid]);
 
                 return false;
             }
@@ -125,7 +125,7 @@ class User extends WicketAcc
         }
 
         if (empty($email)) {
-            WACC()->Log()->error('Email is missing for user creation/update.', ['source' => __METHOD__, 'uuid' => $uuid]);
+            WACC()->Log()->error('Email is missing for user creation/update.', ['source' => __CLASS__, 'uuid' => $uuid]);
 
             return false;
         }
@@ -144,7 +144,7 @@ class User extends WicketAcc
             if (is_wp_error($user_id)) {
                 WACC()->Log()->error(
                     'Failed to update WordPress user.',
-                    ['source' => __METHOD__, 'uuid' => $uuid, 'error' => $user_id->get_error_message()]
+                    ['source' => __CLASS__, 'uuid' => $uuid, 'error' => $user_id->get_error_message()]
                 );
 
                 return false;
@@ -166,7 +166,7 @@ class User extends WicketAcc
             if (is_wp_error($user_id)) {
                 WACC()->Log()->error(
                     'Failed to create WordPress user.',
-                    ['source' => __METHOD__, 'uuid' => $uuid, 'error' => $user_id->get_error_message()]
+                    ['source' => __CLASS__, 'uuid' => $uuid, 'error' => $user_id->get_error_message()]
                 );
 
                 return false;
@@ -212,7 +212,7 @@ class User extends WicketAcc
     {
         if (empty($personUuid) || empty($roles)) {
             WACC()->Log()->warning('User role update skipped: Missing person UUID or roles.', [
-                'source' => __METHOD__,
+                'source' => __CLASS__,
                 'person_uuid' => $personUuid,
                 'action' => $action,
             ]);
@@ -224,7 +224,7 @@ class User extends WicketAcc
 
         if (!$user) {
             WACC()->Log()->error('Failed to find user for role update.', [
-                'source' => __METHOD__,
+                'source' => __CLASS__,
                 'person_uuid' => $personUuid,
                 'action' => $action,
             ]);

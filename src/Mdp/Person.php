@@ -96,14 +96,14 @@ class Person extends Init
     public function getPersonByUuid(?string $uuid = null): object|false
     {
         if (empty($uuid)) {
-            WACC()->Log()->warning('Provided UUID is empty.', ['source' => __METHOD__]);
+            WACC()->Log()->warning('Provided UUID is empty.', ['source' => __CLASS__]);
 
             return false;
         }
 
         $client = $this->initClient();
         if (!$client) {
-            WACC()->Log()->error('Failed to initialize Wicket API client.', ['source' => __METHOD__, 'uuid' => $uuid]);
+            WACC()->Log()->error('Failed to initialize Wicket API client.', ['source' => __CLASS__, 'uuid' => $uuid]);
 
             return false;
         }
@@ -116,7 +116,7 @@ class Person extends Init
             WACC()->Log()->error(
                 'RequestException while fetching person by UUID.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'uuid' => $uuid,
                     'status_code' => $response_code,
                     'message' => $e->getMessage(),
@@ -129,7 +129,7 @@ class Person extends Init
             WACC()->Log()->error(
                 'Generic Exception while fetching person by UUID.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'uuid' => $uuid,
                     'message' => $e->getMessage(),
                     'exception' => $e,
@@ -172,14 +172,14 @@ class Person extends Init
         }
 
         if (empty($person_uuid)) {
-            WACC()->Log()->warning('No UUID provided and current user UUID not found.', ['source' => __METHOD__]);
+            WACC()->Log()->warning('No UUID provided and current user UUID not found.', ['source' => __CLASS__]);
 
             return null;
         }
 
         $client = $this->initClient();
         if (!$client) {
-            WACC()->Log()->error('Failed to initialize Wicket API client.', ['source' => __METHOD__, 'uuid' => $person_uuid]);
+            WACC()->Log()->error('Failed to initialize Wicket API client.', ['source' => __CLASS__, 'uuid' => $person_uuid]);
 
             return null;
         }
@@ -193,7 +193,7 @@ class Person extends Init
             WACC()->Log()->error(
                 'RequestException while fetching person profile by UUID.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'uuid' => $person_uuid,
                     'status_code' => $response_code,
                     'message' => $e->getMessage(),
@@ -206,7 +206,7 @@ class Person extends Init
             WACC()->Log()->error(
                 'Generic Exception while fetching person profile by UUID.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'uuid' => $person_uuid,
                     'message' => $e->getMessage(),
                     'exception' => $e,
@@ -230,7 +230,7 @@ class Person extends Init
     public function getPersonRepeatableContactInfo(object $person_data, string $contact_type, bool $return_full_objects = false): array|false
     {
         if (!method_exists($person_data, 'included')) {
-            WACC()->Log()->warning('Person data object does not have an included() method.', ['source' => __METHOD__, 'contact_type' => $contact_type]);
+            WACC()->Log()->warning('Person data object does not have an included() method.', ['source' => __CLASS__, 'contact_type' => $contact_type]);
 
             return false;
         }
@@ -238,7 +238,7 @@ class Person extends Init
         $included_data = $person_data->included();
 
         if (!method_exists($included_data, 'toArray')) {
-            WACC()->Log()->warning('Included data does not have a toArray() method.', ['source' => __METHOD__, 'contact_type' => $contact_type]);
+            WACC()->Log()->warning('Included data does not have a toArray() method.', ['source' => __CLASS__, 'contact_type' => $contact_type]);
 
             return false;
         }
@@ -292,7 +292,7 @@ class Person extends Init
             WACC()->Log()->error(
                 'RequestException while fetching all people.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'status_code' => $response_code,
                     'message' => $e->getMessage(),
                     'exception' => $e,
@@ -304,7 +304,7 @@ class Person extends Init
             WACC()->Log()->error(
                 'Generic Exception while fetching all people.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'message' => $e->getMessage(),
                     'exception' => $e,
                 ]
@@ -324,7 +324,7 @@ class Person extends Init
     public function getPersonByEmail(string $email): object|false
     {
         if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            WACC()->Log()->warning('Invalid or empty email address provided for person lookup.', ['source' => __METHOD__, 'email' => $email]);
+            WACC()->Log()->warning('Invalid or empty email address provided for person lookup.', ['source' => __CLASS__, 'email' => $email]);
 
             return false;
         }
@@ -352,7 +352,7 @@ class Person extends Init
                 return $this->getPersonByUuid($response['data'][0]['id']);
             }
 
-            WACC()->Log()->info('No person found with the specified primary email.', ['source' => __METHOD__, 'email' => $email]);
+            WACC()->Log()->info('No person found with the specified primary email.', ['source' => __CLASS__, 'email' => $email]);
 
             return false;
         } catch (RequestException $e) {
@@ -360,7 +360,7 @@ class Person extends Init
             WACC()->Log()->error(
                 'RequestException while fetching person by email.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'email' => $email,
                     'status_code' => $response_code,
                     'message' => $e->getMessage(),
@@ -372,7 +372,7 @@ class Person extends Init
             WACC()->Log()->error(
                 'Generic Exception while fetching person by email.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'email' => $email,
                     'message' => $e->getMessage(),
                 ]
@@ -401,7 +401,7 @@ class Person extends Init
             if (!$person || !isset($person->attributes->role_names) || !is_array($person->attributes->role_names)) {
                 WACC()->Log()->info(
                     'Could not determine membership status. Current person data is unavailable or roles are malformed.',
-                    ['source' => __METHOD__]
+                    ['source' => __CLASS__]
                 );
                 $has_membership = false;
             } else {
@@ -429,7 +429,7 @@ class Person extends Init
 
         WACC()->Log()->info(
             'Could not retrieve full name. Current person data is unavailable or name attributes are missing.',
-            ['source' => __METHOD__]
+            ['source' => __CLASS__]
         );
 
         return '';
@@ -451,7 +451,7 @@ class Person extends Init
     public function searchPeople(string $searchTerm, array $args = []): array|false
     {
         if (empty($searchTerm)) {
-            WACC()->Log()->warning('Search term is empty.', ['source' => __METHOD__]);
+            WACC()->Log()->warning('Search term is empty.', ['source' => __CLASS__]);
 
             return false;
         }
@@ -487,7 +487,7 @@ class Person extends Init
             if (empty($response['included'])) {
                 WACC()->Log()->info(
                     'Person search returned no results.',
-                    ['source' => __METHOD__, 'searchTerm' => $searchTerm]
+                    ['source' => __CLASS__, 'searchTerm' => $searchTerm]
                 );
 
                 return []; // Return empty array for no results, which is not an error
@@ -517,7 +517,7 @@ class Person extends Init
                 }
             }
             $logContext = [
-                'source'          => __METHOD__,
+                'source'          => __CLASS__,
                 'searchTerm'      => $searchTerm,
                 'args'            => $args,
                 'status_code'     => $statusCode,
@@ -529,7 +529,7 @@ class Person extends Init
             return false;
         } catch (Exception $e) {
             $logContext = [
-                'source'          => __METHOD__,
+                'source'          => __CLASS__,
                 'searchTerm'      => $searchTerm,
                 'args'            => $args,
                 'exception_class' => get_class($e),
@@ -556,7 +556,7 @@ class Person extends Init
         if (empty($personUuid)) {
             $personUuid = $this->getCurrentPersonUuid();
             if (!$personUuid) {
-                WACC()->Log()->warning('No person ID available to fetch connections.', ['source' => __METHOD__]);
+                WACC()->Log()->warning('No person ID available to fetch connections.', ['source' => __CLASS__]);
 
                 return false;
             }
@@ -596,7 +596,7 @@ class Person extends Init
 
             if (empty($connectionsData)) {
                 WACC()->Log()->info('No connections found for person.', [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'personId' => $personUuid,
                 ]);
             }
@@ -607,7 +607,7 @@ class Person extends Init
         } catch (RequestException $e) {
             $statusCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 'N/A';
             WACC()->Log()->error("Error fetching person connections (HTTP {$statusCode}): " . $e->getMessage(), [
-                'source' => __METHOD__,
+                'source' => __CLASS__,
                 'personId' => $personUuid,
                 'params' => $params,
                 'statusCode' => $statusCode,
@@ -617,7 +617,7 @@ class Person extends Init
 
         } catch (Exception $e) {
             WACC()->Log()->error('Unexpected error fetching person connections: ' . $e->getMessage(), [
-                'source' => __METHOD__,
+                'source' => __CLASS__,
                 'personId' => $personUuid,
                 'params' => $params,
                 'exception' => get_class($e),
@@ -652,7 +652,7 @@ class Person extends Init
     ): array|false {
         $client = $this->initClient();
         if (!$client) {
-            WACC()->Log()->error('Failed to initialize API client.', ['source' => __METHOD__]);
+            WACC()->Log()->error('Failed to initialize API client.', ['source' => __CLASS__]);
 
             return false;
         }
@@ -676,7 +676,7 @@ class Person extends Init
                 $attributes['user']['password_confirmation'] = $passwordConfirmation;
             } else {
                 WACC()->Log()->warning('Password and confirmation do not match during person creation.', [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'givenName' => $givenName, // Avoid logging sensitive data like full name if possible
                     'familyNameInitial' => !empty($familyName) ? substr($familyName, 0, 1) : '',
                 ]);
@@ -715,7 +715,7 @@ class Person extends Init
             return $personResponse;
         } catch (RequestException $e) {
             $errorDetails = [
-                'source' => __METHOD__,
+                'source' => __CLASS__,
                 'message' => $e->getMessage(),
             ];
             if ($e->hasResponse()) {
@@ -728,7 +728,7 @@ class Person extends Init
             return false;
         } catch (Exception $e) {
             WACC()->Log()->error('Generic Exception while creating person.', [
-                'source' => __METHOD__,
+                'source' => __CLASS__,
                 'message' => $e->getMessage(),
                 'exception_type' => get_class($e),
             ]);
@@ -793,7 +793,7 @@ class Person extends Init
                 } else {
                     WACC()->Log()->info(
                         sprintf("Attribute '%s' is not directly updatable on Person object and was ignored.", $key),
-                        ['source' => __METHOD__, 'person_uuid' => $personUuid]
+                        ['source' => __CLASS__, 'person_uuid' => $personUuid]
                     );
                 }
             }
@@ -817,7 +817,7 @@ class Person extends Init
                         $updatedPersonData = $client->patch("people/{$personUuid}", ['json' => $payload]);
                     } catch (RequestException $e) {
                         $errorMsg = 'Failed to update person attributes.';
-                        $context = ['source' => __METHOD__, 'person_uuid' => $personUuid, 'payload' => $payload];
+                        $context = ['source' => __CLASS__, 'person_uuid' => $personUuid, 'payload' => $payload];
                         if ($e->hasResponse()) {
                             $context['statusCode'] = $e->getResponse()->getStatusCode();
                             $context['responseBody'] = $e->getResponse()->getBody()->getContents();
@@ -825,7 +825,7 @@ class Person extends Init
                         WACC()->Log()->error($errorMsg, $context);
                         $errors[] = $errorMsg . ' ' . $e->getMessage();
                     } catch (Exception $e) {
-                        WACC()->Log()->error('Generic exception updating person attributes.', ['source' => __METHOD__, 'person_uuid' => $personUuid, 'message' => $e->getMessage()]);
+                        WACC()->Log()->error('Generic exception updating person attributes.', ['source' => __CLASS__, 'person_uuid' => $personUuid, 'message' => $e->getMessage()]);
                         $errors[] = 'An unexpected error occurred while updating attributes: ' . $e->getMessage();
                     }
                 }
@@ -892,7 +892,7 @@ class Person extends Init
     public function getPersonOrganizationMemberships(string $personUuid): array|false
     {
         if (empty($personUuid)) {
-            WACC()->Log()->error('Person UUID is required.', ['source' => __METHOD__]);
+            WACC()->Log()->error('Person UUID is required.', ['source' => __CLASS__]);
 
             return false;
         }
@@ -913,7 +913,7 @@ class Person extends Init
         } catch (RequestException $e) {
             $errorMsg = 'Failed to get person organization memberships.';
             $context = [
-                'source' => __METHOD__,
+                'source' => __CLASS__,
                 'person_uuid' => $personUuid,
                 'original_exception' => $e->getMessage(),
             ];
@@ -924,7 +924,7 @@ class Person extends Init
             WACC()->Log()->error($errorMsg, $context);
         } catch (Exception $e) {
             WACC()->Log()->error('Generic exception while getting person organization memberships.', [
-                'source' => __METHOD__,
+                'source' => __CLASS__,
                 'person_uuid' => $personUuid,
                 'message' => $e->getMessage(),
             ]);
@@ -1074,7 +1074,7 @@ class Person extends Init
                 $action = empty($itemUuid) ? 'create' : 'update';
                 $errorMsg = sprintf('Failed to %s %s (UUID: %s).', $action, $singularName, $itemUuid ?? 'N/A');
                 $context = [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'person_uuid' => $personUuid,
                     "{$singularName}_uuid" => $itemUuid,
                     'payload' => $payload,
@@ -1089,7 +1089,7 @@ class Person extends Init
             } catch (Exception $e) {
                 $action = empty($itemUuid) ? 'create' : 'update';
                 $errorMsg = sprintf('Generic exception during %s %s (UUID: %s).', $action, $singularName, $itemUuid ?? 'N/A');
-                WACC()->Log()->error($errorMsg, ['source' => __METHOD__, 'person_uuid' => $personUuid, "{$singularName}_uuid" => $itemUuid, 'message' => $e->getMessage()]);
+                WACC()->Log()->error($errorMsg, ['source' => __CLASS__, 'person_uuid' => $personUuid, "{$singularName}_uuid" => $itemUuid, 'message' => $e->getMessage()]);
                 $errors[] = $errorMsg . ' ' . $e->getMessage();
             }
         }

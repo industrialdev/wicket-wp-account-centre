@@ -35,7 +35,7 @@ class Notification
         $org = WACC()->Mdp()->Organization()->getOrganizationByUuid($orgUuid, 'emails');
         if (empty($org['data'])) {
             WACC()->Log()->error('Failed to retrieve organization data for notification.', [
-                'source' => __METHOD__,
+                'source' => __CLASS__,
                 'orgUuid' => $orgUuid,
             ]);
 
@@ -46,7 +46,7 @@ class Notification
         $person = WACC()->Mdp()->Person()->getPersonByUuid($user->user_login);
         if (empty($person)) {
             WACC()->Log()->error('Failed to retrieve person data for notification.', [
-                'source' => __METHOD__,
+                'source' => __CLASS__,
                 'personUuid' => $user->user_login,
             ]);
 
@@ -80,7 +80,7 @@ class Notification
 
         if (!$sent) {
             WACC()->Log()->error('Failed to send team assignment email.', [
-                'source' => __METHOD__,
+                'source' => __CLASS__,
                 'to' => $to,
                 'personUuid' => $user->user_login,
                 'orgUuid' => $orgUuid,
@@ -107,7 +107,7 @@ class Notification
         $org = WACC()->Mdp()->Organization()->getOrganizationByUuid($orgUuid, 'emails');
         if (empty($org['data'])) {
             WACC()->Log()->error('Failed to retrieve organization data for new person notification.', [
-                'source' => __METHOD__,
+                'source' => __CLASS__,
                 'orgUuid' => $orgUuid,
             ]);
 
@@ -140,7 +140,7 @@ class Notification
 
         if (!$sent) {
             WACC()->Log()->error('Failed to send new person team assignment email.', [
-                'source' => __METHOD__,
+                'source' => __CLASS__,
                 'to' => $to,
                 'orgUuid' => $orgUuid,
             ]);
@@ -196,7 +196,7 @@ class Notification
 
         if (!$sent) {
             WACC()->Log()->error('Failed to send membership approval required email.', [
-                'source' => __METHOD__,
+                'source' => __CLASS__,
                 'to' => $to,
             ]);
         }
@@ -219,7 +219,9 @@ class Notification
 
         if (!$person || !$org) {
             WACC()->Log()->error('Failed to send assignment email: Invalid person or organization.', [
-                'source' => __METHOD__, 'personUuid' => $personUuid, 'orgUuid' => $orgUuid,
+                'source' => __CLASS__,
+                'personUuid' => $personUuid,
+                'orgUuid' => $orgUuid,
             ]);
 
             return;
@@ -233,7 +235,8 @@ class Notification
         $to = $person['primary_email_address'] ?? '';
         if (empty($to)) {
             WACC()->Log()->error('Failed to send assignment email: Person has no primary email address.', [
-                'source' => __METHOD__, 'personUuid' => $personUuid,
+                'source' => __CLASS__,
+                'personUuid' => $personUuid,
             ]);
 
             return;
@@ -276,7 +279,8 @@ $organization_name";
         foreach ($requiredKeys as $key) {
             if (empty($emailData[$key])) {
                 WACC()->Log()->error("Email notification missing required data: `{$key}`.", [
-                    'source' => __METHOD__, 'emailData' => $emailData,
+                    'source' => __CLASS__,
+                    'emailData' => $emailData,
                 ]);
 
                 return false;
@@ -287,7 +291,8 @@ $organization_name";
 
         if (!$orgInfo) {
             WACC()->Log()->error('Failed to send notification: Invalid organization.', [
-                'source' => __METHOD__, 'orgUuid' => $emailData['orgUuid'],
+                'source' => __CLASS__,
+                'orgUuid' => $emailData['orgUuid'],
             ]);
 
             return false;
@@ -296,7 +301,8 @@ $organization_name";
         $to = $emailData['to'] ?? $orgInfo['org_meta']['main_email']['address'] ?? '';
         if (empty($to)) {
             WACC()->Log()->error('Failed to send notification: No recipient email address found.', [
-                'source' => __METHOD__, 'orgUuid' => $emailData['orgUuid'],
+                'source' => __CLASS__,
+                'orgUuid' => $emailData['orgUuid'],
             ]);
 
             return false;

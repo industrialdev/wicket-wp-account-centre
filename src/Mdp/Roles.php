@@ -37,7 +37,7 @@ class Roles extends Init
     public function assignRole(string $personUuid, string $roleName, string $orgUuid = ''): bool
     {
         if (empty($personUuid) || empty($roleName)) {
-            WACC()->Log()->warning('Person UUID and Role Name cannot be empty.', ['source' => __METHOD__]);
+            WACC()->Log()->warning('Person UUID and Role Name cannot be empty.', ['source' => __CLASS__]);
 
             return false;
         }
@@ -72,7 +72,7 @@ class Roles extends Init
             WACC()->Log()->error(
                 'RequestException while assigning role to person.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'person_uuid' => $personUuid,
                     'role_name' => $roleName,
                     'org_uuid' => $orgUuid,
@@ -85,7 +85,7 @@ class Roles extends Init
             WACC()->Log()->error(
                 'Generic Exception while assigning role to person.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'person_uuid' => $personUuid,
                     'role_name' => $roleName,
                     'org_uuid' => $orgUuid,
@@ -109,7 +109,7 @@ class Roles extends Init
     public function removeRole(string $personUuid, string $roleName): bool
     {
         if (empty($personUuid) || empty($roleName)) {
-            WACC()->Log()->warning('Person UUID and Role Name cannot be empty.', ['source' => __METHOD__]);
+            WACC()->Log()->warning('Person UUID and Role Name cannot be empty.', ['source' => __CLASS__]);
 
             return false;
         }
@@ -127,7 +127,7 @@ class Roles extends Init
             WACC()->Log()->warning(
                 'Failed to retrieve person or person data is invalid for role removal.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'person_uuid' => $personUuid,
                     'role_name' => $roleName,
                 ]
@@ -157,7 +157,7 @@ class Roles extends Init
             WACC()->Log()->info(
                 'Role not found on person or could not be identified for removal.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'person_uuid' => $personUuid,
                     'role_name' => $roleName,
                 ]
@@ -185,7 +185,7 @@ class Roles extends Init
             WACC()->Log()->error(
                 'RequestException while removing role from person.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'person_uuid' => $personUuid,
                     'role_name' => $roleName,
                     'role_id' => $roleId,
@@ -198,7 +198,7 @@ class Roles extends Init
             WACC()->Log()->error(
                 'Generic Exception while removing role from person.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'person_uuid' => $personUuid,
                     'role_name' => $roleName,
                     'role_id' => $roleId,

@@ -32,7 +32,7 @@ class Address extends Init
     public function getAddressByUuid(string $uuid): object|false
     {
         if (empty($uuid)) {
-            WACC()->Log()->warning('Address UUID cannot be empty.', ['source' => __METHOD__]);
+            WACC()->Log()->warning('Address UUID cannot be empty.', ['source' => __CLASS__]);
 
             return false;
         }
@@ -50,7 +50,7 @@ class Address extends Init
             WACC()->Log()->error(
                 'RequestException while fetching address by UUID.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'uuid' => $uuid,
                     'status_code' => $response_code,
                     'message' => $e->getMessage(),
@@ -62,7 +62,7 @@ class Address extends Init
             WACC()->Log()->error(
                 'Generic Exception while fetching address by UUID.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'uuid' => $uuid,
                     'message' => $e->getMessage(),
                 ]
@@ -148,7 +148,7 @@ class Address extends Init
             } catch (RequestException $e) {
                 $errorMsg = 'API Error: ' . $e->getMessage();
                 $context = [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'address_uuid' => $addressUuid,
                     'payload' => $payload,
                     'original_exception' => $e->getMessage(),
@@ -162,7 +162,7 @@ class Address extends Init
                 $overallSuccess = false;
             } catch (Exception $e) {
                 $errorMsg = 'Generic Exception: ' . $e->getMessage();
-                WACC()->Log()->error("Generic exception during address update (UUID: {$addressUuid}).", ['source' => __METHOD__, 'address_uuid' => $addressUuid, 'message' => $e->getMessage()]);
+                WACC()->Log()->error("Generic exception during address update (UUID: {$addressUuid}).", ['source' => __CLASS__, 'address_uuid' => $addressUuid, 'message' => $e->getMessage()]);
                 $results['failed'][] = ['uuid' => $addressUuid, 'error' => $errorMsg];
                 $overallSuccess = false;
             }

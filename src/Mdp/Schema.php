@@ -27,7 +27,7 @@ class Schema extends Init
             try {
                 $client = $this->initClient();
                 if (!$client) {
-                    WACC()->Log()->error('Failed to initialize API client', ['source' => __METHOD__]);
+                    WACC()->Log()->error('Failed to initialize API client', ['source' => __CLASS__]);
 
                     return false;
                 }
@@ -36,7 +36,7 @@ class Schema extends Init
                 $schemas = $response['data'] ?? false;
 
                 if (empty($schemas)) {
-                    WACC()->Log()->info('No JSON schemas found', ['source' => __METHOD__]);
+                    WACC()->Log()->info('No JSON schemas found', ['source' => __CLASS__]);
 
                     return false;
                 }
@@ -45,14 +45,14 @@ class Schema extends Init
             } catch (RequestException $e) {
                 $statusCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 'N/A';
                 WACC()->Log()->error("Error fetching JSON schemas (HTTP {$statusCode}): " . $e->getMessage(), [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'statusCode' => $statusCode,
                 ]);
 
                 return false;
             } catch (\Exception $e) {
                 WACC()->Log()->error('Unexpected error fetching JSON schemas: ' . $e->getMessage(), [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'exception' => get_class($e),
                 ]);
 
@@ -79,7 +79,7 @@ class Schema extends Init
     {
         if (empty($schema) || empty($field)) {
             WACC()->Log()->warning('getSchemaOptions called with invalid parameters.', [
-                'source' => __METHOD__,
+                'source' => __CLASS__,
                 'field' => $field,
                 'subField' => $subField,
             ]);
@@ -170,7 +170,7 @@ class Schema extends Init
 
         if (empty($schemas['data'])) {
             WACC()->Log()->warning('No schemas found or schemas data is empty.', [
-                'source' => __METHOD__,
+                'source' => __CLASS__,
             ]);
 
             return [];
@@ -186,7 +186,7 @@ class Schema extends Init
 
         if (!$targetSchema) {
             WACC()->Log()->info('Schema with specified parent field not found.', [
-                'source'      => __METHOD__,
+                'source'      => __CLASS__,
                 'parentField' => $parentField,
             ]);
 

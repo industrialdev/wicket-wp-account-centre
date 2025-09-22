@@ -32,14 +32,14 @@ class Organization extends Init
     public function getOrganizationByUuid(string $uuid, ?string $include = null): array|false
     {
         if (empty($uuid)) {
-            WACC()->Log()->warning('UUID cannot be empty.', ['source' => __METHOD__]);
+            WACC()->Log()->warning('UUID cannot be empty.', ['source' => __CLASS__]);
 
             return false;
         }
 
         $client = $this->initClient();
         if (!$client) {
-            WACC()->Log()->error('Failed to initialize API client.', ['source' => __METHOD__, 'uuid' => $uuid]);
+            WACC()->Log()->error('Failed to initialize API client.', ['source' => __CLASS__, 'uuid' => $uuid]);
 
             return false;
         }
@@ -56,7 +56,7 @@ class Organization extends Init
             WACC()->Log()->error(
                 'RequestException while fetching organization by UUID.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'uuid' => $uuid,
                     'include' => $include,
                     'message' => $e->getMessage(),
@@ -69,7 +69,7 @@ class Organization extends Init
             WACC()->Log()->error(
                 'Generic Exception while fetching organization by UUID.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'uuid' => $uuid,
                     'include' => $include,
                     'message' => $e->getMessage(),
@@ -91,14 +91,14 @@ class Organization extends Init
     public function getOrganizationInfo(string $org_uuid, string $lang = 'en'): array|false
     {
         if (empty($org_uuid)) {
-            WACC()->Log()->warning('Organization UUID cannot be empty.', ['source' => __METHOD__]);
+            WACC()->Log()->warning('Organization UUID cannot be empty.', ['source' => __CLASS__]);
 
             return false;
         }
 
         $organization_data = $this->getOrganizationByUuid($org_uuid);
         if (empty($organization_data['data'])) {
-            WACC()->Log()->warning('Failed to retrieve base data for organization.', ['source' => __METHOD__, 'org_uuid' => $org_uuid]);
+            WACC()->Log()->warning('Failed to retrieve base data for organization.', ['source' => __CLASS__, 'org_uuid' => $org_uuid]);
 
             return false;
         }
@@ -149,7 +149,7 @@ class Organization extends Init
                     WACC()->Log()->error(
                         "API Exception fetching {$type} for organization.",
                         [
-                            'source' => __METHOD__,
+                            'source' => __CLASS__,
                             'org_uuid' => $org_uuid,
                             'contact_type' => $type,
                             'message' => $e->getMessage(),
@@ -159,7 +159,7 @@ class Organization extends Init
                 }
             }
         } else {
-            WACC()->Log()->error('Failed to initialize client for fetching contact details.', ['source' => __METHOD__, 'org_uuid' => $org_uuid]);
+            WACC()->Log()->error('Failed to initialize client for fetching contact details.', ['source' => __CLASS__, 'org_uuid' => $org_uuid]);
         }
 
         return [
@@ -205,7 +205,7 @@ class Organization extends Init
                 WACC()->Log()->error(
                     'RequestException while fetching all organizations.',
                     [
-                        'source' => __METHOD__,
+                        'source' => __CLASS__,
                         'status_code' => $response_code,
                         'message' => $e->getMessage(),
                     ]
@@ -215,7 +215,7 @@ class Organization extends Init
                 WACC()->Log()->error(
                     'Generic Exception while fetching all organizations.',
                     [
-                        'source' => __METHOD__,
+                        'source' => __CLASS__,
                         'message' => $e->getMessage(),
                     ]
                 );
@@ -237,7 +237,7 @@ class Organization extends Init
     public function getOrganizationBySlug(string $slug, bool $returnUuidOnly = false): array|string|false
     {
         if (empty($slug)) {
-            WACC()->Log()->warning('Organization slug cannot be empty.', ['source' => __METHOD__]);
+            WACC()->Log()->warning('Organization slug cannot be empty.', ['source' => __CLASS__]);
 
             return false;
         }
@@ -275,7 +275,7 @@ class Organization extends Init
                 return $this->getOrganizationByUuid($orgUuid);
             }
 
-            WACC()->Log()->info('No organization found with the specified slug.', ['source' => __METHOD__, 'slug' => $slug]);
+            WACC()->Log()->info('No organization found with the specified slug.', ['source' => __CLASS__, 'slug' => $slug]);
 
             return false;
 
@@ -283,7 +283,7 @@ class Organization extends Init
             WACC()->Log()->error(
                 'RequestException while fetching organization by slug.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'slug' => $slug,
                     'message' => $e->getMessage(),
                     'exception' => $e,
@@ -295,7 +295,7 @@ class Organization extends Init
             WACC()->Log()->error(
                 'Generic Exception while fetching organization by slug.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'slug' => $slug,
                     'message' => $e->getMessage(),
                     'exception' => $e,
@@ -318,14 +318,14 @@ class Organization extends Init
     public function getOrganizationBasicInfo(string $uuid, string $lang = 'en'): array|false
     {
         if (empty($uuid)) {
-            WACC()->Log()->warning('Organization UUID cannot be empty.', ['source' => __METHOD__]);
+            WACC()->Log()->warning('Organization UUID cannot be empty.', ['source' => __CLASS__]);
 
             return false;
         }
 
         $orgData = $this->getOrganizationByUuid($uuid);
         if (empty($orgData['data'])) {
-            WACC()->Log()->warning('Organization not found for provided UUID.', ['source' => __METHOD__, 'uuid' => $uuid]);
+            WACC()->Log()->warning('Organization not found for provided UUID.', ['source' => __CLASS__, 'uuid' => $uuid]);
 
             return false;
         }
@@ -390,7 +390,7 @@ class Organization extends Init
     public function getOrgConnectionsById(string $orgUuid)
     {
         if (empty($orgUuid)) {
-            WACC()->Log()->warning('No organization UUID provided to fetch connections', ['source' => __METHOD__]);
+            WACC()->Log()->warning('No organization UUID provided to fetch connections', ['source' => __CLASS__]);
 
             return false;
         }
@@ -417,7 +417,7 @@ class Organization extends Init
 
                 if (empty($connections)) {
                     WACC()->Log()->info('No connections found for specified organization', [
-                        'source' => __METHOD__,
+                        'source' => __CLASS__,
                         'orgUuid' => $orgUuid,
                     ]);
                     $connectionsCache[$orgUuid] = false;
@@ -427,7 +427,7 @@ class Organization extends Init
             } catch (RequestException $e) {
                 $statusCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 'N/A';
                 WACC()->Log()->error("Error fetching organization connections (HTTP {$statusCode}): " . $e->getMessage(), [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'orgUuid' => $orgUuid,
                     'statusCode' => $statusCode,
                 ]);
@@ -435,7 +435,7 @@ class Organization extends Init
                 return false;
             } catch (Exception $e) {
                 WACC()->Log()->error('Unexpected error fetching organization connections: ' . $e->getMessage(), [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'orgUuid' => $orgUuid,
                     'exception' => get_class($e),
                 ]);
@@ -456,14 +456,14 @@ class Organization extends Init
     public function getOrganizationPersonRelationships(string $orgUuid): array|false
     {
         if (empty($orgUuid)) {
-            WACC()->Log()->warning('Organization UUID cannot be empty.', ['source' => __METHOD__]);
+            WACC()->Log()->warning('Organization UUID cannot be empty.', ['source' => __CLASS__]);
 
             return false;
         }
 
         $client = $this->initClient();
         if (!$client) {
-            WACC()->Log()->error('Failed to initialize API client.', ['source' => __METHOD__, 'orgUuid' => $orgUuid]);
+            WACC()->Log()->error('Failed to initialize API client.', ['source' => __CLASS__, 'orgUuid' => $orgUuid]);
 
             return false;
         }
@@ -482,7 +482,7 @@ class Organization extends Init
             WACC()->Log()->error(
                 'RequestException while fetching organization person relationships.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'orgUuid' => $orgUuid,
                     'message' => $e->getMessage(),
                     'exception' => $e,
@@ -494,7 +494,7 @@ class Organization extends Init
             WACC()->Log()->error(
                 'Generic Exception while fetching organization person relationships.',
                 [
-                    'source' => __METHOD__,
+                    'source' => __CLASS__,
                     'orgUuid' => $orgUuid,
                     'message' => $e->getMessage(),
                     'exception' => $e,
@@ -515,7 +515,7 @@ class Organization extends Init
     public function getOrganizationPersonRoles(string $personUuid, string $orgUuid): array|false
     {
         if (empty($personUuid) || empty($orgUuid)) {
-            WACC()->Log()->error('Person UUID and Organization UUID are required.', ['source' => __METHOD__]);
+            WACC()->Log()->error('Person UUID and Organization UUID are required.', ['source' => __CLASS__]);
 
             return false;
         }
@@ -553,7 +553,7 @@ class Organization extends Init
         } catch (RequestException $e) {
             $errorMsg = 'Failed to get person roles for organization.';
             $context = [
-                'source'      => __METHOD__,
+                'source'      => __CLASS__,
                 'person_uuid' => $personUuid,
                 'org_uuid'    => $orgUuid,
                 'original_exception' => $e->getMessage(),
@@ -565,7 +565,7 @@ class Organization extends Init
             WACC()->Log()->error($errorMsg, $context);
         } catch (Exception $e) {
             WACC()->Log()->error('Generic exception while getting person roles for organization.', [
-                'source'      => __METHOD__,
+                'source'      => __CLASS__,
                 'person_uuid' => $personUuid,
                 'org_uuid'    => $orgUuid,
                 'message'     => $e->getMessage(),
@@ -588,7 +588,7 @@ class Organization extends Init
     public function getOrganizationInfoExtended(string $orgUuid, string $lang = 'en'): array|false
     {
         if (empty($orgUuid) || empty($lang)) {
-            WACC()->Log()->error('Organization UUID and language are required.', ['source' => __METHOD__]);
+            WACC()->Log()->error('Organization UUID and language are required.', ['source' => __CLASS__]);
 
             return false;
         }
@@ -665,7 +665,7 @@ class Organization extends Init
         } catch (RequestException $e) {
             $errorMsg = 'Failed to get extended organization info.';
             $context = [
-                'source'      => __METHOD__,
+                'source'      => __CLASS__,
                 'org_uuid'    => $orgUuid,
                 'original_exception' => $e->getMessage(),
             ];
@@ -676,7 +676,7 @@ class Organization extends Init
             WACC()->Log()->error($errorMsg, $context);
         } catch (Exception $e) {
             WACC()->Log()->error('Generic exception while getting extended organization info.', [
-                'source'      => __METHOD__,
+                'source'      => __CLASS__,
                 'org_uuid'    => $orgUuid,
                 'message'     => $e->getMessage(),
             ]);
