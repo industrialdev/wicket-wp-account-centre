@@ -28,7 +28,7 @@ class Touchpoint extends Init
      *
      * @param string $service_id The service ID to filter touchpoints by.
      * @param array  $options    Optional. Array of options. Supported keys: {
-     *                           - 'person_id': The person's UUID. If not provided, the current user's UUID is used.
+     *                           - 'person_uuid': The person's UUID. If not provided, the current user's UUID is used.
      *                           - 'mode': 'upcoming' (default) or 'past'.
      * }
      * @return array|false An array of touchpoints or false on failure.
@@ -41,10 +41,10 @@ class Touchpoint extends Init
             return false;
         }
 
-        $pId = $options['person_id'] ?? $this->Person->getCurrentPersonUuid();
+        $pId = $options['person_uuid'] ?? $this->Person->getCurrentPersonUuid();
 
         if (empty($pId)) {
-            WACC()->Log()->warning('Person ID could not be determined.', ['source' => __CLASS__]);
+            WACC()->Log()->warning('Person UUID could not be determined.', ['source' => __CLASS__]);
 
             return false;
         }
@@ -78,7 +78,7 @@ class Touchpoint extends Init
                 'Touchpoint API request failed.',
                 [
                     'source' => __CLASS__,
-                    'person_id' => $pId,
+                    'person_uuid' => $pId,
                     'service_id' => $serviceId,
                     'status' => $responseCode,
                     'error' => $e->getMessage(),
@@ -91,7 +91,7 @@ class Touchpoint extends Init
                 'An unexpected error occurred while fetching touchpoints.',
                 [
                     'source' => __CLASS__,
-                    'person_id' => $pId,
+                    'person_uuid' => $pId,
                     'service_id' => $serviceId,
                     'exception_class' => get_class($e),
                     'error' => $e->getMessage(),

@@ -126,7 +126,7 @@ class init extends Blocks
         }
 
         $touchpoint_service = WACC()->Mdp()->Touchpoint()->getOrCreateServiceId($service_id);
-        $touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoint_service, null, ['mode' => 'past']);
+        $touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoint_service, ['mode' => 'past']);
 
         $action = get_field('action') ?? 'eBook Fulfillment';
 
