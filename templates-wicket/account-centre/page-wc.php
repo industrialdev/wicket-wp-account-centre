@@ -94,10 +94,15 @@ if ($acc_global_headerbanner_page_id && $acc_global_headerbanner_status) {
 ?>
 
     <div class="woocommerce-wicket--account-centre wicket-acc-page wicket-acc-page-acc <?php echo $wc_wrapper_class; ?>">
+        <?php
+        // Render the page content first
+        the_content();
+?>
+
         <!--<div class="woocommerce-MyAccount-content">-->
         <?php
-        // Render the WooCommerce account content (includes notices and endpoint content)
-        do_action('woocommerce_account_content');
+// Render the WooCommerce account content (includes notices and endpoint content)
+do_action('woocommerce_account_content');
 ?>
         <!--</div>-->
     </div>
