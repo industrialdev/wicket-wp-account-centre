@@ -28,6 +28,14 @@ class CFInitOptions extends WicketAcc
      */
     public function bootCarbonFields()
     {
+        // Fix for Pantheon servers: Define Carbon Fields URL before auto-detection
+        // On Pantheon, the directory_to_url method fails to correctly identify
+        // the plugin's vendor directory, resulting in incorrect asset URLs
+        if (!defined('Carbon_Fields\URL')) {
+            $carbon_fields_url = WICKET_ACC_URL . 'vendor/htmlburger/carbon-fields/';
+            define('Carbon_Fields\URL', $carbon_fields_url);
+        }
+
         // Boot Carbon Fields. The autoloader now handles everything.
         \Carbon_Fields\Carbon_Fields::boot();
     }
