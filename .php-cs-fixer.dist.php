@@ -146,7 +146,6 @@ $finder = PhpCsFixer\Finder::create()
     '.ci',
     'node_modules',
     'vendor',
-    'vendor-prefixed',
     'docs',
     'languages',
     'dist',
