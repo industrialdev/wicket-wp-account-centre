@@ -982,6 +982,8 @@ class WooCommerce extends WicketAcc
             return;
         }
 
+        $this->acc_wc_endpoints = apply_filters('wicket/acc/wc_endpoints', $this->acc_wc_endpoints);
+
         // Use the same endpoint mask as WooCommerce
         $mask = EP_PAGES;
 
