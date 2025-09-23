@@ -45,8 +45,8 @@ define('WICKET_ACC_USER_TEMPLATE_URL', get_stylesheet_directory_uri() . '/templa
 define('WICKET_ACC_TEMPLATES_FOLDER', 'account-centre');
 
 // Composer Autoloader
-if (file_exists(WICKET_ACC_PATH . 'vendor-prefixed/autoload.php')) {
-    require_once WICKET_ACC_PATH . 'vendor-prefixed/autoload.php';
+if (file_exists(WICKET_ACC_PATH . 'vendor/autoload.php')) {
+    require_once WICKET_ACC_PATH . 'vendor/autoload.php';
 }
 
 // Initialize the plugin when all plugins are loaded
