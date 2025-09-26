@@ -29,7 +29,9 @@ class Touchpoint extends Init
      * @param string $service_id The service ID to filter touchpoints by.
      * @param array  $options    Optional. Array of options. Supported keys: {
      *                           - 'person_uuid': The person's UUID. If not provided, the current user's UUID is used.
-     *                           - 'mode': 'upcoming' (default) or 'past'.
+     *                           - 'mode': 'upcoming', 'past', or 'all'. Defaults to 'all'.
+     *                           - 'event_start_date_field': The field key for event start date in API response.
+     *                           - 'event_end_date_field': The field key for event end date in API response.
      * }
      * @return array|false An array of touchpoints or false on failure.
      */
@@ -56,22 +58,24 @@ class Touchpoint extends Init
         }
 
         try {
+            // Get all touchpoints without date filtering - let the API return everything
             $params = [
-                'page[size]' => 20,
+                'page[size]' => 100, // Increased to get more results for local filtering
                 'filter[service_id]' => $serviceId,
             ];
 
-            // Date-based filtering
-            $today = gmdate('Y-m-d');
-            $mode = $options['mode'] ?? 'upcoming';
-            if ($mode === 'past') {
-                $params['filter[end_date]'] = $today;
-            } else {
-                $params['filter[start_date]'] = $today;
-            }
             $response = $client->get("people/{$pId}/touchpoints", ['query' => $params]);
+            $touchpoints = $response['data'] ?? [];
 
-            return $response['data'] ?? [];
+            // If no mode specified, return all results
+            $mode = $options['mode'] ?? 'all';
+            if ($mode === 'all' || empty($touchpoints)) {
+                return $touchpoints;
+            }
+
+            // Filter touchpoints based on mode and date fields
+            return $this->filterTouchpointsByDate($touchpoints, $mode, $options);
+
         } catch (RequestException $e) {
             $responseCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : null;
             WACC()->Log()->error(
@@ -96,6 +100,104 @@ class Touchpoint extends Init
                     'exception_class' => get_class($e),
                     'error' => $e->getMessage(),
                     'trace' => $e->getTraceAsString(),
+                ]
+            );
+
+            return false;
+        }
+    }
+
+    /**
+     * Filter touchpoints by date based on mode and dynamic date field keys.
+     *
+     * @param array  $touchpoints The array of touchpoints to filter.
+     * @param string $mode        The filtering mode: 'upcoming' or 'past'.
+     * @param array  $options     Options containing date field keys.
+     * @return array Filtered touchpoints array.
+     */
+    private function filterTouchpointsByDate(array $touchpoints, string $mode, array $options): array
+    {
+        $eventStartField = $options['event_start_date_field'] ?? 'event_start';
+        $eventEndField = $options['event_end_date_field'] ?? 'event_end';
+        $currentTimestamp = time();
+
+        return array_filter($touchpoints, function ($touchpoint) use ($mode, $eventStartField, $eventEndField, $currentTimestamp) {
+            // Look for date in touchpoint attributes data
+            $data = $touchpoint['attributes']['data'] ?? [];
+
+            // Get start and end dates from the touchpoint data
+            $startDate = $data[$eventStartField] ?? null;
+            $endDate = $data[$eventEndField] ?? null;
+
+            // If no start date is available, skip this touchpoint
+            if (empty($startDate)) {
+                return false;
+            }
+
+            // Parse the date and convert to timestamp
+            $startTimestamp = $this->parseEventDate($startDate);
+            if ($startTimestamp === false) {
+                // If we can't parse the date, skip this touchpoint
+                return false;
+            }
+
+            // For events with end dates, use end date for comparison if available
+            $comparisonTimestamp = $startTimestamp;
+            if (!empty($endDate)) {
+                $endTimestamp = $this->parseEventDate($endDate);
+                if ($endTimestamp !== false) {
+                    // Use end date for comparison to determine if event is truly past
+                    $comparisonTimestamp = $endTimestamp;
+                }
+            }
+
+            // Filter based on mode
+            if ($mode === 'upcoming') {
+                return $comparisonTimestamp > $currentTimestamp;
+            } elseif ($mode === 'past') {
+                return $comparisonTimestamp < $currentTimestamp;
+            }
+
+            // Default: return all (shouldn't reach here)
+            return true;
+        });
+    }
+
+    /**
+     * Parse event date from various formats into a Unix timestamp.
+     *
+     * Handles different date formats from various services:
+     * - Pheedloop: "2025-10-10T15:00:00"
+     * - Events Calendar: "2025-01-21 9:00 AM EST"
+     * - Cvent: "2024-12-16T18:00:00.000Z"
+     *
+     * @param string $dateString The date string to parse.
+     * @return int|false Unix timestamp or false if parsing fails.
+     */
+    private function parseEventDate(string $dateString): int|false
+    {
+        if (empty($dateString)) {
+            return false;
+        }
+
+        // Try to parse using strtotime first (handles most formats)
+        $timestamp = strtotime($dateString);
+        if ($timestamp !== false) {
+            return $timestamp;
+        }
+
+        // If strtotime fails, try DateTime for more complex formats
+        try {
+            $dateTime = new \DateTime($dateString);
+
+            return $dateTime->getTimestamp();
+        } catch (Exception $e) {
+            WACC()->Log()->warning(
+                'Failed to parse event date.',
+                [
+                    'source' => __CLASS__,
+                    'date_string' => $dateString,
+                    'error' => $e->getMessage(),
                 ]
             );
 

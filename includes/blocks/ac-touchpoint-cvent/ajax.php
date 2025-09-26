@@ -45,11 +45,16 @@ class ajax extends init
         $offset = absint($_POST['offset']);
         $display_type = sanitize_text_field($_POST['type']);
 
-        $cvent_results = $this->get_touchpoints_results('Aptify Conversion');
+        // Get touchpoints data with Cvent-specific date field keys
+        $cvent_results = $this->get_touchpoints_results('Cvent', [
+            'mode' => $display_type,
+            'event_start_date_field' => 'start_time',
+            'event_end_date_field' => 'end_time',
+        ]);
 
         ob_start();
         $this->display_touchpoints(
-            $cvent_results['data'],
+            $cvent_results,
             $display_type,
             $num_results,
             true,

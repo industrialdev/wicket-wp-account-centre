@@ -69,8 +69,16 @@ class init extends Blocks
         $counter = 0;
         $display_type = 'upcoming';
 
-        $touchpoints_upcoming = $this->get_touchpoints_results('Events Calendar', ['mode' => 'upcoming']);
-        $touchpoints_past = $this->get_touchpoints_results('Events Calendar', ['mode' => 'past']);
+        $touchpoints_upcoming = $this->get_touchpoints_results('Events Calendar', [
+            'mode' => 'upcoming',
+            'event_start_date_field' => 'start_date',
+            'event_end_date_field' => 'end_date',
+        ]);
+        $touchpoints_past = $this->get_touchpoints_results('Events Calendar', [
+            'mode' => 'past',
+            'event_start_date_field' => 'start_date',
+            'event_end_date_field' => 'end_date',
+        ]);
 
         if (empty($registered_action)) {
             $registered_action = [

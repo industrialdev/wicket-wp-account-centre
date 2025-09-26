@@ -46,8 +46,12 @@ class ajax extends init
         $display_type = sanitize_text_field($_POST['type']);
         $service_id = sanitize_text_field($_POST['service_id']);
 
-        // Get touchpoints data
-        $pheedloop_results = $this->get_touchpoints_results($service_id, ['mode' => $display_type]);
+        // Get touchpoints data with Pheedloop-specific date field keys
+        $pheedloop_results = $this->get_touchpoints_results($service_id, [
+            'mode' => $display_type,
+            'event_start_date_field' => 'event_start',
+            'event_end_date_field' => 'event_end',
+        ]);
 
         ob_start();
         $this->display_touchpoints(

@@ -51,6 +51,9 @@ class ajax extends init
         // Get touchpoints data
         $touchpoint_data = maybe_unserialize(base64_decode($touchpoint_data_input));
 
+        // Note: The Event Calendar block pre-filters data using the new Touchpoint filtering system
+        // with start_date and end_date field keys, so this AJAX handler works with already-filtered data
+
         // We will get $this->display_touchpoints results and return it as html
         // Ideally, we should return the results as json, but... i don't know if Wicket has any standar way to render json results on the front-end
         // Even more ideally, we should be using HTMX :blink: :blink: :blink: :blinkitty: :blink: :blink: :blink:

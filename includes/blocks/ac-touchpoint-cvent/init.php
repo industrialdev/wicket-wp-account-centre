@@ -66,9 +66,7 @@ class init extends Blocks
         $counter = 0;
         $display_type = 'upcoming';
 
-        $touchpoints_results = $this->get_touchpoints_results('Cvent');
-
-        // Get query vars
+        // Get query vars first, before calling get_touchpoints_results
         $display = isset($_REQUEST['show']) ? sanitize_text_field($_REQUEST['show']) : $display;
         $num_results = isset($_REQUEST['num_results']) ? absint($_REQUEST['num_results']) : $num_results;
 
@@ -86,6 +84,13 @@ class init extends Blocks
         if (!in_array($display, $valid_display)) {
             $display = 'upcoming';
         }
+
+        // Now get touchpoints with the processed display mode
+        $touchpoints_results = $this->get_touchpoints_results('Cvent', [
+            'mode' => $display,
+            'event_start_date_field' => 'start_time',
+            'event_end_date_field' => 'end_time',
+        ]);
 
         // Switch link
         $display_other = $display == 'upcoming' ? 'past' : 'upcoming';
@@ -132,10 +137,13 @@ class init extends Blocks
      * Get touchpoints results.
      *
      * $service_id - Touchpoint service id
+     * $options - Optional array of options for filtering (e.g., ['mode' => 'upcoming'|'past'])
      *
+     * @param string $service_id Touchpoint service id
+     * @param array  $options    Optional. Array of options for filtering
      * @return mixed Array of touchpoints or false on error
      */
-    protected function get_touchpoints_results($service_id = '')
+    protected function get_touchpoints_results($service_id = '', $options = [])
     {
         if (empty($service_id)) {
             return false;
@@ -144,7 +152,7 @@ class init extends Blocks
         // Debug with person: 6d199632-1bb8-4558-9a7e-b00c824590de
 
         $touchpoint_service = WACC()->Mdp()->Touchpoint()->getOrCreateServiceId($service_id);
-        $touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoint_service);
+        $touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoint_service, $options);
 
         return $touchpoints;
     }
@@ -212,36 +220,13 @@ class init extends Blocks
      * @param string $display_type Touchpoint display type: upcoming, past, all
      *
      * @return array
+     * @deprecated This method is no longer needed as filtering is handled in the Touchpoint class
      */
     public static function filter_touchpoint_data($touchpoint_data = [], $display_type = 'upcoming')
     {
-        if (empty($touchpoint_data)) {
-            return $touchpoint_data;
-        }
-
-        // Get current date as: 2024-09-19T14:00:00.000Z
-        $current_date = date('Y-m-d\TH:i:s.000Z');
-
-        // Check inside every touchpoint for attributes->data->StartDate, and compare with current date. If display_type = upcoming, return an array of touchpoints that are greater than current date. If display_type = past, return an array of touchpoints that are less than current date.
-        $filtered_touchpoint_data = array_filter($touchpoint_data, function ($touchpoint) use ($current_date, $display_type) {
-            if (isset($touchpoint['attributes']['data']['start_time'])) {
-                $start_date = $touchpoint['attributes']['data']['start_time'];
-
-                // Check if start date is greater than current date
-                if (strtotime($start_date) > strtotime($current_date)) {
-                    return $display_type == 'upcoming';
-                }
-
-                // Check if start date is less than current date
-                if (strtotime($start_date) < strtotime($current_date)) {
-                    return $display_type == 'past';
-                }
-            }
-
-            return false;
-        });
-
-        return $filtered_touchpoint_data;
+        // Filtering is now handled in the Touchpoint class based on dynamic date field keys
+        // This method is kept for backward compatibility but just returns the data as-is
+        return $touchpoint_data;
     }
 
     /**

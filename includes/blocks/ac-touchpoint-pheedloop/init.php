@@ -87,7 +87,11 @@ class init extends Blocks
         }
 
         // Now get touchpoints with the processed display mode
-        $touchpoints_results = $this->get_touchpoints_results($service_id, ['mode' => $display]);
+        $touchpoints_results = $this->get_touchpoints_results($service_id, [
+            'mode' => $display,
+            'event_start_date_field' => 'event_start',
+            'event_end_date_field' => 'event_end',
+        ]);
 
         // Switch link
         $display_other = $display == 'upcoming' ? 'past' : 'upcoming';
@@ -218,36 +222,13 @@ class init extends Blocks
      * @param string $display_type Touchpoint display type: upcoming, past, all
      *
      * @return array
+     * @deprecated This method is no longer needed as filtering is handled in the Touchpoint class
      */
     public static function filter_touchpoint_data($touchpoint_data = [], $display_type = 'upcoming')
     {
-        if (empty($touchpoint_data)) {
-            return $touchpoint_data;
-        }
-
-        // Get current date as: 2024-09-19T14:00:00.000Z
-        $current_date = date('Y-m-d\TH:i:s.000Z');
-
-        // Check inside every touchpoint for attributes->data->StartDate, and compare with current date. If display_type = upcoming, return an array of touchpoints that are greater than current date. If display_type = past, return an array of touchpoints that are less than current date.
-        $filtered_touchpoint_data = array_filter($touchpoint_data, function ($touchpoint) use ($current_date, $display_type) {
-            if (isset($touchpoint['attributes']['data']['event_start'])) {
-                $start_date = $touchpoint['attributes']['data']['event_start'];
-
-                // Check if start date is greater than current date
-                if (strtotime($start_date) > strtotime($current_date)) {
-                    return $display_type == 'upcoming';
-                }
-
-                // Check if start date is less than current date
-                if (strtotime($start_date) < strtotime($current_date)) {
-                    return $display_type == 'past';
-                }
-            }
-
-            return false;
-        });
-
-        return $filtered_touchpoint_data;
+        // Filtering is now handled in the Touchpoint class based on dynamic date field keys
+        // This method is kept for backward compatibility but just returns the data as-is
+        return $touchpoint_data;
     }
 
     /**
