@@ -87,6 +87,8 @@ class init extends Blocks
 
         $switch_link = esc_url($switch_link);
 
+        // Debug logging removed to avoid dumping touchpoint payloads
+
         $args = [
             'block_name'          => 'Touchpoint VitalSource',
             'block_description'   => 'This block displays registered data for VitalSource on the front-end.',
@@ -126,12 +128,14 @@ class init extends Blocks
         }
 
         $touchpoint_service = WACC()->Mdp()->Touchpoint()->getOrCreateServiceId($service_id);
-        $touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoint_service, ['mode' => 'past']);
+        $touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($touchpoint_service, ['source' => 'vitalsource', 'mode' => 'all']);
 
         $action = get_field('action') ?? 'eBook Fulfillment';
 
         // Filter touchpoints by action
         $fitered_touchpoints = self::filter_touchpoints_by_action($touchpoints, $action);
+
+        // Debug logging removed to avoid dumping touchpoint payloads
 
         return $fitered_touchpoints;
     }
@@ -201,77 +205,77 @@ class init extends Blocks
     public static function load_more_results($touchpoint_data = [], $num_results = 5, $total_results = 0, $offset = 0)
     {
         ?>
-		<div x-data="ajaxFormHandler()">
-			<div class="wicket-ac-touchpoint__vitalsource-results container" x-html="responseMessage">
-			</div>
+        <div x-data="ajaxFormHandler()">
+            <div class="wicket-ac-touchpoint__vitalsource-results container" x-html="responseMessage">
+            </div>
 
-			<div class="flex load-more-container">
-				<form id="form" action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>" method="post"
-					@submit.prevent="submitForm">
-					<input type="hidden" name="action" value="wicket_ac_touchpoint_vitalsource_results">
-					<input type="hidden" name="num_results" value="<?php echo $num_results; ?>">
-					<input type="hidden" name="total_results" value="<?php echo $total_results; ?>">
-					<input type="hidden" name="offset" value="<?php echo $offset + $num_results; ?>">
-					<?php wp_nonce_field('wicket_ac_touchpoint_vitalsource_results'); ?>
+            <div class="flex load-more-container">
+                <form id="form" action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>" method="post"
+                    @submit.prevent="submitForm">
+                    <input type="hidden" name="action" value="wicket_ac_touchpoint_vitalsource_results">
+                    <input type="hidden" name="num_results" value="<?php echo $num_results; ?>">
+                    <input type="hidden" name="total_results" value="<?php echo $total_results; ?>">
+                    <input type="hidden" name="offset" value="<?php echo $offset + $num_results; ?>">
+                    <?php wp_nonce_field('wicket_ac_touchpoint_vitalsource_results'); ?>
 
-					<div x-show="loading" class="wicket-ac-touchpoint__loader flex justify-center items-center self-center">
-						<i class="fas fa-spinner fa-spin"></i>
-					</div>
+                    <div x-show="loading" class="wicket-ac-touchpoint__loader flex justify-center items-center self-center">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
 
-					<button type="submit"
-						class="button button--secondary show-more flex items-center font-bold text-color-dark-100 my-4"
-						x-show="!loading">
-						<span class="text"><?php esc_html_e('Show More', 'wicket-acc'); ?></span>
-					</button>
-				</form>
-			</div>
-		</div>
+                    <button type="submit"
+                        class="button button--secondary show-more flex items-center font-bold text-color-dark-100 my-4"
+                        x-show="!loading">
+                        <span class="text"><?php esc_html_e('Show More', 'wicket-acc'); ?></span>
+                    </button>
+                </form>
+            </div>
+        </div>
 
-		<script>
-			function ajaxFormHandler() {
-				return {
-					loading: false,
-					responseMessage: '',
-					submitForm(event) {
-						this.loading = true;
-						const form = document.getElementById('form');
-						const formData = new FormData(form);
+        <script>
+            function ajaxFormHandler() {
+                return {
+                    loading: false,
+                    responseMessage: '',
+                    submitForm(event) {
+                        this.loading = true;
+                        const form = document.getElementById('form');
+                        const formData = new FormData(form);
 
-						fetch(woocommerce_params.ajax_url, {
-							method: 'POST',
-							body: formData,
-						})
-							.then(response => response.text())
-							.then(data => {
-								this.loading = false;
-								if (data) {
-									this.responseMessage += data;
-									// Find the events list and load more container
-									const loadMoreContainer = document.querySelector('.load-more-container');
+                        fetch(woocommerce_params.ajax_url, {
+                            method: 'POST',
+                            body: formData,
+                        })
+                            .then(response => response.text())
+                            .then(data => {
+                                this.loading = false;
+                                if (data) {
+                                    this.responseMessage += data;
+                                    // Find the events list and load more container
+                                    const loadMoreContainer = document.querySelector('.load-more-container');
 
-									// Update the offset for the next request
-									const offset = parseInt(form.querySelector('[name="offset"]').value);
-									const numResults = parseInt(form.querySelector('[name="num_results"]').value);
-									const totalResults = parseInt(form.querySelector('[name="total_results"]').value);
+                                    // Update the offset for the next request
+                                    const offset = parseInt(form.querySelector('[name="offset"]').value);
+                                    const numResults = parseInt(form.querySelector('[name="num_results"]').value);
+                                    const totalResults = parseInt(form.querySelector('[name="total_results"]').value);
 
-									// Update offset for next request
-									form.querySelector('[name="offset"]').value = offset + numResults;
+                                    // Update offset for next request
+                                    form.querySelector('[name="offset"]').value = offset + numResults;
 
-									// Hide "Show More" if we've loaded all results
-									if (offset + numResults >= totalResults) {
-										loadMoreContainer.style.display = 'none';
-									}
-								}
-							})
-							.catch(error => {
-								this.loading = false;
-								console.error('Error:', error);
-							});
-					}
-				};
-			}
-		</script>
-		<?php
+                                    // Hide "Show More" if we've loaded all results
+                                    if (offset + numResults >= totalResults) {
+                                        loadMoreContainer.style.display = 'none';
+                                    }
+                                }
+                            })
+                            .catch(error => {
+                                this.loading = false;
+                                console.error('Error:', error);
+                            });
+                    }
+                };
+            }
+        </script>
+        <?php
     }
 
     /**

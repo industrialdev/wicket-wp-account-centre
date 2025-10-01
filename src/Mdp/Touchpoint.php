@@ -29,6 +29,7 @@ class Touchpoint extends Init
      * @param string $service_id The service ID to filter touchpoints by.
      * @param array  $options    Optional. Array of options. Supported keys: {
      *                           - 'person_uuid': The person's UUID. If not provided, the current user's UUID is used.
+     *                           - 'source': Optional source identifier for custom logic. Default to empty string.
      *                           - 'mode': 'upcoming', 'past', or 'all'. Defaults to 'all'.
      *                           - 'event_start_date_field': The field key for event start date in API response.
      *                           - 'event_end_date_field': The field key for event end date in API response.
@@ -43,9 +44,18 @@ class Touchpoint extends Init
             return false;
         }
 
-        $pId = $options['person_uuid'] ?? $this->Person->getCurrentPersonUuid();
+        // Set the default for optional params
+        $options = wp_parse_args($options, [
+            'person_uuid'            => $this->Person->getCurrentPersonUuid(),
+            'source'                 => '', // Optional source identifier for custom logic
+            'mode'                   => 'all', // 'upcoming', 'past', or 'all'
+            'event_start_date_field' => 'event_start', // Default field key for event start date
+            'event_end_date_field'   => 'event_end',   // Default field key for event end date
+        ]);
 
-        if (empty($pId)) {
+        $personUuid = $options['person_uuid'];
+
+        if (empty($personUuid)) {
             WACC()->Log()->warning('Person UUID could not be determined.', ['source' => __CLASS__]);
 
             return false;
@@ -64,17 +74,21 @@ class Touchpoint extends Init
                 'filter[service_id]' => $serviceId,
             ];
 
-            $response = $client->get("people/{$pId}/touchpoints", ['query' => $params]);
+            $response = $client->get("people/{$personUuid}/touchpoints", ['query' => $params]);
             $touchpoints = $response['data'] ?? [];
 
             // If no mode specified, return all results
-            $mode = $options['mode'] ?? 'all';
-            if ($mode === 'all' || empty($touchpoints)) {
+            if ($options['mode'] === 'all' || empty($touchpoints)) {
                 return $touchpoints;
             }
 
             // Filter touchpoints based on mode and date fields
-            return $this->filterTouchpointsByDate($touchpoints, $mode, $options);
+            $mappedOptions = $this->mapSourceFieldNames($options);
+            $filteredTouchpoints = $this->filterTouchpointsByDate($touchpoints, $options['mode'], $mappedOptions);
+
+            // No debug logging: return filtered touchpoints
+
+            return $filteredTouchpoints;
 
         } catch (RequestException $e) {
             $responseCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : null;
@@ -82,7 +96,7 @@ class Touchpoint extends Init
                 'Touchpoint API request failed.',
                 [
                     'source' => __CLASS__,
-                    'person_uuid' => $pId,
+                    'person_uuid' => $personUuid,
                     'service_id' => $serviceId,
                     'status' => $responseCode,
                     'error' => $e->getMessage(),
@@ -95,7 +109,7 @@ class Touchpoint extends Init
                 'An unexpected error occurred while fetching touchpoints.',
                 [
                     'source' => __CLASS__,
-                    'person_uuid' => $pId,
+                    'person_uuid' => $personUuid,
                     'service_id' => $serviceId,
                     'exception_class' => get_class($e),
                     'error' => $e->getMessage(),
@@ -112,11 +126,18 @@ class Touchpoint extends Init
      *
      * @param array  $touchpoints The array of touchpoints to filter.
      * @param string $mode        The filtering mode: 'upcoming' or 'past'.
-     * @param array  $options     Options containing date field keys.
+     * @param array  $options     Options containing date field keys and other settings.
      * @return array Filtered touchpoints array.
      */
     private function filterTouchpointsByDate(array $touchpoints, string $mode, array $options): array
     {
+        $options = wp_parse_args($options, [
+            'event_start_date_field' => 'event_start',
+            'event_end_date_field'   => 'event_end',
+            'source'                 => '',
+            'mode'                   => 'all',
+        ]);
+
         $eventStartField = $options['event_start_date_field'] ?? 'event_start';
         $eventEndField = $options['event_end_date_field'] ?? 'event_end';
         $currentTimestamp = time();
@@ -419,6 +440,68 @@ class Touchpoint extends Init
             );
 
             return null;
+        }
+    }
+
+    /**
+     * Map source-specific field names to standard field names for filtering.
+     *
+     * This method provides backwards compatibility by dynamically setting the correct
+     * field names based on the source, without modifying existing filtering logic.
+     *
+     * @param array $options The original options array.
+     * @return array Modified options array with mapped field names.
+     */
+    private function mapSourceFieldNames(array $options): array
+    {
+        $source = $options['source'] ?? '';
+
+        // If no source specified, return options unchanged (use explicit fields or defaults)
+        if (empty($source)) {
+            return $options;
+        }
+
+        // Map field names based on source
+        switch (strtolower($source)) {
+            case 'vital':
+            case 'vitalsource':
+                // VitalSource uses 'end_date' or 'ebook_end' for end dates
+                // Use 'created_at' as start date since eBooks don't have a real start date
+                $mappedOptions = $options;
+                $mappedOptions['event_start_date_field'] = 'created_at';
+                $mappedOptions['event_end_date_field'] = 'end_date'; // Fallback to 'end_date'
+
+                // mapping applied for vitalsource
+
+                return $mappedOptions;
+
+            case 'eventcalendar':
+            case 'eventscalendar':
+            case 'event_calendar':
+            case 'events_calendar':
+                // Event Calendar uses 'start_date' and 'end_date'
+                $mappedOptions = $options;
+                $mappedOptions['event_start_date_field'] = 'start_date';
+                $mappedOptions['event_end_date_field'] = 'end_date';
+
+                // mapping applied for eventcalendar
+
+                return $mappedOptions;
+
+            case 'pheedloop':
+                // Pheedloop uses 'event_start' and 'event_end' (already defaults)
+                // pheedloop uses defaults
+                return $options;
+
+            case 'cvent':
+                // Cvent uses 'event_start' and 'event_end' (already defaults)
+                // cvent uses defaults
+                return $options;
+
+            default:
+                // Keep defaults for unknown sources
+                // unknown source: keep defaults
+                return $options;
         }
     }
 }
