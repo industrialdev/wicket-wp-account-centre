@@ -437,6 +437,9 @@ function wicket_multiple_products_use_tier_reference($product_id)
     $tier_obj = Wicket_Memberships\Membership_Tier::get_tier_by_product_id($product_id);
     if (!empty($tier_obj)) {
         $membership_tier_slug = $tier_obj->get_membership_tier_slug();
+        if(empty($membership_tier_slug)) {
+            return [$product_id, false];
+        }
         [$parent_product_id, $variation_id] = wicket_get_product_by_tier_reference_with_slug($membership_tier_slug);
     }
     if (!empty($parent_product_id)) {
