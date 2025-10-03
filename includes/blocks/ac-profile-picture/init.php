@@ -239,6 +239,15 @@ class init extends Blocks
             return false;
         }
 
+
+        $profile_photo_url = WACC()->Profile()->getProfilePicture();
+        if ($profile_photo_url) {
+            /**
+             * @var string|null $profile_image_url URL of the updated profile image, or null if not set.
+             */
+            do_action('wicket/acc/profile/edit/profile_image_updated', $profile_photo_url);
+        }
+        
         return true;
     }
 
@@ -278,6 +287,11 @@ class init extends Blocks
                 wp_delete_file($file_path);
             }
         }
+
+        /**
+         * @var string|null $profile_image_url URL of the updated profile image, or null if not set.
+         */
+        do_action('wicket/acc/profile/edit/profile_image_updated', null);
 
         return true;
     }

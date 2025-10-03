@@ -207,6 +207,14 @@ Users must have at least one of these roles to access the block:
 - Save button with loading state
 - Success/error notifications
 
+## Events & Hooks
+
+### Actions
+```php
+// $profile_image_url: (string|null) The URL of the updated profile image, or null if not set.
+do_action('wicket/acc/profile/edit/profile_image_updated', $profile_image_url);
+```
+
 # Legacy Functions to Refactored
 
   - Retrieve organization data for editing
