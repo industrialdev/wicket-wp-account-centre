@@ -40,8 +40,11 @@ class init extends Blocks
         // Ensure we have a valid max size (minimum 1MB)
         $this->max_size = max(1, $this->max_size);
 
-        $org_id = (isset($_GET['org_id'])) ? $_GET['org_id'] : '';
-        $child_org_id = (isset($_GET['child_org_id'])) ? $_GET['child_org_id'] : '';
+        $org_id = isset($_GET['org_uuid']) ? sanitize_text_field($_GET['org_uuid']) : '';
+        if (empty($org_id) && isset($_GET['org_id'])) {
+            $org_id = sanitize_text_field($_GET['org_id']);
+        }
+        $child_org_id = isset($_GET['child_org_id']) ? sanitize_text_field($_GET['child_org_id']) : '';
 
         // Child organization compatibility
         if (!empty($child_org_id)) {

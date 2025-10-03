@@ -113,9 +113,16 @@ class Group extends Init
                 'include' => 'group',
             ];
 
-            // Arg: org_id
-            if (!empty($args['org_id'])) {
-                $queryParams['filter']['group_organization_uuid_eq'] = $args['org_id'];
+            // Args: org_uuid preferred, fall back to org_id
+            $orgFilter = '';
+            if (!empty($args['org_uuid'])) {
+                $orgFilter = $args['org_uuid'];
+            } elseif (!empty($args['org_id'])) {
+                $orgFilter = $args['org_id'];
+            }
+
+            if (!empty($orgFilter)) {
+                $queryParams['filter']['group_organization_uuid_eq'] = sanitize_text_field($orgFilter);
             }
 
             // Arg: search_query

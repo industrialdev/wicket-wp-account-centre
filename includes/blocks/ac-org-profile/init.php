@@ -47,8 +47,11 @@ class init extends Blocks
          * if there's more than 1, we list them for the user to choose
          * which org they want to see
         ------------------------------------------------------------------*/
-        $org_id = (isset($_GET['org_id'])) ? $_GET['org_id'] : '';
-        $child_org_id = (isset($_GET['child_org_id'])) ? $_GET['child_org_id'] : '';
+        $org_id = isset($_GET['org_uuid']) ? sanitize_text_field($_GET['org_uuid']) : '';
+        if (empty($org_id) && isset($_GET['org_id'])) {
+            $org_id = sanitize_text_field($_GET['org_id']);
+        }
+        $child_org_id = isset($_GET['child_org_id']) ? sanitize_text_field($_GET['child_org_id']) : '';
 
         // Child organization compatibility
         if (!empty($child_org_id)) {

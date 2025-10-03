@@ -33,7 +33,10 @@ class Shortcodes extends WicketAcc
             return '<p>[Organization Selector]</p>';
         }
 
-        $org_uuid = $_GET['org_id'] ?? '';
+        $org_uuid = isset($_GET['org_uuid']) ? sanitize_text_field($_GET['org_uuid']) : '';
+        if (empty($org_uuid) && isset($_GET['org_id'])) {
+            $org_uuid = sanitize_text_field($_GET['org_id']);
+        }
 
         $lang = WACC()->Language()->getCurrentLanguage();
 

@@ -81,7 +81,10 @@ if ($acc_global_headerbanner_page_id && $acc_global_headerbanner_status) {
         <?php
     // ACC page
     // Do we have an org_id in URL?
-    $org_id = $_REQUEST['org_id'] ?? null;
+    $org_id = isset($_REQUEST['org_uuid']) ? sanitize_text_field($_REQUEST['org_uuid']) : null;
+if (empty($org_id) && isset($_REQUEST['org_id'])) {
+    $org_id = sanitize_text_field($_REQUEST['org_id']);
+}
 
 if (empty($org_id) || $org_id === null) {
     echo do_shortcode('[org-selector]');

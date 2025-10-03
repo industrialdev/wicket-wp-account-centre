@@ -52,8 +52,10 @@ class init extends Blocks
             return;
         }
 
-        if (empty($acf_org_uuid) && isset($_GET['org_id'])) {
-            $acf_org_uuid = $_GET['org_id'];
+        if (isset($_GET['org_uuid'])) {
+            $acf_org_uuid = sanitize_text_field($_GET['org_uuid']);
+        } elseif (empty($acf_org_uuid) && isset($_GET['org_id'])) {
+            $acf_org_uuid = sanitize_text_field($_GET['org_id']);
         }
 
         // Child organization compatibility. Needs to be after the check for an org_id

@@ -58,7 +58,7 @@ The Organization Profile View block displays comprehensive organization informat
  */
 public static function getActiveOrganizationUuid(): ?string
 {
-    $orgUuid = sanitize_text_field($_GET['org_id'] ?? '');
+    $orgUuid = sanitize_text_field($_GET['org_uuid'] ?? '');
     $childOrgUuid = sanitize_text_field($_GET['child_org_id'] ?? '');
 
     return !empty($childOrgUuid) ? $childOrgUuid : $orgUuid;

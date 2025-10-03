@@ -241,7 +241,10 @@ class Roles extends Init
 
         $personCurrentRoles = $args['person_current_roles'] ?? '';
         $newRoles = $args['roles'] ?? '';
-        $orgId = isset($args['org_id']) ? sanitize_text_field($args['org_id']) : '';
+        $orgId = isset($args['org_uuid']) ? sanitize_text_field($args['org_uuid']) : '';
+        if (empty($orgId) && isset($args['org_id'])) {
+            $orgId = sanitize_text_field($args['org_id']);
+        }
         $updateRolePersonUuid = isset($args['update_role_person_uuid']) ? sanitize_text_field($args['update_role_person_uuid']) : '';
         $personUuid = isset($args['person_uuid']) ? sanitize_text_field($args['person_uuid']) : '';
 
