@@ -23,6 +23,7 @@ use PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
 use PhpCsFixer\FixerDefinition\CodeSample;
 use PhpCsFixer\FixerDefinition\FixerDefinition;
 use PhpCsFixer\FixerDefinition\FixerDefinitionInterface;
+use PhpCsFixer\Future;
 use PhpCsFixer\Tokenizer\CT;
 use PhpCsFixer\Tokenizer\FCT;
 use PhpCsFixer\Tokenizer\Token;
@@ -128,7 +129,11 @@ final class NewWithParenthesesFixer extends AbstractFixer implements Configurabl
         return $tokens->isTokenKindFound(\T_NEW);
     }
 
-    /** @protected */
+    /**
+     * @protected
+     *
+     * @TODO 4.0 move visibility from annotation to code when `NewWithBracesFixer` is removed
+     */
     public function createConfigurationDefinition(): FixerConfigurationResolverInterface
     {
         return new FixerConfigurationResolver([
@@ -138,7 +143,7 @@ final class NewWithParenthesesFixer extends AbstractFixer implements Configurabl
                 ->getOption(),
             (new FixerOptionBuilder('anonymous_class', 'Whether anonymous classes should be followed by parentheses.'))
                 ->setAllowedTypes(['bool'])
-                ->setDefault(true) // @TODO 4.0: set to `false`
+                ->setDefault(Future::getV4OrV3(false, true))
                 ->getOption(),
         ]);
     }

@@ -12,25 +12,21 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace PhpCsFixer\RuleSet;
+namespace PhpCsFixer\RuleSet\Sets;
+
+use PhpCsFixer\RuleSet\AbstractMigrationSetDefinition;
 
 /**
  * @internal
  *
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise.
  */
-interface RuleSetDescriptionInterface
+final class PHP5x4MigrationSet extends AbstractMigrationSetDefinition
 {
-    public function getDescription(): string;
-
-    public function getName(): string;
-
-    /**
-     * Get all rules from rules set.
-     *
-     * @return array<string, array<string, mixed>|bool>
-     */
-    public function getRules(): array;
-
-    public function isRisky(): bool;
+    public function getRules(): array
+    {
+        return [
+            'array_syntax' => true,
+        ];
+    }
 }

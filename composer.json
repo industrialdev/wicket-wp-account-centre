@@ -35,8 +35,7 @@
     },
     "autoload": {
         "psr-4": {
-            "WicketAcc\\": "src/",
-            "WicketAcc\\Admin\\": "src/admin/"
+            "WicketAcc\\": "src/"
         }
     },
     "scripts": {
