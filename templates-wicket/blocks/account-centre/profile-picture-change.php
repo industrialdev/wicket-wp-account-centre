@@ -38,7 +38,7 @@ defined('ABSPATH') || exit;
     </div>
     <form name="wicket-acc-profile-picture-form" method="post" enctype="multipart/form-data">
         <div class="guidance text-sm">
-            <?php esc_html_e('Upload a profile picture to personalize your profile. The image will be cropped to a square.', 'wicket-acc'); ?>
+            <?php esc_html_e('Upload a profile picture to personalize your profile.', 'wicket-acc'); ?>
             <?php esc_html_e('Max upload size:', 'wicket-acc'); ?> <?php echo $args['pp_max_size']; ?> <?php esc_html_e('MB', 'wicket-acc'); ?>
         </div>
         <div class="buttons">
