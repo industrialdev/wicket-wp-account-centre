@@ -209,6 +209,8 @@ class init extends Blocks
                                         </p>
                                     <?php endif; ?>
 
+                                    <?php do_action('wicket/acc/block/welcome/after_member_ids', $person, $membership); ?>
+
                                     <?php if (
                                         $member_since &&
                                         !empty($membership['starts_at']) &&
