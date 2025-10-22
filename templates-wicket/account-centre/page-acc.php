@@ -40,6 +40,7 @@ $acc_global_headerbanner_page_id = WACC()->getGlobalHeaderBannerPageId();
 $acc_global_headerbanner_status = WACC()->getOption('acc_global-headerbanner', false);
 $current_page_id = get_the_ID();
 $default_language = wicket_get_current_language();
+$wc_wrapper_class = '';
 
 if (empty($acc_sidebar_location)) {
     $acc_sidebar_location = 'right';
