@@ -243,7 +243,7 @@ class init extends Blocks
                         </div>
                     <?php } else { ?>
                         <p class="wicket-welcome-pending-membership">
-                            <?php echo __('Pending Membership', 'wicket-acc'); ?>
+                            <?php echo __('Non-Member', 'wicket-acc'); ?>
                         </p>
                     <?php } ?>
 

@@ -239,22 +239,22 @@ class init extends Blocks
                             continue;
                         }
                         foreach ($renewal_data as $membership) {
-                          $skip_record = apply_filters(
-                              'wicket/acc/block/ac-callout/renewal_skip_record',
-                              false,
-                              $membership['membership']
-                          );
-                          /*
-                            add_filter('wicket/acc/block/ac-callout/renewal_skip_record', function($skip, $membership) {
-                                //should  this membership callout be hidden? default to show (false)
-                                //Example: membership_tier_post_id = $membership['meta']['membership_tier_post_id']
-                                return $skip;
-                            }, 10, 2);
-                          */
-                          if ($skip_record) {
-                              continue;
-                          }
-                          if (!empty($_ENV['WICKET_MEMBERSHIPS_DEBUG_ACC']) && $renewal_type == 'debug') {
+                            $skip_record = apply_filters(
+                                'wicket/acc/block/ac-callout/renewal_skip_record',
+                                false,
+                                $membership['membership']
+                            );
+                            /*
+                              add_filter('wicket/acc/block/ac-callout/renewal_skip_record', function($skip, $membership) {
+                                  //should  this membership callout be hidden? default to show (false)
+                                  //Example: membership_tier_post_id = $membership['meta']['membership_tier_post_id']
+                                  return $skip;
+                              }, 10, 2);
+                            */
+                            if ($skip_record) {
+                                continue;
+                            }
+                            if (!empty($_ENV['WICKET_MEMBERSHIPS_DEBUG_ACC']) && $renewal_type == 'debug') {
                                 if ($membership['membership']['ends_in_days'] > 0) {
                                     echo '<pre style="font-size:10px;">';
                                     echo 'DEBUG:<br>';
