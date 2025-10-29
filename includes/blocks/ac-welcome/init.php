@@ -98,6 +98,13 @@ class init extends Blocks
                     </p>
 
                     <?php if ($active_memberships) { ?>
+                        <?php if ($display_mdp_id): ?>
+                            <p class="wicket-welcome-member-mdp-id mb-2">
+                                <span><?php echo __('ID:', 'wicket-acc'); ?></span>
+                                <?php echo $identifying_number; ?>
+                            </p>
+                        <?php endif; ?>
+
                         <div class="gap-6 grid grid-cols-1">
                             <?php
                             // Track seen membership combinations to avoid duplicates
@@ -202,12 +209,6 @@ class init extends Blocks
                                             class="text-gray-700"><?php echo __('Active Member', 'wicket-acc'); ?></span>
                                     </p>
 
-                                    <?php if ($display_mdp_id): ?>
-                                        <p class="wicket-welcome-member-mdp-id mb-0">
-                                            <span><?php echo __('ID:', 'wicket-acc'); ?></span>
-                                            <?php echo $identifying_number; ?>
-                                        </p>
-                                    <?php endif; ?>
 
                                     <?php do_action('wicket/acc/block/welcome/after_member_ids', $person, $membership); ?>
 
