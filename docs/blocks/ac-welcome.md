@@ -93,3 +93,31 @@ ac-welcome/
 - Profile link validation
 - Date validation
 - Image URL validation
+
+## Events & Hooks
+
+
+### Filters
+
+#### <a id="wicket-acc-block-welcome-non-member-text"></a>`wicket/acc/block/welcome_non_member_text`
+
+This filter allows you to customize the text displayed for users who are not members ("Non-Member") in the AC Welcome block.
+
+**Usage:**
+```php
+add_filter('wicket/acc/block/welcome_non_member_text', function($default_text) {
+      return __('Guest User', 'wicket-acc'); // Replace with your custom text
+});
+```
+
+- **Parameters:**
+   - `$default_text` (`string`): The default text, usually `__('Non-Member', 'wicket-acc')`.
+- **Return:**
+   - `string` The text to display for non-members.
+
+**Example:**
+```php
+add_filter('wicket/acc/block/welcome_non_member_text', function($default_text) {
+      return __('Visitor', 'wicket-acc');
+});
+```

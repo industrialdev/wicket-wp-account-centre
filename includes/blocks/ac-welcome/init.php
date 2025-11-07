@@ -244,7 +244,7 @@ class init extends Blocks
                         </div>
                     <?php } else { ?>
                         <p class="wicket-welcome-pending-membership">
-                            <?php echo __('Non-Member', 'wicket-acc'); ?>
+                            <?php echo apply_filters('wicket/acc/block/welcome_non_member_text', __('Non-Member', 'wicket-acc')); ?>
                         </p>
                     <?php } ?>
 
