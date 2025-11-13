@@ -415,6 +415,12 @@ class WooCommerce extends WicketAcc
         // Force order-pay URLs to use checkout base instead of my-account
         add_filter('woocommerce_get_endpoint_url', [$this, 'force_order_pay_to_checkout'], 13, 4);
 
+        // Force add-payment-method endpoint to be directly under base, not nested under payment-methods
+        add_filter('woocommerce_get_endpoint_url', [$this, 'fix_add_payment_method_url'], 999, 4);
+
+        // Earlier filter to catch add-payment-method URLs before they get nested
+        add_filter('woocommerce_get_endpoint_url', [$this, 'early_fix_add_payment_method_url'], 15, 4);
+
         // Add WooCommerce endpoints to account pages
         add_filter('wicket_acc_menu_items', [$this, 'add_wc_menu_items']);
 
@@ -631,6 +637,61 @@ class WooCommerce extends WicketAcc
         }
 
         return $order_pay_url;
+    }
+
+    /**
+     * Early filter to catch add-payment-method URLs before they get processed by other filters.
+     * This is the primary fix that forces the correct URL structure.
+     *
+     * @param string $url The URL.
+     * @param string $endpoint The endpoint.
+     * @param mixed $value The value.
+     * @param string $permalink The permalink.
+     *
+     * @return string The fixed URL.
+     */
+    public function early_fix_add_payment_method_url($url, $endpoint, $value, $permalink)
+    {
+        if ($endpoint !== 'add-payment-method') {
+            return $url;
+        }
+
+        // Force the correct URL regardless of what permalink was passed when in ACC context
+        if ($this->is_acc_wc_context()) {
+            return $this->build_localized_endpoint_url('add-payment-method');
+        }
+
+        return $url;
+    }
+
+    /**
+     * Fallback filter to catch add-payment-method URLs that might slip through the early filter.
+     *
+     * @param string $url The URL.
+     * @param string $endpoint The endpoint.
+     * @param mixed $value The value.
+     * @param string $permalink The permalink.
+     *
+     * @return string The fixed URL.
+     */
+    public function fix_add_payment_method_url($url, $endpoint, $value, $permalink)
+    {
+        if ($endpoint !== 'add-payment-method') {
+            return $url;
+        }
+
+        // Check if the permalink is already pointing to payment-methods (which would cause nesting)
+        if ($permalink && str_contains($permalink, '/payment-methods/')) {
+            return $this->build_localized_endpoint_url('add-payment-method');
+        }
+
+        // Fix URLs that are incorrectly nested under payment-methods
+        if (str_contains($url, '/payment-methods/add-payment-method/') ||
+            str_contains($url, 'payment-methods/add-payment-method')) {
+            return $this->build_localized_endpoint_url('add-payment-method');
+        }
+
+        return $url;
     }
 
     /**
