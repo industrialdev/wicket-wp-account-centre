@@ -9,7 +9,7 @@
     --wicket-grid-gutter: 0.125rem;
     /* 2px */
 
-  --wicket-acc-container-width: 1280px;
+  --wicket-acc-container-width: var(--wicket-breakpoint-xl, 1280px);
   --wicket-acc-breakpoint-mobile: 1023px;
 
   --wicket-acc-z-index-dropdown: 99;
