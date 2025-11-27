@@ -480,6 +480,8 @@ class WooCommerce extends WicketAcc
         // Correct the 'add payment method' URL on the view-subscription page when no payment method exists
         add_filter('woocommerce_subscriptions_frontend_view_subscription_script_parameters', [$this, 'maybe_correct_add_payment_method_url']);
 
+        // Disable "Remove item" (x) button on subscription details
+        add_filter('wcs_can_items_be_removed', '__return_false');
     }
 
     /**
