@@ -56,4 +56,19 @@ jQuery(document).ready(function ($) {
             $(dropdownButton).addClass('open').attr("aria-expanded", "true");
         }
     }
+
+    $('.wicket-acc-menu, .wicket-acc-menu-mobile, .myaccount-nav').on("click", ".dropdown__toggle", function (event) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        $(this).toggleClass("open");
+        var targetContent = "#" + $(this).attr("aria-controls");
+        if ($(this).hasClass("open")) {
+            $(targetContent).slideDown("fast").attr("aria-expanded", "true");
+            $(this).attr("aria-expanded", "true");
+        } else {
+            $(targetContent).slideUp("fast").attr("aria-expanded", "false");
+            $(this).attr("aria-expanded", "false");
+        }
+        $(this).focus();
+    });
 });
