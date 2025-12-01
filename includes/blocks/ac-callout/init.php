@@ -211,7 +211,8 @@ class init extends Blocks
                 break;
 
             case 'renewal':
-                if (!class_exists('\Wicket_Memberships\Wicket_Memberships')) {
+                $callouts = [];
+                if (!class_exists('\\Wicket_Memberships\\Wicket_Memberships')) {
                     //$membership_to_renew = is_renewal_period($memberships, $renewal_period);
                     //$membership_to_renew = (!$membership_to_renew) ? is_renewal_period($woo_memberships, $renewal_period) : $membership_to_renew;
                     $membership_to_renew = is_renewal_period($woo_memberships, $renewal_period);
