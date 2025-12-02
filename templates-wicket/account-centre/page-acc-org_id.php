@@ -63,7 +63,7 @@ if ($acc_display_publish_date) {
 if ($acc_global_headerbanner_page_id && $acc_global_headerbanner_status) {
     $global_banner_page = get_post($acc_global_headerbanner_page_id);
     if ($global_banner_page) {
-        echo '<div class="wicket-acc alignfull wp-block-wicket-banner">';
+        echo '<div class="wicket-acc alignfull wp-block-wicket-banner block">';
         echo apply_filters('the_content', $global_banner_page->post_content);
         echo '</div>';
     }
