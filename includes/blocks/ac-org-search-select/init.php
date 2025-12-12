@@ -44,6 +44,19 @@ class init extends Blocks
         // Check if we should automatically filter by the relationship type upon org creation
         $enable_relationship_filtering = (bool) get_field('orgss_enable_relationship_filtering');
         $relationship_type_filter = '';
+
+        /* This is suggested as the proper flow for this option setting but unsure if it will break anything existing
+         *
+        // First check if there's an explicit filter field
+        if (get_field('orgss_relationship_type_filter')) {
+            $relationship_type_filter = get_field('orgss_relationship_type_filter');
+        }
+        // Otherwise, use the relationship_type_upon_org_creation as the filter
+        elseif ($enable_relationship_filtering && !empty($relationship_type_upon_org_creation)) {
+            $relationship_type_filter = $relationship_type_upon_org_creation;
+        }
+        */
+
         if ($enable_relationship_filtering && !empty($relationship_type_upon_org_creation)) {
             $relationship_type_filter = $relationship_type_upon_org_creation;
         }
