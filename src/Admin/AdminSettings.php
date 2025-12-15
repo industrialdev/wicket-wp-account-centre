@@ -160,8 +160,8 @@ class AdminSettings extends \WicketAcc\WicketAcc
         // Comment out environment check for testing
         if (
             !(
-                (defined('WP_ENV') && WP_ENV === 'development') ||
-                (defined('WP_ENVIRONMENT_TYPE') && in_array(WP_ENVIRONMENT_TYPE, ['local', 'development'], true))
+                (defined('WP_ENV') && WP_ENV === 'development')
+                || (defined('WP_ENVIRONMENT_TYPE') && in_array(WP_ENVIRONMENT_TYPE, ['local', 'development'], true))
             )
         ) {
             return;

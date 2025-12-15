@@ -15,7 +15,7 @@ class CFWicketSettingsDatastore extends Datastore
     /**
      * The option name where settings are stored.
      */
-    const OPTION_NAME = 'wicket_settings';
+    public const OPTION_NAME = 'wicket_settings';
 
     /**
      * Load the field value.

@@ -60,8 +60,8 @@ class init extends Blocks
 
         // Edit profile button (link and title)
         if (
-            empty($edit_profile_button_link) ||
-            !is_array($edit_profile_button_link)
+            empty($edit_profile_button_link)
+            || !is_array($edit_profile_button_link)
         ) {
             // Use ACC mapping
             $editprofile_page_link = WACC()->get_account_page_url('edit-profile');
@@ -75,14 +75,14 @@ class init extends Blocks
         <div class="wicket-acc-block wicket-acc-block-welcome wp-block-wicket-acc-callout row <?php echo defined('WICKET_WP_THEME_V2') ? 'wicket-acc-block-welcome--v2' : 'bg-light-010'; ?>">
             <div class="wicket-welcome-avatar col-2 mr-3">
                 <?php if ($image_url) {
-                    echo '<img src="' .
-                        $image_url .
-                        '?' . time() . '" alt="' .
-                        $person->given_name .
-                        ' ' .
-                        $person->family_name .
-                        __(' Profile Image', 'wicket-acc') .
-                        '" />';
+                    echo '<img src="'
+                        . $image_url
+                        . '?' . time() . '" alt="'
+                        . $person->given_name
+                        . ' '
+                        . $person->family_name
+                        . __(' Profile Image', 'wicket-acc')
+                        . '" />';
                 } ?>
             </div>
 
@@ -123,8 +123,8 @@ class init extends Blocks
                                 $org_main_info = WACC()->Mdp()->Membership()->getOrganizationMembershipByUuid(
                                     $membership['organization_membership_id']
                                 );
-                                $org_uuid =
-                                    $org_main_info['data']['relationships']['organization']['data']['id'];
+                                $org_uuid
+                                    = $org_main_info['data']['relationships']['organization']['data']['id'];
                                 $org_info = wicket_get_active_memberships_relationship(
                                     $org_uuid
                                 );
@@ -156,8 +156,8 @@ class init extends Blocks
                                             $membership['organization_membership_id']
                                         );
 
-                                        $org_uuid =
-                                            $org_main_info['data']['relationships']['organization']['data']['id'];
+                                        $org_uuid
+                                            = $org_main_info['data']['relationships']['organization']['data']['id'];
 
                                         $org_info = WACC()->Mdp()->Membership()->getActiveMembershipRelationship($org_uuid);
 
@@ -213,9 +213,9 @@ class init extends Blocks
                                     <?php do_action('wicket/acc/block/welcome/after_member_ids', $person, $membership); ?>
 
                                     <?php if (
-                                        $member_since &&
-                                        !empty($membership['starts_at']) &&
-                                        strtotime($membership['starts_at'])
+                                        $member_since
+                                        && !empty($membership['starts_at'])
+                                        && strtotime($membership['starts_at'])
                                     ): ?>
                                         <p class="wicket-welcome-member-since mb-0">
                                             <?php esc_html_e(__('Member Since:', 'wicket-acc')); ?>
@@ -250,9 +250,9 @@ class init extends Blocks
 
                 </div>
                 <?php if (
-                    $edit_profile &&
-                    isset($editprofile_page_link) &&
-                    isset($editprofile_page_title)
+                    $edit_profile
+                    && isset($editprofile_page_link)
+                    && isset($editprofile_page_title)
                 ) { ?>
                     <div class="wicket-welcome-edit-profile-button col-3 text-right">
                         <?php get_component('button', [

@@ -444,7 +444,7 @@ class init extends Blocks
      * @param array|null|string $links The array of links from the ACF repeater.
      * @return array The modified array of links.
      */
-    protected function append_query_string(array|null|string $links = []): array
+    protected function append_query_string(array|string|null $links = []): array
     {
         // Return empty array if links is null or empty string
         if (is_null($links) || $links === '') {

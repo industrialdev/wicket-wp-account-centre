@@ -48,8 +48,8 @@ class OrganizationRoster
         // Iterate over the memberships to find the one related to the given org UUID.
         foreach ($memberships['data'] as $membership) {
             if (
-                isset($membership['relationships']['organization']['data']['id']) &&
-                $membership['relationships']['organization']['data']['id'] === $organizationUuid
+                isset($membership['relationships']['organization']['data']['id'])
+                && $membership['relationships']['organization']['data']['id'] === $organizationUuid
             ) {
                 // Found the membership UUID.
                 return $membership['id'];

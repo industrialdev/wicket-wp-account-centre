@@ -41,6 +41,11 @@ class Safeguards extends \WicketAcc\WicketAcc
             return;
         }
 
+        // Avoid deleting folders when running locally
+        if (isset($_SERVER['HTTP_HOST']) && str_contains($_SERVER['HTTP_HOST'], 'localhost')) {
+            return;
+        }
+
         $folders_to_delete = [
             WICKET_ACC_PATH . '.ci/',
             WICKET_ACC_PATH . '.github/',

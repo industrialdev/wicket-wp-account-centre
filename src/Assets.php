@@ -139,9 +139,9 @@ class Assets extends WicketAcc
         ]);
 
         $is_relevant_woocommerce_context = WACC()->isWooCommerceActive() && (
-            is_woocommerce() ||
-            is_account_page() ||
-            is_wc_endpoint_url()
+            is_woocommerce()
+            || is_account_page()
+            || is_wc_endpoint_url()
         );
 
         // If it's NOT the 'my-account' post type, AND
@@ -149,9 +149,9 @@ class Assets extends WicketAcc
         // it's NOT a relevant WooCommerce context,
         // THEN return early and do not enqueue assets.
         if (
-            ('my-account' !== $current_post_type) &&
-            (!$is_relevant_page_slug) &&
-            (!$is_relevant_woocommerce_context)
+            ('my-account' !== $current_post_type)
+            && (!$is_relevant_page_slug)
+            && (!$is_relevant_woocommerce_context)
         ) {
             return;
         }

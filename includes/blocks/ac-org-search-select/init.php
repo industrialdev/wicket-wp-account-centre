@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Wicket Org Search Select block.
  *

@@ -718,8 +718,8 @@ class WooCommerce extends WicketAcc
         }
 
         // Fix URLs that are incorrectly nested under payment-methods
-        if (str_contains($url, '/payment-methods/add-payment-method/') ||
-            str_contains($url, 'payment-methods/add-payment-method')) {
+        if (str_contains($url, '/payment-methods/add-payment-method/')
+            || str_contains($url, 'payment-methods/add-payment-method')) {
             return $this->build_localized_endpoint_url('add-payment-method');
         }
 
@@ -772,8 +772,8 @@ class WooCommerce extends WicketAcc
         }
 
         // Fix URLs that are incorrectly nested under payment-methods
-        if (str_contains($url, '/payment-methods/delete-payment-method/') ||
-            str_contains($url, 'payment-methods/delete-payment-method')) {
+        if (str_contains($url, '/payment-methods/delete-payment-method/')
+            || str_contains($url, 'payment-methods/delete-payment-method')) {
             return $this->build_localized_endpoint_url('delete-payment-method', $value);
         }
 
@@ -826,8 +826,8 @@ class WooCommerce extends WicketAcc
         }
 
         // Fix URLs that are incorrectly nested under payment-methods
-        if (str_contains($url, '/payment-methods/set-default-payment-method/') ||
-            str_contains($url, 'payment-methods/set-default-payment-method')) {
+        if (str_contains($url, '/payment-methods/set-default-payment-method/')
+            || str_contains($url, 'payment-methods/set-default-payment-method')) {
             return $this->build_localized_endpoint_url('set-default-payment-method', $value);
         }
 
@@ -880,9 +880,9 @@ class WooCommerce extends WicketAcc
         }
 
         // Fix URLs that are incorrectly nested under other endpoints
-        if (str_contains($url, '/orders/view-order/') ||
-            str_contains($url, '/subscriptions/view-order/') ||
-            str_contains($url, '/payment-methods/view-order/')) {
+        if (str_contains($url, '/orders/view-order/')
+            || str_contains($url, '/subscriptions/view-order/')
+            || str_contains($url, '/payment-methods/view-order/')) {
             return $this->build_localized_endpoint_url('view-order', $value);
         }
 
@@ -935,9 +935,9 @@ class WooCommerce extends WicketAcc
         }
 
         // Fix URLs that are incorrectly nested under other endpoints
-        if (str_contains($url, '/orders/view-subscription/') ||
-            str_contains($url, '/subscriptions/view-subscription/') ||
-            str_contains($url, '/payment-methods/view-subscription/')) {
+        if (str_contains($url, '/orders/view-subscription/')
+            || str_contains($url, '/subscriptions/view-subscription/')
+            || str_contains($url, '/payment-methods/view-subscription/')) {
             return $this->build_localized_endpoint_url('view-subscription', $value);
         }
 
@@ -990,9 +990,9 @@ class WooCommerce extends WicketAcc
         }
 
         // Fix URLs that are incorrectly nested under other endpoints
-        if (str_contains($url, '/orders/subscription-payment-method/') ||
-            str_contains($url, '/subscriptions/subscription-payment-method/') ||
-            str_contains($url, '/payment-methods/subscription-payment-method/')) {
+        if (str_contains($url, '/orders/subscription-payment-method/')
+            || str_contains($url, '/subscriptions/subscription-payment-method/')
+            || str_contains($url, '/payment-methods/subscription-payment-method/')) {
             return $this->build_localized_endpoint_url('subscription-payment-method', $value);
         }
 

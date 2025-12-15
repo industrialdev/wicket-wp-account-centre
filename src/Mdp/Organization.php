@@ -541,8 +541,8 @@ class Organization extends Init
             if (!empty($response['data'])) {
                 foreach ($response['data'] as $role) {
                     if (
-                        isset($role['relationships']['resource']['data']['id']) &&
-                        $role['relationships']['resource']['data']['id'] === $orgUuid
+                        isset($role['relationships']['resource']['data']['id'])
+                        && $role['relationships']['resource']['data']['id'] === $orgUuid
                     ) {
                         $usersRoles[] = $role['attributes']['name'];
                     }

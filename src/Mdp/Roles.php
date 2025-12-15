@@ -144,8 +144,8 @@ class Roles extends Init
         $includedData = $person->included();
         if (is_array($includedData)) {
             foreach ($includedData as $included) {
-                if (isset($included['type'], $included['attributes']['name'], $included['id']) &&
-                    $included['type'] === 'roles' && $included['attributes']['name'] === $roleName
+                if (isset($included['type'], $included['attributes']['name'], $included['id'])
+                    && $included['type'] === 'roles' && $included['attributes']['name'] === $roleName
                 ) {
                     $roleId = $included['id'];
                     break;

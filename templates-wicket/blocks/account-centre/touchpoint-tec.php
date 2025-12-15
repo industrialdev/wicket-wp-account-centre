@@ -138,8 +138,8 @@ if ($single_event) {
 } else {
 
     if (
-        (!empty($touchpoints_upcoming) && is_array($touchpoints_upcoming)) ||
-        (!empty($touchpoints_past) && is_array($touchpoints_past))
+        (!empty($touchpoints_upcoming) && is_array($touchpoints_upcoming))
+        || (!empty($touchpoints_past) && is_array($touchpoints_past))
     ) {
         if ($display === 'upcoming') {
             TouchpointEventCalendar::display_touchpoints($touchpoints_upcoming, 'upcoming', $num_results, false, $args);

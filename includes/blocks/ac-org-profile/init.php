@@ -18,7 +18,7 @@ class init extends Blocks
     public function __construct(
         protected array $block = [],
         protected bool $is_preview = false,
-        protected int|string|null|bool $hide_additional_info = 0,
+        protected int|string|bool|null $hide_additional_info = 0,
     ) {
         $this->block = $block;
         $this->is_preview = $is_preview;
