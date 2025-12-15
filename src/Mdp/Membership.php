@@ -727,4 +727,36 @@ class Membership extends Init
             return false;
         }
     }
+
+    /**
+     * Gets the max end date for a person's memberships by iterating through membership entries.
+     * This avoids reliance on rollup tables which may be delayed.
+     *
+     * @param string $person_uuid The person UUID.
+     * @return string|null The max end date or null.
+     */
+    public function getPersonMaxEndDateFromEntries(string $person_uuid): ?string
+    {
+        // Fetch all memberships (no filter on active_at)
+        $memberships = $this->getCurrentPersonMemberships([
+            'person_uuid' => $person_uuid,
+            'filter' => [],
+        ]);
+
+        if (empty($memberships['data']) || !is_array($memberships['data'])) {
+            return null;
+        }
+
+        $max_date = null;
+        foreach ($memberships['data'] as $membership) {
+            $end_date = $membership['attributes']['ends_at'] ?? null;
+            if ($end_date) {
+                if (is_null($max_date) || strtotime($end_date) > strtotime($max_date)) {
+                    $max_date = $end_date;
+                }
+            }
+        }
+
+        return $max_date;
+    }
 }

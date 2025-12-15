@@ -229,7 +229,7 @@ class init extends Blocks
 
                                     <?php if ($renewal_date):
                                         // Get the max end date for the person's memberships
-                                        $max_end_date = WACC()->Mdp()->Membership()->getPersonMaxEndDate(['person_uuid' => $person->id]);
+                                        $max_end_date = WACC()->Mdp()->Membership()->getPersonMaxEndDateFromEntries($person->id);
                                         if ($max_end_date && strtotime($max_end_date)): ?>
                                             <p class="wicket-welcome-renewal mb-0">
                                                 <?php echo __('Renewal Date:', 'wicket-acc'); ?>
