@@ -52,7 +52,7 @@
             "name": "orgss_search_org_type",
             "aria-label": "",
             "type": "text",
-            "instructions": "If left blank, all organization types will be searchable. If you wish to filter, you'll need to provide the \"slug\" of the organization type, e.g. \"it_company\".",
+            "instructions": "If left blank, all organization types will be searchable. If you wish to filter, you'll need to provide the \"slug\" of the organization type, e.g., \"it_company\". It's also possible to provide multiple slugs, separated by commas, e.g., \"it_company,non_profit\".",
             "required": 0,
             "conditional_logic": [
                 [
@@ -68,8 +68,10 @@
                 "class": "",
                 "id": ""
             },
+            "wpml_cf_preferences": 0,
             "default_value": "",
             "maxlength": "",
+            "allow_in_bindings": 1,
             "placeholder": "",
             "prepend": "",
             "append": ""
@@ -430,6 +432,57 @@
             "ui": 1
         },
         {
+            "key": "field_693fe88362aa0",
+            "label": "Display Org Fields",
+            "name": "orgss_display_org_fields",
+            "aria-label": "",
+            "type": "select",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 0,
+            "choices": {
+                "name": "Org Name",
+                "name_location": "Org Name and Location",
+                "name_address": "Org Name and Address"
+            },
+            "default_value": "name",
+            "return_format": "value",
+            "multiple": 0,
+            "allow_null": 0,
+            "allow_in_bindings": 0,
+            "ui": 0,
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_693ffed71f921",
+            "label": "Display Org Type",
+            "name": "orgss_display_org_type",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 0,
+            "message": "",
+            "default_value": 0,
+            "allow_in_bindings": 0,
+            "ui": 0,
+            "ui_on_text": "",
+            "ui_off_text": ""
+        },
+        {
             "key": "field_6716a3395be11",
             "label": "Advanced",
             "name": "",
@@ -494,5 +547,6 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1756841702
+    "acfml_field_group_mode": "advanced",
+    "modified": 1765801737
 }
