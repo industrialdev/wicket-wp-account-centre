@@ -74,6 +74,8 @@ class init extends Blocks
         $new_org_created_checkbox_id = get_field('orgss_new_org_created_checkbox_id');
         $display_removal_alert_message = get_field('orgss_display_removal_alert_message');
         $hide_membership_status = get_field('orgss_hide_membership_status');
+        $display_org_fields = get_field('orgss_display_org_fields');
+        $display_org_type = get_field('orgss_display_org_type');
 
         echo '<div ' . $attrs . '>';
 
@@ -98,6 +100,8 @@ class init extends Blocks
             'checkbox_id_new_org'                 => $new_org_created_checkbox_id,
             'display_removal_alert_message'       => $display_removal_alert_message,
             'hide_membership_status'              => $hide_membership_status,
+            'display_org_fields'                  => $display_org_fields,
+            'display_org_type'                    => $display_org_type,
         ]);
 
         echo '</div>';
