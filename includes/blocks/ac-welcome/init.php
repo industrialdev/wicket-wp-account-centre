@@ -109,6 +109,7 @@ class init extends Blocks
                             <?php
                             // Track seen membership combinations to avoid duplicates
                             $seen_memberships = [];
+                        $shown_member_since = false;
                         foreach ($active_memberships as $membership) {
                             // Apply WordPress filter for membership filtering
                             $should_filter = apply_filters('wicket/acc/block/welcome_filter_memberships', false, $membership);
@@ -213,10 +214,14 @@ class init extends Blocks
                                     <?php do_action('wicket/acc/block/welcome/after_member_ids', $person, $membership); ?>
 
                                     <?php if (
-                                        $member_since
+                                        !$shown_member_since
+                                        && $member_since
                                         && !empty($membership['starts_at'])
                                         && strtotime($membership['starts_at'])
-                                    ): ?>
+                                        && !stristr($membership['name'], 'LEADS')
+                                    ):
+                                        $shown_member_since = true;
+                                        ?>
                                         <p class="wicket-welcome-member-since mb-0">
                                             <?php esc_html_e(__('Member Since:', 'wicket-acc')); ?>
                                             <?php if (isset($membership_began_on) && !empty($membership_began_on)) {
