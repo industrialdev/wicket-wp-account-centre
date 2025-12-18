@@ -46,6 +46,10 @@ class init extends Blocks
         $image_url = get_avatar_url($current_user->ID, ['size' => '300']);
         $active_memberships = WACC()->Mdp()->Membership()->getCurrentPersonActiveMemberships($current_lang);
 
+        $renewal_end_timestamp = $renewal_date
+            ? WACC()->Mdp()->Membership()->getCurrentPersonRenewalEndTimestamp()
+            : null;
+
         // We need to find these at the MDP at some point
         $relationship_translations = [
             'Primary Contact'             => 'Personne-ressource principale',
@@ -233,12 +237,10 @@ class init extends Blocks
                                     <?php endif; ?>
 
                                     <?php if ($renewal_date):
-                                        // Get the max end date for the person's memberships
-                                        $max_end_date = WACC()->Mdp()->Membership()->getPersonMaxEndDateFromEntries($person->id);
-                                        if ($max_end_date && strtotime($max_end_date)): ?>
+                                        if ($renewal_end_timestamp && $renewal_end_timestamp > 0): ?>
                                             <p class="wicket-welcome-renewal mb-0">
                                                 <?php echo __('Renewal Date:', 'wicket-acc'); ?>
-                                                <?php echo date('F j, Y', strtotime($max_end_date)); ?>
+                                                <?php echo date('F j, Y', $renewal_end_timestamp); ?>
                                             </p>
                                     <?php
                                         endif;

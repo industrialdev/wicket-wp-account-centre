@@ -759,4 +759,93 @@ class Membership extends Init
 
         return $max_date;
     }
+
+    /**
+     * Gets the renewal end timestamp for the current person's membership.
+     *
+     * @param array $args Optional arguments.
+     *              - user_id: The WordPress user ID.
+     *              - person_uuid: The person UUID to look up.
+     *
+     * @return int|null Unix timestamp of the renewal end date, or null if not found.
+     */
+    public function getCurrentPersonRenewalEndTimestamp(array $args = []): ?int
+    {
+        $defaults = [
+            'user_id' => null,
+            'person_uuid' => null,
+        ];
+
+        $args = wp_parse_args($args, $defaults);
+        $user_id = $args['user_id'];
+        $person_uuid = $args['person_uuid'];
+
+        if (empty($user_id) && function_exists('get_current_user_id')) {
+            $user_id = (int) get_current_user_id();
+        }
+
+        if (empty($person_uuid)) {
+            $person_uuid = WACC()->Mdp()->Person()->getCurrentPersonUuid();
+        }
+
+        $cache_key = 'renewal_end_timestamp_' . (string) $user_id . '_' . (string) $person_uuid;
+        if (isset($this->cache[$cache_key])) {
+            return $this->cache[$cache_key];
+        }
+
+        $renewal_end_timestamp = null;
+
+        if (!empty($user_id) && function_exists('wcs_get_users_subscriptions')) {
+            $subscriptions = wcs_get_users_subscriptions((int) $user_id);
+            if (is_array($subscriptions)) {
+                foreach ($subscriptions as $subscription) {
+                    if (!($subscription instanceof \WC_Subscription)) {
+                        continue;
+                    }
+
+                    $status = $subscription->get_status();
+                    if (!in_array($status, ['active', 'pending-cancel', 'on-hold'], true)) {
+                        continue;
+                    }
+
+                    $has_membership_product = false;
+                    if (function_exists('wicket_is_membership_product')) {
+                        foreach ($subscription->get_items() as $item) {
+                            $product_id = method_exists($item, 'get_product_id') ? (int) $item->get_product_id() : 0;
+                            if ($product_id && wicket_is_membership_product($product_id)) {
+                                $has_membership_product = true;
+                                break;
+                            }
+                        }
+                    } else {
+                        $has_membership_product = true;
+                    }
+
+                    if (!$has_membership_product) {
+                        continue;
+                    }
+
+                    $end_time = (int) $subscription->get_time('end');
+                    if ($end_time <= 0) {
+                        continue;
+                    }
+
+                    if ($renewal_end_timestamp === null || $end_time > $renewal_end_timestamp) {
+                        $renewal_end_timestamp = $end_time;
+                    }
+                }
+            }
+        }
+
+        if ($renewal_end_timestamp === null && !empty($person_uuid)) {
+            $max_end_date = $this->getPersonMaxEndDateFromEntries((string) $person_uuid);
+            if ($max_end_date && strtotime($max_end_date)) {
+                $renewal_end_timestamp = strtotime($max_end_date);
+            }
+        }
+
+        $this->cache[$cache_key] = $renewal_end_timestamp;
+
+        return $renewal_end_timestamp;
+    }
 }
