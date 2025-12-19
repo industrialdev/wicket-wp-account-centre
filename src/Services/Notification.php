@@ -247,7 +247,7 @@ class Notification
 
         $body = "Hi $first_name, <br>
 <p>You have been assigned a membership as part of $organization_name.</p>
-<p>You will receive an account confirmation email from phca@wicketcloud.com, this will allow you to set your password and login for the first time.</p>
+<p>You will receive an account confirmation email from *@wicketcloud.com, this will allow you to set your password and login for the first time.</p>
 <p>Going forward you can visit <a href='$home_url'>$site_name</a> and login to complete your profile and access your resources.</p>
 <br>
 Thank you,
