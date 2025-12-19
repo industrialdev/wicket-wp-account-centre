@@ -11,7 +11,7 @@
   }
 }
 
-@media all and (max-width: 1350px) {
+@media all and (max-width: 1590px) {
   .wicket-acc {
     .wicket-acc-page {
       padding: 0 var(--wicket-acc-padding-md);
@@ -39,7 +39,7 @@
   }
 }
 
-@media all and (max-width: 1350px) {
+@media all and (max-width: 1590px) {
   .wicket_acc-template-default {
     .wicket-acc-container {
       display: block;
