@@ -21,6 +21,11 @@ class Safeguards extends \WicketAcc\WicketAcc
 
         // Hook to run page initialization when Carbon Fields theme options are saved
         add_action('carbon_fields_theme_options_container_saved', [$this, 'accSafeguards']);
+
+        // Prevent trashing/deleting and renaming of the WooCommerce My Account page
+        add_action('wp_trash_post', [$this, 'preventMyAccountTrash'], 10, 2);
+        add_action('before_delete_post', [$this, 'preventMyAccountDelete'], 10, 2);
+        add_filter('wp_insert_post_data', [$this, 'preventMyAccountRenaming'], 10, 2);
     }
 
     /**
@@ -37,7 +42,7 @@ class Safeguards extends \WicketAcc\WicketAcc
     public function deleteUnwantedFolders(): void
     {
         // Only on non production servers
-        if (defined('WP_ENVIRONMENT_TYPE') && WP_ENVIRONMENT_TYPE === 'production') {
+        if (defined('\WP_ENVIRONMENT_TYPE') && \WP_ENVIRONMENT_TYPE === 'production') {
             return;
         }
 
@@ -232,5 +237,109 @@ class Safeguards extends \WicketAcc\WicketAcc
         }
 
         return false;
+    }
+
+    /**
+     * Check if a post is a protected ACC or WooCommerce page.
+     *
+     * @param int|\WP_Post|null $post Post ID or object.
+     * @return bool
+     */
+    private function isProtectedPost($post): bool
+    {
+        $post = get_post($post);
+        if (!$post) {
+            return false;
+        }
+
+        // 1. Check WooCommerce My Account Page
+        $my_account_page_id = (int) get_option('woocommerce_myaccount_page_id', 0);
+        if ($my_account_page_id > 0 && $post->ID === $my_account_page_id) {
+            return true;
+        }
+
+        // 2. Check ACC Core Pages (only if post type matches)
+        // We use $this->acc_post_type (inherited) which is 'my-account' by default
+        if ($post->post_type === $this->acc_post_type) {
+            // Check in acc_pages_map keys
+            if (array_key_exists($post->post_name, $this->acc_pages_map)) {
+                return true;
+            }
+            // Check in acc_pages_map_auto_create values
+            if (in_array($post->post_name, $this->acc_pages_map_auto_create, true)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Prevent trashing of protected pages.
+     *
+     * @param int $post_id
+     * @return void
+     */
+    public function preventMyAccountTrash(int $post_id): void
+    {
+        $this->dieIfProtected($post_id, __('moved to trash', 'wicket-acc'));
+    }
+
+    /**
+     * Prevent permanent deletion of protected pages.
+     *
+     * @param int $post_id
+     * @return void
+     */
+    public function preventMyAccountDelete(int $post_id): void
+    {
+        $this->dieIfProtected($post_id, __('deleted', 'wicket-acc'));
+    }
+
+    /**
+     * Internal helper to die if a post is protected.
+     *
+     * @param int    $post_id
+     * @param string $action  The action being prevented (untranslated)
+     * @return void
+     */
+    private function dieIfProtected(int $post_id, string $action): void
+    {
+        if ($this->isProtectedPost($post_id)) {
+            $message = sprintf(
+                /* translators: %s: action (e.g. moved to trash, deleted) */
+                __('This page is critical for Wicket\'s Account Centre and cannot be %s.', 'wicket-acc'),
+                $action
+            );
+            wp_die($message);
+        }
+    }
+
+    /**
+     * Prevent renaming/slug change of protected pages.
+     *
+     * @param array $data
+     * @param array $postarr
+     * @return array
+     */
+    public function preventMyAccountRenaming(array $data, array $postarr): array
+    {
+        $post_id = $postarr['ID'] ?? 0;
+        if (!$post_id) {
+            return $data;
+        }
+
+        // Check against the *original* post in DB to see if it IS currently a protected page
+        // We cannot rely on $data because that contains the *new* values (potential rename)
+        // logic: If the PAGE currently existing in DB is protected, you cannot change its slug.
+        if ($this->isProtectedPost($post_id)) {
+            $current_post = get_post($post_id);
+            // Revert the slug to the original one
+            if ($current_post && $data['post_name'] !== $current_post->post_name) {
+                $data['post_name'] = $current_post->post_name;
+            }
+        }
+
+        return $data;
     }
 }
