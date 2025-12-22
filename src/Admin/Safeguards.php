@@ -77,23 +77,60 @@ class Safeguards extends \WicketAcc\WicketAcc
             return false;
         }
 
-        global $wp_filesystem;
-
-        // Initialize the WordPress filesystem API
-        if (empty($wp_filesystem)) {
-            require_once ABSPATH . '/wp-admin/includes/file.php';
-            if (!\WP_Filesystem()) {
-                return false;
-            }
+        $filesystem = $this->getWritableFilesystem();
+        if (!$filesystem) {
+            return false;
         }
 
         // Verify the path exists and is a directory
-        if (!$wp_filesystem->exists($path) || !$wp_filesystem->is_dir($path)) {
+        if (!$filesystem->exists($path) || !$filesystem->is_dir($path)) {
             return false;
         }
 
         // Remove directory and all its contents
-        return $wp_filesystem->rmdir($path, true);
+        return $filesystem->rmdir($path, true);
+    }
+
+    /**
+     * Ensure WP_Filesystem is bootstrapped and ready for write operations.
+     */
+    private function getWritableFilesystem(): ?\WP_Filesystem_Base
+    {
+        global $wp_filesystem;
+
+        require_once ABSPATH . '/wp-admin/includes/file.php';
+
+        if ($this->filesystemIsReady($wp_filesystem)) {
+            return $wp_filesystem;
+        }
+
+        if (\WP_Filesystem() && $this->filesystemIsReady($wp_filesystem)) {
+            return $wp_filesystem;
+        }
+
+        // Fallback to direct filesystem if WordPress selected an unusable transport (e.g., FTP w/out credentials)
+        require_once ABSPATH . '/wp-admin/includes/class-wp-filesystem-base.php';
+        require_once ABSPATH . '/wp-admin/includes/class-wp-filesystem-direct.php';
+
+        $wp_filesystem = new \WP_Filesystem_Direct(false);
+
+        return $this->filesystemIsReady($wp_filesystem) ? $wp_filesystem : null;
+    }
+
+    /**
+     * Determine if the filesystem instance is usable.
+     */
+    private function filesystemIsReady($filesystem): bool
+    {
+        if (!$filesystem instanceof \WP_Filesystem_Base) {
+            return false;
+        }
+
+        if (property_exists($filesystem, 'link') && empty($filesystem->link)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
