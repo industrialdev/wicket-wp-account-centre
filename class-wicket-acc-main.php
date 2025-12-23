@@ -385,10 +385,10 @@ class WicketAcc
         new Registers();
         new Assets();
 
-        if (is_admin()) {
+        if (is_admin() || (defined('\WP_CLI') && \WP_CLI)) {
             new AdminSettings();
             new Tweaks();
-            new Safeguards(); // Initialize the safeguard class for admin tasks
+            new Safeguards(); // Initialize the safeguard class for admin tasks and CLI
         }
 
         // Load WooCommerce integration if active
