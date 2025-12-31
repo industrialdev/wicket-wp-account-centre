@@ -44,6 +44,101 @@ Then bump the plugin version number running `composer version-bump`.
 
 Commit and push.
 
+### Running Tests
+
+```bash
+# Run all tests
+composer test
+
+# Run tests with coverage report
+composer test:coverage
+
+# Run specific test file
+./vendor/bin/phpunit tests/unit/WicketAccTest.php
+
+# Run tests from tests/ directory
+cd tests && ../vendor/bin/phpunit unit/
+```
+
+### Writing New Tests
+
+1. **Create test file** in `tests/unit/` with pattern `*Test.php`
+2. **Extend AbstractTestCase** for WordPress function mocking
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace WicketAcc\Tests;
+
+use PHPUnit\Framework\Attributes\CoversClass;
+use WicketAcc\WicketAcc;
+
+#[CoversClass(WicketAcc::class)]
+class MyNewTest extends AbstractTestCase
+{
+    private WicketAcc $wicket_acc;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->wicket_acc = WicketAcc::get_instance();
+    }
+
+    public function test_something(): void
+    {
+        $this->assertTrue(true);
+    }
+}
+```
+
+3. **Use Brain Monkey** to mock WordPress functions:
+
+```php
+\Brain\Monkey\Functions\stubs([
+    'get_option' => 'value',
+    'get_current_user_id' => 1,
+    'WACC' => new class {
+        public function getAttachmentUrlFromOption() {
+            return '';
+        }
+    },
+]);
+```
+
+4. **Run tests** - PHPUnit auto-discovers test files matching `*Test.php`
+
+### Test Structure
+
+```
+tests/
+├── bootstrap.php              # PHPUnit bootstrap with WordPress mocks
+└── unit/
+    ├── AbstractTestCase.php   # Base test class with Brain Monkey setup
+    ├── WicketAccTest.php      # Main class tests
+    ├── ProfileTest.php        # Profile service tests
+    ├── ConstantsTest.php      # Plugin constants tests
+    ├── OrganizationManagementTest.php
+    ├── OrganizationProfileTest.php
+    ├── OrganizationRosterTest.php
+    ├── MdpInitTest.php
+    ├── RouterTest.php
+    ├── SettingsTest.php
+    ├── WooCommerceTest.php
+    └── BlocksTest.php
+```
+
+### Code Style
+
+```bash
+# Check code style
+composer cs:fix --dry-run --diff
+
+# Fix code style automatically
+composer cs:fix
+```
+
 # Documentation
 
 Check this plugin documentation [here](docs/).
