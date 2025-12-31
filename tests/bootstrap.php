@@ -36,4 +36,35 @@ if (!defined('YEAR_IN_SECONDS')) {
     define('YEAR_IN_SECONDS', 31536000);
 }
 
+// Mock WordPress classes
+if (!class_exists('WP_Widget')) {
+    class WP_Widget
+    {
+        public function __construct($id_base = '', $name = '', $widget_options = [], $control_options = []) {}
+    }
+}
+
 require_once dirname(__DIR__) . '/vendor/autoload.php';
+
+// Mock WordPress functions BEFORE loading the main class
+\Brain\Monkey\setUp();
+\Brain\Monkey\Functions\stubs([
+    'get_file_data' => ['Version' => '1.6.0'],
+    'plugin_dir_path' => __DIR__ . '/../../',
+    'plugin_dir_url' => 'http://example.com/wp-content/plugins/wicket-wp-account-centre/',
+    'plugin_basename' => 'wicket-wp-account-centre/wicket-wp-account-centre.php',
+    'wp_get_upload_dir' => [
+        'basedir' => '/tmp/uploads',
+        'baseurl' => 'http://example.com/uploads',
+    ],
+    'get_stylesheet_directory' => '/tmp/theme',
+    'get_stylesheet_directory_uri' => 'http://example.com/theme',
+    'add_action' => null,
+    'add_filter' => null,
+]);
+
+// Load the main WicketAcc class for tests
+require_once dirname(__DIR__) . '/class-wicket-acc-main.php';
+
+\Brain\Monkey\tearDown();
+
