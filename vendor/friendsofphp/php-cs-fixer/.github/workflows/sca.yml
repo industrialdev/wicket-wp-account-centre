@@ -1,0 +1,142 @@
+name: Static Code Analysis
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
+concurrency:
+  group: sca-${{ github.head_ref || github.run_id }} # will be canceled on subsequent pushes in pull requests but not branches
+  cancel-in-progress: true
+
+jobs:
+  spelling:
+    name: Check spelling
+
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Check spelling
+        uses: crate-ci/typos@v1.40.0
+        with:
+          config: ./dev-tools/typos.toml
+
+  everything_else:
+    name: Static Code Analysis
+
+    runs-on: ubuntu-24.04
+    env:
+      php-version: '8.5'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      # We need to fetch base branch because `actions/checkout` only initialises empty repo and fetches PR's meta-branch
+      # which leads to `fatal: ambiguous argument 'origin/...': unknown revision or path not in the working tree.`,
+      # because of that `CHANGED_PHP_FILES` is not set, and tools based on diff between branches (like Mess Detector) don't work.
+      - name: Fetch base branch
+        if: ${{ github.event_name == 'pull_request' }}
+        run: git fetch --no-tags --prune --no-recurse-submodules --depth=1 origin $GITHUB_BASE_REF
+
+      - name: Setup PHP with Composer deps
+        uses: ./.github/composite-actions/setup-php-with-composer-deps
+        with:
+          os: ${{ runner.os }}
+          php: ${{ env.php-version }}
+
+      - name: Cache dev-tools
+        uses: actions/cache@v5
+        with:
+          path: dev-tools/bin/
+          key: DevTools-${{ hashFiles('dev-tools/install.sh') }}
+
+      - name: Install dev-tools
+        uses: nick-invision/retry@v3
+        with:
+          timeout_minutes: 5
+          max_attempts: 5
+          retry_wait_seconds: 30
+          command: ./dev-tools/install.sh
+
+      - name: Check configuration for PHPUnit
+        run: vendor/bin/phpunit --check-php-configuration
+
+      - name: Run AutoReview
+        run: vendor/bin/phpunit --testsuite auto-review
+
+      - name: Check - file permissions
+        run: ./dev-tools/check_file_permissions.sh
+
+      - name: Check - trailing spaces
+        run: ./dev-tools/check_trailing_spaces.sh
+
+      - name: Check - Composer's autoload
+        run: composer dump-autoload --dry-run --optimize --strict-psr
+
+      - name: Check - phpstan
+        run: ./dev-tools/vendor/bin/phpstan analyse --ansi
+
+      - name: Check - PHP compatibility
+        run: composer php-compatibility
+
+      - name: Analyse Composer dependencies
+        run: ./dev-tools/vendor/bin/composer-dependency-analyser
+
+      - name: Check - composer normalize
+        run: |
+          composer normalize --dry-run --working-dir=./dev-tools ../composer.json
+          composer bump --dry-run --working-dir=./dev-tools
+          composer normalize --dry-run --working-dir=./dev-tools composer.json
+
+      - name: Check - shell scripts
+        run: ./dev-tools/check_shell_scripts.sh
+
+      - name: Check - no American English
+        run: ./dev-tools/check_no_american_english.sh
+
+      - name: Find changed files (for pull request)
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          if git diff origin/$GITHUB_BASE_REF --name-only --diff-filter=ACMRTUXB | grep -E "\.php$"; then
+            echo 'CHANGED_PHP_FILES<<EOF' >> $GITHUB_ENV
+            git diff origin/$GITHUB_BASE_REF --name-only --diff-filter=ACMRTUXB | grep -E "\.php$" >> $GITHUB_ENV
+            echo 'EOF' >> $GITHUB_ENV
+          fi
+
+      - name: Find changed files (for push)
+        if: ${{ github.event_name != 'pull_request' }}
+        run: |
+          if git diff --name-only --diff-filter=ACMRTUXB HEAD~..HEAD | grep -E "\.php$"; then
+            echo 'CHANGED_PHP_FILES<<EOF' >> $GITHUB_ENV
+            git diff --name-only --diff-filter=ACMRTUXB HEAD~..HEAD | grep -E "\.php$" >> $GITHUB_ENV
+            echo 'EOF' >> $GITHUB_ENV
+          fi
+
+      - name: Check - well defined array keys
+        if: ${{ env.CHANGED_PHP_FILES }}
+        run: |
+          echo "Array types must explicitly declare key-type, i.e. as \`array<type-of-key, type-of-value>\`, \`list<type-of-value>\` or \`array{...}\` - instead of \`array<type-of-value>\` or \`type-of-value[]\`."
+          echo "Hint: don't apply those rules blindly, provide array key type explicitly\!"
+          PHP_CS_FIXER_IGNORE_ENV=1 ./php-cs-fixer check --config=dev-tools/.php-cs-fixer.well-defined-arrays.php --path-mode=intersection $CHANGED_PHP_FILES
+
+      - name: Check - Mess Detector (phpmd)
+        if: ${{ env.CHANGED_PHP_FILES }}
+        run: |
+          if [ '${{ github.event_name }}' == 'pull_request' ]; then
+            ./dev-tools/vendor/bin/phpmd `echo "$CHANGED_PHP_FILES" | grep -v /Fixtures/ | xargs | sed 's/ /,/g'` github ./dev-tools/mess-detector/phpmd.xml
+          else
+            ./dev-tools/vendor/bin/phpmd `echo "$CHANGED_PHP_FILES" | grep -v /Fixtures/ | xargs | sed 's/ /,/g'` ansi ./dev-tools/mess-detector/phpmd.xml
+          fi
+
+      - name: Check - ensure test files are not present in the archive
+        run: |
+          git archive -o /dev/null HEAD -v 2>&1 | grep tests | grep \.php \
+          && (echo "Test files detected in archive" && exit 1) || echo "No test files detected in archive"

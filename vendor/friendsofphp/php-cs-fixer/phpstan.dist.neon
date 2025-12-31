@@ -1,0 +1,104 @@
+includes:
+    - dev-tools/vendor/phpstan/phpstan/conf/bleedingEdge.neon
+
+    # Baseline, should only shrink! To regenerate it, just execute `composer phpstan:baseline`.
+    - dev-tools/phpstan/baseline/_loader.php
+
+parameters:
+    level: 7
+    paths:
+        - src
+        - tests
+        - php-cs-fixer
+        - .php-cs-fixer.dist.php
+        - dev-tools/phpstan/src
+    excludePaths:
+        - tests/Fixtures
+    polluteScopeWithLoopInitialAssignments: true # Do not enforce assignments outside of the loops
+    reportUnmatchedIgnoredErrors: true # Do not allow outdated errors in the baseline
+    reportPossiblyNonexistentGeneralArrayOffset: true # enabled, but huge exceptions count; example fix: https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/pull/8089
+    reportPossiblyNonexistentConstantArrayOffset: true
+    treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        - '/^Class [a-zA-Z\\]+ extends @final class PhpCsFixer\\(ConfigurationException\\InvalidConfigurationException|ConfigurationException\\InvalidFixerConfigurationException|Tokenizer\\Tokens|Console\\Command\\FixCommand)\.$/'
+
+        -
+            rawMessage: 'Call to internal method PHPUnit\Framework\TestCase::addToAssertionCount() from outside its root namespace PHPUnit.'
+            identifier: method.internal
+
+        # We often need to iterate multiple times within single method and we re-use variable name
+        -
+            message: '/^For loop initial assignment overwrites variable \$(i|index|endIndex)+\.$/'
+            paths:
+                - src/Fixer/Comment/CommentToPhpdocFixer.php
+                - src/Fixer/ControlStructure/YodaStyleFixer.php
+                - src/Fixer/Import/GlobalNamespaceImportFixer.php
+                - src/Fixer/Import/OrderedImportsFixer.php
+                - src/Fixer/LanguageConstruct/SingleSpaceAroundConstructFixer.php
+                - src/Fixer/Operator/NoUselessConcatOperatorFixer.php
+                - src/Fixer/PhpUnit/PhpUnitDedicateAssertInternalTypeFixer.php
+                - src/Fixer/ReturnNotation/ReturnAssignmentFixer.php
+                - src/Fixer/Whitespace/StatementIndentationFixer.php
+                - tests/DocBlock/TypeExpressionTest.php
+        -
+            message: '/^Foreach overwrites \$index with its key variable.$/'
+            paths:
+                - src/Fixer/DoctrineAnnotation/DoctrineAnnotationIndentationFixer.php
+                - src/Fixer/Import/GlobalNamespaceImportFixer.php
+                - src/Fixer/LanguageConstruct/GetClassToClassKeywordFixer.php
+
+        # We allow own config to call v4 interfaces
+        -
+            message: '/Call to an undefined method PhpCsFixer\\ConfigInterface::setUnsupportedPhpVersionAllowed\(\)/'
+            paths:
+                - .php-cs-fixer.dist.php
+
+        # We allow own config to eat internal rules/sets
+        -
+            message: '/(on|of) internal class.*(Set|Fixer)/'
+            paths:
+                - .php-cs-fixer.dist.php
+
+        # Types related to tokens collections are purposefully narrowed, because we expect only tokens there
+        - '/^Parameter #1 \$array \(array<int, PhpCsFixer\\(Tokenizer|Doctrine\\Annotation)+\\Token>\) of method PhpCsFixer\\(Tokenizer|Doctrine\\Annotation)+\\Tokens::fromArray\(\) should be contravariant with parameter \$array \(array<int, mixed>\) of method SplFixedArray<PhpCsFixer\\(Tokenizer|Doctrine\\Annotation)+\\Token>::fromArray\(\)$/'
+        - '/^Parameter .* of method PhpCsFixer\\Tokenizer\\Tokens::offsetSet\(\) should be contravariant with parameter .* of method .*::offsetSet\(\)$/'
+        - '/^Parameter .* of method PhpCsFixer\\Tests\\Test\\TokensWithObservedTransformers::offsetSet\(\) should be contravariant with parameter .* of method .*::offsetSet\(\)$/'
+
+        # We often access tokens collection with `int|null` because our token traversing methods (`getNextMeaningfulToken` etc.) have nullable return type at the moment
+        -
+            message: '/^Offset int(<0, max>)?\|null might not exist on (\$this\()?PhpCsFixer\\Tokenizer\\Tokens\)?\.$/'
+            identifier: offsetAccess.notFound
+
+        # Type for Command::$defaultName and ::$defaultDescription can not be specified because parent property also does not have a type
+        -
+            message: '/^Property PhpCsFixer\\Console\\(Internal\\)?Command\\\w+Command::\$default(?:Name|Description) has no type specified\.$/'
+            identifier: missingType.property
+        -
+            message: '/^Unused PhpCsFixer\\[a-zA-Z\\]+Interface::[a-zA-Z]+$/'
+            path: src
+            count: 12
+
+        -
+            message: '/^AnonymousClass/'
+            path: tests/
+            identifier: phpCsFixer.internalTypeInPublicApi
+    tipsOfTheDay: false
+    symfony:
+        consoleApplicationLoader: dev-tools/phpstan/console-application.php
+    tmpDir: dev-tools/phpstan/cache
+
+services:
+    -
+        class: PhpCsFixer\PHPStan\Rules\NoInternalTypesInPublicApiRule
+        tags:
+            - phpstan.rules.rule
+
+    -
+        class: PhpCsFixer\PHPStan\Extension\PregMatchParameterOutExtension
+        tags:
+            - phpstan.staticMethodParameterOutTypeExtension
+
+    -
+        class: PhpCsFixer\PHPStan\Extension\PregMatchTypeSpecifyingExtension
+        tags:
+            - phpstan.typeSpecifier.staticMethodTypeSpecifyingExtension

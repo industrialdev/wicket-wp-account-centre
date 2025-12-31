@@ -1,0 +1,79 @@
+===============================================
+Rule ``multiline_whitespace_before_semicolons``
+===============================================
+
+Forbid multi-line whitespace before the closing semicolon or move the semicolon
+to the new line for chained calls.
+
+Warning
+-------
+
+This rule is CONFIGURABLE
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can configure this rule using the following option: ``strategy``.
+
+Configuration
+-------------
+
+``strategy``
+~~~~~~~~~~~~
+
+Forbid multi-line whitespace or move the semicolon to the new line for chained
+calls.
+
+Allowed values: ``'new_line_for_chained_calls'`` and ``'no_multi_line'``
+
+Default value: ``'no_multi_line'``
+
+Examples
+--------
+
+Example #1
+~~~~~~~~~~
+
+*Default* configuration.
+
+.. code-block:: diff
+
+   --- Original
+   +++ New
+    <?php
+    function foo() {
+   -    return 1 + 2
+   -        ;
+   +    return 1 + 2;
+    }
+
+Example #2
+~~~~~~~~~~
+
+With configuration: ``['strategy' => 'new_line_for_chained_calls']``.
+
+.. code-block:: diff
+
+   --- Original
+   +++ New
+    <?php
+    $object->method1()
+        ->method2()
+   -    ->method(3);
+   +    ->method(3)
+   +;
+
+Rule sets
+---------
+
+The rule is part of the following rule set:
+
+- `@PhpCsFixer <./../../ruleSets/PhpCsFixer.rst>`_ with config:
+
+  ``['strategy' => 'new_line_for_chained_calls']``
+
+References
+----------
+
+- Fixer class: `PhpCsFixer\\Fixer\\Semicolon\\MultilineWhitespaceBeforeSemicolonsFixer <./../../../src/Fixer/Semicolon/MultilineWhitespaceBeforeSemicolonsFixer.php>`_
+- Test class: `PhpCsFixer\\Tests\\Fixer\\Semicolon\\MultilineWhitespaceBeforeSemicolonsFixerTest <./../../../tests/Fixer/Semicolon/MultilineWhitespaceBeforeSemicolonsFixerTest.php>`_
+
+The test class defines officially supported behaviour. Each test case is a part of our backward compatibility promise.

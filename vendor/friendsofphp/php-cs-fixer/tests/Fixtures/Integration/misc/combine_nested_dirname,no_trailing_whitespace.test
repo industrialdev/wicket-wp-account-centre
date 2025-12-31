@@ -1,0 +1,14 @@
+--TEST--
+Integration of fixers: combine_nested_dirname,no_trailing_whitespace.
+--RULESET--
+{"combine_nested_dirname": true, "no_trailing_whitespace": true}
+--EXPECT--
+<?php
+dirname($path
+, 3);
+
+--INPUT--
+<?php
+dirname(
+    dirname($path, 2)
+);

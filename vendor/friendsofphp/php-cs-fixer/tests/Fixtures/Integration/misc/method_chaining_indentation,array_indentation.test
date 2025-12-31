@@ -1,0 +1,37 @@
+--TEST--
+Integration of fixers: method_chaining_indentation,array_indentation.
+--RULESET--
+{"method_chaining_indentation": true, "array_indentation": true}
+--EXPECT--
+<?php
+Foo::bar([
+    'baz',
+])
+    ->call();
+
+function foo($foo)
+{
+    $foo
+        ->bar()
+        ->baz([
+            'foo' => 'bar',
+        ])
+    ;
+}
+
+--INPUT--
+<?php
+Foo::bar([
+		'baz',
+	])
+	    ->call();
+
+function foo($foo)
+{
+    $foo
+        ->bar()
+           ->baz([
+                'foo' => 'bar',
+            ])
+    ;
+}

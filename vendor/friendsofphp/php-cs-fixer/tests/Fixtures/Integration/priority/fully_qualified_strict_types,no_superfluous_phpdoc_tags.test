@@ -1,0 +1,19 @@
+--TEST--
+Integration of fixers: fully_qualified_strict_types,no_superfluous_phpdoc_tags.
+--RULESET--
+{"fully_qualified_strict_types": {"import_symbols": true, "phpdoc_tags": []}, "no_superfluous_phpdoc_tags": true}
+--EXPECT--
+<?php
+namespace N;
+use Foo\Bar;
+/**
+ */
+function f(Bar $x) {}
+
+--INPUT--
+<?php
+namespace N;
+/**
+ * @param Bar $x
+ */
+function f(\Foo\Bar $x) {}

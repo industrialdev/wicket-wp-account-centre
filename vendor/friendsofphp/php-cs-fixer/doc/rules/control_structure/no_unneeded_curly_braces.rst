@@ -1,0 +1,81 @@
+=================================
+Rule ``no_unneeded_curly_braces``
+=================================
+
+Removes unneeded curly braces that are superfluous and aren't part of a control
+structure's body.
+
+Warnings
+--------
+
+This rule is DEPRECATED and will be removed in the next major version 4.0
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You should use ``no_unneeded_braces`` instead.
+
+This rule is CONFIGURABLE
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can configure this rule using the following option: ``namespaces``.
+
+Configuration
+-------------
+
+``namespaces``
+~~~~~~~~~~~~~~
+
+Remove unneeded curly braces from bracketed namespaces.
+
+Allowed types: ``bool``
+
+Default value: ``false``
+
+Examples
+--------
+
+Example #1
+~~~~~~~~~~
+
+*Default* configuration.
+
+.. code-block:: diff
+
+   --- Original
+   +++ New
+   -<?php {
+   +<?php 
+        echo 1;
+   -}
+
+   +
+    switch ($b) {
+   -    case 1: {
+   +    case 1: 
+            break;
+   -    }
+   +    
+    }
+
+Example #2
+~~~~~~~~~~
+
+With configuration: ``['namespaces' => true]``.
+
+.. code-block:: diff
+
+   --- Original
+   +++ New
+    <?php
+   -namespace Foo {
+   +namespace Foo;
+        function Bar(){}
+   -}
+   +
+
+References
+----------
+
+- Fixer class: `PhpCsFixer\\Fixer\\ControlStructure\\NoUnneededCurlyBracesFixer <./../../../src/Fixer/ControlStructure/NoUnneededCurlyBracesFixer.php>`_
+- Test class: `PhpCsFixer\\Tests\\Fixer\\ControlStructure\\NoUnneededCurlyBracesFixerTest <./../../../tests/Fixer/ControlStructure/NoUnneededCurlyBracesFixerTest.php>`_
+
+The test class defines officially supported behaviour. Each test case is a part of our backward compatibility promise.

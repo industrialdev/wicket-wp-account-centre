@@ -1,0 +1,142 @@
+========================
+Rule ``echo_tag_syntax``
+========================
+
+Replaces short-echo ``<?=`` with long format ``<?php echo``/``<?php print``
+syntax, or vice-versa.
+
+Warning
+-------
+
+This rule is CONFIGURABLE
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can configure this rule using the following options: ``format``,
+``long_function``, ``shorten_simple_statements_only``.
+
+Configuration
+-------------
+
+``format``
+~~~~~~~~~~
+
+The desired language construct.
+
+Allowed values: ``'long'`` and ``'short'``
+
+Default value: ``'long'``
+
+``long_function``
+~~~~~~~~~~~~~~~~~
+
+The function to be used to expand the short echo tags.
+
+Allowed values: ``'echo'`` and ``'print'``
+
+Default value: ``'echo'``
+
+``shorten_simple_statements_only``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Render short-echo tags only in case of simple code.
+
+Allowed types: ``bool``
+
+Default value: ``true``
+
+Examples
+--------
+
+Example #1
+~~~~~~~~~~
+
+*Default* configuration.
+
+.. code-block:: diff
+
+   --- Original
+   +++ New
+   -<?=1?>
+   +<?php echo 1?>
+    <?php print '2' . '3'; ?>
+    <?php /* comment */ echo '2' . '3'; ?>
+    <?php print '2' . '3'; someFunction(); ?>
+
+Example #2
+~~~~~~~~~~
+
+With configuration: ``['format' => 'long']``.
+
+.. code-block:: diff
+
+   --- Original
+   +++ New
+   -<?=1?>
+   +<?php echo 1?>
+    <?php print '2' . '3'; ?>
+    <?php /* comment */ echo '2' . '3'; ?>
+    <?php print '2' . '3'; someFunction(); ?>
+
+Example #3
+~~~~~~~~~~
+
+With configuration: ``['format' => 'long', 'long_function' => 'print']``.
+
+.. code-block:: diff
+
+   --- Original
+   +++ New
+   -<?=1?>
+   +<?php print 1?>
+    <?php print '2' . '3'; ?>
+    <?php /* comment */ echo '2' . '3'; ?>
+    <?php print '2' . '3'; someFunction(); ?>
+
+Example #4
+~~~~~~~~~~
+
+With configuration: ``['format' => 'short']``.
+
+.. code-block:: diff
+
+   --- Original
+   +++ New
+    <?=1?>
+   -<?php print '2' . '3'; ?>
+   -<?php /* comment */ echo '2' . '3'; ?>
+   +<?= '2' . '3'; ?>
+   +<?=/* comment */ '2' . '3'; ?>
+    <?php print '2' . '3'; someFunction(); ?>
+
+Example #5
+~~~~~~~~~~
+
+With configuration: ``['format' => 'short', 'shorten_simple_statements_only' => false]``.
+
+.. code-block:: diff
+
+   --- Original
+   +++ New
+    <?=1?>
+   -<?php print '2' . '3'; ?>
+   -<?php /* comment */ echo '2' . '3'; ?>
+   -<?php print '2' . '3'; someFunction(); ?>
+   +<?= '2' . '3'; ?>
+   +<?=/* comment */ '2' . '3'; ?>
+   +<?= '2' . '3'; someFunction(); ?>
+
+Rule sets
+---------
+
+The rule is part of the following rule sets:
+
+- `@PhpCsFixer <./../../ruleSets/PhpCsFixer.rst>`_
+- `@Symfony <./../../ruleSets/Symfony.rst>`_
+
+References
+----------
+
+- Fixer class: `PhpCsFixer\\Fixer\\PhpTag\\EchoTagSyntaxFixer <./../../../src/Fixer/PhpTag/EchoTagSyntaxFixer.php>`_
+- Test class: `PhpCsFixer\\Tests\\Fixer\\PhpTag\\EchoTagSyntaxFixerTest <./../../../tests/Fixer/PhpTag/EchoTagSyntaxFixerTest.php>`_
+
+The test class defines officially supported behaviour. Each test case is a part of our backward compatibility promise.

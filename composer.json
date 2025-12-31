@@ -25,17 +25,24 @@
         }
     ],
     "require": {
-        "php": ">=8.1.0",
+        "php": ">=8.2.0",
         "industrialdev/wicket-sdk-php": "dev-master",
         "htmlburger/carbon-fields": "^3.6",
         "picocss/pico": "^2.1"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.64"
+        "brain/monkey": "^2.6",
+        "friendsofphp/php-cs-fixer": "^3.64",
+        "phpunit/phpunit": "^11.0"
     },
     "autoload": {
         "psr-4": {
             "WicketAcc\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "WicketAcc\\Tests\\": "tests/unit/"
         }
     },
     "scripts": {
@@ -57,12 +64,15 @@
         ],
         "build-pico-css": "@php ./.ci/build-pico-css.php",
         "cs:fix": "@php -r \"system(PHP_OS_FAMILY === 'Windows' ? './.ci/php.exe ./.ci/php-cs-fixer.phar fix' : (PHP_OS_FAMILY === 'Darwin' ? './.ci/php-macos ./.ci/php-cs-fixer.phar fix' : './.ci/php-linux ./.ci/php-cs-fixer.phar fix'));\"",
+        "test": "phpunit",
+        "test:unit": "phpunit --testsuite unit",
+        "test:coverage": "phpunit --coverage-html coverage",
         "post-autoload-dump": [
         ]
     },
     "config": {
         "platform": {
-            "php": "8.1.0"
+            "php": "8.2.0"
         }
     },
     "extra": {

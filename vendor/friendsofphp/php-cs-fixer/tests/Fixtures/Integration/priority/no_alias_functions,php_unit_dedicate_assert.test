@@ -1,0 +1,23 @@
+--TEST--
+Integration of fixers: no_alias_functions,php_unit_dedicate_assert.
+--RULESET--
+{"no_alias_functions": true, "php_unit_dedicate_assert": true}
+--EXPECT--
+<?php
+final class MyTest extends \PHPUnit_Framework_TestCase
+{
+    public function testSomeTest()
+    {
+        $this->assertInternalType('int', $a);
+    }
+}
+
+--INPUT--
+<?php
+final class MyTest extends \PHPUnit_Framework_TestCase
+{
+    public function testSomeTest()
+    {
+        $this->assertTrue(is_integer($a));
+    }
+}

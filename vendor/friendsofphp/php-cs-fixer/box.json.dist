@@ -1,0 +1,55 @@
+{
+    "check-requirements": false,
+    "dump-autoload": false,
+    "stub": "php-cs-fixer",
+    "compactors": [
+        "KevinGH\\Box\\Compactor\\Json",
+        "KevinGH\\Box\\Compactor\\Php"
+    ],
+    "files": [
+        "resources/.php-cs-fixer.dist.php.template",
+        "LICENSE"
+    ],
+    "finder": [
+        {
+            "in": [
+                "src",
+                "resources"
+            ],
+            "name": [
+                "*.php",
+                "*.php8",
+                "completion.*"
+            ],
+            "exclude": [
+                "Test",
+                "test",
+                "Tests",
+                "tests"
+            ],
+            "notPath": [
+                "|.*/Internal/.*|"
+            ]
+        },
+        {
+            "in": [
+                "vendor"
+            ],
+            "name": [
+                "*.php",
+                "*.php8",
+                "completion.*"
+            ],
+            "exclude": [
+                "Test",
+                "test",
+                "Tests",
+                "tests"
+            ]
+        }
+    ],
+    "blacklist": [
+        "psalm-autoload.php"
+    ],
+    "git-commit": "git-commit"
+}

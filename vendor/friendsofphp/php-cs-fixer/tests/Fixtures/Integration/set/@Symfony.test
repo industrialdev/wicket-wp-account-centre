@@ -1,0 +1,4 @@
+--TEST--
+Integration of @Symfony.
+--RULESET--
+{"@Symfony": true}

@@ -1,0 +1,251 @@
+=============================
+Rule ``php_unit_expectation``
+=============================
+
+Usages of ``->setExpectedException*`` methods MUST be replaced by
+``->expectException*`` methods.
+
+Warnings
+--------
+
+This rule is RISKY
+~~~~~~~~~~~~~~~~~~
+
+Risky when PHPUnit classes are overridden or not accessible, or when project has
+PHPUnit incompatibilities.
+
+This rule is CONFIGURABLE
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can configure this rule using the following option: ``target``.
+
+Configuration
+-------------
+
+``target``
+~~~~~~~~~~
+
+Target version of PHPUnit.
+
+Allowed values: ``'5.2'``, ``'5.6'``, ``'8.4'`` and ``'newest'``
+
+Default value: ``'newest'``
+
+Examples
+--------
+
+Example #1
+~~~~~~~~~~
+
+*Default* configuration.
+
+.. code-block:: diff
+
+   --- Original
+   +++ New
+    <?php
+    final class MyTest extends \PHPUnit_Framework_TestCase
+    {
+        public function testFoo()
+        {
+   -        $this->setExpectedException("RuntimeException", "Msg", 123);
+   +        $this->expectException("RuntimeException");
+   +        $this->expectExceptionMessage("Msg");
+   +        $this->expectExceptionCode(123);
+            foo();
+        }
+
+        public function testBar()
+        {
+   -        $this->setExpectedExceptionRegExp("RuntimeException", "/Msg.*/", 123);
+   +        $this->expectException("RuntimeException");
+   +        $this->expectExceptionMessageMatches("/Msg.*/");
+   +        $this->expectExceptionCode(123);
+            bar();
+        }
+    }
+
+Example #2
+~~~~~~~~~~
+
+With configuration: ``['target' => '8.4']``.
+
+.. code-block:: diff
+
+   --- Original
+   +++ New
+    <?php
+    final class MyTest extends \PHPUnit_Framework_TestCase
+    {
+        public function testFoo()
+        {
+   -        $this->setExpectedException("RuntimeException", null, 123);
+   +        $this->expectException("RuntimeException");
+   +        $this->expectExceptionCode(123);
+            foo();
+        }
+
+        public function testBar()
+        {
+   -        $this->setExpectedExceptionRegExp("RuntimeException", "/Msg.*/", 123);
+   +        $this->expectException("RuntimeException");
+   +        $this->expectExceptionMessageMatches("/Msg.*/");
+   +        $this->expectExceptionCode(123);
+            bar();
+        }
+    }
+
+Example #3
+~~~~~~~~~~
+
+With configuration: ``['target' => '5.6']``.
+
+.. code-block:: diff
+
+   --- Original
+   +++ New
+    <?php
+    final class MyTest extends \PHPUnit_Framework_TestCase
+    {
+        public function testFoo()
+        {
+   -        $this->setExpectedException("RuntimeException", null, 123);
+   +        $this->expectException("RuntimeException");
+   +        $this->expectExceptionCode(123);
+            foo();
+        }
+
+        public function testBar()
+        {
+   -        $this->setExpectedExceptionRegExp("RuntimeException", "/Msg.*/", 123);
+   +        $this->expectException("RuntimeException");
+   +        $this->expectExceptionMessageRegExp("/Msg.*/");
+   +        $this->expectExceptionCode(123);
+            bar();
+        }
+    }
+
+Example #4
+~~~~~~~~~~
+
+With configuration: ``['target' => '5.2']``.
+
+.. code-block:: diff
+
+   --- Original
+   +++ New
+    <?php
+    final class MyTest extends \PHPUnit_Framework_TestCase
+    {
+        public function testFoo()
+        {
+   -        $this->setExpectedException("RuntimeException", "Msg", 123);
+   +        $this->expectException("RuntimeException");
+   +        $this->expectExceptionMessage("Msg");
+   +        $this->expectExceptionCode(123);
+            foo();
+        }
+
+        public function testBar()
+        {
+            $this->setExpectedExceptionRegExp("RuntimeException", "/Msg.*/", 123);
+            bar();
+        }
+    }
+
+Rule sets
+---------
+
+The rule is part of the following rule sets:
+
+- `@PHPUnit5x2Migration:risky <./../../ruleSets/PHPUnit5x2MigrationRisky.rst>`_ with config:
+
+  ``['target' => '5.2']``
+
+- `@PHPUnit5x4Migration:risky <./../../ruleSets/PHPUnit5x4MigrationRisky.rst>`_ with config:
+
+  ``['target' => '5.2']``
+
+- `@PHPUnit5x5Migration:risky <./../../ruleSets/PHPUnit5x5MigrationRisky.rst>`_ with config:
+
+  ``['target' => '5.2']``
+
+- `@PHPUnit5x6Migration:risky <./../../ruleSets/PHPUnit5x6MigrationRisky.rst>`_ with config:
+
+  ``['target' => '5.6']``
+
+- `@PHPUnit5x7Migration:risky <./../../ruleSets/PHPUnit5x7MigrationRisky.rst>`_ with config:
+
+  ``['target' => '5.6']``
+
+- `@PHPUnit6x0Migration:risky <./../../ruleSets/PHPUnit6x0MigrationRisky.rst>`_ with config:
+
+  ``['target' => '5.6']``
+
+- `@PHPUnit7x5Migration:risky <./../../ruleSets/PHPUnit7x5MigrationRisky.rst>`_ with config:
+
+  ``['target' => '5.6']``
+
+- `@PHPUnit8x4Migration:risky <./../../ruleSets/PHPUnit8x4MigrationRisky.rst>`_ with config:
+
+  ``['target' => '8.4']``
+
+- `@PHPUnit9x1Migration:risky <./../../ruleSets/PHPUnit9x1MigrationRisky.rst>`_ with config:
+
+  ``['target' => '8.4']``
+
+- `@PHPUnit10x0Migration:risky <./../../ruleSets/PHPUnit10x0MigrationRisky.rst>`_ with config:
+
+  ``['target' => '8.4']``
+
+- `@PHPUnit11x0Migration:risky <./../../ruleSets/PHPUnit11x0MigrationRisky.rst>`_ with config:
+
+  ``['target' => '8.4']``
+
+- `@PHPUnit52Migration:risky <./../../ruleSets/PHPUnit52MigrationRisky.rst>`_ *(deprecated)* with config:
+
+  ``['target' => '5.2']``
+
+- `@PHPUnit54Migration:risky <./../../ruleSets/PHPUnit54MigrationRisky.rst>`_ *(deprecated)* with config:
+
+  ``['target' => '5.2']``
+
+- `@PHPUnit55Migration:risky <./../../ruleSets/PHPUnit55MigrationRisky.rst>`_ *(deprecated)* with config:
+
+  ``['target' => '5.2']``
+
+- `@PHPUnit56Migration:risky <./../../ruleSets/PHPUnit56MigrationRisky.rst>`_ *(deprecated)* with config:
+
+  ``['target' => '5.6']``
+
+- `@PHPUnit57Migration:risky <./../../ruleSets/PHPUnit57MigrationRisky.rst>`_ *(deprecated)* with config:
+
+  ``['target' => '5.6']``
+
+- `@PHPUnit60Migration:risky <./../../ruleSets/PHPUnit60MigrationRisky.rst>`_ *(deprecated)* with config:
+
+  ``['target' => '5.6']``
+
+- `@PHPUnit75Migration:risky <./../../ruleSets/PHPUnit75MigrationRisky.rst>`_ *(deprecated)* with config:
+
+  ``['target' => '5.6']``
+
+- `@PHPUnit84Migration:risky <./../../ruleSets/PHPUnit84MigrationRisky.rst>`_ *(deprecated)* with config:
+
+  ``['target' => '8.4']``
+
+- `@PHPUnit91Migration:risky <./../../ruleSets/PHPUnit91MigrationRisky.rst>`_ *(deprecated)* with config:
+
+  ``['target' => '8.4']``
+
+- `@PHPUnit100Migration:risky <./../../ruleSets/PHPUnit100MigrationRisky.rst>`_ *(deprecated)* with config:
+
+  ``['target' => '8.4']``
+
+References
+----------
+
+- Fixer class: `PhpCsFixer\\Fixer\\PhpUnit\\PhpUnitExpectationFixer <./../../../src/Fixer/PhpUnit/PhpUnitExpectationFixer.php>`_
+- Test class: `PhpCsFixer\\Tests\\Fixer\\PhpUnit\\PhpUnitExpectationFixerTest <./../../../tests/Fixer/PhpUnit/PhpUnitExpectationFixerTest.php>`_
+
+The test class defines officially supported behaviour. Each test case is a part of our backward compatibility promise.

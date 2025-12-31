@@ -54,7 +54,7 @@ $scssFile = $root . '/build-pico-css.scss';
 $cssOutputFile = $outCss;
 
 // Compile SCSS to CSS using Dart Sass CLI with local overrides taking precedence
-$sassCommand = "sass --no-source-map --load-path={$root}/ --load-path={$root}/../vendor/picocss/pico/scss {$scssFile} {$cssOutputFile}";
+$sassCommand = "sass --no-source-map --silence-deprecation=if-function --load-path={$root}/ --load-path={$root}/../vendor/picocss/pico/scss {$scssFile} {$cssOutputFile}";
 executeCommand($sassCommand);
 
 // Run PostCSS to scope all selectors under .wicket

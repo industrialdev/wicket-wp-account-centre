@@ -1,0 +1,26 @@
+--TEST--
+Integration of fixers: phpdoc_to_return_type,no_superfluous_phpdoc_tags.
+--RULESET--
+{"phpdoc_to_return_type": true, "no_superfluous_phpdoc_tags": true}
+--EXPECT--
+<?php
+
+class Test {
+    /**
+     */
+    public function foo(): int {
+        return 1;
+    }
+}
+
+--INPUT--
+<?php
+
+class Test {
+    /**
+     * @return int
+     */
+    public function foo() {
+        return 1;
+    }
+}

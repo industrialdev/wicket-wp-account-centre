@@ -1,0 +1,82 @@
+==============================
+Rule ``space_after_semicolon``
+==============================
+
+Fix whitespace after a semicolon.
+
+Warning
+-------
+
+This rule is CONFIGURABLE
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can configure this rule using the following option:
+``remove_in_empty_for_expressions``.
+
+Configuration
+-------------
+
+``remove_in_empty_for_expressions``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Whether spaces should be removed for empty ``for`` expressions.
+
+Allowed types: ``bool``
+
+Default value: ``false``
+
+Examples
+--------
+
+Example #1
+~~~~~~~~~~
+
+*Default* configuration.
+
+.. code-block:: diff
+
+   --- Original
+   +++ New
+    <?php
+   -sample();     $test = 1;
+   -sample();$test = 2;
+   -for ( ;;++$sample) {
+   +sample(); $test = 1;
+   +sample(); $test = 2;
+   +for ( ; ; ++$sample) {
+    }
+
+Example #2
+~~~~~~~~~~
+
+With configuration: ``['remove_in_empty_for_expressions' => true]``.
+
+.. code-block:: diff
+
+   --- Original
+   +++ New
+    <?php
+   -for ($i = 0; ; ++$i) {
+   +for ($i = 0;; ++$i) {
+    }
+
+Rule sets
+---------
+
+The rule is part of the following rule sets:
+
+- `@PhpCsFixer <./../../ruleSets/PhpCsFixer.rst>`_ with config:
+
+  ``['remove_in_empty_for_expressions' => true]``
+
+- `@Symfony <./../../ruleSets/Symfony.rst>`_ with config:
+
+  ``['remove_in_empty_for_expressions' => true]``
+
+References
+----------
+
+- Fixer class: `PhpCsFixer\\Fixer\\Semicolon\\SpaceAfterSemicolonFixer <./../../../src/Fixer/Semicolon/SpaceAfterSemicolonFixer.php>`_
+- Test class: `PhpCsFixer\\Tests\\Fixer\\Semicolon\\SpaceAfterSemicolonFixerTest <./../../../tests/Fixer/Semicolon/SpaceAfterSemicolonFixerTest.php>`_
+
+The test class defines officially supported behaviour. Each test case is a part of our backward compatibility promise.

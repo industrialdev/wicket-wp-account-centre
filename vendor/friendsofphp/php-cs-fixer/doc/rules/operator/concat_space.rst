@@ -1,0 +1,107 @@
+=====================
+Rule ``concat_space``
+=====================
+
+Concatenation should be spaced according to configuration.
+
+Warning
+-------
+
+This rule is CONFIGURABLE
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can configure this rule using the following option: ``spacing``.
+
+Configuration
+-------------
+
+``spacing``
+~~~~~~~~~~~
+
+Spacing to apply around concatenation operator.
+
+Allowed values: ``'none'`` and ``'one'``
+
+Default value: ``'none'``
+
+Examples
+--------
+
+Example #1
+~~~~~~~~~~
+
+*Default* configuration.
+
+.. code-block:: diff
+
+   --- Original
+   +++ New
+    <?php
+   -$foo = 'bar' . 3 . 'baz'.'qux';
+   +$foo = 'bar'. 3 .'baz'.'qux';
+
+Example #2
+~~~~~~~~~~
+
+With configuration: ``['spacing' => 'none']``.
+
+.. code-block:: diff
+
+   --- Original
+   +++ New
+    <?php
+   -$foo = 'bar' . 3 . 'baz'.'qux';
+   +$foo = 'bar'. 3 .'baz'.'qux';
+
+Example #3
+~~~~~~~~~~
+
+With configuration: ``['spacing' => 'one']``.
+
+.. code-block:: diff
+
+   --- Original
+   +++ New
+    <?php
+   -$foo = 'bar' . 3 . 'baz'.'qux';
+   +$foo = 'bar' . 3 . 'baz' . 'qux';
+
+Rule sets
+---------
+
+The rule is part of the following rule sets:
+
+- `@PER <./../../ruleSets/PER.rst>`_ *(deprecated)* with config:
+
+  ``['spacing' => 'one']``
+
+- `@PER-CS <./../../ruleSets/PER-CS.rst>`_ with config:
+
+  ``['spacing' => 'one']``
+
+- `@PER-CS2.0 <./../../ruleSets/PER-CS2.0.rst>`_ *(deprecated)* with config:
+
+  ``['spacing' => 'one']``
+
+- `@PER-CS2x0 <./../../ruleSets/PER-CS2x0.rst>`_ with config:
+
+  ``['spacing' => 'one']``
+
+- `@PER-CS3.0 <./../../ruleSets/PER-CS3.0.rst>`_ *(deprecated)* with config:
+
+  ``['spacing' => 'one']``
+
+- `@PER-CS3x0 <./../../ruleSets/PER-CS3x0.rst>`_ with config:
+
+  ``['spacing' => 'one']``
+
+- `@PhpCsFixer <./../../ruleSets/PhpCsFixer.rst>`_
+- `@Symfony <./../../ruleSets/Symfony.rst>`_
+
+References
+----------
+
+- Fixer class: `PhpCsFixer\\Fixer\\Operator\\ConcatSpaceFixer <./../../../src/Fixer/Operator/ConcatSpaceFixer.php>`_
+- Test class: `PhpCsFixer\\Tests\\Fixer\\Operator\\ConcatSpaceFixerTest <./../../../tests/Fixer/Operator/ConcatSpaceFixerTest.php>`_
+
+The test class defines officially supported behaviour. Each test case is a part of our backward compatibility promise.
