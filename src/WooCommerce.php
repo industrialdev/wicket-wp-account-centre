@@ -1202,15 +1202,15 @@ class WooCommerce extends WicketAcc
         // Add WooCommerce menu items
         $wc_items = [
             'orders' => [
-                'title' => __('Orders', 'wicket-acc-woo'),
+                'title' => __('Orders', 'wicket-acc'),
                 'url' => wc_get_account_endpoint_url('orders'),
             ],
             'downloads' => [
-                'title' => __('Downloads', 'wicket-acc-woo'),
+                'title' => __('Downloads', 'wicket-acc'),
                 'url' => wc_get_account_endpoint_url('downloads'),
             ],
             'payment-methods' => [
-                'title' => __('Payment Methods', 'wicket-acc-woo'),
+                'title' => __('Payment Methods', 'wicket-acc'),
                 'url' => wc_get_account_endpoint_url('payment-methods'),
             ],
         ];
@@ -1218,7 +1218,7 @@ class WooCommerce extends WicketAcc
         // Add subscriptions if WooCommerce Subscriptions is active
         if (class_exists('WC_Subscriptions')) {
             $wc_items['subscriptions'] = [
-                'title' => __('Subscriptions', 'wicket-acc-woo'),
+                'title' => __('Subscriptions', 'wicket-acc'),
                 'url' => wc_get_account_endpoint_url('subscriptions'),
             ];
         }

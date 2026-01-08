@@ -232,7 +232,7 @@ class Roles extends Init
             return [
                 'success' => false,
                 'error'   => true,
-                'message' => __('No arguments provided', 'wicket-wp-account-centre'),
+                'message' => __('No arguments provided', 'wicket-acc'),
             ];
         }
 
@@ -309,7 +309,7 @@ class Roles extends Init
         $response = [
             'success' => true,
             'error'   => false,
-            'message' => __('Role updated successfully', 'wicket-wp-account-centre'),
+            'message' => __('Role updated successfully', 'wicket-acc'),
         ];
 
         if ($response['error'] === false && !$preventRedirect) {
