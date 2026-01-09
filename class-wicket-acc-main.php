@@ -49,6 +49,12 @@ if (file_exists(WICKET_ACC_PATH . 'vendor/autoload.php')) {
     require_once WICKET_ACC_PATH . 'vendor/autoload.php';
 }
 
+// Register fatal error handler IMMEDIATELY (before plugins_loaded)
+// This ensures we catch fatal errors that occur during WordPress bootstrap
+if (class_exists(Log::class) && method_exists(Log::class, 'registerFatalErrorHandler')) {
+    Log::registerFatalErrorHandler();
+}
+
 // Initialize the plugin when all plugins are loaded
 add_action(
     'plugins_loaded',
@@ -346,8 +352,6 @@ class WicketAcc
     {
         $this->plugin_url = WICKET_ACC_URL;
         $this->plugin_path = WICKET_ACC_PATH;
-
-        Log::registerFatalErrorHandler();
 
         add_filter('wp_dropdown_pages', 'wicket_acc_alter_wp_job_manager_pages', 10, 3);
 
