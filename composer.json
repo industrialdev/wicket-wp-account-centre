@@ -49,14 +49,11 @@
     },
     "scripts": {
         "dump-autoload-prod": "@php composer dump-autoload --optimize --no-dev",
-        "remove-ci-folder": "@php -r \"if (getenv('COMPOSER_DEV_MODE') === '0') { system('rm -rf ./.ci'); }\"",
         "post-install-cmd": [
-            "@remove-ci-folder",
             "@cs:fix",
             "@build-pico-css"
         ],
         "post-update-cmd": [
-            "@remove-ci-folder",
             "@cs:fix",
             "@build-pico-css"
         ],
