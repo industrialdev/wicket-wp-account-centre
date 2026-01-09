@@ -101,6 +101,8 @@ class init extends Blocks
                         <?php do_action('wicket/acc/block/after_welcome_block_name', $person->id); ?>
                     </p>
 
+                    <?php do_action('wicket/acc/block/before_welcome_block_memberships', $person->id); ?>
+
                     <?php if ($active_memberships) { ?>
                         <?php if ($display_mdp_id): ?>
                             <p class="wicket-welcome-member-mdp-id mb-2">
@@ -254,6 +256,8 @@ class init extends Blocks
                             <?php echo apply_filters('wicket/acc/block/welcome_non_member_text', __('Non-Member', 'wicket-acc')); ?>
                         </p>
                     <?php } ?>
+
+                    <?php do_action('wicket/acc/block/after_welcome_block_memberships', $person->id); ?>
 
                 </div>
                 <?php if (
