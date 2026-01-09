@@ -48,7 +48,8 @@
         }
     },
     "scripts": {
-        "dump-autoload-prod": "@php composer dump-autoload --optimize --no-dev",
+        "production": "composer dump-autoload --optimize --no-dev",
+        "dump-autoload-prod": "@production",
         "post-install-cmd": [
             "@cs:fix",
             "@build-pico-css"
