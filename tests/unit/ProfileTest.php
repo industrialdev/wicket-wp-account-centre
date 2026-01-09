@@ -30,7 +30,8 @@ class ProfileTest extends AbstractTestCase
 
         \Brain\Monkey\Functions\stubs([
             'WACC' => new class {
-                public function getAttachmentUrlFromOption() {
+                public function getAttachmentUrlFromOption()
+                {
                     return '';
                 }
             },
@@ -49,7 +50,8 @@ class ProfileTest extends AbstractTestCase
 
         \Brain\Monkey\Functions\stubs([
             'WACC' => new class {
-                public function getAttachmentUrlFromOption() {
+                public function getAttachmentUrlFromOption()
+                {
                     return '';
                 }
             },

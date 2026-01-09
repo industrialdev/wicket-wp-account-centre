@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PHPUnit Bootstrap File.
  *
@@ -38,7 +39,7 @@ if (!defined('YEAR_IN_SECONDS')) {
 
 // Mock WordPress classes
 if (!class_exists('WP_Widget')) {
-    class WP_Widget
+    class bootstrap
     {
         public function __construct($id_base = '', $name = '', $widget_options = [], $control_options = []) {}
     }
@@ -67,4 +68,3 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 require_once dirname(__DIR__) . '/class-wicket-acc-main.php';
 
 \Brain\Monkey\tearDown();
-
