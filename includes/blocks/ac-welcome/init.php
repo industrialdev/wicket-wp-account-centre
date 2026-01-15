@@ -43,6 +43,7 @@ class init extends Blocks
         $member_since = get_field('member_since');
         $renewal_date = get_field('renewal_date');
         $display_mdp_id = get_field('display_mdp_id');
+        $display_profile_picture = get_field('display_profile_picture') ?? True; // Default this to true, to retain legacy functionality
         $image_url = get_avatar_url($current_user->ID, ['size' => '300']);
         $active_memberships = WACC()->Mdp()->Membership()->getCurrentPersonActiveMemberships($current_lang);
 
@@ -77,18 +78,20 @@ class init extends Blocks
         }
         ?>
         <div class="wicket-acc-block wicket-acc-block-welcome wp-block-wicket-acc-callout row <?php echo defined('WICKET_WP_THEME_V2') ? 'wicket-acc-block-welcome--v2' : 'bg-light-010'; ?>">
-            <div class="wicket-welcome-avatar col-2 mr-3">
-                <?php if ($image_url) {
-                    echo '<img src="'
-                        . $image_url
-                        . '?' . time() . '" alt="'
-                        . $person->given_name
-                        . ' '
-                        . $person->family_name
-                        . __(' Profile Image', 'wicket-acc')
-                        . '" />';
-                } ?>
-            </div>
+            <?php if ($display_profile_picture): ?>
+                <div class="wicket-welcome-avatar col-2 mr-3">
+                    <?php if ($image_url) {
+                        echo '<img src="'
+                            . $image_url
+                            . '?' . time() . '" alt="'
+                            . $person->given_name
+                            . ' '
+                            . $person->family_name
+                            . __(' Profile Image', 'wicket-acc')
+                            . '" />';
+                    } ?>
+                </div>
+            <?php endif; ?>
 
             <div class="wicket-welcome-content-container col row w-full">
                 <div class="wicket-welcome-content col w-full">

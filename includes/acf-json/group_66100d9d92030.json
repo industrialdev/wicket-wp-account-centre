@@ -3,6 +3,27 @@
     "title": "ACC Welcome",
     "fields": [
         {
+            "key": "field_6969024128fb8",
+            "label": "Display Profile Picture",
+            "name": "display_profile_picture",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "Control the visiblity of the profile picture in the Welcome block.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 1,
+            "allow_in_bindings": 1,
+            "ui_on_text": "",
+            "ui_off_text": "",
+            "ui": 1
+        },
+        {
             "key": "field_66100d9eca323",
             "label": "Edit Profile Button (Show\/Hide)",
             "name": "edit_profile_button",
