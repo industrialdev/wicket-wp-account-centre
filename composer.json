@@ -49,7 +49,6 @@
     },
     "scripts": {
         "production": "composer dump-autoload --optimize --no-dev",
-        "dump-autoload-prod": "@production",
         "post-install-cmd": [
             "@cs:fix",
             "@build-pico-css"
@@ -57,10 +56,6 @@
         "post-update-cmd": [
             "@cs:fix",
             "@build-pico-css"
-        ],
-        "version-bump": [
-            "@php ./.ci/version-bump.php",
-            "@cs:fix"
         ],
         "build-pico-css": "@php ./.ci/build-pico-css.php",
         "test": "pest",
@@ -75,7 +70,9 @@
         ],
         "cs:fix": "php-cs-fixer fix",
         "post-autoload-dump": [
-        ]
+            "@build-pico-css"
+        ],
+        "version-bump": "echo 'Use wicket-cli-tools: wicket plugin version-bump'"
     },
     "config": {
         "allow-plugins": {
