@@ -43,7 +43,7 @@ class init extends Blocks
         $member_since = get_field('member_since');
         $renewal_date = get_field('renewal_date');
         $display_mdp_id = get_field('display_mdp_id');
-        $display_profile_picture = get_field('display_profile_picture') ?? True; // Default this to true, to retain legacy functionality
+        $display_profile_picture = get_field('display_profile_picture') ?? true; // Default this to true, to retain legacy functionality
         $image_url = get_avatar_url($current_user->ID, ['size' => '300']);
         $active_memberships = WACC()->Mdp()->Membership()->getCurrentPersonActiveMemberships($current_lang);
 
