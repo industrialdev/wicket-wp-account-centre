@@ -90,6 +90,11 @@ class Log
         }
 
         $date_suffix = date('Y-m-d');
+        if (!function_exists('wp_hash')) {
+            error_log('Wicket Log Error: wp_hash() is not available before plugins_loaded.');
+
+            return false;
+        }
         $file_hash = wp_hash($source);
         $filename = "{$source}-{$date_suffix}-{$file_hash}.log";
         $log_file_path = self::$logBaseDir . $filename;
