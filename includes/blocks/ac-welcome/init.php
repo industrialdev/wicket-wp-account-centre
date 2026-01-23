@@ -47,10 +47,6 @@ class init extends Blocks
         $image_url = get_avatar_url($current_user->ID, ['size' => '300']);
         $active_memberships = WACC()->Mdp()->Membership()->getCurrentPersonActiveMemberships($current_lang);
 
-        $renewal_end_timestamp = $renewal_date
-            ? WACC()->Mdp()->Membership()->getCurrentPersonRenewalEndTimestamp()
-            : null;
-
         // We need to find these at the MDP at some point
         $relationship_translations = [
             'Primary Contact'             => 'Personne-ressource principale',
@@ -241,15 +237,17 @@ class init extends Blocks
                                         </p>
                                     <?php endif; ?>
 
-                                    <?php if ($renewal_date):
-                                        if ($renewal_end_timestamp && $renewal_end_timestamp > 0): ?>
-                                            <p class="wicket-welcome-renewal mb-0">
-                                                <?php echo __('Renewal Date:', 'wicket-acc'); ?>
-                                                <?php echo date('F j, Y', $renewal_end_timestamp); ?>
-                                            </p>
                                     <?php
-                                        endif;
-                                    endif; ?>
+                                    $membership_end_timestamp = !empty($membership['ends_at'])
+                                        ? strtotime($membership['ends_at'])
+                                        : null;
+
+                            if ($renewal_date && $membership_end_timestamp): ?>
+                                        <p class="wicket-welcome-renewal mb-0">
+                                            <?php echo __('Renewal Date:', 'wicket-acc'); ?>
+                                            <?php echo date('F j, Y', $membership_end_timestamp); ?>
+                                        </p>
+                                    <?php endif; ?>
                                 </div>
 
                             <?php } ?>

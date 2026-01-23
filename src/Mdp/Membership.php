@@ -737,10 +737,12 @@ class Membership extends Init
      */
     public function getPersonMaxEndDateFromEntries(string $person_uuid): ?string
     {
-        // Fetch all memberships (no filter on active_at)
+        // Fetch only active memberships to avoid using historical end dates
         $memberships = $this->getCurrentPersonMemberships([
             'person_uuid' => $person_uuid,
-            'filter' => [],
+            'filter' => [
+                'active_at' => 'now',
+            ],
         ]);
 
         if (empty($memberships['data']) || !is_array($memberships['data'])) {
