@@ -244,7 +244,7 @@ class init extends Blocks
 
                             if ($renewal_date && $membership_end_timestamp): ?>
                                         <p class="wicket-welcome-renewal mb-0">
-                                            <?php echo __('Renewal Date:', 'wicket-acc'); ?>
+                                            <?php echo apply_filters('wicket/acc/block/welcome/renewal_date_label', __('Renewal Date:', 'wicket-acc'), $membership); ?>
                                             <?php echo date('F j, Y', $membership_end_timestamp); ?>
                                         </p>
                                     <?php endif; ?>
