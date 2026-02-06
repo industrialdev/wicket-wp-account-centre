@@ -156,6 +156,10 @@ class init extends Blocks
         // Config defaults
         if (empty($config)) {
             $config['show_view_more'] = true;
+            $config['render_load_more'] = true;
+        }
+        if (!isset($config['render_load_more'])) {
+            $config['render_load_more'] = true;
         }
 
         // No data
@@ -186,7 +190,7 @@ class init extends Blocks
         endforeach;
 
         // Show more button only if not an AJAX request and there are more results
-        if ($ajax === false && $config['show_view_more'] && ($offset + $num_results) < $total_results) {
+        if ($ajax === false && $config['show_view_more'] && $config['render_load_more'] && ($offset + $num_results) < $total_results) {
             self::load_more_results($touchpoint_data, $num_results, $total_results, $offset);
         }
     }
@@ -206,11 +210,8 @@ class init extends Blocks
     {
         ?>
         <div x-data="ajaxFormHandler()">
-            <div class="wicket-ac-touchpoint__vitalsource-results container" x-html="responseMessage">
-            </div>
-
             <div class="flex load-more-container">
-                <form id="form" action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>" method="post"
+                <form action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>" method="post"
                     @submit.prevent="submitForm">
                     <input type="hidden" name="action" value="wicket_ac_touchpoint_vitalsource_results">
                     <input type="hidden" name="num_results" value="<?php echo $num_results; ?>">
@@ -235,10 +236,9 @@ class init extends Blocks
             function ajaxFormHandler() {
                 return {
                     loading: false,
-                    responseMessage: '',
                     submitForm(event) {
                         this.loading = true;
-                        const form = document.getElementById('form');
+                        const form = event.target;
                         const formData = new FormData(form);
 
                         fetch(woocommerce_params.ajax_url, {
@@ -249,9 +249,14 @@ class init extends Blocks
                             .then(data => {
                                 this.loading = false;
                                 if (data) {
-                                    this.responseMessage += data;
-                                    // Find the events list and load more container
                                     const loadMoreContainer = document.querySelector('.load-more-container');
+                                    const listContainer = document.querySelector('.vitalsource-list');
+
+                                    if (loadMoreContainer && listContainer && listContainer.contains(loadMoreContainer)) {
+                                        loadMoreContainer.insertAdjacentHTML('beforebegin', data);
+                                    } else if (listContainer) {
+                                        listContainer.insertAdjacentHTML('beforeend', data);
+                                    }
 
                                     // Update the offset for the next request
                                     const offset = parseInt(form.querySelector('[name="offset"]').value);

@@ -41,11 +41,18 @@ $description = $args['description'];
 
 
 
+	<?php $total_results = is_array( $touchpoints_results ) ? count( $touchpoints_results ) : 0; ?>
+
 	<div class="vitalsource-list">
 		<?php
         TouchpointVitalSource::display_touchpoints($touchpoints_results, $num_results, false, [
             'show_view_more' => $show_view_more,
+            'render_load_more' => false,
         ]);
 ?>
 	</div>
+
+	<?php if ( $show_view_more && $total_results > $num_results ) : ?>
+		<?php TouchpointVitalSource::load_more_results( $touchpoints_results, $num_results, $total_results, 0 ); ?>
+	<?php endif; ?>
 </section>
