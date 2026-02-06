@@ -80,6 +80,21 @@ composer test:browser
 
 **Note:** Browser tests require a local WordPress instance running with the Wicket Docker setup. Ensure you have a site (e.g., PACE or any other) running locally before executing browser tests.
 
+Before running browser tests, create a local `.env` file in the plugin root:
+
+```bash
+cp .env.example .env
+```
+
+Then update the values in `.env`:
+
+- `WICKET_BROWSER_BASE_URL` (usually `https://localhost`)
+- `WICKET_BROWSER_IGNORE_HTTPS_ERRORS` (`1` for local/self-signed SSL, otherwise `0`)
+- `WICKET_BROWSER_USERNAME`
+- `WICKET_BROWSER_PASSWORD`
+
+The `composer test:browser` script automatically loads `.env` if present.
+
 **Playwright Setup:** Install Playwright globally if desired: `npm install -g playwright@latest && npx playwright install`
 
 ### Writing New Tests
