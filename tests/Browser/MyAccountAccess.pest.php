@@ -54,15 +54,15 @@ it('redirects authenticated users from /my-account/ to /my-account/dashboard/ an
         ->type('#password', $password)
         ->assertScript(
             <<<'JS'
-            (() => {
-                const form = document.querySelector('#fm1');
-                if (!form) {
-                    return false;
-                }
-                form.submit();
-                return true;
-            })()
-            JS,
+                (() => {
+                    const form = document.querySelector('#fm1');
+                    if (!form) {
+                        return false;
+                    }
+                    form.submit();
+                    return true;
+                })()
+                JS,
             true
         )
         ->wait(4)

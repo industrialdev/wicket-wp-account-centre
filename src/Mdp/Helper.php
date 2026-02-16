@@ -242,11 +242,23 @@ class Helper extends Init
      */
     private function getReadOnlyValue(string $field, string $schema, object $entity): mixed
     {
-        if (empty($entity->data_fields)) {
+        $data_fields = null;
+
+        if (method_exists($entity, 'getAttribute')) {
+            $data_fields = $entity->getAttribute('data_fields');
+        } else {
+            $data_fields = $entity->data_fields ?? null;
+        }
+
+        if ($data_fields instanceof \Traversable) {
+            $data_fields = iterator_to_array($data_fields);
+        }
+
+        if (!is_array($data_fields) || empty($data_fields)) {
             return null;
         }
 
-        foreach ((array) $entity->data_fields as $df) {
+        foreach ($data_fields as $df) {
             $df = (array) $df; // Ensure it's an array for consistent access
             if (($df['$schema'] ?? '') === $schema) {
                 return $df['value'][$field] ?? null;

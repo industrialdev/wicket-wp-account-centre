@@ -41,7 +41,7 @@ $description = $args['description'];
 
 
 
-	<?php $total_results = is_array( $touchpoints_results ) ? count( $touchpoints_results ) : 0; ?>
+	<?php $total_results = is_array($touchpoints_results) ? count($touchpoints_results) : 0; ?>
 
 	<div class="vitalsource-list">
 		<?php
@@ -52,7 +52,7 @@ $description = $args['description'];
 ?>
 	</div>
 
-	<?php if ( $show_view_more && $total_results > $num_results ) : ?>
-		<?php TouchpointVitalSource::load_more_results( $touchpoints_results, $num_results, $total_results, 0 ); ?>
+	<?php if ($show_view_more && $total_results > $num_results) : ?>
+		<?php TouchpointVitalSource::load_more_results($touchpoints_results, $num_results, $total_results, 0); ?>
 	<?php endif; ?>
 </section>

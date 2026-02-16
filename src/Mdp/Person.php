@@ -396,9 +396,13 @@ class Person extends Init
         // Only compute if not already determined for this request
         if (is_null($has_membership)) {
             $person = $this->getCurrentPerson();
+            $role_names = $person ? $this->getPersonAttribute($person, 'role_names') : null;
+            if ($role_names instanceof \Traversable) {
+                $role_names = iterator_to_array($role_names);
+            }
 
             // Check if person data is valid and contains the role_names attribute
-            if (!$person || !isset($person->attributes->role_names) || !is_array($person->attributes->role_names)) {
+            if (!$person || !is_array($role_names)) {
                 WACC()->Log()->info(
                     'Could not determine membership status. Current person data is unavailable or roles are malformed.',
                     ['source' => __CLASS__]
@@ -406,7 +410,7 @@ class Person extends Init
                 $has_membership = false;
             } else {
                 // Check if 'member' exists in the role_names array
-                $has_membership = in_array('member', $person->attributes->role_names);
+                $has_membership = in_array('member', $role_names, true);
             }
         }
 
@@ -421,10 +425,12 @@ class Person extends Init
     public function getCurrentPersonFullName(): string
     {
         $person = $this->getCurrentPerson();
+        $given_name = $person ? $this->getPersonAttribute($person, 'given_name') : null;
+        $family_name = $person ? $this->getPersonAttribute($person, 'family_name') : null;
 
         // Ensure we have a valid person object with the necessary attributes
-        if ($person && isset($person->attributes->given_name, $person->attributes->family_name)) {
-            return trim($person->attributes->given_name . ' ' . $person->attributes->family_name);
+        if ($person && is_string($given_name) && is_string($family_name) && $given_name !== '' && $family_name !== '') {
+            return trim($given_name . ' ' . $family_name);
         }
 
         WACC()->Log()->info(
@@ -816,16 +822,60 @@ class Person extends Init
                     try {
                         $updatedPersonData = $client->patch("people/{$personUuid}", ['json' => $payload]);
                     } catch (RequestException $e) {
-                        $errorMsg = 'Failed to update person attributes.';
-                        $context = ['source' => __CLASS__, 'person_uuid' => $personUuid, 'payload' => $payload];
-                        if ($e->hasResponse()) {
-                            $context['statusCode'] = $e->getResponse()->getStatusCode();
-                            $context['responseBody'] = $e->getResponse()->getBody()->getContents();
+                        $skip_request_error_logging = false;
+
+                        // Retry once with refreshed data_field versions when MDP returns record conflict.
+                        if ($this->shouldRetryDataFieldsConflict($e, $attributesPayload)) {
+                            $retryPayload = $this->buildDataFieldsRetryPayload($personUuid, $payload);
+                            if (is_array($retryPayload)) {
+                                try {
+                                    $updatedPersonData = $client->patch("people/{$personUuid}", ['json' => $retryPayload]);
+                                    $payload = $retryPayload;
+                                } catch (RequestException $retryException) {
+                                    $e = $retryException;
+                                    $payload = $retryPayload;
+                                } catch (Exception $retryException) {
+                                    WACC()->Log()->error('Generic exception updating person attributes after conflict retry.', [
+                                        'source' => __CLASS__,
+                                        'person_uuid' => $personUuid,
+                                        'payload' => $retryPayload,
+                                        'message' => $retryException->getMessage(),
+                                        'exception_class' => get_class($retryException),
+                                    ]);
+                                    $errors[] = 'An unexpected error occurred while retrying attribute update: ' . $retryException->getMessage();
+                                    $skip_request_error_logging = true;
+                                }
+                            }
                         }
-                        WACC()->Log()->error($errorMsg, $context);
-                        $errors[] = $errorMsg . ' ' . $e->getMessage();
+
+                        if ($updatedPersonData !== null) {
+                            $skip_request_error_logging = true;
+                        }
+
+                        if (!$skip_request_error_logging) {
+                            $errorMsg = 'Failed to update person attributes.';
+                            $context = [
+                                'source' => __CLASS__,
+                                'person_uuid' => $personUuid,
+                                'payload' => $payload,
+                                'message' => $e->getMessage(),
+                                'exception_class' => get_class($e),
+                            ];
+                            if ($e->hasResponse()) {
+                                $context['statusCode'] = $e->getResponse()->getStatusCode();
+                                $context['responseBody'] = $e->getResponse()->getBody()->getContents();
+                            }
+                            WACC()->Log()->error($errorMsg, $context);
+                            $errors[] = $errorMsg . ' ' . $e->getMessage();
+                        }
                     } catch (Exception $e) {
-                        WACC()->Log()->error('Generic exception updating person attributes.', ['source' => __CLASS__, 'person_uuid' => $personUuid, 'message' => $e->getMessage()]);
+                        WACC()->Log()->error('Generic exception updating person attributes.', [
+                            'source' => __CLASS__,
+                            'person_uuid' => $personUuid,
+                            'payload' => $payload,
+                            'message' => $e->getMessage(),
+                            'exception_class' => get_class($e),
+                        ]);
                         $errors[] = 'An unexpected error occurred while updating attributes: ' . $e->getMessage();
                     }
                 }
@@ -881,6 +931,168 @@ class Person extends Init
         }
 
         return ['success' => false, 'error' => $errors, 'data' => null];
+    }
+
+    /**
+     * Get an attribute from a Wicket SDK person entity with backwards-compatible fallback.
+     *
+     * @param object $person
+     * @param string $attribute
+     *
+     * @return mixed
+     */
+    private function getPersonAttribute(object $person, string $attribute): mixed
+    {
+        if (method_exists($person, 'getAttribute')) {
+            return $person->getAttribute($attribute);
+        }
+
+        return $person->{$attribute} ?? null;
+    }
+
+    /**
+     * Check whether an update should be retried for data_fields record conflicts.
+     *
+     * @param RequestException $exception
+     * @param array $attributes_payload
+     *
+     * @return bool
+     */
+    private function shouldRetryDataFieldsConflict(RequestException $exception, array $attributes_payload): bool
+    {
+        if (!isset($attributes_payload['data_fields']) || !is_array($attributes_payload['data_fields'])) {
+            return false;
+        }
+
+        if (!$exception->hasResponse()) {
+            return false;
+        }
+
+        return (int) $exception->getResponse()->getStatusCode() === 409;
+    }
+
+    /**
+     * Build retry payload with latest data_field versions merged by schema.
+     *
+     * @param string $person_uuid
+     * @param array $payload
+     *
+     * @return array|null
+     */
+    private function buildDataFieldsRetryPayload(string $person_uuid, array $payload): ?array
+    {
+        if (!isset($payload['data']['attributes']['data_fields']) || !is_array($payload['data']['attributes']['data_fields'])) {
+            return null;
+        }
+
+        $latest_person = $this->getPersonByUuid($person_uuid);
+        if (!$latest_person) {
+            return null;
+        }
+
+        $latest_data_fields = $this->extractPersonDataFields($latest_person);
+        if (empty($latest_data_fields)) {
+            return null;
+        }
+
+        $retry_payload = $payload;
+        $retry_data_fields = [];
+
+        foreach ($retry_payload['data']['attributes']['data_fields'] as $field) {
+            $field_array = $this->normalizeDataField($field);
+            if (!is_array($field_array)) {
+                continue;
+            }
+
+            $schema_id = $field_array['$schema'] ?? ($field_array['schema'] ?? null);
+            if (!empty($schema_id)) {
+                $latest_field = $this->findDataFieldBySchema($latest_data_fields, (string) $schema_id);
+                if (is_array($latest_field) && isset($latest_field['version'])) {
+                    $field_array['version'] = (int) $latest_field['version'];
+                }
+            }
+
+            $retry_data_fields[] = $field_array;
+        }
+
+        $retry_payload['data']['attributes']['data_fields'] = $retry_data_fields;
+
+        return $retry_payload;
+    }
+
+    /**
+     * Extract data_fields from known SDK person shapes.
+     *
+     * @param object $person
+     *
+     * @return array
+     */
+    private function extractPersonDataFields(object $person): array
+    {
+        $entity_data_fields = $this->getPersonAttribute($person, 'data_fields');
+        if ($entity_data_fields instanceof \Traversable) {
+            return iterator_to_array($entity_data_fields);
+        }
+        if (is_array($entity_data_fields)) {
+            return $entity_data_fields;
+        }
+
+        return [];
+    }
+
+    /**
+     * Normalize a data_field entry to an array.
+     *
+     * @param mixed $field
+     *
+     * @return array|null
+     */
+    private function normalizeDataField(mixed $field): ?array
+    {
+        if (is_array($field)) {
+            return $field;
+        }
+
+        if (is_object($field)) {
+            if (method_exists($field, 'toArray')) {
+                $field_array = $field->toArray();
+                if (is_array($field_array)) {
+                    return $field_array;
+                }
+            }
+
+            $field_array = (array) $field;
+            if (!empty($field_array)) {
+                return $field_array;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Locate a data_field by schema identifier.
+     *
+     * @param array $data_fields
+     * @param string $schema_id
+     *
+     * @return array|null
+     */
+    private function findDataFieldBySchema(array $data_fields, string $schema_id): ?array
+    {
+        foreach ($data_fields as $field) {
+            $field_array = $this->normalizeDataField($field);
+            if (!is_array($field_array)) {
+                continue;
+            }
+
+            $field_schema = $field_array['$schema'] ?? ($field_array['schema'] ?? null);
+            if ($field_schema === $schema_id) {
+                return $field_array;
+            }
+        }
+
+        return null;
     }
 
     /**

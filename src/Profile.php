@@ -136,17 +136,27 @@ class Profile extends WicketAcc
                 $user_id = 0;
         }
 
+        $user = $user_id ? get_user_by('id', $user_id) : null;
+        $person_uuid = $user instanceof \WP_User ? $user->user_login : null;
+
         // Check for jpg, jpeg, png, or gif
         $extensions = $this->pp_extensions;
         $pp_profile_picture = '';
 
-        foreach ($extensions as $ext) {
-            $file_path = $this->pp_uploads_path . $user_id . '.' . $ext;
+        $identifiers = array_filter(array_unique([
+            $person_uuid,
+            (string) $user_id,
+        ]));
 
-            if (file_exists($file_path)) {
-                // Found it!
-                $pp_profile_picture = $this->pp_uploads_url . $user_id . '.' . $ext;
-                break;
+        foreach ($identifiers as $identifier) {
+            foreach ($extensions as $ext) {
+                $file_path = $this->pp_uploads_path . $identifier . '.' . $ext;
+
+                if (file_exists($file_path)) {
+                    // Found it!
+                    $pp_profile_picture = $this->pp_uploads_url . $identifier . '.' . $ext;
+                    break 2;
+                }
             }
         }
 
@@ -184,5 +194,301 @@ class Profile extends WicketAcc
         }
 
         return $pp_profile_picture !== $pp_profile_picture_plugin && $pp_profile_picture !== $pp_profile_picture_override;
+    }
+
+    /**
+     * Sync profile image URL into MDP additional fields (photo_link).
+     *
+     * @param string|null $profile_image_url Updated profile image URL, or null when deleted.
+     *
+     * @return void
+     */
+    public function syncProfileImageToMdp(?string $profile_image_url = null): void
+    {
+        $person_uuid = WACC()->Mdp()->Person()->getCurrentPersonUuid();
+        if (empty($person_uuid)) {
+            return;
+        }
+
+        $photo_link = $profile_image_url === null ? null : esc_url_raw($profile_image_url);
+        $schema_id = 'urn:uuid:8eb9c1b3-c272-4f38-802e-f6539ee47aa4';
+        $fields_to_update = $this->buildProfileImageDataFieldsPayload($person_uuid, $schema_id, $photo_link);
+        $result = WACC()->Mdp()->Person()->updatePerson($person_uuid, $fields_to_update);
+
+        // Retry once on version conflict after refetching latest data_fields/version.
+        if (empty($result['success']) && $this->isRecordConflictResponse($result)) {
+            $fields_to_update = $this->buildProfileImageDataFieldsPayload($person_uuid, $schema_id, $photo_link);
+            $result = WACC()->Mdp()->Person()->updatePerson($person_uuid, $fields_to_update);
+        }
+
+        if (empty($result['success'])) {
+            WACC()->Log()->error('Failed to sync profile image to MDP.', [
+                'source' => __CLASS__,
+                'person_uuid' => $person_uuid,
+                'error' => $result['error'] ?? 'unknown',
+                'mdp_response' => $result,
+            ]);
+        }
+    }
+
+    /**
+     * Build a data_fields payload for profile image synchronization.
+     *
+     * @param string $person_uuid
+     * @param string $schema_id
+     * @param string|null $photo_link
+     *
+     * @return array
+     */
+    private function buildProfileImageDataFieldsPayload(string $person_uuid, string $schema_id, ?string $photo_link): array
+    {
+        $current_person = WACC()->Mdp()->Person()->getPersonByUuid($person_uuid);
+        $current_data_fields = $this->extractPersonDataFields($current_person);
+        $data_field = $this->findDataFieldBySchema($current_data_fields, $schema_id);
+
+        if (!is_array($data_field)) {
+            if (!empty($current_data_fields)) {
+                WACC()->Log()->info('Profile image schema not found in current data_fields; creating new payload field.', [
+                    'source' => __CLASS__,
+                    'person_uuid' => $person_uuid,
+                    'schema_id' => $schema_id,
+                    'available_data_field_keys' => $this->getDataFieldShapeSummary($current_data_fields),
+                ]);
+            }
+
+            $data_field = [
+                '$schema' => $schema_id,
+                'version' => 0,
+                'value' => [],
+            ];
+        }
+
+        $data_field_value = $data_field['value'] ?? [];
+        if (!is_array($data_field_value)) {
+            $data_field_value = [];
+        }
+        $data_field_value['photo_link'] = $photo_link;
+        $data_field['value'] = $data_field_value;
+        $data_field['version'] = isset($data_field['version']) ? (int) $data_field['version'] : 0;
+
+        if (empty($data_field['$schema']) && empty($data_field['schema'])) {
+            $data_field['$schema'] = $schema_id;
+        }
+
+        return [
+            'attributes' => [
+                'data_fields' => [
+                    $data_field,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Extract data_fields from known SDK payload shapes.
+     *
+     * @param object|false $person
+     *
+     * @return array
+     */
+    private function extractPersonDataFields(object|false $person): array
+    {
+        if (!$person) {
+            return [];
+        }
+
+        // Wicket SDK entities expose attributes via magic getters; use getAttribute when available.
+        if (method_exists($person, 'getAttribute')) {
+            $entity_data_fields = $person->getAttribute('data_fields');
+            if ($entity_data_fields instanceof \Traversable) {
+                return iterator_to_array($entity_data_fields);
+            }
+            if (is_array($entity_data_fields)) {
+                return $entity_data_fields;
+            }
+        }
+
+        if (isset($person->attributes) && is_object($person->attributes)
+            && isset($person->attributes->data_fields)) {
+            if ($person->attributes->data_fields instanceof \Traversable) {
+                return iterator_to_array($person->attributes->data_fields);
+            }
+            if (is_array($person->attributes->data_fields)) {
+                return $person->attributes->data_fields;
+            }
+        }
+
+        if (isset($person->attributes) && is_array($person->attributes)
+            && isset($person->attributes['data_fields'])) {
+            if ($person->attributes['data_fields'] instanceof \Traversable) {
+                return iterator_to_array($person->attributes['data_fields']);
+            }
+            if (is_array($person->attributes['data_fields'])) {
+                return $person->attributes['data_fields'];
+            }
+        }
+
+        if (isset($person->data) && is_array($person->data)
+            && isset($person->data['attributes']['data_fields'])
+        ) {
+            if ($person->data['attributes']['data_fields'] instanceof \Traversable) {
+                return iterator_to_array($person->data['attributes']['data_fields']);
+            }
+            if (is_array($person->data['attributes']['data_fields'])) {
+                return $person->data['attributes']['data_fields'];
+            }
+        }
+
+        if (isset($person->data) && is_object($person->data)
+            && isset($person->data->attributes) && is_object($person->data->attributes)
+            && isset($person->data->attributes->data_fields)) {
+            if ($person->data->attributes->data_fields instanceof \Traversable) {
+                return iterator_to_array($person->data->attributes->data_fields);
+            }
+            if (is_array($person->data->attributes->data_fields)) {
+                return $person->data->attributes->data_fields;
+            }
+        }
+
+        // Final fallback for unknown SDK object shapes.
+        try {
+            $person_array = WACC()->Mdp()->Helper()->convertObjectToArray($person);
+
+            if (isset($person_array['attributes']) && is_array($person_array['attributes'])
+                && isset($person_array['attributes']['data_fields'])) {
+                $fallback_data_fields = $person_array['attributes']['data_fields'];
+
+                if ($fallback_data_fields instanceof \Traversable) {
+                    return iterator_to_array($fallback_data_fields);
+                }
+                if (is_array($fallback_data_fields)) {
+                    return $fallback_data_fields;
+                }
+            }
+        } catch (\Throwable $exception) {
+            WACC()->Log()->warning('Unable to normalize person object while extracting data_fields.', [
+                'source' => __CLASS__,
+                'error' => $exception->getMessage(),
+            ]);
+        }
+
+        return [];
+    }
+
+    /**
+     * Find a specific data_field entry by schema.
+     *
+     * @param array $data_fields
+     * @param string $schema_id
+     *
+     * @return array|null
+     */
+    private function findDataFieldBySchema(array $data_fields, string $schema_id): ?array
+    {
+        foreach ($data_fields as $field) {
+            $field_array = $this->normalizeDataField($field);
+            if (!is_array($field_array)) {
+                continue;
+            }
+
+            $field_schema = $field_array['$schema'] ?? ($field_array['schema'] ?? ($field_array['schema_id'] ?? ($field_array['schema_uuid'] ?? null)));
+
+            if ($field_schema === $schema_id) {
+                return $field_array;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Normalize a data_field entry to a plain array.
+     *
+     * @param mixed $field
+     *
+     * @return array|null
+     */
+    private function normalizeDataField(mixed $field): ?array
+    {
+        if (is_array($field)) {
+            return $field;
+        }
+
+        if (is_object($field)) {
+            if (method_exists($field, 'toArray')) {
+                $field_array = $field->toArray();
+                if (is_array($field_array)) {
+                    return $field_array;
+                }
+            }
+
+            $field_array = (array) $field;
+            if (!empty($field_array)) {
+                return $field_array;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Summarize available data_field entry keys for debugging shape mismatches.
+     *
+     * @param array $data_fields
+     *
+     * @return array
+     */
+    private function getDataFieldShapeSummary(array $data_fields): array
+    {
+        $summary = [];
+        foreach ($data_fields as $index => $field) {
+            $field_array = $this->normalizeDataField($field);
+            if (!is_array($field_array)) {
+                $summary[] = ['index' => $index, 'keys' => []];
+                continue;
+            }
+
+            $summary[] = [
+                'index' => $index,
+                'keys' => array_values(array_unique(array_map('strval', array_keys($field_array)))),
+                'schema' => $field_array['$schema'] ?? ($field_array['schema'] ?? ($field_array['schema_slug'] ?? null)),
+                'version' => $field_array['version'] ?? null,
+            ];
+        }
+
+        return $summary;
+    }
+
+    /**
+     * Detect MDP record conflict error from update response.
+     *
+     * @param array $result
+     *
+     * @return bool
+     */
+    private function isRecordConflictResponse(array $result): bool
+    {
+        $error_text = strtolower((string) ($result['error'] ?? ''));
+        if (str_contains($error_text, 'record_conflict')
+            || str_contains($error_text, 'record version conflict')
+            || str_contains($error_text, '409 conflict')) {
+            return true;
+        }
+
+        $error_details = $result['data']['errors_detail'] ?? [];
+        if (!is_array($error_details)) {
+            return false;
+        }
+
+        foreach ($error_details as $detail) {
+            $detail_text = strtolower((string) $detail);
+            if (str_contains($detail_text, 'record_conflict')
+                || str_contains($detail_text, 'record version conflict')
+                || str_contains($detail_text, '409 conflict')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

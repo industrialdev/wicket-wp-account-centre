@@ -7,7 +7,8 @@ defined('ABSPATH') || exit;
 
 /**
  * Handles plugin-specific logging with daily rotation and source-based grouping.
- * Logs are stored in wp-content/uploads/wicket-logs/.
+ * Logs are stored in wp-content/uploads/wc-logs/ when WooCommerce is active,
+ * otherwise wp-content/uploads/wicket-logs/.
  */
 class Log
 {
@@ -56,7 +57,8 @@ class Log
      * Logs a message to a custom file.
      *
      * Mimics WC_Logger::log functionality with daily rotation and source-based grouping.
-     * Logs are stored in wp-content/uploads/wicket-logs/.
+     * Logs are stored in wp-content/uploads/wc-logs/ when WooCommerce is active,
+     * otherwise wp-content/uploads/wicket-logs/.
      *
      * @param string $level   Log level (e.g., Log::LOG_LEVEL_DEBUG, 'info', 'error').
      * @param string $message Log message.
@@ -90,18 +92,17 @@ class Log
         }
 
         $date_suffix = date('Y-m-d');
-        if (!function_exists('wp_hash')) {
-            error_log('Wicket Log Error: wp_hash() is not available before plugins_loaded.');
-
-            return false;
-        }
         $file_hash = wp_hash($source);
-        $filename = "{$source}-{$date_suffix}-{$file_hash}.log";
+        $filename = "wicket-{$source}-{$date_suffix}-{$file_hash}.log";
         $log_file_path = self::$logBaseDir . $filename;
 
         $timestamp = date('Y-m-d\\TH:i:s\\Z'); // ISO 8601 UTC
         $formatted_level = strtoupper($level);
-        $log_entry = "{$timestamp} [{$formatted_level}]: {$message}" . PHP_EOL;
+        $context_payload = '';
+        if (!empty($context)) {
+            $context_payload = ' ' . wp_json_encode($context, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        }
+        $log_entry = "{$timestamp} [{$formatted_level}]: {$message}{$context_payload}" . PHP_EOL;
 
         if (!error_log($log_entry, 3, $log_file_path)) {
             // Fallback to standard PHP error log if custom file write fails
@@ -187,7 +188,9 @@ class Log
 
                 return false;
             }
-            self::$logBaseDir = $upload_dir['basedir'] . '/wicket-logs/';
+
+            $log_subdir = class_exists('WooCommerce') ? 'wc-logs' : 'wicket-logs';
+            self::$logBaseDir = $upload_dir['basedir'] . '/' . $log_subdir . '/';
         }
 
         if (!is_dir(self::$logBaseDir)) {

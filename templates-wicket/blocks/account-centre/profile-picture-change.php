@@ -21,7 +21,6 @@ defined('ABSPATH') || exit;
         <img src="<?php echo $args['pp_url']; ?>?<?php echo time(); ?>" alt="<?php esc_html_e('Profile Image', 'wicket-acc'); ?>" class="profile-image-img">
         <?php if ($args['is_custom']) : ?>
             <form name="wicket-acc-profile-picture-remove-form" method="post">
-                <input type="hidden" name="user_id" value="<?php echo get_current_user_id(); ?>">
                 <input type="hidden" name="action" value="wicket-acc-profile-picture-remove-form">
                 <?php wp_nonce_field('wicket-acc-profile-picture-remove-form', 'nonce'); ?>
 
@@ -54,7 +53,6 @@ defined('ABSPATH') || exit;
             <?php esc_html_e('File selected. Ready to upload!', 'wicket-acc'); ?>
         </div>
         <?php wp_nonce_field('wicket-acc-profile-picture-form', 'nonce'); ?>
-        <input type="hidden" name="user_id" value="<?php echo get_current_user_id(); ?>">
         <input type="hidden" name="action" value="wicket-acc-profile-picture-form">
     </form>
 </section>

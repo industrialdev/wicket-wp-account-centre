@@ -113,15 +113,31 @@ class User extends WicketAcc
         // If overrides are not provided, fetch data from MDP
         if (is_null($firstName) || is_null($lastName) || is_null($email)) {
             $mdp_person = WACC()->Mdp()->Person()->getPersonByUuid($uuid);
-            if (!$mdp_person || !isset($mdp_person->attributes)) {
+            if (!$mdp_person) {
                 WACC()->Log()->error('Failed to retrieve person data from MDP for user creation/update.', ['source' => __CLASS__, 'uuid' => $uuid]);
 
                 return false;
             }
-            $attributes = $mdp_person->attributes;
-            $firstName ??= $attributes->given_name ?? null;
-            $lastName ??= $attributes->family_name ?? null;
-            $email ??= $attributes->primary_email_address ?? null;
+
+            // Wicket SDK entities expose person attributes via getAttribute()/magic getters.
+            $given_name = null;
+            $family_name = null;
+            $primary_email_address = null;
+
+            if (method_exists($mdp_person, 'getAttribute')) {
+                $given_name = $mdp_person->getAttribute('given_name');
+                $family_name = $mdp_person->getAttribute('family_name');
+                $primary_email_address = $mdp_person->getAttribute('primary_email_address');
+            } else {
+                // Backward-compatible fallback if response shape changes.
+                $given_name = $mdp_person->given_name ?? null;
+                $family_name = $mdp_person->family_name ?? null;
+                $primary_email_address = $mdp_person->primary_email_address ?? null;
+            }
+
+            $firstName ??= $given_name;
+            $lastName ??= $family_name;
+            $email ??= $primary_email_address;
         }
 
         if (empty($email)) {
