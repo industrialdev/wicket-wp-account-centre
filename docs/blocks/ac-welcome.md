@@ -121,3 +121,31 @@ add_filter('wicket/acc/block/welcome_non_member_text', function($default_text) {
       return __('Visitor', 'wicket-acc');
 });
 ```
+
+#### <a id="wicket-acc-block-welcome-show-renewal-date"></a>`wicket/acc/block/welcome/show_renewal_date`
+
+Controls whether the "Renewal Date" row is displayed.
+
+- **Default value:** Uses the block ACF field `renewal_date`.
+- **Parameters:**
+  - `$show_renewal_date` (`bool`): Whether to render renewal date.
+  - `$person` (`object`): Current Wicket person object.
+  - `$membership` (`array`): Current membership row being rendered.
+  - `$active_memberships` (`array`): All active memberships for the person.
+- **Return:**
+  - `bool` Whether renewal date should be shown.
+
+#### <a id="wicket-acc-block-welcome-renewal-date-payload"></a>`wicket/acc/block/welcome/renewal_date_payload`
+
+Allows overriding the renewal date label and/or timestamp.
+
+- **Default payload:**
+  - `label` => `__('Renewal Date:', 'wicket-acc')`
+  - `timestamp` => value from `WACC()->Mdp()->Membership()->getCurrentPersonRenewalEndTimestamp()`
+- **Parameters:**
+  - `$payload` (`array`): Renewal date payload (`label`, `timestamp`).
+  - `$person` (`object`): Current Wicket person object.
+  - `$membership` (`array`): Current membership row being rendered.
+  - `$active_memberships` (`array`): All active memberships for the person.
+- **Return:**
+  - `array` Payload array with optional `label` and `timestamp`.

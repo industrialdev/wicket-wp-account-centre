@@ -47,6 +47,10 @@ class init extends Blocks
         $image_url = get_avatar_url($current_user->ID, ['size' => '300']);
         $active_memberships = WACC()->Mdp()->Membership()->getCurrentPersonActiveMemberships($current_lang);
 
+        $renewal_end_timestamp = $renewal_date
+            ? WACC()->Mdp()->Membership()->getCurrentPersonRenewalEndTimestamp()
+            : null;
+
         // We need to find these at the MDP at some point
         $relationship_translations = [
             'Primary Contact'             => 'Personne-ressource principale',
@@ -238,16 +242,44 @@ class init extends Blocks
                                     <?php endif; ?>
 
                                     <?php
-                                    $membership_end_timestamp = !empty($membership['ends_at'])
-                                        ? strtotime($membership['ends_at'])
-                                        : null;
+                                    $show_renewal_date = apply_filters(
+                                        'wicket/acc/block/welcome/show_renewal_date',
+                                        (bool) $renewal_date,
+                                        $person,
+                                        $membership,
+                                        $active_memberships
+                                    );
 
-                            if ($renewal_date && $membership_end_timestamp): ?>
-                                        <p class="wicket-welcome-renewal mb-0">
-                                            <?php echo apply_filters('wicket/acc/block/welcome/renewal_date_label', __('Renewal Date:', 'wicket-acc'), $membership); ?>
-                                            <?php echo wp_date('F j, Y', $membership_end_timestamp); ?>
-                                        </p>
-                                    <?php endif; ?>
+                            $renewal_date_payload = apply_filters(
+                                'wicket/acc/block/welcome/renewal_date_payload',
+                                [
+                                    'label' => __('Renewal Date:', 'wicket-acc'),
+                                    'timestamp' => $renewal_end_timestamp,
+                                ],
+                                $person,
+                                $membership,
+                                $active_memberships
+                            );
+
+                            if (!is_array($renewal_date_payload)) {
+                                $renewal_date_payload = [];
+                            }
+
+                            $renewal_date_label = $renewal_date_payload['label'] ?? __('Renewal Date:', 'wicket-acc');
+                            $renewal_date_timestamp = isset($renewal_date_payload['timestamp'])
+                                ? (int) $renewal_date_payload['timestamp']
+                                : 0;
+                            ?>
+
+                                    <?php if ($show_renewal_date):
+                                        if ($renewal_date_timestamp > 0): ?>
+                                            <p class="wicket-welcome-renewal mb-0">
+                                                <?php echo esc_html($renewal_date_label); ?>
+                                                <?php echo wp_date('F j, Y', $renewal_date_timestamp); ?>
+                                            </p>
+                                    <?php
+                                        endif;
+                                    endif; ?>
                                 </div>
 
                             <?php } ?>
