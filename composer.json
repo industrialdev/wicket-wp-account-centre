@@ -1,1 +1,85 @@
-{"authors":[{"homepage":"https://wicket.io","name":"Wicket Inc."}],"autoload":{"psr-4":{"WicketAcc\\":"src/"}},"autoload-dev":{"psr-4":{"WicketAcc\\Tests\\":"tests/unit/"}},"config":{"allow-plugins":{"pestphp/pest-plugin":true}},"description":"Wicket's Account Centre for WordPress","extra":{},"homepage":"https://wicket.io","keywords":["wordpress","wicket","account","centre"],"license":"GPL-2.0-or-later","name":"industrialdev/wicket-wp-account-centre","repositories":[{"no-api":true,"type":"vcs","url":"git@github.com:industrialdev/wicket-sdk-php.git"}],"require":{"htmlburger/carbon-fields":"^3.6","industrialdev/wicket-sdk-php":"dev-master","php":"\u003e=8.2.0","picocss/pico":"^2.1"},"require-dev":{"brain/monkey":"^2","friendsofphp/php-cs-fixer":"^3","pestphp/pest":"^4","pestphp/pest-plugin-browser":"^4","phpunit/phpunit":"^12"},"scripts":{"build-pico-css":"@php ./.ci/build-pico-css.php","check":["@lint","@test"],"cs:fix":"php-cs-fixer fix","format":"php-cs-fixer fix","lint":"php-cs-fixer fix --dry-run --diff","post-autoload-dump":["@build-pico-css"],"post-install-cmd":["@cs:fix","@build-pico-css"],"post-update-cmd":["@cs:fix","@build-pico-css"],"production":"rm -rf vendor \u0026\u0026 composer install --no-dev --optimize-autoloader","setup-hooks":"mkdir -p .git/hooks \u0026\u0026 cp .ci/pre-push .git/hooks/pre-push \u0026\u0026 chmod +x .git/hooks/pre-push \u0026\u0026 echo 'Git hooks installed to .git/hooks/pre-push'","test":"[ -f vendor/bin/pest ] || composer update \u0026\u0026 pest --testsuite unit","test:browser":"sh -lc 'if [ -f .env ]; then set -a; . ./.env; set +a; fi; : \"${WICKET_BROWSER_BASE_URL:=https://localhost}\"; export WICKET_BROWSER_BASE_URL; ./vendor/bin/pest --testsuite browser'","test:coverage":"pest --testsuite unit --coverage-html coverage","test:frontend":"@test:browser","test:unit":"pest --testsuite unit","version-bump":"echo 'Use wicket-cli-tools: wicket plugin version-bump'"},"type":"wordpress-plugin","version":"1.6.14"}
+{
+    "name": "industrialdev/wicket-wp-account-centre",
+    "description": "Wicket's Account Centre for WordPress",
+    "version": "1.6.14",
+    "extra": {},
+    "homepage": "https://wicket.io",
+    "keywords": [
+        "wordpress",
+        "wicket",
+        "account",
+        "centre"
+    ],
+    "license": "GPL-2.0-or-later",
+    "type": "wordpress-plugin",
+    "authors": [
+        {
+            "homepage": "https://wicket.io",
+            "name": "Wicket Inc."
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "WicketAcc\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "WicketAcc\\Tests\\": "tests/unit/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "repositories": [
+        {
+            "no-api": true,
+            "type": "vcs",
+            "url": "git@github.com:industrialdev/wicket-sdk-php.git"
+        }
+    ],
+    "require": {
+        "htmlburger/carbon-fields": "^3.6",
+        "industrialdev/wicket-sdk-php": "dev-master",
+        "php": "\u003e=8.2.0",
+        "picocss/pico": "^2.1"
+    },
+    "require-dev": {
+        "brain/monkey": "^2",
+        "friendsofphp/php-cs-fixer": "^3",
+        "pestphp/pest": "^4",
+        "pestphp/pest-plugin-browser": "^4",
+        "phpunit/phpunit": "^12"
+    },
+    "scripts": {
+        "build-pico-css": "@php ./.ci/build-pico-css.php",
+        "check": [
+            "@lint",
+            "@test"
+        ],
+        "cs:fix": "php-cs-fixer fix",
+        "format": "php-cs-fixer fix",
+        "lint": "php-cs-fixer fix --dry-run --diff",
+        "post-autoload-dump": [
+            "@build-pico-css"
+        ],
+        "post-install-cmd": [
+            "@cs:fix",
+            "@build-pico-css"
+        ],
+        "post-update-cmd": [
+            "@cs:fix",
+            "@build-pico-css"
+        ],
+        "production": "rm -rf vendor \u0026\u0026 composer install --no-dev --optimize-autoloader",
+        "setup-hooks": "mkdir -p .git/hooks \u0026\u0026 cp .ci/pre-push .git/hooks/pre-push \u0026\u0026 chmod +x .git/hooks/pre-push \u0026\u0026 echo 'Git hooks installed to .git/hooks/pre-push'",
+        "test": "[ -f vendor/bin/pest ] || composer update \u0026\u0026 pest --testsuite unit",
+        "test:browser": "sh -lc 'if [ -f .env ]; then set -a; . ./.env; set +a; fi; : \"${WICKET_BROWSER_BASE_URL:=https://localhost}\"; export WICKET_BROWSER_BASE_URL; ./vendor/bin/pest --testsuite browser'",
+        "test:coverage": "pest --testsuite unit --coverage-html coverage",
+        "test:frontend": "@test:browser",
+        "test:unit": "pest --testsuite unit",
+        "version-bump": "echo 'Use wicket-cli-tools: wicket plugin version-bump'"
+    }
+}
