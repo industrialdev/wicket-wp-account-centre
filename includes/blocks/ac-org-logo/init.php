@@ -195,8 +195,8 @@ class init extends Blocks
             return false;
         }
 
-        // Get the extension
-        $file_extension = pathinfo($_FILES['org-logo']['name'], PATHINFO_EXTENSION);
+        // Get the extension and normalize file naming to lowercase before save
+        $file_extension = strtolower((string) pathinfo($_FILES['org-logo']['name'], PATHINFO_EXTENSION));
 
         // Check if the file extension is allowed
         if (!in_array(strtolower($file_extension), array_map('strtolower', $this->pp_extensions))) {
@@ -241,8 +241,9 @@ class init extends Blocks
         }
 
         // No matter whats the file name, rename it to {user_id}.{extension}
-        $_FILES['org-logo']['name'] = $org_id . '.' . $file_extension;
-        $_FILES['org-logo']['full_path'] = $org_id . '.' . $file_extension;
+        $normalized_filename = strtolower($org_id . '.' . $file_extension);
+        $_FILES['org-logo']['name'] = $normalized_filename;
+        $_FILES['org-logo']['full_path'] = $normalized_filename;
 
         // Create subfolder if it doesn't exist
         if (!file_exists($this->uploads_path)) {

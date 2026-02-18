@@ -152,8 +152,8 @@ class init extends Blocks
             return false;
         }
 
-        // Get the extension
-        $file_extension = pathinfo($_FILES['profile-image']['name'], PATHINFO_EXTENSION);
+        // Get the extension and normalize file naming to lowercase before save
+        $file_extension = strtolower((string) pathinfo($_FILES['profile-image']['name'], PATHINFO_EXTENSION));
 
         // Check if the file extension is allowed
         if (!in_array(strtolower($file_extension), array_map('strtolower', $this->pp_extensions))) {
@@ -182,36 +182,25 @@ class init extends Blocks
             return false;
         }
 
-        $user_id = get_current_user_id();
-        $user = $user_id ? get_user_by('id', $user_id) : null;
-        $person_uuid = $user instanceof \WP_User ? $user->user_login : null;
-        $primary_identifier = $person_uuid ?: (string) $user_id;
-        if (empty($primary_identifier)) {
-            $this->setError('missing_user', __('Could not determine the current user for upload.', 'wicket-acc'));
+        // User ID
+        $user_id = sanitize_text_field(wp_unslash($form['user_id']));
 
-            return false;
-        }
+        // Remove any existing file on wicket-profile-pictures/{user_id}.{extension}
+        $file_path = $this->pp_uploads_path . $user_id . '.' . $file_extension;
 
-        // Remove any existing file on wicket-profile-pictures/{uuid}.{extension}
-        $file_path = $this->pp_uploads_path . $primary_identifier . '.' . $file_extension;
+        // Delete the file if it exists
+        foreach ($this->pp_extensions as $ext) {
+            $other_file_path = $this->pp_uploads_path . $user_id . '.' . $ext;
 
-        $identifiers = array_filter(array_unique([
-            $person_uuid,
-            (string) $user_id,
-        ]));
-        foreach ($identifiers as $identifier) {
-            foreach ($this->pp_extensions as $ext) {
-                $other_file_path = $this->pp_uploads_path . $identifier . '.' . $ext;
-
-                if (file_exists($other_file_path)) {
-                    wp_delete_file($other_file_path);
-                }
+            if (file_exists($other_file_path)) {
+                wp_delete_file($other_file_path);
             }
         }
 
-        // No matter whats the file name, rename it to {uuid}.{extension}
-        $_FILES['profile-image']['name'] = $primary_identifier . '.' . $file_extension;
-        $_FILES['profile-image']['full_path'] = $primary_identifier . '.' . $file_extension;
+        // No matter whats the file name, rename it to {user_id}.{extension}
+        $normalized_filename = strtolower($user_id . '.' . $file_extension);
+        $_FILES['profile-image']['name'] = $normalized_filename;
+        $_FILES['profile-image']['full_path'] = $normalized_filename;
 
         // Create subfolder if it doesn't exist
         if (!file_exists($this->pp_uploads_path)) {
@@ -257,8 +246,6 @@ class init extends Blocks
              * @var string|null $profile_image_url URL of the updated profile image, or null if not set.
              */
             do_action('wicket/acc/profile/edit/profile_image_updated', $profile_photo_url);
-
-            WACC()->Profile()->syncProfileImageToMdp($profile_photo_url);
         }
 
         return true;
@@ -289,22 +276,15 @@ class init extends Blocks
             return false;
         }
 
-        $user_id = get_current_user_id();
-        $user = $user_id ? get_user_by('id', $user_id) : null;
-        $person_uuid = $user instanceof \WP_User ? $user->user_login : null;
+        // User ID
+        $user_id = absint($form['user_id']);
 
-        // Remove any existing file on wicket-profile-pictures/{uuid}.{extension}
-        $identifiers = array_filter(array_unique([
-            $person_uuid,
-            (string) $user_id,
-        ]));
-        foreach ($identifiers as $identifier) {
-            foreach ($this->pp_extensions as $ext) {
-                $file_path = $this->pp_uploads_path . $identifier . '.' . $ext;
+        // Remove any existing file on wicket-profile-pictures/{user_id}.{extension}
+        foreach ($this->pp_extensions as $ext) {
+            $file_path = $this->pp_uploads_path . $user_id . '.' . $ext;
 
-                if (file_exists($file_path)) {
-                    wp_delete_file($file_path);
-                }
+            if (file_exists($file_path)) {
+                wp_delete_file($file_path);
             }
         }
 
@@ -312,7 +292,6 @@ class init extends Blocks
          * @var string|null $profile_image_url URL of the updated profile image, or null if not set.
          */
         do_action('wicket/acc/profile/edit/profile_image_updated', null);
-        WACC()->Profile()->syncProfileImageToMdp(null);
 
         return true;
     }
