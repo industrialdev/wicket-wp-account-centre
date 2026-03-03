@@ -1,0 +1,47 @@
+{
+    "key": "group_69a5f1b6ea37e",
+    "title": "ACC Individual Profile",
+    "fields": [
+        {
+            "key": "field_69a5f1b8267e9",
+            "label": "MDP JSON Fields",
+            "name": "mdp_json_fields",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "This expects JSON data for the fields property as defined here: <a href=\"https:\/\/wicket-core.s3.ca-central-1.amazonaws.com\/wicket-widgets-readme-staging.html#createpersonprofile\" target=\"_blank\">https:\/\/wicket-core.s3.ca-central-1.amazonaws.com\/wicket-widgets-readme-staging.html#createpersonprofile<\/a>. Please do not modify unless you know what you are doing. This must be valid JSON, otherwise this field is ignored.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "rows": "",
+            "placeholder": "{\"personType\": { \"hidden\": false }}",
+            "new_lines": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "wicket-ac\/ac-individual-profile"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "display_title": "",
+    "modified": 1772486400
+}

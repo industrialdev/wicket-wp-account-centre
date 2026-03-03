@@ -13,6 +13,11 @@ defined('ABSPATH') || exit;
 class init extends Blocks
 {
     /**
+     * @var string
+     */
+    protected array $mdp_json_fields = [];
+
+    /**
      * Constructor.
      */
     public function __construct(
@@ -21,6 +26,9 @@ class init extends Blocks
     ) {
         $this->block = $block;
         $this->is_preview = $is_preview;
+
+        $json_fields = get_field('mdp_json_fields');
+        $this->mdp_json_fields = json_decode($json_fields, true) ?? [];
 
         // Display the block
         $this->init_block();
@@ -33,6 +41,8 @@ class init extends Blocks
      */
     protected function init_block()
     {
-        get_component('widget-profile-individual', []);
+        get_component('widget-profile-individual', [
+            'fields' => $this->mdp_json_fields,
+        ]);
     }
 }

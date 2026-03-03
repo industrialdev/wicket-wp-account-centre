@@ -63,6 +63,27 @@
             "ui_on_text": "",
             "ui_off_text": "",
             "ui": 1
+        },
+        {
+            "key": "field_69a6f273d3cd6",
+            "label": "MDP JSON Fields",
+            "name": "mdp_json_fields",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "This expects JSON data for the fields property as defined here: <a href=\"https:\/\/wicket-core.s3.ca-central-1.amazonaws.com\/wicket-widgets-readme-staging.html#editorganizationprofile\" target=\"_blank\">https:\/\/wicket-core.s3.ca-central-1.amazonaws.com\/wicket-widgets-readme-staging.html<\/a>. Please do not modify unless you know what you are doing. This must be valid JSON, otherwise this field is ignored.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "rows": "",
+            "placeholder": "{\"legalName\": { \"hidden\": true }}",
+            "new_lines": ""
         }
     ],
     "location": [
@@ -83,6 +104,6 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "acfml_field_group_mode": "localization",
-    "modified": 1752682015
+    "display_title": "",
+    "modified": 1772550817
 }

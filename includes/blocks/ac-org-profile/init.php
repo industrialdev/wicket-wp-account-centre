@@ -13,6 +13,11 @@ defined('ABSPATH') || exit;
 class init extends Blocks
 {
     /**
+     * @var string
+     */
+    protected array $mdp_json_fields = [];
+
+    /**
      * Constructor.
      */
     public function __construct(
@@ -25,6 +30,9 @@ class init extends Blocks
 
         $this->hide_additional_info = get_field('hide_additional_info');
         $this->hide_alternate_name_field = get_field('hide_alternate_name_field');
+
+        $json_fields = get_field('mdp_json_fields');
+        $this->mdp_json_fields = json_decode($json_fields, true) ?? [];
 
         // Display the block
         $this->init_block();
@@ -140,6 +148,7 @@ class init extends Blocks
                                 accessToken: '<?php echo $access_token ?>',
                                 orgId: '<?php echo $org_id ?>',
                                 lang: "<?php echo $lang; ?>",
+                                fields: <?php echo json_encode($this->mdp_json_fields) ?>,
                                 hiddenFields: ['<?php echo implode("', '", $hidden_fields) ?>']
                             }).then(function(widget) {
                                 widget.listen(widget.eventTypes.SAVE_SUCCESS, function(payload) {
