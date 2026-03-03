@@ -220,7 +220,7 @@ class Router extends WicketAcc
      * @param string $url Target URL
      * @return void
      */
-    private function performRedirect(string $url): void
+    protected function performRedirect(string $url): void
     {
         if (headers_sent()) {
             echo '<meta http-equiv="refresh" content="0;url=' . esc_url($url) . '" />';
@@ -289,6 +289,12 @@ class Router extends WicketAcc
     public function accRedirects()
     {
         if (is_admin()) {
+            return;
+        }
+
+        // CAS service tickets are validated later on wp_loaded (priority 2).
+        // Redirecting on init would drop the ticket before authentication occurs.
+        if (!empty($_GET['ticket'])) {
             return;
         }
 
