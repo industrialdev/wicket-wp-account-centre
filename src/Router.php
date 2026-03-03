@@ -232,6 +232,55 @@ class Router extends WicketAcc
     }
 
     /**
+     * Determine if current request should redirect to dashboard.
+     *
+     * Rules:
+     * 1. Old ACC base slugs always redirect (keeps legacy behavior).
+     * 2. ACC localized root base slugs redirect only on index/root requests.
+     * 3. Language directory prefix (e.g. /fr/) is ignored for matching.
+     *
+     * @param string $request_uri
+     * @return bool
+     */
+    private function shouldRedirectRequestToDashboard(string $request_uri): bool
+    {
+        $path = (string) parse_url($request_uri, PHP_URL_PATH);
+        $segments = array_values(array_filter(explode('/', trim($path, '/'))));
+
+        if (empty($segments)) {
+            return false;
+        }
+
+        // Strip language directory prefix (e.g. /fr/ or /fr-CA/) before matching.
+        if (preg_match('/^[a-z]{2}(?:-[A-Z]{2})?$/', $segments[0])) {
+            array_shift($segments);
+        }
+
+        if (empty($segments)) {
+            return false;
+        }
+
+        $root = $segments[0];
+
+        // Keep existing behavior for old ACC aliases: redirect any route under these bases.
+        $legacy_acc_base_slugs = [
+            'account-centre',
+            'account-center',
+            'wc-account',
+            'wc-compte',
+            'wc-cuenta',
+        ];
+        if (in_array($root, $legacy_acc_base_slugs, true)) {
+            return true;
+        }
+
+        // Redirect localized ACC root index to dashboard, but not inner endpoints.
+        $localized_acc_roots = array_values($this->acc_index_slugs);
+
+        return in_array($root, $localized_acc_roots, true) && count($segments) === 1;
+    }
+
+    /**
      * Redirects for ACC
      * 1. /wc-account/ index only to /my-account/dashboard/
      * 2. Old acc slugs (account-centre) to new slugs (my-account)
@@ -244,23 +293,12 @@ class Router extends WicketAcc
         }
 
         $dashboard_url = $this->get_account_page_url('dashboard');
-        $server_request_uri = $_SERVER['REQUEST_URI'];
+        $server_request_uri = (string) ($_SERVER['REQUEST_URI'] ?? '');
 
-        // Redirect old ACC slugs to the main dashboard URL
-        $acc_old_slugs = [
-            '/account-centre',
-            '/account-center',
-            '/wc-account',
-            '/wc-compte',
-            '/wc-cuenta',
-        ];
+        if ($server_request_uri !== '' && $this->shouldRedirectRequestToDashboard($server_request_uri)) {
+            $this->performRedirect($dashboard_url);
 
-        foreach ($acc_old_slugs as $old_slug) {
-            if (str_starts_with($server_request_uri, $old_slug)) {
-                $this->performRedirect($dashboard_url);
-
-                return; // Exit after first redirect
-            }
+            return;
         }
 
         // Redirect archive page of 'my-account' CPT to the dashboard
