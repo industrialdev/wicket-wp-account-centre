@@ -47,7 +47,7 @@ class Shortcodes extends WicketAcc
         }
 
         if (empty($org_uuid)) {
-            $org_uuids_list = apply_filters('wicket_acc_org_selector_org_uuid_list', $this->orgSelectorGetOrgsList());
+            $org_uuids_list = apply_filters('wicket/acc/shortcodes/org-selector/org-uuid-list', $this->orgSelectorGetOrgsList());
         }
 
         if (empty($org_uuids_list)) {

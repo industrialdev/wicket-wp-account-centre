@@ -65,7 +65,7 @@ class ShortcodesTest extends AbstractTestCase
 
         Functions\expect('apply_filters')
             ->once()
-            ->with('wicket_acc_org_selector_org_uuid_list', ['org-123'])
+            ->with('wicket/acc/shortcodes/org-selector/org-uuid-list', ['org-123'])
             ->andReturn([]);
 
         $shortcodes = new Shortcodes();
