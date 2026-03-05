@@ -1,23 +1,56 @@
-# Wicket's ACC (Account Centre) Plugin
+# Wicket Account Centre (ACC) Documentation
 
 ## Purpose
-The Account Centre (ACC) plugin serves as a bridge between WordPress and the Member Data Platform (MDP), providing frontend blocks and functionality for organization management and member data access.
+The Account Centre (ACC) plugin serves as the central hub for member and organization management in WordPress. It bridges WordPress with the Wicket Member Data Platform (MDP), providing a suite of interactive blocks and features for:
+- Individual Profile Management
+- Organization Management (Roster, Profiles, Documents)
+- WooCommerce Integration (Subscriptions, Orders, Payment Methods)
+- Third-party Touchpoints (Cvent, Moodle, Zoom, etc.)
 
-# Technical Architecture
+## Technical Architecture
 
-## Technical Stack
-- Advanced Custom Fields Pro: Block creation and management
-- TailwindCSS: Styling and component design. Read and re-use CSS variables in /uploads/wicket-theme/css/theme-variables.css for custom styling
-- Datastar: Dynamic UI updates and API interactions using Hypermedia
-- MDP API: Data source integration
+### Core Stack
+- **PHP 8.2+**: Modern PHP features with strict typing.
+- **PSR-4 Autoloading**: Managed via Composer (`WicketAcc\` namespace).
+- **Advanced Custom Fields (ACF) Pro**: Powering the custom blocks.
+- **Datastar**: Real-time, hypermedia-driven UI updates for dynamic components.
+- **TailwindCSS**: Utility-first styling with theme variable integration.
+- **MDP API**: The primary data source for all member and organization records.
 
-## Code Structure
-- **PSR-4 Autoloading**: The plugin uses Composer for dependency management and follows the PSR-4 standard for autoloading classes.
-- **Source Directory**: All PHP classes are located in the `src/` directory, organized by namespaces.
-- **Main Plugin File**: The entry point is `class-wicket-acc-main.php`, which initializes the plugin and its components.
+### Plugin Structure
+- `src/`: Core logic and service classes (PSR-4).
+- `includes/`: Legacy helpers and block definitions (ACF).
+- `templates-wicket/`: HTML templates for blocks and pages.
+- `assets/`: Frontend CSS and JS.
+- `docs/`: Technical and feature documentation.
 
-## Security
-- WordPress capabilities mapping to MDP roles
-- WordPress nonce validation
-- API token management
-- REQUEST (GET/POST) data validation and sanitization according to WordPress standards
+### Core Services
+The plugin uses a service-oriented architecture accessed via the `WACC()` singleton:
+- `WACC()->Mdp()`: MDP API integration.
+- `WACC()->Profile()`: Individual user profile management.
+- `WACC()->OrganizationManagement()`: Core organization logic.
+- `WACC()->OrganizationRoster()`: Organization member management.
+- `WACC()->WooCommerce()`: Integration for WC endpoints.
+- `WACC()->Blocks()`: Custom block registration and logic.
+
+## Key Concepts
+
+### Datastar Integration
+Most dynamic interactions (profile updates, member list filtering, organization switching) use **Datastar**. This allows for a fast, "app-like" feel without full page reloads, using server-rendered HTML fragments.
+
+### Theme Variables
+Styling is strictly controlled via CSS variables. Custom styles should always reference variables from `/uploads/wicket-theme/css/theme-variables.css` to ensure brand consistency.
+
+### Security
+- **Nonce Validation**: All state-changing actions require a valid WordPress nonce.
+- **Capability Mapping**: WP roles and capabilities are mapped to MDP permissions.
+- **Sanitization**: All input/output is sanitized and escaped according to WP standards.
+
+## Documentation Links
+- [Plugin Entrypoint](./technical/plugin-entrypoint.md)
+- [Global Helper: WACC()](./technical/functions.md)
+- [Wicket PHP SDK & MDP Integration](./technical/wicket-php-sdk.md)
+- [Developer Hooks (Filters & Actions)](./technical/hooks.md)
+- [Organization Management Overview](./feature-organization-management/organization-management-general.md)
+- [WooCommerce Integration](./integration/woocommerce.md)
+- [Deprecated Functions](./technical/deprecated-functions.md)

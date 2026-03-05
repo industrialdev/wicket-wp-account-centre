@@ -1,177 +1,90 @@
 # AC Base Block Documentation
 
 ## Overview
-The AC Base Block serves as a template for creating new Account Centre blocks. It demonstrates the basic structure and common functionality that blocks should implement.
+The `_ac-base-block` serves as the blueprint for all Account Centre blocks. It provides a standardized structure for initialization, template rendering, and form processing.
 
 ## Block Architecture
 
 ### Directory Structure
 ```
-_ac-base-block/
-├── block.json       # Block registration and settings
-├── init.php        # Block initialization and logic
-├── render.php      # Template renderer
-└── templates/     # Block templates
-    ├── base-block.php  # Main template
-    ├── error.php      # Error template
-    └── success.php    # Success template
+ac-new-block/
+├── block.json       # Registration, metadata, and ACF configuration
+├── init.php        # Core logic and initialization class
+├── render.php      # Entry point for the block renderer
+├── ajax.php        # (Optional) AJAX handlers for the block
+├── block-styles.css # CSS for the block
+└── block-script.js  # JS for the block
 ```
 
-## Core Functionality
+## Core Implementation
 
-### Block Class Structure
+### The `init` Class
+Every block should have an `init.php` defining a class that extends `WicketAcc\Blocks`.
+
 ```php
-namespace WicketAcc\Blocks\BaseBlock;
+namespace WicketAcc\Blocks\NewBlock;
 
-use WicketAcc\WicketAcc;
+use WicketAcc\Blocks;
 
-/**
- * The main class for the base block.
- *
- * This class is intended to be copied and adapted for new blocks.
- * The filename `init.php` is expected to contain a class named `init`.
- */
-class init extends WicketAcc {
-    /**
-     * The block settings and attributes.
-     * @var array
-     */
-    protected array $block = [];
-
-    /**
-     * Whether the block is rendered in the editor preview.
-     * @var bool
-     */
-    protected bool $is_preview = false;
-
-    /**
-     * Constructor.
-     *
-     * @param array $block The block settings and attributes.
-     * @param bool $is_preview True when rendered in the editor.
-     */
-    public function __construct(array $block = [], bool $is_preview = false) {
+class init extends Blocks
+{
+    public function __construct(
+        protected array $block = [],
+        protected bool $is_preview = false,
+        protected ?Blocks $blocks = null
+    ) {
         $this->block = $block;
         $this->is_preview = $is_preview;
+        $this->blocks = $blocks ?? new Blocks();
+        $this->render_block();
     }
 
-    /**
-     * Renders the block's display output.
-     */
-    protected function display_block(): void {
-        // Implementation in child/copied class
-    }
+    public function render_block()
+    {
+        // 1. Fetch ACF fields
+        $title = get_field('field_name');
 
-    /**
-     * Processes form submissions for the block.
-     *
-     * @return bool|void
-     */
-    protected function process_form() {
-        // Implementation in child/copied class
+        // 2. Prepare arguments for the template
+        $args = [
+            'title' => $title,
+            'attrs' => get_block_wrapper_attributes(),
+        ];
+
+        // 3. Render the template
+        $this->blocks->render_template('new-block-template', $args);
     }
 }
 ```
 
-### Implementation Details
+### Template Hierarchy
+Templates are resolved in the following order:
+1. **Theme**: `your-theme/templates-wicket/blocks/account-centre/{template-name}.php`
+2. **Plugin**: `wicket-wp-account-centre/templates-wicket/blocks/account-centre/{template-name}.php`
 
-1. **Block Initialization**
-   - Constructor parameter handling
-   - Preview mode support
-   - Block data management
-   - Template rendering setup
+## Best Practices
 
-2. **Form Processing**
-   - Nonce verification
-   - Admin check prevention
-   - Form data sanitization
-   - Action validation
+### 1. Naming Conventions
+- **ACF Field Prefix**: Use a unique 3-5 character prefix for all fields (e.g., `nb_` for New Block) to avoid collisions in the database.
+- **Template Slugs**: Use kebab-case for template filenames.
 
-3. **Template Management**
-   - Success template rendering
-   - Error template rendering
-   - Base template rendering
-   - Dynamic argument passing
+### 2. Styling
+- Always use Wicket theme variables from `theme-variables.css`.
+- Prefer TailwindCSS utility classes in your templates for layout.
+- Use `get_block_wrapper_attributes()` to support standard Gutenberg alignment and spacing settings.
 
-### Features to Implement
+### 3. Dynamic Interaction
+- Use **Datastar** (`data-star="..."`) for real-time UI updates.
+- If using standard AJAX, register handlers in `ajax.php`.
 
-1. **Required Methods**
-   - `__construct()`: Block initialization
-   - `display_block()`: Content rendering
-   - `process_form()`: Form handling
+### 4. Security
+- Use `wp_nonce_field()` in forms.
+- Sanitize all `$_GET` and `$_POST` data using WordPress standard functions.
+- Perform capability checks before displaying sensitive information.
 
-2. **Security Measures**
-   - WordPress nonce verification
-   - Admin area protection
-   - Input sanitization
-   - Form action validation
-
-3. **Template Structure**
-   - Base template for content
-   - Error template for failures
-   - Success template for confirmations
-
-### Integration Points
-
-1. **WordPress Core**
-   - Nonce system
-   - Admin detection
-   - Form processing
-   - Template rendering
-
-2. **WicketAcc Framework**
-   - Block registration
-   - Template management
-   - Error handling
-   - Form processing
-
-### Error Handling
-
-1. **Form Processing**
-   - Invalid nonce handling
-   - Missing action handling
-   - Admin area protection
-   - Process result handling
-
-2. **Template Fallbacks**
-   - Error template display
-   - Success confirmation
-   - Base content fallback
-
-## Creating a New Block
-
-1. **Directory Setup**
-   ```bash
-   # Create block directory
-   mkdir -p ac-new-block/templates
-   
-   # Copy base files
-   cp _ac-base-block/block.json ac-new-block/
-   cp _ac-base-block/init.php ac-new-block/
-   cp _ac-base-block/render.php ac-new-block/
-   cp -r _ac-base-block/templates/* ac-new-block/templates/
-   ```
-
-2. **Update Namespace**
-   ```php
-   namespace WicketAcc\Blocks\NewBlock;
-   ```
-
-3. **Modify block.json**
-   ```json
-   {
-       "name": "wicket-ac/new-block",
-       "title": "New Block",
-       "category": "wicket-blocks"
-   }
-   ```
-
-4. **Implement Required Methods**
-   - Extend constructor if needed
-   - Override display_block()
-   - Add form processing if required
-
-5. **Create Templates**
-   - Modify base template
-   - Update error handling
-   - Customize success messages
+## Creating a New Block (Quick Start)
+1. Create a new folder in `includes/blocks/`.
+2. Copy `block.json`, `init.php`, and `render.php` from `_ac-base-block`.
+3. Update the `name` and `title` in `block.json`.
+4. Update the namespace in `init.php`.
+5. Create a corresponding template file in `templates-wicket/blocks/account-centre/`.
+6. Add your ACF field group in the WP Admin and export the JSON to `includes/acf-json/`.

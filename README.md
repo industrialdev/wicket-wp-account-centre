@@ -195,6 +195,13 @@ composer build-pico-css  # Rebuild scoped Pico CSS for non-Wicket themes
 
 Blocks in this plugin assume Wicket theme styles. When the plugin runs inside a non-Wicket theme, we ship a scoped Pico CSS bundle to keep ACC blocks readable. The `@build-pico-css` composer script compiles `./.ci/build-pico-css.scss` with Dart Sass, then scopes the output under `.wicket` via PostCSS so it will not leak into the host theme. Run this script if you change block styles or upgrade Pico; ensure Dart Sass (`sass`) and PostCSS are installed on your system.
 
-# Documentation
+## Documentation
 
-Check this plugin documentation [here](docs/).
+Full documentation for this plugin, including technical architecture, available blocks, and developer hooks, can be found in the [docs/](docs/overview.md) directory.
+
+### Key Documentation Links:
+- **[Overview](docs/overview.md)** - Technical stack, architecture, and core services.
+- **[Organization Management](docs/feature-organization-management/organization-management-general.md)** - Roster, profiles, and subsidiary management.
+- **[Developer Hooks](docs/technical/hooks.md)** - Available filters and actions.
+- **[Custom Blocks](docs/blocks/base-block.md)** - Guide for working with ACF blocks.
+- **[WooCommerce Integration](docs/integration/woocommerce.md)** - WC endpoint customizations.

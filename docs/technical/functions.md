@@ -1,170 +1,49 @@
-# Helper Functions Documentation
+# Global Helper: WACC()
 
-## Global Helper Function: WACC()
+## Overview
+The `WACC()` function is the central singleton accessor for the Wicket Account Centre plugin. It provides a standardized way to access all core services and helper methods without relying on global variables.
 
-### Overview
-The `WACC()` function serves as a global singleton accessor for plugin functionality. It provides a single entry point to access all helper methods and registered classes throughout the plugin.
+## Usage
+The `WACC()` function returns the singleton instance of the `WicketAcc` class. Services are accessed as dynamic methods:
 
-### Implementation
 ```php
-/**
- * Magic wrapper Class for WACC() helpers.
- *
- * @return MethodRouter Singleton instance
- */
-function WACC()
-{
-    static $instance = null;
+// Accessing the Profile service
+$profile_data = WACC()->Profile()->getUserProfileData();
 
-    if ($instance === null) {
-        $instance = new MethodRouter();
-    }
+// Accessing the MDP API integration
+$token = WACC()->Mdp()->getToken();
 
-    return $instance;
-}
+// Accessing helper methods
+$is_active = WACC()->Helpers()->is_account_active($user_id);
 ```
 
-### Usage Guidelines
+## Available Services
+The following services are registered and accessible via `WACC()`:
 
-1. **Direct Method Access**
-   ```php
-   // Access helper methods directly
-   WACC()->methodName();
-   ```
+| Service | Accessor | Purpose |
+|         |          |         |
+| **MDP API** | `WACC()->Mdp()` | Communication with the Member Data Platform. |
+| **Profile** | `WACC()->Profile()` | Logic for individual user profiles. |
+| **Org Management** | `WACC()->OrganizationManagement()` | Core logic for organization-level features. |
+| **Org Roster** | `WACC()->OrganizationRoster()` | Member/Roster management logic. |
+| **Blocks** | `WACC()->Blocks()` | ACF Block registration and template rendering. |
+| **WooCommerce** | `WACC()->WooCommerce()` | WooCommerce endpoint and URL management. |
+| **Router** | `WACC()->Router()` | URL routing, page IDs, and template resolution. |
+| **User** | `WACC()->User()` | User utility methods (metadata, roles, sync). |
+| **Helpers** | `WACC()->Helpers()` | General utility functions (formatting, validation). |
+| **Log** | `WACC()->Log()` | Centralized logging and error handling. |
 
-2. **Class Method Access**
-   ```php
-   // Access methods from registered classes
-   WACC()->className()->methodName();
-   ```
+## Coding Standards for Helpers
+- **Location**: Core logic should reside in the `src/` directory within their respective service classes.
+- **Naming**: Use camelCase for methods (`getUserData`) and snake_case for legacy global helpers if necessary.
+- **Strict Typing**: All new helper methods should use PHP 8.2+ strict typing for parameters and return values.
+- **Security**: Helpers that modify state or fetch sensitive data must perform capability checks and nonce validation.
 
-### Architecture Notes
+## Adding a New Helper
+To add a new helper method:
+1. Identify the most relevant service class in `src/`.
+2. Add the method to that class with appropriate visibility (usually `public`).
+3. If no service fits, consider adding it to `src/Helpers.php` or creating a new service in `src/Services/`.
 
-1. **Singleton Pattern**
-   - Single instance maintained across all calls
-   - Lazy initialization on first use
-   - Static instance storage
-
-2. **Method Routing**
-   - Utilizes MethodRouter class
-   - Provides access to registered classes
-   - Maintains consistent access patterns
-
-### Extension Guidelines
-
-1. **Adding New Functionality**
-   - DO NOT add new helpers to `helpers.php`
-   - Use `class-wicket-acc-helpers.php` for new helper methods
-   - Register classes through `class-acc-helpers-router.php`
-
-2. **Class Registration**
-   ```php
-   // Example class registration in router
-   class YourHelper {
-       public function yourMethod() {
-           // Method implementation
-       }
-   }
-
-   // Access in code
-   WACC()->yourHelper()->yourMethod();
-   ```
-
-### Best Practices
-
-1. **Code Organization**
-   - Keep helper methods in appropriate classes
-   - Use meaningful class and method names
-   - Follow WordPress coding standards
-
-2. **Method Implementation**
-   - Keep methods focused and single-purpose
-   - Use proper error handling
-   - Document method parameters and returns
-
-3. **Security Considerations**
-   - Implement proper access controls
-   - Validate and sanitize inputs
-   - Follow WordPress security best practices
-
-### Common Helper Classes
-
-1. **Mdp**
-   - API integration methods
-   - Data synchronization
-   - Error handling
-
-2. **Router**
-   - URL handling
-   - Endpoint management
-   - Request routing
-
-3. **Blocks**
-   - Block registration
-   - Template handling
-   - Block rendering
-
-4. **User**
-   - User management
-   - Profile handling
-   - Permission checks
-
-### Integration Points
-
-1. **WordPress Core**
-   - Action and filter hooks
-   - Database interactions
-   - User management
-
-2. **WooCommerce**
-   - Order processing
-   - Account management
-   - Endpoint integration
-
-3. **External Services**
-   - MDP API integration
-   - Third-party services
-   - Data synchronization
-
-### Error Handling
-
-1. **Common Patterns**
-   - Use WordPress error objects
-   - Implement proper logging
-   - Provide meaningful error messages
-
-2. **Security**
-   - Validate user capabilities
-   - Sanitize inputs and outputs
-   - Implement nonce checks
-
-### Development Notes
-
-1. **Adding New Helpers**
-   ```php
-   // In class-wicket-acc-helpers.php
-   class Helpers {
-       public function newHelperMethod() {
-           // Implementation
-       }
-   }
-
-   // Usage
-   WACC()->newHelperMethod();
-   ```
-
-2. **Exposing Class Methods**
-   ```php
-   // In class-acc-helpers-router.php
-   class HelperRouter {
-       public function register_class() {
-           // Registration logic
-       }
-   }
-   ```
-
-3. **Deprecation Process**
-   - Mark deprecated methods with `@deprecated`
-   - Provide migration path
-   - Maintain backward compatibility
-
+## Deprecation
+Legacy functions in `includes/helpers.php` and `includes/legacy.php` are being phased out. When using these, a `_doing_it_wrong()` notice or `WACC()->Log()->deprecated()` call should be triggered, pointing to the new `WACC()` equivalent.

@@ -1,7 +1,7 @@
 # Organization Selector Shortcode
 
 ## Overview
-The Organization Selector Shortcode provides a reusable way to implement organization selection across the Account Centre plugin. It serves as a foundational component that other blocks can utilize to maintain consistent organization context.
+The Organization Selector shortcode (`[wicket_organization_selector]`) provides a reusable interface for users to switch their current organization context. This is essential for users who manage multiple organizations through the Account Centre.
 
 ## Usage
 
@@ -12,128 +12,58 @@ The Organization Selector Shortcode provides a reusable way to implement organiz
 
 ### Advanced Implementation
 ```php
-[wicket_organization_selector mode="cards" filter="active" show_count="true" callback="refreshContent"]
+[wicket_organization_selector mode="dropdown" filter="active" show_count="true"]
 ```
 
 ## Attributes
 
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `mode` | string | "cards" | Display mode: "cards", "list", or "dropdown" |
-| `filter` | string | "all" | Filter organizations: "all", "active", "inactive" |
-| `show_count` | boolean | false | Show organization count in header |
-| `callback` | string | null | JavaScript function to call after selection |
+| `mode` | string | "cards" | Display mode: `cards` (grid), `list` (simple list), or `dropdown`. |
+| `filter` | string | "all" | Filter organizations: `all`, `active`, `inactive`. |
+| `show_count` | boolean | false | Show the number of members in each organization. |
+| `redirect` | string | "" | URL to redirect to after a new organization is selected. |
 
-## Display Modes
+## Core Functionality
 
-### Cards Mode
-- Grid layout with organization cards
-- Shows organization logo, name, and key metrics
-- Best for dashboards and main navigation
+### 1. Context Switching
+When a user selects an organization:
+- **Parameter Update**: The `org_uuid` or `child_org_id` URL parameter is updated.
+- **Session Persistence**: The selection is typically stored in the user's session or a WordPress transient to maintain context across pages.
+- **Service**: `WACC()->Mdp()->Organization()->getOrganizationByUuid()`.
 
-### List Mode
-- Compact list view
-- Shows essential information
-- Ideal for sidebars and navigation menus
+### 2. Multi-organization Display
+The selector lists all organizations associated with the current user:
+- **Service**: `WACC()->Mdp()->Organization()->getCurrentUserOrganizations()`.
+- **Relationship Type**: Usually filtered to only show organizations where the user has management roles (`org_editor`, `membership_manager`).
 
-### Dropdown Mode
-- Simple dropdown selector
-- Minimal space requirement
-- Perfect for headers and tight spaces
+## Technical Implementation
 
-## State Management
-- Uses WordPress transients for persistence
-- Maintains selection across page loads
-- Automatically clears on user logout
+### Core Services
+- `WACC()->Mdp()->Organization()`: API interaction for fetching organization lists.
+- `WACC()->Shortcodes()`: Registration and handling of the `[wicket_organization_selector]` tag.
+- `WACC()->OrganizationProfile()`: Retrieves logos for the card/list display.
+
+### Dynamic Experience (Datastar)
+The shortcode is enhanced with **Datastar** to provide real-time updates:
+- **Live Filtering**: Filter the list as the user types in a search box.
+- **Instant Switching**: Change organization context without a full page reload for supported blocks.
 
 ## Events & Hooks
 
 ### Actions
-```php
-do_action('wicket/acc/organization_selected', $organization_id);
-do_action('wicket/acc/organization_changed', $new_org_id, $old_org_id);
-```
+- `wicket/acc/organization_selected`: Triggered when an organization is clicked.
+- `wicket/acc/organization_changed`: Triggered when the current organization context is successfully updated.
 
 ### Filters
-```php
-apply_filters('wicket/acc/organization_selector_modes', $modes);
-apply_filters('wicket/acc/organization_selector_display', $html, $mode);
-```
-
-## Integration Example
-
-### PHP Template
-```php
-<?php
-// In your template or block
-echo do_shortcode('[wicket_organization_selector mode="cards" filter="active"]');
-?>
-```
-
-### JavaScript Callback
-```javascript
-// In your JavaScript file
-function refreshContent(organizationId) {
-    // Handle organization change
-    htmx.trigger('#content-area', 'refresh', { organizationId: organizationId });
-}
-```
-
-## Performance Considerations
-- Implements caching for organization list
-- Uses Datastar for efficient updates
-- Minimizes API calls through state management
-
-## Accessibility
-- Follows WCAG 2.1 guidelines
-- Includes proper ARIA labels
-- Keyboard navigation support
-
-## Security
-- Validates all shortcode attributes
-- Implements WordPress nonces
-- Respects user capabilities
-
-## Data Structure
-
-### Organization Data
-Each organization in the selector includes:
-- ID
-- Name
-- Logo URL
-- Status (active/inactive)
-- Member count
-- User role within organization
-- Additional metadata based on display mode
-
-### Cache Structure
-```php
-// Transient key format
-$key = 'wicket_org_selector_' . get_current_user_id();
-
-// Cached data structure
-$cache = [
-    'organizations' => [], // List of organizations
-    'last_updated' => time(),
-    'selected_id' => null,
-];
-```
+- `wicket/acc/organization_selector_query_args`: Filter the MDP API query parameters.
+- `wicket/acc/organization_selector_template`: Override the HTML template used for rendering.
 
 ## Access Control
+- **Viewing**: Authenticated users who have at least one verified relationship with an organization.
+- **Selection**: Restricted to organizations where the user has valid management roles.
 
-#### Required Roles
-- Any authenticated user with at least one organization membership can view this block
-- No additional role requirements for basic view
-- Role-based visibility for action links as specified in Action Links Logic
-
-#### Validation Method
-`OrganizationManager::validateUserAuthentication(): bool`
-
-This method will:
-1. Verify user is logged in
-2. Verify user has a valid Wicket UUID
-3. Return boolean indicating authentication status
-
-## Legacy Functions to be Refactored
-- `wicket_orgman_get_person_organizations()`
-- `get_wicket_user_uuid()`
+## Security Best Practices
+- **UUID Sanitization**: Always sanitize organization UUIDs before performing context switches.
+- **Capability Checks**: Explicitly verify the user's role in the target organization before updating the session context.
+- **Nonce Protection**: Context switches performed via AJAX must include a valid WordPress nonce.

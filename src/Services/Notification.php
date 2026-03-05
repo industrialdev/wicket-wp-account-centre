@@ -184,7 +184,7 @@ class Notification
             esc_url($membershipLink)
         );
 
-        $fromEmail = apply_filters('wicket_approval_email_from', get_bloginfo('admin_email'));
+        $fromEmail = apply_filters('wicket/acc/notifications/approval_email_from', get_bloginfo('admin_email'));
         $fromName = get_bloginfo('name');
 
         $headers = [
