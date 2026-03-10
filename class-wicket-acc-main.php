@@ -15,7 +15,7 @@ use WicketAcc\Services\Notification;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Custom account management system for Wicket. Provides user account features, organization management, and additional blocks and pages. Integrates with WooCommerce when available.
- * Version:           1.6.23
+ * Version:           1.6.24
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -372,6 +372,7 @@ class WicketAcc
         $this->instances = [
             'Mdp'                    => new Mdp(),
             'Profile'                => new Profile(),
+            'ProfilePictureFallback' => new ProfilePictureFallback(),
             'OrganizationManagement' => new OrganizationManagement(),
             'OrganizationProfile'    => new OrganizationProfile(),
             'OrganizationRoster'     => new OrganizationRoster(),
