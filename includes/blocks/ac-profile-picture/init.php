@@ -54,6 +54,11 @@ class init extends Blocks
     {
         $this->error_type = $type;
         $this->error_message = $message;
+        WACC()->Log()->warning('Profile picture update failed.', [
+            'source' => __CLASS__,
+            'error_type' => $type,
+            'message' => $message,
+        ]);
     }
 
     /**
@@ -182,23 +187,25 @@ class init extends Blocks
             return false;
         }
 
-        // User ID
-        $user_id = sanitize_text_field(wp_unslash($form['user_id']));
+        $profile_owner = $this->resolveProfilePictureOwner();
+        if ($profile_owner === null) {
+            $this->setError('invalid_user', __('Could not determine the current user for this upload.', 'wicket-acc'));
 
-        // Remove any existing file on wicket-profile-pictures/{user_id}.{extension}
-        $file_path = $this->pp_uploads_path . $user_id . '.' . $file_extension;
-
-        // Delete the file if it exists
-        foreach ($this->pp_extensions as $ext) {
-            $other_file_path = $this->pp_uploads_path . $user_id . '.' . $ext;
-
-            if (file_exists($other_file_path)) {
-                wp_delete_file($other_file_path);
-            }
+            return false;
         }
 
-        // No matter whats the file name, rename it to {user_id}.{extension}
-        $normalized_filename = strtolower($user_id . '.' . $file_extension);
+        $file_owner = $profile_owner['person_uuid'] !== '' ? $profile_owner['person_uuid'] : (string) $profile_owner['user_id'];
+        if ($file_owner === '') {
+            $this->setError('invalid_user', __('Could not determine a valid profile picture filename.', 'wicket-acc'));
+
+            return false;
+        }
+
+        $file_path = $this->pp_uploads_path . $file_owner . '.' . $file_extension;
+        $this->deleteExistingProfilePictures($profile_owner['identifiers']);
+
+        // No matter whats the file name, rename it to the normalized owner identifier.
+        $normalized_filename = strtolower($file_owner . '.' . $file_extension);
         $_FILES['profile-image']['name'] = $normalized_filename;
         $_FILES['profile-image']['full_path'] = $normalized_filename;
 
@@ -240,13 +247,21 @@ class init extends Blocks
             return false;
         }
 
-        $profile_photo_url = WACC()->Profile()->getProfilePicture();
+        $profile_photo_url = WACC()->Profile()->getProfilePicture($profile_owner['user_id']);
         if ($profile_photo_url) {
             /*
              * @var string|null $profile_image_url URL of the updated profile image, or null if not set.
              */
+            WACC()->Profile()->syncProfileImageToMdp($profile_photo_url);
             do_action('wicket/acc/profile/edit/profile_image_updated', $profile_photo_url);
         }
+
+        WACC()->Log()->info('Profile picture updated successfully.', [
+            'source' => __CLASS__,
+            'user_id' => $profile_owner['user_id'],
+            'person_uuid' => $profile_owner['person_uuid'],
+            'profile_photo_url' => $profile_photo_url,
+        ]);
 
         return true;
     }
@@ -276,24 +291,77 @@ class init extends Blocks
             return false;
         }
 
-        // User ID
-        $user_id = absint($form['user_id']);
+        $profile_owner = $this->resolveProfilePictureOwner();
+        if ($profile_owner === null) {
+            $this->setError('invalid_user', __('Could not determine the current user for this request.', 'wicket-acc'));
 
-        // Remove any existing file on wicket-profile-pictures/{user_id}.{extension}
-        foreach ($this->pp_extensions as $ext) {
-            $file_path = $this->pp_uploads_path . $user_id . '.' . $ext;
-
-            if (file_exists($file_path)) {
-                wp_delete_file($file_path);
-            }
+            return false;
         }
+
+        $this->deleteExistingProfilePictures($profile_owner['identifiers']);
 
         /*
          * @var string|null $profile_image_url URL of the updated profile image, or null if not set.
          */
+        WACC()->Profile()->syncProfileImageToMdp(null);
         do_action('wicket/acc/profile/edit/profile_image_updated', null);
 
+        WACC()->Log()->info('Profile picture removed successfully.', [
+            'source' => __CLASS__,
+            'user_id' => $profile_owner['user_id'],
+            'person_uuid' => $profile_owner['person_uuid'],
+        ]);
+
         return true;
+    }
+
+    /**
+     * Resolve the current logged-in user and normalized profile picture identifiers.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function resolveProfilePictureOwner(): ?array
+    {
+        $user_id = get_current_user_id();
+        if ($user_id <= 0) {
+            return null;
+        }
+
+        $user = get_user_by('id', $user_id);
+        if (!$user instanceof \WP_User) {
+            return null;
+        }
+
+        $person_uuid = sanitize_file_name((string) $user->user_login);
+        $identifiers = array_values(array_filter(array_unique([
+            $person_uuid,
+            (string) $user_id,
+        ])));
+
+        return [
+            'user_id' => $user_id,
+            'person_uuid' => $person_uuid,
+            'identifiers' => $identifiers,
+        ];
+    }
+
+    /**
+     * Delete any existing profile pictures for the provided identifiers.
+     *
+     * @param array<int, string> $identifiers
+     * @return void
+     */
+    private function deleteExistingProfilePictures(array $identifiers): void
+    {
+        foreach ($identifiers as $identifier) {
+            foreach ($this->pp_extensions as $ext) {
+                $file_path = $this->pp_uploads_path . $identifier . '.' . $ext;
+
+                if (file_exists($file_path)) {
+                    wp_delete_file($file_path);
+                }
+            }
+        }
     }
 
     /**

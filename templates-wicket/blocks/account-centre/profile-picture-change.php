@@ -54,6 +54,7 @@ defined('ABSPATH') || exit;
         </div>
         <?php wp_nonce_field('wicket-acc-profile-picture-form', 'nonce'); ?>
         <input type="hidden" name="action" value="wicket-acc-profile-picture-form">
+        <input type="hidden" name="user_id" value="<?php echo esc_attr(get_current_user_id()); ?>">
     </form>
 </section>
 <script>
