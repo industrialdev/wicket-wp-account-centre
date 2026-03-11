@@ -47,9 +47,12 @@ class init extends Blocks
         $image_url = get_avatar_url($current_user->ID, ['size' => '300']);
         $active_memberships = WACC()->Mdp()->Membership()->getCurrentPersonActiveMemberships($current_lang);
 
-        $renewal_end_timestamp = $renewal_date
-            ? WACC()->Mdp()->Membership()->getCurrentPersonRenewalEndTimestamp()
-            : null;
+        $renewal_end_timestamps = $renewal_date
+            ? [
+                'individual' => WACC()->Mdp()->Membership()->getCurrentPersonRenewalEndTimestampByType('individual'),
+                'organization' => WACC()->Mdp()->Membership()->getCurrentPersonRenewalEndTimestampByType('organization'),
+            ]
+            : [];
 
         // We need to find these at the MDP at some point
         $relationship_translations = [
@@ -254,7 +257,7 @@ class init extends Blocks
                                 'wicket/acc/block/welcome/renewal_date_payload',
                                 [
                                     'label' => __('Renewal Date:', 'wicket-acc'),
-                                    'timestamp' => $renewal_end_timestamp,
+                                    'timestamp' => $renewal_end_timestamps[$membership['type']] ?? null,
                                 ],
                                 $person,
                                 $membership,

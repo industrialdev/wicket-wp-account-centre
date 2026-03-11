@@ -536,6 +536,8 @@ class Membership extends Init
         $defaults = [
             'person_uuid' => WACC()->Mdp()->Person()->getCurrentPersonUuid(),
             'include' => 'membership,organization_membership.organization,fusebill_subscription',
+            'sort' => null,
+            'page' => null,
             'filter' => [
                 'active_at' => 'now',
             ],
@@ -557,8 +559,14 @@ class Membership extends Init
             return false;
         }
 
-        // Use class-level caching with person UUID as key
-        $cache_key = 'membership_entries_' . $uuid;
+        // Cache by query shape so active-only and broader lookups do not collide.
+        $cache_key = 'membership_entries_' . md5((string) wp_json_encode([
+            'person_uuid' => $uuid,
+            'include' => $args['include'],
+            'sort' => $args['sort'],
+            'page' => $args['page'],
+            'filter' => $args['filter'],
+        ]));
         if (isset($this->cache[$cache_key])) {
             return $this->cache[$cache_key];
         }
@@ -569,6 +577,14 @@ class Membership extends Init
 
             if (!empty($args['include'])) {
                 $query_params['include'] = $args['include'];
+            }
+
+            if (!empty($args['sort'])) {
+                $query_params['sort'] = $args['sort'];
+            }
+
+            if (!empty($args['page']) && is_array($args['page'])) {
+                $query_params['page'] = $args['page'];
             }
 
             if (!empty($args['filter'])) {
@@ -737,12 +753,15 @@ class Membership extends Init
      */
     public function getPersonMaxEndDateFromEntries(string $person_uuid): ?string
     {
-        // Fetch only active memberships to avoid using historical end dates
+        // Fetch current and future entries, then keep only active/delayed rows.
         $memberships = $this->getCurrentPersonMemberships([
             'person_uuid' => $person_uuid,
-            'filter' => [
-                'active_at' => 'now',
+            'sort' => '-ends_at',
+            'page' => [
+                'number' => 1,
+                'size' => 100,
             ],
+            'filter' => [],
         ]);
 
         if (empty($memberships['data']) || !is_array($memberships['data'])) {
@@ -751,6 +770,11 @@ class Membership extends Init
 
         $max_date = null;
         foreach ($memberships['data'] as $membership) {
+            $status = strtolower((string) ($membership['attributes']['status'] ?? ''));
+            if (!in_array($status, ['active', 'delayed'], true)) {
+                continue;
+            }
+
             $end_date = $membership['attributes']['ends_at'] ?? null;
             if ($end_date) {
                 if (is_null($max_date) || strtotime($end_date) > strtotime($max_date)) {
@@ -795,6 +819,194 @@ class Membership extends Init
             return $this->cache[$cache_key];
         }
 
+        $renewal_end_timestamp = $this->getMdpMembershipRenewalEndTimestamp($person_uuid);
+
+        $this->cache[$cache_key] = $renewal_end_timestamp;
+
+        return $renewal_end_timestamp;
+    }
+
+    /**
+     * Gets the renewal end timestamp for memberships of a specific type.
+     *
+     * @param string $membership_type Membership type slug, such as individual or organization.
+     * @param array $args Optional arguments.
+     *              - user_id: The WordPress user ID.
+     *              - person_uuid: The person UUID to look up.
+     *
+     * @return int|null Unix timestamp of the renewal end date, or null if not found.
+     */
+    public function getCurrentPersonRenewalEndTimestampByType(string $membership_type, array $args = []): ?int
+    {
+        $membership_type = strtolower(trim($membership_type));
+        if ($membership_type === '') {
+            return $this->getCurrentPersonRenewalEndTimestamp($args);
+        }
+
+        $defaults = [
+            'user_id' => null,
+            'person_uuid' => null,
+        ];
+
+        $args = wp_parse_args($args, $defaults);
+        $user_id = $args['user_id'];
+        $person_uuid = $args['person_uuid'];
+
+        if (empty($user_id) && function_exists('get_current_user_id')) {
+            $user_id = (int) get_current_user_id();
+        }
+
+        if (empty($person_uuid)) {
+            $person_uuid = WACC()->Mdp()->Person()->getCurrentPersonUuid();
+        }
+
+        $cache_key = 'renewal_end_timestamp_' . $membership_type . '_' . (string) $user_id . '_' . (string) $person_uuid;
+        if (isset($this->cache[$cache_key])) {
+            return $this->cache[$cache_key];
+        }
+
+        $renewal_end_timestamp = $this->getMdpMembershipRenewalEndTimestampByType($membership_type, $person_uuid);
+
+        $this->cache[$cache_key] = $renewal_end_timestamp;
+
+        return $renewal_end_timestamp;
+    }
+
+    /**
+     * Gets the latest membership end timestamp from the memberships plugin records.
+     * This mirrors the source used by ACC renewal callouts and includes delayed memberships.
+     *
+     * @param int|null $user_id The WordPress user ID.
+     * @return int|null Unix timestamp of the latest membership end date, or null if not found.
+     */
+    protected function getMembershipPluginRenewalEndTimestamp(?int $user_id): ?int
+    {
+        if (empty($user_id) || !class_exists('\Wicket_Memberships\Helper')) {
+            return null;
+        }
+
+        $membership_cpt_slug = \Wicket_Memberships\Helper::get_membership_cpt_slug();
+        if (empty($membership_cpt_slug) || !function_exists('get_posts')) {
+            return null;
+        }
+
+        $memberships = get_posts([
+            'post_type' => $membership_cpt_slug,
+            'post_status' => 'publish',
+            'posts_per_page' => -1,
+            'meta_query' => [
+                [
+                    'key' => 'user_id',
+                    'value' => $user_id,
+                    'compare' => '=',
+                ],
+                [
+                    'key' => 'membership_status',
+                    'value' => ['active', 'delayed', 'grace', 'pending'],
+                    'compare' => 'IN',
+                ],
+            ],
+        ]);
+
+        if (!is_array($memberships) || empty($memberships) || !function_exists('get_post_meta')) {
+            return null;
+        }
+
+        $renewal_end_timestamp = null;
+        foreach ($memberships as $membership) {
+            $membership_id = is_object($membership) && isset($membership->ID) ? (int) $membership->ID : 0;
+            if ($membership_id <= 0) {
+                continue;
+            }
+
+            $end_date = get_post_meta($membership_id, 'membership_ends_at', true);
+            $end_timestamp = $end_date ? strtotime((string) $end_date) : 0;
+            if ($end_timestamp <= 0) {
+                continue;
+            }
+
+            if ($renewal_end_timestamp === null || $end_timestamp > $renewal_end_timestamp) {
+                $renewal_end_timestamp = $end_timestamp;
+            }
+        }
+
+        return $renewal_end_timestamp;
+    }
+
+    /**
+     * Gets the latest membership end timestamp from the memberships plugin records for a specific type.
+     *
+     * @param string $membership_type Membership type slug.
+     * @param int|null $user_id The WordPress user ID.
+     * @return int|null Unix timestamp of the latest membership end date, or null if not found.
+     */
+    protected function getMembershipPluginRenewalEndTimestampByType(string $membership_type, ?int $user_id): ?int
+    {
+        if (empty($user_id) || !class_exists('\Wicket_Memberships\Helper')) {
+            return null;
+        }
+
+        $membership_cpt_slug = \Wicket_Memberships\Helper::get_membership_cpt_slug();
+        if (empty($membership_cpt_slug) || !function_exists('get_posts')) {
+            return null;
+        }
+
+        $memberships = get_posts([
+            'post_type' => $membership_cpt_slug,
+            'post_status' => 'publish',
+            'posts_per_page' => -1,
+            'meta_query' => [
+                [
+                    'key' => 'user_id',
+                    'value' => $user_id,
+                    'compare' => '=',
+                ],
+                [
+                    'key' => 'membership_status',
+                    'value' => ['active', 'delayed', 'grace', 'pending'],
+                    'compare' => 'IN',
+                ],
+                [
+                    'key' => 'membership_type',
+                    'value' => $membership_type,
+                    'compare' => '=',
+                ],
+            ],
+        ]);
+
+        if (!is_array($memberships) || empty($memberships) || !function_exists('get_post_meta')) {
+            return null;
+        }
+
+        $renewal_end_timestamp = null;
+        foreach ($memberships as $membership) {
+            $membership_id = is_object($membership) && isset($membership->ID) ? (int) $membership->ID : 0;
+            if ($membership_id <= 0) {
+                continue;
+            }
+
+            $end_date = get_post_meta($membership_id, 'membership_ends_at', true);
+            $end_timestamp = $end_date ? strtotime((string) $end_date) : 0;
+            if ($end_timestamp <= 0) {
+                continue;
+            }
+
+            if ($renewal_end_timestamp === null || $end_timestamp > $renewal_end_timestamp) {
+                $renewal_end_timestamp = $end_timestamp;
+            }
+        }
+
+        return $renewal_end_timestamp;
+    }
+
+    /**
+     * Gets the latest Woo subscription renewal end timestamp.
+     *
+     * @param int|null $user_id The WordPress user ID.
+     * @return int|null Unix timestamp of the latest subscription end date, or null if not found.
+     */
+    protected function getWooSubscriptionRenewalEndTimestamp(?int $user_id): ?int
+    {
         $renewal_end_timestamp = null;
 
         if (!empty($user_id) && function_exists('wcs_get_users_subscriptions')) {
@@ -839,15 +1051,94 @@ class Membership extends Init
             }
         }
 
-        if ($renewal_end_timestamp === null && !empty($person_uuid)) {
-            $max_end_date = $this->getPersonMaxEndDateFromEntries((string) $person_uuid);
-            if ($max_end_date && strtotime($max_end_date)) {
-                $renewal_end_timestamp = strtotime($max_end_date);
+        return $renewal_end_timestamp;
+    }
+
+    /**
+     * Gets the latest MDP membership renewal end timestamp.
+     *
+     * @param string|null $person_uuid The person UUID to look up.
+     * @return int|null Unix timestamp of the latest membership end date, or null if not found.
+     */
+    protected function getMdpMembershipRenewalEndTimestamp(?string $person_uuid): ?int
+    {
+        if (empty($person_uuid)) {
+            return null;
+        }
+
+        $max_end_date = $this->getPersonMaxEndDateFromEntries((string) $person_uuid);
+        if ($max_end_date && strtotime($max_end_date)) {
+            return strtotime($max_end_date);
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets the latest MDP membership renewal end timestamp for a specific type.
+     *
+     * @param string $membership_type Membership type slug.
+     * @param string|null $person_uuid The person UUID to look up.
+     * @return int|null Unix timestamp of the latest membership end date, or null if not found.
+     */
+    protected function getMdpMembershipRenewalEndTimestampByType(string $membership_type, ?string $person_uuid): ?int
+    {
+        if (empty($person_uuid)) {
+            return null;
+        }
+
+        $max_end_date = $this->getPersonMaxEndDateFromEntriesByType((string) $person_uuid, $membership_type);
+        if ($max_end_date && strtotime($max_end_date)) {
+            return strtotime($max_end_date);
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets the max end date for a person's memberships by type from membership entries.
+     *
+     * @param string $person_uuid The person UUID.
+     * @param string $membership_type Membership type slug.
+     * @return string|null The max end date or null.
+     */
+    public function getPersonMaxEndDateFromEntriesByType(string $person_uuid, string $membership_type): ?string
+    {
+        $memberships = $this->getCurrentPersonMemberships([
+            'person_uuid' => $person_uuid,
+            'sort' => '-ends_at',
+            'page' => [
+                'number' => 1,
+                'size' => 100,
+            ],
+            'filter' => [],
+        ]);
+
+        if (empty($memberships['data']) || !is_array($memberships['data'])) {
+            return null;
+        }
+
+        $helper = new \Wicket\ResponseHelper($memberships);
+        $max_date = null;
+
+        foreach ($helper->data as $entry) {
+            $status = strtolower((string) ($entry['attributes']['status'] ?? ''));
+            if (!in_array($status, ['active', 'delayed'], true)) {
+                continue;
+            }
+
+            $membership_tier = $helper->getIncludedRelationship($entry, 'membership');
+            $entry_type = strtolower((string) ($membership_tier['attributes']['type'] ?? ''));
+            if ($entry_type !== strtolower($membership_type)) {
+                continue;
+            }
+
+            $end_date = $entry['attributes']['ends_at'] ?? null;
+            if ($end_date && (is_null($max_date) || strtotime($end_date) > strtotime($max_date))) {
+                $max_date = $end_date;
             }
         }
 
-        $this->cache[$cache_key] = $renewal_end_timestamp;
-
-        return $renewal_end_timestamp;
+        return $max_date;
     }
 }
