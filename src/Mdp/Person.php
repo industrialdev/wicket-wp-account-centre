@@ -794,7 +794,11 @@ class Person extends Init
             ];
 
             foreach ($fieldsToUpdate['attributes'] as $key => $value) {
-                if (in_array($key, $allowedDirectAttributes)) {
+                if (in_array($key, $allowedDirectAttributes, true)) {
+                    if (is_string($value) && trim($value) === '') {
+                        $value = null;
+                    }
+
                     $attributesPayload[$key] = $value;
                 } else {
                     WACC()->Log()->info(
@@ -805,79 +809,72 @@ class Person extends Init
             }
 
             if (!empty($attributesPayload)) {
-                // Assuming wicket_filter_null_and_blank is a global helper. If not, this needs attention.
-                if (function_exists('wicket_filter_null_and_blank')) {
-                    $attributesPayload = wicket_filter_null_and_blank($attributesPayload);
-                }
+                $payload = [
+                    'data' => [
+                        'id' => $personUuid,
+                        'type' => 'people',
+                        'attributes' => $attributesPayload,
+                    ],
+                ];
 
-                if (!empty($attributesPayload)) { // Ensure there's something to send after filtering
-                    $payload = [
-                        'data' => [
-                            'id' => $personUuid,
-                            'type' => 'people',
-                            'attributes' => $attributesPayload,
-                        ],
-                    ];
+                try {
+                    $updatedPersonData = $client->patch("people/{$personUuid}", ['json' => $payload]);
+                } catch (RequestException $e) {
+                    $skip_request_error_logging = false;
 
-                    try {
-                        $updatedPersonData = $client->patch("people/{$personUuid}", ['json' => $payload]);
-                    } catch (RequestException $e) {
-                        $skip_request_error_logging = false;
-
-                        // Retry once with refreshed data_field versions when MDP returns record conflict.
-                        if ($this->shouldRetryDataFieldsConflict($e, $attributesPayload)) {
-                            $retryPayload = $this->buildDataFieldsRetryPayload($personUuid, $payload);
-                            if (is_array($retryPayload)) {
-                                try {
-                                    $updatedPersonData = $client->patch("people/{$personUuid}", ['json' => $retryPayload]);
-                                    $payload = $retryPayload;
-                                } catch (RequestException $retryException) {
-                                    $e = $retryException;
-                                    $payload = $retryPayload;
-                                } catch (Exception $retryException) {
-                                    WACC()->Log()->error('Generic exception updating person attributes after conflict retry.', [
-                                        'source' => __CLASS__,
-                                        'person_uuid' => $personUuid,
-                                        'payload' => $retryPayload,
-                                        'message' => $retryException->getMessage(),
-                                        'exception_class' => get_class($retryException),
-                                    ]);
-                                    $errors[] = 'An unexpected error occurred while retrying attribute update: ' . $retryException->getMessage();
-                                    $skip_request_error_logging = true;
-                                }
+                    // Retry once with refreshed data_field versions when MDP returns record conflict.
+                    if ($this->shouldRetryDataFieldsConflict($e, $attributesPayload)) {
+                        $retryPayload = $this->buildDataFieldsRetryPayload($personUuid, $payload);
+                        if (is_array($retryPayload)) {
+                            try {
+                                $updatedPersonData = $client->patch("people/{$personUuid}", ['json' => $retryPayload]);
+                                $payload = $retryPayload;
+                            } catch (RequestException $retryException) {
+                                $e = $retryException;
+                                $payload = $retryPayload;
+                            } catch (Exception $retryException) {
+                                WACC()->Log()->error('Generic exception updating person attributes after conflict retry.', [
+                                    'source' => __CLASS__,
+                                    'person_uuid' => $personUuid,
+                                    'payload' => $retryPayload,
+                                    'message' => $retryException->getMessage(),
+                                    'exception_class' => get_class($retryException),
+                                ]);
+                                $errors[] = 'An unexpected error occurred while retrying attribute update: ' . $retryException->getMessage();
+                                $skip_request_error_logging = true;
                             }
                         }
+                    }
 
-                        if ($updatedPersonData !== null) {
-                            $skip_request_error_logging = true;
-                        }
+                    if ($updatedPersonData !== null) {
+                        $skip_request_error_logging = true;
+                    }
 
-                        if (!$skip_request_error_logging) {
-                            $errorMsg = 'Failed to update person attributes.';
-                            $context = [
-                                'source' => __CLASS__,
-                                'person_uuid' => $personUuid,
-                                'payload' => $payload,
-                                'message' => $e->getMessage(),
-                                'exception_class' => get_class($e),
-                            ];
-                            if ($e->hasResponse()) {
-                                $context['statusCode'] = $e->getResponse()->getStatusCode();
-                                $context['responseBody'] = $e->getResponse()->getBody()->getContents();
-                            }
-                            WACC()->Log()->error($errorMsg, $context);
-                            $errors[] = $errorMsg . ' ' . $e->getMessage();
-                        }
-                    } catch (Exception $e) {
-                        WACC()->Log()->error('Generic exception updating person attributes.', [
+                    if (!$skip_request_error_logging) {
+                        $errorMsg = 'Failed to update person attributes.';
+                        $context = [
                             'source' => __CLASS__,
                             'person_uuid' => $personUuid,
                             'payload' => $payload,
                             'message' => $e->getMessage(),
                             'exception_class' => get_class($e),
-                        ]);
-                        $errors[] = 'An unexpected error occurred while updating attributes: ' . $e->getMessage();
+                        ];
+                        if ($e->hasResponse()) {
+                            $context['statusCode'] = $e->getResponse()->getStatusCode();
+                            $context['responseBody'] = $e->getResponse()->getBody()->getContents();
+                        }
+                        WACC()->Log()->error($errorMsg, $context);
+                        $errors[] = $errorMsg . ' ' . $e->getMessage();
                     }
+                } catch (Exception $e) {
+                    WACC()->Log()->error('Generic exception updating person attributes.', [
+                        'source' => __CLASS__,
+                        'person_uuid' => $personUuid,
+                        'payload' => $payload,
+                        'message' => $e->getMessage(),
+                        'exception_class' => get_class($e),
+                    ]);
+                    $errors[] = 'An unexpected error occurred while updating attributes: ' . $e->getMessage();
                 }
             }
         }
