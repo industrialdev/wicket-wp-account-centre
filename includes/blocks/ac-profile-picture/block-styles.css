@@ -41,24 +41,19 @@
 
   .circle-x {
     position: absolute;
-    top: 8px;
-    /* Adjust as necessary */
-    right: 8px;
-    /* Adjust as necessary */
-    width: 24px;
-    /* Adjust as necessary */
-    height: 24px;
-    /* Adjust as necessary */
+    top: 0;
+    right: 0;
+    width: 50px;
+    height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--color-white);
-    color: var(--color-primary);
-    border: 2px solid var(--color-primary);
+    background-color: var(--color-white, #fff);
+    color: var(--color-primary, #1f2937);
+    border: 2px solid var(--color-primary, #1f2937);
     border-radius: 50%;
     font-weight: bold;
     cursor: pointer;
-    /* Optional: if you want to make it clickable */
   }
 
   form {
@@ -149,10 +144,10 @@
 
   &.wicket-acc-profile-picture--v2 .circle-x {
     position: absolute;
-    top: 8px;
-    right: 8px;
-    width: auto;
-    height: auto;
+    top: -0.7rem;
+    right: -0.7rem;
+    width: 50px;
+    height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -161,13 +156,14 @@
     color: var(--interactive);
     cursor: pointer;
     border: 0;
-    font-size: 22px;
+    font-size: 1.75rem;
 
     .fa-solid {
       display: none;
     }
 
     &:hover, &:focus {
+      text-decoration: none;
       .fa-regular {
         display: none;
       }
