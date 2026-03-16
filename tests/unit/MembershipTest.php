@@ -12,7 +12,7 @@ class MembershipTest extends AbstractTestCase
 {
     public function test_get_current_person_renewal_end_timestamp_uses_mdp_only(): void
     {
-        $membership = new class () extends Membership {
+        $membership = new class extends Membership {
             public function __construct() {}
 
             protected function getMdpMembershipRenewalEndTimestamp(?string $person_uuid): ?int
@@ -31,7 +31,7 @@ class MembershipTest extends AbstractTestCase
 
     public function test_get_current_person_renewal_end_timestamp_returns_null_when_mdp_has_no_date(): void
     {
-        $membership = new class () extends Membership {
+        $membership = new class extends Membership {
             public function __construct() {}
 
             protected function getMdpMembershipRenewalEndTimestamp(?string $person_uuid): ?int
@@ -50,7 +50,7 @@ class MembershipTest extends AbstractTestCase
 
     public function test_get_person_max_end_date_from_entries_uses_delayed_mdp_membership(): void
     {
-        $membership = new class () extends Membership {
+        $membership = new class extends Membership {
             public function __construct() {}
 
             public function getCurrentPersonMemberships(array $args = []): array|false
@@ -87,7 +87,7 @@ class MembershipTest extends AbstractTestCase
 
     public function test_get_current_person_renewal_end_timestamp_by_type_uses_mdp_only(): void
     {
-        $membership = new class () extends Membership {
+        $membership = new class extends Membership {
             public function __construct() {}
 
             protected function getMdpMembershipRenewalEndTimestampByType(string $membership_type, ?string $person_uuid): ?int
