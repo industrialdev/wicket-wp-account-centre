@@ -1,7 +1,7 @@
 {
     "name": "industrialdev/wicket-wp-account-centre",
     "description": "Wicket's Account Centre for WordPress",
-    "version": "1.6.28",
+    "version": "1.6.29",
     "extra": {},
     "homepage": "https://wicket.io",
     "keywords": [
@@ -55,15 +55,7 @@
         "post-autoload-dump": [
             "@build-pico-css"
         ],
-        "post-install-cmd": [
-            "@cs:fix",
-            "@build-pico-css"
-        ],
-        "post-update-cmd": [
-            "@cs:fix",
-            "@build-pico-css"
-        ],
-        "production": "[ -x vendor/bin/php-cs-fixer ] || composer install && composer cs:fix && rm -rf vendor && composer update --no-dev && composer install --no-dev --optimize-autoloader",
+        "production": "composer install --no-scripts && composer cs:fix && composer install --no-dev --optimize-autoloader",
         "setup-hooks": "mkdir -p .git/hooks && cp .ci/pre-push .git/hooks/pre-push && chmod +x .git/hooks/pre-push && echo 'Git hooks installed to .git/hooks/pre-push'",
         "version-bump": "echo 'Use wicket-cli-tools: wicket plugin version-bump'"
     }

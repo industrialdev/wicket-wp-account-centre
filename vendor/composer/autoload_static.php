@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitdafe6610e2581487cd80daed8a8c14f1
+class ComposerStaticInit8c15133367c403743912873e7d8a156f
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -917,6 +917,7 @@ class ComposerStaticInitdafe6610e2581487cd80daed8a8c14f1
         'WicketAcc\\OrganizationProfile' => __DIR__ . '/../..' . '/src/OrganizationProfile.php',
         'WicketAcc\\OrganizationRoster' => __DIR__ . '/../..' . '/src/OrganizationRoster.php',
         'WicketAcc\\Profile' => __DIR__ . '/../..' . '/src/Profile.php',
+        'WicketAcc\\ProfilePictureFallback' => __DIR__ . '/../..' . '/src/ProfilePictureFallback.php',
         'WicketAcc\\Registers' => __DIR__ . '/../..' . '/src/Registers.php',
         'WicketAcc\\Router' => __DIR__ . '/../..' . '/src/Router.php',
         'WicketAcc\\Services\\Notification' => __DIR__ . '/../..' . '/src/Services/Notification.php',
@@ -951,9 +952,9 @@ class ComposerStaticInitdafe6610e2581487cd80daed8a8c14f1
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitdafe6610e2581487cd80daed8a8c14f1::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitdafe6610e2581487cd80daed8a8c14f1::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitdafe6610e2581487cd80daed8a8c14f1::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit8c15133367c403743912873e7d8a156f::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit8c15133367c403743912873e7d8a156f::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit8c15133367c403743912873e7d8a156f::$classMap;
 
         }, null, ClassLoader::class);
     }

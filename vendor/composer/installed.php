@@ -1,8 +1,8 @@
 <?php return array(
     'root' => array(
         'name' => 'industrialdev/wicket-wp-account-centre',
-        'pretty_version' => '1.6.21',
-        'version' => '1.6.21.0',
+        'pretty_version' => '1.6.28',
+        'version' => '1.6.28.0',
         'reference' => null,
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
@@ -56,9 +56,9 @@
             'dev_requirement' => false,
         ),
         'guzzlehttp/psr7' => array(
-            'pretty_version' => '2.8.0',
-            'version' => '2.8.0.0',
-            'reference' => '21dc724a0583619cd1652f673303492272778051',
+            'pretty_version' => '2.9.0',
+            'version' => '2.9.0.0',
+            'reference' => '7d0ed42f28e42d61352a7a79de682e5e67fec884',
             'type' => 'library',
             'install_path' => __DIR__ . '/../guzzlehttp/psr7',
             'aliases' => array(),
@@ -130,8 +130,8 @@
             'dev_requirement' => false,
         ),
         'industrialdev/wicket-wp-account-centre' => array(
-            'pretty_version' => '1.6.21',
-            'version' => '1.6.21.0',
+            'pretty_version' => '1.6.28',
+            'version' => '1.6.28.0',
             'reference' => null,
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
