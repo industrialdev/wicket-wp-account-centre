@@ -12,9 +12,8 @@ class ajax extends init
      */
     public function __construct()
     {
-        // Register Ajax actions
+        // Register Ajax actions — logged-in users only; endpoint serves personal Wicket data
         add_action('wp_ajax_wicket_ac_touchpoint_maple_results', [$this, 'ajax_load_more_results']);
-        add_action('wp_ajax_nopriv_wicket_ac_touchpoint_maple_results', [$this, 'ajax_load_more_results']);
     }
 
     /**

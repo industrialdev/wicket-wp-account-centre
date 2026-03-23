@@ -64,7 +64,7 @@ class Profile extends WicketAcc
 
         // If the profile picture URL is not empty, return it
         if (!empty($pp_profile_picture)) {
-            $avatar = "<img src='$pp_profile_picture' alt='$alt' class='avatar avatar-$size photo' height='$size' width='$size' />";
+            $avatar = "<img src='" . esc_url($pp_profile_picture) . "' alt='" . esc_attr($alt) . "' class='avatar avatar-" . (int) $size . " photo' height='" . (int) $size . "' width='" . (int) $size . "' />";
         }
 
         return $avatar;

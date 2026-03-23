@@ -61,42 +61,42 @@ $event_duration = $tp['attributes']['data']['event_duration'] ?? '';
 ?>
 
 <div class="event-card <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'my-0 p-6 border border-gray-200 gap-6 rounded-md shadow-md flex flex-row' ?>"
-	data-uuid="<?php echo $tp['id']; ?>">
+	data-uuid="<?php echo esc_attr($tp['id']); ?>">
 	<div
 		class="event-date-box <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'bg-primary-100 text-white w-[72px] h-[72px] p-2 rounded-md flex flex-col items-center justify-center' ?>">
 		<div class="flex flex-col items-center gap-1">
 			<div
 				class="<?php echo defined('WICKET_WP_THEME_V2') ? 'event-date-box-month' : 'text-sm font-medium uppercase' ?>">
-				<?php echo $start_date_month; ?>
+				<?php echo esc_html($start_date_month); ?>
 			</div>
 			<div class="<?php echo defined('WICKET_WP_THEME_V2') ? 'event-date-box-day' : 'text-2xl font-bold' ?>">
-				<?php echo $start_date_day; ?>
+				<?php echo esc_html($start_date_day); ?>
 			</div>
 		</div>
 	</div>
 
 	<div class="flex-auto md:w-auto event-content-wrap space-y-4">
 		<?php if (isset($event_url, $event_name)) : ?>
-			<a href="<?php echo $event_url; ?>" class="event-card-link" target="_blank">
+			<a href="<?php echo esc_url($event_url); ?>" class="event-card-link" target="_blank">
 			<?php endif; ?>
 			<h3
 				class="event-name <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-xl font-bold leading-tight mb-4' ?>">
-				<?php echo $event_name; ?>
+				<?php echo esc_html($event_name); ?>
 			</h3>
 			<?php if (isset($event_url)) : ?>
 			</a>
 		<?php endif; ?>
 		<p class="event-date <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm leading-relaxed' ?>">
-			<strong><?php _e('Date:', 'wicket-acc'); ?></strong> <?php echo $start_date_full; ?> -
-			<?php echo $end_date_full; ?>
+			<strong><?php _e('Date:', 'wicket-acc'); ?></strong> <?php echo esc_html($start_date_full); ?> -
+			<?php echo esc_html($end_date_full); ?>
 		</p>
 		<p class="event-time <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm leading-relaxed' ?>">
-			<strong><?php _e('Time:', 'wicket-acc'); ?></strong> <?php echo $start_time; ?> - <?php echo $end_time; ?>
+			<strong><?php _e('Time:', 'wicket-acc'); ?></strong> <?php echo esc_html($start_time); ?> - <?php echo esc_html($end_time); ?>
 		</p>
 
 		<?php if (isset($event_duration)) : ?>
 			<p class="event-duration <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm leading-relaxed' ?>">
-				<strong><?php _e('Duration:', 'wicket-acc'); ?></strong> <?php echo $event_duration; ?>
+				<strong><?php _e('Duration:', 'wicket-acc'); ?></strong> <?php echo esc_html($event_duration); ?>
 				<?php _e('minutes', 'wicket-acc'); ?>
 			</p>
 		<?php endif; ?>

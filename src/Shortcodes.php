@@ -33,6 +33,11 @@ class Shortcodes extends WicketAcc
             return '<p>[Organization Selector]</p>';
         }
 
+        // Org data is user-specific — bail before any API calls for unauthenticated visitors
+        if (!is_user_logged_in()) {
+            return '';
+        }
+
         $org_uuid = isset($_GET['org_uuid']) ? sanitize_text_field($_GET['org_uuid']) : '';
         if (empty($org_uuid) && isset($_GET['org_id'])) {
             $org_uuid = sanitize_text_field($_GET['org_id']);
@@ -84,6 +89,12 @@ class Shortcodes extends WicketAcc
                 <ul class="wicket-organization-selector mb-10">
                     <?php
             foreach ($org_uuids_list as $i_org_id) :
+                // Validate org ID is a UUID before any API calls or HTML output
+                $i_org_id = WACC()->sanitizeUuid($i_org_id);
+                if (empty($i_org_id)) {
+                    continue;
+                }
+
                 // Check if org has at least one membership
                 $org_memberships = wicket_get_org_memberships($i_org_id);
 
@@ -106,11 +117,11 @@ class Shortcodes extends WicketAcc
                             <?php if ($linked) { ?>
                                 <i class="fa-solid fa-building w-[20px] h-[20px] text-[var(--color-primary)] shrink-0"></i><a
                                     class='primary_link_color'
-                                    href='<?php echo home_url(add_query_arg([], $wp->request)) . "/?org_id=$i_org_id"; ?>'>
+                                    href='<?php echo esc_url(add_query_arg('org_id', $i_org_id, home_url(add_query_arg([], $wp->request)))); ?>'>
                                 <?php } else { ?>
                                     <i class="fa-solid fa-ban w-[20px] h-[20px] text-[var(--color-primary)] shrink-0"></i>
                                 <?php } ?>
-                                <?php echo $org_name; ?>
+                                <?php echo esc_html($org_name); ?>
                                 <?php if ($linked) { ?>
                                 </a>
                             <?php } ?>

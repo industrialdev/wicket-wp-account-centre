@@ -420,4 +420,24 @@ class Helpers extends WicketAcc
 
         return (bool) preg_match($regex, $uuid);
     }
+
+    /**
+     * Sanitize and validate a UUID string for safe use in file paths and queries.
+     *
+     * Returns the UUID normalised to lowercase, or an empty string when the
+     * value does not match the UUID format — preventing path traversal attacks.
+     *
+     * @param mixed $value Raw input value.
+     * @return string Validated lowercase UUID, or '' on invalid input.
+     */
+    public function sanitizeUuid(mixed $value): string
+    {
+        $sanitized = sanitize_text_field(wp_unslash((string) $value));
+
+        if (!$this->isValidUuid($sanitized)) {
+            return '';
+        }
+
+        return strtolower($sanitized);
+    }
 }

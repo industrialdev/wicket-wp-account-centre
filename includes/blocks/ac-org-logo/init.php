@@ -155,14 +155,14 @@ class init extends Blocks
             return;
         }
 
-        $form = $_POST;
-
-        // Check nonce
-        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($form['nonce'])), 'wicket-acc-org-logo-form')) {
+        // Verify nonce before reading any other POST data
+        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'] ?? '')), 'wicket-acc-org-logo-form')) {
             $this->setError('security', __('Security verification failed. Please try again.', 'wicket-acc'));
 
             return false;
         }
+
+        $form = $_POST;
 
         // Check if the file is set and valid
         if (!isset($_FILES['org-logo'])) {
@@ -225,8 +225,14 @@ class init extends Blocks
             return false;
         }
 
-        // Org ID
-        $org_id = sanitize_text_field(wp_unslash($form['org_id']));
+        // Org ID — must be a valid UUID to prevent path traversal
+        $org_id = WACC()->sanitizeUuid($form['org_id'] ?? '');
+
+        if (empty($org_id)) {
+            $this->setError('invalid_org', __('Invalid organization ID.', 'wicket-acc'));
+
+            return false;
+        }
 
         // Remove any existing file on wicket-profile-pictures/{user_id}.{extension}
         $file_path = $this->uploads_path . $org_id . '.' . $file_extension;
@@ -279,17 +285,23 @@ class init extends Blocks
             return;
         }
 
-        $form = $_POST;
-
-        // Check nonce
-        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($form['nonce'])), 'wicket-acc-org-profile-picture-remove-form')) {
+        // Verify nonce before reading any other POST data
+        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'] ?? '')), 'wicket-acc-org-profile-picture-remove-form')) {
             $this->setError('security', __('Security verification failed. Please try again.', 'wicket-acc'));
 
             return false;
         }
 
-        // Org ID
-        $org_id = $form['org_id'];
+        $form = $_POST;
+
+        // Org ID — must be a valid UUID to prevent path traversal
+        $org_id = WACC()->sanitizeUuid($form['org_id'] ?? '');
+
+        if (empty($org_id)) {
+            $this->setError('invalid_org', __('Invalid organization ID.', 'wicket-acc'));
+
+            return false;
+        }
 
         // Remove any existing file on wicket-profile-pictures/{user_id}.{extension}
         foreach ($this->pp_extensions as $ext) {

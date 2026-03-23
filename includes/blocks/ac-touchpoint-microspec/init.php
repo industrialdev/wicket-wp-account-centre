@@ -217,7 +217,7 @@ class init extends Blocks
             let totalElementsElement = document.getElementById('total_results');
 
             if ( totalElementsElement !== null ) {
-                totalElementsElement.innerHTML = '<?php echo $total_results; ?>';
+                totalElementsElement.innerHTML = '<?php echo (int) $total_results; ?>';
             }
         </script>
         <?php

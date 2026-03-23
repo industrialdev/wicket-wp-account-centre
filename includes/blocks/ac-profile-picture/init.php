@@ -117,10 +117,8 @@ class init extends Blocks
             return;
         }
 
-        $form = $_POST;
-
-        // Check nonce
-        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($form['nonce'])), 'wicket-acc-profile-picture-form')) {
+        // Verify nonce before reading any other POST data
+        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'] ?? '')), 'wicket-acc-profile-picture-form')) {
             $this->setError('security', __('Security verification failed. Please try again.', 'wicket-acc'));
 
             return false;
@@ -282,10 +280,8 @@ class init extends Blocks
             return;
         }
 
-        $form = $_POST;
-
-        // Check nonce
-        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($form['nonce'])), 'wicket-acc-profile-picture-remove-form')) {
+        // Verify nonce before reading any other POST data
+        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'] ?? '')), 'wicket-acc-profile-picture-remove-form')) {
             $this->setError('security', __('Security verification failed. Please try again.', 'wicket-acc'));
 
             return false;

@@ -194,9 +194,12 @@ class ChangePassword
         $client = WACC()->Mdp()->initClient();
         $person = wicket_current_person();
 
-        $current_password = sanitize_text_field($_POST['current_password'] ?? '');
-        $password = sanitize_text_field($_POST['password'] ?? '');
-        $password_confirmation = sanitize_text_field($_POST['password_confirmation'] ?? '');
+        // Passwords must not be sanitized — sanitize_text_field() strips special
+        // characters and would silently corrupt passwords before they reach the API.
+        // wp_unslash() is safe: it only removes magic-quote backslashes, never alters chars.
+        $current_password      = wp_unslash($_POST['current_password'] ?? '');
+        $password              = wp_unslash($_POST['password'] ?? '');
+        $password_confirmation = wp_unslash($_POST['password_confirmation'] ?? '');
 
         // Validate current password
         if ($current_password == '') {
