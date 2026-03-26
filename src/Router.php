@@ -28,6 +28,7 @@ class Router extends WicketAcc
         add_action('init', [$this, 'accPagesTemplate']);
         add_filter('archive_template', [$this, 'customArchiveTemplate']);
         add_action('init', [$this, 'accRedirects']);
+        add_action('template_redirect', [$this, 'maybeRedirectRestrictedAccessWithReferrer'], 1);
     }
 
     /**
@@ -313,6 +314,44 @@ class Router extends WicketAcc
 
             return;
         }
+    }
+
+    /**
+     * If an authenticated user lands on restricted-access with a referrer,
+     * redirect to that referrer URL.
+     *
+     * @return void
+     */
+    public function maybeRedirectRestrictedAccessWithReferrer(): void
+    {
+        if (is_admin() || !is_user_logged_in() || !is_page('restricted-access') || empty($_GET['referrer'])) {
+            return;
+        }
+
+        $referrer = wp_unslash((string) $_GET['referrer']);
+        if ($referrer === '') {
+            return;
+        }
+
+        $target_url = $referrer;
+        if (str_starts_with($target_url, '/')) {
+            $target_url = home_url($target_url);
+        }
+
+        $target_url = remove_query_arg('ticket', $target_url);
+        $target_url = wp_validate_redirect($target_url, '');
+        if (empty($target_url)) {
+            return;
+        }
+
+        $restricted_path = (string) wp_parse_url(home_url('/restricted-access/'), PHP_URL_PATH);
+        $target_path = (string) wp_parse_url($target_url, PHP_URL_PATH);
+        if ($target_path === '' || untrailingslashit($target_path) === untrailingslashit($restricted_path)) {
+            return;
+        }
+
+        wp_safe_redirect($target_url);
+        exit;
     }
 
     /**

@@ -197,8 +197,8 @@ class ChangePassword
         // Passwords must not be sanitized — sanitize_text_field() strips special
         // characters and would silently corrupt passwords before they reach the API.
         // wp_unslash() is safe: it only removes magic-quote backslashes, never alters chars.
-        $current_password      = wp_unslash($_POST['current_password'] ?? '');
-        $password              = wp_unslash($_POST['password'] ?? '');
+        $current_password = wp_unslash($_POST['current_password'] ?? '');
+        $password = wp_unslash($_POST['password'] ?? '');
         $password_confirmation = wp_unslash($_POST['password_confirmation'] ?? '');
 
         // Validate current password

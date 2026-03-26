@@ -35,7 +35,7 @@ if (!empty($dev_wrapper_classes)) {
 }
 
 $acc_global_headerbanner_page_id = WACC()->getGlobalHeaderBannerPageId();
-$acc_global_headerbanner_status  = WACC()->getOption('acc_global-headerbanner', false);
+$acc_global_headerbanner_status = WACC()->getOption('acc_global-headerbanner', false);
 
 // Check if we have a global banner page
 if ($acc_global_headerbanner_page_id && $acc_global_headerbanner_status) {
@@ -57,7 +57,7 @@ if ($acc_global_headerbanner_page_id && $acc_global_headerbanner_status) {
                 the_content();
             endwhile;
         }
-        ?>
+?>
     </div>
 </div>
 
