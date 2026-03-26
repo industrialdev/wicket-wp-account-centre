@@ -115,8 +115,9 @@ class Registers extends WicketAcc
         // Ensure we only add these templates for the 'my-account' post type
         if ($post && $post->post_type === 'my-account') {
             $templates = [
-                'account-centre/page-acc.php'      => __('ACC Page', 'wicket-acc'),
-                'account-centre/page-acc-org_id.php' => __('ACC Page with Org Selector', 'wicket-acc'),
+                'account-centre/page-acc.php'            => __('ACC Page', 'wicket-acc'),
+                'account-centre/page-acc-org_id.php'     => __('ACC Page with Org Selector', 'wicket-acc'),
+                'account-centre/page-acc-no-sidebar.php' => __('ACC Page (No Sidebar)', 'wicket-acc'),
             ];
 
             foreach ($templates as $template_file => $template_name) {
@@ -152,7 +153,9 @@ class Registers extends WicketAcc
 
         $template_basename = basename($template);
 
-        if (($requested_basename === 'page-acc.php' || $requested_basename === 'page-acc-org_id.php') && $template_basename !== 'search.php') {
+        $acc_templates = ['page-acc.php', 'page-acc-org_id.php', 'page-acc-no-sidebar.php'];
+
+        if (in_array($requested_basename, $acc_templates, true) && $template_basename !== 'search.php') {
             $template = WICKET_ACC_PLUGIN_TEMPLATE_PATH . 'account-centre/' . $requested_basename;
 
             if (file_exists($template)) {
