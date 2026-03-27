@@ -51,7 +51,11 @@ if (file_exists(WICKET_ACC_PATH . 'vendor/autoload.php')) {
 
 // Register fatal error handler IMMEDIATELY (before plugins_loaded)
 // This ensures we catch fatal errors that occur during WordPress bootstrap
-if (class_exists(Log::class) && method_exists(Log::class, 'registerFatalErrorHandler')) {
+if (
+    (!defined('WICKET_ACC_DISABLE_FATAL_ERROR_HANDLER') || !WICKET_ACC_DISABLE_FATAL_ERROR_HANDLER)
+    && class_exists(Log::class)
+    && method_exists(Log::class, 'registerFatalErrorHandler')
+) {
     Log::registerFatalErrorHandler();
 }
 
