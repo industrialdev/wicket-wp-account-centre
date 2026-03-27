@@ -162,7 +162,11 @@ class Profile extends WicketAcc
 
         // Check if ACC option acc_profile_picture_default has an image URL set
         if (empty($pp_profile_picture)) {
-            $default_picture = WACC()->getAttachmentUrlFromOption('acc_profile_picture_default', '');
+            $default_picture = '';
+            $wacc = WACC();
+            if (is_object($wacc) && method_exists($wacc, 'getAttachmentUrlFromOption')) {
+                $default_picture = (string) $wacc->getAttachmentUrlFromOption('acc_profile_picture_default', '');
+            }
             if (!empty($default_picture)) {
                 $pp_profile_picture = $default_picture;
             }
@@ -186,7 +190,11 @@ class Profile extends WicketAcc
     public function isCustomProfilePicture(string $pp_profile_picture): bool
     {
         $pp_profile_picture_plugin = WICKET_ACC_URL . '/assets/images/profile-picture-default.svg';
-        $pp_profile_picture_override = WACC()->getAttachmentUrlFromOption('acc_profile_picture_default', '');
+        $pp_profile_picture_override = '';
+        $wacc = WACC();
+        if (is_object($wacc) && method_exists($wacc, 'getAttachmentUrlFromOption')) {
+            $pp_profile_picture_override = (string) $wacc->getAttachmentUrlFromOption('acc_profile_picture_default', '');
+        }
 
         // Check if $pp_profile_picture is one of the two defaults
         if (empty($pp_profile_picture_override)) {

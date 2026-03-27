@@ -33,8 +33,10 @@ class Shortcodes extends WicketAcc
             return '<p>[Organization Selector]</p>';
         }
 
-        // Org data is user-specific — bail before any API calls for unauthenticated visitors
-        if (!is_user_logged_in()) {
+        // Org data is user-specific — fail closed when auth helpers are
+        // unavailable (e.g. isolated test runtime without full WP bootstrap).
+        $is_logged_in = function_exists('is_user_logged_in') ? (bool) is_user_logged_in() : false;
+        if (!$is_logged_in) {
             return '';
         }
 
