@@ -24,8 +24,17 @@ $outCss = $outDir . '/vanilla/_wicket-pico-fluid.classless.light.zinc.css';
 $vendorLoadPath = $root . '/../vendor/picocss/pico/scss';
 $localLoadPath  = $root . '/';
 
+$projectRoot = dirname($root);
+
 if (!is_dir($outDir) && !mkdir($outDir, 0755, true)) {
     fwrite(STDERR, "Error: Unable to create output directory: {$outDir}\n");
+    exit(1);
+}
+
+// Ensure yarn PnP loader exists — requires `yarn install` to have been run first.
+$pnpLoader = $projectRoot . '/.pnp.cjs';
+if (!file_exists($pnpLoader)) {
+    fwrite(STDERR, "Error: Yarn PnP loader not found at {$pnpLoader}.\nRun `yarn install` in the plugin directory first.\n");
     exit(1);
 }
 
@@ -46,10 +55,6 @@ if ($missing) {
     fwrite(STDERR, "Error: Missing required paths:\n- " . implode("\n- ", $missing) . "\n");
     exit(1);
 }
-
-// Define paths
-$pluginDir = __DIR__;
-$projectRoot = dirname($pluginDir);
 $scssFile = $root . '/build-pico-css.scss';
 $cssOutputFile = $outCss;
 
@@ -57,8 +62,11 @@ $cssOutputFile = $outCss;
 $sassCommand = "sass --no-source-map --silence-deprecation=if-function --load-path={$root}/ --load-path={$root}/../vendor/picocss/pico/scss {$scssFile} {$cssOutputFile}";
 executeCommand($sassCommand);
 
-// Run PostCSS to scope all selectors under .wicket
-$postcssCommand = "postcss {$cssOutputFile} --config {$pluginDir}/.ci/postcss.config.js --replace";
+// Run PostCSS to scope all selectors under .wicket.
+// Must be invoked via `yarn exec` so the PnP runtime is active and can resolve
+// postcss-scope. The working directory must be the plugin root (parent of .ci/)
+// so Yarn can locate the project's .pnp.cjs loader.
+$postcssCommand = "cd {$projectRoot} && yarn exec postcss {$cssOutputFile} --config {$root}/postcss.config.js --replace";
 executeCommand($postcssCommand);
 
 $cssContent = file_get_contents($cssOutputFile);

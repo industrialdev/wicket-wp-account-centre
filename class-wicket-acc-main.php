@@ -15,7 +15,7 @@ use WicketAcc\Services\Notification;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Custom account management system for Wicket. Provides user account features, organization management, and additional blocks and pages. Integrates with WooCommerce when available.
- * Version:           1.6.31
+ * Version:           1.6.32
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -49,15 +49,9 @@ if (file_exists(WICKET_ACC_PATH . 'vendor/autoload.php')) {
     require_once WICKET_ACC_PATH . 'vendor/autoload.php';
 }
 
-// Register fatal error handler IMMEDIATELY (before plugins_loaded)
-// This ensures we catch fatal errors that occur during WordPress bootstrap
-if (
-    (!defined('WICKET_ACC_DISABLE_FATAL_ERROR_HANDLER') || !WICKET_ACC_DISABLE_FATAL_ERROR_HANDLER)
-    && class_exists(Log::class)
-    && method_exists(Log::class, 'registerFatalErrorHandler')
-) {
-    Log::registerFatalErrorHandler();
-}
+// Fatal error handler is now registered by wicket-wp-base-plugin (WicketWP\Log)
+// in its main wicket.php file before plugins_loaded. WicketAcc\Log::registerFatalErrorHandler()
+// is retained as a no-op for backward compatibility only.
 
 // Initialize the plugin when all plugins are loaded
 add_action(

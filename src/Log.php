@@ -6,217 +6,61 @@ namespace WicketAcc;
 defined('ABSPATH') || exit;
 
 /**
- * Handles plugin-specific logging with daily rotation and source-based grouping.
- * Logs are stored in wp-content/uploads/wc-logs/ when WooCommerce is active,
- * otherwise wp-content/uploads/wicket-logs/.
+ * Thin wrapper around the centralized WicketWP\Log.
+ *
+ * All logging logic lives in the base plugin (wicket-wp-base-plugin).
+ * This class preserves the existing WACC()->Log() API so account-centre
+ * callsites require no changes.
+ *
+ * @see WicketWP\Log
  */
 class Log
 {
-    public const LOG_LEVEL_DEBUG = 'debug';
-    public const LOG_LEVEL_INFO = 'info';
-    public const LOG_LEVEL_WARNING = 'warning';
-    public const LOG_LEVEL_ERROR = 'error';
-    public const LOG_LEVEL_CRITICAL = 'critical';
-
-    private static bool $logDirSetupDone = false;
-    private static ?string $logBaseDir = null;
+    // Re-export level constants for any code that references WicketAcc\Log::LOG_LEVEL_*.
+    public const LOG_LEVEL_DEBUG = \WicketWP\Log::LOG_LEVEL_DEBUG;
+    public const LOG_LEVEL_INFO = \WicketWP\Log::LOG_LEVEL_INFO;
+    public const LOG_LEVEL_WARNING = \WicketWP\Log::LOG_LEVEL_WARNING;
+    public const LOG_LEVEL_ERROR = \WicketWP\Log::LOG_LEVEL_ERROR;
+    public const LOG_LEVEL_CRITICAL = \WicketWP\Log::LOG_LEVEL_CRITICAL;
 
     /**
-     * Registers a handler to catch and log fatal errors.
-     * This should be called once when the plugin initializes.
+     * Delegates fatal error handler registration to the base plugin's Log.
+     * Kept for backward compatibility — base plugin now registers this itself.
      */
-    public static function registerFatalErrorHandler()
+    public static function registerFatalErrorHandler(): void
     {
-        register_shutdown_function([new self(), 'handleFatalError']);
+        // Base plugin registers the handler in wicket.php before plugins_loaded.
+        // Nothing to do here; method retained so existing call in class-wicket-acc-main.php
+        // does not break.
     }
 
-    /**
-     * Handles fatal errors at script shutdown.
-     *
-     * This method is registered via `register_shutdown_function` and should not be called directly.
-     * It checks for a fatal error and logs it.
-     */
-    public function handleFatalError()
-    {
-        $error = error_get_last();
-
-        if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR])) {
-            $message = sprintf(
-                'Fatal Error: %s in %s on line %d',
-                $error['message'],
-                $error['file'],
-                $error['line']
-            );
-
-            // Use the existing log method to write the fatal error
-            $this->log(self::LOG_LEVEL_CRITICAL, $message, ['source' => 'wicket-fatal-error']);
-        }
-    }
-
-    /**
-     * Logs a message to a custom file.
-     *
-     * Mimics WC_Logger::log functionality with daily rotation and source-based grouping.
-     * Logs are stored in wp-content/uploads/wc-logs/ when WooCommerce is active,
-     * otherwise wp-content/uploads/wicket-logs/.
-     *
-     * @param string $level   Log level (e.g., Log::LOG_LEVEL_DEBUG, 'info', 'error').
-     * @param string $message Log message.
-     * @param array  $context Context for the log message. Expected: ['source' => 'my-source'].
-     *                        If 'source' is not provided, 'wicket-plugin' will be used.
-     * @return bool True if the message was logged successfully to the custom file, false otherwise.
-     */
     public function log(string $level, string $message, array $context = []): bool
     {
-        // Log CRITICAL and ERROR messages regardless of WP_DEBUG.
-        // For other levels (DEBUG, INFO, WARNING), log only if WP_DEBUG is on.
-        if ($level !== self::LOG_LEVEL_CRITICAL && $level !== self::LOG_LEVEL_ERROR) {
-            if (!defined('WP_DEBUG') || !WP_DEBUG) {
-                return true; // WP_DEBUG is off, so don't log DEBUG, INFO, or WARNING messages.
-            }
-        }
-
-        if (!self::$logDirSetupDone) {
-            if (!$this->setupLogDirectory()) {
-                // Fallback to standard PHP error log if setup fails
-                error_log("Wicket Log Directory Setup Failed. Original log: [{$level}] {$message}");
-
-                return false;
-            }
-            self::$logDirSetupDone = true;
-        }
-
-        $source = sanitize_file_name($context['source'] ?? 'wicket-plugin');
-        if (empty($source)) {
-            $source = 'wicket-plugin'; // Ensure source is not empty after sanitization
-        }
-
-        $date_suffix = date('Y-m-d');
-        $file_hash = wp_hash($source);
-        $filename = "wicket-{$source}-{$date_suffix}-{$file_hash}.log";
-        $log_file_path = self::$logBaseDir . $filename;
-
-        $timestamp = date('Y-m-d\\TH:i:s\\Z'); // ISO 8601 UTC
-        $formatted_level = strtoupper($level);
-        $context_payload = '';
-        if (!empty($context)) {
-            $context_payload = ' ' . wp_json_encode($context, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        }
-        $log_entry = "{$timestamp} [{$formatted_level}]: {$message}{$context_payload}" . PHP_EOL;
-
-        if (!error_log($log_entry, 3, $log_file_path)) {
-            // Fallback to standard PHP error log if custom file write fails
-            error_log("Wicket Log File Write Failed to {$log_file_path}. Original log: [{$level}] {$message}");
-
-            return false;
-        }
-
-        return true;
+        return Wicket()->log()->log($level, $message, $context);
     }
 
-    /**
-     * Logs a CRITICAL message.
-     *
-     * @param string $message The message to log.
-     * @param array  $context Optional context data.
-     * @return void
-     */
     public function critical(string $message, array $context = []): void
     {
-        $this->log(self::LOG_LEVEL_CRITICAL, $message, $context);
+        Wicket()->log()->critical($message, $context);
     }
 
-    /**
-     * Logs an ERROR message.
-     *
-     * @param string $message The message to log.
-     * @param array  $context Optional context data.
-     * @return void
-     */
     public function error(string $message, array $context = []): void
     {
-        $this->log(self::LOG_LEVEL_ERROR, $message, $context);
+        Wicket()->log()->error($message, $context);
     }
 
-    /**
-     * Logs a WARNING message.
-     *
-     * @param string $message The message to log.
-     * @param array  $context Optional context data.
-     * @return void
-     */
     public function warning(string $message, array $context = []): void
     {
-        $this->log(self::LOG_LEVEL_WARNING, $message, $context);
+        Wicket()->log()->warning($message, $context);
     }
 
-    /**
-     * Logs an INFO message.
-     *
-     * @param string $message The message to log.
-     * @param array  $context Optional context data.
-     * @return void
-     */
     public function info(string $message, array $context = []): void
     {
-        $this->log(self::LOG_LEVEL_INFO, $message, $context);
+        Wicket()->log()->info($message, $context);
     }
 
-    /**
-     * Logs a DEBUG message.
-     *
-     * @param string $message The message to log.
-     * @param array  $context Optional context data.
-     * @return void
-     */
     public function debug(string $message, array $context = []): void
     {
-        $this->log(self::LOG_LEVEL_DEBUG, $message, $context);
-    }
-
-    /**
-     * Sets up the log directory, ensuring it exists and is secured.
-     *
-     * @return bool True if setup was successful or already done, false on critical failure.
-     */
-    private function setupLogDirectory(): bool
-    {
-        if (self::$logBaseDir === null) {
-            $upload_dir = wp_upload_dir();
-            if (!empty($upload_dir['error'])) {
-                error_log('Wicket Log Error: Could not get WordPress upload directory. ' . $upload_dir['error']);
-
-                return false;
-            }
-
-            $log_subdir = class_exists('WooCommerce') ? 'wc-logs' : 'wicket-logs';
-            self::$logBaseDir = $upload_dir['basedir'] . '/' . $log_subdir . '/';
-        }
-
-        if (!is_dir(self::$logBaseDir)) {
-            if (!wp_mkdir_p(self::$logBaseDir)) {
-                error_log('Wicket Log Error: Could not create log directory: ' . self::$logBaseDir);
-
-                return false;
-            }
-        }
-
-        $htaccess_file = self::$logBaseDir . '.htaccess';
-        if (!file_exists($htaccess_file)) {
-            $htaccess_content = 'deny from all' . PHP_EOL . 'Require all denied' . PHP_EOL;
-            if (@file_put_contents($htaccess_file, $htaccess_content) === false) {
-                error_log('Wicket Log Error: Could not create .htaccess file in ' . self::$logBaseDir);
-            }
-        }
-
-        $index_html_file = self::$logBaseDir . 'index.html';
-        if (!file_exists($index_html_file)) {
-            $index_content = '<!-- Silence is golden. -->';
-            if (@file_put_contents($index_html_file, $index_content) === false) {
-                error_log('Wicket Log Error: Could not create index.html file in ' . self::$logBaseDir);
-            }
-        }
-
-        return true;
+        Wicket()->log()->debug($message, $context);
     }
 }
