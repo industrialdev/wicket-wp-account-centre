@@ -1,51 +1,42 @@
----
-name: Documentation Agent
-role: Senior Full-Stack Engineer with a master degree in journalism, that writes documentation
----
+# Repository Guidelines
 
-# Documentation Rules
+## Project Structure & Module Organization
+This is a WordPress plugin rooted at `wicket.php`.
+- `src/`: PSR-4 PHP code under `WicketWP\\` (core classes like `Main`, `Assets`, `Rest`, `Blocks`, widget classes in `src/Widgets/`).
+- `includes/`: legacy/helpers, integrations, admin settings, and component PHP templates.
+- `assets/`: source and built CSS/JS/images/fonts (`assets/css`, `assets/js`, `assets/css/min`, `assets/js/min`).
+- `tests/`: Pest/PHPUnit test bootstrap and unit tests (`tests/unit/**/*Test.php`).
+- `docs/`: feature docs.
 
-When creating docs, use the code currently checked out alongside these files.
+## Build, Test, and Development Commands
+- `composer install`: install PHP dependencies.
+- `yarn install` (Node 18.20.7, Yarn 4.7.0): install frontend toolchain.
+- `npx gulp build`: compile/minify plugin CSS/JS assets.
+- `composer lint`: style check (`php-cs-fixer --dry-run --diff`).
+- `composer format` or `composer cs:fix`: apply formatting.
+- `composer test`: run full Pest suite.
+- `composer test:unit`: run unit tests only.
+- `composer test:coverage`: generate HTML coverage in `coverage/`.
+- `composer production`: production install (`--no-dev`, optimized autoloader) before release tags.
 
-## Audience
+## Coding Style & Naming Conventions
+- PHP 8.2+, `declare(strict_types=1);`, PSR-12.
+- Use PSR-4 namespaces (`WicketWP\\...`) and keep classes in `src/`.
+- Naming: classes `PascalCase`, methods `camelCase`, test files end with `Test.php`.
+- Favor small methods, early returns, and WordPress-native APIs/hooks.
 
-- **End users** — non-technical humans who need to understand what settings do
-- **Developers** — technical reference for correlating options to code
+## Testing Guidelines
+- Frameworks: Pest + PHPUnit + Brain Monkey.
+- Unit tests live in `tests/unit`; browser suite is configured as `tests/Browser` when present.
+- Add/update tests for any behavior change.
+- Run `composer check` before pushing (lint + test).
 
-## Format
+## Commit & Pull Request Guidelines
+Git history favors short, imperative, scope-specific messages.
+- Keep commits focused; avoid mixed refactor/feature changes.
+- PRs should include: purpose, risk notes, test evidence.
 
-- Separate Markdown file per section (typically a backend menu page)
-- Each option gets its own markdown heading
-- Include: description, default values, when to use it
-- For End Users docs include: examples, use cases, warnings, and tips
-- For Developer docs include: general technical implementation details, code snippets, examples
-- **Be concise** — go straight to the point. Short sentences. No filler. Every word earns its place
-
-## File Naming Convention
-
-| Prefix | Audience | Example |
-|--------|----------|---------|
-| `user-` | End users (non-technical) | `user-how-to-checkout.md`, `user-settings-general.md` |
-| (none) | Developers (technical) | `api-reference.md` |
-
-No prefix = developer reference (e.g., `settings-general.md`, `logging.md`)
-
-- Use kebab-case
-- One file per backend section/page
-
-## Clarification
-
-- If a section's purpose is unclear, ask before writing
-
-## Output
-
-- All docs live in the `docs/` folder
-
-## Index
-
-- Maintain `docs/index.md` as the entry point
-- `docs/index.md` must list all docs organized by audience:
-  - **End User Docs** — all `user-*.md` files
-  - **Developer Docs** — all other non-prefixed `.md` files
-- Show hierarchical relationships (sections → files)
-- Include a link to `docs/index.md` in the repository's `README.md`
+## Security & WordPress-Specific Requirements
+- Sanitize, validate, and escape all input/output.
+- Enforce capability checks and nonces for admin actions and REST endpoints.
+- Use `wpdb`/WordPress APIs for data access and preserve backward compatibility.

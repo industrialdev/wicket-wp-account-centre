@@ -1,30 +1,42 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-This repository is a WordPress plugin (`wicket-wp-account-centre`). Core PHP code lives in `src/` (PSR-4 namespace `WicketAcc\\`), with legacy/compatibility code in `includes/`. Frontend assets are in `assets/` (`css/`, `js/`, `images/`). Template files are under `templates-wicket/`. Tests are split into `tests/unit/` and `tests/Browser/`. Documentation is in `docs/`, and automation/scripts live in `.ci/`.
+This is a WordPress plugin rooted at `wicket.php`.
+- `src/`: PSR-4 PHP code under `WicketWP\\` (core classes like `Main`, `Assets`, `Rest`, `Blocks`, widget classes in `src/Widgets/`).
+- `includes/`: legacy/helpers, integrations, admin settings, and component PHP templates.
+- `assets/`: source and built CSS/JS/images/fonts (`assets/css`, `assets/js`, `assets/css/min`, `assets/js/min`).
+- `tests/`: Pest/PHPUnit test bootstrap and unit tests (`tests/unit/**/*Test.php`).
+- `docs/`: feature docs.
 
 ## Build, Test, and Development Commands
-Use Composer scripts from the plugin root:
-- `composer install`: install PHP dependencies and generate autoload.
-- `composer lint`: dry-run PHP-CS-Fixer checks.
-- `composer format` or `composer cs:fix`: auto-fix code style.
-- `composer test`: run unit suite (`pest --testsuite unit`).
-- `composer test:unit`: run only unit tests.
-- `composer test:browser`: run browser tests (requires local WP + `.env`).
+- `composer install`: install PHP dependencies.
+- `yarn install` (Node 18.20.7, Yarn 4.7.0): install frontend toolchain.
+- `npx gulp build`: compile/minify plugin CSS/JS assets.
+- `composer lint`: style check (`php-cs-fixer --dry-run --diff`).
+- `composer format` or `composer cs:fix`: apply formatting.
+- `composer test`: run full Pest suite.
+- `composer test:unit`: run unit tests only.
 - `composer test:coverage`: generate HTML coverage in `coverage/`.
-- `composer check`: run lint + tests.
-- `composer production`: production build (`--no-dev`, optimized autoload).
+- `composer production`: production install (`--no-dev`, optimized autoloader) before release tags.
 
 ## Coding Style & Naming Conventions
-Target PHP 8.2+, strict typing, and PSR-12 style. Follow `.editorconfig`: 4 spaces for PHP, 2 spaces for CSS/YAML, LF line endings. Prefer early returns and small focused methods. Use verb-based method names (`getUserData`) and noun-based variables (`userData`). Keep WordPress code idiomatic: sanitize/validate input, escape output, check capabilities, and use nonces for state-changing actions.
+- PHP 8.2+, `declare(strict_types=1);`, PSR-12.
+- Use PSR-4 namespaces (`WicketWP\\...`) and keep classes in `src/`.
+- Naming: classes `PascalCase`, methods `camelCase`, test files end with `Test.php`.
+- Favor small methods, early returns, and WordPress-native APIs/hooks.
 
 ## Testing Guidelines
-Frameworks: Pest + PHPUnit + Brain Monkey. Place unit tests in `tests/unit/` with `*Test.php` suffix; extend `AbstractTestCase` for WP mocking. Browser tests go in `tests/Browser/` (see `.env.example` for required vars such as `WICKET_BROWSER_BASE_URL`). Run `composer test:unit` before pushing and `composer test:browser` for UI/auth changes.
+- Frameworks: Pest + PHPUnit + Brain Monkey.
+- Unit tests live in `tests/unit`; browser suite is configured as `tests/Browser` when present.
+- Add/update tests for any behavior change.
+- Run `composer check` before pushing (lint + test).
 
 ## Commit & Pull Request Guidelines
-Recent history shows short, imperative commit subjects (for example, `restore format`, `introduces new filters`). Keep commits focused and atomic. PRs should include:
-- clear summary and scope
-- linked issue/task
-- test evidence (`composer lint`, `composer test`, and browser test notes when relevant)
-- screenshots for UI/template updates
-- changelog update in `CHANGELOG.md` for notable features/fixes
+Git history favors short, imperative, scope-specific messages.
+- Keep commits focused; avoid mixed refactor/feature changes.
+- PRs should include: purpose, risk notes, test evidence.
+
+## Security & WordPress-Specific Requirements
+- Sanitize, validate, and escape all input/output.
+- Enforce capability checks and nonces for admin actions and REST endpoints.
+- Use `wpdb`/WordPress APIs for data access and preserve backward compatibility.
