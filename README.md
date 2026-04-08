@@ -197,11 +197,4 @@ Blocks in this plugin assume Wicket theme styles. When the plugin runs inside a 
 
 ## Documentation
 
-Full documentation for this plugin, including technical architecture, available blocks, and developer hooks, can be found in the [docs/](docs/overview.md) directory.
-
-### Key Documentation Links:
-- **[Overview](docs/overview.md)** - Technical stack, architecture, and core services.
-- **[Organization Management](docs/feature-organization-management/organization-management-general.md)** - Roster, profiles, and subsidiary management.
-- **[Developer Hooks](docs/technical/hooks.md)** - Available filters and actions.
-- **[Custom Blocks](docs/blocks/base-block.md)** - Guide for working with ACF blocks.
-- **[WooCommerce Integration](docs/integration/woocommerce.md)** - WC endpoint customizations.
+For complete documentation, see **[docs/index.md](docs/index.md)**.
