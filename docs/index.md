@@ -38,4 +38,4 @@
 - [AC Welcome Block](engineering/ac-welcome.md) — Greeting and membership list block
 
 ## Guides (End Users)
-_(None yet — contributions welcome)_
+- [Change Your Profile Picture](guides/change-profile-picture.md) — Upload, update, or remove your profile photo
