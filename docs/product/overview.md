@@ -47,10 +47,10 @@ Styling is strictly controlled via CSS variables. Custom styles should always re
 - **Sanitization**: All input/output is sanitized and escaped according to WP standards.
 
 ## Documentation Links
-- [Plugin Entrypoint](./technical/plugin-entrypoint.md)
-- [Global Helper: WACC()](./technical/functions.md)
-- [Wicket PHP SDK & MDP Integration](./technical/wicket-php-sdk.md)
-- [Developer Hooks (Filters & Actions)](./technical/hooks.md)
-- [Organization Management Overview](./feature-organization-management/organization-management-general.md)
-- [WooCommerce Integration](./integration/woocommerce.md)
-- [Deprecated Functions](./technical/deprecated-functions.md)
+- [Plugin Entrypoint](../engineering/plugin-entrypoint.md)
+- [Global Helper: WACC()](../engineering/functions.md)
+- [Wicket PHP SDK & MDP Integration](../engineering/wicket-php-sdk.md)
+- [Developer Hooks (Filters & Actions)](../engineering/hooks.md)
+- [Organization Management Overview](./organization-management-general.md)
+- [WooCommerce Integration](../engineering/woocommerce.md)
+- [Deprecated Functions](../engineering/deprecated-functions.md)

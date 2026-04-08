@@ -45,8 +45,4 @@ Permissions are determined by:
 - [ACC Options (Settings)](./acc-options.md)
 - [Organization Profile View](./organization-profile-view.md)
 - [Organization Profile Edit](./organization-profile-edit.md)
-- [Member Management](./organization-members.md)
-- [Document Management](./organization-documents.md)
-- [Business Information](./organization-business-info.md)
-- [Subsidiary Management](./organization-subsidiaries.md)
 - [Organization Selector Shortcode](./organization-selector-shortcode.md)

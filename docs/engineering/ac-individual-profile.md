@@ -61,4 +61,4 @@ ac-individual-profile/
 - Cache management
 
 ## Related Documentation
-- [Base Block](/blocks/base-block.md)
+- [Base Block](../engineering/base-block.md)

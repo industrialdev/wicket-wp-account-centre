@@ -178,4 +178,4 @@ class ManagePreferences extends BaseBlock {
 - Notification systems
 
 ## Related Documentation
-- [Base Block](/blocks/base-block.md)
+- [Base Block](../engineering/base-block.md)

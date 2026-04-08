@@ -62,4 +62,4 @@ ac-org-logo/
 - CDN integration (if configured)
 
 ## Related Documentation
-- [Base Block](/blocks/base-block.md)
+- [Base Block](../engineering/base-block.md)
