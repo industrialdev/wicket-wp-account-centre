@@ -1,3 +1,10 @@
+---
+title: "Ac Org Search Select"
+audience: [developer, agent]
+php_class: Wicket_ACC_Main
+source_files: ["src/"]
+---
+
 # ACC Org. Search & Select Block
 
 ## Overview
@@ -30,4 +37,4 @@ The `ac-org-search-select` block allows users to search for existing organizatio
 
 ## Hooks & Filters
 - `wicket/acc/blocks/org-search-select/results`: Filter search results before display.
-- `wicket/acc/blocks/org-search-select/selection_saved`: Action triggered after a selection is persisted.
+- `wicket/acc/blocks/org-search-select/selection_saved`: Action triggered after a selection is persisted."

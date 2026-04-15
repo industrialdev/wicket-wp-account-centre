@@ -1,3 +1,10 @@
+---
+title: "Ac Welcome"
+audience: [developer, agent]
+php_class: Wicket_ACC_Main
+source_files: ["src/"]
+---
+
 # AC Welcome Block Documentation
 
 ## Overview
@@ -148,4 +155,4 @@ Allows overriding the renewal date label and/or timestamp.
   - `$membership` (`array`): Current membership row being rendered.
   - `$active_memberships` (`array`): All active memberships for the person.
 - **Return:**
-  - `array` Payload array with optional `label` and `timestamp`.
+  - `array` Payload array with optional `label` and `timestamp`."

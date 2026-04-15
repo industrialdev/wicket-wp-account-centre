@@ -1,3 +1,10 @@
+---
+title: "Ac Profile Picture"
+audience: [developer, agent]
+php_class: Wicket_ACC_Main
+source_files: ["src/"]
+---
+
 # AC Profile Picture Block Documentation
 
 ## Overview
@@ -61,4 +68,4 @@ ac-profile-picture/
    - Current picture display
    - Upload form
    - Remove picture option
-   - Success/error messaging
+   - Success/error messaging"

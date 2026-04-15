@@ -1,3 +1,10 @@
+---
+title: "Functions"
+audience: [developer, agent]
+php_class: Wicket_ACC_Main
+source_files: ["src/"]
+---
+
 # Global Helper: WACC()
 
 ## Overview
@@ -46,4 +53,4 @@ To add a new helper method:
 3. If no service fits, consider adding it to `src/Helpers.php` or creating a new service in `src/Services/`.
 
 ## Deprecation
-Legacy functions in `includes/helpers.php` and `includes/legacy.php` are being phased out. When using these, a `_doing_it_wrong()` notice or `WACC()->Log()->deprecated()` call should be triggered, pointing to the new `WACC()` equivalent.
+Legacy functions in `includes/helpers.php` and `includes/legacy.php` are being phased out. When using these, a `_doing_it_wrong()` notice or `WACC()->Log()->deprecated()` call should be triggered, pointing to the new `WACC()` equivalent."

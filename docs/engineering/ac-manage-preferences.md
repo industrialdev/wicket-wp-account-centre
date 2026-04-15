@@ -1,3 +1,10 @@
+---
+title: "Ac Manage Preferences"
+audience: [developer, agent]
+php_class: Wicket_ACC_Main
+source_files: ["src/"]
+---
+
 # AC Manage Preferences Block Documentation
 
 ## Overview
@@ -178,4 +185,4 @@ class ManagePreferences extends BaseBlock {
 - Notification systems
 
 ## Related Documentation
-- [Base Block](../engineering/base-block.md)
+- [Base Block](../engineering/base-block.md)"

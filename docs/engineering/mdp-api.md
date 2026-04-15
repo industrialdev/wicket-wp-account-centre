@@ -1,3 +1,10 @@
+---
+title: "Mdp Api"
+audience: [developer, agent]
+php_class: Wicket_ACC_Main
+source_files: ["src/"]
+---
+
 Wicket MDP API
 ==============
 
@@ -405,4 +412,4 @@ Self Serve Member Features Include:
 
 *   updating communication preferences
 
-*   onboarding, purchasing and renewing a memberships (When paired with FuseBill)
+*   onboarding, purchasing and renewing a memberships (When paired with FuseBill)"

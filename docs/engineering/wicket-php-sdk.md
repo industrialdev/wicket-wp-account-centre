@@ -1,3 +1,10 @@
+---
+title: "Wicket Php Sdk"
+audience: [developer, agent]
+php_class: Wicket_ACC_Main
+source_files: ["src/"]
+---
+
 # Wicket PHP SDK & MDP Integration
 
 ## Overview
@@ -64,4 +71,4 @@ The MDP services automatically log API failures to the WordPress error log and t
 - Check for `false` or `null` return values on fetch operations.
 
 ## Configuration
-Credentials (JWT, API Endpoint, etc.) are managed via the **ACC Options** page in the WordPress admin. These are stored as WordPress options and retrieved by `WACC()->Mdp()->Init`.
+Credentials (JWT, API Endpoint, etc.) are managed via the **ACC Options** page in the WordPress admin. These are stored as WordPress options and retrieved by `WACC()->Mdp()->Init`."

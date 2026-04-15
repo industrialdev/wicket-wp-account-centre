@@ -1,3 +1,9 @@
+---
+title: "Organization Selector Shortcode"
+audience: [implementer, support]
+php_class: Wicket_ACC_Main
+---
+
 # Organization Selector Shortcode
 
 ## Overview
@@ -66,4 +72,4 @@ The shortcode is enhanced with **Datastar** to provide real-time updates:
 ## Security Best Practices
 - **UUID Sanitization**: Always sanitize organization UUIDs before performing context switches.
 - **Capability Checks**: Explicitly verify the user's role in the target organization before updating the session context.
-- **Nonce Protection**: Context switches performed via AJAX must include a valid WordPress nonce.
+- **Nonce Protection**: Context switches performed via AJAX must include a valid WordPress nonce."

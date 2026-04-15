@@ -1,3 +1,10 @@
+---
+title: "Ac Additional Info"
+audience: [developer, agent]
+php_class: Wicket_ACC_Main
+source_files: ["src/"]
+---
+
 # AC Additional Info Block Documentation
 
 ## Overview
@@ -126,4 +133,4 @@ Required roles for editing:
 - Data synchronization issues
 
 ## Related Documentation
-- [Base Block](../engineering/base-block.md)
+- [Base Block](../engineering/base-block.md)"

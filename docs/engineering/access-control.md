@@ -1,3 +1,10 @@
+---
+title: "Access Control"
+audience: [developer, agent]
+php_class: Wicket_ACC_Main
+source_files: ["src/"]
+---
+
 # Access Control & Roles
 
 ## Overview
@@ -59,4 +66,4 @@ Most organization management blocks perform role checks during initialization:
 ## Security Best Practices
 - **Sanitization**: Always sanitize organization UUIDs before performing role checks.
 - **Nonce Validation**: All role management actions (e.g., via AJAX or form submission) must include a valid WordPress nonce.
-- **Capability Mapping**: Use `current_user_can()` for WordPress-level permissions and the MDP services for organization-specific permissions.
+- **Capability Mapping**: Use `current_user_can()` for WordPress-level permissions and the MDP services for organization-specific permissions."

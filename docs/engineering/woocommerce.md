@@ -1,3 +1,10 @@
+---
+title: "Woocommerce"
+audience: [developer, agent]
+php_class: Wicket_ACC_Main
+source_files: ["src/"]
+---
+
 # WooCommerce Integration
 
 ## Overview
@@ -37,4 +44,4 @@ Example slugs:
 ## Templates
 WooCommerce-specific views are rendered using:
 - `templates-wicket/account-centre/page-wc.php`: The main wrapper for WC content within the ACC.
-- Standard WooCommerce templates (overridden if present in the theme).
+- Standard WooCommerce templates (overridden if present in the theme)."

@@ -1,3 +1,10 @@
+---
+title: "Ac Touchpoint Cvent"
+audience: [developer, agent]
+php_class: Wicket_ACC_Main
+source_files: ["src/"]
+---
+
 # AC Touchpoint Cvent Block Documentation
 
 ## Overview
@@ -61,4 +68,4 @@ ac-touchpoint-cvent/
 4. **Preview Mode**
    - Block information display
    - Description of functionality
-   - Clear preview formatting
+   - Clear preview formatting"

@@ -1,3 +1,10 @@
+---
+title: "Hooks"
+audience: [developer, agent]
+php_class: Wicket_ACC_Main
+source_files: ["src/"]
+---
+
 # Developer Hooks (Filters & Actions)
 
 ## Overview
@@ -107,4 +114,4 @@ The Wicket Account Centre plugin provides several WordPress filters and actions 
 
 ### `wicket/acc/notifications/approval_email_from`
 - **Type**: Filter
-- **Description**: Filter the "From" email address for approval notification emails.
+- **Description**: Filter the "From" email address for approval notification emails."

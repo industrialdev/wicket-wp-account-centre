@@ -1,3 +1,10 @@
+---
+title: "Ac Org Logo"
+audience: [developer, agent]
+php_class: Wicket_ACC_Main
+source_files: ["src/"]
+---
+
 # AC Organization Logo Block Documentation
 
 ## Overview
@@ -62,4 +69,4 @@ ac-org-logo/
 - CDN integration (if configured)
 
 ## Related Documentation
-- [Base Block](../engineering/base-block.md)
+- [Base Block](../engineering/base-block.md)"

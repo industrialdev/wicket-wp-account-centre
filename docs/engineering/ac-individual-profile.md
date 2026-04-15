@@ -1,3 +1,10 @@
+---
+title: "Ac Individual Profile"
+audience: [developer, agent]
+php_class: Wicket_ACC_Main
+source_files: ["src/"]
+---
+
 # AC Individual Profile Block Documentation
 
 ## Overview
@@ -61,4 +68,4 @@ ac-individual-profile/
 - Cache management
 
 ## Related Documentation
-- [Base Block](../engineering/base-block.md)
+- [Base Block](../engineering/base-block.md)"

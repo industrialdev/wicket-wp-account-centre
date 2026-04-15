@@ -1,3 +1,10 @@
+---
+title: "Plugin Entrypoint"
+audience: [developer, agent]
+php_class: Wicket_ACC_Main
+source_files: ["src/"]
+---
+
 # ACC Plugin Entrypoint Documentation
 
 ## Overview
@@ -47,4 +54,4 @@ The entrypoint defines several multilingual slugs for the Account Centre and Woo
 ## Template Overrides
 The plugin supports a hierarchy for templates:
 1. **Theme**: `your-theme/templates-wicket/account-centre/...`
-2. **Plugin**: `wicket-wp-account-centre/templates-wicket/account-centre/...`
+2. **Plugin**: `wicket-wp-account-centre/templates-wicket/account-centre/...`"

@@ -1,3 +1,9 @@
+---
+title: "Organization Profile Edit"
+audience: [implementer, support]
+php_class: Wicket_ACC_Main
+---
+
 # Organization Profile Edit Block
 
 ## Overview
@@ -57,4 +63,4 @@ Permissions are strictly verified:
 ## Security Best Practices
 - **Sanitize Input**: Always sanitize organization UUIDs and all field values before processing.
 - **Nonce Protection**: Form submissions must be protected with nonces.
-- **Auditing**: Changes are typically logged to the internal `Log` service for auditing purposes.
+- **Auditing**: Changes are typically logged to the internal `Log` service for auditing purposes."

@@ -1,3 +1,9 @@
+---
+title: "Organization Profile View"
+audience: [implementer, support]
+php_class: Wicket_ACC_Main
+---
+
 # Organization Profile View Block
 
 ## Overview
@@ -57,4 +63,4 @@ Wicket.widgets.editOrganizationProfile({
 
 ## Access Control
 - **Viewing**: Authenticated users associated with the organization.
-- **Editing**: Users must have the `org_editor` role for the specific organization in the MDP.
+- **Editing**: Users must have the `org_editor` role for the specific organization in the MDP."

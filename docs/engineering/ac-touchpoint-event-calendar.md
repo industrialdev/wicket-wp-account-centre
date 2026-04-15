@@ -1,3 +1,10 @@
+---
+title: "Ac Touchpoint Event Calendar"
+audience: [developer, agent]
+php_class: Wicket_ACC_Main
+source_files: ["src/"]
+---
+
 # AC Touchpoint Event Calendar Block Documentation
 
 ## Overview
@@ -67,4 +74,4 @@ ac-touchpoint-event-calendar/
 5. **Integration**
    - The Events Calendar integration
    - MDP API touchpoint service
-   - User-specific data retrieval
+   - User-specific data retrieval"

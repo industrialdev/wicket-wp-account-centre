@@ -1,3 +1,10 @@
+---
+title: "Ac Callout"
+audience: [developer, agent]
+php_class: Wicket_ACC_Main
+source_files: ["src/"]
+---
+
 # AC Callout Block Documentation
 
 ## Overview
@@ -141,4 +148,4 @@ ac-callout/
 - Dismissal state errors
 
 ## Related Documentation
-- [Base Block](../engineering/base-block.md)
+- [Base Block](../engineering/base-block.md)"

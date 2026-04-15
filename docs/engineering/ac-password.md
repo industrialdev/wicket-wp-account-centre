@@ -1,3 +1,10 @@
+---
+title: "Ac Password"
+audience: [developer, agent]
+php_class: Wicket_ACC_Main
+source_files: ["src/"]
+---
+
 # AC Password Block Documentation
 
 ## Overview
@@ -73,4 +80,4 @@ ac-password/
 - Security logging
 
 ## Related Documentation
-- [Base Block](../engineering/base-block.md)
+- [Base Block](../engineering/base-block.md)"

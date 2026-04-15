@@ -1,3 +1,10 @@
+---
+title: "Deprecated Functions"
+audience: [developer, agent]
+php_class: Wicket_ACC_Main
+source_files: ["src/"]
+---
+
 # Deprecated Functions Documentation
 
 ## Overview
@@ -42,4 +49,4 @@ This document tracks deprecated functions in the Wicket Account Centre plugin. T
 ## Technical Notes
 - **Location**: Legacy functions are maintained in `includes/legacy.php`.
 - **Warning**: Using these functions may trigger `_doing_it_wrong()` notices in debug mode.
-- **Migration**: Always prefer the `WACC()->Service()->method()` pattern for new development.
+- **Migration**: Always prefer the `WACC()->Service()->method()` pattern for new development."

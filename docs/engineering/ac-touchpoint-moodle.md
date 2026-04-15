@@ -1,3 +1,10 @@
+---
+title: "Ac Touchpoint Moodle"
+audience: [developer, agent]
+php_class: Wicket_ACC_Main
+source_files: ["src/"]
+---
+
 # ACC Touchpoint Moodle Block
 
 ## Overview
@@ -28,4 +35,4 @@ The `ac-touchpoint-moodle` block displays Moodle course enrollments and completi
 
 ## Template Files
 - `templates-wicket/blocks/touchpoint-moodle.php`: Main wrapper.
-- `templates-wicket/blocks/touchpoint-moodle-card.php`: Individual item display.
+- `templates-wicket/blocks/touchpoint-moodle-card.php`: Individual item display."

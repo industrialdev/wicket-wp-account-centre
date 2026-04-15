@@ -1,3 +1,9 @@
+---
+title: "Organization Management General"
+audience: [implementer, support]
+php_class: Wicket_ACC_Main
+---
+
 # Organization Management Overview
 
 ## Overview
@@ -45,4 +51,4 @@ Permissions are determined by:
 - [ACC Options (Settings)](./acc-options.md)
 - [Organization Profile View](./organization-profile-view.md)
 - [Organization Profile Edit](./organization-profile-edit.md)
-- [Organization Selector Shortcode](./organization-selector-shortcode.md)
+- [Organization Selector Shortcode](./organization-selector-shortcode.md)"

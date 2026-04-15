@@ -1,3 +1,10 @@
+---
+title: "Ac Touchpoint Maple"
+audience: [developer, agent]
+php_class: Wicket_ACC_Main
+source_files: ["src/"]
+---
+
 # AC Touchpoint Maple Block Documentation
 
 ## Overview
@@ -66,4 +73,4 @@ ac-touchpoint-maple/
    - Historical data support (Aptify)
    - Maple LMS integration
    - MDP API touchpoint service
-   - User-specific data retrieval
+   - User-specific data retrieval"

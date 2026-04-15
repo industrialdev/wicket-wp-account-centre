@@ -1,3 +1,10 @@
+---
+title: "Base Block"
+audience: [developer, agent]
+php_class: Wicket_ACC_Main
+source_files: ["src/"]
+---
+
 # AC Base Block Documentation
 
 ## Overview
@@ -87,4 +94,4 @@ Templates are resolved in the following order:
 3. Update the `name` and `title` in `block.json`.
 4. Update the namespace in `init.php`.
 5. Create a corresponding template file in `templates-wicket/blocks/account-centre/`.
-6. Add your ACF field group in the WP Admin and export the JSON to `includes/acf-json/`.
+6. Add your ACF field group in the WP Admin and export the JSON to `includes/acf-json/`."

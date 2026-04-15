@@ -1,3 +1,8 @@
+---
+title: "Wicket Account Centre Documentation Index"
+audience: [implementer, support, developer, end-user]
+---
+
 # Wicket WP Account Centre Documentation
 
 ## Product Docs (Operators & Support)

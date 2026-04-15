@@ -1,3 +1,10 @@
+---
+title: "Ac Touchpoint Vitalsource"
+audience: [developer, agent]
+php_class: Wicket_ACC_Main
+source_files: ["src/"]
+---
+
 # AC Touchpoint VitalSource Block Documentation
 
 ## Overview
@@ -64,4 +71,4 @@ ac-touchpoint-vitalsource/
 - Empty data state messaging
 - Pagination boundary checks
 - Data validation
-- Safe URL parameter handling
+- Safe URL parameter handling"

@@ -1,3 +1,10 @@
+---
+title: "Ac Touchpoint Zoom"
+audience: [developer, agent]
+php_class: Wicket_ACC_Main
+source_files: ["src/"]
+---
+
 # ACC Touchpoint Zoom Block
 
 ## Overview
@@ -28,4 +35,4 @@ The `ac-touchpoint-zoom` block displays Zoom Webinar registrations and attendanc
 
 ## Template Files
 - `templates-wicket/blocks/touchpoint-zoom.php`: Main container.
-- `templates-wicket/blocks/touchpoint-zoom-card.php`: Webinar card template.
+- `templates-wicket/blocks/touchpoint-zoom-card.php`: Webinar card template."
