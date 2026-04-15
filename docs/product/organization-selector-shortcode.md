@@ -1,7 +1,7 @@
 ---
 title: "Organization Selector Shortcode"
 audience: [implementer, support]
-php_class: Wicket_ACC_Main
+php_class: WicketAcc
 ---
 
 # Organization Selector Shortcode

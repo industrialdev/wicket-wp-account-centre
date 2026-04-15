@@ -1,7 +1,7 @@
 ---
 title: "Organization Profile View"
 audience: [implementer, support]
-php_class: Wicket_ACC_Main
+php_class: WicketAcc
 ---
 
 # Organization Profile View Block

@@ -1,7 +1,7 @@
 ---
 title: "Organization Management General"
 audience: [implementer, support]
-php_class: Wicket_ACC_Main
+php_class: WicketAcc
 ---
 
 # Organization Management Overview

@@ -7,7 +7,7 @@ This official Wicket plugin includes the Account Centre blocks and pages for Woo
 ## Requirements
 
 - **WordPress**: 6.6+
-- **PHP**: 8.1+
+- **PHP**: 8.2+
 - **wicket-wp-base-plugin**: Active
 - **Advanced Custom Fields Pro**: Active
 - **Composer**: For dependency management

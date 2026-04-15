@@ -1,7 +1,7 @@
 ---
 title: "Wicket Php Sdk"
 audience: [developer, agent]
-php_class: Wicket_ACC_Main
+php_class: WicketAcc
 source_files: ["src/"]
 ---
 

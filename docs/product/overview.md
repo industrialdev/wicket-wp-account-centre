@@ -1,7 +1,7 @@
 ---
 title: "Wicket Account Centre Overview"
 audience: [implementer, support, developer]
-php_class: Wicket_ACC_Main
+php_class: WicketAcc
 ---
 
 # Wicket Account Centre (ACC) Documentation

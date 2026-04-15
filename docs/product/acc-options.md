@@ -1,7 +1,7 @@
 ---
 title: "Account Centre Options"
 audience: [implementer, support]
-php_class: Wicket_ACC_Main
+php_class: WicketAcc
 db_option_prefix: acc_, mdp_affiliation_mode
 ---
 
