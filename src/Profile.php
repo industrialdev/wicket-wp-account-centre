@@ -292,6 +292,27 @@ class Profile extends WicketAcc
      */
     public function clearProfileImageFromMdp(): bool
     {
+        $person_uuid = WACC()->Mdp()->Person()->getCurrentPersonUuid();
+        if (empty($person_uuid)) {
+            WACC()->Log()->info('Skipping profile image clear in MDP: current person UUID is missing.', [
+                'source' => __CLASS__,
+            ]);
+
+            return true;
+        }
+
+        $current_person = WACC()->Mdp()->Person()->getPersonByUuid($person_uuid);
+        $current_data_fields = $this->extractPersonDataFields($current_person);
+
+        if (!$this->hasProfileImagePhotoLink($current_data_fields)) {
+            WACC()->Log()->info('Skipping profile image clear in MDP: no photo_link currently set.', [
+                'source' => __CLASS__,
+                'person_uuid' => $person_uuid,
+            ]);
+
+            return true;
+        }
+
         return $this->syncProfileImageToMdp(null);
     }
 
@@ -498,7 +519,12 @@ class Profile extends WicketAcc
             $data_field_value['photo_link'] = $photo_link;
         }
 
-        $data_field['value'] = $data_field_value;
+        // MDP schema expects an object; avoid encoding empty arrays as [] on delete.
+        if (empty($data_field_value)) {
+            $data_field['value'] = (object) [];
+        } else {
+            $data_field['value'] = $data_field_value;
+        }
         $data_field['version'] = isset($data_field['version']) ? (int) $data_field['version'] : 0;
 
         if (empty($data_field['$schema']) && empty($data_field['schema'])) {
@@ -629,6 +655,34 @@ class Profile extends WicketAcc
         }
 
         return null;
+    }
+
+    /**
+     * Determine whether MDP data_fields currently contain a profile image photo_link.
+     *
+     * @param array $data_fields
+     *
+     * @return bool
+     */
+    private function hasProfileImagePhotoLink(array $data_fields): bool
+    {
+        $schema_id = 'urn:uuid:8eb9c1b3-c272-4f38-802e-f6539ee47aa4';
+        $data_field = $this->findDataFieldBySchema($data_fields, $schema_id);
+        if (!is_array($data_field)) {
+            return false;
+        }
+
+        $value = $data_field['value'] ?? null;
+        if (is_object($value)) {
+            $value = (array) $value;
+        }
+        if (!is_array($value)) {
+            return false;
+        }
+
+        $photo_link = $value['photo_link'] ?? null;
+
+        return is_string($photo_link) && trim($photo_link) !== '';
     }
 
     /**
