@@ -25,6 +25,47 @@ class Profile extends WicketAcc
     }
 
     /**
+     * Normalize a profile picture extension to lowercase.
+     *
+     * @param string $filename_or_extension
+     *
+     * @return string
+     */
+    public function normalizeProfilePictureExtension(string $filename_or_extension): string
+    {
+        $value = trim($filename_or_extension);
+        if ($value === '') {
+            return '';
+        }
+
+        $extension = pathinfo($value, PATHINFO_EXTENSION);
+        if (!is_string($extension) || $extension === '') {
+            $extension = $value;
+        }
+
+        return strtolower((string) $extension);
+    }
+
+    /**
+     * Build normalized upload filename metadata for a profile picture.
+     *
+     * @param string $original_filename
+     * @param string $file_owner
+     *
+     * @return array{extension:string,filename:string}
+     */
+    public function buildProfilePictureUploadMeta(string $original_filename, string $file_owner): array
+    {
+        $extension = $this->normalizeProfilePictureExtension($original_filename);
+        $filename = strtolower($file_owner . '.' . $extension);
+
+        return [
+            'extension' => $extension,
+            'filename' => $filename,
+        ];
+    }
+
+    /**
      * Changes default WP get_avatar behavior.
      *
      * @param string $avatar
@@ -149,14 +190,11 @@ class Profile extends WicketAcc
         ]));
 
         foreach ($identifiers as $identifier) {
-            foreach ($extensions as $ext) {
-                $file_path = $this->pp_uploads_path . $identifier . '.' . $ext;
-
-                if (file_exists($file_path)) {
-                    // Found it!
-                    $pp_profile_picture = $this->pp_uploads_url . $identifier . '.' . $ext;
-                    break 2;
-                }
+            $match = $this->findProfilePictureFileForIdentifier((string) $identifier, $extensions);
+            if (is_array($match) && !empty($match['ext'])) {
+                // Found it!
+                $pp_profile_picture = $this->pp_uploads_url . $identifier . '.' . $match['ext'];
+                break;
             }
         }
 
@@ -218,7 +256,7 @@ class Profile extends WicketAcc
             return;
         }
 
-        $photo_link = $profile_image_url === null ? null : esc_url_raw($profile_image_url);
+        $photo_link = $this->normalizeProfileImageUrlForMdp($profile_image_url);
         $schema_id = 'urn:uuid:8eb9c1b3-c272-4f38-802e-f6539ee47aa4';
         $fields_to_update = $this->buildProfileImageDataFieldsPayload($person_uuid, $schema_id, $photo_link);
         $result = WACC()->Mdp()->Person()->updatePerson($person_uuid, $fields_to_update);
@@ -237,6 +275,165 @@ class Profile extends WicketAcc
                 'mdp_response' => $result,
             ]);
         }
+    }
+
+    /**
+     * Delete profile pictures for all provided identifiers using shared normalization rules.
+     *
+     * @param array<int, string> $identifiers
+     *
+     * @return void
+     */
+    public function deleteProfilePicturesByIdentifiers(array $identifiers): void
+    {
+        foreach ($identifiers as $identifier) {
+            $matches = $this->getProfilePictureCandidatesForIdentifier((string) $identifier, $this->pp_extensions);
+            foreach ($matches as $match) {
+                if (!empty($match['path']) && is_file($match['path'])) {
+                    wp_delete_file($match['path']);
+                }
+            }
+        }
+    }
+
+    /**
+     * Resolve profile picture file for an identifier, normalizing extension casing.
+     *
+     * Supports legacy files with uppercase extensions and renames them to lowercase
+     * when possible so downstream systems consistently consume normalized filenames.
+     *
+     * @param string $identifier
+     * @param array<int, string> $extensions
+     *
+     * @return array{path:string,ext:string}|null
+     */
+    private function findProfilePictureFileForIdentifier(string $identifier, array $extensions): ?array
+    {
+        $matches = $this->getProfilePictureCandidatesForIdentifier($identifier, $extensions);
+
+        return !empty($matches) ? $matches[0] : null;
+    }
+
+    /**
+     * Get normalized profile picture file candidates for an identifier.
+     *
+     * @param string $identifier
+     * @param array<int, string> $extensions
+     *
+     * @return array<int, array{path:string,ext:string}>
+     */
+    private function getProfilePictureCandidatesForIdentifier(string $identifier, array $extensions): array
+    {
+        $allowed_extensions = array_values(array_unique(array_map('strtolower', $extensions)));
+        $candidates = glob($this->pp_uploads_path . $identifier . '.*');
+
+        if (!is_array($candidates) || empty($candidates)) {
+            return [];
+        }
+
+        usort($candidates, static function (string $a, string $b): int {
+            return (int) (filemtime($b) <=> filemtime($a));
+        });
+
+        $normalized_matches = [];
+        $seen = [];
+
+        foreach ($candidates as $candidate_path) {
+            if (!is_file($candidate_path)) {
+                continue;
+            }
+
+            $candidate_ext = $this->normalizeProfilePictureExtension($candidate_path);
+            if (!in_array($candidate_ext, $allowed_extensions, true)) {
+                continue;
+            }
+
+            $normalized_path = $this->pp_uploads_path . $identifier . '.' . $candidate_ext;
+            if ($candidate_path !== $normalized_path && !file_exists($normalized_path)) {
+                @rename($candidate_path, $normalized_path);
+            }
+
+            if (!file_exists($normalized_path)) {
+                $normalized_path = $candidate_path;
+            }
+
+            if (isset($seen[$normalized_path])) {
+                continue;
+            }
+
+            $seen[$normalized_path] = true;
+            $normalized_matches[] = [
+                'path' => $normalized_path,
+                'ext' => $candidate_ext,
+            ];
+        }
+
+        return $normalized_matches;
+    }
+
+    /**
+     * Normalize profile image URL to a complete absolute URL for MDP.
+     *
+     * Accepts absolute URLs, protocol-relative URLs, filesystem paths, and
+     * relative paths under uploads; returns a clean absolute URL or null.
+     *
+     * @param string|null $profile_image_url
+     *
+     * @return string|null
+     */
+    private function normalizeProfileImageUrlForMdp(?string $profile_image_url): ?string
+    {
+        if ($profile_image_url === null) {
+            return null;
+        }
+
+        $candidate = trim($profile_image_url);
+        if ($candidate === '') {
+            return null;
+        }
+
+        // Already absolute.
+        if (preg_match('#^https?://#i', $candidate) === 1) {
+            $sanitized = esc_url_raw($candidate);
+
+            return $sanitized !== '' ? $sanitized : null;
+        }
+
+        // Protocol-relative URL.
+        if (str_starts_with($candidate, '//')) {
+            $absolute = set_url_scheme($candidate, is_ssl() ? 'https' : 'http');
+            $sanitized = esc_url_raw($absolute);
+
+            return $sanitized !== '' ? $sanitized : null;
+        }
+
+        $uploads = wp_get_upload_dir();
+        $baseurl = rtrim((string) ($uploads['baseurl'] ?? ''), '/');
+
+        // Convert filesystem/site paths that include the uploads marker.
+        $uploads_marker = '/wp-content/uploads/';
+        $uploads_marker_pos = strpos($candidate, $uploads_marker);
+        if ($baseurl !== '' && $uploads_marker_pos !== false) {
+            $relative_upload_path = substr($candidate, $uploads_marker_pos + strlen($uploads_marker));
+            $absolute = $baseurl . '/' . ltrim((string) $relative_upload_path, '/');
+            $sanitized = esc_url_raw($absolute);
+
+            return $sanitized !== '' ? $sanitized : null;
+        }
+
+        // Convert uploads-relative paths (e.g. wicket-account-center/profile-pictures/...).
+        if ($baseurl !== '' && !str_starts_with($candidate, '/')) {
+            $absolute = $baseurl . '/' . ltrim($candidate, '/');
+            $sanitized = esc_url_raw($absolute);
+
+            return $sanitized !== '' ? $sanitized : null;
+        }
+
+        // Fallback to site-relative absolute URL.
+        $absolute = str_starts_with($candidate, '/') ? home_url($candidate) : home_url('/' . ltrim($candidate, '/'));
+        $sanitized = esc_url_raw($absolute);
+
+        return $sanitized !== '' ? $sanitized : null;
     }
 
     /**

@@ -156,7 +156,7 @@ class init extends Blocks
         }
 
         // Get the extension and normalize file naming to lowercase before save
-        $file_extension = strtolower((string) pathinfo($_FILES['profile-image']['name'], PATHINFO_EXTENSION));
+        $file_extension = WACC()->Profile()->normalizeProfilePictureExtension((string) $_FILES['profile-image']['name']);
 
         // Check if the file extension is allowed
         if (!in_array(strtolower($file_extension), array_map('strtolower', $this->pp_extensions))) {
@@ -199,11 +199,14 @@ class init extends Blocks
             return false;
         }
 
-        $file_path = $this->pp_uploads_path . $file_owner . '.' . $file_extension;
+        $upload_meta = WACC()->Profile()->buildProfilePictureUploadMeta((string) $_FILES['profile-image']['name'], $file_owner);
+        $file_extension = $upload_meta['extension'];
+        $normalized_filename = $upload_meta['filename'];
+
+        $file_path = $this->pp_uploads_path . $normalized_filename;
         $this->deleteExistingProfilePictures($profile_owner['identifiers']);
 
         // No matter whats the file name, rename it to the normalized owner identifier.
-        $normalized_filename = strtolower($file_owner . '.' . $file_extension);
         $_FILES['profile-image']['name'] = $normalized_filename;
         $_FILES['profile-image']['full_path'] = $normalized_filename;
 
@@ -349,15 +352,7 @@ class init extends Blocks
      */
     private function deleteExistingProfilePictures(array $identifiers): void
     {
-        foreach ($identifiers as $identifier) {
-            foreach ($this->pp_extensions as $ext) {
-                $file_path = $this->pp_uploads_path . $identifier . '.' . $ext;
-
-                if (file_exists($file_path)) {
-                    wp_delete_file($file_path);
-                }
-            }
-        }
+        WACC()->Profile()->deleteProfilePicturesByIdentifiers($identifiers);
     }
 
     /**
