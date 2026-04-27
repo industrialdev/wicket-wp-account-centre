@@ -83,7 +83,18 @@ The Wicket Account Centre plugin provides several WordPress filters and actions 
 
 ### `do_action('wicket/acc/profile/edit/profile_image_updated', $photo_url)`
 - **Type**: Action
-- **Description**: Triggered when a user successfully updates or removes their profile picture.
+- **Description**: Backwards-compatible action triggered when a user updates or removes their profile picture.
+
+### `do_action('wicket/acc/profile/edit/profile_image_deleted', $payload)`
+- **Type**: Action
+- **Description**: Fired on profile-picture removal with explicit delete payload for webhook consumers.
+- **Payload**:
+  - `event` (`deleted`)
+  - `profile_image_url` (`null`)
+  - `user_id`
+  - `person_uuid`
+  - `mdp_sync_success` (`bool`)
+  - `timestamp` (unix epoch)
 
 ---
 

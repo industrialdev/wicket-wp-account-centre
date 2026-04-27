@@ -290,6 +290,13 @@ class init extends Blocks
             return false;
         }
 
+        $profile_image_operation = sanitize_text_field(wp_unslash($_POST['profile-image-operation'] ?? ''));
+        if ($profile_image_operation !== 'delete') {
+            $this->setError('invalid_action', __('Invalid profile image operation.', 'wicket-acc'));
+
+            return false;
+        }
+
         $profile_owner = $this->resolveProfilePictureOwner();
         if ($profile_owner === null) {
             $this->setError('invalid_user', __('Could not determine the current user for this request.', 'wicket-acc'));
@@ -302,8 +309,27 @@ class init extends Blocks
         /*
          * @var string|null $profile_image_url URL of the updated profile image, or null if not set.
          */
-        WACC()->Profile()->syncProfileImageToMdp(null);
+        $mdp_sync_success = WACC()->Profile()->clearProfileImageFromMdp();
+
+        $delete_webhook_payload = [
+            'event' => 'deleted',
+            'profile_image_url' => null,
+            'user_id' => $profile_owner['user_id'],
+            'person_uuid' => $profile_owner['person_uuid'],
+            'mdp_sync_success' => $mdp_sync_success,
+            'timestamp' => time(),
+        ];
+
+        // Backwards-compatible action name used by existing integrations.
         do_action('wicket/acc/profile/edit/profile_image_updated', null);
+        // Explicit delete action to simplify downstream webhook wiring.
+        do_action('wicket/acc/profile/edit/profile_image_deleted', $delete_webhook_payload);
+
+        if (!$mdp_sync_success) {
+            $this->setError('mdp_sync_error', __('Profile image was removed locally, but clearing the MDP URL failed. Please try again.', 'wicket-acc'));
+
+            return false;
+        }
 
         WACC()->Log()->info('Profile picture removed successfully.', [
             'source' => __CLASS__,

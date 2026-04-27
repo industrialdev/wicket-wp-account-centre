@@ -247,13 +247,17 @@ class Profile extends WicketAcc
      *
      * @param string|null $profile_image_url Updated profile image URL, or null when deleted.
      *
-     * @return void
+     * @return bool True when MDP sync succeeds, false otherwise.
      */
-    public function syncProfileImageToMdp(?string $profile_image_url = null): void
+    public function syncProfileImageToMdp(?string $profile_image_url = null): bool
     {
         $person_uuid = WACC()->Mdp()->Person()->getCurrentPersonUuid();
         if (empty($person_uuid)) {
-            return;
+            WACC()->Log()->warning('Unable to sync profile image to MDP: current person UUID is missing.', [
+                'source' => __CLASS__,
+            ]);
+
+            return false;
         }
 
         $photo_link = $this->normalizeProfileImageUrlForMdp($profile_image_url);
@@ -274,7 +278,21 @@ class Profile extends WicketAcc
                 'error' => $result['error'] ?? 'unknown',
                 'mdp_response' => $result,
             ]);
+
+            return false;
         }
+
+        return true;
+    }
+
+    /**
+     * Clear profile image link from MDP for the current person.
+     *
+     * @return bool True when MDP clear succeeds, false otherwise.
+     */
+    public function clearProfileImageFromMdp(): bool
+    {
+        return $this->syncProfileImageToMdp(null);
     }
 
     /**
@@ -472,7 +490,14 @@ class Profile extends WicketAcc
         if (!is_array($data_field_value)) {
             $data_field_value = [];
         }
-        $data_field_value['photo_link'] = $photo_link;
+
+        // Match MDP UI behavior: remove the key on delete, set full URL on update.
+        if ($photo_link === null) {
+            unset($data_field_value['photo_link']);
+        } else {
+            $data_field_value['photo_link'] = $photo_link;
+        }
+
         $data_field['value'] = $data_field_value;
         $data_field['version'] = isset($data_field['version']) ? (int) $data_field['version'] : 0;
 

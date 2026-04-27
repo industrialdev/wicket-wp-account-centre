@@ -22,6 +22,7 @@ defined('ABSPATH') || exit;
         <?php if ($args['is_custom']) : ?>
             <form name="wicket-acc-profile-picture-remove-form" method="post">
                 <input type="hidden" name="action" value="wicket-acc-profile-picture-remove-form">
+                <input type="hidden" name="profile-image-operation" value="delete">
                 <?php wp_nonce_field('wicket-acc-profile-picture-remove-form', 'nonce'); ?>
 
                 <?php if (defined('WICKET_WP_THEME_V2')) : ?>
