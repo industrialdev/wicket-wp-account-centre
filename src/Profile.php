@@ -292,27 +292,6 @@ class Profile extends WicketAcc
      */
     public function clearProfileImageFromMdp(): bool
     {
-        $person_uuid = WACC()->Mdp()->Person()->getCurrentPersonUuid();
-        if (empty($person_uuid)) {
-            WACC()->Log()->info('Skipping profile image clear in MDP: current person UUID is missing.', [
-                'source' => __CLASS__,
-            ]);
-
-            return true;
-        }
-
-        $current_person = WACC()->Mdp()->Person()->getPersonByUuid($person_uuid);
-        $current_data_fields = $this->extractPersonDataFields($current_person);
-
-        if (!$this->hasProfileImagePhotoLink($current_data_fields)) {
-            WACC()->Log()->info('Skipping profile image clear in MDP: no photo_link currently set.', [
-                'source' => __CLASS__,
-                'person_uuid' => $person_uuid,
-            ]);
-
-            return true;
-        }
-
         return $this->syncProfileImageToMdp(null);
     }
 
