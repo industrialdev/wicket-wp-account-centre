@@ -36,31 +36,31 @@ class Log
 
     public function log(string $level, string $message, array $context = []): bool
     {
-        return Wicket()->log()->log($level, $message, $context);
+        return \Wicket()->log()->log($level, $message, $context);
     }
 
     public function critical(string $message, array $context = []): void
     {
-        Wicket()->log()->critical($message, $context);
+        \Wicket()->log()->critical($message, $context);
     }
 
     public function error(string $message, array $context = []): void
     {
-        Wicket()->log()->error($message, $context);
+        \Wicket()->log()->error($message, $context);
     }
 
     public function warning(string $message, array $context = []): void
     {
-        Wicket()->log()->warning($message, $context);
+        \Wicket()->log()->warning($message, $context);
     }
 
     public function info(string $message, array $context = []): void
     {
-        Wicket()->log()->info($message, $context);
+        \Wicket()->log()->info($message, $context);
     }
 
     public function debug(string $message, array $context = []): void
     {
-        Wicket()->log()->debug($message, $context);
+        \Wicket()->log()->debug($message, $context);
     }
 }
