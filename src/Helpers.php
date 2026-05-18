@@ -117,26 +117,29 @@ class Helpers extends WicketAcc
      */
     public function getAttachmentUrlFromOption(string $key, string $default = ''): string
     {
+        // Try Carbon Fields API.
         if (function_exists('carbon_get_theme_option')) {
-            $id = carbon_get_theme_option($key);
-            if (is_numeric($id)) {
-                $url = wp_get_attachment_url((int) $id);
-
-                return $url ?: $default;
+            $value = carbon_get_theme_option($key);
+            if (is_numeric($value) && (int) $value > 0) {
+                $url = wp_get_attachment_url((int) $value);
+                if ($url) {
+                    return $url;
+                }
             }
-
-            return $default;
+            // Fall through — CF may not be fully initialized at this point in the
+            // request lifecycle (e.g. template_redirect priority 0), so don't
+            // return the default here; try the remaining strategies below.
         }
 
-        if (function_exists('get_field')) {
-            $val = get_field($key, 'option');
-            if (is_numeric($val)) {
-                $url = wp_get_attachment_url((int) $val);
-
-                return $url ?: $default;
-            }
-            if (is_string($val)) {
-                return $val;
+        // Direct CF datastore read: CF theme options are stored in wp_options with a
+        // leading underscore prefix (KEY_PREFIX = '_' in Key_Toolset). Reading the raw
+        // option bypasses CF's container initialization entirely, which makes this safe
+        // to call at any point in the request lifecycle regardless of CF's boot state.
+        $raw = get_option('_' . $key);
+        if (is_numeric($raw) && (int) $raw > 0) {
+            $url = wp_get_attachment_url((int) $raw);
+            if ($url) {
+                return $url;
             }
         }
 
