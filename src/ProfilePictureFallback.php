@@ -127,11 +127,7 @@ class ProfilePictureFallback extends WicketAcc
      */
     private function redirectToDefaultProfilePicture(string $current_request_path): void
     {
-        $default_url = '';
-        $wacc = WACC();
-        if (is_object($wacc) && method_exists($wacc, 'getAttachmentUrlFromOption')) {
-            $default_url = (string) $wacc->getAttachmentUrlFromOption('acc_profile_picture_default', '');
-        }
+        $default_url = (string) WACC()->getAttachmentUrlFromOption('acc_profile_picture_default', '');
 
         // Loop guard: if the configured default would resolve to the same path we are
         // already on (i.e. it is also a 404), skip it and use the built-in SVG instead.
@@ -143,7 +139,7 @@ class ProfilePictureFallback extends WicketAcc
         }
 
         if (empty($default_url)) {
-            $default_url = WICKET_ACC_URL . '/assets/images/profile-picture-default.svg';
+            $default_url = WICKET_ACC_URL . 'assets/images/profile-picture-default.svg';
         }
 
         // wp_redirect() is used intentionally here — the destination is a trusted,
