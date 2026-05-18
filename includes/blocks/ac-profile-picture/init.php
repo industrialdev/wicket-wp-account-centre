@@ -37,7 +37,7 @@ class init extends Blocks
         $this->pp_max_size = max(1, $this->pp_max_size);
         $this->pp_uploads_path = WICKET_ACC_UPLOADS_PATH . 'profile-pictures/';
         $this->pp_uploads_url = WICKET_ACC_UPLOADS_URL . 'profile-pictures/';
-        $this->pp_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+        $this->pp_extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
         // Display the block
         $this->display_block();

@@ -32,7 +32,7 @@ class init extends Blocks
 
         $this->uploads_path = WICKET_ACC_UPLOADS_PATH . 'organization-logos/';
         $this->uploads_url = WICKET_ACC_UPLOADS_URL . 'organization-logos/';
-        $this->pp_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+        $this->pp_extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
         // Get max size from centralized helper (CF preferred, ACF fallback)
         $this->max_size = absint(WACC()->getOption('acc_profile_picture_size', 1));

@@ -16,7 +16,7 @@ class Profile extends WicketAcc
      * Constructor.
      */
     public function __construct(
-        protected array $pp_extensions = ['jpg', 'jpeg', 'png', 'gif'],
+        protected array $pp_extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'],
         protected string $pp_uploads_path = WICKET_ACC_UPLOADS_PATH . 'profile-pictures/',
         protected string $pp_uploads_url = WICKET_ACC_UPLOADS_URL . 'profile-pictures/'
     ) {
@@ -180,7 +180,7 @@ class Profile extends WicketAcc
         $user = $user_id ? get_user_by('id', $user_id) : null;
         $person_uuid = $user instanceof \WP_User ? $user->user_login : null;
 
-        // Check for jpg, jpeg, png, or gif
+        // Check for jpg, jpeg, png, gif, or webp
         $extensions = $this->pp_extensions;
         $pp_profile_picture = '';
 

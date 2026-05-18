@@ -16,7 +16,7 @@ class OrganizationProfile extends WicketAcc
      * Constructor.
      */
     public function __construct(
-        protected array $extensions = ['jpg', 'jpeg', 'png', 'gif'],
+        protected array $extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'],
         protected string $uploads_path = WICKET_ACC_UPLOADS_PATH . 'organization-logos/',
         protected string $uploads_url = WICKET_ACC_UPLOADS_URL . 'organization-logos/'
     ) {}

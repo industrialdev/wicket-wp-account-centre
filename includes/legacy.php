@@ -614,7 +614,7 @@ function wp_job_dropdown_pages($parsed_args = '')
  */
 function wicket_acc_get_avatar($user, $args = [])
 {
-    $extensions = ['jpg', 'jpeg', 'png', 'gif'];
+    $extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
     $uploads_dir = wp_get_upload_dir();
     $uploads_url = $uploads_dir['baseurl'] . '/wicket-profile-pictures';
     $default_avatar = WICKET_ACC_URL . '/dist/assets/images/profile-picture-default.svg';
