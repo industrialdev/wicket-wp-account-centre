@@ -18,6 +18,11 @@ class init extends Blocks
     protected array $mdp_json_fields = [];
 
     /**
+     * @var array
+     */
+    protected array $mdp_json_sections = [];
+
+    /**
      * Constructor.
      */
     public function __construct(
@@ -29,6 +34,9 @@ class init extends Blocks
 
         $json_fields = get_field('mdp_json_fields');
         $this->mdp_json_fields = json_decode($json_fields, true) ?? [];
+
+        $json_sections = get_field('mdp_json_sections');
+        $this->mdp_json_sections = json_decode($json_sections, true) ?? [];
 
         // Display the block
         $this->init_block();
@@ -42,7 +50,8 @@ class init extends Blocks
     protected function init_block()
     {
         get_component('widget-profile-individual', [
-            'fields' => $this->mdp_json_fields,
+            'fields'   => $this->mdp_json_fields,
+            'sections' => $this->mdp_json_sections,
         ]);
     }
 }
