@@ -13,6 +13,27 @@ defined('ABSPATH') || exit;
 class Profile extends WicketAcc
 {
     /**
+     * Default MDP schema slug that holds the profile image (photo_link) field.
+     *
+     * MDP schema UUIDs are tenant-specific, but the slug is stable across tenants,
+     * so we identify the schema by slug. Used as the fallback when the "Profile
+     * picture MDP schema" ACC Option is left blank.
+     *
+     * @var string
+     */
+    public const PROFILE_IMAGE_SCHEMA_SLUG_DEFAULT = 'personal_info';
+
+    /**
+     * Default field key (slug) within the schema that stores the profile image URL.
+     *
+     * The field slug is not guaranteed to be "photo_link" on every tenant, so it
+     * is configurable; this is the fallback when the ACC Option is left blank.
+     *
+     * @var string
+     */
+    public const PROFILE_IMAGE_FIELD_SLUG_DEFAULT = 'photo_link';
+
+    /**
      * Constructor.
      */
     public function __construct(
@@ -253,13 +274,13 @@ class Profile extends WicketAcc
         }
 
         $photo_link = $this->normalizeProfileImageUrlForMdp($profile_image_url);
-        $schema_id = 'urn:uuid:8eb9c1b3-c272-4f38-802e-f6539ee47aa4';
-        $fields_to_update = $this->buildProfileImageDataFieldsPayload($person_uuid, $schema_id, $photo_link);
+        $schema_slug = $this->getProfileImageSchemaSlug();
+        $fields_to_update = $this->buildProfileImageDataFieldsPayload($person_uuid, $schema_slug, $photo_link);
         $result = WACC()->Mdp()->Person()->updatePerson($person_uuid, $fields_to_update);
 
         // Retry once on version conflict after refetching latest data_fields/version.
         if (empty($result['success']) && $this->isRecordConflictResponse($result)) {
-            $fields_to_update = $this->buildProfileImageDataFieldsPayload($person_uuid, $schema_id, $photo_link);
+            $fields_to_update = $this->buildProfileImageDataFieldsPayload($person_uuid, $schema_slug, $photo_link);
             $result = WACC()->Mdp()->Person()->updatePerson($person_uuid, $fields_to_update);
         }
 
@@ -449,63 +470,65 @@ class Profile extends WicketAcc
     /**
      * Build a data_fields payload for profile image synchronization.
      *
+     * Identifies the target schema by its stable slug (e.g. "personal_info")
+     * rather than a tenant-specific UUID, and patches via schema_slug. The full
+     * existing value is preserved so sibling fields (bio, dates, etc.) are not
+     * wiped; only the photo_link key is set (update) or removed (delete).
+     *
      * @param string $person_uuid
-     * @param string $schema_id
+     * @param string $schema_slug
      * @param string|null $photo_link
      *
      * @return array
      */
-    private function buildProfileImageDataFieldsPayload(string $person_uuid, string $schema_id, ?string $photo_link): array
+    private function buildProfileImageDataFieldsPayload(string $person_uuid, string $schema_slug, ?string $photo_link): array
     {
         $current_person = WACC()->Mdp()->Person()->getPersonByUuid($person_uuid);
         $current_data_fields = $this->extractPersonDataFields($current_person);
-        $data_field = $this->findDataFieldBySchema($current_data_fields, $schema_id);
+        $data_field = $this->findDataFieldBySchemaSlug($current_data_fields, $schema_slug);
 
-        if (!is_array($data_field)) {
-            if (!empty($current_data_fields)) {
-                WACC()->Log()->info('Profile image schema not found in current data_fields; creating new payload field.', [
-                    'source' => __CLASS__,
-                    'person_uuid' => $person_uuid,
-                    'schema_id' => $schema_id,
-                    'available_data_field_keys' => $this->getDataFieldShapeSummary($current_data_fields),
-                ]);
-            }
-
-            $data_field = [
-                '$schema' => $schema_id,
-                'version' => 0,
-                'value' => [],
-            ];
+        if (!is_array($data_field) && !empty($current_data_fields)) {
+            WACC()->Log()->info('Profile image schema slug not found in current data_fields; creating new payload field.', [
+                'source' => __CLASS__,
+                'person_uuid' => $person_uuid,
+                'schema_slug' => $schema_slug,
+                'available_data_field_keys' => $this->getDataFieldShapeSummary($current_data_fields),
+            ]);
         }
 
-        $data_field_value = $data_field['value'] ?? [];
+        // The profile image lives inside a shared schema (e.g. "personal_info")
+        // alongside other fields (bio, dates, etc.). Preserve the full existing
+        // value and only touch photo_link, otherwise saving would wipe siblings.
+        // SDK objects arrive as stdClass after a shallow cast, so normalize to an
+        // array here rather than discarding a populated object value.
+        $data_field_value = is_array($data_field) ? ($data_field['value'] ?? []) : [];
+        if (is_object($data_field_value)) {
+            $data_field_value = (array) $data_field_value;
+        }
         if (!is_array($data_field_value)) {
             $data_field_value = [];
         }
 
         // Match MDP UI behavior: remove the key on delete, set full URL on update.
+        // Sibling fields in $data_field_value are carried through unchanged.
+        // The photo field is format:url in MDP, so it must be unset (not "") on delete.
+        $field_slug = $this->getProfileImageFieldSlug();
         if ($photo_link === null) {
-            unset($data_field_value['photo_link']);
+            unset($data_field_value[$field_slug]);
         } else {
-            $data_field_value['photo_link'] = $photo_link;
+            $data_field_value[$field_slug] = $photo_link;
         }
 
         // MDP schema expects an object; avoid encoding empty arrays as [] on delete.
-        if (empty($data_field_value)) {
-            $data_field['value'] = (object) [];
-        } else {
-            $data_field['value'] = $data_field_value;
-        }
-        $data_field['version'] = isset($data_field['version']) ? (int) $data_field['version'] : 0;
-
-        if (empty($data_field['$schema']) && empty($data_field['schema'])) {
-            $data_field['$schema'] = $schema_id;
-        }
+        $value = empty($data_field_value) ? (object) [] : $data_field_value;
 
         return [
             'attributes' => [
                 'data_fields' => [
-                    $data_field,
+                    [
+                        'schema_slug' => $schema_slug,
+                        'value' => $value,
+                    ],
                 ],
             ],
         ];
@@ -603,14 +626,17 @@ class Profile extends WicketAcc
     }
 
     /**
-     * Find a specific data_field entry by schema.
+     * Find a specific data_field entry by its schema slug.
+     *
+     * MDP data_field entries carry a stable slug under "schema_slug" (and a
+     * mirrored "key"), unlike the tenant-specific schema UUID.
      *
      * @param array $data_fields
-     * @param string $schema_id
+     * @param string $schema_slug
      *
      * @return array|null
      */
-    private function findDataFieldBySchema(array $data_fields, string $schema_id): ?array
+    private function findDataFieldBySchemaSlug(array $data_fields, string $schema_slug): ?array
     {
         foreach ($data_fields as $field) {
             $field_array = $this->normalizeDataField($field);
@@ -618,14 +644,49 @@ class Profile extends WicketAcc
                 continue;
             }
 
-            $field_schema = $field_array['$schema'] ?? ($field_array['schema'] ?? ($field_array['schema_id'] ?? ($field_array['schema_uuid'] ?? null)));
+            $field_slug = $field_array['schema_slug'] ?? ($field_array['key'] ?? null);
 
-            if ($field_schema === $schema_id) {
+            if ($field_slug === $schema_slug) {
                 return $field_array;
             }
         }
 
         return null;
+    }
+
+    /**
+     * Resolve the MDP schema slug that stores the profile image (photo_link).
+     *
+     * Reads the "Profile picture MDP schema slug" ACC Option, falling back to
+     * PROFILE_IMAGE_SCHEMA_SLUG_DEFAULT when unset or blank. The slug is stable
+     * across tenants (unlike the schema UUID), so no runtime schema lookup is
+     * needed.
+     *
+     * @return string
+     */
+    private function getProfileImageSchemaSlug(): string
+    {
+        $configured = WACC()->getOption('acc_profile_picture_mdp_schema', '');
+        $configured = is_string($configured) ? trim($configured) : '';
+
+        return $configured !== '' ? $configured : self::PROFILE_IMAGE_SCHEMA_SLUG_DEFAULT;
+    }
+
+    /**
+     * Resolve the MDP field slug (within the schema) that stores the profile image URL.
+     *
+     * Reads the "Profile picture MDP field slug" ACC Option, falling back to
+     * PROFILE_IMAGE_FIELD_SLUG_DEFAULT when unset or blank. The field is not
+     * guaranteed to be "photo_link" on every tenant, so it must be configurable.
+     *
+     * @return string
+     */
+    private function getProfileImageFieldSlug(): string
+    {
+        $configured = WACC()->getOption('acc_profile_picture_mdp_field', '');
+        $configured = is_string($configured) ? trim($configured) : '';
+
+        return $configured !== '' ? $configured : self::PROFILE_IMAGE_FIELD_SLUG_DEFAULT;
     }
 
     /**
@@ -637,8 +698,7 @@ class Profile extends WicketAcc
      */
     private function hasProfileImagePhotoLink(array $data_fields): bool
     {
-        $schema_id = 'urn:uuid:8eb9c1b3-c272-4f38-802e-f6539ee47aa4';
-        $data_field = $this->findDataFieldBySchema($data_fields, $schema_id);
+        $data_field = $this->findDataFieldBySchemaSlug($data_fields, $this->getProfileImageSchemaSlug());
         if (!is_array($data_field)) {
             return false;
         }
@@ -651,7 +711,7 @@ class Profile extends WicketAcc
             return false;
         }
 
-        $photo_link = $value['photo_link'] ?? null;
+        $photo_link = $value[$this->getProfileImageFieldSlug()] ?? null;
 
         return is_string($photo_link) && trim($photo_link) !== '';
     }

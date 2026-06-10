@@ -75,6 +75,12 @@ class CFInitOptions extends WicketAcc
                     ->set_attribute('min', 1)
                     ->set_attribute('max', 7),
                 Field::make('image', 'acc_profile_picture_default', __('Default profile picture')),
+                Field::make('text', 'acc_profile_picture_mdp_schema', __('Profile picture MDP schema slug'))
+                    ->set_help_text(__('MDP schema slug that contains the profile picture field. Stable across tenants. Leave blank to use the plugin default.', 'wicket-acc'))
+                    ->set_attribute('placeholder', \WicketAcc\Profile::PROFILE_IMAGE_SCHEMA_SLUG_DEFAULT),
+                Field::make('text', 'acc_profile_picture_mdp_field', __('Profile picture MDP field slug'))
+                    ->set_help_text(__('Field slug within the schema above that stores the profile picture URL. Leave blank to use the plugin default.', 'wicket-acc'))
+                    ->set_attribute('placeholder', \WicketAcc\Profile::PROFILE_IMAGE_FIELD_SLUG_DEFAULT),
                 Field::make('checkbox', 'acc_global-headerbanner', __('Global sub-header')),
             ]
         );
