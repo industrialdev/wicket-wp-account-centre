@@ -1,7 +1,7 @@
 {
     "name": "industrialdev/wicket-wp-account-centre",
     "description": "Wicket's Account Centre for WordPress",
-    "version": "1.6.40",
+    "version": "1.6.41",
     "extra": {},
     "homepage": "https://wicket.io",
     "keywords": [
@@ -20,8 +20,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "WicketAcc\\": "src/"
-        }
+            "WicketAcc\\": "src/",
+            "WicketORM\\": "src/WicketORM/"
+        },
+        "files": [
+            "src/WicketORM/compat.php"
+        ]
     },
     "config": {
         "allow-plugins": {
@@ -38,7 +42,7 @@
     "require": {
         "htmlburger/carbon-fields": "^3.6",
         "industrialdev/wicket-sdk-php": "dev-master",
-        "php": "\u003e=8.2.0",
+        "php": ">=8.2.0",
         "picocss/pico": "^2.1"
     },
     "require-dev": {
