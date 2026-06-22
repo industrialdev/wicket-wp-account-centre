@@ -1,0 +1,11 @@
+First Name,Last Name,Email Address,Relationship Type,Roles
+Avery,Holloway,avery.holloway+uat1@example.org,Employee,member
+Milo,Carrington,milo.carrington+uat2@example.org,Employee,member
+Nadia,Whitlock,nadia.whitlock+uat3@example.org,Employee,member
+Rowan,Prescott,rowan.prescott+uat4@example.org,Employee,member|membership_manager
+Keira,Langford,keira.langford+uat5@example.org,Employee,member
+Elias,Montrose,elias.montrose+uat6@example.org,Employee,member
+Priya,Halberg,priya.halberg+uat7@example.org,Employee,member
+Theo,Marwick,theo.marwick+uat8@example.org,Employee,member|membership_manager
+Iris,Penhalgon,iris.penhalgon+uat9@example.org,Employee,member
+Jonas,Redfern,jonas.redfern+uat10@example.org,Employee,member

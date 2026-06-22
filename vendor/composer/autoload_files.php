@@ -14,4 +14,5 @@ return array(
     '60799491728b879e74601d83e38b2cad' => $vendorDir . '/illuminate/collections/helpers.php',
     '37a3dc5111fe8f707ab4c132ef1dbc62' => $vendorDir . '/guzzlehttp/guzzle/src/functions_include.php',
     '72579e7bd17821bb1321b87411366eae' => $vendorDir . '/illuminate/support/helpers.php',
+    '1ffd48fd2f3bb3fe50dd66b2bda72795' => $baseDir . '/src/WicketORM/compat.php',
 );
