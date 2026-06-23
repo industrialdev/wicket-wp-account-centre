@@ -114,7 +114,7 @@ $member['lazy_loaded'] = true;
 $member['is_confirmed'] = !empty($member['confirmed_at']);
 
 // Shared variables for the partials
-$config = \WicketORM\Services\ConfigService::getConfig();
+$config = ConfigService::getConfig();
 $member_list_config = $config['presentation']['member_list'] ?? [];
 $show_account_status = (bool) ($member_list_config['account_status']['enabled'] ?? true);
 $show_unconfirmed_label = (bool) ($member_list_config['account_status']['show_unconfirmed_label'] ?? true);

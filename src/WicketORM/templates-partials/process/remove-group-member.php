@@ -55,7 +55,7 @@ if (empty($group_uuid) || empty($person_uuid)) {
 }
 
 $configService = new ConfigService();
-$orgman_config = \WicketORM\Services\ConfigService::getConfig();
+$orgman_config = ConfigService::getConfig();
 $groups_config = is_array($orgman_config['groups'] ?? null) ? $orgman_config['groups'] : [];
 $groups_presentation = is_array($groups_config['presentation'] ?? null)
     ? $groups_config['presentation']

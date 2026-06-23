@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use WicketORM\Helpers as OrgHelpers;
 
-/**
+/*
  * Contacts list Datastar partial.
  *
  * Mirrors members-list.php structure but for relationship-based contacts.
@@ -62,8 +62,8 @@ $total_pages = max(1, $total_pages);
 $page = min(max(1, $page), $total_pages);
 
 $org_dom_suffix = sanitize_html_class($org_uuid ?: 'default');
-$show_remove_button = WicketORM\Helpers\PermissionHelper::can_manage_contacts($org_uuid);
-$can_add = WicketORM\Helpers\PermissionHelper::can_manage_contacts($org_uuid);
+$show_remove_button = OrgHelpers\PermissionHelper::can_manage_contacts($org_uuid);
+$can_add = OrgHelpers\PermissionHelper::can_manage_contacts($org_uuid);
 
 $remove_contact_reset_actions = "(() => { const modal = document.getElementById('removeContactModal'); const messages = modal ? modal.querySelector('#remove-contact-messages') : document.getElementById('remove-contact-messages'); if (messages) messages.innerHTML = ''; if (modal && modal.open) modal.close(); })(); \$removeContactModalOpen = false; \$removeContactSubmitting = false; \$removeContactSuccess = false; \$contactsLoading = false; \$currentRemoveContactUuid = ''; \$currentRemoveContactName = ''; \$currentRemoveConnectionIds = '';";
 $remove_contact_success_actions = "console.log('Contact removed successfully'); \$removeContactSubmitting = false; \$removeContactSuccess = true; \$contactsLoading = false;";
@@ -133,7 +133,7 @@ $build_action = static function (int $page_number) use ($build_url) {
                 $contact_email = $contact['email'] ?? '';
                 $type_names_csv = $contact['relationship_type_names_csv'] ?? '';
                 $connection_ids_csv = $contact['connection_ids_csv'] ?? '';
-            ?>
+                ?>
             <div class="contact-card wt_bg-light-neutral wt_rounded-card wt_p-6 wt_transition-opacity wt_duration-300"
                 id="contact-card-<?php echo esc_attr($person_uuid_safe); ?>">
                 <div class="wt_flex wt_w-full md_wt_flex-row wt_items-start wt_justify-between wt_gap-4">
@@ -187,12 +187,12 @@ $build_action = static function (int $page_number) use ($build_url) {
         <nav class="contacts-pagination wt_mt-6 wt_flex wt_flex-col wt_gap-4" aria-label="<?php esc_attr_e('Contacts pagination', 'wicket-acc'); ?>">
             <div class="contacts-pagination__info wt_w-full wt_text-left wt_text-sm wt_text-content">
                 <?php
-                if ($total_items > 0) {
-                    $first = (($page - 1) * $page_size) + 1;
-                    $last = min($total_items, $page * $page_size);
-                    echo esc_html(sprintf(__('Showing %1$d-%2$d of %3$d', 'wicket-acc'), $first, $last, $total_items));
-                }
-                ?>
+                    if ($total_items > 0) {
+                        $first = (($page - 1) * $page_size) + 1;
+                        $last = min($total_items, $page * $page_size);
+                        echo esc_html(sprintf(__('Showing %1$d-%2$d of %3$d', 'wicket-acc'), $first, $last, $total_items));
+                    }
+?>
             </div>
             <?php if ($total_pages > 1): ?>
             <div class="contacts-pagination__controls wt_w-full wt_flex wt_items-center wt_gap-2 wt_justify-end wt_self-end">
@@ -208,7 +208,7 @@ $build_action = static function (int $page_number) use ($build_url) {
                 <div class="wt_flex wt_items-center wt_gap-1">
                     <?php for ($i = 1; $i <= $total_pages; $i++):
                         $is_current = ($i === $page);
-                    ?>
+                        ?>
                         <button type="button"
                             class="button wt_px-3 wt_py-2 wt_text-sm <?php echo $is_current ? 'button--primary' : 'button--secondary'; ?> component-button"
                             <?php if ($is_current): ?>disabled<?php endif; ?>
@@ -324,7 +324,9 @@ $build_action = static function (int $page_number) use ($build_url) {
                     <p class="wt_font-bold wt_mb-3"><?php esc_html_e('Permissions', 'wicket-acc'); ?></p>
                     <div class="wt_space-y-2">
                         <?php foreach ($permission_labels as $slug => $label): ?>
-                            <?php if (!in_array($slug, $assign_roles, true)) { continue; } ?>
+                            <?php if (!in_array($slug, $assign_roles, true)) {
+                                continue;
+                            } ?>
                             <div class="wt_flex wt_items-center wt_gap-2">
                                 <label class="wt_flex wt_items-center wt_gap-2 wt_cursor-pointer">
                                     <input type="checkbox" name="roles[]" value="<?php echo esc_attr($slug); ?>"

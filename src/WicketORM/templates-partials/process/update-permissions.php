@@ -60,7 +60,7 @@ if ('POST' === strtoupper($request_method)) {
         $log_context = ['source' => 'wicket-orgman', 'action' => 'update-permissions'];
 
         // First update relationship type if provided and enabled
-        $config = \WicketORM\Services\ConfigService::getConfig();
+        $config = ConfigService::getConfig();
         $edit_permissions_config = $config['edit_permissions_modal'] ?? [];
         if (!is_array($edit_permissions_config) || $edit_permissions_config === []) {
             $edit_permissions_config = $config['member_management']['permissions_modal'] ?? [];

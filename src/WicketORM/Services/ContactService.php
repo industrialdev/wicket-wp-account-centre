@@ -108,8 +108,8 @@ class ContactService
             // Extract person data from included lookup
             $person_attrs = $person_lookup[$person_id] ?? [];
             $person_name = trim(
-                ($person_attrs['given_name'] ?? $person_attrs['first_name'] ?? '') . ' ' .
-                ($person_attrs['family_name'] ?? $person_attrs['last_name'] ?? '')
+                ($person_attrs['given_name'] ?? $person_attrs['first_name'] ?? '') . ' '
+                . ($person_attrs['family_name'] ?? $person_attrs['last_name'] ?? '')
             );
             $person_email = (string) (
                 $person_attrs['primary_email_address']
@@ -149,7 +149,7 @@ class ContactService
         $type_labels = $contacts_config['form']['relationship_type'] ?? [];
         foreach ($grouped as &$contact) {
             $contact['relationship_type_names'] = array_map(
-                static fn(string $slug) => $type_labels[$slug] ?? ucwords(str_replace('_', ' ', $slug)),
+                static fn (string $slug) => $type_labels[$slug] ?? ucwords(str_replace('_', ' ', $slug)),
                 $contact['relationship_types']
             );
             $contact['relationship_type_names_csv'] = implode(', ', $contact['relationship_type_names']);
@@ -481,5 +481,4 @@ class ContactService
             'totalItems'  => 0,
         ];
     }
-
 }

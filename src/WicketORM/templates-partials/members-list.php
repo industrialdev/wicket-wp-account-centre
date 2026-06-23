@@ -68,7 +68,7 @@ $update_permissions_success_actions = "console.log('Permissions updated successf
 $remove_member_reset_actions = "(() => { const modal = document.getElementById('removeMemberModal'); const messages = modal ? modal.querySelector('#remove-member-messages') : document.getElementById('remove-member-messages'); if (messages) messages.innerHTML = ''; if (modal && modal.open) modal.close(); })(); \$removeMemberModalOpen = false; \$removeMemberSubmitting = false; \$removeMemberSuccess = false; \$membersLoading = false; \$autoCloseCountdown = 0; \$currentRemoveMemberUuid = ''; \$currentRemoveMemberName = ''; \$currentRemoveMemberEmail = ''; \$currentRemoveMemberConnectionId = ''; \$currentRemoveMemberPersonMembershipId = '';";
 $remove_member_success_actions = "console.log('Member removed successfully'); $removeMemberSubmitting = false; $removeMemberSuccess = true; $membersLoading = false;";
 
-$orgman_config = \WicketORM\Services\ConfigService::getConfig();
+$orgman_config = WicketORM\Services\ConfigService::getConfig();
 $presentation_config = is_array($orgman_config['presentation'] ?? null)
     ? $orgman_config['presentation']
     : [];

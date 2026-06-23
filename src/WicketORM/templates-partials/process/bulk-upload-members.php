@@ -34,7 +34,7 @@ $membership_uuid = isset($_POST['membership_uuid']) ? sanitize_text_field(wp_uns
 $message_dom_suffix_source = $org_uuid !== '' ? $org_uuid : ($group_uuid !== '' ? $group_uuid : 'default');
 $org_dom_suffix = sanitize_html_class($message_dom_suffix_source);
 $message_target = '#bulk-upload-messages-' . $org_dom_suffix;
-$orgman_config = \WicketORM\Services\ConfigService::getConfig();
+$orgman_config = ConfigService::getConfig();
 $member_list_config = is_array($orgman_config['presentation']['member_list'] ?? null)
     ? $orgman_config['presentation']['member_list']
     : [];

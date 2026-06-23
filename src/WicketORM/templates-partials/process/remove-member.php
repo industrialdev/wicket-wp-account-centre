@@ -63,7 +63,7 @@ if ('POST' === strtoupper($request_method)) {
     try {
         $configService = new ConfigService();
         $roster_mode = (string) $configService->getRosterMode();
-        $orgman_config = \WicketORM\Services\ConfigService::getConfig();
+        $orgman_config = ConfigService::getConfig();
         $presentation_config = is_array($orgman_config['presentation'] ?? null) ? $orgman_config['presentation'] : [];
         $member_view_config = is_array($presentation_config['member_view'] ?? null) ? $presentation_config['member_view'] : [];
         $remove_auto_close_on_success = (bool) ($member_view_config['add_member_auto_close_on_success'] ?? false);

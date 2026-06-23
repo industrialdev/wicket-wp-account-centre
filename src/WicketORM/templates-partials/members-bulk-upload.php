@@ -30,7 +30,7 @@ if ($content_dir !== '' && strpos($library_base_path, $content_dir) === 0) {
 }
 $library_base_url = trailingslashit((string) apply_filters('wicket/org-roster/base_url', $library_base_url));
 $csv_template_url = $library_base_url . 'public/templates/roster_template.csv';
-$orgman_config = \WicketORM\Services\ConfigService::getConfig();
+$orgman_config = WicketORM\Services\ConfigService::getConfig();
 $bulk_upload_config = is_array($orgman_config['member_management']['bulk_upload'] ?? null)
     ? $orgman_config['member_management']['bulk_upload']
     : [];

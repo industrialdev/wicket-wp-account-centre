@@ -9,7 +9,6 @@
 
 use starfederation\datastar\enums\ElementPatchMode;
 use starfederation\datastar\ServerSentEventGenerator;
-use WicketORM\Services\ConfigService;
 use WicketORM\Services\ContactService;
 
 if (!defined('ABSPATH')) {

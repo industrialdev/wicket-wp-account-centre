@@ -57,7 +57,7 @@ if (empty($access['allowed'])) {
     return;
 }
 
-$orgman_config = \WicketORM\Services\ConfigService::getConfig();
+$orgman_config = WicketORM\Services\ConfigService::getConfig();
 $groups_config = is_array($orgman_config['groups'] ?? null) ? $orgman_config['groups'] : [];
 $presentation_config = is_array($groups_config['presentation'] ?? null) ? $groups_config['presentation'] : [];
 $editable_fields = is_array($presentation_config['editable_fields'] ?? null) ? $presentation_config['editable_fields'] : [];

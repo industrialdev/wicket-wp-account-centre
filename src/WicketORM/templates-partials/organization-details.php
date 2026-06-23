@@ -212,24 +212,24 @@ if ($roster_mode !== 'groups') {
 
     <?php
     $details_config = \WicketORM\Services\ConfigService::getConfig()['presentation']['organization_details'] ?? [];
-    $show_actions = (bool) ($details_config['show_actions'] ?? true);
-    ?>
+$show_actions = (bool) ($details_config['show_actions'] ?? true);
+?>
 
     <?php if ($show_actions) : ?>
     <div class="org-details__actions wt_w-full wt_flex wt_items-stretch wt_gap-4 wt_mt-2">
         <?php
-        // Check user permissions for this organization
-        if ($roster_mode === 'groups' && $group_uuid !== '') {
-            $group_service = new \WicketORM\Services\GroupService();
-            $group_access = $group_service->canManageGroup($group_uuid, $user_uuid);
-            $can_edit_org = !empty($group_access['allowed']);
-            $is_membership_manager = !empty($group_access['allowed']);
-            $can_bulk_upload = !empty($group_access['allowed']);
-        } else {
-            $can_edit_org = \WicketORM\Helpers\PermissionHelper::can_edit_organization($org_uuid);
-            $is_membership_manager = \WicketORM\Helpers\PermissionHelper::is_membership_manager($org_uuid);
-            $can_bulk_upload = \WicketORM\Helpers\PermissionHelper::can_add_members($org_uuid);
-        }
+    // Check user permissions for this organization
+    if ($roster_mode === 'groups' && $group_uuid !== '') {
+        $group_service = new \WicketORM\Services\GroupService();
+        $group_access = $group_service->canManageGroup($group_uuid, $user_uuid);
+        $can_edit_org = !empty($group_access['allowed']);
+        $is_membership_manager = !empty($group_access['allowed']);
+        $can_bulk_upload = !empty($group_access['allowed']);
+    } else {
+        $can_edit_org = \WicketORM\Helpers\PermissionHelper::can_edit_organization($org_uuid);
+        $is_membership_manager = \WicketORM\Helpers\PermissionHelper::is_membership_manager($org_uuid);
+        $can_bulk_upload = \WicketORM\Helpers\PermissionHelper::can_add_members($org_uuid);
+    }
 
 // Get WPML-aware URLs for my-account pages
 $profile_url = \WicketORM\Helpers\Helper::getMyAccountPageUrl('organization-profile', '/my-account/organization-profile/');

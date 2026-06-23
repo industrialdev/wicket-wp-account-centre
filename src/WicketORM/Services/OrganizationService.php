@@ -28,7 +28,7 @@ class OrganizationService
 
     public function __construct()
     {
-        $this->config = \WicketORM\Services\ConfigService::getConfig();
+        $this->config = ConfigService::getConfig();
     }
 
     /**
@@ -73,8 +73,6 @@ class OrganizationService
 
         return 'Unknown Organization';
     }
-
-
 
     /**
      * Normalize role values for comparisons.

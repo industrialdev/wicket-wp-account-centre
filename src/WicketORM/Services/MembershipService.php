@@ -25,7 +25,7 @@ class MembershipService
 
     public function __construct()
     {
-        $this->config = \WicketORM\Services\ConfigService::getConfig();
+        $this->config = ConfigService::getConfig();
     }
 
     /**

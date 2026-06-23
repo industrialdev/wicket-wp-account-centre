@@ -42,7 +42,7 @@ if (empty($org_uuid) && function_exists('wicket_get_group')) {
 $membershipService = new MembershipService();
 $configService = new ConfigService();
 $additional_seats_service = new AdditionalSeatsService($configService);
-$orgman_config = \WicketORM\Services\ConfigService::getConfig();
+$orgman_config = ConfigService::getConfig();
 $clear_form_on_error = $orgman_config['member_management']['forms']['add_member']['clear_form_on_error'] ?? false;
 
 $membership_uuid = '';
