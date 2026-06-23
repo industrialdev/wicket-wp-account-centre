@@ -12,3 +12,4 @@ coverage
 .yarn/releases/
 .yarn/install-state.gz
 .yarn/unplugged/
+.phpactor.json

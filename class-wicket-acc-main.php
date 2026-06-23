@@ -16,7 +16,7 @@ use WicketORM\OrgMan;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Custom account management system for Wicket. Provides user account features, organization management, and additional blocks and pages. Integrates with WooCommerce when available.
- * Version:           1.6.41
+ * Version:           1.7.0
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -28,26 +28,44 @@ use WicketORM\OrgMan;
  * Text Domain:       wicket-acc
  */
 
-if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly.
+if (!defined("ABSPATH")) {
+    exit(); // Exit if accessed directly.
 }
 
 // Constants
-define('WICKET_ACC_VERSION', get_file_data(__FILE__, ['Version' => 'Version'], false)['Version']);
-define('WICKET_ACC_PATH', plugin_dir_path(__FILE__));
-define('WICKET_ACC_URL', plugin_dir_url(__FILE__));
-define('WICKET_ACC_BASENAME', plugin_basename(__FILE__));
-define('WICKET_ACC_UPLOADS_PATH', wp_get_upload_dir()['basedir'] . '/wicket-account-center/');
-define('WICKET_ACC_UPLOADS_URL', wp_get_upload_dir()['baseurl'] . '/wicket-account-center/');
-define('WICKET_ACC_PLUGIN_TEMPLATE_PATH', WICKET_ACC_PATH . 'templates-wicket/');
-define('WICKET_ACC_PLUGIN_TEMPLATE_URL', WICKET_ACC_URL . 'templates-wicket/');
-define('WICKET_ACC_USER_TEMPLATE_PATH', get_stylesheet_directory() . '/templates-wicket/');
-define('WICKET_ACC_USER_TEMPLATE_URL', get_stylesheet_directory_uri() . '/templates-wicket/');
-define('WICKET_ACC_TEMPLATES_FOLDER', 'account-centre');
+define(
+    "WICKET_ACC_VERSION",
+    get_file_data(__FILE__, ["Version" => "Version"], false)["Version"],
+);
+define("WICKET_ACC_PATH", plugin_dir_path(__FILE__));
+define("WICKET_ACC_URL", plugin_dir_url(__FILE__));
+define("WICKET_ACC_BASENAME", plugin_basename(__FILE__));
+define(
+    "WICKET_ACC_UPLOADS_PATH",
+    wp_get_upload_dir()["basedir"] . "/wicket-account-center/",
+);
+define(
+    "WICKET_ACC_UPLOADS_URL",
+    wp_get_upload_dir()["baseurl"] . "/wicket-account-center/",
+);
+define(
+    "WICKET_ACC_PLUGIN_TEMPLATE_PATH",
+    WICKET_ACC_PATH . "templates-wicket/",
+);
+define("WICKET_ACC_PLUGIN_TEMPLATE_URL", WICKET_ACC_URL . "templates-wicket/");
+define(
+    "WICKET_ACC_USER_TEMPLATE_PATH",
+    get_stylesheet_directory() . "/templates-wicket/",
+);
+define(
+    "WICKET_ACC_USER_TEMPLATE_URL",
+    get_stylesheet_directory_uri() . "/templates-wicket/",
+);
+define("WICKET_ACC_TEMPLATES_FOLDER", "account-centre");
 
 // Composer Autoloader
-if (file_exists(WICKET_ACC_PATH . 'vendor/autoload.php')) {
-    require_once WICKET_ACC_PATH . 'vendor/autoload.php';
+if (file_exists(WICKET_ACC_PATH . "vendor/autoload.php")) {
+    require_once WICKET_ACC_PATH . "vendor/autoload.php";
 }
 
 // Fatal error handler is now registered by wicket-wp-base-plugin (WicketWP\Log)
@@ -55,14 +73,11 @@ if (file_exists(WICKET_ACC_PATH . 'vendor/autoload.php')) {
 // is retained as a no-op for backward compatibility only.
 
 // Initialize the plugin when all plugins are loaded
-add_action(
-    'plugins_loaded',
-    [WicketAcc::get_instance(), 'plugin_setup']
-);
+add_action("plugins_loaded", [WicketAcc::get_instance(), "plugin_setup"]);
 
 // Flush rewrite rules on (de)activation so vendored WicketORM\ REST routes register.
 // Guarded so the file can load outside WordPress (e.g. unit tests).
-if (function_exists('register_activation_hook')) {
+if (function_exists("register_activation_hook")) {
     register_activation_hook(__FILE__, static function (): void {
         flush_rewrite_rules();
     });
@@ -117,14 +132,14 @@ class WicketAcc
      *
      * @type string
      */
-    public $plugin_url = '';
+    public $plugin_url = "";
 
     /**
      * Path to this plugin's directory.
      *
      * @type string
      */
-    public $plugin_path = '';
+    public $plugin_path = "";
 
     /**
      * Component instances.
@@ -140,68 +155,68 @@ class WicketAcc
      */
     private Helpers $helpersInstance;
 
-    protected string $acc_post_type = 'my-account';
+    protected string $acc_post_type = "my-account";
 
     protected array $acc_index_slugs = [
-        'en' => 'my-account',
-        'fr' => 'mon-compte',
-        'es' => 'mi-cuenta',
+        "en" => "my-account",
+        "fr" => "mon-compte",
+        "es" => "mi-cuenta",
     ];
 
     protected array $acc_wc_index_slugs = [
-        'en' => 'my-account',
-        'fr' => 'mon-compte',
-        'es' => 'mi-cuenta',
+        "en" => "my-account",
+        "fr" => "mon-compte",
+        "es" => "mi-cuenta",
     ];
 
     protected array $acc_pages_map = [
         // Wicket pages
-        'edit-profile'                => 'Edit Profile',
-        'events'                      => 'My Events',
-        'jobs'                        => 'My Jobs',
-        'job-post'                    => 'Post a Job',
-        'change-password'             => 'Change Password',
-        'organization-management'     => 'Organization Management',
-        'organization-profile'        => 'Organization Profile',
-        'organization-members'        => 'Organization Members',
-        'organization-members-bulk'   => 'Bulk Upload Members',
-        'acc_global-headerbanner'     => 'Global Header-Banner',
+        "edit-profile" => "Edit Profile",
+        "events" => "My Events",
+        "jobs" => "My Jobs",
+        "job-post" => "Post a Job",
+        "change-password" => "Change Password",
+        "organization-management" => "Organization Management",
+        "organization-profile" => "Organization Profile",
+        "organization-members" => "Organization Members",
+        "organization-members-bulk" => "Bulk Upload Members",
+        "acc_global-headerbanner" => "Global Header-Banner",
         // WooCommerce endpoints https://developer.woocommerce.com/docs/woocommerce-endpoints/
         //'order-pay'                      => 'Order Pay', // Handled by checkout, not account
         //'order-received'                 => 'Order Received',
-        'add-payment-method'          => 'Add Payment Method',
-        'set-default-payment-method'  => 'Set Default Payment Method',
-        'orders'                      => 'Orders',
-        'view-order'                  => 'View Order',
-        'downloads'                   => 'Downloads',
-        'edit-account'                => 'Edit Account',
-        'edit-address'                => 'Edit Address',
-        'payment-methods'             => 'Payment Methods',
+        "add-payment-method" => "Add Payment Method",
+        "set-default-payment-method" => "Set Default Payment Method",
+        "orders" => "Orders",
+        "view-order" => "View Order",
+        "downloads" => "Downloads",
+        "edit-account" => "Edit Account",
+        "edit-address" => "Edit Address",
+        "payment-methods" => "Payment Methods",
         //'customer-logout'                => 'Logout',
         // WooCommerce subscription endpoints
-        'subscriptions'               => 'Subscriptions',
-        'view-subscription'           => 'View Subscription',
-        'subscription-payment-method' => 'Subscription Payment Method',
+        "subscriptions" => "Subscriptions",
+        "view-subscription" => "View Subscription",
+        "subscription-payment-method" => "Subscription Payment Method",
     ];
 
     protected array $acc_pages_map_auto_create = [
-        'dashboard',
-        'edit-profile',
-        'change-password',
-        'organization-management',
-        'organization-profile',
-        'organization-members',
-        'organization-members-bulk',
-        'acc_global-headerbanner',
-        'add-payment-method',
-        'set-default-payment-method',
-        'orders',
-        'view-order',
-        'downloads',
-        'payment-methods',
-        'subscriptions',
-        'view-subscription',
-        'subscription-payment-method',
+        "dashboard",
+        "edit-profile",
+        "change-password",
+        "organization-management",
+        "organization-profile",
+        "organization-members",
+        "organization-members-bulk",
+        "acc_global-headerbanner",
+        "add-payment-method",
+        "set-default-payment-method",
+        "orders",
+        "view-order",
+        "downloads",
+        "payment-methods",
+        "subscriptions",
+        "view-subscription",
+        "subscription-payment-method",
     ];
 
     /**
@@ -212,70 +227,70 @@ class WicketAcc
      * @var array
      */
     protected array $acc_wc_endpoints = [
-        'add-payment-method'          => [
-            'en' => 'add-payment-method',
-            'fr' => 'add-payment-method',
-            'es' => 'agregar-medio-pago',
+        "add-payment-method" => [
+            "en" => "add-payment-method",
+            "fr" => "add-payment-method",
+            "es" => "agregar-medio-pago",
         ],
-        'set-default-payment-method'  => [
-            'en' => 'set-default-payment-method',
-            'fr' => 'definir-mode-paiement-defaut',
-            'es' => 'establecer-medio-pago-principal',
+        "set-default-payment-method" => [
+            "en" => "set-default-payment-method",
+            "fr" => "definir-mode-paiement-defaut",
+            "es" => "establecer-medio-pago-principal",
         ],
-        'delete-payment-method'       => [
-            'en' => 'delete-payment-method',
-            'fr' => 'supprimer-mode-paiement',
-            'es' => 'eliminar-medio-pago',
+        "delete-payment-method" => [
+            "en" => "delete-payment-method",
+            "fr" => "supprimer-mode-paiement",
+            "es" => "eliminar-medio-pago",
         ],
-        'orders'                      => [
-            'en' => 'orders',
-            'fr' => 'commandes',
-            'es' => 'ordenes',
+        "orders" => [
+            "en" => "orders",
+            "fr" => "commandes",
+            "es" => "ordenes",
         ],
-        'view-order'                  => [
-            'en' => 'view-order',
-            'fr' => 'afficher-commande',
-            'es' => 'ver-orden',
+        "view-order" => [
+            "en" => "view-order",
+            "fr" => "afficher-commande",
+            "es" => "ver-orden",
         ],
-        'view-subscription'           => [
-            'en' => 'view-subscription',
-            'fr' => 'voir-abonnement',
-            'es' => 'ver-suscripcion',
+        "view-subscription" => [
+            "en" => "view-subscription",
+            "fr" => "voir-abonnement",
+            "es" => "ver-suscripcion",
         ],
-        'subscription-payment-method' => [
-            'en' => 'subscription-payment-method',
-            'fr' => 'abonnement-mode-de-paiement',
-            'es' => 'suscripcion-metodo-de-pago',
+        "subscription-payment-method" => [
+            "en" => "subscription-payment-method",
+            "fr" => "abonnement-mode-de-paiement",
+            "es" => "suscripcion-metodo-de-pago",
         ],
-        'downloads'                   => [
-            'en' => 'downloads',
-            'fr' => 'telechargements',
-            'es' => 'descargas',
+        "downloads" => [
+            "en" => "downloads",
+            "fr" => "telechargements",
+            "es" => "descargas",
         ],
-        'edit-account'                => [
-            'en' => 'edit-account',
-            'fr' => 'editer-compte',
-            'es' => 'editar-cuenta',
+        "edit-account" => [
+            "en" => "edit-account",
+            "fr" => "editer-compte",
+            "es" => "editar-cuenta",
         ],
-        'edit-address'                => [
-            'en' => 'edit-address',
-            'fr' => 'editer-adresse',
-            'es' => 'editar-direccion',
+        "edit-address" => [
+            "en" => "edit-address",
+            "fr" => "editer-adresse",
+            "es" => "editar-direccion",
         ],
-        'payment-methods'             => [
-            'en' => 'payment-methods',
-            'fr' => 'modes-de-paiement',
-            'es' => 'metodos-de-pago',
+        "payment-methods" => [
+            "en" => "payment-methods",
+            "fr" => "modes-de-paiement",
+            "es" => "metodos-de-pago",
         ],
-        'customer-logout'             => [
-            'en' => 'customer-logout',
-            'fr' => 'deconnexion',
-            'es' => 'cerrar-sesion',
+        "customer-logout" => [
+            "en" => "customer-logout",
+            "fr" => "deconnexion",
+            "es" => "cerrar-sesion",
         ],
-        'subscriptions'               => [
-            'en' => 'subscriptions',
-            'fr' => 'souscriptions',
-            'es' => 'suscripciones',
+        "subscriptions" => [
+            "en" => "subscriptions",
+            "fr" => "souscriptions",
+            "es" => "suscripciones",
         ],
     ];
 
@@ -287,7 +302,7 @@ class WicketAcc
      */
     public static function get_instance()
     {
-        null === self::$instance and self::$instance = new self();
+        null === self::$instance and (self::$instance = new self());
 
         return self::$instance;
     }
@@ -322,12 +337,12 @@ class WicketAcc
         }
 
         // Handle MdpApi alias for backward compatibility
-        if ($name === 'MdpApi') {
-            $name = 'Mdp';
+        if ($name === "MdpApi") {
+            $name = "Mdp";
         }
 
         // Handle Helpers alias for backward compatibility
-        if ($name === 'Helpers') {
+        if ($name === "Helpers") {
             return $this->getHelpers();
         }
 
@@ -336,7 +351,10 @@ class WicketAcc
             return $this->instances[$name];
         }
 
-        throw new \Exception("Method or service '$name' does not exist. Available services: " . implode(', ', array_keys($this->instances)));
+        throw new \Exception(
+            "Method or service '$name' does not exist. Available services: " .
+                implode(", ", array_keys($this->instances)),
+        );
     }
 
     /**
@@ -365,13 +383,15 @@ class WicketAcc
         $this->plugin_url = WICKET_ACC_URL;
         $this->plugin_path = WICKET_ACC_PATH;
 
-        add_filter('wp_dropdown_pages', 'wicket_acc_alter_wp_job_manager_pages', 10, 3);
+        add_filter(
+            "wp_dropdown_pages",
+            "wicket_acc_alter_wp_job_manager_pages",
+            10,
+            3,
+        );
 
         // Load global helper files
-        $includes_global = [
-            'includes/helpers.php',
-            'includes/legacy.php',
-        ];
+        $includes_global = ["includes/helpers.php", "includes/legacy.php"];
         foreach ($includes_global as $global_file_path) {
             if (file_exists($this->plugin_path . $global_file_path)) {
                 include_once $this->plugin_path . $global_file_path;
@@ -380,18 +400,18 @@ class WicketAcc
 
         // Instantiate services
         $this->instances = [
-            'Mdp'                    => new Mdp(),
-            'Profile'                => new Profile(),
-            'ProfilePictureFallback' => new ProfilePictureFallback(),
-            'OrganizationManagement' => new OrganizationManagement(),
-            'OrganizationProfile'    => new OrganizationProfile(),
-            'OrganizationRoster'     => new OrganizationRoster(),
-            'Blocks'                 => new Blocks(),
-            'User'                   => new User(),
-            'Log'                    => new Log(),
-            'Language'               => new Language(),
-            'Notification'           => new Notification(),
-            'Settings'               => new Settings(),
+            "Mdp" => new Mdp(),
+            "Profile" => new Profile(),
+            "ProfilePictureFallback" => new ProfilePictureFallback(),
+            "OrganizationManagement" => new OrganizationManagement(),
+            "OrganizationProfile" => new OrganizationProfile(),
+            "OrganizationRoster" => new OrganizationRoster(),
+            "Blocks" => new Blocks(),
+            "User" => new User(),
+            "Log" => new Log(),
+            "Language" => new Language(),
+            "Notification" => new Notification(),
+            "Settings" => new Settings(),
         ];
 
         // Instantiate classes for their hooks
@@ -402,7 +422,7 @@ class WicketAcc
         new Registers();
         new Assets();
 
-        if (is_admin() || (defined('\WP_CLI') && \WP_CLI)) {
+        if (is_admin() || (defined("\WP_CLI") && \WP_CLI)) {
             new AdminSettings();
             new Tweaks();
             new Safeguards(); // Initialize the safeguard class for admin tasks and CLI
@@ -410,7 +430,7 @@ class WicketAcc
 
         // Load WooCommerce integration if active
         if ($this->isWooCommerceActive()) {
-            $this->instances['WooCommerce'] = new WooCommerce();
+            $this->instances["WooCommerce"] = new WooCommerce();
         }
 
         // Boot the WicketORM\OrgMan orchestrator (org-roster code, integrated at
@@ -425,13 +445,17 @@ class WicketAcc
         // account-centre is the sole provider. The check uses class_exists(..., false)
         // (no autoload attempt): the standalone declares its bootstrap class in its main
         // file, so it is already loaded if (and only if) that plugin loaded successfully.
-        add_action('after_setup_theme', static function (): void {
-            if (class_exists('WicketOrgRoster\WicketOrgRoster', false)) {
-                return;
-            }
-            if (class_exists(OrgMan::class)) {
-                OrgMan::getInstance();
-            }
-        }, 20);
+        add_action(
+            "after_setup_theme",
+            static function (): void {
+                if (class_exists("WicketOrgRoster\WicketOrgRoster", false)) {
+                    return;
+                }
+                if (class_exists(OrgMan::class)) {
+                    OrgMan::getInstance();
+                }
+            },
+            20,
+        );
     }
 } // end Class.
