@@ -60,9 +60,9 @@
                 <?php endif; ?>
 
                 <?php
-                $card_org_list_config = \WicketORM\Services\ConfigService::getConfig()['presentation']['organization_list'] ?? [];
-                $card_show_my_role = (bool) ($card_org_list_config['show_my_role'] ?? true);
-                ?>
+                $card_org_list_config = WicketORM\Services\ConfigService::getConfig()['presentation']['organization_list'] ?? [];
+            $card_show_my_role = (bool) ($card_org_list_config['show_my_role'] ?? true);
+            ?>
                 <?php if ($card_show_my_role) : ?>
                 <div class="wt_text-base wt_font-bold wt_text-content">
                     <span><?php esc_html_e('My Role(s):', 'wicket-acc'); ?></span>
@@ -76,7 +76,7 @@
 
                 <?php if (!empty($group_details)): ?>
                     <?php
-                    $group_types = [];
+                $group_types = [];
                     $group_tags = [];
                     foreach ($group_details as $group_detail) {
                         $type = (string) ($group_detail['type'] ?? '');

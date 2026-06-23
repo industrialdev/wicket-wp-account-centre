@@ -259,7 +259,7 @@ class FileParserService
         return array_column(
             array_filter(
                 $this->columns,
-                static fn(array $col): bool => $col['required'],
+                static fn (array $col): bool => $col['required'],
             ),
             'header',
         );

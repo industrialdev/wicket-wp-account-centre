@@ -13,7 +13,7 @@ $org_uuid = isset($org_uuid) ? (string) $org_uuid : '';
 $group_uuid = isset($group_uuid) ? (string) $group_uuid : '';
 $org_identifier = isset($org_identifier) ? (string) $org_identifier : '';
 
-$orgman_config = \WicketORM\Services\ConfigService::getConfig();
+$orgman_config = WicketORM\Services\ConfigService::getConfig();
 $presentation_config = is_array($orgman_config['presentation'] ?? null) ? $orgman_config['presentation'] : [];
 $view_config = is_array($presentation_config['member_view'] ?? null) ? $presentation_config['member_view'] : [];
 $member_list_config = is_array($presentation_config['member_list'] ?? null) ? $presentation_config['member_list'] : [];

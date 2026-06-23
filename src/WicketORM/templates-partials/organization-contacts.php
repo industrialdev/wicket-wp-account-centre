@@ -6,7 +6,6 @@
  * Sets up Datastar signals and includes the contacts list.
  * Mirrors organization-members.php pattern.
  */
-
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -40,10 +39,10 @@ $org_dom_suffix = sanitize_html_class($org_uuid ?: 'default');
 >
 
     <?php
-    $contacts = $contacts ?? null;
-    $pagination = $pagination ?? null;
-    $query = $query ?? '';
-    include dirname(__FILE__) . '/contacts-list.php';
-    ?>
+    $contacts ??= null;
+$pagination ??= null;
+$query ??= '';
+include dirname(__FILE__) . '/contacts-list.php';
+?>
 
 </div>

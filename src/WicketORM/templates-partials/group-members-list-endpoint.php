@@ -51,7 +51,7 @@ $group_query = $result['query'] ?? '';
 $group_members_list_endpoint = \WicketORM\Helpers\template_url() . 'group-members-list';
 $group_members_list_target = 'group-members-list-container-' . sanitize_html_class($group_uuid);
 
-$orgman_config = \WicketORM\Services\ConfigService::getConfig();
+$orgman_config = WicketORM\Services\ConfigService::getConfig();
 $group_presentation = is_array($orgman_config['groups']['presentation'] ?? null)
     ? $orgman_config['groups']['presentation']
     : [];

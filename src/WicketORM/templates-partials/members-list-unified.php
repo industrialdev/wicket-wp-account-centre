@@ -43,7 +43,7 @@ $members = isset($members) && is_array($members) ? $members : [];
 $total_pages = max(1, $total_pages);
 $page = min(max(1, $page), $total_pages);
 
-$orgman_config = \WicketORM\Services\ConfigService::getConfig();
+$orgman_config = WicketORM\Services\ConfigService::getConfig();
 $role_display_map = $orgman_config['access']['roles']['labels'] ?? [];
 $presentation_config = is_array($orgman_config['presentation'] ?? null)
     ? $orgman_config['presentation']

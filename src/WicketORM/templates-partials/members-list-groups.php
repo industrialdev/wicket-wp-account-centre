@@ -84,7 +84,7 @@ $build_action = static function (int $page_number) use ($build_url) {
 $remove_member_endpoint = WicketORM\Helpers\TemplateHelper::template_url() . 'process/remove-group-member';
 $refresh_action = "@get('" . $build_url(1) . "') >> select('#" . $members_list_target . "') | set(html)";
 
-$orgman_config = \WicketORM\Services\ConfigService::getConfig();
+$orgman_config = ConfigService::getConfig();
 $show_assignment_info = (bool) ($orgman_config['presentation']['member_list']['show_assignment_info'] ?? true);
 
 ?>

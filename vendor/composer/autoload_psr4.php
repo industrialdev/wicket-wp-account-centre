@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'voku\\' => array($vendorDir . '/voku/portable-ascii/src/voku'),
+    'starfederation\\datastar\\' => array($vendorDir . '/starfederation/datastar-php/src'),
     'Wicket\\' => array($vendorDir . '/industrialdev/wicket-sdk-php/src'),
     'WicketORM\\' => array($baseDir . '/src/WicketORM'),
     'WicketAcc\\' => array($baseDir . '/src'),

@@ -261,7 +261,7 @@ class NotificationService
             }
 
             // Get configuration for email
-            $config = \WicketORM\Services\ConfigService::getConfig();
+            $config = ConfigService::getConfig();
             $confirmation_email_from = $config['integrations']['notifications']['confirmation_email_from'] ?? 'no-reply@wicketcloud.com';
 
             $first_name = $person->given_name ?? '';
@@ -424,7 +424,7 @@ class NotificationService
             $last_name = sanitize_text_field($person->family_name ?? '');
 
             // Get configuration for email
-            $config = \WicketORM\Services\ConfigService::getConfig();
+            $config = ConfigService::getConfig();
             $confirmation_email_from = $config['integrations']['notifications']['confirmation_email_from'] ?? 'no-reply@wicketcloud.com';
 
             // Generate email content based on notification type

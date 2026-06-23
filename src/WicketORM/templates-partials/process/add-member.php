@@ -115,7 +115,7 @@ if ('POST' === strtoupper($request_method)) {
         }, $_POST['roles']);
     }
 
-    $orgman_config = \WicketORM\Services\ConfigService::getConfig();
+    $orgman_config = ConfigService::getConfig();
     $permissions_field_config = $orgman_config['member_management']['forms']['add_member']['fields']['permissions'] ?? [];
     $allowed_roles = is_array($permissions_field_config['allowlist'] ?? null)
         ? $permissions_field_config['allowlist']
@@ -221,7 +221,7 @@ if ('POST' === strtoupper($request_method)) {
         );
 
         status_header(200);
-        $orgman_config = \WicketORM\Services\ConfigService::getConfig();
+        $orgman_config = ConfigService::getConfig();
         $presentation_config = is_array($orgman_config['presentation'] ?? null) ? $orgman_config['presentation'] : [];
         $member_view_config = is_array($presentation_config['member_view'] ?? null) ? $presentation_config['member_view'] : [];
         $auto_close_on_success = (bool) ($member_view_config['add_member_auto_close_on_success'] ?? false);
