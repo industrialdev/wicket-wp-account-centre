@@ -405,6 +405,17 @@ final class OrgManConfig
                     'form_slug' => 'additional-seats',
                     'min_quantity' => 1,
                     'max_quantity' => 900,
+                    // Multi-tier seat purchases (opt-in). When tier_mode is true (or tier_skus is
+                    // non-empty) the additional-seats flow resolves one WooCommerce product per
+                    // membership tier slug instead of a single shared product. Sites that hold
+                    // more than one org membership tier at once (e.g. ESCRS) use this so each
+                    // purchase targets the correct membership record. Legacy single-SKU sites
+                    // leave this off and keep the existing behaviour.
+                    'tier_mode' => false,
+                    'tier_skus' => [
+                        // 'tier-slug' => 'tier-specific-sku',
+                    ],
+                    'tier_slug_field' => 'tier-slug',
                 ],
                 'documents' => [
                     'allowed_types' => [

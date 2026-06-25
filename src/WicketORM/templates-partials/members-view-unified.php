@@ -198,8 +198,11 @@ include __DIR__ . '/members-list-unified.php';
 
     <?php if (!empty($setup_issues)) : ?>
     <div class="orgman-setup-warning wt_mt-4 wt_p-4 wt_rounded-md" style="background:#fff8e1;border:2px solid #f9a825;color:#5d4037;">
+        <h3 class="orgman-setup-warning__title wt_mt-0 wt_mb-2 wt_font-semibold wt_text-lg" style="display:flex;align-items:center;gap:0.4rem;">
+            <span aria-hidden="true">⚠️</span> <?php esc_html_e('Visible to administrators only', 'wicket-acc'); ?>
+        </h3>
         <p class="wt_font-semibold wt_mb-2">
-            ⚠️ <?php esc_html_e('Additional Seats: Setup Incomplete (visible to administrators only)', 'wicket-acc'); ?>
+            <?php esc_html_e('Additional Seats: Setup Incomplete.', 'wicket-acc'); ?>
         </p>
         <p class="wt_mb-2"><?php esc_html_e('The "Purchase Additional Seats" button is hidden because the following items are not yet configured:', 'wicket-acc'); ?></p>
         <ul style="list-style:disc;padding-left:1.25rem;margin:0 0 0.5rem;">
@@ -214,6 +217,27 @@ include __DIR__ . '/members-list-unified.php';
                 }
                 ?></li>
             <?php endforeach; ?>
+        </ul>
+        <?php
+        $orgman_cfg = $configService->getFullConfig();
+        $orgman_form_slug = $orgman_cfg['integrations']['additional_seats']['form_slug'] ?? 'additional-seats';
+        $orgman_form_slug = is_string($orgman_form_slug) ? trim($orgman_form_slug) : 'additional-seats';
+        $orgman_tier_field = $configService->getAdditionalSeatsTierSlugField();
+        $orgman_token_attrs = 'title="' . esc_attr__('Click to copy', 'wicket-acc') . '" style="cursor:pointer;background:#fff3cd;border:1px solid #f9a825;border-radius:3px;padding:1px 5px;font-family:monospace;font-size:0.9em;"';
+        ?>
+        <ul class="orgman-setup-warning__config" style="list-style:none;padding-left:0;margin:0.5rem 0 0;border-top:1px solid #f9a825;padding-top:0.5rem;opacity:0.85;">
+            <li style="margin-bottom:0.5rem;">
+                <strong><?php esc_html_e('Expected Gravity Form slug:', 'wicket-acc'); ?></strong>
+                <code class="orgman-copy-token" data-copy-value="<?php echo esc_attr($orgman_form_slug); ?>" <?php echo $orgman_token_attrs; // phpcs:ignore ?>><?php echo esc_html($orgman_form_slug); ?></code><br>
+                <em style="display:block;margin-top:0.25rem;"><?php esc_html_e('Map this slug to the additional-seats Gravity Form under Gravity Forms > Wicket Settings > Form Slug ID Mapping.', 'wicket-acc'); ?></em>
+            </li>
+            <?php if ($orgman_tier_field !== '') : ?>
+            <li style="margin-bottom:0;">
+                <strong><?php esc_html_e('Tier slug hidden-field parameter:', 'wicket-acc'); ?></strong>
+                <code class="orgman-copy-token" data-copy-value="<?php echo esc_attr($orgman_tier_field); ?>" <?php echo $orgman_token_attrs; // phpcs:ignore ?>><?php echo esc_html($orgman_tier_field); ?></code><br>
+                <em style="display:block;margin-top:0.25rem;"><?php esc_html_e('Name of the hidden field (Parameter Name) on the form that receives the membership tier slug from the URL. GF conditional logic reads it to show only that tier’s quantity input, and the submission handler reads it to pick the right tier-specific product.', 'wicket-acc'); ?></em>
+            </li>
+            <?php endif; ?>
         </ul>
     </div>
     <script>
