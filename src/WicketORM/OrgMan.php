@@ -335,6 +335,21 @@ final class OrgMan
 
         // Check if this is an additional seats order
         $additional_seats_service = $this->services['additional_seats'];
+
+        // Multi-tier path: when tier mode is active and the order contains any tier-specific
+        // seat product, fulfil per line item via MDP only (no subscription/CPT), then return.
+        // This keeps multi-membership orgs (e.g. ESCRS) isolated from the legacy subscription
+        // flow while leaving single-SKU sites on the unchanged path below.
+        if ($additional_seats_service->isTierMode() && $this->orderHasTierSeatItems($order)) {
+            $processed = $this->processTierSeatLineItems($order);
+            $logger->info('Tier-mode additional seats processing complete', array_merge($context, [
+                'order_id' => $order_id,
+                'processed_items' => $processed,
+            ]));
+
+            return;
+        }
+
         $additional_seats_product_id = $additional_seats_service->getAdditionalSeatsProduct();
 
         if (!$additional_seats_product_id) {
@@ -814,6 +829,26 @@ final class OrgMan
             return false;
         }
 
+        // Multi-tier: any tier-specific seat product qualifies the order.
+        if ($additional_seats_service->isTierMode()) {
+            foreach ($order->get_items() as $item) {
+                $product = $item->get_product();
+                if (!$product) {
+                    continue;
+                }
+                $tier_slug = $additional_seats_service->classifySeatProduct((int) $product->get_id());
+                if ($tier_slug !== null) {
+                    $logger->debug('Tier seat product detected on order', array_merge($context, [
+                        'order_id' => (int) $order->get_id(),
+                        'order_item_id' => $item->get_id(),
+                        'tier_slug' => $tier_slug,
+                    ]));
+
+                    return true;
+                }
+            }
+        }
+
         $product_id = $additional_seats_service->getAdditionalSeatsProduct();
         if (!$product_id) {
             $logger->error('Additional seats product not found; cannot detect additional seats order', array_merge($context, [
@@ -878,6 +913,179 @@ final class OrgMan
         }
 
         return $base_url;
+    }
+
+    /**
+     * Whether an order contains any tier-specific seat line item (multi-tier mode).
+     *
+     * @param \WC_Order $order WooCommerce order.
+     * @return bool
+     */
+    private function orderHasTierSeatItems($order): bool
+    {
+        $additional_seats_service = $this->services['additional_seats'] ?? null;
+        if (!$additional_seats_service || !$additional_seats_service->isTierMode()) {
+            return false;
+        }
+
+        foreach ($order->get_items() as $item) {
+            $product = $item->get_product();
+            if (!$product) {
+                continue;
+            }
+            if ($additional_seats_service->classifySeatProduct((int) $product->get_id()) !== null) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Fulfil tier-mode additional seats per line item via the MDP only.
+     *
+     * For each tier seat line item: read its quantity and stamped org_uuid/membership_id, then
+     * raise that organization membership's max_assignments by the purchased quantity. No
+     * WooCommerce Subscription, wicket_membership CPT, or Membership_Controller interaction
+     * occurs here. Per-item idempotency meta ('tier_seats_applied') makes re-runs safe.
+     *
+     * @param \WC_Order $order WooCommerce order.
+     * @return int Number of line items successfully fulfilled.
+     */
+    private function processTierSeatLineItems($order): int
+    {
+        $logger = \Wicket()->log();
+        $context = ['source' => 'wicket-orgman', 'order_id' => (int) $order->get_id()];
+        $additional_seats_service = $this->services['additional_seats'];
+        $fulfilled = 0;
+        $total_tier_items = 0;
+
+        foreach ($order->get_items() as $item) {
+            $product = $item->get_product();
+            if (!$product) {
+                continue;
+            }
+
+            $tier_slug = $additional_seats_service->classifySeatProduct((int) $product->get_id());
+            if ($tier_slug === null) {
+                continue;
+            }
+
+            $total_tier_items++;
+
+            // Idempotency: skip items already applied.
+            if ($item->get_meta('tier_seats_applied', true)) {
+                $logger->debug('Tier seat item already applied; skipping', array_merge($context, [
+                    'order_item_id' => $item->get_id(),
+                    'tier_slug' => $tier_slug,
+                ]));
+
+                continue;
+            }
+
+            $membership_id = (string) $item->get_meta('membership_id', true);
+            $org_uuid = (string) $item->get_meta('org_uuid', true);
+            $qty = (int) $item->get_quantity();
+
+            if ($membership_id === '' || $qty < 1) {
+                $logger->error('Tier seat line item missing membership_id or quantity; skipping', array_merge($context, [
+                    'order_item_id' => $item->get_id(),
+                    'tier_slug' => $tier_slug,
+                    'org_uuid' => $org_uuid,
+                    'membership_id' => $membership_id,
+                    'qty' => $qty,
+                ]));
+
+                continue;
+            }
+
+            $ok = $this->applyTierSeatIncrease($org_uuid, $membership_id, $qty);
+            if ($ok) {
+                $item->update_meta_data('tier_seats_applied', true);
+                $item->update_meta_data('tier_seats_applied_qty', $qty);
+                $item->save();
+                $fulfilled++;
+            }
+        }
+
+        // Only mark the order fully processed when EVERY tier line item has been fulfilled.
+        // Per-item 'tier_seats_applied' meta governs re-entry safety, so partial fulfilment
+        // (e.g. one MDP PATCH failing) leaves the order un-stamped and eligible for retry on the
+        // next order-status hook. Without this, a single failure would permanently drop the
+        // unfulfilled items even though the customer paid.
+        if ($total_tier_items > 0 && $fulfilled >= $total_tier_items) {
+            $order->update_meta_data('additional_seats_processed', true);
+            $order->update_meta_data('tier_seats_processed', true);
+            $order->save();
+        } elseif ($fulfilled > 0 && $fulfilled < $total_tier_items) {
+            // Partial fulfilment: do NOT set the order-level guard. Log so retries are traceable.
+            $order->update_meta_data('tier_seats_partial', true);
+            $order->save();
+            $logger->warning('Tier seat fulfilment partial; order left eligible for retry', array_merge($context, [
+                'fulfilled' => $fulfilled,
+                'total_tier_items' => $total_tier_items,
+            ]));
+        }
+
+        $logger->info('Tier seat line items processed', array_merge($context, [
+            'fulfilled' => $fulfilled,
+            'total_tier_items' => $total_tier_items,
+        ]));
+
+        return $fulfilled;
+    }
+
+    /**
+     * Raise an organization membership's max_assignments by a purchased quantity via the MDP.
+     *
+     * Reads the current max_assignments, adds the purchased seats, and PATCHes the membership.
+     *
+     * @param string $org_uuid      Organization UUID (contextual logging).
+     * @param string $membership_id Organization membership UUID.
+     * @param int    $qty           Seats purchased.
+     * @return bool True when the MDP was updated.
+     */
+    private function applyTierSeatIncrease(string $org_uuid, string $membership_id, int $qty): bool
+    {
+        $logger = \Wicket()->log();
+        $context = [
+            'source' => 'wicket-orgman',
+            'org_uuid' => $org_uuid,
+            'membership_id' => $membership_id,
+            'qty' => $qty,
+        ];
+
+        /** @var \WicketORM\Services\AdditionalSeatsService $service */
+        $service = $this->services['additional_seats'];
+
+        $current = $service->getMembershipCurrentMaxAssignments($membership_id);
+        if ($current === null) {
+            $logger->error('Could not read current max_assignments; aborting tier seat increase', $context);
+
+            return false;
+        }
+
+        $new_max = $current + $qty;
+
+        $logger->info('Applying tier seat increase', array_merge($context, [
+            'current_max_assignments' => $current,
+            'new_max_assignments' => $new_max,
+        ]));
+
+        $ok = $service->updateMdpMembershipMaxAssignments($membership_id, $new_max);
+        if (!$ok) {
+            $logger->error('MDP max_assignments update failed for tier seat increase', array_merge($context, [
+                'new_max_assignments' => $new_max,
+            ]));
+
+            return false;
+        }
+
+        $logger->info('Tier seat increase applied', array_merge($context, [
+            'new_max_assignments' => $new_max,
+        ]));
+
+        return true;
     }
 
     /**
@@ -1233,6 +1441,60 @@ final class OrgMan
     public function addAdditionalSeatsDataToOrderItem($item, $cart_item_key, $values, $order)
     {
         $additional_seats_service = $this->services['additional_seats'];
+        $logger = \Wicket()->log();
+
+        $product = $item->get_product();
+        if (!$product) {
+            return;
+        }
+        $product_id = (int) $product->get_id();
+
+        // --- Multi-tier path: classify the line item as a tier-specific seat product. ---
+        // Truth comes from the cart item data ($values), not user meta, because an org may hold
+        // several memberships and a single user-meta record cannot represent them all.
+        if ($additional_seats_service->isTierMode()) {
+            $tier_slug = $additional_seats_service->classifySeatProduct($product_id);
+            if ($tier_slug !== null) {
+                $org_uuid = isset($values['org_uuid']) ? sanitize_text_field((string) $values['org_uuid']) : '';
+                $membership_id = isset($values['membership_id']) ? sanitize_text_field((string) $values['membership_id']) : '';
+                $values_tier_slug = isset($values['tier_slug']) ? sanitize_text_field((string) $values['tier_slug']) : '';
+                if ($values_tier_slug === '') {
+                    $values_tier_slug = $tier_slug;
+                }
+
+                if ($org_uuid === '' || $membership_id === '') {
+                    $logger->warning('Tier seat line item missing org_uuid/membership_id cart data', [
+                        'source' => 'wicket-orgman',
+                        'order_id' => $order->get_id(),
+                        'item_id' => $item->get_id(),
+                        'product_id' => $product_id,
+                        'tier_slug' => $values_tier_slug,
+                    ]);
+
+                    return;
+                }
+
+                $item->update_meta_data('org_uuid', $org_uuid);
+                $item->update_meta_data('_org_uuid', $org_uuid);
+                $item->update_meta_data('membership_id', $membership_id);
+                $item->update_meta_data('tier_slug', $values_tier_slug);
+                $item->update_meta_data('additional_seats', true);
+
+                $logger->info('Stamped tier seat data on order item', [
+                    'source' => 'wicket-orgman',
+                    'order_id' => $order->get_id(),
+                    'item_id' => $item->get_id(),
+                    'product_id' => $product_id,
+                    'org_uuid' => $org_uuid,
+                    'membership_id' => $membership_id,
+                    'tier_slug' => $values_tier_slug,
+                ]);
+
+                return;
+            }
+        }
+
+        // --- Legacy single-SKU path (unchanged). ---
         $additional_seats_product_id = $additional_seats_service->getAdditionalSeatsProduct();
 
         if (!$additional_seats_product_id) {
@@ -1240,8 +1502,7 @@ final class OrgMan
         }
 
         // Check if this is an additional seats product
-        $product = $item->get_product();
-        if (!$product || $product->get_id() !== $additional_seats_product_id) {
+        if ($product_id !== $additional_seats_product_id) {
             return;
         }
 
@@ -1250,7 +1511,6 @@ final class OrgMan
         $user_meta_data = $additional_seats_service->getPurchaseUserMeta($user_id);
 
         if (!$user_meta_data) {
-            $logger = \Wicket()->log();
             $logger->warning('No user meta data found for additional seats order item', [
                 'source' => 'wicket-orgman',
                 'user_id' => $user_id,

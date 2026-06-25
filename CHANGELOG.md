@@ -1,5 +1,14 @@
 # Wicket Account Centre Changelog
 
+# 1.7.1 / 2026-06-25
+- Added opt-in multi-tier additional seats flow for orgs holding several active membership tiers at once (e.g. ESCRS). Tier mode activates via `additional_seats.tier_mode` / `tier_skus` config; legacy single-SKU sites are unaffected.
+- Tier-specific WooCommerce product resolution per membership tier slug, derived as `{sku_prefix}-{tier-slug}` or mapped explicitly via `tier_skus`.
+- Per-line-item MDP-only fulfilment on order completion: bumps the correct `organization_memberships.max_assignments` per line item, with per-item idempotency (`tier_seats_applied`) and partial-fulfilment retry safety (`tier_seats_partial`).
+- Gravity Form tier-slug hidden field + per-tier quantity inputs support; form resolved by slug via `wicket_gf_get_form_id_by_slug()`.
+- Admin setup-warning card now shows expected form slug and tier-slug field parameter with explanations.
+- Fixed partial MDP failure permanently dropping unfulfilled tier items.
+- Preserved legacy single-SKU quantity cap of 100 on legacy sites; tier-mode fields honour configured `max_quantity`.
+
 # 1.5.64 / 2024-10-18
 - Available classes to hide elements based on existing memberships.
 - Avoid loading assets when we are not viewing an ACC related page.

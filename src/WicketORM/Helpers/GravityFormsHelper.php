@@ -111,6 +111,19 @@ class GravityFormsHelper extends Helper
             'seat_quantity' => (int) $seat_quantity,
         ]));
 
+        // Multi-tier: resolve the tier slug and, when present, the per-tier quantity.
+        $tier_slug = '';
+        $tiered_service = new \WicketORM\Services\AdditionalSeatsService($configService);
+        if ($tiered_service->isTierMode()) {
+            $tier_slug = self::get_request_tier_slug($field_map);
+            if ($tier_slug !== '') {
+                $tier_qty = self::resolve_seat_quantity_for_tier($field_map, $tier_slug);
+                if ($tier_qty > 0) {
+                    $seat_quantity = $tier_qty;
+                }
+            }
+        }
+
         // Validate required fields
         if (empty($org_uuid) || empty($membership_id) || empty($seat_quantity)) {
             self::log_error('Missing required fields in additional seats submission', [
@@ -132,12 +145,14 @@ class GravityFormsHelper extends Helper
             'org_uuid' => sanitize_text_field($org_uuid),
             'membership_id' => sanitize_text_field($membership_id),
             'seat_quantity' => absint($seat_quantity),
+            'tier_slug' => $tier_slug !== '' ? sanitize_text_field($tier_slug) : '',
         ];
 
         $logger->info('[OrgMan] Stored Gravity Forms additional seats submission in session', array_merge($context, [
             'org_uuid' => sanitize_text_field($org_uuid),
             'membership_id' => sanitize_text_field($membership_id),
             'seat_quantity' => absint($seat_quantity),
+            'tier_slug' => $tier_slug !== '' ? sanitize_text_field($tier_slug) : '',
         ]));
     }
 
@@ -178,11 +193,23 @@ class GravityFormsHelper extends Helper
 
         // Get the additional seats product
         $additional_seats_service = new \WicketORM\Services\AdditionalSeatsService($configService);
-        $product_id = $additional_seats_service->getAdditionalSeatsProduct();
+        $tier_slug = is_array($seat_data) && !empty($seat_data['tier_slug']) ? sanitize_text_field((string) $seat_data['tier_slug']) : '';
+
+        // Multi-tier: resolve the tier-specific product; fall back to the legacy single product
+        // when tier mode is off or no tier slug was captured.
+        $product_id = 0;
+        if ($tier_slug !== '' && $additional_seats_service->isTierMode()) {
+            $product_id = (int) $additional_seats_service->getAdditionalSeatsProductForTier($tier_slug);
+        }
+        if (!$product_id) {
+            $product_id = (int) $additional_seats_service->getAdditionalSeatsProduct();
+        }
 
         if (!$product_id) {
             wc_add_notice(__('Additional seats product not found. Please contact support.', 'wicket-acc'), 'error');
-            $logger->error('[OrgMan] Additional seats product missing during Gravity Forms confirmation', $context);
+            $logger->error('[OrgMan] Additional seats product missing during Gravity Forms confirmation', array_merge($context, [
+                'tier_slug' => $tier_slug,
+            ]));
 
             return $confirmation;
         }
@@ -206,6 +233,7 @@ class GravityFormsHelper extends Helper
             [
                 'org_uuid' => $seat_data['org_uuid'],
                 'membership_id' => $seat_data['membership_id'],
+                'tier_slug' => $tier_slug,
                 'additional_seats' => true,
             ]
         );
@@ -291,6 +319,18 @@ class GravityFormsHelper extends Helper
         }
 
         $quantity = absint($seat_quantity);
+
+        // Multi-tier: resolve tier slug + per-tier quantity, overriding the generic quantity.
+        $tier_slug = '';
+        $tiered_service = new \WicketORM\Services\AdditionalSeatsService($configService);
+        if ($tiered_service->isTierMode()) {
+            $tier_slug = self::get_request_tier_slug($field_map);
+            if ($tier_slug !== '') {
+                $tier_qty = self::resolve_seat_quantity_for_tier($field_map, $tier_slug);
+                $quantity = absint($tier_qty);
+            }
+        }
+
         if ($org_uuid === '' || $membership_id === '' || $quantity < 1) {
             return $form;
         }
@@ -299,6 +339,7 @@ class GravityFormsHelper extends Helper
             'org_uuid' => sanitize_text_field($org_uuid),
             'membership_id' => sanitize_text_field($membership_id),
             'seat_quantity' => $quantity,
+            'tier_slug' => $tier_slug !== '' ? sanitize_text_field($tier_slug) : '',
         ];
 
         $user_id = get_current_user_id();
@@ -307,6 +348,7 @@ class GravityFormsHelper extends Helper
                 'org_uuid' => sanitize_text_field($org_uuid),
                 'membership_id' => sanitize_text_field($membership_id),
                 'seat_quantity' => $quantity,
+                'tier_slug' => $tier_slug !== '' ? sanitize_text_field($tier_slug) : '',
                 'created_at' => current_time('mysql'),
             ]);
         }
@@ -330,6 +372,80 @@ class GravityFormsHelper extends Helper
         }
 
         return is_string($value) ? $value : '';
+    }
+
+    /**
+     * Resolve the membership tier slug from the current request (multi-tier mode).
+     *
+     * Order: posted GF hidden field (mapped tier_slug field) -> configured query/post field name
+     * -> 'tier_slug'/'tier-slug' aliases -> stored purchase user meta.
+     *
+     * @param array $field_map Field map from get_additional_seats_field_map().
+     * @return string Tier slug, or '' when not present.
+     */
+    private static function get_request_tier_slug(array $field_map): string
+    {
+        $configService = new \WicketORM\Services\ConfigService();
+        $tier_slug_field = $configService->getAdditionalSeatsTierSlugField();
+
+        if (!empty($field_map['tier_slug'])) {
+            $value = self::get_posted_field_value((int) $field_map['tier_slug']);
+            if ($value !== '') {
+                return sanitize_text_field($value);
+            }
+        }
+
+        foreach (array_unique(array_filter([$tier_slug_field, 'tier_slug', 'tier-slug'])) as $key) {
+            if (isset($_POST[$key])) {
+                $value = sanitize_text_field(wp_unslash($_POST[$key]));
+                if ($value !== '') {
+                    return $value;
+                }
+            }
+            if (isset($_GET[$key])) {
+                $value = sanitize_text_field(wp_unslash($_GET[$key]));
+                if ($value !== '') {
+                    return $value;
+                }
+            }
+        }
+
+        $additional_seats_service = new \WicketORM\Services\AdditionalSeatsService($configService);
+        $purchase_meta = $additional_seats_service->getPurchaseUserMeta();
+        if (is_array($purchase_meta) && !empty($purchase_meta['tier_slug'])) {
+            return sanitize_text_field((string) $purchase_meta['tier_slug']);
+        }
+
+        return '';
+    }
+
+    /**
+     * Resolve the seat quantity for a given tier slug from the current request (multi-tier mode).
+     *
+     * Reads the per-tier number field (inputName 'seat_quantity_{tier-slug}') when mapped, with a
+     * fallback to the generic 'seat_quantity' field. Returns the raw integer (callers validate).
+     *
+     * @param array  $field_map Field map from get_additional_seats_field_map().
+     * @param string $tier_slug Membership tier slug.
+     * @return int Parsed quantity (may be 0/negative; callers must validate >= 1).
+     */
+    private static function resolve_seat_quantity_for_tier(array $field_map, string $tier_slug): int
+    {
+        $tier_slug = trim($tier_slug);
+        $candidate_field_id = null;
+        if ($tier_slug !== '' && isset($field_map['seat_quantities'][$tier_slug])) {
+            $candidate_field_id = (int) $field_map['seat_quantities'][$tier_slug];
+        } elseif (!empty($field_map['seat_quantity'])) {
+            $candidate_field_id = (int) $field_map['seat_quantity'];
+        }
+
+        if ($candidate_field_id) {
+            $value = self::get_posted_field_value($candidate_field_id);
+
+            return (int) $value;
+        }
+
+        return 0;
     }
 
     /**
@@ -385,21 +501,45 @@ class GravityFormsHelper extends Helper
         $configService = new \WicketORM\Services\ConfigService();
         $additional_seats_form_id = $configService->getAdditionalSeatsFormId();
 
-        $field_map = self::get_additional_seats_field_map($form);
-        $quantity_field_id = $field_map['seat_quantity'] ?? null;
-
-        if ($form['id'] !== $additional_seats_form_id || !$quantity_field_id || (int) $field->id !== (int) $quantity_field_id) {
+        if ($form['id'] !== $additional_seats_form_id) {
             return $result;
         }
 
+        $field_map = self::get_additional_seats_field_map($form);
+        $min = (int) $configService->getAdditionalSeatsMinQuantity();
+        if ($min < 1) {
+            $min = 1;
+        }
+
+        // Legacy single quantity field.
+        $quantity_field_id = $field_map['seat_quantity'] ?? null;
+        $is_legacy_field = $quantity_field_id && (int) $field->id === (int) $quantity_field_id;
+
+        // Multi-tier per-tier quantity field.
+        $tier_quantity_field_ids = isset($field_map['seat_quantities']) && is_array($field_map['seat_quantities'])
+            ? array_map('intval', array_values($field_map['seat_quantities']))
+            : [];
+        $is_tier_field = in_array((int) $field->id, $tier_quantity_field_ids, true);
+
+        if (!$is_legacy_field && !$is_tier_field) {
+            return $result;
+        }
+
+        // Legacy single-SKU sites keep the historical hard cap of 100 (B1: do not silently widen
+        // to the configured max_quantity, whose default is 900). Tier-mode fields honour the
+        // configured max_quantity instead.
+        $max = $is_tier_field ? (int) $configService->getAdditionalSeatsMaxQuantity() : 100;
+
         $quantity = absint($value);
 
-        if ($quantity < 1) {
+        if ($quantity < $min) {
             $result['is_valid'] = false;
-            $result['message'] = __('Please enter at least 1 seat.', 'wicket-acc');
-        } elseif ($quantity > 100) {
+            /* translators: %d: minimum seats per order */
+            $result['message'] = sprintf(__('Please enter at least %d seat(s).', 'wicket-acc'), $min);
+        } elseif ($max > 0 && $quantity > $max) {
             $result['is_valid'] = false;
-            $result['message'] = __('Maximum 100 seats can be purchased at once. Please contact support for larger orders.', 'wicket-acc');
+            /* translators: %d: maximum seats per order */
+            $result['message'] = sprintf(__('Maximum %d seats can be purchased at once. Please contact support for larger orders.', 'wicket-acc'), $max);
         }
 
         return $result;
@@ -436,11 +576,13 @@ class GravityFormsHelper extends Helper
     /**
      * Get form HTML for additional seats.
      *
-     * @param string $org_uuid The organization UUID.
+     * @param string $org_uuid      The organization UUID.
      * @param string $membership_id The membership ID.
+     * @param string $tier_slug     Optional membership tier slug (multi-tier mode) used to populate
+     *                              the tier-slug hidden field and drive GF conditional logic.
      * @return string The form HTML or empty string if form not found.
      */
-    public static function get_form_html($org_uuid, $membership_id)
+    public static function get_form_html($org_uuid, $membership_id, $tier_slug = '')
     {
         $configService = new \WicketORM\Services\ConfigService();
         $form_id = $configService->getAdditionalSeatsFormIdForCurrentLanguage();
@@ -458,9 +600,28 @@ class GravityFormsHelper extends Helper
             return '';
         }
 
+        $tier_slug = is_string($tier_slug) ? trim($tier_slug) : '';
+        // Multi-tier: when no explicit tier slug was passed, read it from the request so the
+        // form renders with the correct conditional input visible.
+        if ($tier_slug === '') {
+            $tier_slug_field = $configService->getAdditionalSeatsTierSlugField();
+            foreach (array_unique(array_filter([$tier_slug_field, 'tier_slug', 'tier-slug'])) as $key) {
+                if (isset($_GET[$key])) {
+                    $candidate = sanitize_text_field(wp_unslash($_GET[$key]));
+                    if ($candidate !== '') {
+                        $tier_slug = $candidate;
+                        break;
+                    }
+                }
+            }
+        }
+
         // Set default values for hidden fields
         $_GET['org_uuid'] = $org_uuid;
         $_GET['membership_id'] = $membership_id;
+        if ($tier_slug !== '') {
+            $_GET[$configService->getAdditionalSeatsTierSlugField()] = $tier_slug;
+        }
 
         $previous_lang = null;
         $current_lang = function_exists('wicket_get_current_language') ? wicket_get_current_language() : null;
@@ -475,6 +636,10 @@ class GravityFormsHelper extends Helper
             'org_uuid' => $org_uuid,
             'membership_id' => $membership_id,
         ];
+        if ($tier_slug !== '') {
+            $field_values[$configService->getAdditionalSeatsTierSlugField()] = $tier_slug;
+            $field_values['tier_slug'] = $tier_slug;
+        }
 
         // Render the form without AJAX to preserve Woo session/cart cookies.
         ob_start();
@@ -588,6 +753,12 @@ class GravityFormsHelper extends Helper
             return $map;
         }
 
+        $configService = new \WicketORM\Services\ConfigService();
+        $tier_slug_field = $configService->getAdditionalSeatsTierSlugField();
+        $tier_mode = $configService->isAdditionalSeatsTierMode();
+
+        $map['seat_quantities'] = [];
+
         foreach ($form['fields'] as $field) {
             if (!isset($field->id)) {
                 continue;
@@ -605,6 +776,19 @@ class GravityFormsHelper extends Helper
                 if ($input_name === 'membership_id' || $admin_label === 'membership_id' || $label === 'membership_id') {
                     $map['membership_id'] = (int) $field->id;
                 }
+                // Multi-tier tier-slug hidden field. Recognizes the configured slug field name plus
+                // common aliases so the same helper works regardless of GF field naming.
+                if (
+                    $input_name === $tier_slug_field
+                    || $input_name === 'tier_slug'
+                    || $admin_label === 'tier_slug'
+                    || $admin_label === 'tier-slug'
+                    || $label === 'Tier Slug'
+                    || $label === 'tier-slug'
+                    || $label === 'tier_slug'
+                ) {
+                    $map['tier_slug'] = (int) $field->id;
+                }
             }
 
             if ($field->type === 'number') {
@@ -615,7 +799,27 @@ class GravityFormsHelper extends Helper
                 } elseif ($label === 'Number of Additional Seats') {
                     $map['seat_quantity'] = (int) $field->id;
                 }
+
+                // Multi-tier per-tier quantity fields: inputName 'seat_quantity_{tier-slug}'.
+                if ($input_name !== '' && str_starts_with($input_name, 'seat_quantity_')) {
+                    $tier_slug_for_field = substr($input_name, strlen('seat_quantity_'));
+                    $tier_slug_for_field = is_string($tier_slug_for_field) ? trim($tier_slug_for_field) : '';
+                    if ($tier_slug_for_field !== '') {
+                        $map['seat_quantities'][$tier_slug_for_field] = (int) $field->id;
+                    }
+                }
             }
+        }
+
+        // Drop the per-tier bucket when empty to keep the map shape clean for legacy callers.
+        if (empty($map['seat_quantities'])) {
+            unset($map['seat_quantities']);
+        }
+
+        // In tier mode, record the active mode on the map so callers can branch without
+        // re-querying config.
+        if ($tier_mode) {
+            $map['tier_mode'] = true;
         }
 
         return $map;
@@ -678,6 +882,7 @@ class GravityFormsHelper extends Helper
         $org_uuid = isset($pending['org_uuid']) ? sanitize_text_field((string) $pending['org_uuid']) : '';
         $membership_id = isset($pending['membership_id']) ? sanitize_text_field((string) $pending['membership_id']) : '';
         $seat_quantity = isset($pending['seat_quantity']) ? absint($pending['seat_quantity']) : 0;
+        $pending_tier_slug = isset($pending['tier_slug']) ? sanitize_text_field((string) $pending['tier_slug']) : '';
         if ($org_uuid === '' || $membership_id === '' || $seat_quantity < 1) {
             $logger->warning('[OrgMan] Pending additional seats data invalid', [
                 'source' => 'wicket-orgman',
@@ -692,12 +897,19 @@ class GravityFormsHelper extends Helper
 
         $configService = new \WicketORM\Services\ConfigService();
         $additional_seats_service = new \WicketORM\Services\AdditionalSeatsService($configService);
-        $product_id = $additional_seats_service->getAdditionalSeatsProduct();
+        $product_id = 0;
+        if ($pending_tier_slug !== '' && $additional_seats_service->isTierMode()) {
+            $product_id = (int) $additional_seats_service->getAdditionalSeatsProductForTier($pending_tier_slug);
+        }
+        if (!$product_id) {
+            $product_id = (int) $additional_seats_service->getAdditionalSeatsProduct();
+        }
         if (!$product_id) {
             wc_add_notice(__('Additional seats product not found. Please contact support.', 'wicket-acc'), 'error');
             $logger->error('[OrgMan] Additional seats product missing during restore', [
                 'source' => 'wicket-orgman',
                 'user_id' => $user_id,
+                'tier_slug' => $pending_tier_slug,
             ]);
 
             return;
@@ -716,6 +928,7 @@ class GravityFormsHelper extends Helper
             [
                 'org_uuid' => $org_uuid,
                 'membership_id' => $membership_id,
+                'tier_slug' => $pending_tier_slug,
                 'additional_seats' => true,
             ]
         );

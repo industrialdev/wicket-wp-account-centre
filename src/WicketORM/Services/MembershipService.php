@@ -444,6 +444,104 @@ class MembershipService
     }
 
     /**
+     * Resolve the membership tier slug for an organization membership.
+     *
+     * The tier slug is the slug of the related 'memberships' (tier) resource, retrieved via the
+     * organization_memberships include=membership payload. Used by the multi-tier additional
+     * seats flow to drive form conditional logic and per-tier WooCommerce product resolution.
+     *
+     * Resolution order:
+     *   1. 'included' membership whose id matches data.relationships.membership.data.id
+     *      (type 'memberships') -> attributes.slug.
+     *   2. First 'memberships' resource in 'included' -> attributes.slug (when the relationship
+     *      pointer is absent but a tier resource is present).
+     *   3. Direct attributes on the org membership (membership_tier_slug / slug) as a defensive
+     *      fallback if the API ever exposes the slug inline.
+     *
+     * Results are memoized per (org_uuid, membership_id) for the request.
+     *
+     * @param string $organization_uuid Organization UUID (contextual; used for cache keying).
+     * @param string $membership_id     Organization membership UUID.
+     * @return string Tier slug, or '' when it cannot be resolved.
+     */
+    public function getMembershipTierSlug(string $organization_uuid, string $membership_id): string
+    {
+        $membership_id = trim($membership_id);
+        if ($membership_id === '') {
+            return '';
+        }
+
+        static $cache = [];
+        $cache_key = $organization_uuid . '|' . $membership_id;
+        if (array_key_exists($cache_key, $cache)) {
+            return $cache[$cache_key];
+        }
+
+        $cache[$cache_key] = '';
+
+        $membership_data = $this->getOrgMembershipData($membership_id);
+        if (!is_array($membership_data)) {
+            return '';
+        }
+
+        $cache[$cache_key] = $this->extractTierSlugFromOrgMembership($membership_data);
+
+        return $cache[$cache_key];
+    }
+
+    /**
+     * Extract the tier slug from a single organization_memberships payload (with included).
+     *
+     * @param array $membership_data Organization membership payload.
+     * @return string
+     */
+    public function extractTierSlugFromOrgMembership(array $membership_data): string
+    {
+        $attrs = (array) ($membership_data['data']['attributes'] ?? []);
+
+        // Defensive inline fallbacks.
+        foreach (['membership_tier_slug', 'tier_slug', 'membership_slug'] as $key) {
+            $candidate = $attrs[$key] ?? null;
+            if (is_string($candidate) && trim($candidate) !== '') {
+                return trim($candidate);
+            }
+        }
+
+        $included = $membership_data['included'] ?? null;
+        if (!is_array($included)) {
+            return '';
+        }
+
+        $relationship_membership_id = $membership_data['data']['relationships']['membership']['data']['id'] ?? null;
+        $first_slug = '';
+
+        foreach ($included as $item) {
+            if (($item['type'] ?? '') !== 'memberships') {
+                continue;
+            }
+
+            $slug = $item['attributes']['slug'] ?? null;
+            if (!is_string($slug) || trim($slug) === '') {
+                continue;
+            }
+
+            $trimmed = trim($slug);
+            if ($first_slug === '') {
+                $first_slug = $trimmed;
+            }
+
+            if (
+                $relationship_membership_id !== null
+                && (string) ($item['id'] ?? '') === (string) $relationship_membership_id
+            ) {
+                return $trimmed;
+            }
+        }
+
+        return $first_slug;
+    }
+
+    /**
      * Resolve tier-mapped seat limit from config.
      *
      * @param array $membershipData Organization membership payload.

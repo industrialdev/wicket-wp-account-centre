@@ -24,6 +24,21 @@ if (empty($membership_id) && isset($_GET['membership_uuid'])) {
     $membership_id = sanitize_text_field($_GET['membership_uuid']);
 }
 
+// Multi-tier: pass the membership tier slug through to the form so it can drive conditional
+// logic and resolve the correct tier-specific product on submission.
+$config_service = new \WicketORM\Services\ConfigService();
+$tier_slug_field = $config_service->getAdditionalSeatsTierSlugField();
+$tier_slug = '';
+foreach (array_unique(array_filter([$tier_slug_field, 'tier_slug', 'tier-slug'])) as $key) {
+    if (isset($_GET[$key])) {
+        $candidate = sanitize_text_field(wp_unslash($_GET[$key]));
+        if ($candidate !== '') {
+            $tier_slug = $candidate;
+            break;
+        }
+    }
+}
+
 // Helper function for back link (WPML-aware)
 if (!function_exists('WicketORM\Templates\get_my_account_page_url')) {
     function get_my_account_page_url($slug)
@@ -45,7 +60,7 @@ if (!function_exists('WicketORM\Templates\get_my_account_page_url')) {
         <?php
             // Render Gravity Forms form
             if (class_exists('GFForms')) {
-                echo \WicketORM\Helpers\GravityFormsHelper::get_form_html($org_uuid, $membership_id);
+                echo \WicketORM\Helpers\GravityFormsHelper::get_form_html($org_uuid, $membership_id, $tier_slug);
             } else {
                 ?>
         <div class="woocommerce-error">

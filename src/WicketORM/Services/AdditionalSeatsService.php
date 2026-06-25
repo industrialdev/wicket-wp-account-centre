@@ -22,6 +22,13 @@ class AdditionalSeatsService
     private $configService;
 
     /**
+     * Memoized tier_slug => product_id map (S3). Null until first resolution.
+     *
+     * @var array<string,int>|null
+     */
+    private $tierProductIdsCache;
+
+    /**
      * Constructor.
      *
      * @param ConfigService $configService The configuration service.
@@ -87,6 +94,34 @@ class AdditionalSeatsService
                 }
                 $parts[] = ['type' => 'text', 'value' => __(' and set it to Published/Purchasable.', 'wicket-acc')];
                 $issues[] = ['parts' => $parts];
+            }
+
+            // Multi-tier: each configured tier SKU must resolve to a purchasable product. When
+            // tier mode is active the single-SKU check above is informational; this block is the
+            // authoritative gate.
+            if ($this->isTierMode()) {
+                $tier_skus = $this->configService->getAdditionalSeatsTierSkus();
+                // Flag-only tier mode (S4): tier_mode is on but no tier_skus map is configured.
+                // Order-side product-id classification is disabled in this mode; surface a clear
+                // setup issue so adopters configure the map rather than hitting silent failures.
+                if (empty($tier_skus)) {
+                    $issues[] = ['parts' => [
+                        ['type' => 'text',  'value' => __('Multi-tier additional seats: tier_mode is enabled but no tier_skus map is configured. Add a tier slug to SKU map (or rely on derived SKUs and ensure matching products exist) in the site org-roster config.', 'wicket-acc')],
+                    ]];
+                }
+                foreach ($tier_skus as $tier_slug => $tier_sku) {
+                    $tier_product_id = wc_get_product_id_by_sku($tier_sku);
+                    $tier_product = $tier_product_id ? wc_get_product($tier_product_id) : null;
+                    if (!$tier_product || !$tier_product->is_purchasable()) {
+                        $issues[] = ['parts' => [
+                            ['type' => 'text',  'value' => __('Multi-tier additional seats: no purchasable product found for tier ', 'wicket-acc')],
+                            ['type' => 'token', 'value' => $tier_slug],
+                            ['type' => 'text',  'value' => __(' (expected SKU ', 'wicket-acc')],
+                            ['type' => 'token', 'value' => $tier_sku],
+                            ['type' => 'text',  'value' => __(').', 'wicket-acc')],
+                        ]];
+                    }
+                }
             }
         }
 
@@ -175,6 +210,124 @@ class AdditionalSeatsService
         $product = $this->resolvePurchasableProductBySkus($skus, 'Additional seats discount product');
 
         return (int) ($product['product_id'] ?? 0) ?: null;
+    }
+
+    /**
+     * Whether the multi-tier additional-seats flow is active for this site.
+     *
+     * Thin proxy over ConfigService::isAdditionalSeatsTierMode(). When true the seat purchase
+     * flow resolves one WooCommerce product per membership tier slug; when false the legacy
+     * single-SKU path is used.
+     *
+     * @return bool
+     */
+    public function isTierMode()
+    {
+        return $this->configService->isAdditionalSeatsTierMode();
+    }
+
+    /**
+     * Resolve the tier-specific additional-seats WooCommerce product for a tier slug.
+     *
+     * SKU comes from ConfigService::getAdditionalSeatsTierSkuForSlug() (explicit map or derived
+     * from the configured prefix). Resolution reuses the WPML-aware helper so translated
+     * products are honoured.
+     *
+     * @param string $tier_slug Membership tier slug.
+     * @return int|null Product ID or null when not found / not purchasable.
+     */
+    public function getAdditionalSeatsProductForTier($tier_slug)
+    {
+        $tier_slug = is_string($tier_slug) ? trim($tier_slug) : '';
+        if ($tier_slug === '') {
+            return null;
+        }
+
+        $sku = $this->configService->getAdditionalSeatsTierSkuForSlug($tier_slug);
+        if ($sku === null) {
+            return null;
+        }
+
+        $product = $this->resolvePurchasableProductBySkus([$sku], 'Additional seats tier product (' . $tier_slug . ')');
+
+        return (int) ($product['product_id'] ?? 0) ?: null;
+    }
+
+    /**
+     * Resolve every configured tier seat product as a tier_slug => product_id map.
+     *
+     * Used by setup-issue checks and order-side classification. Only tiers whose SKU resolves
+     * to a purchasable product are included. Memoized per request (S3) because the order
+     * lifecycle calls classifySeatProduct() across multiple passes x N line items.
+     *
+     * @return array<string,int> Map of tier slug => product ID.
+     */
+    public function getAdditionalSeatsTierProductIds()
+    {
+        if (isset($this->tierProductIdsCache)) {
+            return $this->tierProductIdsCache;
+        }
+
+        $tier_skus = $this->configService->getAdditionalSeatsTierSkus();
+        // Flag-only tier mode (empty map) cannot resolve products by id; only SKU-based
+        // derived classification would work there. Return empty so callers fall back to SKU.
+        if (empty($tier_skus) && $this->isTierMode()) {
+            $this->tierProductIdsCache = [];
+
+            return [];
+        }
+
+        $resolved = [];
+        foreach ($tier_skus as $tier_slug => $sku) {
+            $product_id = $this->getAdditionalSeatsProductForTier($tier_slug);
+            if ($product_id) {
+                $resolved[$tier_slug] = (int) $product_id;
+            }
+        }
+
+        $this->tierProductIdsCache = $resolved;
+
+        return $resolved;
+    }
+
+    /**
+     * Classify a WooCommerce product as a tier-specific seat product.
+     *
+     * Returns the tier slug when the product's SKU maps to a configured/derived tier seat
+     * product, or null when it is not a tier seat product (or tier mode is off).
+     *
+     * @param int $product_id WooCommerce product ID.
+     * @return string|null Tier slug, or null.
+     */
+    public function classifySeatProduct($product_id)
+    {
+        $product_id = (int) $product_id;
+        if ($product_id <= 0 || !$this->isTierMode()) {
+            return null;
+        }
+
+        $product = wc_get_product($product_id);
+        if (!$product) {
+            return null;
+        }
+
+        // Direct product-id match against resolved tier products (covers translated products whose
+        // SKU may differ).
+        $tier_products = $this->getAdditionalSeatsTierProductIds();
+        foreach ($tier_products as $tier_slug => $tier_product_id) {
+            if ((int) $tier_product_id === $product_id) {
+                return (string) $tier_slug;
+            }
+        }
+
+        // SKU-based classification.
+        $sku = $product->get_sku();
+        $sku = is_string($sku) ? trim($sku) : '';
+        if ($sku === '') {
+            return null;
+        }
+
+        return $this->configService->getAdditionalSeatsTierSlugForSku($sku);
     }
 
     /**
@@ -833,7 +986,78 @@ class AdditionalSeatsService
             'current_seats' => $membership_data['membership']['current_max_assignments'] ?? 1,
         ];
 
+        // Multi-tier: pass the membership tier slug so the form can drive conditional logic and
+        // so the submission resolves the correct tier-specific WooCommerce product. Stored
+        // alongside the purchase context in user meta for resilience on the order side.
+        $tier_slug = '';
+        if ($this->isTierMode()) {
+            $membershipService = new \WicketORM\Services\MembershipService();
+            $tier_slug = $membershipService->getMembershipTierSlug((string) $org_uuid, (string) $membership_id);
+            if ($tier_slug !== '') {
+                $args[$this->configService->getAdditionalSeatsTierSlugField()] = $tier_slug;
+                $this->storeTierSlugOnPurchaseUserMeta($tier_slug);
+            }
+        }
+
         return add_query_arg($args, $base_url);
+    }
+
+    /**
+     * Stash the resolved tier slug onto the existing purchase user-meta record.
+     *
+     * Best-effort: the multi-tier order flow sources truth from line-item meta, but keeping the
+     * tier slug in user meta aids restore/recovery paths.
+     *
+     * @param string $tier_slug Membership tier slug.
+     * @return void
+     */
+    public function storeTierSlugOnPurchaseUserMeta(string $tier_slug): void
+    {
+        $tier_slug = trim($tier_slug);
+        if ($tier_slug === '') {
+            return;
+        }
+
+        $current_user_id = get_current_user_id();
+        if (!$current_user_id) {
+            return;
+        }
+
+        $existing = $this->getPurchaseUserMeta($current_user_id);
+        if (!is_array($existing)) {
+            return;
+        }
+
+        $existing['tier_slug'] = $tier_slug;
+        update_user_meta($current_user_id, 'orgman_additional_seats_data', $existing);
+    }
+
+    /**
+     * Read the current max_assignments for an organization membership from the MDP API.
+     *
+     * Public read accessor used by the multi-tier order flow when bumping seats per line item.
+     *
+     * @param string $membership_id Organization membership UUID.
+     * @return int|null Current max_assignments, or null when unavailable.
+     */
+    public function getMembershipCurrentMaxAssignments($membership_id): ?int
+    {
+        $membership_id = is_string($membership_id) ? trim($membership_id) : '';
+        if ($membership_id === '') {
+            return null;
+        }
+
+        $data = $this->getMembershipDataFromApi($membership_id);
+        if (!is_array($data)) {
+            return null;
+        }
+
+        $value = $data['attributes']['max_assignments'] ?? null;
+        if ($value === null || !is_numeric($value)) {
+            return null;
+        }
+
+        return (int) $value;
     }
 
     /**

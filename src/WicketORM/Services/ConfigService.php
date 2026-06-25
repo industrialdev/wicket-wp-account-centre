@@ -228,6 +228,153 @@ class ConfigService
     }
 
     /**
+     * Whether the multi-tier additional-seats flow is active.
+     *
+     * Tier mode is opt-in. It activates when the 'tier_mode' flag is explicitly true OR when
+     * 'tier_skus' contains at least one tier-to-SKU mapping. When active the flow resolves one
+     * WooCommerce product per membership tier slug; when inactive the legacy single-SKU path is
+     * used (preserving behaviour for ASAE/CITT/NJBIA/OSPE and similar sites).
+     *
+     * @return bool
+     */
+    public function isAdditionalSeatsTierMode()
+    {
+        $config = $this->getFullConfig();
+        $tier_mode = (bool) ($config['integrations']['additional_seats']['tier_mode'] ?? false);
+        $tier_skus = $this->getAdditionalSeatsTierSkus();
+        $default_active = $tier_mode || !empty($tier_skus);
+
+        return (bool) apply_filters('wicket/org-roster/additional_seats_tier_mode', $default_active);
+    }
+
+    /**
+     * Get the tier-to-SKU map for multi-tier additional seats.
+     *
+     * Keys are membership tier slugs (the 'memberships' resource slug), values are WooCommerce
+     * product SKUs. When empty the flow falls back to deriving a SKU per tier as
+     * '{additional_seats_sku}-{tier-slug}' via getAdditionalSeatsTierSkuForSlug().
+     *
+     * @return array<string,string> Map of tier slug => product SKU.
+     */
+    public function getAdditionalSeatsTierSkus()
+    {
+        $config = $this->getFullConfig();
+        $tier_skus = $config['integrations']['additional_seats']['tier_skus'] ?? [];
+        $tier_skus = is_array($tier_skus) ? $tier_skus : [];
+
+        // Normalize keys/values to trimmed strings.
+        $normalized = [];
+        foreach ($tier_skus as $tier_slug => $sku) {
+            $tier_slug = is_string($tier_slug) ? trim($tier_slug) : '';
+            $sku = is_string($sku) ? trim($sku) : '';
+            if ($tier_slug !== '' && $sku !== '') {
+                $normalized[$tier_slug] = $sku;
+            }
+        }
+
+        return apply_filters('wicket/org-roster/additional_seats_tier_skus', $normalized);
+    }
+
+    /**
+     * Get the query parameter / GF hidden field name used to carry the tier slug.
+     *
+     * Default 'tier-slug'.
+     *
+     * @return string
+     */
+    public function getAdditionalSeatsTierSlugField()
+    {
+        $config = $this->getFullConfig();
+        $field = $config['integrations']['additional_seats']['tier_slug_field'] ?? 'tier-slug';
+        $field = is_string($field) ? trim($field) : '';
+        if ($field === '') {
+            $field = 'tier-slug';
+        }
+
+        return apply_filters('wicket/org-roster/additional_seats_tier_slug_field', $field);
+    }
+
+    /**
+     * Resolve the WooCommerce product SKU for a given membership tier slug.
+     *
+     * Uses an explicit tier_skus mapping when present; otherwise derives the SKU as
+     * '{additional_seats_sku}-{tier-slug}' so a site only needs to create WooCommerce products
+     * following that convention.
+     *
+     * @param string $tier_slug Membership tier slug.
+     * @return string|null Resolved SKU, or null when the tier slug is empty.
+     */
+    public function getAdditionalSeatsTierSkuForSlug($tier_slug)
+    {
+        $tier_slug = is_string($tier_slug) ? trim($tier_slug) : '';
+        if ($tier_slug === '') {
+            return null;
+        }
+
+        $tier_skus = $this->getAdditionalSeatsTierSkus();
+        if (isset($tier_skus[$tier_slug]) && $tier_skus[$tier_slug] !== '') {
+            return $tier_skus[$tier_slug];
+        }
+
+        $prefix = $this->getAdditionalSeatsSku();
+        $prefix = is_string($prefix) ? trim($prefix) : '';
+        if ($prefix === '') {
+            $prefix = 'additional-seats';
+        }
+
+        return $prefix . '-' . $tier_slug;
+    }
+
+    /**
+     * Reverse-lookup: resolve the membership tier slug for a given WooCommerce product SKU.
+     *
+     * Used on order processing to classify a line item as a tier-specific seat product. Returns
+     * null when the SKU is not recognised as a tier seat product (either tier mode is off or the
+     * SKU does not map to a configured/derived tier).
+     *
+     * @param string $sku WooCommerce product SKU.
+     * @return string|null Tier slug, or null.
+     */
+    public function getAdditionalSeatsTierSlugForSku($sku)
+    {
+        $sku = is_string($sku) ? trim($sku) : '';
+        if ($sku === '') {
+            return null;
+        }
+
+        $tier_skus = $this->getAdditionalSeatsTierSkus();
+        foreach ($tier_skus as $tier_slug => $tier_sku) {
+            if ($tier_sku === $sku) {
+                return $tier_slug;
+            }
+        }
+
+        // Derived-SKU fallback ONLY when no explicit tier_skus map is configured. With an
+        // explicit map present (S1), any product whose SKU merely starts with the prefix would
+        // otherwise false-positive as a tier seat (e.g. a future 'additional-seats-bundle').
+        // Flag-only tier mode (empty map) is the only case that relies on derived SKUs.
+        if (!empty($tier_skus)) {
+            return null;
+        }
+
+        $prefix = $this->getAdditionalSeatsSku();
+        $prefix = is_string($prefix) ? trim($prefix) : '';
+        if ($prefix === '') {
+            $prefix = 'additional-seats';
+        }
+        $prefix_dash = $prefix . '-';
+        if (str_starts_with($sku, $prefix_dash)) {
+            $candidate = substr($sku, strlen($prefix_dash));
+            $candidate = is_string($candidate) ? trim($candidate) : '';
+            if ($candidate !== '') {
+                return $candidate;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Get allowed document types.
      *
      * @return array Array of allowed document file types.
