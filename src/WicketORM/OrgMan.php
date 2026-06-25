@@ -1114,14 +1114,7 @@ final class OrgMan
             include $content_map[$slug];
             $orgman_content = ob_get_clean();
 
-            $debug_comments = sprintf(
-                "\n<!-- Wicket Roster Library Path: %s -->\n<!-- Wicket Roster Library Version: %s -->\n<!-- Wicket Roster Strategy: %s -->\n",
-                esc_html($this->getDebugLibraryPath()),
-                esc_html(Helpers\Helper::getLibraryVersion()),
-                esc_html($this->getDebugRosterStrategy())
-            );
-
-            $orgman_markup = '<!-- ORGMAN:BEGIN -->' . $debug_comments . $notifications . $orgman_content . '<!-- ORGMAN:END -->';
+            $orgman_markup = '<!-- ORGMAN:BEGIN -->' . $notifications . $orgman_content . '<!-- ORGMAN:END -->';
 
             if ($slug === 'organization-profile' || $slug === 'supplemental-members') {
                 // For organization-profile and supplemental-members we need the OrgMan content
@@ -1318,54 +1311,6 @@ final class OrgMan
     private function relativePath(string $path, string $root): string
     {
         return ltrim(substr($path, strlen($root)), '/');
-    }
-
-    /**
-     * Resolve a safe debug path without exposing server filesystem roots.
-     */
-    private function getDebugLibraryPath(): string
-    {
-        $library_path = $this->normalizePath(__DIR__);
-        $abs_path = defined('ABSPATH') ? $this->normalizePath(ABSPATH) : '';
-
-        if ($this->pathIsWithin($library_path, $abs_path)) {
-            return './' . $this->relativePath($library_path, $abs_path);
-        }
-
-        $public_markers = [
-            '/web/app/',
-            '/app/',
-            '/wp-content/',
-            '/content/',
-        ];
-
-        foreach ($public_markers as $marker) {
-            $position = strpos($library_path, $marker);
-            if ($position === false) {
-                continue;
-            }
-
-            return './' . ltrim(substr($library_path, $position + 1), '/');
-        }
-
-        return './' . basename($library_path);
-    }
-
-    /**
-     * Resolve the active roster strategy for debug output.
-     */
-    private function getDebugRosterStrategy(): string
-    {
-        if (
-            !isset($this->services['config'])
-            || !$this->services['config'] instanceof Services\ConfigService
-        ) {
-            return 'unknown';
-        }
-
-        $strategy = $this->services['config']->getRosterMode();
-
-        return is_string($strategy) && $strategy !== '' ? $strategy : 'unknown';
     }
 
     /**
