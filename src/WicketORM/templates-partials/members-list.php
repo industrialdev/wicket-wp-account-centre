@@ -41,10 +41,10 @@ $members_list_separator = str_contains($members_list_endpoint, '?') ? '&' : '?';
 $encodedOrgUuid = rawurlencode((string) $org_uuid);
 
 $update_permissions_endpoint = OrgHelpers\template_url() . 'process/update-permissions';
-$update_permissions_error_actions = "console.error('Failed to update permissions'); $editPermissionsSubmitting = false; $membersLoading = false;";
-$edit_permissions_reset_actions = "$editPermissionsSuccess = false; $editPermissionsSubmitting = false; $currentMemberUuid = ''; $currentMemberName = ''; $currentMemberRoles = []; $currentMemberRelationshipType = ''; (() => { const messages = document.getElementById('update-permissions-messages'); if (messages) messages.innerHTML = ''; })();";
+$update_permissions_error_actions = "console.error('Failed to update permissions'); \$editPermissionsSubmitting = false; \$membersLoading = false;";
+$edit_permissions_reset_actions = "\$editPermissionsSuccess = false; \$editPermissionsSubmitting = false; \$currentMemberUuid = ''; \$currentMemberName = ''; \$currentMemberRoles = []; \$currentMemberRelationshipType = ''; (() => { const messages = document.getElementById('update-permissions-messages'); if (messages) messages.innerHTML = ''; })();";
 $remove_member_endpoint = OrgHelpers\template_url() . 'process/remove-member';
-$remove_member_error_actions = "console.error('Failed to remove member'); $removeMemberSubmitting = false; $membersLoading = false;";
+$remove_member_error_actions = "console.error('Failed to remove member'); \$removeMemberSubmitting = false; \$membersLoading = false;";
 
 $page = isset($pagination['currentPage']) ? (int) $pagination['currentPage'] : 1;
 $total_pages = isset($pagination['totalPages']) ? (int) $pagination['totalPages'] : 1;
@@ -64,9 +64,9 @@ if (!empty($membership_uuid)) {
     $membership_query_fragment = '&membership_uuid=' . rawurlencode((string) $membership_uuid);
 }
 $update_permissions_local_sync_actions = "(() => { const modal = document.getElementById('editPermissionsModal'); if (!modal) return; const selected = Array.from(modal.querySelectorAll('input[name=\"roles[]\"]:checked')).map((node) => node.value); const selectedJson = JSON.stringify(selected); document.querySelectorAll('.edit-permissions-button[data-member-uuid=\"' + \$currentMemberUuid + '\"]').forEach((btn) => { btn.dataset.memberRoles = selectedJson; }); \$currentMemberRoles = selected; })();";
-$update_permissions_success_actions = "console.log('Permissions updated successfully'); $editPermissionsSubmitting = false; $editPermissionsSuccess = true; $membersLoading = false; {$update_permissions_local_sync_actions}";
+$update_permissions_success_actions = "console.log('Permissions updated successfully'); \$editPermissionsSubmitting = false; \$editPermissionsSuccess = true; \$membersLoading = false; {$update_permissions_local_sync_actions}";
 $remove_member_reset_actions = "(() => { const modal = document.getElementById('removeMemberModal'); const messages = modal ? modal.querySelector('#remove-member-messages') : document.getElementById('remove-member-messages'); if (messages) messages.innerHTML = ''; if (modal && modal.open) modal.close(); })(); \$removeMemberModalOpen = false; \$removeMemberSubmitting = false; \$removeMemberSuccess = false; \$membersLoading = false; \$autoCloseCountdown = 0; \$currentRemoveMemberUuid = ''; \$currentRemoveMemberName = ''; \$currentRemoveMemberEmail = ''; \$currentRemoveMemberConnectionId = ''; \$currentRemoveMemberPersonMembershipId = '';";
-$remove_member_success_actions = "console.log('Member removed successfully'); $removeMemberSubmitting = false; $removeMemberSuccess = true; $membersLoading = false;";
+$remove_member_success_actions = "console.log('Member removed successfully'); \$removeMemberSubmitting = false; \$removeMemberSuccess = true; \$membersLoading = false;";
 
 $orgman_config = WicketORM\Services\ConfigService::getConfig();
 $presentation_config = is_array($orgman_config['presentation'] ?? null)

@@ -278,22 +278,22 @@ $members_list_endpoint = $membersListEndpoint;
 				<?php endforeach; ?>
 			</ul>
 		<?php
-		$orgman_cfg = $configService->getFullConfig();
-		$orgman_form_slug = $orgman_cfg['integrations']['additional_seats']['form_slug'] ?? 'additional-seats';
-		$orgman_form_slug = is_string($orgman_form_slug) ? trim($orgman_form_slug) : 'additional-seats';
-		$orgman_tier_field = $configService->getAdditionalSeatsTierSlugField();
-		$orgman_token_attrs = 'title="' . esc_attr__('Click to copy', 'wicket-acc') . '" style="cursor:pointer;background:#fff3cd;border:1px solid #f9a825;border-radius:3px;padding:1px 5px;font-family:monospace;font-size:0.9em;"';
-		?>
+        $orgman_cfg = $configService->getFullConfig();
+	    $orgman_form_slug = $orgman_cfg['integrations']['additional_seats']['form_slug'] ?? 'additional-seats';
+	    $orgman_form_slug = is_string($orgman_form_slug) ? trim($orgman_form_slug) : 'additional-seats';
+	    $orgman_tier_field = $configService->getAdditionalSeatsTierSlugField();
+	    $orgman_token_attrs = 'title="' . esc_attr__('Click to copy', 'wicket-acc') . '" style="cursor:pointer;background:#fff3cd;border:1px solid #f9a825;border-radius:3px;padding:1px 5px;font-family:monospace;font-size:0.9em;"';
+	    ?>
 		<ul class="orgman-setup-warning__config" style="list-style:none;padding-left:0;margin:0.5rem 0 0;border-top:1px solid #f9a825;padding-top:0.5rem;opacity:0.85;">
 			<li style="margin-bottom:0.5rem;">
 				<strong><?php esc_html_e('Expected Gravity Form slug:', 'wicket-acc'); ?></strong>
-				<code class="orgman-copy-token" data-copy-value="<?php echo esc_attr($orgman_form_slug); ?>" <?php echo $orgman_token_attrs; // phpcs:ignore ?>><?php echo esc_html($orgman_form_slug); ?></code><br>
+				<code class="orgman-copy-token" data-copy-value="<?php echo esc_attr($orgman_form_slug); ?>" <?php echo $orgman_token_attrs; // phpcs:ignore?>><?php echo esc_html($orgman_form_slug); ?></code><br>
 				<em style="display:block;margin-top:0.25rem;"><?php esc_html_e('Map this slug to the additional-seats Gravity Form under Gravity Forms > Wicket Settings > Form Slug ID Mapping.', 'wicket-acc'); ?></em>
 			</li>
 			<?php if ($orgman_tier_field !== '') : ?>
 			<li style="margin-bottom:0;">
 				<strong><?php esc_html_e('Tier slug hidden-field parameter:', 'wicket-acc'); ?></strong>
-				<code class="orgman-copy-token" data-copy-value="<?php echo esc_attr($orgman_tier_field); ?>" <?php echo $orgman_token_attrs; // phpcs:ignore ?>><?php echo esc_html($orgman_tier_field); ?></code><br>
+				<code class="orgman-copy-token" data-copy-value="<?php echo esc_attr($orgman_tier_field); ?>" <?php echo $orgman_token_attrs; // phpcs:ignore?>><?php echo esc_html($orgman_tier_field); ?></code><br>
 				<em style="display:block;margin-top:0.25rem;"><?php esc_html_e('Name of the hidden field (Parameter Name) on the form that receives the membership tier slug from the URL. GF conditional logic reads it to show only that tier’s quantity input, and the submission handler reads it to pick the right tier-specific product.', 'wicket-acc'); ?></em>
 			</li>
 			<?php endif; ?>
@@ -328,8 +328,8 @@ $members_list_endpoint = $membersListEndpoint;
 		<?php endif; ?>
 
 		<?php
-            // Check if user can purchase additional seats (requires membership_owner role on this org).
-            $can_purchase_seats = $additional_seats_service->canPurchaseAdditionalSeats($org_uuid);
+	        // Check if user can purchase additional seats (requires membership_owner role on this org).
+	        $can_purchase_seats = $additional_seats_service->canPurchaseAdditionalSeats($org_uuid);
 $purchase_url = $can_purchase_seats ? $additional_seats_service->getPurchaseFormUrl($org_uuid, $membershipUuid) : '';
 
 if ($can_purchase_seats && !empty($purchase_url)):

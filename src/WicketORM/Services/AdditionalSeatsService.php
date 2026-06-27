@@ -991,7 +991,7 @@ class AdditionalSeatsService
         // alongside the purchase context in user meta for resilience on the order side.
         $tier_slug = '';
         if ($this->isTierMode()) {
-            $membershipService = new \WicketORM\Services\MembershipService();
+            $membershipService = new MembershipService();
             $tier_slug = $membershipService->getMembershipTierSlug((string) $org_uuid, (string) $membership_id);
             if ($tier_slug !== '') {
                 $args[$this->configService->getAdditionalSeatsTierSlugField()] = $tier_slug;

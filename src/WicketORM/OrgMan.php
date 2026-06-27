@@ -1055,7 +1055,7 @@ final class OrgMan
             'qty' => $qty,
         ];
 
-        /** @var \WicketORM\Services\AdditionalSeatsService $service */
+        /** @var Services\AdditionalSeatsService $service */
         $service = $this->services['additional_seats'];
 
         $current = $service->getMembershipCurrentMaxAssignments($membership_id);
