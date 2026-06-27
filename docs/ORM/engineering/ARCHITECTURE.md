@@ -7,7 +7,7 @@ source_files: ["src/OrgMan.php", "src/Config/OrgManConfig.php", "src/Services/",
 
 # Architecture
 
-`wicket-lib-org-roster` is a WordPress library that injects roster-management UI into account pages and routes mutations through service classes and Datastar-oriented template endpoints.
+`WicketORM\` is the WordPress code inside `wicket-wp-account-centre` that injects roster-management UI into account pages and routes mutations through service classes and Datastar-oriented template endpoints.
 
 ## Core Runtime Pieces
 

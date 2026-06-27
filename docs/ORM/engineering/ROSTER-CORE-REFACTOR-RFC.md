@@ -2,7 +2,7 @@
 
 **Status:** Draft  
 **Author:** EstebanForge  
-**Scope:** `wicket-lib-org-roster` — `MemberService`, roster strategies, member-list enrichment, member update flows, and downstream hypermedia/template callers
+**Scope:** `WicketORM\` — `MemberService`, roster strategies, member-list enrichment, member update flows, and downstream hypermedia/template callers
 
 ---
 

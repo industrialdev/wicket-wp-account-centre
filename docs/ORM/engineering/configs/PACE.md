@@ -33,16 +33,30 @@ PACE's MDP membership has "Cascading Membership Settings" enabled with cascade t
 - `integrations.additional_seats.min_quantity = 1`
 - `integrations.additional_seats.max_quantity = 900`
 
-## Current Config Function
+## Current Override File
+
+`OrgMan` is booted by `wicket-wp-account-centre` at `after_setup_theme` priority 20. This file registers **only** PACE's config overrides — it does not boot `OrgMan` and does not load any autoloader. See [Installation](../../product/INSTALLATION.md).
 
 ```php
-function wicket_orgman_config(array $config): array
-{
-    $config['membership']['strategy'] = 'cascade';
+<?php
+/**
+ * Site-specific WicketORM\ org-roster config.
+ *
+ * OrgMan is now booted by wicket-wp-account-centre (at after_setup_theme
+ * priority 20). This file only registers THIS SITE's config overrides,
+ * which account-centre reads when it boots OrgMan. Do not boot OrgMan here
+ * and do not load any org-roster autoloader. account-centre handles both.
+ */
 
-    // MDP cascade membership is configured to trigger on 'employee' relationship type only.
-    // The library default is 'Position' — override it here so the cascade fires correctly.
+defined('ABSPATH') || exit;
+
+add_filter('wicket/org-roster/config', static function (array $config): array {
+    // PACE: MDP cascade membership triggers on 'employee' relationship type only.
+    // The library default is 'Position', so override it here so the cascade fires.
+    $config['membership']['strategy'] = 'cascade';
     $config['relationships']['defaults']['type'] = 'employee';
+
+    // PACE: additional seats integration.
     $config['integrations']['additional_seats']['enabled'] = true;
     $config['integrations']['additional_seats']['sku'] = 'additional-seats';
     $config['integrations']['additional_seats']['discount_sku'] = 'corporate-seat-discount';
@@ -52,5 +66,5 @@ function wicket_orgman_config(array $config): array
     $config['integrations']['additional_seats']['max_quantity'] = 900;
 
     return $config;
-}
+});
 ```

@@ -19,6 +19,7 @@ Three distinct audiences. Every doc targets one primary audience. Know which bef
 | `support` | Support team — answers client questions, troubleshoots issues | Same as implementer; also needs troubleshooting tips and warnings |
 | `developer` | Engineers and AI agents writing or reading code | Hooks, filters, class architecture, source file references |
 | `end-user` | Client staff using the WP admin UI | Plain-language task guides, no technical detail |
+| `ORM` | Organization Roster Management docs | Manages the organization roster, including adding, removing, and updating members |
 
 > **Alias note for LLMs:** When a user says "implementation team", "implementer", "implementor", or "operator" — they mean the `implementer` audience. When they say "support team" or "support" — they mean the `support` audience. Both read `docs/product/` primarily.
 

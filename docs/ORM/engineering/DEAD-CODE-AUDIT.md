@@ -7,7 +7,7 @@ source_files: ["src/OrgMan.php", "src/Controllers/", "src/Services/", "src/Helpe
 # Dead Code Audit
 
 **Date:** 2026-03-19
-**Scope:** `wicket-lib-org-roster` library + all workspace consumers (theme, plugins, QA)
+**Scope:** org-roster code (`WicketORM\`) + all workspace consumers (theme, plugins, QA)
 
 ---
 

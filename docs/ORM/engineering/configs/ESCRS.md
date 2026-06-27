@@ -44,7 +44,7 @@ This document mirrors the current site override. If it drifts, update the site c
 | Priority / accepted args | `10 / 4` |
 | Registered in | `after_setup_theme` (priority 20) |
 | Source file | `src/web/app/themes/wicket-child/custom/org-roster.php` |
-| Provided by | `wicket-lib-org-roster` — `templates-partials/organization-list.php` |
+| Provided by | `WicketORM\` — `templates-partials/organization-list.php` |
 
 **Problem.** By default the library only surfaces memberships where `active=true` or `in_grace=true`. Memberships purchased ahead of time carry both flags as `false` until `starts_at` is reached, so they are silently dropped from the organization list.
 

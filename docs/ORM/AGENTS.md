@@ -1,4 +1,4 @@
-# Documentation Rules — wicket-lib-org-roster
+# Documentation Rules — WicketORM Org Roster
 
 Always read the code currently checked out alongside these files before writing or updating any doc.
 

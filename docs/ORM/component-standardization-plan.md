@@ -2,7 +2,7 @@
 
 **Created:** 2026-04-19  
 **Status:** Analysis Complete  
-**Objective:** Replace custom HTML patterns in wicket-lib-org-roster with standardized base-plugin components
+**Objective:** Replace custom HTML patterns in the org-roster code with standardized base-plugin components
 
 ## Executive Summary
 

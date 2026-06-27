@@ -1,18 +1,17 @@
 # Wicket Org Roster Documentation
 
-> **Migration note (2026-06):** This documentation set migrated here from the
-> `wicket-lib-org-roster` library. The `WicketORM\` code it documents now lives
-> inside this plugin (`wicket-wp-account-centre`), vendored at
-> [`lib/wicket-org-roster/`](../../../lib/wicket-org-roster/) (namespace `WicketORM\`,
-> unchanged). The standalone library and the `wicket-wp-organization-roster` plugin are
-> being retired; account-centre is now the single source of truth for `WicketORM\`.
-> Doc content is preserved as-is from the library; relative links and `source_files`
-> paths below still reflect the original library layout unless updated.
+> **Migration note (2026-06):** The `WicketORM\` code lives inside this
+> plugin (`wicket-wp-account-centre`), at
+> [`src/WicketORM/`](../../../src/WicketORM/) (namespace `WicketORM\`,
+> unchanged). `wicket-wp-account-centre` is the sole provider: it boots
+> `OrgMan` itself at `after_setup_theme` priority 20. Sites configure the
+> feature through a small child-theme config override file (see
+> [Installation](product/INSTALLATION.md)).
 
 ## Product Docs (Operators & Support)
 - [Additional Seats](product/ADDITIONAL-SEATS.md) — Additional-seats purchase flow: requirements, config, setup checklist, and troubleshooting
 - [Configuration](product/CONFIGURATION.md) — Full canonical config schema with all paths, defaults, and migration map (includes `exports` for async CSV export and `engagement` for MDP data display)
-- [Installation](product/INSTALLATION.md) — How to install and bootstrap the library in WordPress or Bedrock
+- [Installation](product/INSTALLATION.md) — How account-centre boots `OrgMan` and how a site registers its config overrides
 - [Testing](product/TESTING.md) — Available verification commands and practical validation steps
 
 ## Engineering Docs (Developers & Agents)

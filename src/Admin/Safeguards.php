@@ -17,7 +17,10 @@ class Safeguards extends \WicketAcc\WicketAcc
      */
     public function __construct()
     {
-        add_action('admin_init', [$this, 'deleteUnwantedFolders']);
+        // DISABLED: Auto-deletes .ci/.github/.git from the plugin folder on non-prod admin loads.
+        // Too fragile (relies on HTTP_HOST + WP_ENVIRONMENT_TYPE heuristics, filesystem availability).
+        // Re-enable intentionally if this cleanup is needed again.
+        // add_action('admin_init', [$this, 'deleteUnwantedFolders']);
 
         // Hook to run page initialization when Carbon Fields theme options are saved
         add_action('carbon_fields_theme_options_container_saved', [$this, 'accSafeguards']);
@@ -38,7 +41,11 @@ class Safeguards extends \WicketAcc\WicketAcc
 
     /**
      * Delete unwanted folders (.ci, .github, .git) if they exist.
+     *
+     * DISABLED: Fragile auto-cleanup. Hook registration commented out in __construct().
+     * Kept for reference; doesFolderExists() + deleteFolderRecursive() preserved as-is.
      */
+    /*
     public function deleteUnwantedFolders(): void
     {
         // Only on non production servers
@@ -62,6 +69,7 @@ class Safeguards extends \WicketAcc\WicketAcc
             }
         }
     }
+    */
 
     /**
      * Recursively delete a folder using WP_Filesystem

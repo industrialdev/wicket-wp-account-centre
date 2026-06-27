@@ -6,7 +6,7 @@ source_files: ["docs/engineering/configs/"]
 
 # Active Site Config Docs
 
-This folder contains documentation snapshots of active site override configurations. These files are not runtime configuration, but they are intended to mirror the real site override files for sites currently using `wicket-lib-org-roster`.
+This folder contains documentation snapshots of active site override configurations. These files are not runtime configuration, but they are intended to mirror the real site override files for sites currently using the org-roster feature (`WicketORM\`).
 
 ## Current Site Mappings
 

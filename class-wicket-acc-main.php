@@ -437,20 +437,9 @@ class WicketAcc
         // src/WicketORM/). OrgMan reads the `wicket/org-roster/config` filter in
         // its constructor, so it must boot AFTER theme config filters are registered
         // (after_setup_theme priority 20).
-        //
-        // Transitional safety net: while the standalone wicket-wp-organization-roster
-        // plugin is still active and healthy, defer to it so production behavior is
-        // unchanged. WicketORM\ is destined to live ONLY inside account-centre; once the
-        // standalone plugin is archived across sites, this guard becomes dead code and
-        // account-centre is the sole provider. The check uses class_exists(..., false)
-        // (no autoload attempt): the standalone declares its bootstrap class in its main
-        // file, so it is already loaded if (and only if) that plugin loaded successfully.
         add_action(
             "after_setup_theme",
             static function (): void {
-                if (class_exists("WicketOrgRoster\WicketOrgRoster", false)) {
-                    return;
-                }
                 if (class_exists(OrgMan::class)) {
                     OrgMan::getInstance();
                 }
