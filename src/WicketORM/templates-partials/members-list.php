@@ -180,6 +180,11 @@ $available_roles = OrgHelpers\PermissionHelper::filter_role_choices(
 $allow_relationship_editing = $orgman_config['member_management']['forms']['add_member']['allow_relationship_type_editing'] ?? false;
 $relationship_types = $orgman_config['relationships']['labels']['custom'] ?? [];
 $show_remove_button = $show_remove_button_by_config && OrgHelpers\PermissionHelper::can_remove_members($org_uuid);
+// When this partial is rendered via the hypermedia endpoint (e.g. a member-search
+// GET), Datastar morphs top-level elements by id. The modal blocks below have no
+// id on their wrapper div, which triggers PatchElementsNoTargetsFound. The modals
+// already live in the page shell, so skip emitting them on endpoint requests.
+$is_hypermedia_request = OrgHelpers\is_orgman_template_request();
 $show_remove_policy_callout = (
     !$show_remove_button
     && !empty($remove_policy_callout['enabled'])
@@ -526,6 +531,7 @@ $no_members_message = __('No members found.', 'wicket-acc');
     </div>
 </div>
 
+<?php if (!$is_hypermedia_request): ?>
 <!-- Edit Permissions Modal - Single modal using pure Datastar -->
 <div class="wt_mt-6" data-signals='{"editPermissionsModalOpen": false, "editPermissionsSubmitting": false, "editPermissionsSuccess": false, "currentMemberUuid": "", "currentMemberName": "", "currentMemberRoles": [], "currentMemberRelationshipType": "", "removeMemberModalOpen": false, "removeMemberSubmitting": false, "removeMemberSuccess": false, "currentRemoveMemberUuid": "", "currentRemoveMemberName": "", "currentRemoveMemberEmail": "", "currentRemoveMemberConnectionId": "", "currentRemoveMemberPersonMembershipId": ""}'>
     <dialog id="editPermissionsModal" class="modal wt_m-auto max_wt_3xl wt_rounded-md wt_shadow-md backdrop_wt_bg-black-50"
@@ -658,8 +664,9 @@ $no_members_message = __('No members found.', 'wicket-acc');
         </div>
     </dialog>
 </div>
+<?php endif; ?>
 
-<?php if ($show_remove_button): ?>
+<?php if ($show_remove_button && !$is_hypermedia_request): ?>
 <!-- Remove Member Modal -->
 <div class="wt_mt-6">
     <dialog id="removeMemberModal" class="modal wt_m-auto max_wt_md wt_rounded-md wt_shadow-md backdrop_wt_bg-black-50"

@@ -94,8 +94,7 @@ This document mirrors the current site override. If it drifts, update the site c
 ## Current Config Function
 
 ```php
-function njbia_orgman_config(array $config): array
-{
+add_filter('wicket/org-roster/config', static function (array $config): array {
     $config['membership']['strategy'] = 'cascade';
     $config['relationships']['defaults']['type'] = 'member_contact';
     $config['relationships']['filters']['allowlist'] = [];
@@ -192,5 +191,31 @@ function njbia_orgman_config(array $config): array
     $config['integrations']['additional_seats']['max_quantity'] = 900;
 
     return $config;
-}
+});
+```
+
+## Theme Styling Override
+
+NJBIA enqueues a parent-theme stylesheet (`public/css/wicket-orgman.css`) layered on top of `orgman-modern`:
+
+```php
+add_action('wp_enqueue_scripts', static function (): void {
+    if (!wp_style_is('orgman-modern', 'enqueued') && !wp_style_is('orgman-modern', 'registered')) {
+        return;
+    }
+
+    $relative_path = 'public/css/wicket-orgman.css';
+    $file_path = trailingslashit(get_template_directory()) . $relative_path;
+    if (!file_exists($file_path)) {
+        return;
+    }
+
+    wp_enqueue_style(
+        'njbia-orgman-customizations',
+        trailingslashit(get_template_directory_uri()) . $relative_path,
+        ['orgman-modern'],
+        (string) filemtime($file_path),
+        'all'
+    );
+}, 30);
 ```

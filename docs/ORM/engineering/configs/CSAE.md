@@ -71,9 +71,8 @@ This document mirrors the current site override. If it drifts, update the site c
 ## Current Config Function
 
 ```php
-function wicket_orgman_config(array $config): array
-{
-    // CASAE roster is direct-assignment based.
+add_filter('wicket/org-roster/config', static function (array $config): array {
+    // CSAE roster is direct-assignment based.
     $config['membership']['strategy'] = 'direct';
 
     // Keep role labels aligned with CASAE wording.
@@ -125,5 +124,5 @@ function wicket_orgman_config(array $config): array
     $config['integrations']['additional_seats']['max_quantity'] = 900;
 
     return $config;
-}
+});
 ```

@@ -1373,6 +1373,14 @@ class GroupService
         // Prefer base helper for backwards-compatible group create behavior.
         // Extended helper now supports optional custom_data_field without altering defaults.
         if (function_exists('wicket_add_group_member')) {
+            $this->getLogger()->debug('createGroupMember: calling helper', [
+                'source' => 'wicket-orgman',
+                'group_uuid' => $group_uuid,
+                'person_uuid' => $person_uuid,
+                'role_slug' => $role_slug,
+                'custom_data_field' => $custom_data_field,
+            ]);
+
             $helper_response = wicket_add_group_member($person_uuid, $group_uuid, $role_slug, [
                 'start_date' => $this->currentTimestamp(),
                 'end_date' => null,
@@ -1380,7 +1388,20 @@ class GroupService
                 'custom_data_field' => $custom_data_field,
             ]);
 
+            $this->getLogger()->debug('createGroupMember: helper returned', [
+                'source' => 'wicket-orgman',
+                'is_wp_error' => is_wp_error($helper_response),
+                'response_type' => is_object($helper_response) ? get_class($helper_response) : gettype($helper_response),
+            ]);
+
             if (is_wp_error($helper_response)) {
+                $this->getLogger()->debug('createGroupMember: helper returned error', [
+                    'source' => 'wicket-orgman',
+                    'error_code' => $helper_response->get_error_code(),
+                    'error_message' => $helper_response->get_error_message(),
+                    'error_data' => $helper_response->get_error_data(),
+                ]);
+
                 return $helper_response;
             }
 

@@ -1169,9 +1169,13 @@ final class OrgMan
                 $segment = preg_replace('/<p>\s*<\/p>/i', '', $segment);
                 $segment = preg_replace('/<br\s*\/?>\s*/i', '', (string) $segment);
 
-                // Strip all wpautop-injected <p> wrappers from ORGMAN markup.
-                // Our templates use <div> and flexbox for layout, never intentional <p> tags.
-                $segment = preg_replace('/<\/?(?:p)\b[^>]*>/i', '', (string) $segment);
+                // Strip wpautop-injected <p> wrappers (bare, no attributes) from ORGMAN markup.
+                // NOTE: modal templates DO use intentional <p> tags with attributes
+                // (data-show, data-text, class). Only strip bare <p>/</p> so attribute-bearing
+                // tags survive. The previous blanket regex /<\/?p\b[^>]*>/ stopped at the first
+                // '>' inside a quoted attribute value (e.g. data-show="$x > 0"), corrupting the
+                // tag and leaking its remaining attributes as visible text.
+                $segment = preg_replace('/<p\s*>|<\/p\s*>/i', '', (string) $segment);
 
                 return (string) $segment;
             },

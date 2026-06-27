@@ -11,9 +11,8 @@ This folder contains documentation snapshots of active site override configurati
 ## Current Site Mappings
 
 - `docs/engineering/configs/CSAE.md`
-  - source of truth: `../csae-website-wordpress/src/web/app/themes/sassquatch/custom/org-roster.php`
+  - source of truth: `../csae-portal-wordpress/src/web/app/themes/wicket-child/custom/org-roster.php`
   - `direct` strategy
-  - **Note:** config override file not yet created; doc reflects planned configuration
 - `docs/engineering/configs/CCHL.md`
   - source of truth: `../cchl-website-wordpress/src/web/app/themes/industrial/custom/org-roster.php`
   - `direct` strategy

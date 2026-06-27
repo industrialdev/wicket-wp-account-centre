@@ -117,8 +117,7 @@ This document mirrors the current site override. If it drifts, update the site c
 ## Current Config Function
 
 ```php
-function wicket_orgman_config(array $config): array
-{
+add_filter('wicket/org-roster/config', static function (array $config): array {
     $config['access']['roles'] = [
         'owner' => 'membership_owner',
         'manager' => 'membership_manager',
@@ -242,5 +241,30 @@ function wicket_orgman_config(array $config): array
     ];
 
     return $config;
-}
+});
+```
+
+## Theme Styling Override
+
+CCHL enqueues a child-theme stylesheet layered on top of `orgman-modern`:
+
+```php
+add_action('wp_enqueue_scripts', static function (): void {
+    if (!wp_style_is('orgman-modern', 'enqueued') && !wp_style_is('orgman-modern', 'registered')) {
+        return;
+    }
+
+    $relative_path = 'assets/css/org-roster.css';
+    $file_path = trailingslashit(get_stylesheet_directory()) . $relative_path;
+    if (!file_exists($file_path)) {
+        return;
+    }
+
+    wp_enqueue_style(
+        'wicket-child-org-roster',
+        trailingslashit(get_stylesheet_directory_uri()) . $relative_path,
+        ['orgman-modern'],
+        (string) filemtime($file_path)
+    );
+}, 30);
 ```

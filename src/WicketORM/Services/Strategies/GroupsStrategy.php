@@ -6,6 +6,7 @@
 
 namespace WicketORM\Services\Strategies;
 
+use WicketORM\Services\ConfigService;
 use WicketORM\Services\ConnectionService;
 use WicketORM\Services\GroupService;
 use WicketORM\Services\MembershipService;
@@ -69,6 +70,11 @@ class GroupsStrategy implements RosterManagementStrategy
      * @var MembershipService|null
      */
     private $membershipService = null;
+
+    /**
+     * @var ConfigService|null
+     */
+    private $configService = null;
 
     public function addMember($org_id, $member_data, $context = [])
     {
@@ -232,9 +238,12 @@ class GroupsStrategy implements RosterManagementStrategy
             $logger->debug('Groups strategy adding member to group', array_merge($log_context, [
                 'role' => $role_slug,
             ]));
-            $custom_data_source = '' !== $org_uuid ? $org_uuid : $org_identifier;
+            $custom_data_source = '' !== $org_identifier ? $org_identifier : $org_uuid;
             $custom_data_field = $this->groupService()->buildCustomDataField($custom_data_source, $role_slug);
             $group_member_result = $this->groupService()->createGroupMember($person_uuid, $group_uuid, $role_slug, $custom_data_field);
+            $logger->debug('Groups strategy createGroupMember returned', array_merge($log_context, [
+                'is_wp_error' => is_wp_error($group_member_result),
+            ]));
             if (is_wp_error($group_member_result)) {
                 return $group_member_result;
             }
@@ -242,6 +251,9 @@ class GroupsStrategy implements RosterManagementStrategy
             $group_details = function_exists('wicket_get_group') ? wicket_get_group($group_uuid) : null;
             $group_name = $group_details['data']['attributes']['name'] ?? 'Unknown Group';
 
+            $logger->debug('Groups strategy sending notification', array_merge($log_context, [
+                'group_name' => $group_name,
+            ]));
             // NOTE: On local/dev hosts this often fails because SMTP is not configured
             // (expected outside staging/production). Keep non-blocking.
             $notification_result = $this->notificationService()->emailToPersonOnGroupAssignment($person_uuid, [
@@ -549,6 +561,20 @@ class GroupsStrategy implements RosterManagementStrategy
         }
 
         return $this->membershipService;
+    }
+
+    /**
+     * Lazily instantiate ConfigService.
+     *
+     * @return ConfigService
+     */
+    private function configService(): ConfigService
+    {
+        if (!isset($this->configService)) {
+            $this->configService = new ConfigService();
+        }
+
+        return $this->configService;
     }
 
     /**

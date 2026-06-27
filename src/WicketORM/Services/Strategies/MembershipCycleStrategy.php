@@ -6,6 +6,7 @@
 
 namespace WicketORM\Services\Strategies;
 
+use WicketORM\Services\ConfigService;
 use WicketORM\Services\MembershipService;
 use WicketORM\Services\OrganizationService;
 use WicketORM\Services\PermissionService;
@@ -46,6 +47,25 @@ class MembershipCycleStrategy implements RosterManagementStrategy
      * @var PermissionService|null
      */
     private $permissionService = null;
+
+    /**
+     * @var ConfigService|null
+     */
+    private $configService = null;
+
+    /**
+     * Lazily instantiate ConfigService.
+     *
+     * @return ConfigService
+     */
+    private function configService(): ConfigService
+    {
+        if (!isset($this->configService)) {
+            $this->configService = new ConfigService();
+        }
+
+        return $this->configService;
+    }
 
     /**
      * Add member via direct assignment, but scoped to explicit membership cycle.

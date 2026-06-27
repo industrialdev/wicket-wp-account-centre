@@ -39,6 +39,8 @@ This document mirrors the current site override. If it drifts, update the site c
 
 - `presentation.organization_details.show_actions = false` — hides the Org. Profile / Manage Members / Bulk Upload action buttons from the organization details summary card.
 - `presentation.organization_list.show_my_role = false` — hides the "My Role" display from organization summary cards.
+- `presentation.organization_list.show_organization_name = false`
+- `presentation.organization_list.show_managed_orgs_summary = true`
 - `presentation.organization_list.page_size = 10`
 
 ### `presentation.member_list`
@@ -64,8 +66,7 @@ This document mirrors the current site override. If it drifts, update the site c
 ## Current Config Function
 
 ```php
-function wicket_child_orgman_config(array $config): array
-{
+add_filter('wicket/org-roster/config', static function (array $config): array {
     $config['membership']['strategy'] = 'groups';
 
     // Access control
@@ -125,5 +126,5 @@ function wicket_child_orgman_config(array $config): array
     $config['integrations']['additional_seats']['max_quantity'] = 900;
 
     return $config;
-}
+});
 ```

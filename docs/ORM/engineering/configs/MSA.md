@@ -92,8 +92,9 @@ This document mirrors the current site override. If it drifts, update the site c
 ## Current Config Function
 
 ```php
-function wicket_child_orgman_config(array $config): array
-{
+declare(strict_types=1);
+
+add_filter('wicket/org-roster/config', static function (array $config): array {
     $config['membership']['strategy'] = 'cascade';
     $config['membership']['resolution']['prefer_current_cycle'] = true;
     $config['member_management']['addition']['auto_assign_roles'] = [];
@@ -182,5 +183,5 @@ function wicket_child_orgman_config(array $config): array
     $config['integrations']['additional_seats']['max_quantity'] = 900;
 
     return $config;
-}
+});
 ```

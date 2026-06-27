@@ -133,6 +133,10 @@ $groups_presentation = is_array($groups_config['presentation'] ?? null)
     : (is_array($groups_config['ui'] ?? null) ? $groups_config['ui'] : []);
 $auto_close_on_success = (bool) ($groups_presentation['add_member_auto_close_on_success'] ?? false);
 $auto_close_delay_seconds = max(0, (int) ($groups_presentation['add_member_auto_close_delay_seconds'] ?? 7));
+$logger->debug('add-group-member: preparing SSE response', array_merge($log_context, [
+    'has_members_html' => $members_list_html !== '',
+    'auto_close' => $auto_close_on_success,
+]));
 $generator = new ServerSentEventGenerator();
 $generator->sendHeaders();
 $generator->patchSignals([
