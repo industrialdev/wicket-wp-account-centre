@@ -157,10 +157,18 @@ final class OrgMan
     private function addHooks()
     {
         add_action('rest_api_init', [$this, 'registerApiRoutes']);
-        add_filter('the_content', [$this, 'injectOrgmanContent']);
-        add_filter('the_content', [$this, 'cleanupOrgmanAutopArtifacts'], 9999);
-        add_filter('body_class', [$this, 'addOrgmanBodyClass']);
-        add_action('wp_enqueue_scripts', [$this, 'enqueueAssets']);
+
+        // Front-end roster UI injection is gated at boot time: on sites where
+        // the active theme ships its own hard-coded org-management roster
+        // (detected via wicket_orgman_page_role_check), the modern UI hooks
+        // are never registered so the two do not render side by side. REST
+        // API, hypermedia, and opt-in blocks stay registered regardless.
+        if (!$this->isLegacyRosterActive()) {
+            add_filter('the_content', [$this, 'injectOrgmanContent']);
+            add_filter('the_content', [$this, 'cleanupOrgmanAutopArtifacts'], 9999);
+            add_filter('body_class', [$this, 'addOrgmanBodyClass']);
+            add_action('wp_enqueue_scripts', [$this, 'enqueueAssets']);
+        }
 
         add_filter('query_vars', [Helpers\TemplateHelper::class, 'add_hypermedia_query_vars']);
         add_action('parse_request', [Helpers\TemplateHelper::class, 'maybe_handle_hypermedia_request']);
@@ -1331,6 +1339,28 @@ final class OrgMan
         $slug = $this->getCurrentPageSlug();
 
         return isset($this->getContentMap()[$slug]);
+    }
+
+    /**
+     * Whether a legacy, theme-provided organization roster is active.
+     *
+     * Detected automatically: every child theme that ships its own hard-coded
+     * org-management templates defines `wicket_orgman_page_role_check`, the
+     * access-control function guarding every template entry point (asae, chfa,
+     * oba, owwa, phca, rahb at time of writing). Themes without full template
+     * overrides (ies, pao) do not define it and correctly keep the plugin's
+     * modern roster UI.
+     *
+     * When true, the plugin keeps its REST API and opt-in blocks available
+     * but skips automatic content injection, asset loading, and body classes
+     * on org-management pages so the legacy and modern UIs do not render
+     * side by side.
+     *
+     * @return bool
+     */
+    private function isLegacyRosterActive(): bool
+    {
+        return function_exists('wicket_orgman_page_role_check');
     }
 
     /**
