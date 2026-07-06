@@ -1,15 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WicketAcc\Blocks;
 
-use Carbon_Fields\Block;
-use Carbon_Fields\Field;
+use HyperBlocks\Block\Block;
+use HyperBlocks\Block\Field;
+use HyperBlocks\Config as HyperBlocksConfig;
+use HyperBlocks\Registry as HyperBlocksRegistry;
 
 // No direct access
 defined('ABSPATH') || exit;
 
 /**
+ * HyperBlocks Block: ACC Change Password.
+ *
  * Block: ACC Change Password.
+ *
+ * Renders through a .hb.php template at
+ * templates-wicket/blocks/change-password.hb.php; form-submission errors are
+ * exposed to that template via getFormErrors() because HyperBlocks render
+ * templates run in an isolated scope that cannot see $this/self.
  */
 class ChangePassword
 {
@@ -18,172 +29,81 @@ class ChangePassword
      *
      * @var array
      */
-    private static $form_errors = [];
+    private static array $form_errors = [];
 
     public function __construct()
     {
-        // Register the style immediately
+        // Register the plugin's block-template directory as a TEMPLATE-ONLY
+        // path (not a discovery path). HyperBlocks validates render-template
+        // paths against this allowlist, but does NOT glob it for block
+        // definitions — important because templates-wicket/blocks/account-centre/
+        // holds pre-existing ACF render templates that expect a render context
+        // and would fatal if require_once'd as block definitions on init.
+        HyperBlocksConfig::registerTemplatePath(WICKET_ACC_PATH . 'templates-wicket/blocks');
+
+        add_action('init', [$this, 'registerAssets']);
+        add_action('init', [$this, 'registerBlock'], 9);
+        add_action('init', [$this, 'processWicketPasswordForm']);
+    }
+
+    /**
+     * Register the block's style handle.
+     *
+     * Hooked on init (not the constructor) so it fires after WordPress is
+     * ready for script/style registration — registering during plugin
+     * bootstrap triggers a "called incorrectly" notice.
+     */
+    public function registerAssets(): void
+    {
         wp_register_style(
             'wicket-acc-password-block',
             WICKET_ACC_URL . 'assets/css/blocks/change-password.css',
             [],
             '1.0.0'
         );
-
-        add_action('carbon_fields_register_fields', [$this, 'registerBlock']);
-        add_action('init', [$this, 'processWicketPasswordForm']);
     }
 
-    public function registerBlock()
+    /**
+     * Form errors captured by processWicketPasswordForm for the current
+     * request. Public so the isolated-scope render template can read them
+     * via ChangePassword::getFormErrors() without access to self::$form_errors.
+     *
+     * @return array
+     */
+    public static function getFormErrors(): array
     {
-        Block::make('wicket-acc/change-password', __('ACC Password Block (Carbon)'))
-          ->add_fields([
-              Field::make('text', 'form_title', __('Form Title'))
-                ->set_default_value(__('Change Password', 'wicket-acc')),
-              Field::make('textarea', 'form_instructions', __('Form Instructions'))
-                ->set_default_value(__('Enter your current password and choose a new one.', 'wicket-acc'))
-                ->set_rows(3),
-          ])
-          ->set_description(__('A Wicket block for Password'))
-          ->set_category('wicket-account-centre', __('Wicket Account Centre'))
-          ->set_keywords([__('account-centre'), __('password'), __('wicket')])
-          ->set_mode('preview')
-          ->set_style('wicket-acc-password-block')
-          ->set_render_callback([$this, 'renderBlock']);
+        return self::$form_errors;
     }
 
-    public function renderBlock($fields, $attributes, $inner_blocks)
+    /**
+     * Register the block with HyperBlocks.
+     */
+    public function registerBlock(): void
     {
-        $formErrors = self::$form_errors;
-        $hasErrors = !empty($formErrors);
-        $formTitle = $fields['form_title'] ?? __('Change Password', 'wicket-acc');
-        $formInstructions = $fields['form_instructions'] ?? __('Enter your current password and choose a new one.', 'wicket-acc');
+        $block = Block::make(__('ACC Change Password', 'wicket-acc'))
+            ->setName('wicket-acc/change-password')
+            ->setIcon('lock')
+            ->addFields([
+                Field::make('text', 'form_title', __('Form Title', 'wicket-acc'))
+                    ->setDefault(__('Change Password', 'wicket-acc')),
+                Field::make('textarea', 'form_instructions', __('Form Instructions', 'wicket-acc'))
+                    ->setDefault(__('Enter your current password and choose a new one.', 'wicket-acc')),
+            ])
+            ->setDescription(__('A Wicket block for changing the user password.', 'wicket-acc'))
+            ->setCategory('wicket-account-center')
+            ->setKeywords([__('account-centre', 'wicket-acc'), __('password', 'wicket-acc'), __('wicket', 'wicket-acc')])
+            ->setStyle('wicket-acc-password-block')
+            ->setRenderTemplateFile('change-password.hb.php');
 
-        $attrs = get_block_wrapper_attributes([
-            'class' => 'wicket wicket-acc-block wicket-acc-block-password flex flex-col gap-8',
-            'data-theme' => WACC()->Settings()->getWicketCssTheme(),
-        ]);
-
-        // Helper function to check for field errors
-        $hasFieldError = fn (string $field): bool => $hasErrors && !empty(array_filter($formErrors, fn ($error) => $error->meta->field === $field));
-
-        $currentPasswordError = $hasFieldError('user.current_password');
-        $passwordError = $hasFieldError('user.password');
-        $passwordConfirmError = $hasFieldError('user.password_confirmation');
-
-        ob_start();
-        ?>
-    <div <?= $attrs ?>>
-      <?php if ($formTitle): ?>
-        <h3><?= esc_html($formTitle) ?></h3>
-      <?php endif; ?>
-
-      <?php if ($formInstructions): ?>
-        <p class="form-instructions"><?= esc_html($formInstructions) ?></p>
-      <?php endif; ?>
-
-      <?php if ($hasErrors): ?>
-        <div class='alert alert-danger' role="alert">
-          <strong>
-            <?= sprintf(
-                _n(
-                    'The form could not be submitted because 1 error was found',
-                    'The form could not be submitted because %s errors were found',
-                    count($formErrors),
-                    'wicket-acc'
-                ),
-                number_format_i18n(count($formErrors))
-            ) ?>
-          </strong>
-          <ul>
-            <?php foreach ($formErrors as $index => $error): ?>
-              <?php
-                                                                                                                        $errorMap = [
-                                                                                                                            'user.current_password' => ['Current Password', '#current_password'],
-                                                                                                                            'user.password' => ['New Password', '#password'],
-                                                                                                                            'user.password_confirmation' => ['Confirm Password', '#password_confirmation'],
-                                                                                                                        ];
-
-                if (isset($errorMap[$error->meta->field])):
-                    [$prefix, $anchor] = $errorMap[$error->meta->field];
-                    ?>
-                <li>
-                  <a href="<?= $anchor ?>">
-                    <strong>Error: <?= $index + 1 ?></strong>
-                    <?= esc_html($prefix . ' ' . __($error->title)) ?>
-                  </a>
-                </li>
-              <?php endif; ?>
-            <?php endforeach; ?>
-          </ul>
-        </div>
-      <?php elseif (isset($_GET['success'])): ?>
-        <div class='alert alert-success' role="alert">
-          <strong><?php _e('Your password has been updated.', 'wicket-acc'); ?></strong>
-        </div>
-      <?php endif; ?>
-
-      <form class='manage_password_form' method="post">
-        <?php
-          $fields = [
-              [
-                  'id' => 'current_password',
-                  'label' => __('Current password', 'wicket-acc'),
-                  'hasError' => $currentPasswordError,
-              ],
-              [
-                  'id' => 'password',
-                  'label' => __('New password', 'wicket-acc'),
-                  'hasError' => $passwordError,
-                  'helpText' => __('Minimum of 8 characters', 'wicket-acc'),
-              ],
-              [
-                  'id' => 'password_confirmation',
-                  'label' => __('Confirm new password', 'wicket-acc'),
-                  'hasError' => $passwordConfirmError,
-              ],
-          ];
-
-        foreach ($fields as $field):
-            $errorClass = ($hasErrors || $field['hasError']) ? 'error_input' : '';
-            ?>
-          <div class="form__group">
-            <label class="form__label" for="<?= $field['id'] ?>">
-              <?= $field['label'] ?>
-              <span class="required">*</span>
-            </label>
-
-            <?php if (isset($field['helpText'])): ?>
-              <p class='small-text'>
-                <?= $field['helpText'] ?>
-              </p>
-            <?php endif; ?>
-
-            <input class="form__input <?= $errorClass ?>" required
-              type="password"
-              id="<?= $field['id'] ?>"
-              name="<?= $field['id'] ?>"
-              value="">
-          </div>
-        <?php endforeach; ?>
-
-        <input type="hidden" name="wicket_update_password" value="wicket_update_password--1" />
-
-        <?php
-              // Render the submit button using a component
-              get_component('button', [
-                  'variant' => 'primary',
-                  'type'    => 'submit',
-                  'classes' => ['wicket_update_password--1'],
-                  'label'   => __('Change password', 'wicket-acc'),
-              ]);
-        ?>
-      </form>
-    </div>
-    <?php
-    echo ob_get_clean();
+        HyperBlocksRegistry::getInstance()->registerFluentBlock($block);
     }
 
+    /**
+     * Process the change-password form submission.
+     *
+     * Validates inputs, calls the MDP people API, and either redirects on
+     * success or stores errors for the render template to display.
+     */
     public function processWicketPasswordForm()
     {
         if (!isset($_POST['wicket_update_password'])) {

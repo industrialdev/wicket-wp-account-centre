@@ -236,7 +236,7 @@ $build_action = static function (int $page_number) use ($build_url) {
         <div class="wt_mt-6">
             <button type="button"
                 class="button button--primary add-contact-button wt_w-full wt_py-2 component-button"
-                data-on:click="$addContactSuccess = false; $addContactSubmitting = false; (() => { const modal = document.getElementById('addContactModal'); const form = modal ? modal.querySelector('form') : null; if (form && form.reset) form.reset(); const messages = document.querySelector('[id^='add-contact-messages-']'); if (messages) messages.innerHTML = ''; })(); $addContactModalOpen = true">
+                data-on:click="$addContactSuccess = false; $addContactSubmitting = false; (() => { const modal = document.getElementById('addContactModal'); const form = modal ? modal.querySelector('form') : null; if (form && form.reset) form.reset(); const messages = document.querySelector('[id^=\'add-contact-messages-\']'); if (messages) messages.innerHTML = ''; })(); $addContactModalOpen = true">
                 <?php esc_html_e('Add Individual Contact', 'wicket-acc'); ?>
             </button>
         </div>
@@ -346,7 +346,7 @@ $build_action = static function (int $page_number) use ($build_url) {
                         <?php esc_html_e('Cancel', 'wicket-acc'); ?>
                     </button>
                     <button type="submit"
-                        class="button button--primary wt_inline-flex wt_items-center wt_gap-2 wt_px-4 wt_py-2 wt_text-sm component-button"
+                        class="button button--primary wt_button_submit_async wt_inline-flex wt_items-center wt_gap-2 wt_px-4 wt_py-2 wt_text-sm component-button"
                         data-class="{ 'wt_pointer-events-none': $addContactSubmitting, 'wt_opacity-50': $addContactSubmitting, 'wt_is-loading': $addContactSubmitting }"
                         data-attr:aria-disabled="$addContactSubmitting ? 'true' : 'false'">
                         <span class="wt_submit_label"><?php esc_html_e('Add Contact', 'wicket-acc'); ?></span>

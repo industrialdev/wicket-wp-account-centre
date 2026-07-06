@@ -43,6 +43,7 @@ class init extends Blocks
         $member_since = get_field('member_since');
         $renewal_date = get_field('renewal_date');
         $display_mdp_id = get_field('display_mdp_id');
+        $display_member_status = get_field('display_member_status') ?? true; // Default this to true, to retain legacy functionality
         $display_profile_picture = get_field('display_profile_picture') ?? true; // Default this to true, to retain legacy functionality
         $image_url = get_avatar_url($current_user->ID, ['size' => '300']);
         $active_memberships = WACC()->Mdp()->Membership()->getCurrentPersonActiveMemberships($current_lang);
@@ -217,10 +218,12 @@ class init extends Blocks
                                     <?php endif;
                                     endif; ?>
 
+                                    <?php if ($display_member_status): ?>
                                     <p class="mt-0 mb-2 wicket-welcome-member-active flex items-center space-x-2">
                                         <span
                                             class="text-gray-700"><?php echo __('Active Member', 'wicket-acc'); ?></span>
                                     </p>
+                                    <?php endif; ?>
 
 
                                     <?php do_action('wicket/acc/block/welcome/after_member_ids', $person, $membership); ?>
@@ -288,9 +291,11 @@ class init extends Blocks
                             <?php } ?>
                         </div>
                     <?php } else { ?>
-                        <p class="wicket-welcome-pending-membership">
-                            <?php echo apply_filters('wicket/acc/block/welcome_non_member_text', __('Non-Member', 'wicket-acc')); ?>
-                        </p>
+                        <?php if ($display_member_status): ?>
+                            <p class="wicket-welcome-pending-membership">
+                                <?php echo apply_filters('wicket/acc/block/welcome_non_member_text', __('Non-Member', 'wicket-acc')); ?>
+                            </p>
+                        <?php endif; ?>
                     <?php } ?>
 
                     <?php do_action('wicket/acc/block/after_welcome_block_memberships', $person->id); ?>

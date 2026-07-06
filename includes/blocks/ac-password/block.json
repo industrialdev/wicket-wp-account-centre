@@ -2,7 +2,6 @@
 	"name": "wicket-ac/ac-password",
 	"title": "[Deprecated] ACC Password Block",
 	"description": "[Deprecated] A Wicket block for Password",
-	"style": "file:./block-styles.css",
 	"category": "wicket-account-center",
 	"icon": "",
 	"apiVersion": 2,

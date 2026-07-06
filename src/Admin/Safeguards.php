@@ -22,8 +22,10 @@ class Safeguards extends \WicketAcc\WicketAcc
         // Re-enable intentionally if this cleanup is needed again.
         // add_action('admin_init', [$this, 'deleteUnwantedFolders']);
 
-        // Hook to run page initialization when Carbon Fields theme options are saved
-        add_action('carbon_fields_theme_options_container_saved', [$this, 'accSafeguards']);
+        // Hook to run page initialization when HyperFields options are saved.
+        // Fires on real changes only (HF gates on old !== new). accepted_args=3
+        // so accSafeguards receives the $page arg and can filter to ACC's pages.
+        add_action('hyperfields/options_page/after_save', [$this, 'accSafeguards'], 10, 3);
 
         // Prevent trashing/deleting and renaming of the WooCommerce My Account page
         add_action('wp_trash_post', [$this, 'preventMyAccountTrash'], 10, 2);
@@ -142,13 +144,35 @@ class Safeguards extends \WicketAcc\WicketAcc
     }
 
     /**
-     * (RE) Create all ACC pages and ensure WooCommerce my account setup
-     * Runs when Carbon Fields theme options are saved.
+     * (RE) Create all ACC pages and ensure WooCommerce my account setup.
      *
+     * Runs when HyperFields options are saved (hyperfields/options_page/after_save).
+     * The action fires for EVERY OptionsPage instance site-wide, so we filter
+     * on the originating page's option_name and only act on ACC's own pages.
+     * Without this guard, saving unrelated HF settings (other plugins) would
+     * trigger page recreation, rewrite-rule flushes, and WooCommerce my-account
+     * trashing across the site.
+     *
+     * @param mixed            $new_value The new option value (unused).
+     * @param mixed            $old_value The old option value (unused).
+     * @param \HyperFields\OptionsPage|null $page The page that fired the action.
      * @return void
      */
-    public function accSafeguards()
+    public function accSafeguards($new_value = null, $old_value = null, $page = null)
     {
+        // Only act on ACC's own options pages. Other HyperFields consumers in
+        // the stack fire the same action; bail before any destructive work.
+        if ($page instanceof \HyperFields\OptionsPage) {
+            $option_name = $page->getOptionName();
+            $acc_option_names = [
+                \WicketAcc\InitOptions::MAIN_OPTION_NAME,
+                \WicketAcc\InitOptions::SETTINGS_OPTION_NAME,
+            ];
+            if (!in_array($option_name, $acc_option_names, true)) {
+                return;
+            }
+        }
+
         global $wpdb;
 
         // Step 1: Check existing ACC pages using direct database query (fastest method)

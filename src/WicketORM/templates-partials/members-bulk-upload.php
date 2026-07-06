@@ -21,15 +21,11 @@ $bulk_upload_wrapper_class = isset($bulk_upload_wrapper_class)
     ? (string) $bulk_upload_wrapper_class
     : 'wt_mt-6 wt_rounded-md wt_border wt_border-color wt_bg-white wt_p-4';
 
-$library_base_path = dirname(__DIR__);
-$content_dir = defined('WP_CONTENT_DIR') ? (string) WP_CONTENT_DIR : '';
-$library_base_url = trailingslashit((string) content_url(''));
-if ($content_dir !== '' && strpos($library_base_path, $content_dir) === 0) {
-    $relative_path = ltrim(str_replace($content_dir, '', $library_base_path), '/');
-    $library_base_url = trailingslashit((string) content_url($relative_path));
-}
-$library_base_url = trailingslashit((string) apply_filters('wicket/org-roster/base_url', $library_base_url));
-$csv_template_url = $library_base_url . 'public/templates/roster_template.csv';
+// Roster CSV template now lives under the plugin's assets/templates/ directory
+// (relocated from src/WicketORM/public/templates/). Resolve via the plugin URL
+// constant that the rest of the plugin uses.
+$plugin_url = defined('WICKET_ACC_URL') ? WICKET_ACC_URL : plugin_dir_url(dirname(__DIR__, 2) . '/class-wicket-acc-main.php');
+$csv_template_url = $plugin_url . 'assets/templates/orm-roster-template.csv';
 $orgman_config = WicketORM\Services\ConfigService::getConfig();
 $bulk_upload_config = is_array($orgman_config['member_management']['bulk_upload'] ?? null)
     ? $orgman_config['member_management']['bulk_upload']

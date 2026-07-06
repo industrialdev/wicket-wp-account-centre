@@ -12,7 +12,12 @@ return array(
     '7b11c4dc42b3b3023073cb14e519683c' => $vendorDir . '/ralouphie/getallheaders/src/getallheaders.php',
     'a1105708a18b76903365ca1c4aa61b02' => $vendorDir . '/symfony/translation/Resources/functions.php',
     '60799491728b879e74601d83e38b2cad' => $vendorDir . '/illuminate/collections/helpers.php',
+    '13f65e44352b0407f05cb5a5e174612b' => $vendorDir . '/estebanforge/hyperfields/includes/helpers.php',
+    '0522701f5d113a2ff6373ccc834dd7d6' => $vendorDir . '/estebanforge/hyperfields/includes/backward-compatibility.php',
+    'c1c635284e1ca7836efff979fb09390f' => $vendorDir . '/estebanforge/hyperfields/bootstrap.php',
     '37a3dc5111fe8f707ab4c132ef1dbc62' => $vendorDir . '/guzzlehttp/guzzle/src/functions_include.php',
     '72579e7bd17821bb1321b87411366eae' => $vendorDir . '/illuminate/support/helpers.php',
+    '7a417aa514b484622606bfc8f3893672' => $vendorDir . '/estebanforge/hyperblocks/bootstrap.php',
+    '611bc1f60ae2ec6bee160ee5d1b75d78' => $vendorDir . '/estebanforge/hyperblocks/src/helpers.php',
     '1ffd48fd2f3bb3fe50dd66b2bda72795' => $baseDir . '/src/WicketORM/compat.php',
 );

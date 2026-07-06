@@ -112,6 +112,27 @@
             "wpml_cf_preferences": 3
         },
         {
+            "key": "field_6869a1b2c3d4e",
+            "label": "Display Member Status",
+            "name": "display_member_status",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "Show or hide the member status line (\"Active Member\" / \"Non-Member\") in the Welcome block.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "wpml_cf_preferences": 3,
+            "message": "",
+            "default_value": 1,
+            "ui_on_text": "",
+            "ui_off_text": "",
+            "ui": 1
+        },
+        {
             "key": "field_66ad00c245a65",
             "label": "Display MDP ID",
             "name": "display_mdp_id",
@@ -152,5 +173,5 @@
     "description": "",
     "show_in_rest": 0,
     "acfml_field_group_mode": "localization",
-    "modified": 1728572760
+    "modified": 1752000000
 }

@@ -1075,7 +1075,7 @@ class WooCommerce extends WicketAcc
      */
     public function wc_add_acc_banner()
     {
-        // Use centralized helper (Carbon Fields preferred, ACF fallback)
+        // Use centralized helper (HyperFields preferred, ACF fallback)
         $acc_banner_enabled = WACC()->getOption('acc_global-headerbanner', false);
 
         if (!$acc_banner_enabled) {

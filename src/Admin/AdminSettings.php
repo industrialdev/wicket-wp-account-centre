@@ -47,7 +47,7 @@ class AdminSettings extends \WicketAcc\WicketAcc
     {
         global $submenu;
         $parent_slug = 'edit.php?post_type=my-account';
-        $options_page_slug = 'crb_carbon_fields_container_wicket_acc_options.php';
+        $options_page_slug = \WicketAcc\InitOptions::MAIN_MENU_SLUG;
 
         // Check if the submenu for our parent exists
         if (empty($submenu[$parent_slug])) {
@@ -106,12 +106,23 @@ class AdminSettings extends \WicketAcc\WicketAcc
     }
 
     /**
-     * Run a one-time migration from ACF options to Carbon Fields options.
+     * Run a one-time migration from ACF options to HyperFields options.
+     *
+     * Older installs stored these keys as ACF options. This migrates them into
+     * the wicket_acc_options array. Skips silently when ACF is not installed
+     * (nothing to migrate).
      */
     public function maybeMigrateOldACFOptions()
     {
         // Check if the migration has already run
         if (get_option('wicket_acc_cf_migration_complete')) {
+            return;
+        }
+
+        // ACF is the source; nothing to migrate if it isn't present.
+        if (!function_exists('get_field')) {
+            update_option('wicket_acc_cf_migration_complete', true);
+
             return;
         }
 
@@ -122,11 +133,34 @@ class AdminSettings extends \WicketAcc\WicketAcc
             'acc_profile_picture_default',
             'acc_global-headerbanner',
         ];
+        // Note: acc_profile_picture_mdp_schema / _mdp_field are intentionally
+        // absent — they never had ACF equivalents, so there is no ACF source
+        // to migrate for those keys.
+
+        $options = get_option(\WicketAcc\InitOptions::MAIN_OPTION_NAME, []);
+        if (!is_array($options)) {
+            $options = [];
+        }
 
         foreach ($acf_fields_to_migrate as $field_name) {
+            // Don't overwrite a key that already has a value (e.g. set via the
+            // HF UI or copied by the CF->HF migrator).
+            if (array_key_exists($field_name, $options)) {
+                continue;
+            }
+
+            // Skip falsey ACF values. For acc_global-headerbanner (checkbox),
+            // an unchecked state returns false from get_field; skipping it
+            // leaves the HF key unset, which callers read as the default they
+            // pass (WACC()->getOption('acc_global-headerbanner', false)). This
+            // couples correctness to callers passing `false` as the default.
             $value = get_field($field_name, 'option');
-            carbon_set_theme_option($field_name, $value);
+            if ($value !== null && $value !== false) {
+                $options[$field_name] = $value;
+            }
         }
+
+        update_option(\WicketAcc\InitOptions::MAIN_OPTION_NAME, $options);
 
         // Mark the migration as complete
         update_option('wicket_acc_cf_migration_complete', true);

@@ -46,11 +46,11 @@ It also:
 
 ## Assets
 
-- main stylesheet: `public/css/modern-orgman-static.css`
+- main stylesheet: `assets/css/orm-static.css`
 - helper scripts:
-  - `public/js/datastar-error-handler.js`
-  - `public/js/orgman-notifications.js`
-  - `public/js/orgman-content-behaviors.js`
+  - `assets/js/datastar-error-handler.js`
+  - `assets/js/orm-notifications.js`
+  - `assets/js/orm-content-behaviors.js`
 
 ## Config Flags That Affect Rendering
 

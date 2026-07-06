@@ -54,8 +54,8 @@ User-facing mutations can go through either registered REST routes or the templa
 
 - server-rendered HTML
 - Datastar-compatible partial refreshes and SSE responses
-- static CSS in `public/css/modern-orgman-static.css`
-- small JS helpers in `public/js/`
+- static CSS in `assets/css/orm-static.css`
+- small JS helpers in `assets/js/`
 
 The library supports both legacy member templates and unified member templates. Selection is config-driven.
 

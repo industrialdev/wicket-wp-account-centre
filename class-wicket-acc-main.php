@@ -3,6 +3,7 @@
 namespace WicketAcc;
 
 use WicketAcc\Admin\AdminSettings;
+use WicketAcc\Admin\HFMigration;
 use WicketAcc\Admin\Safeguards;
 use WicketAcc\Admin\Tweaks;
 use WicketAcc\Mdp\Init as Mdp;
@@ -16,7 +17,7 @@ use WicketORM\OrgMan;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Custom account management system for Wicket. Provides user account features, organization management, and additional blocks and pages. Integrates with WooCommerce when available.
- * Version:           1.7.3
+ * Version:           1.7.4
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -71,6 +72,30 @@ if (file_exists(WICKET_ACC_PATH . 'vendor/autoload.php')) {
 // Fatal error handler is now registered by wicket-wp-base-plugin (WicketWP\Log)
 // in its main wicket.php file before plugins_loaded. WicketAcc\Log::registerFatalErrorHandler()
 // is retained as a no-op for backward compatibility only.
+
+// Initialize HyperFields + HyperBlocks libraries.
+// The Jetpack Autoloader does not execute autoload 'files' entries, so the
+// libraries' bootstrap chains (constant definition, asset hooks, init) never
+// fire on their own. This mirrors the explicit init pattern used by other
+// consumers (e.g. fuerte-wp). Runs at priority 0 so constants are defined
+// before plugin_setup (default priority) creates OptionsPage instances.
+add_action('plugins_loaded', static function (): void {
+    $hf_bootstrap = WICKET_ACC_PATH . 'vendor/estebanforge/hyperfields/bootstrap.php';
+    if (file_exists($hf_bootstrap)) {
+        require_once $hf_bootstrap;
+        if (function_exists('hyperfields_run_initialization_logic')) {
+            hyperfields_run_initialization_logic($hf_bootstrap, WICKET_ACC_VERSION);
+        }
+    }
+
+    $hb_bootstrap = WICKET_ACC_PATH . 'vendor/estebanforge/hyperblocks/bootstrap.php';
+    if (file_exists($hb_bootstrap)) {
+        require_once $hb_bootstrap;
+        if (function_exists('hyperblocks_run_initialization_logic')) {
+            hyperblocks_run_initialization_logic($hb_bootstrap, WICKET_ACC_VERSION);
+        }
+    }
+}, 0);
 
 // Initialize the plugin when all plugins are loaded
 add_action('plugins_loaded', [WicketAcc::get_instance(), 'plugin_setup']);
@@ -415,14 +440,15 @@ class WicketAcc
         ];
 
         // Instantiate classes for their hooks
-        new CFInitOptions(); // Options always should be first, it bootstraps Carbon Fields
-        new CFInitBlocks();
+        new InitOptions(); // Options always should be first, it bootstraps the options pages
+        new InitBlocks();
         new Router();
         new Shortcodes();
         new Registers();
         new Assets();
 
         if (is_admin() || (defined("\WP_CLI") && \WP_CLI)) {
+            new HFMigration(); // Migrate CF -> HF options before any HF read
             new AdminSettings();
             new Tweaks();
             new Safeguards(); // Initialize the safeguard class for admin tasks and CLI

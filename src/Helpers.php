@@ -79,70 +79,67 @@ class Helpers extends WicketAcc
     }
 
     /**
-     * Get a theme option value preferring Carbon Fields, fallback to ACF option.
+     * Get a Wicket option value.
      *
-     * @param string $key Option key
-     * @param mixed $default Default value if neither provider is available
+     * Resolves keys across the two option arrays ACC uses:
+     *   - wicket_acc_options: the 7 main ACC settings.
+     *   - wicket_settings: the shared environment/settings array also read by
+     *     wicket-wp-base-plugin via wicket_get_option().
+     *
+     * Lookup order: main array first, then settings array, then $default.
+     * NOTE: when a key is absent from both arrays, the CALLER-SUPPLIED default
+     * is returned — HyperFields' field-level defaults (registered in
+     * InitOptions) are NOT consulted anywhere on this read path. Callers must
+     * pass their own default explicitly if they need a fallback value.
+     *
+     * @param string $key     Option key.
+     * @param mixed  $default Default value if the key is unset.
      * @return mixed
      */
     public function getOption(string $key, $default = null)
     {
-        if (function_exists('carbon_get_theme_option')) {
-            return carbon_get_theme_option($key);
+        // Main ACC options first.
+        $main = get_option(InitOptions::MAIN_OPTION_NAME, []);
+        if (is_array($main) && array_key_exists($key, $main)) {
+            return $main[$key];
         }
 
-        if (function_exists('get_field')) {
-            return get_field($key, 'option');
+        // Then the shared settings array (env fields live here).
+        $settings = get_option(InitOptions::SETTINGS_OPTION_NAME, []);
+        if (is_array($settings) && array_key_exists($key, $settings)) {
+            return $settings[$key];
         }
 
         return $default;
     }
 
     /**
-     * Get a Page/Post ID stored as a relation option.
-     * Handles Carbon Fields relation arrays and ACF numeric IDs.
-     *
-     * @param string $key Option key
-     * @param int $default Default ID
-     * @return int
-     */
-
-    /**
      * Get an attachment URL from a theme option.
-     * CF typically stores attachment ID; ACF may store URL or ID.
      *
-     * @param string $key Option key
-     * @param string $default Default URL if not resolvable
+     * The option stores the attachment ID (written by HyperFields' image field
+     * or migrated from Carbon Fields). Resolves it to a URL via
+     * wp_get_attachment_url(). Falls back to a stored URL string, then to the
+     * supplied default.
+     *
+     * @param string $key     Option key in wicket_acc_options.
+     * @param string $default Default URL if not resolvable.
      * @return string
      */
     public function getAttachmentUrlFromOption(string $key, string $default = ''): string
     {
-        // CF API is only reliable after its fields are registered.
-        if (did_action('carbon_fields_fields_registered')) {
-            $value = carbon_get_theme_option($key);
-            if (is_numeric($value) && (int) $value > 0) {
-                $url = wp_get_attachment_url((int) $value);
-                if ($url) {
-                    return $url;
-                }
-            }
-        }
+        $value = $this->getOption($key);
 
-        // Raw CF datastore fallback: theme options are stored in wp_options with a
-        // leading underscore prefix (KEY_PREFIX = '_' in Key_Toolset). Safe to call
-        // regardless of CF boot state.
-        $raw = get_option('_' . $key);
-        if (is_numeric($raw) && (int) $raw > 0) {
-            $url = wp_get_attachment_url((int) $raw);
+        if (is_numeric($value) && (int) $value > 0) {
+            $url = wp_get_attachment_url((int) $value);
             if ($url) {
                 return $url;
             }
         }
 
-        // Last resort: if the stored value is already a URL (non-standard but possible
-        // if the option was written outside CF's normal flow).
-        if (is_string($raw) && $raw !== '' && filter_var($raw, FILTER_VALIDATE_URL)) {
-            return $raw;
+        // If the stored value is already a URL (non-standard but possible if
+        // the option was written outside the normal field flow).
+        if (is_string($value) && $value !== '' && filter_var($value, FILTER_VALIDATE_URL)) {
+            return $value;
         }
 
         return $default;

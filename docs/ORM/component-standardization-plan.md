@@ -315,7 +315,7 @@ get_component('tabs', [
 **Post-Standardization:** Reduce custom CSS, rely on component styles
 
 **Action Items:**
-- Audit `public/css/modern-orgman-static.css` for unused utilities
+- Audit `assets/css/orm-static.css` for unused utilities
 - Keep only org-roster-specific styles
 - Document which utilities are still needed and why
 

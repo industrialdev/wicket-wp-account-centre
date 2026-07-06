@@ -271,20 +271,20 @@ $orgman_token_attrs = 'title="' . esc_attr__('Click to copy', 'wicket-acc') . '"
     <?php if ($can_purchase_seats && !empty($purchase_url)) : ?>
         <?php
     get_component('card-call-out', [
-'title' => __('Need More Seats?', 'wicket-acc'),
-'description' => __('Purchase additional seats for your organization membership to accommodate more team members.', 'wicket-acc'),
-'style' => 'secondary',
-'links' => [
-    [
-        'link' => [
-            'title' => __('Purchase Additional Seats', 'wicket-acc'),
-            'url' => $purchase_url,
-            'target' => '_self',
+        'title' => __('Need More Seats?', 'wicket-acc'),
+        'description' => __('Purchase additional seats for your organization membership to accommodate more team members.', 'wicket-acc'),
+        'style' => 'secondary',
+        'links' => [
+            [
+                'link' => [
+                    'title' => __('Purchase Additional Seats', 'wicket-acc'),
+                    'url' => $purchase_url,
+                    'target' => '_self',
+                ],
+                'link_style' => 'secondary',
+            ],
         ],
-        'link_style' => 'secondary',
-    ],
-],
-'classes' => ['my-3'],
+        'classes' => ['my-3'],
     ]);
         ?>
     <?php endif; ?>

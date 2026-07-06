@@ -847,28 +847,37 @@ class ConnectionService
         $page = max(1, (int) ($pagination['page'] ?? 1));
         $size = max(1, (int) ($pagination['size'] ?? 10));
 
-        $query_params = [
-            'page[number]' => $page,
-            'page[size]'   => $size,
-            'include'      => 'person',
+        // Build query string manually: Ransack's _in predicate requires repeated
+        // filter[..._in][]=value params (array notation), not a comma-separated string.
+        // http_build_query adds numeric indices ([0], [1]) which Rails parses as a hash,
+        // so we build the [] form by hand.
+        $query_parts = [
+            'page[number]=' . $page,
+            'page[size]=' . $size,
+            'include=person',
         ];
 
-        // Active filter
+        // Active filter: use the ransackable 'active_at' scope (not 'active_true',
+        // which is not a valid predicate and is silently ignored by Ransack).
         $active = $filters['active'] ?? true;
         if ($active) {
-            $query_params['filter[active_true]'] = 'true';
+            $query_parts[] = 'filter[active_at]=' . rawurlencode(gmdate('Y-m-d\TH:i:s\Z'));
         }
 
-        // Server-side type filtering
+        // Server-side type filtering via resource_type_slug_in (array notation)
         $type_slugs = $filters['resource_type_slugs'] ?? [];
         if (!empty($type_slugs) && is_array($type_slugs)) {
-            $query_params['filter[resource_type_slug_in]'] = implode(',', array_map('sanitize_key', $type_slugs));
+            foreach (array_map('sanitize_key', $type_slugs) as $slug) {
+                if ($slug !== '') {
+                    $query_parts[] = 'filter[resource_type_slug_in][]=' . rawurlencode($slug);
+                }
+            }
         }
 
         try {
             $client = wicket_api_client();
-            $endpoint = '/organizations/' . rawurlencode($org_uuid) . '/connections';
-            $response = $client->get($endpoint . '?' . http_build_query($query_params, '', '&', PHP_QUERY_RFC3986));
+            $endpoint = '/organizations/' . rawurlencode($org_uuid) . '/connections?' . implode('&', $query_parts);
+            $response = $client->get($endpoint);
 
             if (is_wp_error($response)) {
                 return $response;

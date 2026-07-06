@@ -1202,24 +1202,27 @@ final class OrgMan
             return;
         }
 
-        $base_uri = $this->getBaseUri();
-        $base_path = $this->getBasePath();
+        // OrgMan frontend assets live under the plugin's assets/css/ and assets/js/
+        // directories (relocated from src/WicketORM/public/). Resolve via the plugin
+        // constants that Assets.php already uses, so paths match the rest of the plugin.
+        $plugin_path = defined('WICKET_ACC_PATH') ? WICKET_ACC_PATH : rtrim(dirname(__DIR__, 2), '/') . '/';
+        $plugin_url = defined('WICKET_ACC_URL') ? WICKET_ACC_URL : plugin_dir_url(dirname(__DIR__, 2) . '/class-wicket-acc-main.php');
 
-        $css_file_path = $base_path . '/public/css/modern-orgman-static.css';
+        $css_file_path = $plugin_path . 'assets/css/orm-static.css';
         $css_version = file_exists($css_file_path) ? filemtime($css_file_path) : '1.0.0';
-        wp_enqueue_style('orgman-modern', $base_uri . 'public/css/modern-orgman-static.css', [], $css_version);
+        wp_enqueue_style('orgman-modern', $plugin_url . 'assets/css/orm-static.css', [], $css_version);
 
-        $datastar_error_path = $base_path . '/public/js/datastar-error-handler.js';
+        $datastar_error_path = $plugin_path . 'assets/js/datastar-error-handler.js';
         $datastar_error_version = file_exists($datastar_error_path) ? filemtime($datastar_error_path) : '1.0.0';
-        wp_enqueue_script('orgman-datastar-error-handler', $base_uri . 'public/js/datastar-error-handler.js', [], $datastar_error_version, false);
+        wp_enqueue_script('orgman-datastar-error-handler', $plugin_url . 'assets/js/datastar-error-handler.js', [], $datastar_error_version, false);
 
-        $notifications_js_path = $base_path . '/public/js/orgman-notifications.js';
+        $notifications_js_path = $plugin_path . 'assets/js/orm-notifications.js';
         $notifications_js_version = file_exists($notifications_js_path) ? filemtime($notifications_js_path) : '1.0.0';
-        wp_enqueue_script('orgman-notifications', $base_uri . 'public/js/orgman-notifications.js', [], $notifications_js_version, true);
+        wp_enqueue_script('orgman-notifications', $plugin_url . 'assets/js/orm-notifications.js', [], $notifications_js_version, true);
 
-        $content_behaviors_js_path = $base_path . '/public/js/orgman-content-behaviors.js';
+        $content_behaviors_js_path = $plugin_path . 'assets/js/orm-content-behaviors.js';
         $content_behaviors_js_version = file_exists($content_behaviors_js_path) ? filemtime($content_behaviors_js_path) : '1.0.0';
-        wp_enqueue_script('orgman-content-behaviors', $base_uri . 'public/js/orgman-content-behaviors.js', [], $content_behaviors_js_version, true);
+        wp_enqueue_script('orgman-content-behaviors', $plugin_url . 'assets/js/orm-content-behaviors.js', [], $content_behaviors_js_version, true);
 
         // Load Datastar from CDN as module script
         $datastar_version = '1.0.1';

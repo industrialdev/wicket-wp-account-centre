@@ -64,8 +64,10 @@ ac-welcome/
 3. **ACF Configuration Options**
    - Edit profile button toggle
    - Member ID display toggle
+   - Member status display toggle (`display_member_status`)
    - Member since date toggle
    - Renewal date toggle
+   - Profile picture display toggle
    - Profile link customization
 
 4. **Theme Integration**

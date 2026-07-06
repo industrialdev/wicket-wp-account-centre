@@ -7,7 +7,7 @@ audience: [implementer, support, developer, end-user]
 
 ## Product Docs (Operators & Support)
 - [Overview](product/overview.md) — Plugin purpose, architecture, key concepts
-- [ACC Options](product/acc-options.md) — Carbon Fields settings for org management, affiliation mode, permissions
+- [ACC Options](product/acc-options.md) — HyperFields settings for org management, affiliation mode, permissions
 - [Organization Management Overview](product/organization-management-general.md) — Core features, access control, Datastar UI
 - [Organization Profile View](product/organization-profile-view.md) — Org profile display block
 - [Organization Profile Edit](product/organization-profile-edit.md) — Org profile editing block

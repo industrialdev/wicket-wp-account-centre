@@ -465,7 +465,8 @@ class ContactService
      */
     public function clearContactsCache(string $org_uuid): void
     {
-        $cache_key = 'orgman_contacts_' . md5($org_uuid);
+        $page_size = (int) ($this->config['contacts']['presentation']['page_size'] ?? 10);
+        $cache_key = 'orgman_contacts_' . md5($org_uuid . '_' . $page_size);
         delete_transient($cache_key);
     }
 
