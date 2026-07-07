@@ -760,6 +760,13 @@ class MembershipService
                 return new \WP_Error('api_error', 'Failed to end-date person membership: ' . ($response['errors'][0]['detail'] ?? 'Unknown error'));
             }
 
+            \Wicket()->log()->info('[OrgMan] endPersonMembershipToday success', [
+                'source' => 'wicket-orgman',
+                'person_membership_id' => $person_membership_id,
+                'ends_at' => $ends_at,
+                'anchor' => $this->getRemovalAnchor(),
+            ]);
+
             return $response;
 
         } catch (\Exception $e) {
@@ -767,6 +774,105 @@ class MembershipService
 
             return new \WP_Error('end_person_membership_exception', $e->getMessage());
         }
+    }
+
+    /**
+     * End every active person_membership for a person within one org_membership.
+     *
+     * Queries the MDP for all person_memberships the person holds under the
+     * given organization membership and end-dates each active one via
+     * endPersonMembershipToday(). Continue-on-error: every record is attempted
+     * and per-record failures are collected, not fatal. Mirrors the authoritative
+     * loop that lived inline in the remove-member modal.
+     *
+     * @param string $person_uuid         The UUID of the person.
+     * @param string $org_membership_uuid The organization membership UUID.
+     * @return array{ended: list<string>, errors: array<string,string>}
+     *   ended:  person_membership IDs that were successfully end-dated
+     *   errors: map of person_membership_id => error message (non-fatal)
+     */
+    public function endAllActivePersonMembershipsForOrg($person_uuid, $org_membership_uuid)
+    {
+        $ended = [];
+        $errors = [];
+
+        if (empty($person_uuid) || empty($org_membership_uuid)) {
+            return ['ended' => $ended, 'errors' => $errors];
+        }
+
+        if (!function_exists('wicket_api_client')) {
+            \Wicket()->log()->error('MembershipService::endAllActivePersonMembershipsForOrg() - API client unavailable', ['source' => 'wicket-orgman']);
+
+            return ['ended' => $ended, 'errors' => $errors];
+        }
+
+        try {
+            $client = wicket_api_client();
+            $filter_data = [
+                'filter' => [
+                    'organization_membership_uuid_in' => [$org_membership_uuid],
+                    'person_id_eq' => $person_uuid,
+                ],
+            ];
+
+            $response = $client->post('/person_memberships/query', ['json' => $filter_data]);
+
+            if (is_wp_error($response)) {
+                \Wicket()->log()->error('MembershipService::endAllActivePersonMembershipsForOrg() - query failed', [
+                    'source' => 'wicket-orgman',
+                    'person_uuid' => $person_uuid,
+                    'org_membership_uuid' => $org_membership_uuid,
+                    'error' => $response->get_error_message(),
+                ]);
+
+                return ['ended' => $ended, 'errors' => $errors];
+            }
+
+            if (empty($response['data']) || !is_array($response['data'])) {
+                return ['ended' => $ended, 'errors' => $errors];
+            }
+
+            foreach ($response['data'] as $p_membership) {
+                $p_membership_id = $p_membership['id'] ?? null;
+                $p_membership_active = $p_membership['attributes']['active'] ?? false;
+
+                if (!$p_membership_id || !$p_membership_active) {
+                    continue;
+                }
+
+                $result = $this->endPersonMembershipToday($p_membership_id);
+                if (is_wp_error($result)) {
+                    $errors[(string) $p_membership_id] = $result->get_error_message();
+                    \Wicket()->log()->error('MembershipService::endAllActivePersonMembershipsForOrg() - failed to end membership', [
+                        'source' => 'wicket-orgman',
+                        'id' => $p_membership_id,
+                        'error' => $result->get_error_message(),
+                    ]);
+
+                    continue;
+                }
+
+                $ended[] = (string) $p_membership_id;
+            }
+        } catch (\Exception $e) {
+            \Wicket()->log()->error('MembershipService::endAllActivePersonMembershipsForOrg() - Exception: ' . $e->getMessage(), [
+                'source' => 'wicket-orgman',
+                'person_uuid' => $person_uuid,
+                'org_membership_uuid' => $org_membership_uuid,
+            ]);
+        }
+
+        \Wicket()->log()->info('[OrgMan] endAllActivePersonMembershipsForOrg result', [
+            'source' => 'wicket-orgman',
+            'person_uuid' => $person_uuid,
+            'org_membership_uuid' => $org_membership_uuid,
+            'ended_count' => count($ended),
+            'ended_ids' => $ended,
+            'error_count' => count($errors),
+            'errors' => $errors,
+        ]);
+
+        return ['ended' => $ended, 'errors' => $errors];
     }
 
     /**

@@ -734,15 +734,108 @@ class PermissionHelper extends Helper
      * @param string $org_uuid    Organization UUID.
      * @return bool True if removal should be prevented.
      */
-    public static function is_contact_removal_prevented(string $person_uuid, string $org_uuid): bool
-    {
-        $organizationService = new \WicketORM\Services\OrganizationService();
+    public static function is_contact_removal_prevented(
+        string $person_uuid,
+        string $org_uuid,
+        ?\WicketORM\Services\OrganizationService $organizationService = null
+    ): bool {
+        $organizationService ??= new \WicketORM\Services\OrganizationService();
         $org_owner = $organizationService->getOrganizationOwner($org_uuid);
 
         if (is_wp_error($org_owner) || !$org_owner) {
             return false;
         }
 
-        return isset($org_owner->uuid) && (string) $org_owner->uuid === $person_uuid;
+        return self::extractOwnerUuid($org_owner) === $person_uuid;
+    }
+
+    /**
+     * Guard a member removal against owner-protection policy.
+     *
+     * Returns a WP_Error when removal must be refused because the target person is
+     * the organization owner and the policy blocks owner removal. Returns null when
+     * removal is allowed.
+     *
+     * The caller resolves the policy booleans from its own config path, because the
+     * default differs per roster mode: membership_cycle defaults to true, every
+     * other mode defaults to false. This helper intentionally does not read config,
+     * so each strategy/modal can apply its own default without a hidden override.
+     *
+     * Uses Shape A owner resolution (id-first, is_array/is_object dispatch) because
+     * the Wicket SDK entity exposes the resource id via the public $id property but
+     * not via a declared uuid property, and the SDK's fetch() can return a raw
+     * array on degenerate responses.
+     *
+     * @param string $org_id                        Organization ID.
+     * @param string $person_uuid                    UUID of the person being removed.
+     * @param bool   $prevent                        Resolved config: should owner removal be blocked?
+     * @param bool   $require_membership_owner_role  When true, owner must also hold the membership_owner role.
+     * @param \WicketORM\Services\OrganizationService|null $organizationService Inject to stub in tests.
+     * @param \WicketORM\Services\PermissionService|null   $permissionService   Inject to stub in tests.
+     * @return \WP_Error|null WP_Error when removal is forbidden, null when allowed.
+     */
+    public static function guardOwnerRemoval(
+        string $org_id,
+        string $person_uuid,
+        bool $prevent,
+        bool $require_membership_owner_role = false,
+        ?\WicketORM\Services\OrganizationService $organizationService = null,
+        ?\WicketORM\Services\PermissionService $permissionService = null
+    ): ?\WP_Error {
+        if (!$prevent || empty($org_id)) {
+            return null;
+        }
+
+        $organizationService ??= new \WicketORM\Services\OrganizationService();
+        $org_owner = $organizationService->getOrganizationOwner($org_id);
+        if (is_wp_error($org_owner) || !$org_owner) {
+            return null;
+        }
+
+        $owner_uuid = self::extractOwnerUuid($org_owner);
+        if ($owner_uuid === '' || $owner_uuid !== $person_uuid) {
+            return null;
+        }
+
+        if ($require_membership_owner_role) {
+            $permissionService ??= new \WicketORM\Services\PermissionService();
+            $current_roles = $permissionService->getPersonCurrentRolesByOrgId($person_uuid, $org_id);
+            if (!is_array($current_roles) || !in_array('membership_owner', $current_roles, true)) {
+                return null;
+            }
+        }
+
+        return new \WP_Error(
+            'owner_removal_forbidden',
+            __('The organization owner (Primary Member) cannot be removed.', 'wicket-acc')
+        );
+    }
+
+    /**
+     * Resolve the owner UUID from whatever shape getOrganizationOwner returns.
+     *
+     * Shape A dispatch: the SDK entity exposes $id (the JSON:API resource id, which
+     * is the UUID for people) reliably; uuid is not a declared property. The array
+     * branch covers the SDK's degenerate raw-array return on error responses.
+     *
+     * @param mixed $org_owner
+     * @return string
+     */
+    private static function extractOwnerUuid($org_owner): string
+    {
+        if (is_array($org_owner)) {
+            return (string) ($org_owner['id']
+                ?? ($org_owner['uuid']
+                ?? ($org_owner['data']['id']
+                ?? '')));
+        }
+
+        if (is_object($org_owner)) {
+            return (string) ($org_owner->id
+                ?? ($org_owner->uuid
+                ?? ''));
+        }
+
+        return '';
     }
 }

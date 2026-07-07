@@ -346,26 +346,18 @@ class GroupsStrategy implements RosterManagementStrategy
             $prevent_owner_removal = (bool) ($access_permissions['prevent_owner_removal'] ?? false);
             $owner_must_have_membership_owner = (bool) ($access_permissions['owner_removal_requires_membership_owner_role'] ?? false);
 
-            if ($prevent_owner_removal && !empty($org_uuid)) {
-                $org_owner = $this->organizationService()->getOrganizationOwner($org_uuid);
-                $is_org_owner = !is_wp_error($org_owner)
-                    && $org_owner
-                    && isset($org_owner->uuid)
-                    && (string) $org_owner->uuid === (string) $person_uuid;
+            $owner_guard = \WicketORM\Helpers\PermissionHelper::guardOwnerRemoval(
+                $org_uuid,
+                $person_uuid,
+                $prevent_owner_removal,
+                $owner_must_have_membership_owner,
+                $this->organizationService(),
+                $this->permissionService()
+            );
+            if (is_wp_error($owner_guard)) {
+                $logger->warning('Groups strategy attempted to remove organization owner', $log_context);
 
-                if ($is_org_owner) {
-                    $owner_role_match = true;
-                    if ($owner_must_have_membership_owner) {
-                        $current_roles = $this->permissionService()->getPersonCurrentRolesByOrgId($person_uuid, $org_uuid);
-                        $owner_role_match = is_array($current_roles) && in_array('membership_owner', $current_roles, true);
-                    }
-
-                    if ($owner_role_match) {
-                        $logger->warning('Groups strategy attempted to remove organization owner', $log_context);
-
-                        return new \WP_Error('owner_removal_forbidden', 'The organization owner (Primary Member) cannot be removed.');
-                    }
-                }
+                return $owner_guard;
             }
 
             $groups_config = is_array($orgman_config['groups'] ?? null) ? $orgman_config['groups'] : [];

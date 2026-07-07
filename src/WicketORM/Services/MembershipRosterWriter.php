@@ -588,18 +588,44 @@ class MembershipRosterWriter
      */
     public function removeMember($org_id, $person_uuid, $context = [])
     {
+        $logger = \Wicket()->log();
+        $log_context = [
+            'source' => 'wicket-orgman',
+            'action' => 'remove_member',
+            'roster_mode' => (string) $this->configService->getRosterMode(),
+            'org_id' => $org_id,
+            'person_uuid' => $person_uuid,
+            'membership_uuid' => $context['membership_uuid'] ?? null,
+            'person_membership_id' => $context['person_membership_id'] ?? null,
+            'has_connection_id' => !empty($context['connection_id']),
+        ];
+
         if (!function_exists('wicket_api_client')) {
+            $logger->error('[OrgMan] removeMember aborted: wicket_api_client unavailable', $log_context);
+
             return new \WP_Error('api_unavailable', 'Wicket API client is not available.');
         }
+
+        $logger->info('[OrgMan] removeMember start', $log_context);
 
         $result = $this->getStrategy()->removeMember($org_id, $person_uuid, $context);
 
         // Invalidate read caches on success so the roster reflects the change immediately.
-        if (!is_wp_error($result) && is_array($result)) {
+        $cache_invalidated = false;
+        if (is_wp_error($result)) {
+            $logger->error('[OrgMan] removeMember failed', array_merge($log_context, [
+                'error_code' => $result->get_error_code(),
+                'error_message' => $result->get_error_message(),
+            ]));
+        } elseif (is_array($result)) {
             $membership_uuid = $context['membership_uuid'] ?? '';
             if ($membership_uuid !== '') {
                 $this->reader->clearMembersCache($membership_uuid);
+                $cache_invalidated = true;
             }
+            $logger->info('[OrgMan] removeMember success', array_merge($log_context, [
+                'cache_invalidated' => $cache_invalidated,
+            ]));
         }
 
         return $result;

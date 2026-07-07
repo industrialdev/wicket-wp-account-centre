@@ -273,6 +273,19 @@ class MembershipRosterReader
 
                 $normalized = $this->normalizeMembershipResponse($response);
                 if (null !== $normalized) {
+                    // Forensic log: correlates a fresh MDP fetch with prior removal logs.
+                    // Debug level keeps the hot read path quiet by default; retrievable when raised.
+                    $logger->debug('[OrgMan] Fresh member list fetch from MDP', [
+                        'source' => 'wicket-orgman',
+                        'membership_uuid' => $membershipUuid,
+                        'page' => $page,
+                        'size' => $size,
+                        'returned_count' => is_array($normalized['data'] ?? null) ? count($normalized['data']) : 0,
+                        'person_ids' => array_values(array_map(static function ($row): string {
+                            return (string) ($row['relationships']['person']['data']['id'] ?? $row['person']['id'] ?? '?');
+                        }, is_array($normalized['data'] ?? null) ? $normalized['data'] : [])),
+                    ]);
+
                     // Cache initial load only (no search term)
                     if (empty($searchTerm)) {
                         $isLazy = (bool) ($args['lazy'] ?? false);
