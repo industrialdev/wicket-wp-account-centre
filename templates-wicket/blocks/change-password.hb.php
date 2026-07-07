@@ -157,10 +157,10 @@ foreach ($fields as $field):
         <?php
         // Render the submit button using a component
         get_component('button', [
-    'variant' => 'primary',
-    'type'    => 'submit',
-    'classes' => ['wicket_update_password--1'],
-    'label'   => __('Change password', 'wicket-acc'),
+            'variant' => 'primary',
+            'type'    => 'submit',
+            'classes' => ['wicket_update_password--1'],
+            'label'   => __('Change password', 'wicket-acc'),
         ]);
 ?>
     </form>

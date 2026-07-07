@@ -17,7 +17,7 @@ use WicketORM\OrgMan;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Custom account management system for Wicket. Provides user account features, organization management, and additional blocks and pages. Integrates with WooCommerce when available.
- * Version:           1.7.4
+ * Version:           1.7.5
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -73,27 +73,27 @@ if (file_exists(WICKET_ACC_PATH . 'vendor/autoload.php')) {
 // in its main wicket.php file before plugins_loaded. WicketAcc\Log::registerFatalErrorHandler()
 // is retained as a no-op for backward compatibility only.
 
-// Initialize HyperFields + HyperBlocks libraries.
-// The Jetpack Autoloader does not execute autoload 'files' entries, so the
-// libraries' bootstrap chains (constant definition, asset hooks, init) never
-// fire on their own. This mirrors the explicit init pattern used by other
-// consumers (e.g. fuerte-wp). Runs at priority 0 so constants are defined
-// before plugin_setup (default priority) creates OptionsPage instances.
+// Ensure HyperFields + HyperBlocks bootstrap files execute so they
+// register their candidate for the multi-instance version election at
+// after_setup_theme. Under the Jetpack Autoloader, Composer autoload
+// 'files' entries may not execute, so we require_once them explicitly.
+//
+// We intentionally do NOT call hyperfields_run_initialization_logic()
+// here: the election owns initialization so the highest-version copy
+// across all plugins wins. Calling init directly would pass the host
+// plugin's version (WICKET_ACC_VERSION) instead of the library's own
+// version into the version-aware guard, defeating the election.
+// The election runs on after_setup_theme priority 0, before any ACC
+// code builds OptionsPage instances.
 add_action('plugins_loaded', static function (): void {
     $hf_bootstrap = WICKET_ACC_PATH . 'vendor/estebanforge/hyperfields/bootstrap.php';
     if (file_exists($hf_bootstrap)) {
         require_once $hf_bootstrap;
-        if (function_exists('hyperfields_run_initialization_logic')) {
-            hyperfields_run_initialization_logic($hf_bootstrap, WICKET_ACC_VERSION);
-        }
     }
 
     $hb_bootstrap = WICKET_ACC_PATH . 'vendor/estebanforge/hyperblocks/bootstrap.php';
     if (file_exists($hb_bootstrap)) {
         require_once $hb_bootstrap;
-        if (function_exists('hyperblocks_run_initialization_logic')) {
-            hyperblocks_run_initialization_logic($hb_bootstrap, WICKET_ACC_VERSION);
-        }
     }
 }, 0);
 

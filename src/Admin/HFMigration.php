@@ -44,6 +44,28 @@ class HFMigration
     public const MIGRATION_FLAG = 'wicket_acc_hf_migration_complete';
 
     /**
+     * Gate flag for the checkbox-value normalization pass.
+     *
+     * Carbon Fields stores checked checkboxes as 'yes'; HyperFields expects
+     * a boolean. Installs that ran the main migration before checkbox
+     * normalization existed carry 'yes' values that the HF checkbox template
+     * renders unchecked (checked() === '1') while the plugin's truthy guards
+     * treat them as enabled. This flag tracks a one-shot fix-up that coerces
+     * any stray truthy-string checkbox values to a proper boolean.
+     */
+    public const MIGRATION_NORMALIZE_FLAG = 'wicket_acc_hf_checkbox_normalized';
+
+    /**
+     * The checkbox-typed keys among the main options.
+     *
+     * Carbon stored these as 'yes'/'no' (or ''/1) strings; HyperFields stores
+     * a boolean. Used by both the copy path and the normalization pass.
+     */
+    private const CHECKBOX_KEYS = [
+        'acc_global-headerbanner',
+    ];
+
+    /**
      * The ACC main-option keys previously registered with Carbon Fields.
      *
      * Kept in sync with the fields registered in InitOptions::registerMainOptionsPage.
@@ -83,6 +105,13 @@ class HFMigration
      */
     public function run(): void
     {
+        // The checkbox-value normalization pass is independent of the main
+        // copy migration. It must run on installs where the main flag was set
+        // before normalization existed (stray 'yes' values from Carbon).
+        if (!get_option(self::MIGRATION_NORMALIZE_FLAG)) {
+            $this->normalizeCheckboxValues();
+        }
+
         if (get_option(self::MIGRATION_FLAG)) {
             return;
         }
@@ -143,6 +172,13 @@ class HFMigration
                 continue;
             }
 
+            // Normalize checkbox values: Carbon stored 'yes'/'1'/etc.; HF
+            // expects a boolean so the template's checked() and the plugin's
+            // truthy guards agree.
+            if (in_array($key, self::CHECKBOX_KEYS, true)) {
+                $cf_value = $this->normalizeCheckboxValue($cf_value);
+            }
+
             $hf_options[$key] = $cf_value;
             $copied[$key] = $cf_value;
         }
@@ -167,33 +203,99 @@ class HFMigration
     }
 
     /**
-     * Read a Carbon Fields theme-option value from its raw wp_options rows.
+     * Read a Carbon Fields theme-option value from its raw wp_options row.
      *
-     * Carbon typically stores the raw value at the <key> row; the _<key> row
-     * holds type metadata for complex fields. We prefer <key>, falling back
-     * to _<key> defensively.
+     * Carbon's Theme_Options_Datastore stores each simple-root field at the
+     * underscore-prefixed key (_<field_name>) — confirmed against the live
+     * CF source (Key_Toolset::KEY_PREFIX = '_') and the production DB. The
+     * bare <key> is read as a defensive fallback for any non-standard
+     * storage variant but is not where CF normally puts the value.
      *
-     * Caveat: the field-shape assumptions here (radio = slug string, image =
-     * attachment ID int, checkbox = '1'/'' string, text = scalar) are based on
-     * Carbon Fields conventions and the existing Helpers::getAttachmentUrlFromOption
-     * read pattern. They could not be validated against the live Carbon source
-     * in this checkout (the dependency was removed in Phase 2). Validate the
-     * checkbox and image round-trips against a real pre-migration DB dump
-     * before relying on this in production.
-     *
-     * @param string $key Option key.
-     * @return mixed|null The value, or null if neither row exists.
+     * @param string $key Field base name (no underscore prefix).
+     * @return mixed|null The raw CF value, or null if neither row exists.
      */
     private function readCarbonValue(string $key): mixed
     {
-        $raw = get_option($key, null);
+        // Primary: Carbon's standard theme-options storage location.
+        $raw = get_option('_' . $key, null);
 
         if ($raw === null) {
-            // Some CF field types/storages keep the value under the underscore
-            // row. Last-resort read before declaring the key absent.
-            $raw = get_option('_' . $key, null);
+            // Defensive fallback: some installs or field types may have
+            // written to the bare key. Harmless if absent.
+            $raw = get_option($key, null);
         }
 
         return $raw;
+    }
+
+    /**
+     * One-shot fix-up: coerce stray Carbon-format checkbox values in the HF
+     * option array to proper booleans.
+     *
+     * Runs on installs where the main migration copied 'yes' (Carbon's
+     * checked sentinel) before this normalization existed. The checkbox
+     * template renders checked() === '1', so 'yes' shows unchecked in the UI
+     * while truthy guards treat it as enabled, producing the visual/logic
+     * mismatch (e.g. the Global Header submenu showing with the box off).
+     *
+     * Idempotent and gated by MIGRATION_NORMALIZE_FLAG so it runs exactly
+     * once. Only touches the checkbox-typed keys; leaves everything else.
+     *
+     * @return void
+     */
+    private function normalizeCheckboxValues(): void
+    {
+        update_option(self::MIGRATION_NORMALIZE_FLAG, true);
+
+        $hf_options = get_option(self::HF_OPTION_NAME, []);
+        if (!is_array($hf_options)) {
+            return;
+        }
+
+        $changed = false;
+
+        foreach (self::CHECKBOX_KEYS as $key) {
+            if (!array_key_exists($key, $hf_options)) {
+                continue;
+            }
+
+            $normalized = $this->normalizeCheckboxValue($hf_options[$key]);
+
+            if ($hf_options[$key] !== $normalized) {
+                $hf_options[$key] = $normalized;
+                $changed = true;
+            }
+        }
+
+        if ($changed) {
+            update_option(self::HF_OPTION_NAME, $hf_options);
+        }
+    }
+
+    /**
+     * Coerce a Carbon-format checkbox value to a HyperFields boolean.
+     *
+     * Carbon Fields stored checked as 'yes' (and sometimes '1' or true);
+     * unchecked as '' or 'no'. HyperFields stores a plain boolean. Map all
+     * common truthy representations to true and everything else to false so
+     * the checkbox template's checked($value, '1')-equivalent and the
+     * plugin's truthy guards agree.
+     *
+     * @param mixed $value Raw value from Carbon or the HF array.
+     * @return bool
+     */
+    private function normalizeCheckboxValue(mixed $value): bool
+    {
+        if (is_bool($value)) {
+            return $value;
+        }
+
+        // Carbon's checked sentinel is 'yes'. Also accept the usual WP/HTML
+        // truthy strings so this is robust against any storage variant.
+        return in_array(
+            strtolower((string) $value),
+            ['yes', '1', 'true', 'on'],
+            true,
+        );
     }
 }
