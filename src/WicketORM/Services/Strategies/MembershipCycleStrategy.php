@@ -130,33 +130,22 @@ class MembershipCycleStrategy implements RosterManagementStrategy
         $access_permissions = is_array($config['access']['permissions'] ?? null) ? $config['access']['permissions'] : [];
         $prevent_owner_removal = (bool) ($cycle_config['prevent_owner_removal'] ?? true);
         $owner_must_have_membership_owner = (bool) ($access_permissions['owner_removal_requires_membership_owner_role'] ?? false);
-        if ($prevent_owner_removal && !empty($org_id)) {
-            $org_owner = $this->organizationService()->getOrganizationOwner($org_id);
-            $owner_uuid = '';
-            if (is_array($org_owner)) {
-                $owner_uuid = $org_owner['id'] ?? ($org_owner['uuid'] ?? ($org_owner['data']['id'] ?? ''));
-            } elseif (is_object($org_owner)) {
-                $owner_uuid = $org_owner->id ?? ($org_owner->uuid ?? '');
-            }
-
-            $is_org_owner = !is_wp_error($org_owner)
-                && $org_owner
-                && !empty($owner_uuid)
-                && (string) $owner_uuid === (string) $person_uuid;
-
-            if ($is_org_owner) {
-                $owner_role_match = true;
-                if ($owner_must_have_membership_owner) {
-                    $current_roles = $this->permissionService()->getPersonCurrentRolesByOrgId($person_uuid, $org_id);
-                    $owner_role_match = is_array($current_roles) && in_array('membership_owner', $current_roles, true);
-                }
-
-                if ($owner_role_match) {
-                    return new WP_Error('owner_removal_forbidden', 'The organization owner (Primary Member) cannot be removed.');
-                }
-            }
+        $owner_guard = \WicketORM\Helpers\PermissionHelper::guardOwnerRemoval(
+            $org_id,
+            $person_uuid,
+            $prevent_owner_removal,
+            $owner_must_have_membership_owner,
+            $this->organizationService(),
+            $this->permissionService()
+        );
+        if (is_wp_error($owner_guard)) {
+            return $owner_guard;
         }
 
+        // End the selected person_membership assignment for this cycle. Cycle mode targets a
+        // specific assignment identified by person_membership_id (see
+        // docs/ORM/engineering/strategy-membership-cycle/membership-cycle-add-remove.md); it does
+        // NOT broadly end every membership the person holds under the org membership.
         $remove_result = $this->membershipService()->endPersonMembershipToday($person_membership_id);
         if (is_wp_error($remove_result)) {
             return $remove_result;

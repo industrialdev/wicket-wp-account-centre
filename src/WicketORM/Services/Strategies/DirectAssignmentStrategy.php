@@ -803,42 +803,24 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
                 }
             }
 
-            $person_membership_id = $context['person_membership_id'] ?? null;
-
-            if (empty($person_membership_id)) {
-                return new WP_Error('missing_person_membership_id', 'Person membership ID is required to remove a member.');
-            }
+            // Direct mode ends connections and roles; it does not read person_membership_id.
+            // The value is intentionally not captured: connection-only removals are valid here.
 
             $config = $this->configService()->getFullConfig();
             $preserve_relationship = (bool) ($config['member_management']['removal']['direct']['preserve_relationship'] ?? false);
             $prevent_owner_removal = (bool) ($config['access']['permissions']['prevent_owner_removal'] ?? false);
             $owner_must_have_membership_owner = (bool) ($config['access']['permissions']['owner_removal_requires_membership_owner_role'] ?? false);
 
-            if ($prevent_owner_removal && !empty($org_id)) {
-                $org_owner = $this->organizationService()->getOrganizationOwner($org_id);
-                $owner_uuid = '';
-                if (is_array($org_owner)) {
-                    $owner_uuid = $org_owner['id'] ?? ($org_owner['uuid'] ?? ($org_owner['data']['id'] ?? ''));
-                } elseif (is_object($org_owner)) {
-                    $owner_uuid = $org_owner->id ?? ($org_owner->uuid ?? '');
-                }
-
-                $is_org_owner = !is_wp_error($org_owner)
-                    && $org_owner
-                    && !empty($owner_uuid)
-                    && (string) $owner_uuid === (string) $person_uuid;
-
-                if ($is_org_owner) {
-                    $owner_role_match = true;
-                    if ($owner_must_have_membership_owner) {
-                        $current_roles = $this->permissionService()->getPersonCurrentRolesByOrgId($person_uuid, $org_id);
-                        $owner_role_match = is_array($current_roles) && in_array('membership_owner', $current_roles, true);
-                    }
-
-                    if ($owner_role_match) {
-                        return new WP_Error('owner_removal_forbidden', 'The organization owner (Primary Member) cannot be removed.');
-                    }
-                }
+            $owner_guard = \WicketORM\Helpers\PermissionHelper::guardOwnerRemoval(
+                $org_id,
+                $person_uuid,
+                $prevent_owner_removal,
+                $owner_must_have_membership_owner,
+                $this->organizationService(),
+                $this->permissionService()
+            );
+            if (is_wp_error($owner_guard)) {
+                return $owner_guard;
             }
 
             if (!$preserve_relationship) {

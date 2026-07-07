@@ -480,51 +480,58 @@ class CascadeStrategy implements RosterManagementStrategy
         ];
 
         try {
-            $person_membership_id = sanitize_text_field((string) ($context['person_membership_id'] ?? ''));
-
-            if ('' === $person_membership_id) {
-                return new \WP_Error('missing_person_membership_id', 'Person membership ID is required to remove a member.');
-            }
-
             $config = $this->configService()->getFullConfig();
             $access_permissions = is_array($config['access']['permissions'] ?? null) ? $config['access']['permissions'] : [];
             $prevent_owner_removal = (bool) ($access_permissions['prevent_owner_removal'] ?? false);
             $owner_must_have_membership_owner = (bool) ($access_permissions['owner_removal_requires_membership_owner_role'] ?? false);
 
-            if ($prevent_owner_removal && !empty($org_id)) {
-                $org_owner = $this->organizationService()->getOrganizationOwner($org_id);
-                $owner_uuid = '';
-                if (is_array($org_owner)) {
-                    $owner_uuid = $org_owner['id'] ?? ($org_owner['uuid'] ?? ($org_owner['data']['id'] ?? ''));
-                } elseif (is_object($org_owner)) {
-                    $owner_uuid = $org_owner->id ?? ($org_owner->uuid ?? '');
-                }
-
-                $is_org_owner = !is_wp_error($org_owner)
-                    && $org_owner
-                    && !empty($owner_uuid)
-                    && (string) $owner_uuid === (string) $person_uuid;
-
-                if ($is_org_owner) {
-                    $owner_role_match = true;
-                    if ($owner_must_have_membership_owner) {
-                        $current_roles = $this->permissionService()->getPersonCurrentRolesByOrgId($person_uuid, $org_id);
-                        $owner_role_match = is_array($current_roles) && in_array('membership_owner', $current_roles, true);
-                    }
-
-                    if ($owner_role_match) {
-                        return new \WP_Error('owner_removal_forbidden', 'The organization owner (Primary Member) cannot be removed.');
-                    }
-                }
+            $owner_guard = \WicketORM\Helpers\PermissionHelper::guardOwnerRemoval(
+                $org_id,
+                $person_uuid,
+                $prevent_owner_removal,
+                $owner_must_have_membership_owner,
+                $this->organizationService(),
+                $this->permissionService()
+            );
+            if (is_wp_error($owner_guard)) {
+                return $owner_guard;
             }
 
-            $remove_result = $this->membershipService()->endPersonMembershipToday($person_membership_id);
-            if (is_wp_error($remove_result)) {
-                $logger->error('[OrgMan] Cascade strategy failed to end person membership', array_merge($log_context, [
-                    'error' => $remove_result->get_error_message(),
-                ]));
+            $membership_uuid = sanitize_text_field((string) ($context['membership_uuid'] ?? ''));
 
-                return $remove_result;
+            if ('' === $membership_uuid) {
+                return new \WP_Error('missing_membership_uuid', 'Organization membership UUID is required to remove a member.');
+            }
+
+            // End every active person_membership this person holds under this org membership.
+            // Continue-on-error: a single record failure does not abort the rest.
+            $membership_result = $this->membershipService()->endAllActivePersonMembershipsForOrg($person_uuid, $membership_uuid);
+            if (!empty($membership_result['errors'])) {
+                $logger->warning('[OrgMan] Cascade strategy ended memberships with per-record errors', array_merge($log_context, [
+                    'ended_count' => count($membership_result['ended']),
+                    'error_count' => count($membership_result['errors']),
+                    'errors' => $membership_result['errors'],
+                ]));
+            } else {
+                $logger->debug('[OrgMan] Cascade strategy ended person memberships', array_merge($log_context, [
+                    'ended_count' => count($membership_result['ended']),
+                ]));
+            }
+
+            // End every active person-to-organization connection. Continue-on-error sibling;
+            // no removal-side skip-types config exists today, so pass an empty allowlist
+            // for exact parity with the current modal behavior.
+            $connection_result = $this->connectionService()->endAllActivePersonOrganizationConnections($person_uuid, $org_id, []);
+            if (!empty($connection_result['errors'])) {
+                $logger->warning('[OrgMan] Cascade strategy ended connections with per-record errors', array_merge($log_context, [
+                    'ended_count' => count($connection_result['ended']),
+                    'error_count' => count($connection_result['errors']),
+                    'errors' => $connection_result['errors'],
+                ]));
+            } else {
+                $logger->debug('[OrgMan] Cascade strategy ended person connections', array_merge($log_context, [
+                    'ended_count' => count($connection_result['ended']),
+                ]));
             }
 
             $roles_to_remove = $this->permissionService()->getPersonCurrentRolesByOrgId($person_uuid, $org_id);

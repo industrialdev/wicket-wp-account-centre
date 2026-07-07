@@ -593,12 +593,7 @@ class ConnectionService
             return $connections;
         }
 
-        $normalized_skip_types = array_values(array_unique(array_filter(array_map(static function ($type): string {
-            $normalized = strtolower(trim((string) $type));
-            $normalized = str_replace(['-', ' '], '_', $normalized);
-
-            return sanitize_key($normalized);
-        }, $skip_types))));
+        $normalized_skip_types = $this->normalizeSkipTypes($skip_types);
 
         $ended_ids = [];
         $skipped_ids = [];
@@ -671,6 +666,110 @@ class ConnectionService
             'count' => count($ended_ids),
             'connection_ids' => $ended_ids,
         ];
+    }
+
+    /**
+     * Continue-on-error counterpart to endActivePersonOrganizationConnections().
+     *
+     * Ends every active person-to-organization connection for a person, honoring
+     * the same protected-type skip list, but attempts every record regardless of
+     * per-record failure. Used by removal flows (modal/strategies) that must keep
+     * going when one connection cannot be ended, matching the modal's parity.
+     *
+     * The existing endActivePersonOrganizationConnections() stays fail-fast because
+     * the add-path stale-relationship repair depends on early abort semantics.
+     *
+     * @param string $person_uuid The UUID of the person.
+     * @param string $org_id      The organization ID.
+     * @param array  $skip_types  Relationship types to leave intact.
+     * @return array{ended: list<string>, errors: array<string,string>}
+     *   ended:  connection IDs that were successfully end-dated
+     *   errors: map of connection_id => error message (non-fatal)
+     */
+    public function endAllActivePersonOrganizationConnections($person_uuid, $org_id, array $skip_types = [])
+    {
+        $ended = [];
+        $errors = [];
+
+        $connections = $this->getActivePersonOrganizationConnections($person_uuid, $org_id);
+        if (is_wp_error($connections)) {
+            \Wicket()->log()->error('[OrgMan] endAllActivePersonOrganizationConnections aborted: active connection lookup error', [
+                'source' => 'wicket-orgman',
+                'person_uuid' => $person_uuid,
+                'org_id' => $org_id,
+                'error_code' => $connections->get_error_code(),
+                'error_message' => $connections->get_error_message(),
+            ]);
+
+            return ['ended' => $ended, 'errors' => $errors];
+        }
+
+        $normalized_skip_types = $this->normalizeSkipTypes($skip_types);
+
+        foreach ($connections as $connection) {
+            $connection_id = (string) ($connection['id'] ?? '');
+            if ($connection_id === '') {
+                continue;
+            }
+
+            $raw_relationship_type = (string) ($connection['attributes']['type'] ?? '');
+            $normalized_relationship_type = sanitize_key(str_replace(['-', ' '], '_', strtolower(trim($raw_relationship_type))));
+
+            // Leave protected relationship types intact.
+            if (!empty($skip_types)) {
+                if (
+                    in_array($raw_relationship_type, $skip_types, true)
+                    || in_array($normalized_relationship_type, $normalized_skip_types, true)
+                ) {
+                    continue;
+                }
+            }
+
+            $result = $this->endRelationshipToday($person_uuid, $connection_id, $org_id);
+            if (is_wp_error($result)) {
+                $errors[$connection_id] = $result->get_error_message();
+                \Wicket()->log()->error('[OrgMan] endAllActivePersonOrganizationConnections failed to end connection', [
+                    'source' => 'wicket-orgman',
+                    'connection_id' => $connection_id,
+                    'error_code' => $result->get_error_code(),
+                    'error_message' => $result->get_error_message(),
+                ]);
+
+                continue;
+            }
+
+            $ended[] = $connection_id;
+        }
+
+        \Wicket()->log()->info('[OrgMan] endAllActivePersonOrganizationConnections result', [
+            'source' => 'wicket-orgman',
+            'person_uuid' => $person_uuid,
+            'org_id' => $org_id,
+            'skip_types' => array_values($skip_types),
+            'ended_count' => count($ended),
+            'ended_ids' => $ended,
+            'error_count' => count($errors),
+            'errors' => $errors,
+        ]);
+
+        return ['ended' => $ended, 'errors' => $errors];
+    }
+
+    /**
+     * Normalize a list of relationship-type skip entries into unique sanitized slugs.
+     * Shared by both end-active-connections methods (fail-fast and continue-on-error).
+     *
+     * @param array $skip_types
+     * @return list<string>
+     */
+    private function normalizeSkipTypes(array $skip_types): array
+    {
+        return array_values(array_unique(array_filter(array_map(static function ($type): string {
+            $normalized = strtolower(trim((string) $type));
+            $normalized = str_replace(['-', ' '], '_', $normalized);
+
+            return sanitize_key($normalized);
+        }, $skip_types))));
     }
 
     /**
