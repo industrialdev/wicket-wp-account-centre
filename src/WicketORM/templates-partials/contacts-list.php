@@ -94,6 +94,12 @@ $search_base_url = $contacts_list_endpoint
     . (str_contains($contacts_list_endpoint, '?') ? '&' : '?')
     . http_build_query(['org_uuid' => $org_uuid, 'page' => 1], '', '&', PHP_QUERY_RFC3986);
 
+// Search/Clear actions mirror members-view-unified.php. Submit sets the query signal
+// and reloads page 1 with it; clear resets the query and reloads page 1 without it.
+$contacts_search_action = "@get('" . esc_js($search_base_url) . "&query=' + encodeURIComponent(" . '$contactsQuery' . "))";
+$contacts_search_submit = '$contactsSubmitted = true; ' . $contacts_search_action;
+$contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' . $contacts_search_action . ')';
+
 ?>
 <div
     id="<?php echo esc_attr($contacts_list_target); ?>"
@@ -101,7 +107,7 @@ $search_base_url = $contacts_list_endpoint
     data-page="<?php echo esc_attr((string) $page); ?>"
     data-attr:aria-busy="$contactsLoading">
 
-    <div class="contacts-loading-state wt_flex wt_flex-col wt_items-center wt_justify-center wt_gap-4 wt_rounded-card wt_border wt_border-color wt_bg-white wt_shadow-sm wt_text-center"
+    <div class="contacts-loading-state wt_flex wt_flex-col wt_items-center wt_justify-center wt_gap-4 wt_rounded-card wt_border wt_border-color wt_bg-white wt_shadow-sm wt_text-center wt_py-8"
         data-show="$contactsLoading"
         style="display: none;">
         <span class="wt_loader" aria-hidden="true"></span>
@@ -119,17 +125,28 @@ $search_base_url = $contacts_list_endpoint
 
         <!-- Search -->
         <div class="wt_mb-4 wt_flex wt_gap-2">
-            <form class="wt_flex wt_w-full wt_gap-2" method="GET"
-                data-on:submit="$contactsLoading = true; @get('<?php echo esc_js($search_base_url); ?>&query=' + encodeURIComponent(evt.target.querySelector('input[name=query]').value)); evt.preventDefault();"
-                data-on:success="<?php echo esc_attr('$contactsLoading = false; ' . wp_sprintf("select('#%s') | set(html)", $contacts_list_target)); ?>"
-                data-on:error="console.error('Failed to search contacts'); $contactsLoading = false;">
-                <input type="text" name="query" value="<?php echo esc_attr($query); ?>"
-                    class="wt_w-full wt_border wt_border-color wt_rounded-md wt_p-2 wt_text-sm"
-                    placeholder="<?php esc_attr_e('Search by name or email...', 'wicket-acc'); ?>">
-                <button type="submit" class="button button--primary wt_px-4 wt_py-2 wt_text-sm component-button wt_whitespace-nowrap">
-                    <?php esc_html_e('Search', 'wicket-acc'); ?>
-                </button>
-            </form>
+            <input type="text" name="query"
+                data-bind="contactsQuery"
+                value="<?php echo esc_attr($query); ?>"
+                class="wt_w-full wt_border wt_border-color wt_rounded-md wt_p-2 wt_text-sm"
+                placeholder="<?php esc_attr_e('Search by name or email...', 'wicket-acc'); ?>"
+                data-on:keydown="if (evt.key === 'Enter') { <?php echo esc_attr($contacts_search_submit); ?> }"
+                data-on:keydown__prevent-default="evt.key === 'Enter'"
+                data-indicator:contacts-loading>
+            <button type="button"
+                class="button button--primary wt_px-4 wt_py-2 wt_text-sm component-button wt_whitespace-nowrap"
+                data-on:click="<?php echo esc_attr($contacts_search_submit); ?>"
+                data-show="!$contactsSubmitted"
+                data-indicator:contacts-loading>
+                <?php esc_html_e('Search', 'wicket-acc'); ?>
+            </button>
+            <button type="button"
+                class="button button--secondary wt_px-4 wt_py-2 wt_text-sm component-button wt_whitespace-nowrap"
+                data-on:click="<?php echo esc_attr($contacts_clear_action); ?>"
+                data-show="$contactsSubmitted"
+                data-indicator:contacts-loading>
+                <?php esc_html_e('Clear', 'wicket-acc'); ?>
+            </button>
         </div>
 
         <?php if (empty($contacts)): ?>
@@ -209,7 +226,6 @@ $search_base_url = $contacts_list_endpoint
                     <button type="button"
                         class="button button--secondary wt_px-3 wt_py-2 wt_text-sm component-button"
                         data-on:click="<?php echo esc_attr($build_action($page - 1)); ?>"
-                        data-on:success="<?php echo esc_attr('$contactsLoading = false; ' . wp_sprintf("select('#%s') | set(html)", $contacts_list_target)); ?>"
                         data-indicator:contacts-loading>
                         <?php esc_html_e('Previous', 'wicket-acc'); ?>
                     </button>
@@ -222,7 +238,6 @@ $search_base_url = $contacts_list_endpoint
                             class="button wt_px-3 wt_py-2 wt_text-sm <?php echo $is_current ? 'button--primary' : 'button--secondary'; ?> component-button"
                             <?php if ($is_current): ?>disabled<?php endif; ?>
                             <?php if (!$is_current): ?>data-on:click="<?php echo esc_attr($build_action($i)); ?>" <?php endif; ?>
-                            data-on:success="<?php echo esc_attr('$contactsLoading = false; ' . wp_sprintf("select('#%s') | set(html)", $contacts_list_target)); ?>"
                             data-indicator:contacts-loading>
                             <?php echo esc_html((string) $i); ?>
                         </button>
@@ -232,7 +247,6 @@ $search_base_url = $contacts_list_endpoint
                     <button type="button"
                         class="button button--secondary wt_px-3 wt_py-2 wt_text-sm component-button"
                         data-on:click="<?php echo esc_attr($build_action($page + 1)); ?>"
-                        data-on:success="<?php echo esc_attr('$contactsLoading = false; ' . wp_sprintf("select('#%s') | set(html)", $contacts_list_target)); ?>"
                         data-indicator:contacts-loading>
                         <?php esc_html_e('Next', 'wicket-acc'); ?>
                     </button>
@@ -252,7 +266,6 @@ $search_base_url = $contacts_list_endpoint
         <?php endif; ?>
 
     </div>
-</div>
 
 <!-- Add Contact Modal -->
 <?php if ($can_add): ?>
@@ -449,3 +462,5 @@ $search_base_url = $contacts_list_endpoint
     </dialog>
 </div>
 <?php endif; ?>
+
+</div>
