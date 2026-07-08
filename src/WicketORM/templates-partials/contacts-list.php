@@ -87,6 +87,13 @@ $build_action = static function (int $page_number) use ($build_url) {
     return '$contactsLoading = true; @get(\'' . $url . '\')';
 };
 
+// Search base URL: org_uuid + page 1 only. The typed query is appended client-side
+// so the param appears once (the previous form emitted a stale empty query= plus
+// the real one, relying on PHP last-wins parsing).
+$search_base_url = $contacts_list_endpoint
+    . (str_contains($contacts_list_endpoint, '?') ? '&' : '?')
+    . http_build_query(['org_uuid' => $org_uuid, 'page' => 1], '', '&', PHP_QUERY_RFC3986);
+
 ?>
 <div
     id="<?php echo esc_attr($contacts_list_target); ?>"
@@ -113,7 +120,9 @@ $build_action = static function (int $page_number) use ($build_url) {
         <!-- Search -->
         <div class="wt_mb-4 wt_flex wt_gap-2">
             <form class="wt_flex wt_w-full wt_gap-2" method="GET"
-                data-on:submit="$contactsLoading = true; @get('<?php echo esc_js($build_url(1)); ?>&query=' + encodeURIComponent(evt.target.querySelector('input[name=query]').value)); evt.preventDefault();">
+                data-on:submit="$contactsLoading = true; @get('<?php echo esc_js($search_base_url); ?>&query=' + encodeURIComponent(evt.target.querySelector('input[name=query]').value)); evt.preventDefault();"
+                data-on:success="<?php echo esc_attr('$contactsLoading = false; ' . wp_sprintf("select('#%s') | set(html)", $contacts_list_target)); ?>"
+                data-on:error="console.error('Failed to search contacts'); $contactsLoading = false;">
                 <input type="text" name="query" value="<?php echo esc_attr($query); ?>"
                     class="wt_w-full wt_border wt_border-color wt_rounded-md wt_p-2 wt_text-sm"
                     placeholder="<?php esc_attr_e('Search by name or email...', 'wicket-acc'); ?>">

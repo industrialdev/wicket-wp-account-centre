@@ -741,6 +741,19 @@ class MembershipService
                 ? $this->currentDayStartTimestamp()
                 : $this->currentTimestamp();
 
+            // The MDP API requires ends_at to be strictly after starts_at. A same-day
+            // add+remove, a same-second timestamp, or a future-dated starts_at can make the
+            // computed ends_at fall at or before starts_at, which the API rejects with a 422.
+            // Clamp to one second after starts_at so the membership still end-dates instead of
+            // failing closed (member stays active).
+            $starts_at = (string) ($attributes['starts_at'] ?? '');
+            if ($starts_at !== '') {
+                $starts_ts = strtotime($starts_at);
+                if ($starts_ts !== false && strtotime($ends_at) <= $starts_ts) {
+                    $ends_at = gmdate('Y-m-d\TH:i:s\Z', $starts_ts + 1);
+                }
+            }
+
             $update_payload = [
                 'data' => [
                     'type'       => $person_membership_data['type'],
