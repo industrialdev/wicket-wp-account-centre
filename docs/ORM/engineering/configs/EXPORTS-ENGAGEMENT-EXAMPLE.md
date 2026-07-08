@@ -1,3 +1,11 @@
+---
+title: "Exports & Engagement Configuration Example"
+audience: [implementer, support, developer]
+config_path: exports, engagement
+php_class: WicketORM\Services\MemberExportService
+source_files: ["src/Services/MemberExportService.php", "src/Services/EngagementService.php", "src/Controllers/MemberExportController.php", "src/Controllers/EngagementController.php"]
+---
+
 # Exports & Engagement Configuration Example
 
 This document shows how to enable and configure the member export and engagement features. These features are **disabled by default** and must be explicitly enabled via the `wicket/org-roster/config` filter.

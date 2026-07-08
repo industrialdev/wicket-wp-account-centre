@@ -1,3 +1,12 @@
+---
+title: "Groups Strategy: Specification"
+audience: [developer, implementer]
+slug: groups-specification
+source_files:
+  - "src/Services/Strategies/GroupsStrategy.php"
+  - "src/Services/MemberService.php"
+---
+
 # Groups Strategy: Specification
 
 ## Current Contract

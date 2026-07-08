@@ -329,7 +329,7 @@ $members_list_endpoint = $membersListEndpoint;
 
 		<?php
 	        // Check if user can purchase additional seats (requires membership_owner role on this org).
-	        $can_purchase_seats = $additional_seats_service->canPurchaseAdditionalSeats($org_uuid);
+	        $can_purchase_seats = $additional_seats_service->canPurchaseAdditionalSeats($org_uuid, $membershipUuid);
 $purchase_url = $can_purchase_seats ? $additional_seats_service->getPurchaseFormUrl($org_uuid, $membershipUuid) : '';
 
 if ($can_purchase_seats && !empty($purchase_url)):

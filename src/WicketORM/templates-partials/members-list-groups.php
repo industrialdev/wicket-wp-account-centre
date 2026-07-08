@@ -54,8 +54,11 @@ if ($membership_uuid) {
         }
     }
 
-    if (!$has_seats_available) {
-        $can_purchase_seats = $additional_seats_service->canPurchaseAdditionalSeats($org_uuid);
+    // Resolve the purchase CTA. By default it is always available to authorized users; sites can
+    // opt into the original seats-full-only behaviour via show_button_when_full_only.
+    $show_purchase_cta = $configService->isAdditionalSeatsButtonShownWhenFullOnly() ? !$has_seats_available : true;
+    if ($show_purchase_cta) {
+        $can_purchase_seats = $additional_seats_service->canPurchaseAdditionalSeats($org_uuid, $membership_uuid);
         if ($can_purchase_seats) {
             $purchase_seats_url = $additional_seats_service->getPurchaseFormUrl($org_uuid, $membership_uuid);
         }
@@ -127,6 +130,12 @@ $show_assignment_info = (bool) ($orgman_config['presentation']['member_list']['s
                     </a>
                 </div>
             <?php endif; ?>
+        </div>
+    <?php elseif ($can_purchase_seats && $purchase_seats_url) : ?>
+        <div class="wt_rounded-md wt_bg-light-neutral wt_p-4">
+            <a class="button button--primary additional-seats-cta" href="<?php echo esc_url($purchase_seats_url); ?>">
+                <?php esc_html_e('Purchase Additional Seats', 'wicket-acc'); ?>
+            </a>
         </div>
     <?php endif; ?>
 

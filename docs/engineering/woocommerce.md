@@ -1,8 +1,8 @@
 ---
-title: "Woocommerce"
+title: "WooCommerce Integration"
 audience: [developer, agent]
-php_class: WicketAcc
-source_files: ["src/"]
+php_class: WicketAcc\WicketAcc
+source_files: ["src/WooCommerce.php", "src/WicketORM/Services/AdditionalSeatsService.php", "src/WicketORM/Helpers/GravityFormsHelper.php", "class-wicket-acc-main.php"]
 ---
 
 # WooCommerce Integration
@@ -44,4 +44,21 @@ Example slugs:
 ## Templates
 WooCommerce-specific views are rendered using:
 - `templates-wicket/account-centre/page-wc.php`: The main wrapper for WC content within the ACC.
-- Standard WooCommerce templates (overridden if present in the theme)."
+- Standard WooCommerce templates (overridden if present in the theme).
+
+## Additional Seats (Single-SKU)
+
+See [ADDITIONAL-SEATS.md](../ORM/product/ADDITIONAL-SEATS.md) for the full flow. In short:
+
+- The supplemental-members callout links to a Gravity Forms form, which posts to WooCommerce with the additional-seats SKU.
+- `OrgMan::addAdditionalSeatsDataToOrderItem()` attaches `membership_id` and `org_uuid` to each line item.
+- `AdditionalSeatsService::processOrderCompletion()` (or the equivalent order-completion handler) reads those item meta values and bumps the matching `organization_memberships.max_assignments` by the line-item quantity.
+
+## Additional Seats (Multi-Tier)
+
+Multi-tier mode (`integrations.additional_seats.tier_mode = true`):
+
+- Each tier resolves its own WooCommerce product (`tier_skus` map or `{sku}-{tier-slug}` derivation).
+- `OrgMan::addAdditionalSeatsDataToOrderItem()` classifies the cart item by product and writes the `tier_slug` into line-item meta.
+- `AdditionalSeatsService::processTierSeatLineItem()` fulfils per line item by bumping the matching tier's `organization_memberships.max_assignments`.
+- Idempotency per line item uses the `tier_seats_applied` order-meta flag; partial-fulfilment retries use `tier_seats_partial`."

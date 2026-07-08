@@ -1,7 +1,8 @@
 ---
 title: "Organization Profile Edit"
 audience: [implementer, support]
-php_class: WicketAcc
+php_class: WicketAcc\Blocks\OrgProfile\init
+source_files: ["includes/blocks/ac-org-profile/init.php", "includes/blocks/ac-org-profile/render.php", "includes/blocks/ac-org-profile/block.json"]
 ---
 
 # Organization Profile Edit Block

@@ -1,8 +1,8 @@
 ---
-title: "Ac Welcome"
-audience: [developer, agent]
-php_class: WicketAcc
-source_files: ["src/"]
+title: "AC Welcome Block"
+audience: [developer, agent, implementer]
+php_class: WicketAcc\Blocks\Welcome\init
+source_files: ["includes/blocks/ac-welcome/init.php", "includes/blocks/ac-welcome/render.php", "includes/blocks/ac-welcome/block.json"]
 ---
 
 # AC Welcome Block Documentation

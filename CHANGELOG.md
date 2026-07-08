@@ -1,5 +1,9 @@
 # Wicket Account Centre Changelog
 
+# 1.7.7 / 2026-07-08
+- Additional seats "Purchase" button now shows by default for authorized users regardless of seat availability. New config `integrations.additional_seats.show_button_when_full_only` (default false) restores the original seats-full-only behaviour.
+- Fixed membership owners being denied the purchase button: `can_purchase_seats` now grants the right to the actual membership owner (ownership relationship), including delayed (not-yet-started) memberships. Multi-tier orgs pass the specific membership UUID so the correct tier is evaluated.
+
 # 1.7.1 / 2026-06-25
 - Added opt-in multi-tier additional seats flow for orgs holding several active membership tiers at once (e.g. ESCRS). Tier mode activates via `additional_seats.tier_mode` / `tier_skus` config; legacy single-SKU sites are unaffected.
 - Tier-specific WooCommerce product resolution per membership tier slug, derived as `{sku_prefix}-{tier-slug}` or mapped explicitly via `tier_skus`.

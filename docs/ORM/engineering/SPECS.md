@@ -1,7 +1,7 @@
 ---
 title: "Current Library Spec"
 audience: [developer, implementer]
-source_files: ["src/OrgMan.php", "src/Services/Strategies/"]
+source_files: ["src/OrgMan.php", "src/Services/", "src/Services/Strategies/", "src/Controllers/"]
 ---
 
 # Current Library Spec
@@ -15,12 +15,15 @@ This file describes what the library does today.
 - `groups`
 - `membership_cycle`
 
+Strategy selection is driven by `membership.strategy`. See [STRATEGIES.md](STRATEGIES.md) for behavior.
+
 ## Supported Account Screens
 
 - organization list and detail flows
 - organization member management
+- organization contacts roster (when `contacts.enabled = true`)
 - group member management in groups mode
-- supplemental-members purchase flow for additional seats
+- supplemental-members purchase flow for additional seats (single-SKU and multi-tier)
 - organization-members-bulk page when bulk upload UI is enabled
 
 ## Implemented Runtime Capabilities
@@ -31,16 +34,19 @@ This file describes what the library does today.
 - async CSV member export with secure download tokens (opt-in via `exports.enabled`)
 - MDP engagement/donation data display with configurable sections (opt-in via `engagement.enabled`)
 - group-member add and remove flows
-- additional-seats checkout integration
-- organization, member, membership, group, and permission services
+- contacts roster (President, CEO, Treasurer, etc.) via relationship types, with on-add role grants and on-removal role strips
+- additional-seats checkout integration (single-SKU and multi-tier)
+- organization, member, membership, group, contact, and permission services
 - config-driven unified and legacy member views
 - hypermedia partial endpoint via `TemplateHelper`
+- per-tier seat fulfillment with idempotency (`tier_seats_applied`) and partial-fulfilment retry safety (`tier_seats_partial`)
 
 ## Current Runtime Gaps
 
 - no bundled automated tests in this package
 - no cycle-tab resolver UI for `membership_cycle`
 - no packaged documentation guarantee that additional-seats UI propagation is cycle-specific across every membership-cycle surface
+- the contacts roster ships its own page and process handlers; it does not currently reuse the members-list bulk patterns
 
 ## Bulk Upload
 
@@ -48,24 +54,52 @@ Shared bulk upload is implemented through `templates-partials/process/bulk-uploa
 
 Current characteristics:
 
-- disabled by default
+- disabled by default (`presentation.member_list.show_bulk_upload = false`)
 - additive only
 - strategy-aware through `MemberService`
 - available to non-groups and membership-cycle flows when the UI flag is enabled
 
 ## Additional Seats
 
-Current additional-seats flow includes:
+Two flows are supported today. Both flow through `WicketORM\Services\AdditionalSeatsService`.
+
+Single-SKU (default):
 
 - Gravity Forms capture
 - WooCommerce cart and checkout handoff
 - order processing hooks in `OrgMan`
 - membership ID and organization UUID persistence in session, user meta, order item meta, and order meta
+- one WooCommerce product per org (`integrations.additional_seats.sku`)
+- legacy quantity cap of `900` hard-enforced even if the GF quantity field allows more
+
+Multi-tier (opt-in via `tier_mode = true`):
+
+- one WooCommerce product per tier, either mapped explicitly (`tier_skus`) or derived as `{sku}-{tier-slug}`
+- tier slug passed from the purchase callout to Gravity Forms through `integrations.additional_seats.tier_slug_field`
+- tier classification happens from the cart item data (truth source), not from user meta
+- fulfilment bumps the matching tier's `organization_memberships.max_assignments` by the line-item quantity
+- per-line-item idempotency (`tier_seats_applied`) and partial-fulfilment retry safety (`tier_seats_partial`)
+- admin setup warning when `tier_mode = true` but `tier_skus` is empty (also surfaces expected form slug and tier-slug field parameter)
 
 Current documentation limit:
 
 - the library stores `membership_id` and uses it during seat processing
 - the package does not currently ship a dedicated cycle-specific UI layer proving every membership-cycle surface passes the intended membership context
+
+## Contacts Roster
+
+Relationship-only contacts roster (President, President Elect, Secretary, CEO, Treasurer, Main Contact). Disabled by default.
+
+Current characteristics:
+
+- activated via `contacts.enabled = true`
+- rendered on the `organization-contacts` page slug
+- `contacts.relationship_types.roster` defines which relationship slugs count as contacts (default: `president`, `president_elect`, `secretary`, `ceo`, `treasurer`, `main_contact`)
+- permission flags `can_add`, `can_remove`, `can_view` default to `membership_manager`
+- on add: auto-assigns `org_editor` and `membership_manager` (configurable via `contacts.on_add.assign_roles`)
+- on removal: strips those roles, unless the person still has an active membership (`contacts.on_removal.skip_strip_if_has_membership = true`)
+- separate from `membership.strategy` — works in any strategy mode
+- contacts are relationship-only; no active membership is required to appear on the roster
 
 ## Member Export
 

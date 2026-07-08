@@ -1,3 +1,12 @@
+---
+title: "Groups Strategy: Card Display"
+audience: [developer, implementer]
+slug: groups-card-display
+source_files:
+  - "src/WicketORM/templates-partials/card-organization-groups.php"
+  - "src/WicketORM/templates-partials/members-list-groups.php"
+---
+
 # Groups Strategy: Card Display
 
 Groups mode changes the top-level management surface from organizations to groups.

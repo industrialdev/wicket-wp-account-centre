@@ -1,3 +1,11 @@
+---
+title: "Membership Cycle Strategy: Card Display"
+audience: [developer, implementer]
+slug: membership-cycle-card-display
+source_files:
+  - "src/WicketORM/templates-partials/card-organization-membership-cycle.php"
+---
+
 # Membership Cycle Strategy: Card Display
 
 Membership-cycle mode currently reuses the shared organization-centric UI.

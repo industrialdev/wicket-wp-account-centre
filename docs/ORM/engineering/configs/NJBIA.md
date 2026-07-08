@@ -1,3 +1,9 @@
+---
+title: "NJBIA Configuration"
+audience: [implementer, support, developer]
+source_files: ["../njbia-website-wordpress/src/wp-content/themes/njbia/theme/inc/org-roster.php"]
+---
+
 # NJBIA Configuration
 
 Source of truth: `../njbia-website-wordpress/src/wp-content/themes/njbia/theme/inc/org-roster.php`

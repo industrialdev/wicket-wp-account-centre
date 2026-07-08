@@ -164,7 +164,7 @@ class AdditionalSeatsService
      * @param string $org_uuid The organization UUID.
      * @return bool True if user is authorized, false otherwise.
      */
-    public function canPurchaseAdditionalSeats($org_uuid)
+    public function canPurchaseAdditionalSeats($org_uuid, $membership_uuid = '')
     {
         // Check if additional seats functionality is enabled
         $enabled = $this->configService->isAdditionalSeatsEnabled();
@@ -178,9 +178,11 @@ class AdditionalSeatsService
             return false;
         }
 
-        // Use PermissionHelper to check if user has purchase_seats permission for this organization
-        // This includes active membership requirement and proper role checking
-        return \WicketORM\Helpers\PermissionHelper::can_purchase_seats($org_uuid);
+        // Use PermissionHelper to check if user has purchase_seats permission for this organization.
+        // The membership UUID enables multi-tier ownership checks: the owner of a specific tier
+        // (including a delayed, not-yet-started membership) is granted the purchase right even
+        // when they hold no configured purchase role.
+        return \WicketORM\Helpers\PermissionHelper::can_purchase_seats($org_uuid, $membership_uuid);
     }
 
     /**

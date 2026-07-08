@@ -1,3 +1,9 @@
+---
+title: "ESCRS Configuration"
+audience: [implementer, support, developer]
+source_files: ["../escrs-website-wordpress/src/web/app/themes/wicket-child/custom/org-roster.php"]
+---
+
 # ESCRS Configuration
 
 Source of truth: `../escrs-website-wordpress/src/web/app/themes/wicket-child/custom/org-roster.php`

@@ -1,3 +1,11 @@
+---
+title: "Groups Strategy: Current Status"
+audience: [developer, implementer]
+slug: groups-implementation-plan
+source_files:
+  []
+---
+
 # Groups Strategy: Current Status
 
 This file replaces older plan-oriented notes.

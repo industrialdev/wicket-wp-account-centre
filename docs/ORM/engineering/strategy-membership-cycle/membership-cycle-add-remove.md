@@ -1,3 +1,11 @@
+---
+title: "Membership Cycle Strategy: Add / Remove"
+audience: [developer, implementer]
+slug: membership-cycle-add-remove
+source_files:
+  - "src/Services/Strategies/MembershipCycleStrategy.php"
+---
+
 # Membership Cycle Strategy: Add / Remove
 
 ## Add

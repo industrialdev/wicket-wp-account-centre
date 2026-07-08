@@ -1,7 +1,8 @@
 ---
 title: "Organization Selector Shortcode"
 audience: [implementer, support]
-php_class: WicketAcc
+php_class: WicketAcc\Shortcodes
+source_files: ["src/Shortcodes.php", "src/WicketORM/templates-partials/organization-list.php"]
 ---
 
 # Organization Selector Shortcode
@@ -64,6 +65,8 @@ The shortcode is enhanced with **Datastar** to provide real-time updates:
 ### Filters
 - `wicket/acc/organization_selector_query_args`: Filter the MDP API query parameters.
 - `wicket/acc/organization_selector_template`: Override the HTML template used for rendering.
+- `wicket/acc/shortcodes/org-selector/org-uuid-list`: Filter the list of organization UUIDs available in the selector.
+- `wicket/acc/orgman/membership_cycle_include_entry`: For `membership_cycle` strategy, opt in to include delayed memberships (`starts_at` in the future) so the selector can show pre-purchased tiers.
 
 ## Access Control
 - **Viewing**: Authenticated users who have at least one verified relationship with an organization.

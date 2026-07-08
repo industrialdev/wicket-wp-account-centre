@@ -507,7 +507,7 @@ class PermissionHelper extends Helper
      * @param string|null $org_id Organization ID
      * @return bool True if user can purchase seats, false otherwise
      */
-    public static function can_purchase_seats($org_id = null): bool
+    public static function can_purchase_seats($org_id = null, $membership_uuid = null): bool
     {
         $config = \WicketORM\Services\ConfigService::getConfig();
         $purchase_roles = $config['access']['permissions']['purchase_seat_roles'] ?? ['membership_owner'];
@@ -521,10 +521,23 @@ class PermissionHelper extends Helper
         }
 
         if (self::has_active_membership($org_id)) {
-            return self::role_check($purchase_roles, $org_id, false);
+            if (self::role_check($purchase_roles, $org_id, false)) {
+                return true;
+            }
+
+            // Ownership grants the purchase right. In multi-tier orgs a person may be the
+            // membership owner (a relationship, not a role assignment) without holding any
+            // configured purchase role, so role_check alone would wrongly deny them.
+            return self::is_membership_owner_of($org_id, $membership_uuid);
         }
 
-        return self::can_bypass_active_membership_requirement($org_id, $purchase_roles);
+        if (self::can_bypass_active_membership_requirement($org_id, $purchase_roles)) {
+            return true;
+        }
+
+        // Ownership also grants the purchase right for delayed (not-yet-started) memberships,
+        // which never register as "active" but are still purchasable ahead of their start date.
+        return self::is_membership_owner_of($org_id, $membership_uuid);
     }
 
     /**
@@ -599,6 +612,60 @@ class PermissionHelper extends Helper
         }
 
         return false;
+    }
+
+    /**
+     * Check if the current user owns a specific (or the resolved) organization membership.
+     *
+     * When a membership UUID is provided (multi-tier orgs pass the tier-specific membership),
+     * ownership is evaluated directly against that membership record. This is robust for
+     * delayed (not-yet-started) memberships, which never register as "active" but are still
+     * owned and purchasable. When no UUID is given, falls back to the org's resolved
+     * membership via is_organization_membership_owner().
+     *
+     * @param string|null $org_id           Organization identifier.
+     * @param string|null $membership_uuid   Specific membership UUID (multi-tier). Optional.
+     * @return bool True if the current user owns the membership.
+     */
+    public static function is_membership_owner_of($org_id = null, $membership_uuid = null): bool
+    {
+        if (!$org_id || !is_user_logged_in()) {
+            return false;
+        }
+
+        $person_uuid = wp_get_current_user()->user_login;
+        if (empty($person_uuid)) {
+            return false;
+        }
+
+        $membership_uuid = is_string($membership_uuid) ? trim($membership_uuid) : '';
+        if ($membership_uuid === '') {
+            return self::is_organization_membership_owner($org_id);
+        }
+
+        if (!class_exists('\WicketORM\Services\MembershipService')) {
+            return false;
+        }
+
+        try {
+            $membershipService = new \WicketORM\Services\MembershipService();
+            $membership_data = $membershipService->getOrgMembershipData($membership_uuid);
+
+            if (!is_array($membership_data) || !isset($membership_data['data']['relationships']['owner']['data']['id'])) {
+                return false;
+            }
+
+            return $person_uuid === $membership_data['data']['relationships']['owner']['data']['id'];
+        } catch (\Throwable $e) {
+            \Wicket()->log()->error('Error checking membership owner (specific): ' . $e->getMessage(), [
+                'source' => 'wicket-orgman',
+                'org_id' => $org_id,
+                'membership_uuid' => $membership_uuid,
+                'person_uuid' => $person_uuid,
+            ]);
+
+            return false;
+        }
     }
 
     /**

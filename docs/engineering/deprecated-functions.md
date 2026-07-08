@@ -1,8 +1,8 @@
 ---
 title: "Deprecated Functions"
 audience: [developer, agent]
-php_class: WicketAcc
-source_files: ["src/"]
+php_class: WicketAcc\WicketAcc
+source_files: ["includes/legacy.php", "includes/helpers.php", "src/Helpers.php", "src/Profile.php"]
 ---
 
 # Deprecated Functions Documentation
@@ -47,6 +47,18 @@ This document tracks deprecated functions in the Wicket Account Centre plugin. T
 - **Purpose**: Integrates ACC pages into the WP Job Manager settings.
 
 ## Technical Notes
-- **Location**: Legacy functions are maintained in `includes/legacy.php`.
+- **Location**: Legacy functions are maintained in `includes/legacy.php` and `includes/helpers.php`.
 - **Warning**: Using these functions may trigger `_doing_it_wrong()` notices in debug mode.
-- **Migration**: Always prefer the `WACC()->Service()->method()` pattern for new development."
+- **Migration**: Always prefer the `WACC()->Service()->method()` pattern for new development.
+
+## OrgMan-Side Deprecations
+
+The `WicketORM\` org-roster library keeps a number of in-tree methods and services that are not referenced anywhere in the codebase and should be considered dead. The canonical dead-code audit lives at [DEAD-CODE-AUDIT.md](../ORM/engineering/DEAD-CODE-AUDIT.md) (most recent run: 2026-03-19; re-run on every meaningful change to `OrgMan`, the controllers, or the service layer). Examples from that audit:
+
+- `OrgMan::clearUserOrgCache()` / `clearAllOrgCache()` — never called.
+- `ConfigurationController::enableAdditionalSeats*()` and the dependent helper methods — never called; replaced by `ConfigService`.
+- `MemberService::hasRole()`, `searchMembers()`, `getFormattedRolesString()` — never called.
+- `NotificationService::success()` / `error()` / etc. — kept for legacy callers; new code should use `WACC()->Notification()`.
+- `Helper::log_critical()` — never called.
+
+These methods are kept in-tree to preserve backwards compatibility for sites that may still call them by name. New code should not introduce new dependencies on them."

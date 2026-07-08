@@ -1,8 +1,9 @@
 ---
-title: "Ac Additional Info"
-audience: [developer, agent]
-php_class: WicketAcc
-source_files: ["src/"]
+title: "Additional Info Block"
+audience: [developer, agent, implementer]
+php_class: WicketAcc\Blocks\AdditionalInfo\init
+source_files: ["includes/blocks/ac-additional-info/init.php", "includes/blocks/ac-additional-info/render.php", "includes/blocks/ac-additional-info/block.json"]
+---
 ---
 
 # AC Additional Info Block Documentation

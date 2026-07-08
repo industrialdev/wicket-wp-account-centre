@@ -1,8 +1,9 @@
 ---
-title: "Ac Touchpoint Vitalsource"
-audience: [developer, agent]
-php_class: WicketAcc
-source_files: ["src/"]
+title: "Touchpoint: VitalSource Block"
+audience: [developer, agent, implementer]
+php_class: WicketAcc\Blocks\TouchpointVitalSource\init
+source_files: ["includes/blocks/ac-touchpoint-vitalsource/init.php", "includes/blocks/ac-touchpoint-vitalsource/render.php", "includes/blocks/ac-touchpoint-vitalsource/block.json"]
+---
 ---
 
 # AC Touchpoint VitalSource Block Documentation

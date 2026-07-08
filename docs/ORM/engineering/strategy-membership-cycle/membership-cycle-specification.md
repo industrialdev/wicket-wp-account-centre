@@ -1,3 +1,11 @@
+---
+title: "Membership Cycle Strategy: Specification"
+audience: [developer, implementer]
+slug: membership-cycle-specification
+source_files:
+  - "src/Services/Strategies/MembershipCycleStrategy.php"
+---
+
 # Membership Cycle Strategy: Specification
 
 ## Current Contract

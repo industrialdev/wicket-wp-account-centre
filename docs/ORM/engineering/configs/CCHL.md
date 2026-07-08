@@ -1,3 +1,9 @@
+---
+title: "CCHL Configuration"
+audience: [implementer, support, developer]
+source_files: ["../cchl-website-wordpress/src/web/app/themes/industrial/custom/org-roster.php"]
+---
+
 # CCHL Configuration
 
 Source of truth: `../cchl-website-wordpress/src/web/app/themes/industrial/custom/org-roster.php`

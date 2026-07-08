@@ -1,3 +1,11 @@
+---
+title: "Groups Strategy: Seats"
+audience: [developer, implementer]
+slug: groups-seats-assignment
+source_files:
+  - "src/Services/Strategies/GroupsStrategy.php"
+---
+
 # Groups Strategy: Seats
 
 Groups mode has different seat semantics from non-groups strategies.

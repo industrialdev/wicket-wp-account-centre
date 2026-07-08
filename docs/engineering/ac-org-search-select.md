@@ -1,8 +1,9 @@
 ---
-title: "Ac Org Search Select"
-audience: [developer, agent]
-php_class: WicketAcc
-source_files: ["src/"]
+title: "Org Search Select Block"
+audience: [developer, agent, implementer]
+php_class: WicketAcc\Blocks\OrgSearchSelect\init
+source_files: ["includes/blocks/ac-org-search-select/init.php", "includes/blocks/ac-org-search-select/render.php", "includes/blocks/ac-org-search-select/block.json"]
+---
 ---
 
 # ACC Org. Search & Select Block

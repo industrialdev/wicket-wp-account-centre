@@ -1,8 +1,9 @@
 ---
-title: "Ac Touchpoint Cvent"
-audience: [developer, agent]
-php_class: WicketAcc
-source_files: ["src/"]
+title: "Touchpoint: Cvent Block"
+audience: [developer, agent, implementer]
+php_class: WicketAcc\Blocks\TouchpointCvent\init
+source_files: ["includes/blocks/ac-touchpoint-cvent/init.php", "includes/blocks/ac-touchpoint-cvent/render.php", "includes/blocks/ac-touchpoint-cvent/block.json"]
+---
 ---
 
 # AC Touchpoint Cvent Block Documentation

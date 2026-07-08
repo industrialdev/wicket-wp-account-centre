@@ -1,8 +1,9 @@
 ---
-title: "Ac Touchpoint Zoom"
-audience: [developer, agent]
-php_class: WicketAcc
-source_files: ["src/"]
+title: "Touchpoint: Zoom Block"
+audience: [developer, agent, implementer]
+php_class: WicketAcc\Blocks\TouchpointZoom\init
+source_files: ["includes/blocks/ac-touchpoint-zoom/init.php", "includes/blocks/ac-touchpoint-zoom/render.php", "includes/blocks/ac-touchpoint-zoom/block.json"]
+---
 ---
 
 # ACC Touchpoint Zoom Block

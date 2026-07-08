@@ -1,8 +1,9 @@
 ---
-title: "Ac Touchpoint Moodle"
-audience: [developer, agent]
-php_class: WicketAcc
-source_files: ["src/"]
+title: "Touchpoint: Moodle Block"
+audience: [developer, agent, implementer]
+php_class: WicketAcc\Blocks\TouchpointMoodle\init
+source_files: ["includes/blocks/ac-touchpoint-moodle/init.php", "includes/blocks/ac-touchpoint-moodle/render.php", "includes/blocks/ac-touchpoint-moodle/block.json"]
+---
 ---
 
 # ACC Touchpoint Moodle Block

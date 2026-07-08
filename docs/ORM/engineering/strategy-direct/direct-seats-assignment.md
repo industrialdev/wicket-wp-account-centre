@@ -1,3 +1,12 @@
+---
+title: "Direct Strategy: Seats"
+audience: [developer, implementer]
+slug: direct-seats-assignment
+source_files:
+  - "src/Services/MembershipService.php"
+  - "src/Services/Strategies/DirectAssignmentStrategy.php"
+---
+
 # Direct Strategy: Seats
 
 Direct mode assigns people to organization memberships directly.

@@ -1,71 +1,60 @@
 ---
-title: "Ac Individual Profile"
-audience: [developer, agent]
-php_class: WicketAcc
-source_files: ["src/"]
+title: "AC Individual Profile Block"
+audience: [developer, agent, implementer]
+php_class: WicketAcc\Blocks\IndividualProfile\init
+source_files: ["includes/blocks/ac-individual-profile/init.php", "includes/blocks/ac-individual-profile/render.php", "includes/blocks/ac-individual-profile/block.json", "includes/acf-json/group_66bd0f5a9fca8.json"]
 ---
 
-# AC Individual Profile Block Documentation
+# AC Individual Profile Block
 
 ## Overview
-The Individual Profile block provides a wrapper for the Wicket Individual Profile widget component. This block is designed to display and manage individual user profile information through the Wicket platform.
+
+The Individual Profile block renders a single person's profile inside an account area. It pulls data through the `widget-profile-individual` widget and exposes two MDP-driven ACF fields: `mdp_json_fields` and `mdp_json_sections`.
 
 ## Block Architecture
 
 ### Directory Structure
+
 ```
-ac-individual-profile/
-├── block.json       # Block registration and settings
-├── init.php        # Block initialization
-├── render.php      # Template renderer
-└── block-styles.css # Profile styles
+includes/blocks/ac-individual-profile/
+├── block.json         # Block registration
+├── init.php           # WicketAcc\Blocks\IndividualProfile\init
+└── render.php         # Template renderer (when not using widget)
 ```
+
+Extends `WicketAcc\Blocks` (see [base-block.md](base-block.md)).
 
 ## Core Functionality
 
-### Implementation Details
+### MDP JSON Fields and Sections
 
-1. **Widget Integration**
-   ```php
-   get_component('widget-profile-individual', []);
-   ```
-   The block serves as a wrapper for the `widget-profile-individual` component, which handles:
-   - Profile data display
-   - Edit functionality
-   - Data synchronization with MDP
+The block reads two ACF fields whose values are JSON strings:
 
-2. **Dependencies**
-   - Requires the Wicket platform integration
-   - Uses the global widget component system
-   - Relies on MDP for data management
+- `mdp_json_fields` — flat list of person field keys to render. Decoded and passed to the widget as `fields`.
+- `mdp_json_sections` — ordered sections the widget should render. Decoded and passed as `sections`.
 
-### Features
+Both fields default to `[]` when the ACF value is empty or invalid.
 
-1. **Profile Management**
-   - View personal information
-   - Edit profile details
-   - Data synchronization with MDP
+```php
+$json_fields   = get_field('mdp_json_fields');
+$json_sections = get_field('mdp_json_sections');
 
-2. **Integration**
-   - Seamless integration with Wicket platform
-   - Consistent user interface
-   - Standardized data handling
+$this->mdp_json_fields   = json_decode($json_fields, true)   ?? [];
+$this->mdp_json_sections = json_decode($json_sections, true) ?? [];
 
-### Usage Notes
+get_component('widget-profile-individual', [
+    'fields'   => $this->mdp_json_fields,
+    'sections' => $this->mdp_json_sections,
+]);
+```
 
-1. **Implementation**
-   - Block requires no additional configuration
-   - Automatically uses current user context
-   - Handles all profile management through the widget
+This is the configuration surface that drives what the individual-profile widget renders for a given person.
 
-2. **Customization**
-   - Visual styling through block-styles.css
-   - Functionality controlled by widget component
-   - No additional block-level settings required
+## Recent Changes
 
-
-- File upload handling
-- Cache management
+- Added `mdp_json_sections` config so editors can declare the section order independently from the field list.
 
 ## Related Documentation
-- [Base Block](../engineering/base-block.md)"
+
+- [Base Block](base-block.md)
+- [Organization Profile Block](ac-org-profile.md) — same JSON config pattern for org profiles.

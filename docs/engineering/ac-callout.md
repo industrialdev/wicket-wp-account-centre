@@ -1,8 +1,9 @@
 ---
-title: "Ac Callout"
-audience: [developer, agent]
-php_class: WicketAcc
-source_files: ["src/"]
+title: "Callout Block"
+audience: [developer, agent, implementer]
+php_class: WicketAcc\Blocks\Callout\init
+source_files: ["includes/blocks/ac-callout/init.php", "includes/blocks/ac-callout/render.php", "includes/blocks/ac-callout/block.json"]
+---
 ---
 
 # AC Callout Block Documentation

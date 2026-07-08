@@ -416,6 +416,11 @@ final class OrgManConfig
                         // 'tier-slug' => 'tier-specific-sku',
                     ],
                     'tier_slug_field' => 'tier-slug',
+                    // When true, the "Purchase Additional Seats" button only renders once all
+                    // seats are assigned. Defaults to false so the button is always available to
+                    // authorized users (members can buy more seats before running out). Sites that
+                    // prefer the original behaviour set this to true.
+                    'show_button_when_full_only' => false,
                 ],
                 'documents' => [
                     'allowed_types' => [

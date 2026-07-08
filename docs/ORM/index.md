@@ -1,3 +1,8 @@
+---
+title: "Wicket Org Roster Documentation"
+audience: [implementer, support, developer]
+---
+
 # Wicket Org Roster Documentation
 
 > **Migration note (2026-06):** The `WicketORM\` code lives inside this
@@ -6,12 +11,18 @@
 > unchanged). `wicket-wp-account-centre` is the sole provider: it boots
 > `OrgMan` itself at `after_setup_theme` priority 20. Sites configure the
 > feature through a small child-theme config override file (see
-> [Installation](product/INSTALLATION.md)).
+> [Setup](product/SETUP.md)).
+
+## Recent Highlights
+
+- **Multi-tier additional seats** (`integrations.additional_seats.tier_mode`): one WooCommerce product per membership tier, with per-tier seat fulfilment and idempotency. See [Additional Seats](product/ADDITIONAL-SEATS.md) and the [ESCRS config snapshot](engineering/configs/ESCRS.md) for a working example.
+- **Contacts roster** (`contacts.enabled`): relationship-only roster for `president`, `ceo`, `treasurer`, etc. Renders on the `organization-contacts` page slug.
+- **Centralized owner-removal guard** (`access.permissions.prevent_owner_removal`, `access.permissions.owner_removal_requires_membership_owner_role`): enforced through `WicketORM\Helpers\PermissionHelper::guardOwnerRemoval()` from every strategy.
 
 ## Product Docs (Operators & Support)
-- [Additional Seats](product/ADDITIONAL-SEATS.md) — Additional-seats purchase flow: requirements, config, setup checklist, and troubleshooting
-- [Configuration](product/CONFIGURATION.md) — Full canonical config schema with all paths, defaults, and migration map (includes `exports` for async CSV export and `engagement` for MDP data display)
-- [Installation](product/INSTALLATION.md) — How account-centre boots `OrgMan` and how a site registers its config overrides
+- [Additional Seats](product/ADDITIONAL-SEATS.md) — Single-SKU and multi-tier additional-seats flow: requirements, config, setup checklist, and troubleshooting
+- [Configuration](product/CONFIGURATION.md) — Full canonical config schema with all paths, defaults, and migration map (includes `contacts`, `exports`, `engagement`, and tier-mode keys)
+- [Setup](product/SETUP.md) — How a site activates and configures the org-roster feature from the child theme
 - [Testing](product/TESTING.md) — Available verification commands and practical validation steps
 
 ## Engineering Docs (Developers & Agents)

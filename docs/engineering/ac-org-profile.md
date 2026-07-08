@@ -1,136 +1,82 @@
 ---
-title: "Ac Org Profile"
-audience: [developer, agent]
-php_class: WicketAcc
-source_files: ["src/"]
+title: "AC Org Profile Block"
+audience: [developer, agent, implementer]
+php_class: WicketAcc\Blocks\OrgProfile\init
+source_files: ["includes/blocks/ac-org-profile/init.php", "includes/blocks/ac-org-profile/render.php", "includes/blocks/ac-org-profile/block.json", "includes/acf-json/group_69a5f1b6ea37e.json"]
 ---
 
-# AC Organization Profile Block Documentation
+# AC Org Profile Block
 
 ## Overview
-The Organization Profile block manages organization profile information, supporting both parent and child organizations. It integrates with WPML for multilingual support and provides configurable display options.
+
+The Org Profile block renders and edits a single organization's profile inside the account area. It mounts the `Wicket.widgets.editOrganizationProfile` widget and passes the MDP field/section config into the widget so editors can configure what is shown.
 
 ## Block Architecture
 
 ### Directory Structure
+
 ```
-ac-org-profile/
-├── block.json       # Block registration and settings
-├── init.php        # Block initialization and logic
-├── render.php      # Template renderer
-└── block-styles.css # Profile styles
+includes/blocks/ac-org-profile/
+├── block.json         # Block registration
+├── init.php           # WicketAcc\Blocks\OrgProfile\init
+└── render.php         # Template renderer
 ```
+
+Extends `WicketAcc\Blocks` (see [base-block.md](base-block.md)).
 
 ## Core Functionality
 
-### Implementation Details
+### URL-Based Org Resolution
 
-1. **Block Configuration**
-   ```php
-   protected array $block = [];
-   protected bool $is_preview = false;
-   protected int|string|null|bool $hide_additional_info = 0;
-   ```
-   - Configurable additional info display
-   - Preview mode support
-   - Block-specific settings
+The block resolves which organization to display from the request:
 
-2. **Organization Context**
-   - URL-based organization detection
-   - Parent/child organization handling
-   - Multiple organization support
+- `?org_uuid=` or `?org_id=` selects the parent org.
+- `?child_org_id=` overrides `org_id` when present (used for parent/child org flows).
 
-3. **Language Support**
-   ```php
-   $lang = WACC()->Language()->getCurrentLanguage();
-   ```
-   - Centralized language detection (WPML, Polylang, WP User/Site Locale)
-   - Consistent language handling via `Language` class
-   - Default fallback to 'en'
+If no org is in the URL, the block falls back to the user's `org_editor` role associations and:
 
-### Features
+- renders the single matching org directly when the user only has one, or
+- surfaces a chooser when the user has more than one (handled by `ac-org-search-select`).
 
-1. **Organization Management**
-   - Parent organization handling
-   - Child organization support
-   - Organization ID detection from URL
+### Configuration Surface
 
-2. **Display Options**
-   - Configurable additional info visibility
-   - Preview mode for editors
-   - Responsive layout
+The block reads these ACF fields:
 
-3. **Integration**
-   - WPML compatibility
-   - URL parameter handling
-   - Dynamic organization loading
+- `hide_additional_info` — hides the additional-info widget when truthy.
+- `hide_alternate_name_field` — adds `alternateName` to the widget's `hiddenFields`.
+- `mdp_json_fields` — JSON string decoded into the `fields` array passed to the widget.
+- `mdp_json_sections` — JSON string decoded into the `sections` array passed to the widget.
+
+`mdp_json_sections` lets editors declare the section order independently from the field list.
+
+### Language And API
+
+- Uses `WACC()->Language()->getCurrentLanguage()` to resolve the active language (WPML / Polylang / site default).
+- Pulls the org through `WACC()->Mdp()->Organization()->getOrganizationByUuid()` and mints an org-scoped access token via `wicket_get_access_token($person_uuid, $org_id)`.
 
 ### Widget Integration
 
-1. **Organization Profile Widget**
-   ```javascript
-   Wicket.widgets.editOrganizationProfile({
-       rootEl: widgetRoot,
-       apiRoot: wicket_settings['api_endpoint'],
-       accessToken: access_token,
-       orgId: org_id,
-       lang: lang
-   })
-   ```
-   - Profile editing interface
-   - Language-specific content
-   - Event handling for save operations
+The block mounts the org-profile widget:
 
-2. **Additional Info Widget**
-   ```javascript
-   Wicket.widgets.editAdditionalInfo({
-       loadIcons: true,
-       rootEl: widgetRoot,
-       apiRoot: wicket_settings['api_endpoint'],
-       accessToken: access_token,
-       resource: {
-           type: "organizations",
-           id: org_id
-       },
-       lang: lang
-   })
-   ```
-   - Optional display based on settings
-   - Icon support
-   - Schema-based data management
+```js
+Wicket.widgets.editOrganizationProfile({
+    rootEl: widgetRoot,
+    apiRoot: wicket_settings['api_endpoint'],
+    accessToken: access_token,
+    orgId: org_id,
+    lang: lang,
+    fields: mdp_json_fields,
+    sections: mdp_json_sections, // when present
+    hiddenFields: ['alternateName', ...]
+});
+```
 
-### Access Control
-- Role-based access via `org_editor` role
-- Organization-specific permissions
-- Automatic organization detection from roles
+## Recent Changes
 
-## Features
-
-### Form Management
-- Real-time validation
-- Field dependencies
-- Dynamic updates
-- Progress tracking
-
-### Data Integration
-- MDP synchronization
-- Cache management
-- Batch operations
-- Error recovery
-
-### UI Components
-- Form sections
-- Validation messages
-- Status indicators
-- Loading states
-- Action buttons
-
-## Error Handling
-- Field validation
-- API failures
-- Permission errors
-- Network issues
-- Data conflicts
+- Added `mdp_json_sections` config so editors can declare the section order independently from the field list.
 
 ## Related Documentation
-- [Base Block](../engineering/base-block.md)"
+
+- [Base Block](base-block.md)
+- [Organization Search Select Block](ac-org-search-select.md) — picker used when the user has more than one org.
+- [Org Logo Block](ac-org-logo.md) — companion block for the logo.

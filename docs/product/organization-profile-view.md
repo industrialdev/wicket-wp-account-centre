@@ -1,7 +1,8 @@
 ---
 title: "Organization Profile View"
 audience: [implementer, support]
-php_class: WicketAcc
+php_class: WicketAcc\Blocks\OrgProfile\init
+source_files: ["includes/blocks/ac-org-profile/init.php", "includes/blocks/ac-org-profile/render.php", "includes/blocks/ac-org-profile/block.json", "includes/acf-json/group_69a5f1b6ea37e.json"]
 ---
 
 # Organization Profile View Block
@@ -60,6 +61,7 @@ Wicket.widgets.editOrganizationProfile({
 | `hide_additional_info` | Toggles the display of the Additional Info widget. |
 | `hide_alternate_name_field` | Explicitly hides the Alternate Name field in the profile editor. |
 | `mdp_json_fields` | A JSON string defining which MDP fields should be editable. |
+| `mdp_json_sections` | A JSON string defining the section order rendered by the widget. |
 
 ## Access Control
 - **Viewing**: Authenticated users associated with the organization.

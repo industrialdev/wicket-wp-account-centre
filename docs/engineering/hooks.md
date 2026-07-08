@@ -1,14 +1,17 @@
 ---
 title: "Hooks"
 audience: [developer, agent]
-php_class: WicketAcc
-source_files: ["src/"]
+php_class: WicketAcc\WicketAcc
+source_files: ["class-wicket-acc-main.php", "src/", "src/WicketORM/", "includes/"]
 ---
 
 # Developer Hooks (Filters & Actions)
 
 ## Overview
-The Wicket Account Centre plugin provides several WordPress filters and actions to allow developers to customize behavior, modify data, and hook into plugin processes.
+
+WordPress filters and actions exposed by `wicket-wp-account-centre`, including the hooks fired by the in-tree `WicketORM\` org-roster library.
+
+For the org-roster config filters specifically, see [config-filters.md](../ORM/engineering/config-filters.md).
 
 ---
 
@@ -39,16 +42,6 @@ The Wicket Account Centre plugin provides several WordPress filters and actions 
 ### `wicket_acc_menu_items`
 - **Type**: Filter
 - **Description**: Modify the array of navigation menu items in the Account Centre.
-- **Usage**:
-  ```php
-  add_filter('wicket_acc_menu_items', function($items) {
-      $items['custom-link'] = [
-          'title' => __('Custom Link', 'text-domain'),
-          'url' => home_url('/custom-path/'),
-      ];
-      return $items;
-  });
-  ```
 
 ### `wicket/acc/router/disable_router`
 - **Type**: Filter
@@ -69,6 +62,8 @@ The Wicket Account Centre plugin provides several WordPress filters and actions 
 - `do_action('wicket/acc/block/before_welcome_block_memberships', $person_id)`: Triggered before the membership list.
 - `wicket/acc/block/welcome_filter_memberships`: Filter the memberships displayed in the welcome block.
 - `wicket/acc/block/welcome_non_member_text`: Filter the text shown for non-members.
+- `wicket/acc/block/welcome/show_renewal_date`: Filter whether the renewal date row is shown.
+- `wicket/acc/block/welcome/renewal_date_payload`: Override the renewal date label and/or timestamp.
 
 ### Callout Block (`ac-callout`)
 - `wicket/acc/block/ac-callout/renewal_filter_product_data`: Filter membership categories for renewal logic.
@@ -96,6 +91,10 @@ The Wicket Account Centre plugin provides several WordPress filters and actions 
   - `mdp_sync_success` (`bool`)
   - `timestamp` (unix epoch)
 
+### `do_action('profile-image delete', $payload)`
+- **Type**: Action
+- **Description**: Lower-level profile-image delete action invoked by the explicit `clear_profile_image()` flow. Fires in addition to the backwards-compatible `wicket/acc/profile/edit/profile_image_deleted` action.
+
 ---
 
 ## 5. Organization Management
@@ -103,6 +102,21 @@ The Wicket Account Centre plugin provides several WordPress filters and actions 
 ### `wicket/acc/shortcodes/org-selector/org-uuid-list`
 - **Type**: Filter
 - **Description**: Filter the list of organization UUIDs available in the organization selector shortcode.
+
+### `wicket/acc/orgman/membership_cycle_include_entry`
+- **Type**: Filter
+- **Description**: Opt-in hook to include delayed memberships (those whose `starts_at` is in the future) in the org list when running `membership.strategy = membership_cycle`. By default only `active` and `in_grace` entries are included. ESCRS uses this to surface pre-purchased tiers.
+- **Signature**:
+  ```
+  apply_filters(
+      'wicket/acc/orgman/membership_cycle_include_entry',
+      bool   $include,
+      array  $attrs,
+      array  $data,
+      string $org_uuid
+  )
+  ```
+- **Default**: returns `$include` unchanged.
 
 ---
 
@@ -125,4 +139,16 @@ The Wicket Account Centre plugin provides several WordPress filters and actions 
 
 ### `wicket/acc/notifications/approval_email_from`
 - **Type**: Filter
-- **Description**: Filter the "From" email address for approval notification emails."
+- **Description**: Filter the "From" email address for approval notification emails.
+
+---
+
+## 8. OrgMan Config Filters
+
+See [config-filters.md](../ORM/engineering/config-filters.md) for the full list. Highlights:
+
+- `wicket/org-roster/config` — global config override (receives full array, returns full array).
+- `wicket/acc/orgman/config` — legacy alias of the global filter.
+- `wicket/org-roster/additional_seats_*` — per-field overrides for every additional-seats config value, including the tier-mode filters (`additional_seats_tier_mode`, `additional_seats_tier_skus`, `additional_seats_tier_slug_field`).
+- `wicket/org-roster/allowed_document_types`, `wicket/org-roster/max_document_size`.
+- `wicket_orgman_log_levels` — overrides the allowed log levels per environment.

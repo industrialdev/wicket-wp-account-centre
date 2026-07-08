@@ -1,8 +1,9 @@
 ---
 title: "Account Centre Options"
 audience: [implementer, support]
-php_class: WicketAcc
+php_class: WicketAcc\WicketAcc
 db_option_prefix: acc_, wicket_admin_settings_, wicket_acc_options
+source_files: ["src/Settings.php", "src/Admin/HFMigration.php", "src/Helpers.php"]
 ---
 
 # Account Centre Options
@@ -25,6 +26,8 @@ Toggle capabilities for organization managers:
 - Ability to add new relationships/members.
 - Ability to assign security roles (e.g., Org Editor).
 - Ability to remove members from the roster.
+
+> The org-roster library also exposes its own access-control layer. See [CONFIGURATION.md](../ORM/product/CONFIGURATION.md) for the canonical `access.permissions.*` keys (`prevent_owner_removal`, `owner_removal_requires_membership_owner_role`, role-only management access, etc.). ACC options are the global toggle surface; the org-roster config is the per-site authority.
 
 ### Configuration Storage
 - **Provider**: HyperFields (`estebanforge/hyperfields`).

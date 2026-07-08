@@ -35,7 +35,10 @@ Applied by `ConfigService` methods. Each wraps a single config value read from `
 | `wicket/org-roster/additional_seats_discount_sku` | `ConfigService.php:68` | `integrations.additional_seats.discount_sku` | `string` | `'corporate-seat-discount'` |
 | `wicket/org-roster/additional_seats_form_id` | `ConfigService.php:90` | `integrations.additional_seats.form_id` | `int` | `0` (auto-detected from slug if possible) |
 | `wicket/org-roster/additional_seats_min_quantity` | `ConfigService.php:143` | `integrations.additional_seats.min_quantity` | `int` | `1` |
-| `wicket/org-roster/additional_seats_max_quantity` | `ConfigService.php:156` | `integrations.additional_seats.max_quantity` | `int` | `100` |
+| `wicket/org-roster/additional_seats_max_quantity` | `ConfigService.php:156` | `integrations.additional_seats.max_quantity` | `int` | `900` |
+| `wicket/org-roster/additional_seats_tier_mode` | `ConfigService.php:247` | `integrations.additional_seats.tier_mode` | `bool` | `false` |
+| `wicket/org-roster/additional_seats_tier_skus` | `ConfigService.php:275` | `integrations.additional_seats.tier_skus` | `array<string,string>` | `[]` |
+| `wicket/org-roster/additional_seats_tier_slug_field` | `ConfigService.php:294` | `integrations.additional_seats.tier_slug_field` | `string` | `'tier-slug'` |
 | `wicket/org-roster/allowed_document_types` | `ConfigService.php:171` | `integrations.documents.allowed_types` | `array` | `['pdf','doc','docx','xls','xlsx','jpg','jpeg','png','gif']` |
 | `wicket/org-roster/max_document_size` | `ConfigService.php:184` | `integrations.documents.max_size` | `int` | `10485760` (10 MB) |
 | `wicket/org-roster/business_info_seat_limit` | `ConfigService.php:197` | `integrations.business_info.seat_limit_info` | `string\|null` | `null` |
@@ -88,4 +91,6 @@ All three are guarded by `wicket_is_multilang_active()` checks. They only fire w
 | Per-field config filters | 9 |
 | External filters consumed | 1 (`wpml_object_id`, 3 call sites) |
 | Utility filters | 1 |
-| **Total `apply_filters` calls** | **16** |
+| **Total `apply_filters` calls** | **22** |
+
+> Count includes the three tier-mode filters added with the multi-tier additional seats flow.

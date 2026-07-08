@@ -1,3 +1,11 @@
+---
+title: "Cascade Strategy: Config Schema"
+audience: [developer, implementer]
+slug: cascade-config-schema
+source_files:
+  - "src/Config/OrgManConfig.php"
+---
+
 # Cascade Strategy: Config Schema
 
 Cascade mode uses shared config keys rather than a dedicated `cascade` namespace.

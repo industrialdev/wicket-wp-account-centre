@@ -1,3 +1,11 @@
+---
+title: "Direct Strategy: Current Status"
+audience: [developer, implementer]
+slug: direct-implementation-plan
+source_files:
+  []
+---
+
 # Direct Strategy: Current Status
 
 This file replaces older implementation-plan notes.

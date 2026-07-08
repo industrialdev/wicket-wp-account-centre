@@ -1,3 +1,9 @@
+---
+title: "CSAE Configuration"
+audience: [implementer, support, developer]
+source_files: ["../csae-portal-wordpress/src/web/app/themes/wicket-child/custom/org-roster.php"]
+---
+
 # CSAE Configuration
 
 Source of truth: `../csae-portal-wordpress/src/web/app/themes/wicket-child/custom/org-roster.php`

@@ -1,3 +1,11 @@
+---
+title: "Membership Cycle Strategy: Roles And Permissions"
+audience: [developer, implementer]
+slug: membership-cycle-roles-permissions
+source_files:
+  - "src/Services/Strategies/MembershipCycleStrategy.php"
+---
+
 # Membership Cycle Strategy: Roles And Permissions
 
 Membership-cycle mode has strategy-local permission keys.

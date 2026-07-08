@@ -1,3 +1,9 @@
+---
+title: "PACE Configuration"
+audience: [implementer, support, developer]
+source_files: ["../pace-website-wordpress/src/web/app/themes/wicket-child/custom/org-roster.php"]
+---
+
 # PACE Configuration
 
 Source of truth: `../pace-website-wordpress/src/web/app/themes/wicket-child/custom/org-roster.php`
@@ -35,7 +41,7 @@ PACE's MDP membership has "Cascading Membership Settings" enabled with cascade t
 
 ## Current Override File
 
-`OrgMan` is booted by `wicket-wp-account-centre` at `after_setup_theme` priority 20. This file registers **only** PACE's config overrides — it does not boot `OrgMan` and does not load any autoloader. See [Installation](../../product/INSTALLATION.md).
+`OrgMan` is booted by `wicket-wp-account-centre` at `after_setup_theme` priority 20. This file registers **only** PACE's config overrides — it does not boot `OrgMan` and does not load any autoloader. See [Setup](../../product/SETUP.md).
 
 ```php
 <?php

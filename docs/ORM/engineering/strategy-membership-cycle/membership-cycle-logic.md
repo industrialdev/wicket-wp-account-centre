@@ -1,3 +1,12 @@
+---
+title: "Membership Cycle Strategy: Logic"
+audience: [developer, implementer]
+slug: membership-cycle-logic
+source_files:
+  - "src/Services/Strategies/MembershipCycleStrategy.php"
+  - "src/Services/MembershipService.php"
+---
+
 # Membership Cycle Strategy: Logic
 
 Membership-cycle mode exists to prevent cross-cycle mutations when an organization has more than one relevant membership.

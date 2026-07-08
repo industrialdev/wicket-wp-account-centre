@@ -1,8 +1,9 @@
 ---
-title: "Ac Touchpoint Microspec"
-audience: [developer, agent]
-php_class: WicketAcc
-source_files: ["src/"]
+title: "Touchpoint: Microspec Block"
+audience: [developer, agent, implementer]
+php_class: WicketAcc\Blocks\TouchpointMicrospec\init
+source_files: ["includes/blocks/ac-touchpoint-microspec/init.php", "includes/blocks/ac-touchpoint-microspec/render.php", "includes/blocks/ac-touchpoint-microspec/block.json"]
+---
 ---
 
 # AC Touchpoint Microspec Block Documentation

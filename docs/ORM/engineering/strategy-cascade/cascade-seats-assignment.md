@@ -1,3 +1,12 @@
+---
+title: "Cascade Strategy: Seats"
+audience: [developer, implementer]
+slug: cascade-seats-assignment
+source_files:
+  - "src/Services/MembershipService.php"
+  - "src/Services/Strategies/CascadeStrategy.php"
+---
+
 # Cascade Strategy: Seats
 
 Cascade mode still targets organization memberships for seat consumption.

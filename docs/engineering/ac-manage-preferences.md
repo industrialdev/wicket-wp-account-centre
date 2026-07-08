@@ -1,8 +1,9 @@
 ---
-title: "Ac Manage Preferences"
-audience: [developer, agent]
-php_class: WicketAcc
-source_files: ["src/"]
+title: "Manage Preferences Block"
+audience: [developer, agent, implementer]
+php_class: WicketAcc\Blocks\ManagePreferences\init
+source_files: ["includes/blocks/ac-manage-preferences/init.php", "includes/blocks/ac-manage-preferences/render.php", "includes/blocks/ac-manage-preferences/block.json"]
+---
 ---
 
 # AC Manage Preferences Block Documentation

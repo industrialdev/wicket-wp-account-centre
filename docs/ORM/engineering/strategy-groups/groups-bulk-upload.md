@@ -1,3 +1,11 @@
+---
+title: "Groups Strategy: Bulk Upload"
+audience: [developer, implementer]
+slug: groups-bulk-upload
+source_files:
+  - "src/Services/BulkMemberUploadService.php"
+---
+
 # Groups Strategy: Bulk Upload
 
 Bulk upload is available in groups mode when:

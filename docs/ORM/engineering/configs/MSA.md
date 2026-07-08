@@ -1,3 +1,9 @@
+---
+title: "MSA Configuration"
+audience: [implementer, support, developer]
+source_files: ["../msa-website-wordpress/src/web/app/themes/wicket-child/custom/org-roster.php"]
+---
+
 # MSA Configuration
 
 Source of truth: `../msa-website-wordpress/src/web/app/themes/wicket-child/custom/org-roster.php`

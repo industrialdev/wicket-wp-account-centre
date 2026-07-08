@@ -1,8 +1,9 @@
 ---
-title: "Ac Touchpoint Maple"
-audience: [developer, agent]
-php_class: WicketAcc
-source_files: ["src/"]
+title: "Touchpoint: Maple Block"
+audience: [developer, agent, implementer]
+php_class: WicketAcc\Blocks\TouchpointMaple\init
+source_files: ["includes/blocks/ac-touchpoint-maple/init.php", "includes/blocks/ac-touchpoint-maple/render.php", "includes/blocks/ac-touchpoint-maple/block.json"]
+---
 ---
 
 # AC Touchpoint Maple Block Documentation

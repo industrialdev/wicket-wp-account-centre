@@ -1,3 +1,12 @@
+---
+title: "Direct Strategy: Logic"
+audience: [developer, implementer]
+slug: direct-logic
+source_files:
+  - "src/Services/Strategies/DirectAssignmentStrategy.php"
+  - "src/Services/MemberService.php"
+---
+
 # Direct Strategy: Logic
 
 Direct strategy is the most explicit organization-membership flow in the package.

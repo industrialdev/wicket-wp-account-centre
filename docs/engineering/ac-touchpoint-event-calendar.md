@@ -1,8 +1,9 @@
 ---
-title: "Ac Touchpoint Event Calendar"
-audience: [developer, agent]
-php_class: WicketAcc
-source_files: ["src/"]
+title: "Touchpoint: Event Calendar Block"
+audience: [developer, agent, implementer]
+php_class: WicketAcc\Blocks\TouchpointEventCalendar\init
+source_files: ["includes/blocks/ac-touchpoint-event-calendar/init.php", "includes/blocks/ac-touchpoint-event-calendar/render.php", "includes/blocks/ac-touchpoint-event-calendar/block.json"]
+---
 ---
 
 # AC Touchpoint Event Calendar Block Documentation

@@ -228,6 +228,23 @@ class ConfigService
     }
 
     /**
+     * Whether the "Purchase Additional Seats" button is shown only once all seats are assigned.
+     *
+     * Defaults to false (button always available to authorized users). Sites that want the
+     * button to surface only at capacity enable this. Filterable via
+     * 'wicket/org-roster/additional_seats_show_button_when_full_only'.
+     *
+     * @return bool
+     */
+    public function isAdditionalSeatsButtonShownWhenFullOnly()
+    {
+        $config = $this->getFullConfig();
+        $default = (bool) ($config['integrations']['additional_seats']['show_button_when_full_only'] ?? false);
+
+        return (bool) apply_filters('wicket/org-roster/additional_seats_show_button_when_full_only', $default);
+    }
+
+    /**
      * Whether the multi-tier additional-seats flow is active.
      *
      * Tier mode is opt-in. It activates when the 'tier_mode' flag is explicitly true OR when

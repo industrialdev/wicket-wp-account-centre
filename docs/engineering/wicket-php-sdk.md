@@ -1,8 +1,8 @@
 ---
-title: "Wicket Php Sdk"
+title: "Wicket PHP SDK & MDP Integration"
 audience: [developer, agent]
-php_class: WicketAcc
-source_files: ["src/"]
+php_class: WicketAcc\WicketAcc
+source_files: ["src/Mdp/", "src/Profile.php", "src/Helpers.php", "vendor/industrialdev/wicket-sdk-php/"]
 ---
 
 # Wicket PHP SDK & MDP Integration
@@ -45,13 +45,16 @@ $touchpoints = WACC()->Mdp()->Touchpoint()->getCurrentUserTouchpoints($service_i
 ```
 
 ## Technical Architecture
-The `WicketAcc\Mdp\Init` class acts as a gateway. It uses magic methods to lazily instantiate sub-services located in `src/Mdp/`:
+
+`WicketAcc\Mdp\Init` acts as a gateway. It uses magic methods to lazily instantiate sub-services in `src/Mdp/`:
 - `Person.php`
 - `Organization.php`
 - `Membership.php`
 - `Touchpoint.php`
 - `Address.php`
 - `Roles.php`
+
+The OrgMan org-roster library talks to the same MDP through `WicketORM\Services\MembershipService`, `WicketORM\Services\OrganizationService`, `WicketORM\Services\PermissionService`, and the rest of the in-tree services. They do **not** go through `WACC()->Mdp()` — they hold their own SDK client. See [ARCHITECTURE.md](../ORM/engineering/ARCHITECTURE.md).
 
 ## SDK Client Initialization
 If you need direct access to the SDK `Client` (e.g., for custom API calls not covered by existing services):

@@ -1,3 +1,11 @@
+---
+title: "Cascade Strategy: Current Status"
+audience: [developer, implementer]
+slug: cascade-implementation-plan
+source_files:
+  []
+---
+
 # Cascade Strategy: Current Status
 
 This file replaces older plan-oriented notes.

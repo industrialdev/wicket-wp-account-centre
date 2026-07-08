@@ -218,7 +218,7 @@ if ($use_unified_view) {
 if ($use_unified_view) {
     return;
 }
-$can_purchase_seats = $org_uuid ? $additional_seats_service->canPurchaseAdditionalSeats($org_uuid) : false;
+$can_purchase_seats = $org_uuid ? $additional_seats_service->canPurchaseAdditionalSeats($org_uuid, $membership_uuid) : false;
 $purchase_url = ($can_purchase_seats && $membership_uuid)
     ? $additional_seats_service->getPurchaseFormUrl($org_uuid, $membership_uuid)
     : '';

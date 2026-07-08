@@ -1,8 +1,8 @@
 ---
 title: "Base Block"
 audience: [developer, agent]
-php_class: WicketAcc
-source_files: ["src/"]
+php_class: WicketAcc\Blocks
+source_files: ["includes/blocks/_ac-base-block/init.php", "includes/blocks/_ac-base-block/ajax.php", "includes/blocks/_ac-base-block/render.php"]
 ---
 
 # AC Base Block Documentation

@@ -1,3 +1,12 @@
+---
+title: "Cascade Strategy: Bulk Upload"
+audience: [developer, implementer]
+slug: cascade-bulk-upload
+source_files:
+  - "src/Services/BulkMemberUploadService.php"
+  - "src/WicketORM/templates-partials/process/bulk-upload-members.php"
+---
+
 # Cascade Strategy: Bulk Upload
 
 Bulk upload is available in cascade mode when:

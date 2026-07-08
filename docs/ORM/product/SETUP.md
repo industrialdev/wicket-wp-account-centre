@@ -1,54 +1,35 @@
 ---
-title: "Installation"
+title: "Org Roster Setup"
 audience: [implementer, support]
 php_class: WicketORM\OrgMan
-source_files: ["src/WicketORM/OrgMan.php", "class-wicket-acc-main.php"]
+source_files: ["src/OrgMan.php", "src/Config/OrgManConfig.php", "class-wicket-acc-main.php"]
 ---
 
-# Installation
+# Org Roster Setup
 
-How `WicketORM\OrgMan` (org-roster) is installed and activated on a Wicket site.
+How a site activates and configures the org-roster feature (`WicketORM\`) once `wicket-wp-account-centre` is installed and active.
 
-`WicketORM\` lives inside and is booted by **`wicket-wp-account-centre`**.
-Sites do not install, autoload, sync, or boot the library themselves.
-A site's only responsibility is a small child-theme config override file.
+`WicketORM\` is **booted automatically** by `wicket-wp-account-centre` on `after_setup_theme` priority 20. There is no separate install, autoload, or bootstrap step for the site to perform.
 
-## Requirements
+What a site *does* need to do:
 
-- PHP 8.2+
-- WordPress
-- `wicket-wp-account-centre` plugin active (it provides `WicketORM\` and boots `OrgMan`)
+1. Create a child-theme config override file (only if the site needs non-default behavior).
+2. Include that file from `functions.php`.
+3. Make sure the required WordPress page slugs exist.
 
-Optional integrations:
+## When Do You Need This
 
-- WooCommerce for additional seats
-- Gravity Forms for the additional seats purchase form
-- Wicket/MDP helper functions supplied by the host application
+You need a child-theme override file when the site wants to:
 
-For product setup and operational behavior of the additional seats flow, see [ADDITIONAL-SEATS.md](ADDITIONAL-SEATS.md).
+- Switch strategy (e.g., `membership.strategy = membership_cycle` instead of `direct`).
+- Enable the additional-seats flow (`integrations.additional_seats.enabled = true`).
+- Enable the contacts roster (`contacts.enabled = true`).
+- Enable async CSV exports (`exports.enabled = true`).
+- Enable MDP engagement/donation display (`engagement.enabled = true`).
+- Tighten or relax owner-removal rules.
+- Override any other config key documented in [CONFIGURATION.md](CONFIGURATION.md).
 
-## How OrgMan Boots
-
-`wicket-wp-account-centre` boots the orchestrator itself:
-
-```php
-// class-wicket-acc-main.php (abbreviated)
-add_action(
-    "after_setup_theme",
-    static function (): void {
-        if (class_exists(OrgMan::class)) {
-            OrgMan::getInstance();
-        }
-    },
-    20,
-);
-```
-
-Consequences for site code:
-
-- `OrgMan::getInstance()` runs on `after_setup_theme` priority **20**.
-- `OrgMan` reads the `wicket/org-roster/config` filter during boot, so site overrides must be registered **before** that hook fires. A plain top-level `add_filter(...)` in the child theme's `custom/org-roster.php` (included from `functions.php`) satisfies this — theme files load before `after_setup_theme`.
-- Sites must **not** call `OrgMan::get_instance()` / `getInstance()`, must **not** load any org-roster autoloader, and must **not** replicate the old library-root / `base_path` / `base_url` scaffold. account-centre owns all of that.
+If the site is fine with every default, no override file is needed.
 
 ## 1) Create the Config Override File
 
@@ -77,7 +58,16 @@ add_filter('wicket/org-roster/config', static function (array $config): array {
 });
 ```
 
-Working examples: per-site snapshots live in [`engineering/configs/`](../engineering/configs/) (e.g. [PACE](../engineering/configs/PACE.md), [CCHL](../engineering/configs/CCHL.md)).
+Working examples for active sites live under [`engineering/configs/`](../engineering/configs/):
+
+- [PACE](../engineering/configs/PACE.md) — `cascade` strategy
+- [CCHL](../engineering/configs/CCHL.md) — `direct` strategy
+- [ESCRS](../engineering/configs/ESCRS.md) — `membership_cycle` strategy with multi-tier additional seats
+- [IAA](../engineering/configs/IAA.md) — `groups` strategy
+- [MSA](../engineering/configs/MSA.md) — `cascade` strategy with `membership.seat_limits.tier_max_assignments`
+- [NJBIA](../engineering/configs/NJBIA.md) — `cascade` strategy with `member_contact` defaults
+- [CSAE](../engineering/configs/CSAE.md) — `direct` strategy with additional seats off
+- [Exports & Engagement Example](../engineering/configs/EXPORTS-ENGAGEMENT-EXAMPLE.md) — opt-in `exports` and `engagement` config
 
 ## 2) Include the Override File From Theme `functions.php`
 
@@ -91,7 +81,7 @@ $wicket_child_includes = [
 ];
 ```
 
-## 3) Strategy and Behavior Overrides
+## 3) Strategy And Behavior Overrides
 
 Set inside the config filter callback. Common keys:
 
@@ -141,17 +131,25 @@ The library expects account-page slugs matching:
 - `organization-profile`
 - `organization-members`
 - `organization-members-bulk`
+- `organization-contacts` (only when `contacts.enabled = true`)
 - `supplemental-members`
+
+Legacy ACC compatibility slugs (`org-management`, `org-management-profile`, `org-management-members`, `org-management-roster`) route to the same templates and can be used as drop-in aliases during migration.
 
 ## 6) Verification Checklist
 
 1. `wicket-wp-account-centre` is active.
 2. Child theme includes `custom/org-roster.php` and it contains an `add_filter('wicket/org-roster/config', ...)` callback.
 3. No `OrgMan::get_instance()` / `getInstance()` call, no `require` of an org-roster autoloader, and no library-root scaffold in site code.
-4. My Account CPT page slug exists: `organization-management`.
+4. My Account CPT page slug exists: `organization-management`. If `contacts.enabled = true`, also confirm `organization-contacts`.
 5. User has relevant memberships/roles in Wicket.
 6. No fatal errors in PHP/WP logs.
 
 ## Common Failure Mode
 
 If the page renders but the org list is empty with no `OrgMan` execution evidence, check that `wicket-wp-account-centre` is active and that the child-theme override file is included and registering its `wicket/org-roster/config` callback before `after_setup_theme` priority 20.
+
+## Notes
+
+- `OrgMan` reads the `wicket/org-roster/config` filter during boot. Theme overrides must be registered before that hook fires. A plain top-level `add_filter(...)` in the child theme's `custom/org-roster.php` (included from `functions.php`) satisfies this because theme files load before `after_setup_theme`.
+- A defer-guard yields `OrgMan::getInstance()` to the standalone WicketORM plugin if both happen to be active at the same time. Sites mid-migration can leave the standalone plugin in place until they're ready to remove it; once it is gone, account-centre takes over automatically.

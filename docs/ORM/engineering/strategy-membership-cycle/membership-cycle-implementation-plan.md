@@ -1,3 +1,11 @@
+---
+title: "Membership Cycle Strategy: Current Status"
+audience: [developer, implementer]
+slug: membership-cycle-implementation-plan
+source_files:
+  []
+---
+
 # Membership Cycle Strategy: Current Status
 
 This file replaces older plan-oriented notes.

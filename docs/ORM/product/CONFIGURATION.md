@@ -12,7 +12,7 @@ Current runtime source of truth: `src/Config/OrgManConfig.php`
 
 This document defines the proposed canonical configuration schema for the library and maps every current config area into that schema.
 
-Use `docs/INSTALLATION.md` for setup wiring.
+Use [SETUP.md](SETUP.md) for the child-theme override pattern.
 
 ## Status
 
@@ -80,6 +80,9 @@ Use `docs/INSTALLATION.md` for setup wiring.
   - Default: `['org_editor', 'membership_manager', 'membership_owner']`
 - `access.permissions.prevent_owner_removal`
   - Default: `false`
+- `access.permissions.owner_removal_requires_membership_owner_role`
+  - Default: `false`
+  - When `true`, only users holding the `membership_owner` role can remove another `membership_owner`. Used by sites that lock down owner removal while leaving non-owner removal open to managers.
 - `access.permissions.prevent_owner_assignment`
   - Default: `true`
 - `access.permissions.relationship_grants.enabled`
@@ -355,9 +358,9 @@ Use `docs/INSTALLATION.md` for setup wiring.
 #### `groups.list`
 
 - `groups.list.page_size`
-  - Default: `20`
+  - Default: `10`
 - `groups.list.member_page_size`
-  - Default: `15`
+  - Default: `10`
 
 #### `groups.additional_info`
 
@@ -417,7 +420,7 @@ Use `docs/INSTALLATION.md` for setup wiring.
   - When `false`, hides the "My Role" / "My Role(s)" display from organization summary cards on the list page and detail cards.
   - Strategy-agnostic: applies to all roster modes (direct, cascade, groups, membership_cycle).
 - `presentation.organization_list.page_size`
-  - Default: `5`
+  - Default: `10`
 - `presentation.organization_list.use_custom_title`
   - Default: `false`
 - `presentation.organization_list.custom_title`
@@ -511,18 +514,44 @@ Use `docs/INSTALLATION.md` for setup wiring.
 
 #### `integrations.additional_seats`
 
+Single-SKU and multi-tier additional seats flow. Disabled by default. See [ADDITIONAL-SEATS.md](ADDITIONAL-SEATS.md) for the full flow, fail-closed guarantees, and the multi-tier fulfilment contract.
+
 - `integrations.additional_seats.enabled`
-  - Default: `true`
+  - Default: `false`
+  - Master switch. Must be `true` for the flow to activate. When `false`, the supplemental-members page renders without the purchase callout.
 - `integrations.additional_seats.sku`
   - Default: `additional-seats`
+  - WooCommerce product SKU for the seat purchase product (legacy single-SKU mode).
+- `integrations.additional_seats.discount_sku`
+  - Default: `corporate-seat-discount`
+  - SKU for the optional seat discount product. Used when both `tier_mode = false` and the discount handoff is enabled.
 - `integrations.additional_seats.form_id`
   - Default: `0`
+  - Gravity Forms form ID. Must be set to a valid form, or to `0` so the library resolves the form by slug (`form_slug`) instead.
 - `integrations.additional_seats.form_slug`
   - Default: `additional-seats`
+  - Gravity Forms form slug used in URL generation and form-by-slug resolution.
 - `integrations.additional_seats.min_quantity`
   - Default: `1`
+  - Minimum number of seats purchasable in one order.
 - `integrations.additional_seats.max_quantity`
   - Default: `900`
+  - Maximum number of seats purchasable in one order. Legacy single-SKU mode hard-caps at this value even if the GF quantity field allows more.
+- `integrations.additional_seats.tier_mode`
+  - Default: `false`
+  - Opt-in flag. When `true` (or when `tier_skus` is non-empty), the additional-seats flow resolves one WooCommerce product per membership tier slug instead of a single shared product. Sites that hold more than one org membership tier at once (e.g. ESCRS) use this so each purchase targets the correct membership record.
+- `integrations.additional_seats.tier_skus`
+  - Default: `[]`
+  - Map of `tier-slug => sku`. When set, the library looks up the WooCommerce product by SKU for each tier. When empty, SKUs are derived as `{sku}-{tier-slug}` at runtime.
+- `integrations.additional_seats.tier_slug_field`
+  - Default: `tier-slug`
+  - GF field name from which the tier slug is read at submit time. The purchase callout writes this field into the form payload so Gravity Forms can drive conditional logic and pick the correct tier product.
+
+**Fulfilment** runs through `WicketORM\Services\AdditionalSeatsService` on `woocommerce_order_status_completed` / `processing`:
+
+- Each tier seat line item bumps the matching `organization_memberships.max_assignments` by the line-item quantity.
+- Idempotency per line item is tracked via the `tier_seats_applied` order-meta flag.
+- Partial-fulfilment retries use the `tier_seats_partial` order-meta flag so re-processing an already-fulfilled order is safe.
 
 #### `integrations.documents`
 
@@ -540,6 +569,42 @@ Use `docs/INSTALLATION.md` for setup wiring.
 
 - `integrations.business_info.seat_limit_info`
   - Default: `null`
+
+### `contacts`
+
+Relationship-only contacts roster (separate from the membership-based roster). Disabled by default. Only consulted when `contacts.enabled = true`.
+
+- `contacts.enabled`
+  - Default: `false`
+  - Master switch for the contacts roster. When `true`, the contacts page (`organization-contacts` slug) renders and `WicketORM\Services\ContactService` is wired in.
+- `contacts.relationship_types.roster`
+  - Default: `['president', 'president_elect', 'secretary', 'ceo', 'treasurer', 'main_contact']`
+  - Slugs that count as a contact relationship for the org. Members assigned any of these slugs through the normal relationships flow appear in the contacts roster.
+- `contacts.permissions.can_add`
+  - Default: `['membership_manager']`
+  - WP roles that can add a contact relationship.
+- `contacts.permissions.can_remove`
+  - Default: `['membership_manager']`
+  - WP roles that can remove a contact relationship.
+- `contacts.permissions.can_view`
+  - Default: `['membership_manager']`
+  - WP roles that can view the contacts roster page.
+- `contacts.on_add.assign_roles`
+  - Default: `['org_editor', 'membership_manager']`
+  - Roles auto-assigned to the person when they are added as a contact.
+- `contacts.on_removal.strip_roles`
+  - Default: `['org_editor', 'membership_manager']`
+  - Roles stripped from the person when their contact relationship ends.
+- `contacts.on_removal.skip_strip_if_has_membership`
+  - Default: `true`
+  - When `true`, role stripping is skipped if the person still has an active membership with the org. Prevents removing access the user should keep via their membership.
+- `contacts.presentation.page_size`
+  - Default: `10`
+  - Page size for the contacts roster list.
+- `contacts.form.relationship_type.*`
+  - Display labels per relationship slug for the add-contact form.
+- `contacts.form.permissions.*`
+  - Display labels per role slug for the add-contact permissions field.
 
 ### `exports`
 
@@ -619,9 +684,15 @@ Available formats for field values:
 #### `platform.cache`
 
 - `platform.cache.enabled`
-  - Default: `false`
+  - Default: `true`
 - `platform.cache.duration`
-  - Default: `300`
+  - Default: `300` (5 minutes)
+- `platform.cache.search_clear_cache_duration`
+  - Default: `3600` (1 hour)
+  - TTL for the search-clear cache that backs incremental list refresh after a search filter is cleared.
+- `platform.cache.cache_salt`
+  - Default: `202604243100`
+  - Static cache-bust key. Bump whenever a config tree change would otherwise let stale values survive the standard `duration` window.
 
 ## Migration Map
 
@@ -819,10 +890,16 @@ The runtime still uses the current paths below. These are the target destination
 
 - `additional_seats.enabled -> integrations.additional_seats.enabled`
 - `additional_seats.sku -> integrations.additional_seats.sku`
+- `additional_seats.discount_sku -> integrations.additional_seats.discount_sku`
 - `additional_seats.form_id -> integrations.additional_seats.form_id`
 - `additional_seats.form_slug -> integrations.additional_seats.form_slug`
 - `additional_seats.min_quantity -> integrations.additional_seats.min_quantity`
 - `additional_seats.max_quantity -> integrations.additional_seats.max_quantity`
+- `additional_seats.tier_mode -> integrations.additional_seats.tier_mode`
+- `additional_seats.tier_skus -> integrations.additional_seats.tier_skus`
+- `additional_seats.tier_slug_field -> integrations.additional_seats.tier_slug_field`
+
+> Multi-tier seat purchases were added on top of the legacy single-SKU flow. The `tier_*` keys are opt-in; sites that set only the legacy keys continue to behave exactly as before. See [ADDITIONAL-SEATS.md](ADDITIONAL-SEATS.md) for the full flow.
 
 - `documents.allowed_types -> integrations.documents.allowed_types`
 - `documents.max_size -> integrations.documents.max_size`
@@ -833,6 +910,10 @@ The runtime still uses the current paths below. These are the target destination
 
 - `cache.enabled -> platform.cache.enabled`
 - `cache.duration -> platform.cache.duration`
+- `cache.search_clear_cache_duration -> platform.cache.search_clear_cache_duration`
+- `cache.cache_salt -> platform.cache.cache_salt`
+
+> The `contacts` config tree is new and has no legacy path. Sites opt in by setting `contacts.enabled = true`. See [STRATEGIES.md](../engineering/STRATEGIES.md) for how it co-exists with `membership.strategy`.
 
 ## Notes
 
@@ -841,4 +922,6 @@ The runtime still uses the current paths below. These are the target destination
 - `presentation.relationships.show_type` is positive. It replaced the legacy negative flag `ui.hide_relationship_type`.
 - Member management is intentionally unified into one category because the current code already couples member addition, edit rules, permission filtering, and bulk upload.
 - `ConfigService` also exposes dedicated filters for some runtime-resolved values such as additional seats form settings and document limits.
+- The `additional_seats.tier_*` keys are the supported way to handle multi-tier orgs. There is no legacy single-SKU equivalent; the tier flags simply did not exist before the multi-tier flow landed.
+- `access.permissions.owner_removal_requires_membership_owner_role` is a newer flag that tightens owner removal. It defaults to `false` to preserve prior behaviour; sites that already rely on the default owner-removal rules do not need to change anything.
 - Site-specific docs under `docs/configs/` are examples only. They are not loaded automatically.

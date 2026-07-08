@@ -1,3 +1,12 @@
+---
+title: "Direct Strategy: Bulk Upload"
+audience: [developer, implementer]
+slug: direct-bulk-upload
+source_files:
+  - "src/Services/BulkMemberUploadService.php"
+  - "src/WicketORM/templates-partials/process/bulk-upload-members.php"
+---
+
 # Direct Strategy: Bulk Upload
 
 Bulk upload is available in direct mode when:

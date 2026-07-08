@@ -1,3 +1,12 @@
+---
+title: "Direct Strategy: Specification"
+audience: [developer, implementer]
+slug: direct-specification
+source_files:
+  - "src/Services/MemberService.php"
+  - "src/Services/Strategies/DirectAssignmentStrategy.php"
+---
+
 # Direct Strategy: Specification
 
 ## Current Contract

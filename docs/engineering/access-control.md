@@ -1,8 +1,8 @@
 ---
-title: "Access Control"
+title: "Access Control & Roles"
 audience: [developer, agent]
-php_class: WicketAcc
-source_files: ["src/"]
+php_class: WicketAcc\WicketAcc
+source_files: ["src/User.php", "src/WicketORM/Services/PermissionService.php", "src/WicketORM/Helpers/PermissionHelper.php", "src/WicketORM/Services/MemberService.php"]
 ---
 
 # Access Control & Roles
@@ -63,7 +63,20 @@ Most organization management blocks perform role checks during initialization:
 2. **Role Check**: Fetch roles for the current user in that organization.
 3. **Capability Validation**: If the user lacks the required role, the block displays a "Permission Denied" message or redirects.
 
+## OrgMan Access Control (Org Roster)
+
+The in-tree `WicketORM\` org-roster library extends access control with three layers:
+
+1. **Org management**: standard org-management WP roles and the configured MDP roles (`access.permissions.any_management_roles`).
+2. **Member management**: `access.permissions.manage_member_roles` gates add/remove.
+3. **Owner removal guard**: `access.permissions.prevent_owner_removal` and `access.permissions.owner_removal_requires_membership_owner_role` are enforced through `WicketORM\Helpers\PermissionHelper::guardOwnerRemoval()`. This guard is invoked from every strategy's remove path, so the rules apply uniformly across `direct`, `cascade`, `groups`, and `membership_cycle` modes.
+
+Contacts roster uses a separate permission set (`contacts.permissions.can_add`, `contacts.permissions.can_remove`, `contacts.permissions.can_view`) and is strategy-agnostic.
+
+See [CONFIGURATION.md](../ORM/product/CONFIGURATION.md) for the full schema and [STRATEGIES.md](../ORM/engineering/STRATEGIES.md) for how the guards are wired into each strategy.
+
 ## Security Best Practices
 - **Sanitization**: Always sanitize organization UUIDs before performing role checks.
 - **Nonce Validation**: All role management actions (e.g., via AJAX or form submission) must include a valid WordPress nonce.
-- **Capability Mapping**: Use `current_user_can()` for WordPress-level permissions and the MDP services for organization-specific permissions."
+- **Capability Mapping**: Use `current_user_can()` for WordPress-level permissions and the MDP services for organization-specific permissions.
+- **Owner removal**: When tightening owner-removal rules, prefer `access.permissions.prevent_owner_removal` and `access.permissions.owner_removal_requires_membership_owner_role` over custom code; they are the only removal rules that apply uniformly across all org-roster strategies."

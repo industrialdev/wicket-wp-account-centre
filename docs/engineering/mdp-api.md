@@ -1,8 +1,8 @@
 ---
-title: "Mdp Api"
+title: "MDP API"
 audience: [developer, agent]
-php_class: WicketAcc
-source_files: ["src/"]
+php_class: WicketAcc\Mdp\Init
+source_files: ["src/Mdp/", "vendor/industrialdev/wicket-sdk-php/"]
 ---
 
 Wicket MDP API

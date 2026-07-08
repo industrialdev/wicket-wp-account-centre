@@ -1,8 +1,9 @@
 ---
-title: "Ac Touchpoint Pheedloop"
-audience: [developer, agent]
-php_class: WicketAcc
-source_files: ["src/"]
+title: "Touchpoint: Pheedloop Block"
+audience: [developer, agent, implementer]
+php_class: WicketAcc\Blocks\TouchpointPheedloop\init
+source_files: ["includes/blocks/ac-touchpoint-pheedloop/init.php", "includes/blocks/ac-touchpoint-pheedloop/render.php", "includes/blocks/ac-touchpoint-pheedloop/block.json"]
+---
 ---
 
 # AC Touchpoint Pheedloop Block Documentation

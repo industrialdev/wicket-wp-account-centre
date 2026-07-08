@@ -1,3 +1,11 @@
+---
+title: "Membership Cycle Strategy: Bulk Upload"
+audience: [developer, implementer]
+slug: membership-cycle-bulk-upload
+source_files:
+  - "src/Services/BulkMemberUploadService.php"
+---
+
 # Membership Cycle Strategy: Bulk Upload
 
 Bulk upload is available in membership-cycle mode when:

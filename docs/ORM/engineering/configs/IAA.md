@@ -1,3 +1,9 @@
+---
+title: "IAA Configuration"
+audience: [implementer, support, developer]
+source_files: ["../iaa-website-wordpress/src/web/app/themes/wicket-child/custom/org-roster.php"]
+---
+
 # IAA Configuration
 
 Source of truth: `../iaa-website-wordpress/src/web/app/themes/wicket-child/custom/org-roster.php`
