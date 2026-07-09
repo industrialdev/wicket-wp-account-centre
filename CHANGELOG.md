@@ -1,5 +1,7 @@
 # Wicket Account Centre Changelog
 
+<!-- new releases inserted below this line -->
+
 # 1.7.7 / 2026-07-08
 - Additional seats "Purchase" button now shows by default for authorized users regardless of seat availability. New config `integrations.additional_seats.show_button_when_full_only` (default false) restores the original seats-full-only behaviour.
 - Fixed membership owners being denied the purchase button: `can_purchase_seats` now grants the right to the actual membership owner (ownership relationship), including delayed (not-yet-started) memberships. Multi-tier orgs pass the specific membership UUID so the correct tier is evaluated.
