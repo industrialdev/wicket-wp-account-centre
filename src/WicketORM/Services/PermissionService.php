@@ -222,6 +222,7 @@ class PermissionService
         $protected_roles = ['super_admin', 'administrator', 'user'];
 
         try {
+            $failed_roles = [];
             foreach ($roles as $role) {
                 // Skip protected roles
                 if (in_array($role, $protected_roles, true)) {
@@ -230,8 +231,17 @@ class PermissionService
 
                 $result = $this->removePersonSingleRoleFromOrg($person_uuid, $role, $org_id);
                 if (!$result) {
-                    return new \WP_Error('role_removal_failed', sprintf('Failed removing role %s.', $role));
+                    // Continue-on-error: collect failures and keep stripping the
+                    // remaining roles. A single bad role must not strand the rest.
+                    $failed_roles[] = $role;
                 }
+            }
+
+            if (!empty($failed_roles)) {
+                return new \WP_Error('role_removal_failed', sprintf(
+                    'Failed removing role(s): %s.',
+                    implode(', ', $failed_roles)
+                ));
             }
 
             return true;
