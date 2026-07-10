@@ -71,6 +71,23 @@ class MembershipRosterReader
     }
 
     /**
+     * Resolve the active_at filter value for a membership-scoped roster query.
+     *
+     * Delegates to MembershipService, which owns the cached org-membership data.
+     * When the MDP reports the membership status as 'Delayed', the membership
+     * starts in the future and its assignments need active_at pointed at the
+     * membership's own start to appear (WWID-1910). Otherwise 'now' preserves
+     * active-only filtering (and the hiding of end-dated removed members).
+     *
+     * @param string $membershipUuid Organization membership UUID.
+     * @return string 'now', or the membership's starts_at when it is Delayed.
+     */
+    private function resolveActiveAt(string $membershipUuid): string
+    {
+        return $this->membershipService()->resolveActiveAt($membershipUuid);
+    }
+
+    /**
      * Lazily instantiate ConnectionService.
      *
      * @return ConnectionService
@@ -159,9 +176,15 @@ class MembershipRosterReader
         $logger = \Wicket()->log();
         $gen = $this->cacheService()->getMembershipGeneration($membershipUuid);
 
+        // WWID-1910: Delayed (future-starting) memberships need the roster window
+        // pointed at the membership's own start; otherwise active_at=now hides
+        // their future assignments. 'now' for everything else preserves current
+        // behavior (active-only, hiding end-dated removed members).
+        $activeAt = $this->resolveActiveAt($membershipUuid);
+
         // Cache initial load only (no search term)
         if (empty($searchTerm)) {
-            $cache_key = 'orgman_members_' . md5($membershipUuid . $page . $size . (int) $isLazy . $gen);
+            $cache_key = 'orgman_members_' . md5($membershipUuid . $page . $size . (int) $isLazy . $gen . $activeAt);
             $cached_data = $this->getCachedData($cache_key);
 
             if (false !== $cached_data) {
@@ -170,7 +193,7 @@ class MembershipRosterReader
         }
 
         if ('' !== $searchTerm) {
-            $search_cache_key = 'orgman_search_' . md5($membershipUuid . $searchTerm . $page . $size . $gen);
+            $search_cache_key = 'orgman_search_' . md5($membershipUuid . $searchTerm . $page . $size . $gen . $activeAt);
             $cached_search = $this->getCachedData($search_cache_key);
             if (false !== $cached_search) {
                 return $cached_search;
@@ -212,7 +235,7 @@ class MembershipRosterReader
         }
 
         if ('' !== $searchTerm && function_exists('wicket_api_client')) {
-            $search_cache_key ??= 'orgman_search_' . md5($membershipUuid . $searchTerm . $page . $size . $gen);
+            $search_cache_key ??= 'orgman_search_' . md5($membershipUuid . $searchTerm . $page . $size . $gen . $activeAt);
             $search_ttl ??= \WicketORM\Helpers\ConfigHelper::get_search_cache_duration();
 
             $queryArgs = [
@@ -225,7 +248,7 @@ class MembershipRosterReader
                 'filter' => [
                     'organization_membership_uuid_in'                    => [$membershipUuid],
                     'person_full_name_or_person_emails_address_cont'     => $searchTerm,
-                    'active_at'                                          => 'now',
+                    'active_at'                                          => $activeAt,
                 ],
             ];
 
@@ -258,7 +281,7 @@ class MembershipRosterReader
             'page[number]' => $page,
             'page[size]'   => $size,
             'include'      => 'person,membership',
-            'filter[active_at]' => 'now',
+            'filter[active_at]' => $activeAt,
         ];
 
         if ('' !== $searchTerm) {
@@ -290,7 +313,7 @@ class MembershipRosterReader
                     if (empty($searchTerm)) {
                         $isLazy = (bool) ($args['lazy'] ?? false);
                         $gen = $this->cacheService()->getMembershipGeneration($membershipUuid);
-                        $cache_key = 'orgman_members_' . md5($membershipUuid . $page . $size . (int) $isLazy . $gen);
+                        $cache_key = 'orgman_members_' . md5($membershipUuid . $page . $size . (int) $isLazy . $gen . $activeAt);
                         $this->setCachedData($cache_key, $normalized);
                     }
 
@@ -314,7 +337,7 @@ class MembershipRosterReader
                 $fallbackResponse = $client->get($endpoint . '?' . http_build_query([
                     'page[number]' => 1,
                     'page[size]' => max(100, $size),
-                    'filter[active_at]' => 'now',
+                    'filter[active_at]' => $activeAt,
                     'include' => 'person,emails,phones',
                 ]));
 
@@ -357,7 +380,7 @@ class MembershipRosterReader
         if (empty($searchTerm) && null !== $final_response) {
             $isLazy = (bool) ($args['lazy'] ?? false);
             $gen = $this->cacheService()->getMembershipGeneration($membershipUuid);
-            $cache_key = 'orgman_members_' . md5($membershipUuid . $page . $size . (int) $isLazy . $gen);
+            $cache_key = 'orgman_members_' . md5($membershipUuid . $page . $size . (int) $isLazy . $gen . $activeAt);
             $this->setCachedData($cache_key, $final_response);
         }
 
@@ -807,13 +830,15 @@ class MembershipRosterReader
         try {
             $client = wicket_api_client();
 
+            $activeAt = $this->resolveActiveAt($membershipUuid);
+
             // Use the same nested endpoint pattern as getMembershipMembers()
             // GET /organization_memberships/{membershipUuid}/person_memberships
             $endpoint = '/organization_memberships/' . rawurlencode($membershipUuid) . '/person_memberships';
             $queryParams = [
                 'page[number]' => 1,
                 'page[size]'   => 100,
-                'filter[active_at]' => 'now',
+                'filter[active_at]' => $activeAt,
                 'include'      => 'person,membership',
             ];
 
