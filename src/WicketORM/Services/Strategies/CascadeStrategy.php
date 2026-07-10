@@ -535,6 +535,14 @@ class CascadeStrategy implements RosterManagementStrategy
             }
 
             $roles_to_remove = $this->permissionService()->getPersonCurrentRolesByOrgId($person_uuid, $org_id);
+
+            // Exclude the base member role: it is tied to the membership that was
+            // just ended above, so the MDP revokes it server-side. Attempting to
+            // explicitly delete it fails (it is already gone from the person
+            // fetch by the time we get here) and would abort the whole removal.
+            $base_member_role = $config['member_management']['addition']['base_member_role'] ?? 'member';
+            $roles_to_remove = array_values(array_diff($roles_to_remove, [$base_member_role]));
+
             if (!empty($roles_to_remove)) {
                 $roles_result = $this->permissionService()->removePersonRolesFromOrg($person_uuid, $roles_to_remove, $org_id);
                 if (is_wp_error($roles_result)) {
