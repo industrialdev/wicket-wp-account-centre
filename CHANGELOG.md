@@ -2,6 +2,17 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.7.9] - 2026-07-13
+
+### Fixed
+- roster removal first-click failure and add member button styling
+
+### Documentation
+- add automated release process to AGENTS.md #norelease
+- self-contained release automation reference #norelease
+- add release automation reference #norelease
+
+
 ## [1.7.8] - 2026-07-09
 
 ### Added
