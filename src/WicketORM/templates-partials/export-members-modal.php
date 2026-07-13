@@ -35,22 +35,41 @@ $dialog_id = 'exportMembersDialog-' . $org_dom_suffix;
 $messages_id = 'export-messages-' . $org_dom_suffix;
 ?>
 
-<div data-signals="{exportSubmitting: false, exportQueued: false}">
+<div data-signals="{<?php echo esc_attr($dialog_id); ?>_exportSubmitting: false, <?php echo esc_attr($dialog_id); ?>_exportQueued: false}">
 
     <button
         type="button"
-        class="wt_button wt_button--secondary"
+        class="button button--secondary add-member-button wt_w-full wt_mt-3 wt_py-2 component-button"
         onclick="document.getElementById('<?php echo esc_attr($dialog_id); ?>').showModal()"
     >
-        <?php esc_html_e('Export Members', 'wicket-acc'); ?>
+        <?php esc_html_e('Download Roster', 'wicket-acc'); ?>
     </button>
+    <?php
+    // WWID-1907: when the roster exceeds the configured sync_threshold, the
+    // export runs asynchronously (WP-Cron batches) and the download link is
+    // emailed rather than delivered instantly. Surface that upfront so the
+    // user sets the right expectation before clicking.
+    $sync_threshold = max(0, (int) ($export_config['sync_threshold'] ?? 250));
+    $roster_count = isset($org_roster_count) ? (int) $org_roster_count : 0;
+    if ($sync_threshold > 0 && $roster_count > $sync_threshold) :
+    ?>
+        <p class="wt_mt-2 wt_mb-0 wt_text-xs wt_text-color-500 wt_text-center">
+            <?php
+            echo esc_html(sprintf(
+                /* translators: %d: member count threshold */
+                __('This roster is large (%1$d members) and will be prepared in the background. After clicking, a download link will be emailed to you.', 'wicket-acc'),
+                $roster_count
+            ));
+        ?>
+        </p>
+    <?php endif; ?>
 
     <dialog
         id="<?php echo esc_attr($dialog_id); ?>"
         class="wt_dialog"
     >
         <div class="wt_dialog__header">
-            <h2 class="wt_dialog__title"><?php esc_html_e('Export Members', 'wicket-acc'); ?></h2>
+            <h2 class="wt_dialog__title"><?php esc_html_e('Download Roster', 'wicket-acc'); ?></h2>
             <button
                 type="button"
                 class="wt_dialog__close"
@@ -63,12 +82,12 @@ $messages_id = 'export-messages-' . $org_dom_suffix;
 
             <div id="<?php echo esc_attr($messages_id); ?>"></div>
 
-            <div data-show="!exportQueued">
-                <p><?php esc_html_e('The member list will be exported as a CSV file. When the export is ready, a download link will be sent to the email address below.', 'wicket-acc'); ?></p>
+            <div data-show="!<?php echo esc_attr($dialog_id); ?>_exportQueued">
+                <p><?php esc_html_e('Download the current roster as a CSV file. Small rosters download immediately; large rosters are prepared in the background and a download link is emailed to you.', 'wicket-acc'); ?></p>
 
                 <form
                     data-on-submit="
-                        $exportSubmitting = true;
+                        $<?php echo esc_js($dialog_id); ?>_exportSubmitting = true;
                         evt.preventDefault();
                         @post('<?php echo esc_url($export_url); ?>', {
                             headers: {'X-WP-Nonce': '<?php echo esc_js(wp_create_nonce('wp_rest')); ?>'},
@@ -80,20 +99,7 @@ $messages_id = 'export-messages-' . $org_dom_suffix;
                     <input type="hidden" name="membership_uuid" value="<?php echo esc_attr($membership_uuid); ?>">
                     <input type="hidden" name="org_dom_suffix" value="<?php echo esc_attr($org_dom_suffix); ?>">
                     <input type="hidden" name="_wpnonce" value="<?php echo esc_attr($nonce); ?>">
-
-                    <div class="wt_form-group">
-                        <label for="export-email-<?php echo esc_attr($org_dom_suffix); ?>" class="wt_label">
-                            <?php esc_html_e('Send download link to', 'wicket-acc'); ?>
-                        </label>
-                        <input
-                            type="email"
-                            id="export-email-<?php echo esc_attr($org_dom_suffix); ?>"
-                            name="recipient_email"
-                            value="<?php echo esc_attr($recipient_email); ?>"
-                            class="wt_input"
-                            required
-                        >
-                    </div>
+                    <input type="hidden" name="recipient_email" value="<?php echo esc_attr($recipient_email); ?>">
 
                     <div class="wt_dialog__footer">
                         <button
@@ -106,21 +112,21 @@ $messages_id = 'export-messages-' . $org_dom_suffix;
                         <button
                             type="submit"
                             class="wt_button wt_button--primary"
-                            data-bind-disabled="exportSubmitting"
+                            data-bind-disabled="<?php echo esc_attr($dialog_id); ?>_exportSubmitting"
                         >
-                            <span data-show="!exportSubmitting"><?php esc_html_e('Export', 'wicket-acc'); ?></span>
-                            <span data-show="exportSubmitting"><?php esc_html_e('Processing…', 'wicket-acc'); ?></span>
+                            <span data-show="!<?php echo esc_attr($dialog_id); ?>_exportSubmitting"><?php esc_html_e('Download', 'wicket-acc'); ?></span>
+                            <span data-show="<?php echo esc_attr($dialog_id); ?>_exportSubmitting"><?php esc_html_e('Processing…', 'wicket-acc'); ?></span>
                         </button>
                     </div>
                 </form>
             </div>
 
-            <div data-show="exportQueued" class="wt_text-center wt_py-4">
-                <p><?php esc_html_e('Your export has been queued. You will receive an email when the download is ready.', 'wicket-acc'); ?></p>
+            <div data-show="<?php echo esc_attr($dialog_id); ?>_exportQueued" class="wt_text-center wt_py-4">
+                <p><?php esc_html_e('Your roster is large and is being prepared in the background. A download link will be emailed to you shortly.', 'wicket-acc'); ?></p>
                 <button
                     type="button"
                     class="wt_button wt_button--secondary"
-                    onclick="document.getElementById('<?php echo esc_attr($dialog_id); ?>').close(); $exportQueued = false;"
+                    onclick="document.getElementById('<?php echo esc_attr($dialog_id); ?>').close(); $<?php echo esc_js($dialog_id); ?>_exportQueued = false;"
                 >
                     <?php esc_html_e('Close', 'wicket-acc'); ?>
                 </button>

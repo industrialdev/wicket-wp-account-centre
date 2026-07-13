@@ -513,6 +513,19 @@ $show_remove_policy_callout = (
         </div>
     <?php endif; ?>
 
+    <?php
+    // WWID-1907: roster download. Gated on can_edit_members (plan §2.7), NOT
+    // can_add_members — a user who can edit the roster can download it even
+    // when seats are full (which is exactly when audit-via-download matters).
+    // Rendered outside the seats-available block for the same reason. The
+    // partial self-gates on exports.enabled.
+    if (OrgHelpers\PermissionHelper::can_edit_members($org_uuid)) :
+        $org_dom_suffix = sanitize_html_class($org_uuid ?: 'default');
+        $org_roster_count = $total_items;
+        include __DIR__ . '/export-members-modal.php';
+    endif;
+    ?>
+
     <?php if ($show_remove_policy_callout && $remove_policy_callout_placement === 'below_members') : ?>
         <?php
         $callout_content = '';

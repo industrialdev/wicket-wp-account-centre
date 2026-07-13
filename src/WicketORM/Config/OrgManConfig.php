@@ -497,17 +497,21 @@ final class OrgManConfig
             'exports' => [
                 'enabled'               => false,
                 'batch_size'            => 50,
-                'token_expiration_days' => 30,
+                // Roster size above which the export routes through the async
+                // WP-Cron path instead of an in-request build. Below this the
+                // sync path avoids WP-Cron entirely (it only fires on traffic
+                // and is fragile on low-traffic sites).
+                // Overridable per site via wicket/org-roster/config.
+                'sync_threshold'        => 250,
+                // Token TTL (days) for BOTH sync and async download links.
+                // Default 14; overridable per site via the wicket/org-roster/config filter.
+                'token_expiration_days' => 14,
                 'max_downloads'         => 10,
                 'upload_dir_slug'       => 'wicket-exports',
-                'columns'               => [
-                    'first_name'      => true,
-                    'last_name'       => true,
-                    'email'           => true,
-                    'job_title'       => true,
-                    'permission_role' => true,
-                    'primary_role'    => true,
-                ],
+                // NOTE: the legacy boolean 'columns' map was removed in WWID-1907.
+                // Export columns now derive from BulkMemberUploadService::getExportColumns()
+                // (the same config the front-end roster bulk-upload validates against),
+                // so upload and download can never drift apart.
             ],
             'engagement' => [
                 'enabled'                => false,

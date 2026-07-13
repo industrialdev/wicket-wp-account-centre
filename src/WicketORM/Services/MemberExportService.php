@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WicketORM\Services;
 
+use WicketWP\Support\CsvExporter;
 use WP_Error;
 
 if (!defined('ABSPATH')) {
@@ -11,10 +12,18 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Handles queued async CSV member exports using WP-Cron batches.
+ * Handles CSV member exports.
  *
- * Batch scheduling mirrors BulkMemberUploadService: job state stored in wp_options,
- * each batch self-chains via wp_schedule_single_event.
+ * Two paths share one download mechanism (handleDownload on `init`, streaming
+ * via readfile):
+ *   - SYNC:  roster at or below the configured threshold is built in-request
+ *            to a temp file, then a tokenized GET URL is issued. Avoids WP-Cron
+ *            for the common small-roster case (cron only fires on traffic).
+ *   - ASYNC: larger rosters go through WP-Cron batches and email the link.
+ *
+ * Columns derive from BulkMemberUploadService::getExportColumns() so an
+ * exported CSV round-trips through the roster bulk-upload without drift.
+ * AD14: every cell write goes through WicketWP\Support\CsvExporter.
  */
 class MemberExportService
 {
@@ -31,11 +40,38 @@ class MemberExportService
     private $configService;
 
     /**
-     * @param ConfigService|null $configService
+     * @var CsvExporter
      */
-    public function __construct(?ConfigService $configService = null)
+    private $csvExporter;
+
+    /**
+     * @var BulkMemberUploadService|null Lazily instantiated; only when columns are needed.
+     */
+    private $bulkUploadService;
+
+    /**
+     * @param ConfigService|null           $configService
+     * @param BulkMemberUploadService|null $bulkUploadService Injected for testability.
+     */
+    public function __construct(?ConfigService $configService = null, ?BulkMemberUploadService $bulkUploadService = null)
     {
         $this->configService = $configService ?? new ConfigService();
+        $this->csvExporter = new CsvExporter();
+        $this->bulkUploadService = $bulkUploadService;
+    }
+
+    /**
+     * Resolve the export column set from the upload service (single source).
+     *
+     * @return array<string, array{enabled: bool, header: string}>
+     */
+    private function resolveExportColumns(): array
+    {
+        if ($this->bulkUploadService === null) {
+            $this->bulkUploadService = new BulkMemberUploadService($this->configService);
+        }
+
+        return $this->bulkUploadService->getExportColumns();
     }
 
     /**
@@ -113,6 +149,209 @@ class MemberExportService
         ]);
 
         return ['job_id' => $job_id, 'status' => 'queued'];
+    }
+
+    /**
+     * Build the export in-request (sync) when the roster is at or below the
+     * configured threshold; otherwise delegate to the async cron path.
+     *
+     * The count is read from the first real page fetch (`meta.page.total_items`),
+     * not a separate probe round-trip. The defensive fallback overestimates
+     * (total_pages * batch_size) which biases to async — fails safe.
+     *
+     * Sync path writes to a temp file fully BEFORE issuing a token, so an MDP
+     * failure mid-stream produces no partial file and no token — the caller
+     * surfaces an error instead of handing the user a truncated CSV. The token
+     * uses the same 14-day TTL and CLEANUP_HOOK as the async path; both share
+     * {@see handleDownload()} for the actual stream-to-browser.
+     *
+     * @param string $org_id
+     * @param string $membership_uuid
+     * @return array{mode: string, token?: string, job_id?: string}|WP_Error
+     *     mode 'sync'  -> caller issues a browser redirect to the token URL.
+     *     mode 'async' -> caller shows the "queued, email coming" message.
+     */
+    public function streamExport(string $org_id, string $membership_uuid, ?string $recipient_email = null)
+    {
+        if ($org_id === '') {
+            return new WP_Error('export_missing_org', __('Organization ID is required.', 'wicket-acc'));
+        }
+        if ($membership_uuid === '') {
+            return new WP_Error('export_missing_membership', __('Membership UUID is required.', 'wicket-acc'));
+        }
+
+        $config = $this->configService->getFullConfig();
+        $export_config = is_array($config['exports'] ?? null) ? $config['exports'] : [];
+        $batch_size = max(1, min(500, (int) ($export_config['batch_size'] ?? 50)));
+        $threshold = max(0, (int) ($export_config['sync_threshold'] ?? 250));
+
+        // Fetch page 1 — count comes free, no separate probe.
+        $first = $this->fetchPersonMembershipsPage($membership_uuid, 1, $batch_size);
+        if (is_wp_error($first)) {
+            return $first;
+        }
+
+        $total_items = (int) ($first['meta']['page']['total_items'] ?? 0);
+        if ($total_items === 0) {
+            // Defensive fallback: overestimate -> biases async -> fails safe.
+            $total_pages = max(1, (int) ($first['meta']['page']['total_pages'] ?? 1));
+            $total_items = $total_pages * $batch_size;
+        }
+
+        // Over threshold (or threshold disabled=0 forces async) -> async path.
+        if ($threshold === 0 || $total_items > $threshold) {
+            $recipient = $recipient_email ?? sanitize_email(wp_get_current_user()->user_email ?? '');
+            if (!is_email($recipient)) {
+                return new WP_Error('export_invalid_email', __('A valid recipient email is required.', 'wicket-acc'));
+            }
+            $result = $this->enqueueExport($org_id, $membership_uuid, $recipient);
+            if (is_wp_error($result)) {
+                return $result;
+            }
+
+            return ['mode' => 'async', 'job_id' => (string) ($result['job_id'] ?? '')];
+        }
+
+        // Sync path: build the file in-request.
+        $job_id = $this->generateJobId();
+        $init = $this->initCsvFile($job_id, $export_config);
+        if (is_wp_error($init)) {
+            return $init;
+        }
+        $file_path = $init;
+        $columns = $this->resolveExportColumns();
+
+        $fh = fopen($file_path, 'a');
+        if ($fh === false) {
+            wp_delete_file($file_path);
+
+            return new WP_Error('export_file_failed', __('Unable to write to export file.', 'wicket-acc'));
+        }
+
+        try {
+            // Page 1 members.
+            $total_pages = max(1, (int) ($first['meta']['page']['total_pages'] ?? 1));
+            $processed = $this->writeMembersPage($first, $columns, $fh);
+
+            // Pages 2..N.
+            for ($page = 2; $page <= $total_pages; $page++) {
+                $next = $this->fetchPersonMembershipsPage($membership_uuid, $page, $batch_size);
+                if (is_wp_error($next)) {
+                    fclose($fh);
+                    wp_delete_file($file_path);
+
+                    return $next;
+                }
+                $processed += $this->writeMembersPage($next, $columns, $fh);
+            }
+        } finally {
+            if (is_resource($fh)) {
+                fclose($fh);
+            }
+        }
+
+        // File built. Issue token + schedule cleanup (same lifecycle as async).
+        $token = bin2hex(random_bytes(32));
+        $job = [
+            'id'              => $job_id,
+            'status'          => 'completed',
+            'created_at'      => $this->nowIso8601(),
+            'updated_at'      => $this->nowIso8601(),
+            'completed_at'    => $this->nowIso8601(),
+            'org_id'          => $org_id,
+            'membership_uuid' => $membership_uuid,
+            'recipient_email' => '',
+            'file_path'       => $file_path,
+            'download_token'  => $token,
+            'current_page'    => $total_pages,
+            'total_pages'     => $total_pages,
+            'total_processed' => $processed,
+            'batch_size'      => $batch_size,
+        ];
+        $this->saveJob($job);
+        $this->saveToken($job_id, $token, $export_config);
+        $this->scheduleCleanup($job_id, $export_config);
+
+        $this->logActivity('info', 'Sync export completed', [
+            'job_id'          => $job_id,
+            'org_id'          => $org_id,
+            'total_processed' => $processed,
+        ]);
+
+        return ['mode' => 'sync', 'token' => $token];
+    }
+
+    /**
+     * Fetch one page of active person_memberships for an org-membership.
+     *
+     * @return array<string, mixed>|WP_Error
+     */
+    private function fetchPersonMembershipsPage(string $membership_uuid, int $page, int $size)
+    {
+        if (!function_exists('wicket_api_client')) {
+            return new WP_Error('export_no_api', __('Wicket API client is unavailable.', 'wicket-acc'));
+        }
+
+        try {
+            $client = wicket_api_client();
+            $response = $client->get(
+                '/organization_memberships/' . rawurlencode($membership_uuid) . '/person_memberships?' . http_build_query([
+                    'page'    => ['number' => $page, 'size' => $size],
+                    'sort'    => 'person_family_name',
+                    'include' => 'person',
+                    'filter'  => ['status_eq' => 'Active'],
+                ])
+            );
+        } catch (\Throwable $e) {
+            return new WP_Error('export_api_error', $e->getMessage());
+        }
+
+        if (is_wp_error($response)) {
+            return $response;
+        }
+
+        return $response;
+    }
+
+    /**
+     * Write all members from one API response page to the CSV handle.
+     *
+     * @param array<string, mixed>                           $response
+     * @param array<string, array{enabled: bool, header: string}> $columns
+     * @param resource                                       $fh
+     * @return int Number of rows written.
+     */
+    private function writeMembersPage(array $response, array $columns, $fh): int
+    {
+        $members = is_array($response['data'] ?? null) ? $response['data'] : [];
+        $person_lookup = [];
+        foreach (is_array($response['included'] ?? null) ? $response['included'] : [] as $included) {
+            if (($included['type'] ?? '') === 'people') {
+                $person_lookup[(string) ($included['id'] ?? '')] = is_array($included['attributes'] ?? null)
+                    ? $included['attributes']
+                    : [];
+            }
+        }
+
+        $written = 0;
+        foreach ($members as $member) {
+            $person_id = (string) ($member['relationships']['person']['data']['id'] ?? '');
+            $person_data = is_array($person_lookup[$person_id] ?? null) ? $person_lookup[$person_id] : [];
+            $this->csvExporter->writeRow($this->buildCsvRow($member, $person_data, $columns), $fh);
+            $written++;
+        }
+
+        return $written;
+    }
+
+    /**
+     * @return string Sanitized job id (uuid with dashes stripped).
+     */
+    private function generateJobId(): string
+    {
+        $raw = function_exists('wp_generate_uuid4') ? wp_generate_uuid4() : uniqid('orgman_export_', true);
+
+        return sanitize_key(str_replace('-', '', (string) $raw));
     }
 
     /**
@@ -215,11 +454,11 @@ class MemberExportService
             return;
         }
 
-        $columns = is_array($export_config['columns'] ?? null) ? $export_config['columns'] : [];
+        $columns = $this->resolveExportColumns();
         foreach ($members as $member) {
             $person_id = (string) ($member['relationships']['person']['data']['id'] ?? '');
             $person_data = is_array($person_lookup[$person_id] ?? null) ? $person_lookup[$person_id] : [];
-            fputcsv($fh, $this->buildCsvRow($member, $person_data, $columns));
+            $this->csvExporter->writeRow($this->buildCsvRow($member, $person_data, $columns), $fh);
             $job['total_processed']++;
         }
 
@@ -385,35 +624,68 @@ class MemberExportService
     // -------------------------------------------------------------------------
 
     /**
+     * Build one CSV data row for a member, emitting only the columns that are
+     * enabled in the shared export column set (same source as bulk upload).
+     *
+     * Column order matches {@see self::headerRow()}: first_name, last_name,
+     * email, relationship_type, roles. Values are escaped downstream by
+     * CsvExporter::writeRow(); here we only coerce to strings.
+     *
+     * NOTE on roles round-trip (WWID-1907 known limitation): export joins roles
+     * with '|'; import splits on /[|]+/. Formats match, but resolvePermissionRoles()
+     * emits only [membership_manager, org_editor, membership_owner] while import
+     * re-applies the client's filter_role_submission allow/deny list. A role present
+     * in the export can be silently dropped on re-import. 'roles' is optional for
+     * upload so this is semantic data loss, not a validation failure. Aligning the
+     * export's role emission with the import filter is a future ticket.
+     *
      * @param array<string, mixed> $member     API person_membership resource.
      * @param array<string, mixed> $person_data Attributes from included person resource.
-     * @param array<string, mixed> $columns    Column flags from config.
+     * @param array<string, array{enabled: bool, header: string}> $columns
      * @return list<string>
      */
     private function buildCsvRow(array $member, array $person_data, array $columns): array
     {
         $row = [];
 
-        if ($columns['first_name'] ?? true) {
-            $row[] = sanitize_text_field((string) ($person_data['given_name'] ?? ''));
+        if ($columns['first_name']['enabled'] ?? true) {
+            $row[] = (string) ($person_data['given_name'] ?? '');
         }
-        if ($columns['last_name'] ?? true) {
-            $row[] = sanitize_text_field((string) ($person_data['family_name'] ?? ''));
+        if ($columns['last_name']['enabled'] ?? true) {
+            $row[] = (string) ($person_data['family_name'] ?? '');
         }
-        if ($columns['email'] ?? true) {
-            $row[] = sanitize_email((string) ($person_data['primary_email_address'] ?? ''));
+        if ($columns['email']['enabled'] ?? true) {
+            $row[] = (string) ($person_data['primary_email_address'] ?? '');
         }
-        if ($columns['job_title'] ?? true) {
-            $row[] = sanitize_text_field((string) ($person_data['job_title'] ?? $person_data['alternate_name'] ?? ''));
+        if ($columns['relationship_type']['enabled'] ?? true) {
+            $row[] = (string) ($member['attributes']['relationship_type'] ?? '');
         }
-        if ($columns['permission_role'] ?? true) {
+        if ($columns['roles']['enabled'] ?? true) {
             $row[] = implode('|', $this->resolvePermissionRoles($member));
-        }
-        if ($columns['primary_role'] ?? true) {
-            $row[] = sanitize_text_field((string) ($member['attributes']['relationship_type'] ?? ''));
         }
 
         return $row;
+    }
+
+    /**
+     * The CSV header row, derived from the same shared column set as the data rows.
+     * Headers are literal English by design (locale-invariant) so a CSV exported
+     * under one site locale round-trips through upload regardless of locale.
+     * DO NOT wrap in __().
+     *
+     * @param array<string, array{enabled: bool, header: string}> $columns
+     * @return list<string>
+     */
+    private function headerRow(array $columns): array
+    {
+        $headers = [];
+        foreach ($columns as $key => $def) {
+            if ($def['enabled'] ?? false) {
+                $headers[] = (string) ($def['header'] ?? $key);
+            }
+        }
+
+        return $headers;
     }
 
     /**
@@ -453,7 +725,8 @@ class MemberExportService
             return new WP_Error('export_dir_failed', __('Unable to create export directory.', 'wicket-acc'));
         }
 
-        // Deny direct HTTP access to this directory
+        // Deny direct HTTP access to this directory. Apache-only; nginx sites
+        // should add an equivalent location block. WWID-1907 noted this gap.
         $htaccess = $exports_dir . '/.htaccess';
         if (!file_exists($htaccess)) {
             file_put_contents($htaccess, "Options -Indexes\nDeny from all\n"); // phpcs:ignore
@@ -465,28 +738,10 @@ class MemberExportService
             return new WP_Error('export_file_failed', __('Unable to create export file.', 'wicket-acc'));
         }
 
-        $columns = is_array($export_config['columns'] ?? null) ? $export_config['columns'] : [];
-        $headers = [];
-        if ($columns['first_name'] ?? true) {
-            $headers[] = __('First Name', 'wicket-acc');
-        }
-        if ($columns['last_name'] ?? true) {
-            $headers[] = __('Last Name', 'wicket-acc');
-        }
-        if ($columns['email'] ?? true) {
-            $headers[] = __('Email', 'wicket-acc');
-        }
-        if ($columns['job_title'] ?? true) {
-            $headers[] = __('Job Title', 'wicket-acc');
-        }
-        if ($columns['permission_role'] ?? true) {
-            $headers[] = __('Permission Role', 'wicket-acc');
-        }
-        if ($columns['primary_role'] ?? true) {
-            $headers[] = __('Primary Role', 'wicket-acc');
-        }
-
-        fputcsv($fh, $headers);
+        // Header row from the same shared column source the data rows use.
+        // CsvExporter applies AD14 formula-injection escape. Headers are literal
+        // English by design (locale-invariant round-trip) — see headerRow().
+        $this->csvExporter->writeRow($this->headerRow($this->resolveExportColumns()), $fh);
         fclose($fh);
 
         return $file_path;
@@ -500,7 +755,7 @@ class MemberExportService
      */
     private function saveToken(string $job_id, string $token, array $export_config): void
     {
-        $expiration_days = max(1, (int) ($export_config['token_expiration_days'] ?? 30));
+        $expiration_days = max(1, (int) ($export_config['token_expiration_days'] ?? 14));
         update_option(self::TOKEN_OPTION_PREFIX . $token, [
             'job_id'         => $job_id,
             'download_count' => 0,
@@ -516,7 +771,7 @@ class MemberExportService
      */
     private function scheduleCleanup(string $job_id, array $export_config): void
     {
-        $expiration_days = max(1, (int) ($export_config['token_expiration_days'] ?? 30));
+        $expiration_days = max(1, (int) ($export_config['token_expiration_days'] ?? 14));
         wp_schedule_single_event(time() + ($expiration_days * DAY_IN_SECONDS), self::CLEANUP_HOOK, [$job_id]);
     }
 
@@ -536,7 +791,7 @@ class MemberExportService
         $config = $this->configService->getFullConfig();
         $from_email = sanitize_email((string) ($config['integrations']['notifications']['confirmation_email_from'] ?? 'no-reply@wicketcloud.com'));
         $from_name = get_bloginfo('name');
-        $expiration_days = max(1, (int) ($export_config['token_expiration_days'] ?? 30));
+        $expiration_days = max(1, (int) ($export_config['token_expiration_days'] ?? 14));
         $max_downloads = max(1, (int) ($export_config['max_downloads'] ?? 10));
         $download_url = add_query_arg([self::QUERY_VAR => $token], home_url('/'));
 
