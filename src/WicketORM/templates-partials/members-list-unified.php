@@ -491,30 +491,14 @@ $show_remove_policy_callout = (
     <?php if ($show_add_member_button) : ?>
         <div class="wt_mt-6">
             <?php if ($has_seats_available) : ?>
-                <?php
-                get_component('button', [
-                    'variant' => 'primary',
-                    'label' => __('Add Member', 'wicket-acc'),
-                    'type' => 'button',
-                    'classes' => ['add-member-button', 'wt_w-full', 'wt_py_2', 'wt_justify-center'],
-                    'atts' => [
-                        'data-on:click' => '$addMemberSuccess = false; $addMemberSubmitting = false; $addMemberSuccessMessage = \'\'; (() => { const modal = document.getElementById(\'membersAddModal\'); if (!modal) return; const form = modal.querySelector(\'form\'); if (form) form.reset(); const messages = modal.querySelector(`[id^=\'add-member-messages-\']`); if (messages) messages.innerHTML = \'\'; const groupMessages = modal.querySelector(\'#group-member-add-messages\'); if (groupMessages) groupMessages.innerHTML = \'\'; })(); $addMemberModalOpen = true',
-                    ],
-                ]);
-                ?>
+                <button type="button"
+                    class="button button--primary add-member-button wt_w-full wt_py-2 component-button"
+                    data-on:click="$addMemberSuccess = false; $addMemberSubmitting = false; $addMemberSuccessMessage = ''; (() => { const modal = document.getElementById('membersAddModal'); const form = modal ? modal.querySelector('form') : document.querySelector('#membersAddModal form'); if (form && form.reset) form.reset(); const messages = document.querySelector('[id^=\'add-member-messages-\']'); if (messages) messages.innerHTML = ''; })(); $addMemberModalOpen = true"><?php esc_html_e('Add Member', 'wicket-acc'); ?></button>
                 <?php if ($mode !== 'groups' && $show_bulk_upload) : ?>
                     <div class="wt_mt-3">
-                        <?php
-                        get_component('button', [
-                            'variant' => 'primary',
-                            'label' => __('Bulk Upload Members', 'wicket-acc'),
-                            'type' => 'button',
-                            'classes' => ['add-member-button', 'wt_w-full', 'wt_py_2', 'wt_justify-center'],
-                            'atts' => [
-                                'data-on:click' => '$bulkUploadModalOpen = true',
-                            ],
-                        ]);
-                    ?>
+                        <button type="button"
+                            class="button button--primary add-member-button wt_w-full wt_py-2 component-button"
+                            data-on:click="$bulkUploadModalOpen = true"><?php esc_html_e('Bulk Upload Members', 'wicket-acc'); ?></button>
                     </div>
                 <?php endif; ?>
             <?php endif; ?>
