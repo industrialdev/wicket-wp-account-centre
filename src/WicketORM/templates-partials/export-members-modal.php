@@ -43,6 +43,7 @@ $safe_suffix = str_replace('-', '_', sanitize_key($org_dom_suffix));
 $sig_open = "exportOpen_{$safe_suffix}";
 $sig_submitting = "exportSubmitting_{$safe_suffix}";
 $sig_queued = "exportQueued_{$safe_suffix}";
+$sig_done = "exportDone_{$safe_suffix}";
 $dialog_id = 'exportMembersDialog_' . $safe_suffix;
 // HTML element ids may keep hyphens; only Datastar signal names must not.
 $messages_id = 'export-messages-' . $org_dom_suffix;
@@ -53,6 +54,7 @@ $data_signals = wp_json_encode([
     $sig_open => false,
     $sig_submitting => false,
     $sig_queued => false,
+    $sig_done => false,
 ]);
 ?>
 
@@ -90,7 +92,7 @@ $data_signals = wp_json_encode([
         class="modal wt_m-auto max_wt_3xl wt_rounded-md wt_shadow-md backdrop_wt_bg-black-50"
         data-show="$<?php echo esc_attr($sig_open); ?>"
         data-effect="if ($<?php echo esc_attr($sig_open); ?>) el.showModal(); else el.close();"
-        data-on:close="$<?php echo esc_attr($sig_open); ?> = false; $<?php echo esc_attr($sig_submitting); ?> = false; $<?php echo esc_attr($sig_queued); ?> = false;"
+        data-on:close="$<?php echo esc_attr($sig_open); ?> = false; $<?php echo esc_attr($sig_submitting); ?> = false; $<?php echo esc_attr($sig_queued); ?> = false; $<?php echo esc_attr($sig_done); ?> = false;"
     >
         <div class="wt_bg-white wt_p-6 wt_relative">
             <button
@@ -152,6 +154,17 @@ $data_signals = wp_json_encode([
                     type="button"
                     class="wt_button wt_button--secondary"
                     data-on:click="$<?php echo esc_attr($sig_open); ?> = false; $<?php echo esc_attr($sig_queued); ?> = false"
+                >
+                    <?php esc_html_e('Close', 'wicket-acc'); ?>
+                </button>
+            </div>
+
+            <div data-show="$<?php echo esc_attr($sig_done); ?>" class="wt_text-center wt_py-4">
+                <p class="wt_mb-6"><?php esc_html_e('Your roster is ready and downloading now. If the download did not start automatically, check your browser\'s download settings.', 'wicket-acc'); ?></p>
+                <button
+                    type="button"
+                    class="wt_button wt_button--secondary"
+                    data-on:click="$<?php echo esc_attr($sig_open); ?> = false; $<?php echo esc_attr($sig_done); ?> = false"
                 >
                     <?php esc_html_e('Close', 'wicket-acc'); ?>
                 </button>
