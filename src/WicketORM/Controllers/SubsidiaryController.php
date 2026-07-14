@@ -33,7 +33,7 @@ class SubsidiaryController extends ApiController
     public function __construct(SubsidiaryService $subsidiary_service)
     {
         $this->subsidiary_service = $subsidiary_service;
-        $this->namespace = 'org-management/v1/subsidiaries';
+        $this->namespace = 'wicket/orm/v1/subsidiaries';
     }
 
     /**

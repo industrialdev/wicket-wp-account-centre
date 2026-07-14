@@ -31,7 +31,7 @@ class EngagementController extends ApiController
     public function __construct(EngagementService $engagement_service)
     {
         $this->engagement_service = $engagement_service;
-        $this->namespace = 'org-management/v1/engagement';
+        $this->namespace = 'wicket/orm/v1/engagement';
     }
 
     /**

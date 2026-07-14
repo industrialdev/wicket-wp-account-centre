@@ -62,7 +62,7 @@ if ($seat_limit_info) : ?>
 		<p><?php esc_html_e('Business information is not available for this organization.', 'wicket-acc'); ?></p>
 	<?php else : ?>
 	<form class="business-info__form"
-	      ds-post="<?php echo esc_url(rest_url('org-management/v1/business/info')); ?>"
+	      ds-post="<?php echo esc_url(rest_url('wicket/orm/v1/business/info')); ?>"
 	      ds-target="#business-info-container"
 	      ds-swap="innerHTML">
 		<input type="hidden" name="org_id" value="<?php echo esc_attr($org_id); ?>">

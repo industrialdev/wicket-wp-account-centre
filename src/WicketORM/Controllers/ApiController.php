@@ -21,7 +21,7 @@ abstract class ApiController
      *
      * @var string
      */
-    protected $namespace = 'org-management/v1';
+    protected $namespace = 'wicket/orm/v1';
 
     /**
      * Register the routes for this controller.

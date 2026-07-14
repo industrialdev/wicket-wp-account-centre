@@ -111,7 +111,7 @@ Current characteristics:
 - secure download tokens with expiration and max-download limits
 - WP-Cron based batch processing for large datasets
 - configurable CSV columns and batch size
-- REST endpoints: `/org-management/v1/exports/initiate`, `/org-management/v1/exports/status`
+- REST endpoints: `/wicket/orm/v1/exports/initiate`, `/wicket/orm/v1/exports/status`
 
 Export flow:
 
@@ -133,7 +133,7 @@ Current characteristics:
 - badge parsing from person tags via regex patterns
 - per-field formatting (currency, date, yesno, string)
 - active membership conditional rendering
-- REST endpoint: `/org-management/v1/engagement/person`
+- REST endpoint: `/wicket/orm/v1/engagement/person`
 
 Section behavior:
 

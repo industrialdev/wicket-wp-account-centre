@@ -33,7 +33,7 @@ class DocumentController extends ApiController
     public function __construct(DocumentService $document_service)
     {
         $this->document_service = $document_service;
-        $this->namespace = 'org-management/v1/documents';
+        $this->namespace = 'wicket/orm/v1/documents';
     }
 
     /**

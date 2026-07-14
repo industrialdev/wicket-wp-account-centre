@@ -33,7 +33,7 @@ class BusinessInfoController extends ApiController
     public function __construct(BusinessInfoService $business_info_service)
     {
         $this->business_info_service = $business_info_service;
-        $this->namespace = 'org-management/v1/business';
+        $this->namespace = 'wicket/orm/v1/business';
     }
 
     /**

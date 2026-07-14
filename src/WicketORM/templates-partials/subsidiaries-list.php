@@ -159,7 +159,7 @@ function addSubsidiary(subsidiaryId, subsidiaryName) {
 		formData.append('_wpnonce', '<?php echo wp_create_nonce('org_management_subsidiary_add_' . $org_id); ?>');
 
 		// Send request via Datastar
-		Datastar.fetch('<?php echo esc_url(rest_url('org-management/v1/subsidiaries/add')); ?>', {
+		Datastar.fetch('<?php echo esc_url(rest_url('wicket/orm/v1/subsidiaries/add')); ?>', {
 			method: 'POST',
 			body: formData,
 			headers: {

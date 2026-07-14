@@ -34,7 +34,7 @@ $notice ??= null;
 
 	<div class="documents-toolbar wt_mb-4">
 		<form class="document-upload-form"
-		      ds-post="<?php echo esc_url(rest_url('org-management/v1/documents/upload')); ?>"
+		      ds-post="<?php echo esc_url(rest_url('wicket/orm/v1/documents/upload')); ?>"
 		      ds-target="#documents-list-container"
 		      ds-swap="innerHTML"
 		      enctype="multipart/form-data">
@@ -147,7 +147,7 @@ $notice ??= null;
 						</a>
 						|
 						<button
-							ds-delete="<?php echo esc_url(rest_url('org-management/v1/documents/delete/' . $document['id'] . '?org_id=' . $org_id . '&category=' . $category)); ?>"
+							ds-delete="<?php echo esc_url(rest_url('wicket/orm/v1/documents/delete/' . $document['id'] . '?org_id=' . $org_id . '&category=' . $category)); ?>"
 							ds-target="#documents-list-container"
 							ds-swap="innerHTML"
 							ds-confirm="<?php esc_attr_e('Are you sure you want to delete this document?', 'wicket-acc'); ?>"

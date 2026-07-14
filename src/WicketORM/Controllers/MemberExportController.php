@@ -31,7 +31,7 @@ class MemberExportController extends ApiController
     public function __construct(MemberExportService $export_service)
     {
         $this->export_service = $export_service;
-        $this->namespace = 'org-management/v1/exports';
+        $this->namespace = 'wicket/orm/v1/exports';
     }
 
     /**

@@ -7,7 +7,7 @@
  * Loaded via EngagementController's REST endpoint; embed with Datastar data-on-load:
  *
  *   <div
- *     data-on-load="@get('<?php echo esc_url(rest_url('org-management/v1/engagement/person')); ?>?org_id=...')"
+ *     data-on-load="@get('<?php echo esc_url(rest_url('wicket/orm/v1/engagement/person')); ?>?org_id=...')"
  *   ></div>
  *
  * Variables provided by EngagementController::htmlResponse():

@@ -76,8 +76,8 @@ $config['exports']['columns'] = [
 
 ### Export REST Endpoints
 
-- `POST /org-management/v1/exports/initiate` — Start export job
-- `GET /org-management/v1/exports/status` — Poll job status
+- `POST /wicket/orm/v1/exports/initiate` — Start export job
+- `GET /wicket/orm/v1/exports/status` — Poll job status
 
 ### Export Flow
 
@@ -154,7 +154,7 @@ $config['engagement']['sections'] = [
 
 ### Engagement REST Endpoint
 
-- `GET /org-management/v1/engagement/person` — Fetch engagement data for person
+- `GET /wicket/orm/v1/engagement/person` — Fetch engagement data for person
 
 ### Display Behavior
 
