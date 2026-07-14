@@ -124,7 +124,7 @@ $data_signals = wp_json_encode([
                     <input type="hidden" name="org_id" value="<?php echo esc_attr($org_uuid); ?>">
                     <input type="hidden" name="membership_uuid" value="<?php echo esc_attr($membership_uuid); ?>">
                     <input type="hidden" name="org_dom_suffix" value="<?php echo esc_attr($org_dom_suffix); ?>">
-                    <input type="hidden" name="_wpnonce" value="<?php echo esc_attr($nonce); ?>">
+                    <input type="hidden" name="export_nonce" value="<?php echo esc_attr($nonce); ?>">
                     <input type="hidden" name="recipient_email" value="<?php echo esc_attr($recipient_email); ?>">
 
                     <div class="wt_flex wt_justify-end wt_gap-3 wt_pt-4">

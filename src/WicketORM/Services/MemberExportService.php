@@ -50,6 +50,16 @@ class MemberExportService
     private $bulkUploadService;
 
     /**
+     * @var PermissionService|null Lazily instantiated for per-member role enrichment.
+     */
+    private $permissionService;
+
+    /**
+     * @var ConnectionService|null Lazily instantiated for per-member relationship enrichment.
+     */
+    private $connectionService;
+
+    /**
      * @param ConfigService|null           $configService
      * @param BulkMemberUploadService|null $bulkUploadService Injected for testability.
      */
@@ -231,7 +241,7 @@ class MemberExportService
         try {
             // Page 1 members.
             $total_pages = max(1, (int) ($first['meta']['page']['total_pages'] ?? 1));
-            $processed = $this->writeMembersPage($first, $columns, $fh);
+            $processed = $this->writeMembersPage($first, $columns, $fh, $org_id);
 
             // Pages 2..N.
             for ($page = 2; $page <= $total_pages; $page++) {
@@ -242,7 +252,7 @@ class MemberExportService
 
                     return $next;
                 }
-                $processed += $this->writeMembersPage($next, $columns, $fh);
+                $processed += $this->writeMembersPage($next, $columns, $fh, $org_id);
             }
         } finally {
             if (is_resource($fh)) {
@@ -321,7 +331,7 @@ class MemberExportService
      * @param resource                                       $fh
      * @return int Number of rows written.
      */
-    private function writeMembersPage(array $response, array $columns, $fh): int
+    private function writeMembersPage(array $response, array $columns, $fh, string $org_id): int
     {
         $members = is_array($response['data'] ?? null) ? $response['data'] : [];
         $person_lookup = [];
@@ -337,7 +347,7 @@ class MemberExportService
         foreach ($members as $member) {
             $person_id = (string) ($member['relationships']['person']['data']['id'] ?? '');
             $person_data = is_array($person_lookup[$person_id] ?? null) ? $person_lookup[$person_id] : [];
-            $this->csvExporter->writeRow($this->buildCsvRow($member, $person_data, $columns), $fh);
+            $this->csvExporter->writeRow($this->buildCsvRow($member, $person_data, $columns, $org_id), $fh);
             $written++;
         }
 
@@ -458,7 +468,7 @@ class MemberExportService
         foreach ($members as $member) {
             $person_id = (string) ($member['relationships']['person']['data']['id'] ?? '');
             $person_data = is_array($person_lookup[$person_id] ?? null) ? $person_lookup[$person_id] : [];
-            $this->csvExporter->writeRow($this->buildCsvRow($member, $person_data, $columns), $fh);
+            $this->csvExporter->writeRow($this->buildCsvRow($member, $person_data, $columns, $org_id), $fh);
             $job['total_processed']++;
         }
 
@@ -644,7 +654,7 @@ class MemberExportService
      * @param array<string, array{enabled: bool, header: string}> $columns
      * @return list<string>
      */
-    private function buildCsvRow(array $member, array $person_data, array $columns): array
+    private function buildCsvRow(array $member, array $person_data, array $columns, string $org_id): array
     {
         $row = [];
 
@@ -657,11 +667,17 @@ class MemberExportService
         if ($columns['email']['enabled'] ?? true) {
             $row[] = (string) ($person_data['primary_email_address'] ?? '');
         }
+
+        $person_uuid = (string) ($member['relationships']['person']['data']['id'] ?? '');
+
+        // relationship_type and roles are NOT in the person_memberships payload;
+        // they are lazy-loaded separately per person (same as the roster UI).
+        // Fetch via the same services the UI uses so export matches display.
         if ($columns['relationship_type']['enabled'] ?? true) {
-            $row[] = (string) ($member['attributes']['relationship_type'] ?? '');
+            $row[] = $this->resolveRelationshipType($person_uuid, $org_id);
         }
         if ($columns['roles']['enabled'] ?? true) {
-            $row[] = implode('|', $this->resolvePermissionRoles($member));
+            $row[] = implode('|', $this->resolveRoles($person_uuid, $org_id));
         }
 
         return $row;
@@ -689,23 +705,105 @@ class MemberExportService
     }
 
     /**
-     * @param array<string, mixed> $member
-     * @return list<string>
+     * Lazily-instantiated PermissionService for per-member role enrichment.
      */
-    private function resolvePermissionRoles(array $member): array
+    private function permissionService(): PermissionService
     {
-        $roles = [];
-        $member_roles = is_array($member['attributes']['roles'] ?? null) ? $member['attributes']['roles'] : [];
-        $permission_roles = ['membership_manager', 'org_editor', 'membership_owner'];
-
-        foreach ($member_roles as $role) {
-            $slug = sanitize_key((string) ($role['name'] ?? ($role['slug'] ?? '')));
-            if (in_array($slug, $permission_roles, true)) {
-                $roles[] = $slug;
-            }
+        if (!isset($this->permissionService)) {
+            $this->permissionService = new PermissionService();
         }
 
-        return $roles;
+        return $this->permissionService;
+    }
+
+    /**
+     * Lazily-instantiated ConnectionService for per-member relationship enrichment.
+     */
+    private function connectionService(): ConnectionService
+    {
+        if (!isset($this->connectionService)) {
+            $this->connectionService = new ConnectionService();
+        }
+
+        return $this->connectionService;
+    }
+
+    /**
+     * Resolve a person's org-scoped permission roles (membership_manager,
+     * org_editor, membership_owner, etc.) via the same path the roster UI uses.
+     *
+     * @return list<string>
+     */
+    private function resolveRoles(string $person_uuid, string $org_id): array
+    {
+        if ($person_uuid === '' || $org_id === '') {
+            return [];
+        }
+
+        try {
+            $roles = $this->permissionService()->getPersonCurrentRolesByOrgId($person_uuid, $org_id);
+
+            return is_array($roles) ? array_values(array_filter(array_map('strval', $roles))) : [];
+        } catch (\Throwable $e) {
+            \Wicket()->log()->error('Export role enrichment failed: ' . $e->getMessage(), [
+                'source'     => 'wicket-orgman',
+                'person_id'  => $person_uuid,
+                'org_id'     => $org_id,
+            ]);
+
+            return [];
+        }
+    }
+
+    /**
+     * Resolve the first relationship-type slug for a person against the target org,
+     * via the same connections endpoint the roster UI uses. Mirrors the extraction
+     * in MembershipRosterReader (filtered to this org, deduped, primary_contact
+     * surfaced first) but returns the single slug value the import expects.
+     */
+    private function resolveRelationshipType(string $person_uuid, string $org_id): string
+    {
+        if ($person_uuid === '' || $org_id === '') {
+            return '';
+        }
+
+        try {
+            $connections = $this->connectionService()->getPersonConnectionsById($person_uuid);
+            $data = is_array($connections['data'] ?? null) ? $connections['data'] : [];
+        } catch (\Throwable $e) {
+            \Wicket()->log()->error('Export relationship enrichment failed: ' . $e->getMessage(), [
+                'source'    => 'wicket-orgman',
+                'person_id' => $person_uuid,
+                'org_id'    => $org_id,
+            ]);
+
+            return '';
+        }
+
+        $slugs = [];
+        foreach ($data as $conn) {
+            $conn_org_id = (string) ($conn['relationships']['organization']['data']['id'] ?? '');
+            if (trim($conn_org_id) !== trim($org_id)) {
+                continue;
+            }
+            // Only active connections carry a meaningful relationship type.
+            if (!($conn['attributes']['active'] ?? false)) {
+                continue;
+            }
+            $raw_type = (string) ($conn['attributes']['type'] ?? '');
+            if ($raw_type === '') {
+                continue;
+            }
+            $slugs[] = sanitize_key($raw_type);
+        }
+
+        $slugs = array_values(array_unique($slugs));
+        if (in_array('primary_contact', $slugs, true)) {
+            $slugs = array_values(array_diff($slugs, ['primary_contact']));
+            array_unshift($slugs, 'primary_contact');
+        }
+
+        return $slugs !== [] ? (string) reset($slugs) : '';
     }
 
     /**

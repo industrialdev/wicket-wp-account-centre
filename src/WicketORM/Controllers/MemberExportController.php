@@ -68,25 +68,39 @@ class MemberExportController extends ApiController
         $membership_uuid = sanitize_text_field($request->get_param('membership_uuid'));
         $org_dom_suffix = sanitize_html_class($request->get_param('org_dom_suffix') ?: ($org_id ?: 'default'));
 
+        // Signal keys must be valid JS identifiers AND match exactly what the
+        // modal template registered. Template uses: <prefix>_<safe_suffix>
+        // where safe_suffix = str_replace('-', '_', sanitize_key($org_dom_suffix)).
+        // Mirror that here so SSE signal patches hit the registered keys.
+        $safe_suffix = str_replace('-', '_', sanitize_key($org_dom_suffix));
+        $sig_submitting = "exportSubmitting_{$safe_suffix}";
+        $sig_queued = "exportQueued_{$safe_suffix}";
+        $messages_target = '#export-messages-' . $org_dom_suffix;
+
         $error_signals = [
-            $org_dom_suffix . '_exportSubmitting' => false,
+            $sig_submitting => false,
         ];
 
         if (empty($org_id)) {
             \WicketORM\Helpers\DatastarSSE::renderError(
                 __('Organization identifier is missing.', 'wicket-acc'),
-                '#export-messages-' . $org_dom_suffix,
+                $messages_target,
                 $error_signals
             );
 
             return;
         }
 
-        $nonce = $request->get_param('_wpnonce');
+        // Renamed from '_wpnonce': that field name is reserved by WP REST core
+        // (rest_cookie_check_errors reads $_REQUEST['_wpnonce'] before the
+        // X-WP-Nonce header and verifies it against the 'wp_rest' action). An
+        // app-level nonce under that name fails WP's check -> 403 before the
+        // permission_callback runs.
+        $nonce = $request->get_param('export_nonce');
         if (!$nonce || !wp_verify_nonce($nonce, 'wicket_orgman_export_' . $org_id)) {
             \WicketORM\Helpers\DatastarSSE::renderError(
                 __('Security verification failed. Please refresh and try again.', 'wicket-acc'),
-                '#export-messages-' . $org_dom_suffix,
+                $messages_target,
                 $error_signals
             );
 
@@ -96,7 +110,7 @@ class MemberExportController extends ApiController
         if (!\WicketORM\Helpers\PermissionHelper::can_edit_members($org_id)) {
             \WicketORM\Helpers\DatastarSSE::renderError(
                 __('You do not have permission to export members for this organization.', 'wicket-acc'),
-                '#export-messages-' . $org_dom_suffix,
+                $messages_target,
                 $error_signals
             );
 
@@ -113,7 +127,7 @@ class MemberExportController extends ApiController
         if (is_wp_error($result)) {
             \WicketORM\Helpers\DatastarSSE::renderError(
                 $result->get_error_message(),
-                '#export-messages-' . $org_dom_suffix,
+                $messages_target,
                 $error_signals
             );
 
@@ -127,7 +141,7 @@ class MemberExportController extends ApiController
                 home_url('/')
             );
             // Flip the submitting flag off, then navigate to the download URL.
-            \WicketORM\Helpers\DatastarSSE::setSignals([$org_dom_suffix . '_exportSubmitting' => false]);
+            \WicketORM\Helpers\DatastarSSE::setSignals([$sig_submitting => false]);
             \WicketORM\Helpers\DatastarSSE::executeScript(
                 'window.location.href = ' . wp_json_encode($download_url) . ';'
             );
@@ -142,8 +156,8 @@ class MemberExportController extends ApiController
                 esc_html__('Your export has been queued. You will receive an email at %s when it is ready to download.', 'wicket-acc'),
                 esc_html($recipient_email)
             ),
-            '#export-messages-' . $org_dom_suffix,
-            [$org_dom_suffix . '_exportSubmitting' => false, $org_dom_suffix . '_exportQueued' => true]
+            $messages_target,
+            [$sig_submitting => false, $sig_queued => true]
         );
     }
 
