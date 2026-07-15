@@ -15,7 +15,7 @@ audience: [implementer, support, developer]
 
 ## Recent Highlights
 
-- **Multi-tier additional seats** (`integrations.additional_seats.tier_mode`): one WooCommerce product per membership tier, with per-tier seat fulfilment and idempotency. See [Additional Seats](product/ADDITIONAL-SEATS.md) and the [ESCRS config snapshot](engineering/configs/ESCRS.md) for a working example.
+- **Multi-tier additional seats** (`integrations.additional_seats.tier_mode`): one WooCommerce product per membership tier, with per-tier seat fulfilment and idempotency. See [Additional Seats](product/ADDITIONAL-SEATS.md); a working client config example lives in Wicket Atlas (`atlas/components/orm-configs/`).
 - **Contacts roster** (`contacts.enabled`): relationship-only roster for `president`, `ceo`, `treasurer`, etc. Renders on the `organization-contacts` page slug.
 - **Centralized owner-removal guard** (`access.permissions.prevent_owner_removal`, `access.permissions.owner_removal_requires_membership_owner_role`): enforced through `WicketORM\Helpers\PermissionHelper::guardOwnerRemoval()` from every strategy.
 
@@ -29,7 +29,6 @@ audience: [implementer, support, developer]
 - [Architecture](engineering/ARCHITECTURE.md) — Core runtime pieces, page injection, mutation paths, integrations
 - [Backwards Compatibility](engineering/BACKWARDS-COMPATIBILITY.md) — Compatibility rules, additive defaults, breaking change definition
 - [Config Filters Reference](engineering/config-filters.md) — Every WordPress filter this library applies or consumes, with source locations, config paths, types, and defaults
-- [Dead Code Audit](engineering/DEAD-CODE-AUDIT.md) — Unused classes, methods, and latent bugs in the current codebase (audited 2026-03-19)
 - [Design](engineering/DESIGN.md) — Design goals, UI shape, reactive layer, current constraints
 - [Frontend](engineering/FRONTEND.md) — Template structure, hypermedia endpoint, assets, config flags for rendering
 - [Specs](engineering/SPECS.md) — Supported strategy keys, account screens, implemented capabilities, runtime gaps
@@ -46,10 +45,6 @@ Each strategy has a dedicated subdirectory covering its specification, logic, ro
 
 ### Active Site Config Snapshots
 
-Per-client bootstrap overrides for sites currently using this library. Manually maintained — update when a site override changes.
+Per-client config snapshots live in **Wicket Atlas** (`atlas/components/orm-configs/`), not in this repo — client details must not ship inside the plugin. A generic, client-free example remains here:
 
-- [`engineering/configs/`](engineering/configs/) — CCHL, CSAE, ESCRS, IAA, MSA, NJBIA, PACE, Exports & Engagement Example
-
-## Planning (Archive)
-- [Active Sites Index](guides/ACTIVE-SITES.md) — Index of active site config snapshot files and their strategy mappings
-- [Config Reorganization Plan](guides/CONFIG-REORGANIZATION-PLAN.md) — Planning document for config schema migration (historical)
+- [Exports & Engagement Example](engineering/configs/EXPORTS-ENGAGEMENT-EXAMPLE.md) — opt-in `exports` and `engagement` config

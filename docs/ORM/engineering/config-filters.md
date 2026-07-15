@@ -57,7 +57,7 @@ This means a per-field filter **always wins** over a global filter for that spec
 
 ### Refactor warning
 
-Any code path that bypasses `ConfigService` (e.g., reading `OrgManConfig::get()` directly) skips all per-field filters. This is the primary reason to standardize on `ConfigService` as the single access point (see `docs/config-cache-consolidation-rfc.md`, Step 1).
+Any code path that bypasses `ConfigService` (e.g., reading `OrgManConfig::get()` directly) skips all per-field filters. This is the primary reason to standardize on `ConfigService` as the single access point.
 
 ---
 

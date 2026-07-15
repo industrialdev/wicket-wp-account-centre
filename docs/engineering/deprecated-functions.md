@@ -53,7 +53,7 @@ This document tracks deprecated functions in the Wicket Account Centre plugin. T
 
 ## OrgMan-Side Deprecations
 
-The `WicketORM\` org-roster library keeps a number of in-tree methods and services that are not referenced anywhere in the codebase and should be considered dead. The canonical dead-code audit lives at [DEAD-CODE-AUDIT.md](../ORM/engineering/DEAD-CODE-AUDIT.md) (most recent run: 2026-03-19; re-run on every meaningful change to `OrgMan`, the controllers, or the service layer). Examples from that audit:
+The `WicketORM\` org-roster library keeps a number of in-tree methods and services that are not referenced anywhere in the codebase and should be considered dead (last audited 2026-03-19; re-audit on every meaningful change to `OrgMan`, the controllers, or the service layer). Examples from that audit:
 
 - `OrgMan::clearUserOrgCache()` / `clearAllOrgCache()` — never called.
 - `ConfigurationController::enableAdditionalSeats*()` and the dependent helper methods — never called; replaced by `ConfigService`.

@@ -58,15 +58,8 @@ add_filter('wicket/org-roster/config', static function (array $config): array {
 });
 ```
 
-Working examples for active sites live under [`engineering/configs/`](../engineering/configs/):
+Working per-client examples live in **Wicket Atlas** (`atlas/components/orm-configs/`) — client config snapshots do not ship inside this plugin. A generic example remains in this repo:
 
-- [PACE](../engineering/configs/PACE.md) — `cascade` strategy
-- [CCHL](../engineering/configs/CCHL.md) — `direct` strategy
-- [ESCRS](../engineering/configs/ESCRS.md) — `membership_cycle` strategy with multi-tier additional seats
-- [IAA](../engineering/configs/IAA.md) — `groups` strategy
-- [MSA](../engineering/configs/MSA.md) — `cascade` strategy with `membership.seat_limits.tier_max_assignments`
-- [NJBIA](../engineering/configs/NJBIA.md) — `cascade` strategy with `member_contact` defaults
-- [CSAE](../engineering/configs/CSAE.md) — `direct` strategy with additional seats off
 - [Exports & Engagement Example](../engineering/configs/EXPORTS-ENGAGEMENT-EXAMPLE.md) — opt-in `exports` and `engagement` config
 
 ## 2) Include the Override File From Theme `functions.php`
