@@ -18,7 +18,8 @@ The Organization Management module is the in-tree `WicketORM\` org-roster librar
 - An async CSV member export (opt-in).
 - An MDP engagement/donation summary on member cards (opt-in).
 
-For the full feature list and runtime contract, see [SPECS.md](../ORM/engineering/SPECS.md). For the full config schema, see [CONFIGURATION.md](../ORM/product/CONFIGURATION.md).
+For the full feature list and runtime contract, consult the org-roster config
+(`wicket/org-roster/config`) and the `OrgManConfig` defaults.
 
 ## Core Features
 
@@ -51,7 +52,7 @@ For the full feature list and runtime contract, see [SPECS.md](../ORM/engineerin
 
 ### 6. Additional Seats
 - **Single-SKU** (default): one WC product per org.
-- **Multi-tier** (opt-in): one WC product per membership tier. Triggered with `integrations.additional_seats.tier_mode = true` and configured via `tier_skus` / `tier_slug_field`. See [ADDITIONAL-SEATS.md](../ORM/product/ADDITIONAL-SEATS.md).
+- **Multi-tier** (opt-in): one WC product per membership tier. Triggered with `integrations.additional_seats.tier_mode = true` and configured via `tier_skus` / `tier_slug_field`.
 
 ## Technical Architecture
 
@@ -62,7 +63,7 @@ For the full feature list and runtime contract, see [SPECS.md](../ORM/engineerin
 - `WACC()->OrganizationRoster()`: Member management facade (delegates to `WicketORM\OrgMan`).
 - `WACC()->Mdp()->Organization()`: API wrapper for MDP organization endpoints.
 
-The in-tree `WicketORM\OrgMan` orchestrator owns its own services and controllers in `src/WicketORM/` and is **not** accessed through `WACC()`. See [ARCHITECTURE.md](../ORM/engineering/ARCHITECTURE.md).
+The in-tree `WicketORM\OrgMan` orchestrator owns its own services and controllers in `src/WicketORM/` and is **not** accessed through `WACC()`.
 
 ### Dynamic Interaction (Datastar)
 The organization management interface is built using **Datastar** for real-time, interactive updates. Actions like searching, filtering, and role changes are performed without full page reloads.
@@ -79,6 +80,3 @@ Permissions are determined by:
 - [Organization Profile View](./organization-profile-view.md)
 - [Organization Profile Edit](./organization-profile-edit.md)
 - [Organization Selector Shortcode](./organization-selector-shortcode.md)
-- [ORM: Additional Seats](../ORM/product/ADDITIONAL-SEATS.md)
-- [ORM: Configuration](../ORM/product/CONFIGURATION.md)
-- [ORM: Setup](../ORM/product/SETUP.md)

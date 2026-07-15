@@ -55,7 +55,8 @@ The `WicketORM\` library has its own service layer that is **not** reached throu
 - `Helpers/PermissionHelper` (centralized role and owner-removal guard).
 - `Helpers/TemplateHelper` (hypermedia endpoint under `?action=hypermedia&template=...`).
 
-See [ARCHITECTURE.md](../ORM/engineering/ARCHITECTURE.md) for the full layout.
+See the org-roster config (`wicket/org-roster/config`) and `OrgManConfig`
+defaults for the full layout.
 
 ## Key Concepts
 
@@ -74,7 +75,7 @@ Most dynamic interactions (profile updates, member list filtering, organization 
 Legacy ACC compatibility slugs (`org-management`, `org-management-profile`, `org-management-members`, `org-management-roster`) are routed to the same templates.
 
 ### Multi-Tier Additional Seats
-When `integrations.additional_seats.tier_mode = true`, the additional-seats flow resolves one WooCommerce product per membership tier. Order completion is fulfilled per line item with idempotency (`tier_seats_applied`) and partial-fulfilment retry safety (`tier_seats_partial`). See [ADDITIONAL-SEATS.md](../ORM/product/ADDITIONAL-SEATS.md).
+When `integrations.additional_seats.tier_mode = true`, the additional-seats flow resolves one WooCommerce product per membership tier. Order completion is fulfilled per line item with idempotency (`tier_seats_applied`) and partial-fulfilment retry safety (`tier_seats_partial`).
 
 ### Theme Variables
 Styling is strictly controlled via CSS variables. Custom styles should always reference variables from `/uploads/wicket-theme/css/theme-variables.css` to ensure brand consistency.
@@ -86,14 +87,9 @@ Styling is strictly controlled via CSS variables. Custom styles should always re
 - **Sanitization**: All input/output is sanitized and escaped according to WP standards.
 
 ## Documentation Links
-- [Plugin Entrypoint](../engineering/plugin-entrypoint.md)
-- [Global Helper: WACC()](../engineering/functions.md)
-- [Wicket PHP SDK & MDP Integration](../engineering/wicket-php-sdk.md)
-- [Developer Hooks (Filters & Actions)](../engineering/hooks.md)
+- [ACC Options (Settings)](./acc-options.md)
 - [Organization Management Overview](./organization-management-general.md)
-- [WooCommerce Integration](../engineering/woocommerce.md)
-- [Deprecated Functions](../engineering/deprecated-functions.md)
-- [ORM: Configuration](../ORM/product/CONFIGURATION.md)
-- [ORM: Setup](../ORM/product/SETUP.md)
-- [ORM: Additional Seats](../ORM/product/ADDITIONAL-SEATS.md)
-- [ORM: Architecture](../ORM/engineering/ARCHITECTURE.md)
+- [Organization Profile View](./organization-profile-view.md)
+- [Organization Profile Edit](./organization-profile-edit.md)
+- [Organization Selector Shortcode](./organization-selector-shortcode.md)
+- [Change Your Profile Picture](./change-profile-picture.md)

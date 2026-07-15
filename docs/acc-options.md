@@ -27,7 +27,11 @@ Toggle capabilities for organization managers:
 - Ability to assign security roles (e.g., Org Editor).
 - Ability to remove members from the roster.
 
-> The org-roster library also exposes its own access-control layer. See [CONFIGURATION.md](../ORM/product/CONFIGURATION.md) for the canonical `access.permissions.*` keys (`prevent_owner_removal`, `owner_removal_requires_membership_owner_role`, role-only management access, etc.). ACC options are the global toggle surface; the org-roster config is the per-site authority.
+> The org-roster library also exposes its own per-site access-control layer
+> (`access.permissions.prevent_owner_removal`,
+> `access.permissions.owner_removal_requires_membership_owner_role`, and
+> role-only management access). ACC options are the global toggle surface;
+> the org-roster config is the per-site authority and overrides these.
 
 ### Configuration Storage
 - **Provider**: HyperFields (`estebanforge/hyperfields`).
