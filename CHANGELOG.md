@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.7.10] - 2026-07-16
+
+### Fixed
+- **roster:** stop assigning default "Main Contact" on add member [WWID-1988]
+
+
 ## [1.7.9] - 2026-07-13
 
 ### Fixed
