@@ -125,7 +125,10 @@ final class OrgManConfig
                 ],
                 'removal' => [],
                 'addition' => [
-                    'type' => 'position',
+                    // Default relationship type applied when the add-member form does not
+                    // supply one. Empty by default so the library never sends a fabricated
+                    // slug; tenants that want an implicit default can set a valid slug here.
+                    'type' => '',
                 ],
                 'filters' => [
                     'allowlist' => [],
