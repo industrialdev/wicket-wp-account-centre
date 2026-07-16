@@ -35,12 +35,13 @@ class init extends Blocks
         // Deprecated: mdp_json_fields is superseded by the mdp_json_config ACF
         // field (see init_block()); kept working for existing saved blocks.
         //
-        // Note: the ACF group also still has an "MDP JSON Sections (Deprecated,
-        // Inactive)" field (mdp_json_sections), but it is never read here — the
-        // org profile widget component has no sections arg, unlike the individual
-        // profile component, so this field never had any effect. It's kept
-        // visible in the editor only so a value saved before this was noticed
-        // isn't silently hidden from whoever configured the block.
+        // Note: the ACF group also still has an "MDP JSON Sections (Deprecated)"
+        // field (mdp_json_sections), but it is never read here — the org profile
+        // widget component has no sections arg, unlike the individual profile
+        // component, so this field never had any effect on render. It still gets
+        // the standard migrate link into mdp_json_config's `sections` key (see
+        // assets/js/wicket-acc-acf-field-deprecation.js), so a previously-saved
+        // value isn't stranded if the widget ever gains section support.
         $json_fields = get_field('mdp_json_fields');
         $this->mdp_json_fields = json_decode($json_fields, true) ?? [];
 

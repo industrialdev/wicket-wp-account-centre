@@ -29,13 +29,12 @@
  * `includes/blocks/ac-org-profile/init.php`). This script is pure editor-UX
  * sugar on top of that already-existing precedence rule.
  *
- * Special case: `mdp_json_sections` on the Org Profile block is dead weight —
- * the org profile widget component has no `sections` arg, so this field never
- * did anything even before `mdp_json_config` existed. It's excluded from the
- * migrate-link/auto-hide behavior above (see isInertOrgSectionsField()): no
- * migrate link (nothing meaningful to migrate), and it's never auto-hidden,
- * so a value saved here before this was noticed stays visible rather than
- * disappearing silently.
+ * Note: `mdp_json_sections` on the Org Profile block is currently inert — the
+ * org profile widget component has no `sections` arg, so a value migrated
+ * into `mdp_json_config`'s `sections` key has no effect on render today. The
+ * migrate link is still offered so a previously-saved value isn't stranded:
+ * if the org widget ever grows section support, migrated values are already
+ * in the right place under `mdp_json_config`.
  */
 (function($) {
   if (typeof acf === 'undefined') {
@@ -156,26 +155,7 @@
     }
   }
 
-  // mdp_json_sections is only wired up (has a working component arg to feed)
-  // on the Individual Profile block. On the Org Profile block it's a dead
-  // field the org profile widget component has never supported — kept only so
-  // a previously-saved value stays visible to whoever configured the block,
-  // not so it can be usefully migrated. Detect which block we're in via a
-  // sibling field unique to the org block's ACF group.
-  function isInertOrgSectionsField(legacyField, legacyName) {
-    return legacyName === 'mdp_json_sections' && !!findSiblingField(legacyField, 'hide_alternate_name_field');
-  }
-
   function handleLegacyField(legacyField, legacyName) {
-    if (isInertOrgSectionsField(legacyField, legacyName)) {
-      // No migrate link (there is nothing meaningful to migrate into config —
-      // the widget ignores this value either way) and never auto-hide, even
-      // when empty — this field's only job now is staying visible so a
-      // previously-saved value is never hidden from the person configuring
-      // the block.
-      return;
-    }
-
     ensureMigrateLink(legacyField, legacyName, LEGACY_WRAP_KEYS[legacyName]);
     // Covers the post-save/reload case: once the legacy value was purged and
     // saved, the field loads empty on the next page load and should stay hidden.

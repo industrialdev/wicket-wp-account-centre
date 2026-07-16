@@ -46,14 +46,14 @@ The block reads these ACF fields:
 - `hide_alternate_name_field` — adds `alternateName` to the widget's `hiddenFields`. Since the shared component has no dedicated `hidden_fields` arg for the org widget, this is passed via `widget_config['hiddenFields']`.
 - `mdp_json_fields` — JSON string decoded into the `fields` array passed to the component. Legacy; ignored entirely when `mdp_json_config` is set.
 - `mdp_json_config` — open-ended JSON object forwarded verbatim to the component as `widget_config` (any current or future MDP widget option). See "MDP Widget Config" below.
-- `mdp_json_sections` — **inert.** This field is never read by `init.php` and has no effect: the
-  org profile widget component has no `sections` arg (unlike the individual profile component), so
-  any value ever saved here has always been silently dropped at render time — before and after the
-  widget-config refactor. It's kept in the ACF group, visible and unhidden, purely so a value saved
-  before this was noticed isn't hidden from whoever configured the block. It gets no migrate link
-  and no CodeMirror (see `assets/js/wicket-acc-acf-field-deprecation.js`,
-  `isInertOrgSectionsField()`). Use `mdp_json_config`'s `sections` key instead if the MDP widget
-  ever adds real section support for organization profiles.
+- `mdp_json_sections` — **inert at render, but migratable.** This field is never read by
+  `init.php` and has no effect: the org profile widget component has no `sections` arg (unlike the
+  individual profile component), so any value ever saved here has always been silently dropped at
+  render time — before and after the widget-config refactor. It still gets the standard "Copy this
+  value into MDP Widget Config" migrate link and auto-hide-when-empty behavior
+  (`assets/js/wicket-acc-acf-field-deprecation.js`), writing into `mdp_json_config`'s `sections`
+  key — so a previously-saved value has somewhere to go, ready for if the org widget ever adds real
+  section support. No CodeMirror (deprecated field, plain textarea like the other legacy fields).
 
 ### Language And API
 
@@ -132,7 +132,7 @@ plain textareas.
 ## Recent Changes
 
 - **Refactored onto the shared `widget-profile-org` base-plugin component** (previously inline `editOrganizationProfile` call, predating the component). Added open-ended `mdp_json_config` passthrough with exclusive precedence over the legacy fields config. `hide_alternate_name_field` now flows through `widget_config['hiddenFields']` instead of a direct `hiddenFields` widget-init arg.
-- **`mdp_json_sections` confirmed inert** — the org profile component never had a `sections` arg, so this field has never had any effect (not a regression from this refactor). Relabeled "(Deprecated, Inactive)" with instructions saying so plainly; excluded from the migrate-link and auto-hide behavior that applies to `mdp_json_fields` (see `assets/js/wicket-acc-acf-field-deprecation.js`, `isInertOrgSectionsField()`), so it stays visible rather than disappearing or offering a migrate action that wouldn't do anything useful.
+- **`mdp_json_sections` confirmed inert at render** — the org profile component never had a `sections` arg, so this field has never had any effect on output (not a regression from this refactor). Relabeled "(Deprecated)" with instructions saying so plainly. Still gets the standard migrate link and auto-hide behavior shared with `mdp_json_fields` (see `assets/js/wicket-acc-acf-field-deprecation.js`) — a saved value can be moved into `mdp_json_config`'s `sections` key even though the widget currently ignores it, so nothing is stranded if section support is ever added.
 - `mdp_json_config` moved to the top of the field group; the legacy `mdp_json_fields` field relabeled "(Deprecated)", kept plain text/textarea (no CodeMirror), with a "Copy this value into MDP Widget Config" link.
 - Added CodeMirror JSON editor UI to the `mdp_json_config` textarea in the block editor.
 

@@ -108,11 +108,11 @@
         },
         {
             "key": "field_69a6f273d3cd7",
-            "label": "MDP JSON Sections (Deprecated, Inactive)",
+            "label": "MDP JSON Sections (Deprecated)",
             "name": "mdp_json_sections",
             "aria-label": "",
             "type": "textarea",
-            "instructions": "This field never had an effect on this block — the organization profile widget component does not support a sections option, unlike the individual profile widget. Kept visible only so any value saved here previously is not silently hidden. Please do not modify.",
+            "instructions": "This field has no effect on this block — the organization profile widget component does not support a sections option, unlike the individual profile widget. Superseded by the MDP Widget Config setting above. A \"Copy this value into MDP Widget Config\" link appears below this field in the editor to copy it over pre-formatted, in case the widget gains section support later.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -147,5 +147,5 @@
     "description": "",
     "show_in_rest": 0,
     "display_title": "",
-    "modified": 1780272000
+    "modified": 1784233545
 }
