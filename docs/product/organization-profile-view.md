@@ -2,7 +2,7 @@
 title: "Organization Profile View"
 audience: [implementer, support]
 php_class: WicketAcc\Blocks\OrgProfile\init
-source_files: ["includes/blocks/ac-org-profile/init.php", "includes/blocks/ac-org-profile/render.php", "includes/blocks/ac-org-profile/block.json", "includes/acf-json/group_69a5f1b6ea37e.json"]
+source_files: ["includes/blocks/ac-org-profile/init.php", "includes/blocks/ac-org-profile/render.php", "includes/blocks/ac-org-profile/block.json", "includes/acf-json/group_66bd0f5a9fca8.json"]
 ---
 
 # Organization Profile View Block
@@ -60,8 +60,9 @@ Wicket.widgets.editOrganizationProfile({
 |       |             |
 | `hide_additional_info` | Toggles the display of the Additional Info widget. |
 | `hide_alternate_name_field` | Explicitly hides the Alternate Name field in the profile editor. |
-| `mdp_json_fields` | A JSON string defining which MDP fields should be editable. |
-| `mdp_json_sections` | A JSON string defining the section order rendered by the widget. |
+| `mdp_json_fields` | A JSON string defining which MDP fields should be editable. Superseded by MDP Widget Config (JSON); see that setting instead for new configuration. |
+| `mdp_json_config` | Open-ended JSON object supporting all MDP JS Widget options (fields, resourceLimits, resourcePermissions, and more). Use this for new configuration. |
+| `mdp_json_sections` | **Inactive** — this setting has never had any effect for organization profiles (the widget has no section-order option here). Do not use; kept visible only so a previously-saved value isn't hidden. |
 
 ## Access Control
 - **Viewing**: Authenticated users associated with the organization.
