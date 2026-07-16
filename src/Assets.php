@@ -92,6 +92,34 @@ class Assets extends WicketAcc
             'wicket_prefer_color_scheme' => $this->wicketPreferColorScheme,
         ];
         wp_localize_script('wicket-acc-admin-scripts', 'wicketAccSettings', $localized_settings);
+
+        $current_screen = function_exists('get_current_screen') ? get_current_screen() : null;
+        if ($current_screen && $current_screen->is_block_editor()) {
+            $acf_deprecation_js_path = WICKET_ACC_PATH . 'assets/js/wicket-acc-acf-field-deprecation.js';
+            wp_enqueue_script(
+                'wicket-acc-acf-field-deprecation',
+                WICKET_ACC_URL . 'assets/js/wicket-acc-acf-field-deprecation.js',
+                ['acf-input'],
+                file_exists($acf_deprecation_js_path) ? filemtime($acf_deprecation_js_path) : WICKET_ACC_VERSION,
+                true
+            );
+
+            $acf_json_editor_js_path = WICKET_ACC_PATH . 'assets/js/wicket-acc-acf-json-editor.js';
+            wp_enqueue_script(
+                'wicket-acc-acf-json-editor',
+                WICKET_ACC_URL . 'assets/js/wicket-acc-acf-json-editor.js',
+                ['acf-input', 'underscore', 'wp-codemirror'],
+                file_exists($acf_json_editor_js_path) ? filemtime($acf_json_editor_js_path) : WICKET_ACC_VERSION,
+                true
+            );
+
+            $wicket_acc_json_editor_settings = wp_enqueue_code_editor(['type' => 'application/json']);
+            wp_localize_script(
+                'wicket-acc-acf-json-editor',
+                'WicketAccJsonEditorSettings',
+                $wicket_acc_json_editor_settings !== false ? $wicket_acc_json_editor_settings : []
+            );
+        }
     }
 
     /**
