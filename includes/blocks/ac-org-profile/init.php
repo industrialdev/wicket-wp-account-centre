@@ -25,6 +25,7 @@ class init extends Blocks
         protected array $block = [],
         protected bool $is_preview = false,
         protected int|string|bool|null $hide_additional_info = 0,
+        protected bool $hide_alternate_name_field = false,
     ) {
         $this->block = $block;
         $this->is_preview = $is_preview;
