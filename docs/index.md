@@ -32,7 +32,7 @@ audience: [implementer, support, developer, end-user]
 - [AC Individual Profile Block](engineering/ac-individual-profile.md) — Person profile display block (with `mdp_json_fields` / `mdp_json_sections`)
 - [AC Manage Preferences Block](engineering/ac-manage-preferences.md) — Communication preferences block
 - [AC Org Logo Block](engineering/ac-org-logo.md) — Organization logo block with 404 fallback chain
-- [AC Org Profile Block](engineering/ac-org-profile.md) — Organization profile display/edit block (with `mdp_json_sections`)
+- [AC Org Profile Block](engineering/ac-org-profile.md) — Organization profile display/edit block (with `mdp_json_config`; `mdp_json_sections` is inert, kept only for visibility of previously-saved values)
 - [AC Org Search Select Block](engineering/ac-org-search-select.md) — Organization search/select block
 - [AC Password Block](engineering/ac-password.md) — Password change block (HyperBlocks)
 - [AC Profile Picture Block](engineering/ac-profile-picture.md) — Profile photo upload block with explicit delete flow

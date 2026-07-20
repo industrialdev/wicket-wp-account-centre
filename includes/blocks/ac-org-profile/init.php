@@ -14,13 +14,9 @@ class init extends Blocks
 {
     /**
      * @var string
+     * @deprecated Superseded by the mdp_json_config ACF field; kept for legacy saved blocks.
      */
     protected array $mdp_json_fields = [];
-
-    /**
-     * @var array
-     */
-    protected array $mdp_json_sections = [];
 
     /**
      * Constructor.
@@ -29,6 +25,7 @@ class init extends Blocks
         protected array $block = [],
         protected bool $is_preview = false,
         protected int|string|bool|null $hide_additional_info = 0,
+        protected bool $hide_alternate_name_field = false,
     ) {
         $this->block = $block;
         $this->is_preview = $is_preview;
@@ -36,11 +33,18 @@ class init extends Blocks
         $this->hide_additional_info = get_field('hide_additional_info');
         $this->hide_alternate_name_field = get_field('hide_alternate_name_field');
 
+        // Deprecated: mdp_json_fields is superseded by the mdp_json_config ACF
+        // field (see init_block()); kept working for existing saved blocks.
+        //
+        // Note: the ACF group also still has an "MDP JSON Sections (Deprecated)"
+        // field (mdp_json_sections), but it is never read here — the org profile
+        // widget component has no sections arg, unlike the individual profile
+        // component, so this field never had any effect on render. It still gets
+        // the standard migrate link into mdp_json_config's `sections` key (see
+        // assets/js/wicket-acc-acf-field-deprecation.js), so a previously-saved
+        // value isn't stranded if the widget ever gains section support.
         $json_fields = get_field('mdp_json_fields');
         $this->mdp_json_fields = json_decode($json_fields, true) ?? [];
-
-        $json_sections = get_field('mdp_json_sections');
-        $this->mdp_json_sections = json_decode($json_sections, true) ?? [];
 
         // Display the block
         $this->init_block();
@@ -111,64 +115,48 @@ class init extends Blocks
         if ($org_id) {
             $wicket_settings = get_wicket_settings();
             $access_token = wicket_get_access_token(wicket_current_person_uuid(), $org_id);
-            ?>
 
-            <div class="wicket-section" role="complementary">
-                <h2><?php _e('Profile', 'wicket-acc'); ?>
-                </h2>
-                <div id="profile"></div>
-            </div>
-
-            <script>
-                window.Wicket = function(doc, tag, id, script) {
-                    var w = window.Wicket || {};
-                    if (doc.getElementById(id)) return w;
-                    var ref = doc.getElementsByTagName(tag)[0];
-                    var js = doc.createElement(tag);
-                    js.id = id;
-                    js.src = script;
-                    ref.parentNode.insertBefore(js, ref);
-                    w._q = [];
-                    w.ready = function(f) {
-                        w._q.push(f)
-                    };
-                    return w
-                }(document, "script", "wicket-widgets",
-                    "<?php echo $wicket_settings['wicket_admin'] ?>/dist/widgets.js"
-                );
-            </script>
-
-            <script>
-                <?php
-                            $hidden_fields = [];
+            $hidden_fields = [];
             if ($this->hide_alternate_name_field) {
                 $hidden_fields[] = 'alternateName';
             }
+
+            if (!component_exists('widget-profile-org')) {
+                echo '<p>' . __('Widget-profile-org component is missing. Please update the Wicket Base Plugin.', 'wicket-acc') . '</p>';
+            } else {
+                $json_config = get_field('mdp_json_config');
+                $widget_config = json_decode((string) $json_config, true) ?? [];
+
+                if (is_array($widget_config) && !empty($widget_config) && !array_is_list($widget_config)) {
+                    if (!empty($hidden_fields)) {
+                        $existing_hidden_fields = isset($widget_config['hiddenFields']) && is_array($widget_config['hiddenFields']) ? $widget_config['hiddenFields'] : [];
+                        $widget_config['hiddenFields'] = array_values(array_unique(array_merge($hidden_fields, $existing_hidden_fields)));
+                    }
+                    // The component has no dedicated 'lang' arg — it falls back to a
+                    // bare ICL_LANGUAGE_CODE check with no Polylang/WP-locale support.
+                    // $lang (WACC()->Language()->getCurrentLanguage(), resolved above)
+                    // is the correct value the pre-refactor inline call used; route it
+                    // through widget_config so it overrides the component's fallback.
+                    $widget_config['lang'] = $lang;
+                    get_component('widget-profile-org', [
+                        'org_id'        => $org_id,
+                        'widget_config' => $widget_config,
+                    ]);
+                } else {
+                    // Deprecated fallback: mdp_json_fields only renders when the
+                    // mdp_json_config ACF field is empty/invalid.
+                    $component_widget_config = ['lang' => $lang];
+                    if (!empty($hidden_fields)) {
+                        $component_widget_config['hiddenFields'] = $hidden_fields;
+                    }
+                    get_component('widget-profile-org', array_filter([
+                        'org_id'        => $org_id,
+                        'fields'        => $this->mdp_json_fields,
+                        'widget_config' => $component_widget_config,
+                    ], static fn ($value) => $value !== []));
+                }
+            }
             ?>
-
-                    (function() {
-                        Wicket.ready(function() {
-                            var widgetRoot = document.getElementById('profile');
-
-                            Wicket.widgets.editOrganizationProfile({
-                                rootEl: widgetRoot,
-                                apiRoot: '<?php echo $wicket_settings['api_endpoint'] ?>',
-                                accessToken: '<?php echo $access_token ?>',
-                                orgId: '<?php echo $org_id ?>',
-                                lang: "<?php echo $lang; ?>",
-                                fields: <?php echo json_encode($this->mdp_json_fields) ?>,
-                                <?php if (!empty($this->mdp_json_sections)) : ?>
-                                sections: <?php echo json_encode($this->mdp_json_sections) ?>,
-                                <?php endif; ?>
-                                hiddenFields: ['<?php echo implode("', '", $hidden_fields) ?>']
-                            }).then(function(widget) {
-                                widget.listen(widget.eventTypes.SAVE_SUCCESS, function(payload) {
-
-                                });
-                            });
-                        });
-                    })()
-            </script>
 
             <?php if ($this->hide_additional_info == 0) : ?>
                 <div class="wicket-section" role="complementary">
