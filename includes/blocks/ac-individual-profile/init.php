@@ -61,7 +61,7 @@ class init extends Blocks
      */
     protected function init_block()
     {
-        if (is_array($this->mdp_json_config) && $this->mdp_json_config !== []) {
+        if (is_array($this->mdp_json_config) && !empty($this->mdp_json_config) && !array_is_list($this->mdp_json_config)) {
             get_component('widget-profile-individual', [
                 'widget_config' => $this->mdp_json_config,
             ]);

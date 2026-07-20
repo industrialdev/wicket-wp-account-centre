@@ -127,7 +127,7 @@ class init extends Blocks
                 $json_config = get_field('mdp_json_config');
                 $widget_config = json_decode((string) $json_config, true) ?? [];
 
-                if (is_array($widget_config) && $widget_config !== []) {
+                if (is_array($widget_config) && !empty($widget_config) && !array_is_list($widget_config)) {
                     if (!empty($hidden_fields)) {
                         $existing_hidden_fields = isset($widget_config['hiddenFields']) && is_array($widget_config['hiddenFields']) ? $widget_config['hiddenFields'] : [];
                         $widget_config['hiddenFields'] = array_values(array_unique(array_merge($hidden_fields, $existing_hidden_fields)));
