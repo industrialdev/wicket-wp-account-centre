@@ -128,7 +128,8 @@ class init extends Blocks
 
                 if (is_array($widget_config) && $widget_config !== []) {
                     if (!empty($hidden_fields)) {
-                        $widget_config['hiddenFields'] = $hidden_fields;
+                        $existing_hidden_fields = isset($widget_config['hiddenFields']) && is_array($widget_config['hiddenFields']) ? $widget_config['hiddenFields'] : [];
+                        $widget_config['hiddenFields'] = array_values(array_unique(array_merge($hidden_fields, $existing_hidden_fields)));
                     }
                     // The component has no dedicated 'lang' arg — it falls back to a
                     // bare ICL_LANGUAGE_CODE check with no Polylang/WP-locale support.
