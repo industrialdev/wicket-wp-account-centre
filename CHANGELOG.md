@@ -2,6 +2,22 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.7.11] - 2026-07-20
+
+### Added
+- refactor org-profile block onto shared widget-profile-org component
+- add MDP Widget Config setting to AC individual-profile block
+
+### Fixed
+- reject list-shaped JSON as mdp_json_config in both profile blocks
+- promote hide_alternate_name_field to typed constructor property
+- merge hiddenFields toggle into widget_config instead of overwriting
+- restore migrate link for mdp_json_sections on org profile block
+
+### Documentation
+- clarify migrate link replaces, not copies, the config key
+
+
 ## [1.7.10] - 2026-07-16
 
 ### Fixed
