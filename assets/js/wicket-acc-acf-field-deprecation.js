@@ -15,11 +15,12 @@
  * should use `mdp_json_config` only.
  *
  * This script exists purely to make that migration painless for editors who
- * already have legacy values saved: it injects a "Copy this value into MDP
- * Widget Config" link under each legacy field. Clicking it JSON-parses the
- * legacy value, wraps it under the right key (`fields` or `sections`) into
- * whatever's already in `mdp_json_config`, writes the result back, and clears
- * the legacy field. It also hides each legacy field once its value is empty,
+ * already have legacy values saved: it injects a `Replace "fields"/"sections"
+ * in MDP Widget Config` link under each legacy field. Clicking it JSON-parses
+ * the legacy value and writes it under the right key (`fields` or `sections`)
+ * into whatever's already in `mdp_json_config`, replacing any existing value
+ * under that key wholesale (not merging it), then clears the legacy field.
+ * It also hides each legacy field once its value is empty,
  * so old blocks that never used them (or have already been migrated) don't
  * show dead, empty settings to editors.
  *
@@ -73,7 +74,7 @@
     // DOM ACF replaced) would otherwise pass an existence check while having
     // no working click handler on the currently-visible element.
     $input.find('.wicket-acc-mdp-migrate-link').remove();
-    var $link = jQuery('<p style="margin-top: 4px;"><a href="#" class="wicket-acc-mdp-migrate-link">Copy this value into MDP Widget Config &rarr;</a></p>');
+    var $link = jQuery('<p style="margin-top: 4px;"><a href="#" class="wicket-acc-mdp-migrate-link">Replace "' + wrapKey + '" in MDP Widget Config &rarr;</a></p>');
     $input.append($link);
 
     $link.find('a').on('click', function(e) {
