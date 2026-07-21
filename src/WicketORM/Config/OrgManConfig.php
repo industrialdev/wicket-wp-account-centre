@@ -313,6 +313,8 @@ final class OrgManConfig
                     'show_edit_permissions' => false,
                     'add_member_auto_close_on_success' => false,
                     'add_member_auto_close_delay_seconds' => 7,
+                    // Default role preselected in the add-member modal: 'member' or 'observer'.
+                    'add_member_default_role' => 'member',
                     'search_clear_requires_submit' => true,
                     'editable_fields' => [
                         'name',

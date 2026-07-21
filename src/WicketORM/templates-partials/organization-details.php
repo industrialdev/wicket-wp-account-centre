@@ -41,6 +41,13 @@ if ($roster_mode === 'groups' && $group_uuid && function_exists('wicket_get_grou
         $attrs = $group['data']['attributes'];
         $group_name = $attrs['name'] ?? $attrs['name_en'] ?? $attrs['name_fr'] ?? '';
         $group_type = $attrs['type'] ?? '';
+        $group_description = (string) (
+            $attrs['description']
+            ?? $attrs['description_en']
+            ?? $attrs['description_fr']
+            ?? $attrs['description_es']
+            ?? ''
+        );
     }
     if (empty($org_uuid) && is_array($group)) {
         $org_uuid = (string) ($group['data']['relationships']['organization']['data']['id'] ?? '');
@@ -183,6 +190,9 @@ if ($roster_mode !== 'groups') {
     <div class="org-details__summary-card wt_rounded-card-accent wt_p-4 wt_bg-summary-card">
         <?php if ($roster_mode === 'groups' && $group_name): ?>
             <h2 class="wp-block-heading has-heading-sm-font-size org-details__title wt_text-lg wt_mb-2 wt_text-heading-color wt_font-bold"><?php echo esc_html($group_name); ?></h2>
+            <?php if ($group_description !== '') : ?>
+                <p class="org-details__summary-item wt_leading-normal wt_text-content wt_mb-2"><?php echo esc_html($group_description); ?></p>
+            <?php endif; ?>
             <?php if ($org_name): ?>
                 <p class="org-details__summary-item wt_leading-normal wt_text-content mb-1">
                     <?php esc_html_e('Organization:', 'wicket-acc'); ?>
