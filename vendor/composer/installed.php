@@ -38,9 +38,9 @@
             'dev_requirement' => false,
         ),
         'estebanforge/hyperblocks' => array(
-            'pretty_version' => '1.3.1',
-            'version' => '1.3.1.0',
-            'reference' => 'b7ff90007809b8338841e1ebf8f40d9bd373aefb',
+            'pretty_version' => '1.3.3',
+            'version' => '1.3.3.0',
+            'reference' => '3e341758704ff5312fbfd6f24b08efb2b75b357f',
             'type' => 'library',
             'install_path' => __DIR__ . '/../estebanforge/hyperblocks',
             'aliases' => array(),

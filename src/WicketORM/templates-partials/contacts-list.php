@@ -96,7 +96,7 @@ $search_base_url = $contacts_list_endpoint
 
 // Search/Clear actions mirror members-view-unified.php. Submit sets the query signal
 // and reloads page 1 with it; clear resets the query and reloads page 1 without it.
-$contacts_search_action = "@get('" . esc_js($search_base_url) . "&query=' + encodeURIComponent(" . '$contactsQuery' . "))";
+$contacts_search_action = "@get('" . esc_js($search_base_url) . "&query=' + encodeURIComponent(" . '$contactsQuery' . '))';
 $contacts_search_submit = '$contactsSubmitted = true; ' . $contacts_search_action;
 $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' . $contacts_search_action . ')';
 
