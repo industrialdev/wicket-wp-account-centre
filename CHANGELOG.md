@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.7.12] - 2026-07-23
+
+### Added
+- **org-roster:** show group desc, back button, observer default role
+
+
 ## [1.7.11] - 2026-07-20
 
 ### Added
