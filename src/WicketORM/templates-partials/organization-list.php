@@ -130,6 +130,13 @@ do {
         $group_name = $attrs['name'] ?? $attrs['name_en'] ?? $attrs['name_fr'] ?? '';
         $group_type = $attrs['type'] ?? '';
         $group_tags = is_array($attrs) ? ($attrs['tags'] ?? null) : null;
+        $group_description = (string) (
+            $attrs['description']
+            ?? $attrs['description_en']
+            ?? $attrs['description_fr']
+            ?? $attrs['description_es']
+            ?? ''
+        );
         if ($group_name === '' && $group_type === '') {
             $logger->debug('Skipping group item missing name/type', [
                 'source' => 'wicket-orgman',
@@ -144,6 +151,7 @@ do {
         $groups_by_org[$org_map_key][] = [
             'id' => $group_id,
             'name' => $group_name,
+            'description' => $group_description,
             'type' => $group_type,
             'tags' => $group_tags,
             'org_uuid' => $org_uuid,
@@ -194,6 +202,7 @@ if ($roster_mode === 'groups') {
             $manageable_groups[] = [
                 'group_uuid' => $group_id,
                 'group_name' => $group_name,
+                'group_description' => (string) ($group_detail['description'] ?? ''),
                 'org_uuid' => (string) ($group_detail['org_uuid'] ?? ''),
                 'org_identifier' => (string) ($group_detail['org_identifier'] ?? ''),
                 'org_name' => (string) ($group_detail['org_name'] ?? ''),
@@ -382,6 +391,12 @@ if ($roster_mode === 'groups') {
                 <div class="wt_w-full wt_rounded-card-accent wt_p-4 wt_mb-1 wt_hover_shadow-sm wt_transition-shadow wt_bg-card wt_border wt_border-color wt_decoration-none"
                     role="listitem">
                     <div class="wt_text-xl wt_font-semibold wt_text-content"><?php echo esc_html((string) $group_item['group_name']); ?></div>
+                <?php
+                $group_description_text = trim((string) ($group_item['group_description'] ?? ''));
+                ?>
+                <?php if ($group_description_text !== '') : ?>
+                    <div class="wt_text-base wt_text-content wt_mt-1 wt_text-pretty"><?php echo esc_html($group_description_text); ?></div>
+                <?php endif; ?>
                     <?php if ($grp_card_show_org_name && $group_org_label !== '') : ?>
                         <div class="wt_text-sm wt_text-content wt_mt-1">
                             <?php echo esc_html(sprintf(__('Organization: %s', 'wicket-acc'), $group_org_label)); ?>

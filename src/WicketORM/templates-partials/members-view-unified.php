@@ -580,9 +580,10 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
                 $group_roles = is_array($groups_config['roles'] ?? null) ? $groups_config['roles'] : [];
                 $member_role = $group_roles['member'] ?? ($groups_config['member_role'] ?? 'member');
                 $observer_role = $group_roles['observer'] ?? ($groups_config['observer_role'] ?? 'observer');
+                $default_member_role = $groups_config['presentation']['add_member_default_role'] ?? ($groups_config['ui']['add_member_default_role'] ?? 'member');
                 ?>
-                            <option value="<?php echo esc_attr($member_role); ?>"><?php esc_html_e('Member', 'wicket-acc'); ?></option>
-                            <option value="<?php echo esc_attr($observer_role); ?>"><?php esc_html_e('Observer', 'wicket-acc'); ?></option>
+                            <option value="<?php echo esc_attr($member_role); ?>"<?php echo $default_member_role !== 'observer' ? ' selected' : ''; ?>><?php esc_html_e('Member', 'wicket-acc'); ?></option>
+                            <option value="<?php echo esc_attr($observer_role); ?>"<?php echo $default_member_role === 'observer' ? ' selected' : ''; ?>><?php esc_html_e('Observer', 'wicket-acc'); ?></option>
                         </select>
                     </div>
 

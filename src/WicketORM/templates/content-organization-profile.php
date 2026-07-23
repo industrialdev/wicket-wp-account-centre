@@ -54,6 +54,25 @@ $status = isset($_REQUEST['status']) ? sanitize_text_field(wp_unslash($_REQUEST[
 <div id="org-management-index-app"
     class="org-management-app wicket-orgman wt_w-full wt_mt-6 wt_mb-6"
     data-org-type="<?php echo esc_attr($org_type); ?>">
+    <?php
+    // Back to Manage Groups / Organizations landing when the user has drilled into a specific context.
+    $back_to_landing_show = $roster_mode === 'groups' || $org_uuid !== '';
+if ($back_to_landing_show) :
+    $back_to_landing_label = $roster_mode === 'groups'
+        ? __('Back to Manage Groups', 'wicket-acc')
+        : __('Back to Manage Organizations', 'wicket-acc');
+    $back_to_landing_url = \WicketORM\Helpers\Helper::getMyAccountPageUrl(
+        'organization-management',
+        '/my-account/organization-management/'
+    );
+    ?>
+        <a href="<?php echo esc_url($back_to_landing_url); ?>"
+            class="wt_inline-flex wt_items-center wt_gap-1 wt_text-primary-600 wt_hover_text-primary-700 wt_text-sm wt_mb-4 underline underline-offset-4">
+            <span aria-hidden="true">&larr;</span>
+            <?php echo esc_html($back_to_landing_label); ?>
+        </a>
+    <?php endif; ?>
+
     <h1 class="wt_text-2xl wt_font-bold wt_mb-4"><?php echo esc_html($management_title); ?></h1>
 
     <?php if ($status === 'success') : ?>

@@ -269,6 +269,8 @@ $remove_member_endpoint = WicketORM\Helpers\TemplateHelper::template_url() . 'pr
 $group_roles = is_array($groups_config['roles'] ?? null) ? $groups_config['roles'] : [];
 $member_role = $group_roles['member'] ?? ($groups_config['member_role'] ?? 'member');
 $observer_role = $group_roles['observer'] ?? ($groups_config['observer_role'] ?? 'observer');
+// Default role preselected in the add-member modal: 'member' or 'observer'.
+$default_member_role = $groups_presentation['add_member_default_role'] ?? 'member';
 ?>
 
     <dialog id="groupMembersAddModal"
@@ -332,8 +334,8 @@ $observer_role = $group_roles['observer'] ?? ($groups_config['observer_role'] ??
                     </label>
                     <select id="group-member-role" name="role"
                         class="wt_w-full wt_border wt_border-color wt_rounded-md wt_p-2">
-                        <option value="<?php echo esc_attr($member_role); ?>"><?php esc_html_e('Member', 'wicket-acc'); ?></option>
-                        <option value="<?php echo esc_attr($observer_role); ?>"><?php esc_html_e('Observer', 'wicket-acc'); ?></option>
+                        <option value="<?php echo esc_attr($member_role); ?>"<?php echo $default_member_role !== 'observer' ? ' selected' : ''; ?>><?php esc_html_e('Member', 'wicket-acc'); ?></option>
+                        <option value="<?php echo esc_attr($observer_role); ?>"<?php echo $default_member_role === 'observer' ? ' selected' : ''; ?>><?php esc_html_e('Observer', 'wicket-acc'); ?></option>
                     </select>
                 </div>
 
