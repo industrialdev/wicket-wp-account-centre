@@ -1,5 +1,70 @@
 # Changelog
 
+## [1.4.5] - 2026-07-24
+
+### Fixed
+- **Admin asset 404s when HyperFields runs under HyperPress.** `TemplateLoader::enqueueAssets()` and `ExportImportUI::enqueuePageAssets()` preferred `HYPERPRESS_PLUGIN_URL` over `HYPERFIELDS_PLUGIN_URL` for HyperFields' own assets (`hyperfields-admin.css`, `conditional-fields.js`, `media-fields.js`, `map-field.js`, `hyperfields-admin.js`) — a legacy of the HyperFields/HyperPress split. Those files live under `hyperfields/assets/`, not `hyperpress-core/assets/`, so every request 404'd. Now prefers `HYPERFIELDS_PLUGIN_URL` (and `HYPERFIELDS_VERSION` for cache-busting), falling back to `HYPERPRESS_*` only when HyperFields' own URL is unavailable.
+
+### Changed
+- `package.json` version resynced to the library version (had drifted during earlier manual bumps).
+- README: added a Jetpack Autoloader note pointing consumers to the direct-require gate.
+- `LibraryBootstrap::VERSION` bumped to match the release (stamps the class file for the version-aware shadow predicate). `version-bump.sh` now scans `src/` recursively, so class-level version stamps are updated automatically on future bumps.
+
+## [1.4.4] - 2026-07-24
+
+### Added
+- **`LibraryBootstrap::VERSION` constant + version-aware shadow predicate.** Closes the `method_exists` blind spot a peer review (Claude Opus) flagged: `method_exists` only catches *absent* methods, not a method present in both versions but with changed behavior. `hyperfields_is_class_shadowed()` now also treats a loaded class whose `VERSION` is older than 1.4.1 (when `resolveContentUrl()`'s stable contract was introduced) as shadowed — catching behavioral drift, not just absence. Classes without the stamp (pre-1.4.4, test stubs) skip the version check and fall through to `method_exists`. Uses `ReflectionClass::hasConstant()` (not `getConstant()` directly) to avoid the PHP 8.5 deprecation for non-existent constants.
+
+### Fixed
+- Companion doc mirrors: the "consumers must directly require `automattic/jetpack-autoloader`" guidance (the non-obvious gate that caused a staging outage) now also lives in `estebanforge/hyperblocks` and `estebanforge/hyperpress-core` docs, not only HyperFields'.
+
+### Notes
+- `LibraryBootstrap::VERSION` must track the library release version on future bumps (the `version-bump.sh` script does not yet update it).
+
+## [1.4.3] - 2026-07-24
+
+### Fixed
+- **Class-shadowing guard extended to the shared procedural wrapper `hyperfields_resolve_content_url()` (in `includes/helpers.php`)** — the chokepoint sibling libraries actually call. 1.4.2 guarded only HyperFields' own bootstrap init call; sibling paths were still vulnerable: HyperPress-Core's bootstrap (`function_exists('hyperfields_resolve_content_url') ? hyperfields_resolve_content_url(...)`) and HyperBlocks' `hyperblocks_resolve_content_url()` both delegate to this wrapper, so a stale bundled `LibraryBootstrap` (< 1.4.1) lacking `resolveContentUrl()` would still fatal through them. The wrapper now runs the same shadow predicate and returns `''` (siblings already treat `''` as the "bail" signal) instead of calling the absent method. The class FQCN is injectable for testing.
+
+### Added
+- `tests/Unit/ResolvePluginUrlTest.php`: two regression tests for the wrapper path (`testWrapperDelegatesToFreshClass`, `testWrapperBailsOnStaleClassInsteadOfFataling`). Removing the wrapper guard makes the stale test fatal.
+
+### Notes
+- 1.4.2 (the bootstrap-path guard) remains a strict improvement and is safe; 1.4.3 closes the sibling-wrapper hole identified in peer review. Together they cover both external call sites of `LibraryBootstrap::resolveContentUrl()`.
+
+## [1.4.2] - 2026-07-24
+
+### Fixed
+- **Class-shadowing fatal eliminated: a stale bundled `HyperFields\LibraryBootstrap` lacking `resolveContentUrl()` (added in 1.4.1) no longer crashes the request when a newer init wins the multi-instance version election.** The election guarantees the newest *init* runs but cannot guarantee the newest *class* is loaded — PHP's autoloader stack may resolve the class from an older bundled copy. Previously the newest init then called a method absent on the stale class and the process fatal'd (`Call to undefined method ... resolveContentUrl()`). The call is now guarded: when the shadow signature is detected (class loaded, method absent) the resolver emits a diagnosable `error_log` alarm and falls back to `plugins_url()` instead of crashing. This is the direct fix for a staging-outage class of failure.
+
+### Added
+- `hyperfields_resolve_plugin_url(string $plugin_dir, string $plugin_file_path, string $plugin_version, string $class = 'HyperFields\LibraryBootstrap', ?callable $alarm = null): string` — extracts the library URL resolution (formerly inline in `hyperfields_run_initialization_logic()`) into a testable function with the class FQCN and alarm callable injectable.
+- `hyperfields_is_class_shadowed(string $class): bool` — pure predicate returning true iff the LibraryBootstrap class is loaded but lacks `resolveContentUrl()`. The alarm trigger logic, unit-testable without `error_log` capture.
+- `tests/Unit/ResolvePluginUrlTest.php` — four regression tests pinning the guard: fresh class delegates, stale class falls back + alarms with the correct message, missing class falls back silently, and the predicate detects the stale shape. Removing the guard makes the stale test fatal.
+
+### Notes
+- This guard is a safety net, not the root-cause fix. The root cause is that consumers (e.g. any distributable plugin vendoring a Hyper library) pull `automattic/jetpack-autoloader` only transitively via `hyperfields → jetpack`, so Jetpack never adopts them and stays inert. Consumers must *directly* require `automattic/jetpack-autoloader` for Jetpack to generate its manifest and own class identity. See `docs/library-bootstrap.md`.
+
+## [1.4.1] - 2026-07-23
+
+### Fixed
+- **Vendored HyperFields no longer produces a 404ing asset URL, fixing admin/options-page assets and field JS (multiselect-enhanced.js) that silently failed to load when the library was installed outside `WP_PLUGIN_DIR`.** The library URL constant `HYPERFIELDS_PLUGIN_URL` was computed with `plugins_url('', $plugin_file_path)` (in `bootstrap.php` and `LibraryBootstrap::resolve_plugin_url()`). That function resolves correctly only when the file sits directly under `WP_PLUGIN_DIR`: it calls `plugin_basename()`, which strips that one prefix and nothing else. When HyperFields is loaded from anywhere else, `plugin_basename()` returns the full filesystem path with its leading slash stripped, and `plugins_url()` glues it to `WP_PLUGIN_URL`, emitting a URL like `https://host/app/plugins/home/.../src/vendor/estebanforge/hyperfields/` that 404s. Assets enqueued from that URL never load, silently breaking options pages and field enhancements. This hit real Bedrock deployments where the app's root `composer.json` pulls a plugin that requires `estebanforge/hyperblocks` (which itself requires `estebanforge/hyperfields`) into `public_html/src/vendor` (outside the `src/web` document root), and that root copy won HyperFields' multi-instance highest-version election, so its (unreachable) assets were the ones enqueued. The new resolver matches the library directory against every web-accessible WordPress content root (`WP_PLUGIN_DIR`/`WP_PLUGIN_URL`, `WPMU_PLUGIN_DIR`/`WPMU_PLUGIN_URL`, `WP_CONTENT_DIR`/`WP_CONTENT_URL`, and the active theme template + stylesheet dirs) on a directory boundary, with `realpath` canonicalization so symlinked plugin dirs (wp-env, Lando, some Bedrock setups) still match. Returns the correct public URL, or an empty string when the path is genuinely not HTTP-reachable.
+- **`HYPERPRESS_PLUGIN_URL` no longer inherits a broken HyperFields value.** `LibraryBootstrap::init()` previously defined `HYPERPRESS_PLUGIN_URL` by copying `HYPERFIELDS_PLUGIN_URL`. When HyperFields' URL was the 404ing value above, that pollution silently broke HyperPress-Core's frontend script enqueue too. HyperFields no longer defines `HYPERPRESS_PLUGIN_URL` at all. HyperPress-Core owns that constant and resolves it from its own base directory (HyperPress vendors HyperFields, so it may live at a different path). A naive "resolve independently from HyperFields' $base_dir" was considered but rejected: that $base_dir is HyperFields' dir, not HyperPress-Core's, so it would still produce the wrong URL. Removing the fallback lets HyperPress-Core's own (correct) bootstrap win.
+
+### Added
+- `LibraryBootstrap::resolveContentUrl(string $path): string` public static method — the canonical content-aware URL resolver shared across the HyperFields / HyperBlocks / HyperPress-Core library family. Matches an absolute filesystem path against web-accessible WordPress content roots with directory-boundary prefix matching and `realpath` canonicalization; returns `''` when no root contains the path.
+- `hyperfields_resolve_content_url(string $path): string` procedural wrapper in `includes/helpers.php`, exposed so sibling libraries (HyperBlocks, HyperPress-Core) delegate to this single implementation when HyperFields is present rather than carrying their own copy.
+- `tests/Unit/ResolveContentUrlTest.php` covering nested plugin-vendor resolution, exact-root match, the shared-prefix boundary guard, the Bedrock-root-vendor (non-web-accessible) empty case, and backslash normalization.
+- `WP_PLUGIN_URL`/`WP_CONTENT_URL` constants in the test bootstrap so the resolver's production code path is exercised (previously only `WP_*_DIR` was defined, so the URL pairs were skipped and the resolver could not be tested meaningfully).
+
+## [1.4.0] - 2026-07-16
+
+### Changed
+- **Admin CSS realigned with current WordPress checkbox/heading UI** — three scoping fixes in `assets/css/hyperfields-admin.css`, all in service of matching recent WP core rendering rather than fighting it:
+  - Section headings now use the admin text-color token (`var(--hf-color-admin-text)`) instead of the generic frontend text token (`var(--hf-color-text)`), so headings match the surrounding WP admin chrome.
+  - Removed the fixed `width: 18px` / `height: 18px` on `.hyperpress-field-input-wrapper input[type="checkbox"]` and `[type="radio"]`. WordPress 6.9+/7.x renders checkboxes via `appearance: none` with an internally-positioned checkmark; forcing a fixed size distorted that internal positioning and produced an off-center check, especially on mobile. Width/height is now left unset so WP core owns the checkbox appearance; `cursor: pointer` is retained.
+  - Scoped the `.hyperpress-heading-label` rule to `.hyperpress-options-wrap .hyperpress-heading-label`, preventing it from leaking out and overriding unrelated heading markup on pages that share the class name.
+
 ## [1.3.5] - 2026-07-07
 
 ### Fixed

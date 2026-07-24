@@ -1,5 +1,45 @@
 # Changelog
 
+## [1.3.4] - 2026-07-24
+
+### Changed
+- `docs/library-bootstrap.md`: documented the Jetpack Autoloader direct-require gate (consumers vendoring HyperBlocks must directly require `automattic/jetpack-autoloader`; transitive presence leaves Jetpack inert).
+- README: added a Jetpack Autoloader note for consumers.
+
+## [1.3.3] - 2026-07-23
+
+### Fixed
+- **Dynamic blocks now wrap their editor preview in `useBlockProps()`, restoring block selection, focus, and `supports.*` features (align, anchor, `customClassName`) in the editor.** The 1.3.2 ServerSideRender fix rendered the server markup but skipped the `useBlockProps()` wrapper that core's own dynamic blocks apply. Without it, those editor features silently failed (no block-selection chrome, no alignment controls) the moment a fluent block declared a `supports.*` feature, and the same wiring becomes mandatory under block apiVersion 3. The editor output is now `<div {...useBlockProps()}><ServerSideRender /></>`, matching the canonical WordPress dynamic-block pattern. The `wp-block-editor` package (which provides `useBlockProps`) was added to the editor script dependencies.
+
+### Changed
+- `docs/hyperblocks.md` updated to describe the ServerSideRender + useBlockProps editor behavior; the prior text incorrectly documented `edit() => null` as intentional design.
+
+## [1.3.2] - 2026-07-23
+
+### Fixed
+- **Dynamic fluent blocks now render their server-side markup in the editor canvas instead of appearing as a blank placeholder.** The editor script registered every fluent block with `edit: () => null`, on the assumption that the editor would automatically display the server-rendered output produced by the block's `render_callback`. That assumption was wrong: WordPress does not auto-render a dynamic block's `render_callback` inside the editor, so a fluent block that appeared in the inserter and rendered correctly on the front end showed nothing when inserted into a post. The editor now uses the canonical WordPress dynamic-block pattern, fetching the server-rendered HTML via the `ServerSideRender` component (the same mechanism used by WooCommerce, Gravity Forms, and ACF dynamic blocks). Each block instance makes one REST call to render its preview, which is the standard cost of a dynamic block in Gutenberg. `save()` continues to return `null` because dynamic blocks emit no static markup; the stored block comment is re-rendered server-side on the front end via the `render_callback`. The editor script gained `wp-server-side-render` as a dependency so the component is available when `edit()` runs.
+
+## [1.3.1] - 2026-07-23
+
+### Fixed
+- **Vendored HyperBlocks no longer produces a 404ing editor-script URL, fixing fluent blocks that were silently invisible in the Gutenberg inserter.** The library URL constant `HYPERBLOCKS_PLUGIN_URL` (and the editor.js/editor.css asset URLs derived from it) were computed with `plugins_url('', $bootstrap_file_path)`. That function resolves correctly only when the file sits directly under `WP_PLUGIN_DIR`: it calls `plugin_basename()`, which strips that one prefix and nothing else. When HyperBlocks is loaded from anywhere else, `plugin_basename()` returns the full filesystem path with its leading slash stripped, and `plugins_url()` glues it to `WP_PLUGIN_URL`, emitting a URL like `https://host/app/plugins/home/.../src/vendor/estebanforge/hyperblocks/` that 404s. The editor script then never loads, `wp.blocks.registerBlockType()` never fires on the client, and every fluent block registered via the PHP API (server-side `register_block_type()`) keeps rendering on the front end but vanishes from the inserter. This hit real Bedrock deployments where the app's root `composer.json` pulls `estebanforge/hyperblocks` into `public_html/src/vendor` (outside the `src/web` document root), and that root copy won HyperBlocks' multi-instance highest-version election, so its (unreachable) assets were the ones enqueued. The resolver now matches the library directory against every web-accessible WordPress content root (`WP_PLUGIN_DIR`/`WP_PLUGIN_URL`, `WPMU_PLUGIN_DIR`/`WPMU_PLUGIN_URL`, `WP_CONTENT_DIR`/`WP_CONTENT_URL`, and the active theme template + stylesheet dirs) on a directory boundary, returning the correct public URL or an empty string when the path is genuinely not HTTP-reachable. When empty, the editor-script registration bails and emits a clear `error_log` explaining that fluent blocks will not appear in the inserter and that the library must be served from within `wp-content` — instead of silently enqueuing a broken URL. The URL also inherits the correct scheme because it is built from the already-correct `WP_*_URL` constants, sidestepping the `is_ssl()` mis-detection behind reverse proxies that further corrupted the previous `plugins_url()` output. The empty-sentinel contract is preserved through the constant composition (`rtrim('') . '/'` would otherwise turn the unresolvable case into `'/'` and defeat the downstream `!== ''` guard, re-enqueuing a root-relative 404ing URL), and both the path and each candidate root are `realpath`-canonicalized so symlinked plugin directories (wp-env, Lando, some Bedrock setups) still match a `realpath`'d script path the way WordPress core's own `$wp_plugin_paths` symlink map does.
+
+### Added
+- `hyperblocks_resolve_content_url(string $path): string` procedural helper (in `src/helpers.php`) that resolves an absolute filesystem path to its public URL by matching it against the active web-accessible WordPress content roots, with directory-boundary prefix matching and cross-platform backslash normalization. Returns `''` when no root contains the path.
+- `tests/Unit/AssetUrlResolverTest.php` covering nested plugin-vendor resolution, exact-root match, the shared-prefix boundary guard, the Bedrock-root-vendor (non-web-accessible) empty case, and backslash normalization.
+- `WP_PLUGIN_DIR`/`WP_PLUGIN_URL`/`WP_CONTENT_URL` constants and a faithful `plugins_url()` mock (porting core's `plugin_basename()` prefix-strip + fallback behavior) in the test bootstrap and mocks, so the production code path that previously went untested is now exercised.
+
+## [1.3.0] - 2026-07-16
+
+### Changed
+- **`scripts/version-bump.sh` gained non-interactive flag support.** The script previously prompted interactively for the new version only; it now resolves the target version from flags first, falling back to the interactive prompt only when called with no arguments:
+  - `--patch` / `--minor` / `--major` — compute the next version from the current `composer.json` version using a shared `bump_version()` helper (e.g. `1.2.3` + `--minor` → `1.3.0`).
+  - `--version X.Y.Z` — explicit target, validated against `^[0-9]+\.[0-9]+\.[0-9]+$` and rejected if equal to the current version.
+  - `-h` / `--help` prints usage; unknown arguments exit `2`.
+  - Emits a final `RESULT: <cur> -> <new>` line for machine-parseable output.
+  - No flags = unchanged interactive behavior (backwards compatible).
+- No library or runtime changes; no API additions.
+
 ## [1.2.0] - 2026-07-07
 
 ### Security

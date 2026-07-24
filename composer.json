@@ -41,6 +41,7 @@
         }
     ],
     "require": {
+        "automattic/jetpack-autoloader": "^2",
         "estebanforge/hyperblocks": "^1",
         "industrialdev/wicket-sdk-php": "dev-master",
         "php": ">=8.2.0",

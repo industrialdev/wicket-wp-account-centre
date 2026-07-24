@@ -7,6 +7,7 @@ use HyperFields\Compatibility\WPSettingsCompatibility;
 use HyperFields\ContentExportImport;
 use HyperFields\ExportImport;
 use HyperFields\Field;
+use HyperFields\LibraryBootstrap;
 use HyperFields\OptionsPage;
 use HyperFields\OptionsSection;
 use HyperFields\RepeaterField;
@@ -658,5 +659,48 @@ if (!function_exists('hf_detect_type')) {
     function hf_detect_type(mixed $value): string
     {
         return SchemaValidator::detectType($value);
+    }
+}
+
+if (!function_exists('hyperfields_resolve_content_url')) {
+    /**
+     * Resolve a filesystem path to its public URL via the web-accessible
+     * WordPress content roots.
+     *
+     * Thin procedural wrapper around LibraryBootstrap::resolveContentUrl(),
+     * exposed so sibling libraries (HyperBlocks, HyperPress-Core) can delegate
+     * to the single canonical implementation when HyperFields is present.
+     * Returns '' when the path is not under any web-accessible root (e.g. a
+     * Bedrock root composer vendor outside the document root), which is the
+     * signal for callers to bail and log instead of enqueuing a 404ing URL.
+     *
+     * @param string $path Absolute filesystem path (file or directory).
+     * @return string Public URL with no trailing slash, or '' if not resolvable.
+     */
+    function hyperfields_resolve_content_url(string $path, string $class = LibraryBootstrap::class, ?callable $alarm = null): string
+    {
+        // Shadow guard: a stale bundled LibraryBootstrap (< 1.4.1) lacks
+        // resolveContentUrl(). Bail with '' so sibling callers (HyperPress-Core,
+        // HyperBlocks) skip asset enqueue instead of fataling on the absent
+        // method — the staging outage class. Sibling callers already treat '' as
+        // the "not HTTP-reachable, bail" signal. The class FQCN and alarm
+        // callable are injectable so the guard is unit-testable via stubs.
+        if (hyperfields_is_class_shadowed($class)) {
+            $alarm ??= static function (string $message): void {
+                if (function_exists('error_log')) {
+                    error_log($message);
+                }
+            };
+            $alarm(sprintf(
+                'HyperFields: class shadowing detected via hyperfields_resolve_content_url(). '
+                . 'The loaded %s lacks resolveContentUrl() (added in 1.4.1); returning empty URL. '
+                . 'Fix: every consumer must directly require automattic/jetpack-autoloader so '
+                . 'Jetpack owns class identity, and ship the same HyperFields version across bundles.',
+                $class
+            ));
+            return '';
+        }
+
+        return $class::resolveContentUrl($path);
     }
 }
