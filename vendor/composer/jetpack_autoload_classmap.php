@@ -983,247 +983,247 @@ return array(
 		'path'    => $vendorDir . '/automattic/jetpack-autoloader/src/class-hook-manager.php'
 	),
 	'HyperBlocks\\Block\\Block' => array(
-		'version' => '1.3.3.0',
+		'version' => '1.3.4.0',
 		'path'    => $vendorDir . '/estebanforge/hyperblocks/src/Block/Block.php'
 	),
 	'HyperBlocks\\Block\\Field' => array(
-		'version' => '1.3.3.0',
+		'version' => '1.3.4.0',
 		'path'    => $vendorDir . '/estebanforge/hyperblocks/src/Block/Field.php'
 	),
 	'HyperBlocks\\Block\\FieldGroup' => array(
-		'version' => '1.3.3.0',
+		'version' => '1.3.4.0',
 		'path'    => $vendorDir . '/estebanforge/hyperblocks/src/Block/FieldGroup.php'
 	),
 	'HyperBlocks\\Config' => array(
-		'version' => '1.3.3.0',
+		'version' => '1.3.4.0',
 		'path'    => $vendorDir . '/estebanforge/hyperblocks/src/Config.php'
 	),
 	'HyperBlocks\\Registry' => array(
-		'version' => '1.3.3.0',
+		'version' => '1.3.4.0',
 		'path'    => $vendorDir . '/estebanforge/hyperblocks/src/Registry.php'
 	),
 	'HyperBlocks\\Renderer' => array(
-		'version' => '1.3.3.0',
+		'version' => '1.3.4.0',
 		'path'    => $vendorDir . '/estebanforge/hyperblocks/src/Renderer.php'
 	),
 	'HyperBlocks\\RestApi' => array(
-		'version' => '1.3.3.0',
+		'version' => '1.3.4.0',
 		'path'    => $vendorDir . '/estebanforge/hyperblocks/src/RestApi.php'
 	),
 	'HyperBlocks\\WordPress\\Bootstrap' => array(
-		'version' => '1.3.3.0',
+		'version' => '1.3.4.0',
 		'path'    => $vendorDir . '/estebanforge/hyperblocks/src/WordPress/Bootstrap.php'
 	),
 	'HyperFields\\AdminPage' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/AdminPage.php'
 	),
 	'HyperFields\\Admin\\Activation' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Admin/Activation.php'
 	),
 	'HyperFields\\Admin\\ExportImportPageConfig' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Admin/ExportImportPageConfig.php'
 	),
 	'HyperFields\\Admin\\ExportImportUI' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Admin/ExportImportUI.php'
 	),
 	'HyperFields\\Admin\\Options' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Admin/Options.php'
 	),
 	'HyperFields\\Admin\\OptionsMigration' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Admin/OptionsMigration.php'
 	),
 	'HyperFields\\Admin\\TransferLogsUI' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Admin/TransferLogsUI.php'
 	),
 	'HyperFields\\Assets' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Assets.php'
 	),
 	'HyperFields\\BlockFieldAdapter' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/BlockFieldAdapter.php'
 	),
 	'HyperFields\\Compatibility\\CompatibilityMigrator' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Compatibility/CompatibilityMigrator.php'
 	),
 	'HyperFields\\Compatibility\\OptionTypeRegistry' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Compatibility/OptionTypeRegistry.php'
 	),
 	'HyperFields\\Compatibility\\SectionProxy' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Compatibility/SectionProxy.php'
 	),
 	'HyperFields\\Compatibility\\SettingsCompatibility' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Compatibility/SettingsCompatibility.php'
 	),
 	'HyperFields\\Compatibility\\Store\\ArrayOptionStore' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Compatibility/Store/ArrayOptionStore.php'
 	),
 	'HyperFields\\Compatibility\\Store\\DualWriteStore' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Compatibility/Store/DualWriteStore.php'
 	),
 	'HyperFields\\Compatibility\\Store\\FallbackReadStore' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Compatibility/Store/FallbackReadStore.php'
 	),
 	'HyperFields\\Compatibility\\Store\\SingleOptionStore' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Compatibility/Store/SingleOptionStore.php'
 	),
 	'HyperFields\\Compatibility\\Store\\StoreInterface' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Compatibility/Store/StoreInterface.php'
 	),
 	'HyperFields\\Compatibility\\TabProxy' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Compatibility/TabProxy.php'
 	),
 	'HyperFields\\Compatibility\\WPSettingsCompatibility' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Compatibility/WPSettingsCompatibility.php'
 	),
 	'HyperFields\\ConditionalLogic' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/ConditionalLogic.php'
 	),
 	'HyperFields\\Container\\Container' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Container/Container.php'
 	),
 	'HyperFields\\Container\\ContainerFactory' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Container/ContainerFactory.php'
 	),
 	'HyperFields\\Container\\PostMetaContainer' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Container/PostMetaContainer.php'
 	),
 	'HyperFields\\Container\\TermMetaContainer' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Container/TermMetaContainer.php'
 	),
 	'HyperFields\\Container\\UserMetaContainer' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Container/UserMetaContainer.php'
 	),
 	'HyperFields\\ContentExportImport' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/ContentExportImport.php'
 	),
 	'HyperFields\\ContentTransferAdapter' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/ContentTransferAdapter.php'
 	),
 	'HyperFields\\CustomField' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/CustomField.php'
 	),
 	'HyperFields\\ExportImport' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/ExportImport.php'
 	),
 	'HyperFields\\Field' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Field.php'
 	),
 	'HyperFields\\HeadingField' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/HeadingField.php'
 	),
 	'HyperFields\\HyperFields' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/HyperFields.php'
 	),
 	'HyperFields\\LibraryBootstrap' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/LibraryBootstrap.php'
 	),
 	'HyperFields\\Log' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Log.php'
 	),
 	'HyperFields\\OptionField' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/OptionField.php'
 	),
 	'HyperFields\\OptionsPage' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/OptionsPage.php'
 	),
 	'HyperFields\\OptionsSection' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/OptionsSection.php'
 	),
 	'HyperFields\\PostField' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/PostField.php'
 	),
 	'HyperFields\\ReactField' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/ReactField.php'
 	),
 	'HyperFields\\Registry' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Registry.php'
 	),
 	'HyperFields\\RepeaterField' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/RepeaterField.php'
 	),
 	'HyperFields\\SeparatorField' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/SeparatorField.php'
 	),
 	'HyperFields\\TabsField' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/TabsField.php'
 	),
 	'HyperFields\\TemplateLoader' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/TemplateLoader.php'
 	),
 	'HyperFields\\TermField' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/TermField.php'
 	),
 	'HyperFields\\Transfer\\AuditContext' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Transfer/AuditContext.php'
 	),
 	'HyperFields\\Transfer\\AuditLogStorage' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Transfer/AuditLogStorage.php'
 	),
 	'HyperFields\\Transfer\\AuditLogger' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Transfer/AuditLogger.php'
 	),
 	'HyperFields\\Transfer\\Manager' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Transfer/Manager.php'
 	),
 	'HyperFields\\Transfer\\SchemaConfig' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Transfer/SchemaConfig.php'
 	),
 	'HyperFields\\UserField' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/UserField.php'
 	),
 	'HyperFields\\Validation\\SchemaValidator' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/src/Validation/SchemaValidator.php'
 	),
 	'Illuminate\\Contracts\\Auth\\Access\\Authorizable' => array(

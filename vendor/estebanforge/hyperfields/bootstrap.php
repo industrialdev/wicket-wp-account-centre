@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 
 if (!defined('HYPERFIELDS_DEFAULT_VERSION')) {
-    define('HYPERFIELDS_DEFAULT_VERSION', '1.4.4');
+    define('HYPERFIELDS_DEFAULT_VERSION', '1.4.5');
 }
 
 // Define global functions BEFORE early-return guards so they're always available.
@@ -106,7 +106,7 @@ if (!function_exists('hyperfields_is_class_shadowed')) {
             return false;
         }
 
-        // Absent method → definitely shadowed (the original OBA vector: a
+        // Absent method → definitely shadowed (the original incident vector: a
         // < 1.4.1 class lacks resolveContentUrl entirely).
         if (!method_exists($class, 'resolveContentUrl')) {
             return true;

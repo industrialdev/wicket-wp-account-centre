@@ -31,15 +31,15 @@ return array(
 		'path'    => $vendorDir . '/illuminate/collections/helpers.php'
 	),
 	'13f65e44352b0407f05cb5a5e174612b' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/includes/helpers.php'
 	),
 	'0522701f5d113a2ff6373ccc834dd7d6' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/includes/backward-compatibility.php'
 	),
 	'c1c635284e1ca7836efff979fb09390f' => array(
-		'version' => '1.4.4.0',
+		'version' => '1.4.5.0',
 		'path'    => $vendorDir . '/estebanforge/hyperfields/bootstrap.php'
 	),
 	'37a3dc5111fe8f707ab4c132ef1dbc62' => array(
@@ -51,11 +51,11 @@ return array(
 		'path'    => $vendorDir . '/illuminate/support/helpers.php'
 	),
 	'7a417aa514b484622606bfc8f3893672' => array(
-		'version' => '1.3.3.0',
+		'version' => '1.3.4.0',
 		'path'    => $vendorDir . '/estebanforge/hyperblocks/bootstrap.php'
 	),
 	'611bc1f60ae2ec6bee160ee5d1b75d78' => array(
-		'version' => '1.3.3.0',
+		'version' => '1.3.4.0',
 		'path'    => $vendorDir . '/estebanforge/hyperblocks/src/helpers.php'
 	),
 	'1ffd48fd2f3bb3fe50dd66b2bda72795' => array(
