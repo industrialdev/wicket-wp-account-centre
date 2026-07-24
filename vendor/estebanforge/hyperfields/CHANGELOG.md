@@ -1,5 +1,40 @@
 # Changelog
 
+## [1.4.4] - 2026-07-24
+
+### Added
+- **`LibraryBootstrap::VERSION` constant + version-aware shadow predicate.** Closes the `method_exists` blind spot a peer review (Claude Opus) flagged: `method_exists` only catches *absent* methods, not a method present in both versions but with changed behavior. `hyperfields_is_class_shadowed()` now also treats a loaded class whose `VERSION` is older than 1.4.1 (when `resolveContentUrl()`'s stable contract was introduced) as shadowed — catching behavioral drift, not just absence. Classes without the stamp (pre-1.4.4, test stubs) skip the version check and fall through to `method_exists`. Uses `ReflectionClass::hasConstant()` (not `getConstant()` directly) to avoid the PHP 8.5 deprecation for non-existent constants.
+
+### Fixed
+- Companion doc mirrors: the "consumers must directly require `automattic/jetpack-autoloader`" guidance (the non-obvious gate that caused the OBA outage) now also lives in `estebanforge/hyperblocks` and `estebanforge/hyperpress-core` docs, not only HyperFields'.
+
+### Notes
+- `LibraryBootstrap::VERSION` must track the library release version on future bumps (the `version-bump.sh` script does not yet update it).
+
+## [1.4.3] - 2026-07-24
+
+### Fixed
+- **Class-shadowing guard extended to the shared procedural wrapper `hyperfields_resolve_content_url()` (in `includes/helpers.php`)** — the chokepoint sibling libraries actually call. 1.4.2 guarded only HyperFields' own bootstrap init call; sibling paths were still vulnerable: HyperPress-Core's bootstrap (`function_exists('hyperfields_resolve_content_url') ? hyperfields_resolve_content_url(...)`) and HyperBlocks' `hyperblocks_resolve_content_url()` both delegate to this wrapper, so a stale bundled `LibraryBootstrap` (< 1.4.1) lacking `resolveContentUrl()` would still fatal through them. The wrapper now runs the same shadow predicate and returns `''` (siblings already treat `''` as the "bail" signal) instead of calling the absent method. The class FQCN is injectable for testing.
+
+### Added
+- `tests/Unit/ResolvePluginUrlTest.php`: two regression tests for the wrapper path (`testWrapperDelegatesToFreshClass`, `testWrapperBailsOnStaleClassInsteadOfFataling`). Removing the wrapper guard makes the stale test fatal.
+
+### Notes
+- 1.4.2 (the bootstrap-path guard) remains a strict improvement and is safe; 1.4.3 closes the sibling-wrapper hole identified in peer review. Together they cover both external call sites of `LibraryBootstrap::resolveContentUrl()`.
+
+## [1.4.2] - 2026-07-24
+
+### Fixed
+- **Class-shadowing fatal eliminated: a stale bundled `HyperFields\LibraryBootstrap` lacking `resolveContentUrl()` (added in 1.4.1) no longer crashes the request when a newer init wins the multi-instance version election.** The election guarantees the newest *init* runs but cannot guarantee the newest *class* is loaded — PHP's autoloader stack may resolve the class from an older bundled copy. Previously the newest init then called a method absent on the stale class and the process fatal'd (`Call to undefined method ... resolveContentUrl()`). The call is now guarded: when the shadow signature is detected (class loaded, method absent) the resolver emits a diagnosable `error_log` alarm and falls back to `plugins_url()` instead of crashing. This is the direct fix for the OBA staging outage class of failure.
+
+### Added
+- `hyperfields_resolve_plugin_url(string $plugin_dir, string $plugin_file_path, string $plugin_version, string $class = 'HyperFields\LibraryBootstrap', ?callable $alarm = null): string` — extracts the library URL resolution (formerly inline in `hyperfields_run_initialization_logic()`) into a testable function with the class FQCN and alarm callable injectable.
+- `hyperfields_is_class_shadowed(string $class): bool` — pure predicate returning true iff the LibraryBootstrap class is loaded but lacks `resolveContentUrl()`. The alarm trigger logic, unit-testable without `error_log` capture.
+- `tests/Unit/ResolvePluginUrlTest.php` — four regression tests pinning the guard: fresh class delegates, stale class falls back + alarms with the correct message, missing class falls back silently, and the predicate detects the stale shape. Removing the guard makes the stale test fatal.
+
+### Notes
+- This guard is a safety net, not the root-cause fix. The root cause is that consumers (e.g. `wicket-wp-account-centre`, `wicket-wp-importer`) pull `automattic/jetpack-autoloader` only transitively via `hyperfields → jetpack`, so Jetpack never adopts them and stays inert. Consumers must *directly* require `automattic/jetpack-autoloader` for Jetpack to generate its manifest and own class identity. See `docs/library-bootstrap.md`.
+
 ## [1.4.1] - 2026-07-23
 
 ### Fixed
