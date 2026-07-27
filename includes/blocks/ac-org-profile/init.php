@@ -31,7 +31,7 @@ class init extends Blocks
         $this->is_preview = $is_preview;
 
         $this->hide_additional_info = get_field('hide_additional_info');
-        $this->hide_alternate_name_field = get_field('hide_alternate_name_field');
+        $this->hide_alternate_name_field = (bool) get_field('hide_alternate_name_field');
 
         // Deprecated: mdp_json_fields is superseded by the mdp_json_config ACF
         // field (see init_block()); kept working for existing saved blocks.
