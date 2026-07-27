@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.7.13] - 2026-07-27
+
+### Fixed
+- **roster:** show delayed membership roster and correct summary block
+
+
 ## [1.7.12] - 2026-07-23
 
 ### Added
