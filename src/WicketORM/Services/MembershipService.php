@@ -592,6 +592,33 @@ class MembershipService
      * @param string $organization_uuid The organization UUID.
      * @return string|WP_Error The membership UUID or WP_Error on failure.
      */
+    /**
+     * Resolve the active_at filter value for a membership-scoped roster query.
+     *
+     * The MDP computes an authoritative membership status; when it is 'Delayed'
+     * the membership starts in the future and its assignments need active_at
+     * pointed at the membership's own start to appear (WWID-1910). Otherwise
+     * 'now' preserves active-only filtering. MembershipRosterReader delegates
+     * here.
+     *
+     * @param string $membership_uuid Organization membership UUID.
+     * @return string 'now', or the membership's starts_at when it is Delayed.
+     */
+    public function resolveActiveAt(string $membership_uuid): string
+    {
+        $data = $this->getOrgMembershipData($membership_uuid);
+        $status = $data['data']['attributes']['status'] ?? null;
+
+        if ($status === 'Delayed') {
+            $startsAt = $data['data']['attributes']['starts_at'] ?? null;
+            if ($startsAt) {
+                return (string) $startsAt;
+            }
+        }
+
+        return 'now';
+    }
+
     public function getCurrentPersonMembershipsByOrganization($organization_uuid)
     {
         if (empty($organization_uuid)) {
@@ -651,7 +678,7 @@ class MembershipService
                 'filter' => [
                     'organization_membership_uuid_in' => [$membership_uuid],
                     'person_full_name_or_person_emails_address_cont' => $query,
-                    'active_at' => 'now',
+                    'active_at' => $this->resolveActiveAt($membership_uuid),
                 ],
             ];
 
@@ -697,7 +724,7 @@ class MembershipService
             $size = absint($args['size'] ?? 15);
 
             $client = wicket_api_client();
-            $response = $client->get('/organization_memberships/' . rawurlencode($membership_uuid) . '/person_memberships?page[number]=' . $page . '&page[size]=' . $size . '&filter[active_at]=now');
+            $response = $client->get('/organization_memberships/' . rawurlencode($membership_uuid) . '/person_memberships?page[number]=' . $page . '&page[size]=' . $size . '&filter[active_at]=' . rawurlencode($this->resolveActiveAt($membership_uuid)));
 
             return isset($response['data']) ? $response : new \WP_Error('no_results', 'No membership members found.');
 

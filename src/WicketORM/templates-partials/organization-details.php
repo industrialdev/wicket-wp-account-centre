@@ -79,7 +79,13 @@ $renewal_date = '';
 $seats_label = '';
 
 if ($roster_mode !== 'groups') {
-    $membership_uuid = $org_uuid ? $membershipService->getMembershipForOrganization($org_uuid) : '';
+    // Honor the membership UUID requested in the URL (e.g. a delayed/future renewal
+    // the user navigated to) before falling back to the org's active membership,
+    // so the summary block matches the membership actually being viewed (WWID-1910).
+    $requested_membership_uuid = isset($_GET['membership_uuid']) ? sanitize_text_field((string) wp_unslash($_GET['membership_uuid'])) : '';
+    $membership_uuid = $requested_membership_uuid !== ''
+        ? $requested_membership_uuid
+        : ($org_uuid ? $membershipService->getMembershipForOrganization($org_uuid) : '');
     $membership_data = $membership_uuid ? $membershipService->getOrgMembershipData($membership_uuid) : null;
 
     if ($membership_data) {
