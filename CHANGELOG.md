@@ -2,6 +2,17 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.7.14] - 2026-07-27
+
+### Fixed
+- **roster:** guard contacts search action expression
+
+### Maintenance
+- **deps:** bump hyperfields to 1.4.5 + hyperblocks to 1.3.4
+- **deps:** directly require jetpack-autoloader + bump hyperfields to 1.4.4
+- **deps:** bump hyper* libraries to asset-url-fix releases
+
+
 ## [1.7.13] - 2026-07-27
 
 ### Fixed
