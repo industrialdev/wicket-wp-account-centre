@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.7.15] - 2026-07-28
+
+### Fixed
+- **ac-org-profile:** cast hide_alternate_name_field to bool
+
+
 ## [1.7.14] - 2026-07-27
 
 ### Fixed
