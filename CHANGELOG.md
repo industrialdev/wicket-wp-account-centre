@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.7.16] - 2026-07-29
+
+### Fixed
+- do not require Gravity Forms API directly
+
+
 ## [1.7.15] - 2026-07-28
 
 ### Fixed
