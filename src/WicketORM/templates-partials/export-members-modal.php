@@ -30,7 +30,7 @@ $current_user = wp_get_current_user();
 $recipient_email = isset($recipient_email) ? sanitize_email((string) $recipient_email) : sanitize_email($current_user->user_email ?? '');
 $nonce = wp_create_nonce('wicket_orgman_export_' . $org_uuid);
 
-$export_url = rest_url('org-management/v1/exports/initiate');
+$export_url = rest_url('wicket-acc/v1/exports/initiate');
 $dialog_id = 'exportMembersDialog-' . $org_dom_suffix;
 $messages_id = 'export-messages-' . $org_dom_suffix;
 ?>
