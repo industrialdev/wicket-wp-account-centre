@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.8.0] - 2026-07-31
+
+### Changed
+- **rest:** rename org-management/v1 namespace to wicket-acc/v1 #minor
+
+
 ## [1.7.16] - 2026-07-29
 
 ### Fixed
