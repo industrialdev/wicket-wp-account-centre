@@ -125,7 +125,10 @@ final class OrgManConfig
                 ],
                 'removal' => [],
                 'addition' => [
-                    'type' => 'position',
+                    // Default relationship type applied when the add-member form does not
+                    // supply one. Empty by default so the library never sends a fabricated
+                    // slug; tenants that want an implicit default can set a valid slug here.
+                    'type' => '',
                 ],
                 'filters' => [
                     'allowlist' => [],
@@ -310,6 +313,8 @@ final class OrgManConfig
                     'show_edit_permissions' => false,
                     'add_member_auto_close_on_success' => false,
                     'add_member_auto_close_delay_seconds' => 7,
+                    // Default role preselected in the add-member modal: 'member' or 'observer'.
+                    'add_member_default_role' => 'member',
                     'search_clear_requires_submit' => true,
                     'editable_fields' => [
                         'name',

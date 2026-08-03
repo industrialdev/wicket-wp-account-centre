@@ -94,10 +94,15 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
             $base_member_role = $config['member_management']['addition']['base_member_role'] ?? 'member';
             $auto_assign_roles = $config['member_management']['addition']['auto_assign_roles'] ?? [];
 
-            // Use relationship type from context if provided, otherwise use config default
+            // Use relationship type from context if provided, otherwise fall back to
+            // the configured addition default. When neither is set (e.g. the add-member
+            // form's relationship-type field is disabled), leave it empty and send no
+            // type at all rather than fabricating an unrecognized slug — the MDP will
+            // then apply the tenant's own default relationship instead of rejecting a
+            // bogus value.
             $relationship_type = !empty($context['relationship_type'])
                 ? $context['relationship_type']
-                : ($config['relationships']['addition']['type'] ?? 'position');
+                : ($config['relationships']['addition']['type'] ?? '');
             $relationship_description = $context['relationship_description'] ?? $member_data['relationship_description'] ?? '';
             $relationship_description = is_string($relationship_description) ? sanitize_textarea_field($relationship_description) : '';
 
@@ -129,7 +134,16 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
                     return $has_relationship;
                 }
 
-                if (!$has_relationship) {
+                // Only create a person-to-organization relationship when one was
+                // actually chosen/configured. With no resolved type the MDP would
+                // simply stamp its own default org relationship (surfacing as
+                // "Main Contact" on this tenant), assigning a contact role the
+                // membership manager never selected. Members added without a
+                // relationship type are plain members: the membership seat below is
+                // their org linkage, and they render correctly with no relationship
+                // label. A relationship description alone (no type) has nowhere to
+                // live, so it is intentionally skipped in that case too.
+                if (!$has_relationship && $relationship_type !== '') {
                     $connection_payload = $this->connectionService()->buildConnectionPayload(
                         $person_uuid,
                         $org_id,
@@ -146,6 +160,8 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
                             $response_connection->get_error_message() ?? 'Failed to add employee connection'
                         );
                     }
+                } elseif (!$has_relationship) {
+                    $logger->debug('No relationship type resolved; skipping person-to-organization connection', $log_context);
                 }
 
                 // Assign person to membership seat to give them active membership

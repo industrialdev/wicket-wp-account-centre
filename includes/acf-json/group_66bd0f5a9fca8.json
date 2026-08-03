@@ -65,12 +65,33 @@
             "ui": 1
         },
         {
+            "key": "field_69a6f273d3cd8",
+            "label": "MDP Widget Config (JSON)",
+            "name": "mdp_json_config",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "<p>This expects JSON data for configuring the widget, supporting all options documented for the MDP JS Widget (<code>fields<\/code>, <code>resourceLimits<\/code>, <code>resourcePermissions<\/code>, and more). Please do not modify unless you know what you are doing.<\/p><p>Note: <code>rootEl<\/code>, <code>apiRoot<\/code>, <code>accessToken<\/code>, and <code>orgId<\/code> are always set automatically and any value provided for them here is ignored.<\/p><p>See <a href=\"https:\/\/wicket-core.s3.ca-central-1.amazonaws.com\/wicket-widgets-readme-staging.html#editorganizationprofile\" target=\"_blank\">full documentation for MDP JS Widgets<\/a>.<\/p>",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "rows": "",
+            "placeholder": "{\n  \"fields\": {...}\n}",
+            "new_lines": ""
+        },
+        {
             "key": "field_69a6f273d3cd6",
-            "label": "MDP JSON Fields",
+            "label": "MDP JSON Fields (Deprecated)",
             "name": "mdp_json_fields",
             "aria-label": "",
             "type": "textarea",
-            "instructions": "This expects JSON data for the fields property as defined here: <a href=\"https:\/\/wicket-core.s3.ca-central-1.amazonaws.com\/wicket-widgets-readme-staging.html#editorganizationprofile\" target=\"_blank\">https:\/\/wicket-core.s3.ca-central-1.amazonaws.com\/wicket-widgets-readme-staging.html<\/a>. Please do not modify unless you know what you are doing. This must be valid JSON, otherwise this field is ignored.",
+            "instructions": "This expects JSON data for the fields property as defined here: <a href=\"https:\/\/wicket-core.s3.ca-central-1.amazonaws.com\/wicket-widgets-readme-staging.html#editorganizationprofile\" target=\"_blank\">https:\/\/wicket-core.s3.ca-central-1.amazonaws.com\/wicket-widgets-readme-staging.html<\/a>. Please do not modify unless you know what you are doing. This must be valid JSON, otherwise this field is ignored. Superseded by the MDP Widget Config setting above — if that is set, this value is ignored entirely. A \"Copy this value into MDP Widget Config\" link appears below this field in the editor to copy it over pre-formatted.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -87,11 +108,11 @@
         },
         {
             "key": "field_69a6f273d3cd7",
-            "label": "MDP JSON Sections",
+            "label": "MDP JSON Sections (Deprecated)",
             "name": "mdp_json_sections",
             "aria-label": "",
             "type": "textarea",
-            "instructions": "This expects JSON data for the sections property (address \/ email \/ phone \/ web field config) as defined here: <a href=\"https:\/\/wicket-core.s3.ca-central-1.amazonaws.com\/wicket-widgets-readme-staging.html#addresssectionconfig\" target=\"_blank\">https:\/\/wicket-core.s3.ca-central-1.amazonaws.com\/wicket-widgets-readme-staging.html#addresssectionconfig<\/a>. Please do not modify unless you know what you are doing. This must be valid JSON, otherwise this field is ignored.",
+            "instructions": "This field has no effect on this block — the organization profile widget component does not support a sections option, unlike the individual profile widget. Superseded by the MDP Widget Config setting above. A \"Copy this value into MDP Widget Config\" link appears below this field in the editor to copy it over pre-formatted, in case the widget gains section support later.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -103,7 +124,7 @@
             "maxlength": "",
             "allow_in_bindings": 0,
             "rows": "",
-            "placeholder": "{\"addresses\": { \"fields\": { \"companyName\": { \"readOnly\": true } } }}",
+            "placeholder": "",
             "new_lines": ""
         }
     ],
@@ -126,5 +147,5 @@
     "description": "",
     "show_in_rest": 0,
     "display_title": "",
-    "modified": 1780272000
+    "modified": 1784233545
 }

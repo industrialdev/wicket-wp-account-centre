@@ -230,8 +230,8 @@ class ConnectionService
      */
     public function buildConnectionPayload($person_id = null, $org_id = null, $connection_type = null, $type = null, $description = null)
     {
-        if (empty($person_id) || empty($org_id) || empty($connection_type) || empty($type)) {
-            return new WP_Error('invalid_params', 'Person ID, organization ID, connection type, and type are required.');
+        if (empty($person_id) || empty($org_id) || empty($connection_type)) {
+            return new WP_Error('invalid_params', 'Person ID, organization ID, and connection type are required.');
         }
 
         try {
@@ -243,7 +243,6 @@ class ConnectionService
                     'type'          => 'connections',
                     'attributes'    => [
                         'connection_type' => $connection_type,
-                        'type'            => $type,
                         'starts_at'       => $now_date,
                     ],
                     'relationships' => [
@@ -274,6 +273,14 @@ class ConnectionService
                     ],
                 ],
             ];
+
+            // Only send an explicit relationship type when one was resolved. Sending a
+            // blank/unrecognized slug makes the MDP fall back to its own default org
+            // relationship anyway, so we omit the attribute entirely rather than
+            // fabricating a value the tenant did not choose.
+            if (is_string($type) && $type !== '') {
+                $payload['data']['attributes']['type'] = $type;
+            }
 
             if ($description !== '') {
                 $payload['data']['attributes']['description'] = $description;

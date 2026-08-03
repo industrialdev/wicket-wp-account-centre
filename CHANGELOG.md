@@ -2,6 +2,69 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.8.0] - 2026-07-31
+
+### Changed
+- **rest:** rename org-management/v1 namespace to wicket-acc/v1 #minor
+
+
+## [1.7.16] - 2026-07-29
+
+### Fixed
+- do not require Gravity Forms API directly
+
+
+## [1.7.15] - 2026-07-28
+
+### Fixed
+- **ac-org-profile:** cast hide_alternate_name_field to bool
+
+
+## [1.7.14] - 2026-07-27
+
+### Fixed
+- **roster:** guard contacts search action expression
+
+### Maintenance
+- **deps:** bump hyperfields to 1.4.5 + hyperblocks to 1.3.4
+- **deps:** directly require jetpack-autoloader + bump hyperfields to 1.4.4
+- **deps:** bump hyper* libraries to asset-url-fix releases
+
+
+## [1.7.13] - 2026-07-27
+
+### Fixed
+- **roster:** show delayed membership roster and correct summary block
+
+
+## [1.7.12] - 2026-07-23
+
+### Added
+- **org-roster:** show group desc, back button, observer default role
+
+
+## [1.7.11] - 2026-07-20
+
+### Added
+- refactor org-profile block onto shared widget-profile-org component
+- add MDP Widget Config setting to AC individual-profile block
+
+### Fixed
+- reject list-shaped JSON as mdp_json_config in both profile blocks
+- promote hide_alternate_name_field to typed constructor property
+- merge hiddenFields toggle into widget_config instead of overwriting
+- restore migrate link for mdp_json_sections on org profile block
+
+### Documentation
+- clarify migrate link replaces, not copies, the config key
+
+
+## [1.7.10] - 2026-07-16
+
+### Fixed
+- **roster:** stop assigning default "Main Contact" on add member [WWID-1988]
+
+
 ## [1.7.9] - 2026-07-13
 
 ### Fixed
