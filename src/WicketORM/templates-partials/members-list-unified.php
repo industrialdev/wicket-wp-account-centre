@@ -524,11 +524,11 @@ $show_remove_policy_callout = (
         $org_roster_count = $total_items;
         include __DIR__ . '/export-members-modal.php';
     endif;
-    ?>
+?>
 
     <?php if ($show_remove_policy_callout && $remove_policy_callout_placement === 'below_members') : ?>
         <?php
-        $callout_content = '';
+    $callout_content = '';
         if (!empty($remove_policy_callout['title'])) {
             $callout_content .= '<p class="wt_font-semibold wt_mb-1">' . esc_html((string) $remove_policy_callout['title']) . '</p>';
         }

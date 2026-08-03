@@ -146,14 +146,14 @@ class MemberExportController extends ApiController
             // and kills the modal before any confirmation can render.
             $url_js = wp_json_encode($download_url);
             $iframe_js = <<<JS
-(function () {
-    var f = document.createElement('iframe');
-    f.style.display = 'none';
-    f.src = {$url_js};
-    document.body.appendChild(f);
-    setTimeout(function () { if (f.parentNode) { f.parentNode.removeChild(f); } }, 60000);
-})();
-JS;
+                (function () {
+                    var f = document.createElement('iframe');
+                    f.style.display = 'none';
+                    f.src = {$url_js};
+                    document.body.appendChild(f);
+                    setTimeout(function () { if (f.parentNode) { f.parentNode.removeChild(f); } }, 60000);
+                })();
+                JS;
             \WicketORM\Helpers\DatastarSSE::renderSuccess(
                 __('Your roster is ready and downloading now.', 'wicket-acc'),
                 $messages_target,

@@ -73,8 +73,8 @@ $data_signals = wp_json_encode([
     // emailed rather than delivered instantly. Surface that upfront so the
     // user sets the right expectation before clicking.
     $sync_threshold = max(0, (int) ($export_config['sync_threshold'] ?? 250));
-    $roster_count = isset($org_roster_count) ? (int) $org_roster_count : 0;
-    if ($sync_threshold > 0 && $roster_count > $sync_threshold) :
+$roster_count = isset($org_roster_count) ? (int) $org_roster_count : 0;
+if ($sync_threshold > 0 && $roster_count > $sync_threshold) :
     ?>
         <p class="wt_mt-2 wt_mb-0 wt_text-xs wt_text-color-500 wt_text-center">
             <?php
@@ -83,7 +83,7 @@ $data_signals = wp_json_encode([
                 __('This roster is large (%1$d members) and will be prepared in the background. After clicking, a download link will be emailed to you.', 'wicket-acc'),
                 $roster_count
             ));
-        ?>
+    ?>
         </p>
     <?php endif; ?>
 

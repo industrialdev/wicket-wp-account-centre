@@ -522,7 +522,7 @@ $no_members_message = __('No members found.', 'wicket-acc');
         $org_roster_count = $total_items;
         include __DIR__ . '/export-members-modal.php';
     endif;
-    ?>
+?>
 
     <?php if ($show_remove_policy_callout && $remove_policy_callout_placement === 'below_members') : ?>
         <div class="wt_mt-2 wt_mb-0 wt_p-4 wt_border wt_border-yellow-200 wt_bg-yellow-50 wt_rounded-md wt_text-sm wt_text-yellow-900">

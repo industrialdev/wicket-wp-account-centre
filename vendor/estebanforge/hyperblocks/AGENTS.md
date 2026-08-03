@@ -30,6 +30,14 @@ HyperBlocks' `bootstrap.php` is included via Composer `autoload.files`. It also 
 
 **Requirements**: PHP 8.2+, WordPress latest.
 
+### Bedrock / Composer-managed WordPress sites
+
+When this library is installed **transitively** into a Bedrock-style project, Composer places it in the project **root `vendor/`** (outside `wp-content/`), because the package is `type: library` and Bedrock's `installer-paths` only route `wordpress-plugin` / `wordpress-muplugin` / `wordpress-theme` types. That root-vendor copy is not under any web-accessible WordPress content root, so its `assets/js/editor.js` cannot be served over HTTP.
+
+`WordPress\Bootstrap::init()` still runs from such a copy — it does **not** gate boot on web-reachability. `Config::$pluginUrl` is simply empty, and the editor-asset enqueue bails gracefully (`registerEditorScript()` logs the "not reachable from any web-accessible WordPress content root" notice and returns) instead of emitting a 404ing URL. Fluent blocks still render server-side; they just will not appear in the inserter until a web-reachable copy provides the URL. The `bootstrap.php` ABSPATH guard also keeps a root-vendor copy from bootstrapping early in Bedrock's `wp-config` load order.
+
+**Recommended pattern for plugins that bundle HyperBlocks:** ship it inside the plugin's own committed `vendor/` (e.g. `wp-content/plugins/<your-plugin>/vendor/estebanforge/hyperblocks/`) and load the plugin's own `vendor/autoload.php`. That copy is web-reachable, so `Config::$pluginUrl` resolves, the editor script registers, and fluent blocks appear in the inserter. Do not rely on a Bedrock root-vendor copy to serve assets; it never can.
+
 ---
 
 ## Development Commands
@@ -48,7 +56,7 @@ composer run version-bump    # Bump version in composer.json + bootstrap
 ## Architecture & Directory Structure
 
 ```
-bootstrap.php               # Version resolution + HyperFields bootstrap
+bootstrap.php               # Dev-env auto-init bridge (delegates to WordPress\Bootstrap::init())
 src/
   Block/
     Block.php               # Fluent block builder
@@ -363,39 +371,35 @@ Server-side renders a block with provided attributes. Attributes are sanitized a
 All helper functions are defined in `src/helpers.php` and available globally after bootstrap.
 
 ```php
-hyperblocks_block(string $title): Block
-hyperblocks_field(string $type, string $name, string $label): Field
-hyperblocks_field_group(string $name, string $id): FieldGroup
-hyperblocks_register_block(Block $block): void
-hyperblocks_register_field_group(FieldGroup $group): void
-hyperblocks_registry(): Registry
-hyperblocks_register_path(string $path): void
-hyperblocks_register_template_path(string $path): void
-hyperblocks_config(string $key, mixed $default = null): mixed
-hyperblocks_render(string $template, array $attributes = []): string
-hyperblocks_has_block(string $blockName): bool
-hyperblocks_get_block(string $blockName): ?Block
+hb_block(string $title): Block
+hb_field(string $type, string $name, string $label): Field
+hb_field_group(string $name, string $id): FieldGroup
+hb_register_block(Block $block): void
+hb_register_field_group(FieldGroup $group): void
+hb_registry(): Registry
+hb_register_path(string $path): void
+hb_register_template_path(string $path): void
+hb_config(string $key, mixed $default = null): mixed
+hb_render(string $template, array $attributes = []): string
+hb_has_block(string $blockName): bool
+hb_get_block(string $blockName): ?Block
 ```
 
 ---
 
-## Bootstrap & Constants
+## Bootstrap System
 
-HyperBlocks uses a version-resolution bootstrap identical to HyperFields: each instance registers itself as a candidate; the highest version wins and initializes via `after_setup_theme` (priority 0).
+HyperBlocks self-initializes via `HyperBlocks\WordPress\Bootstrap::init()`, which is idempotent (guarded by `Config::isInitialized()`). When loaded directly through Composer, `bootstrap.php` schedules `init()` at `after_setup_theme` (priority 0); vendored or namespace-prefixed consumers call `WordPress\Bootstrap::init()` explicitly.
 
-**Constants defined after initialization**:
+Duplicate-load protection: the first copy to reach `init()` claims the namespace-scoped `HyperBlocks\WordPress\LOADED` constant and wins; later copies bail before bootstrapping, so two plugins shipping HyperBlocks do not double-init or fatal. First-to-boot guard (not newest-wins, no version resolution, no class-shadow guard, no jetpack dependency). The guard is namespace-scoped, so a consumer that optionally prefixes the namespace with Mozart gets fully isolated copies that each boot independently.
 
-| Constant | Value |
-|---|---|
-| `HYPERBLOCKS_VERSION` | Version string from `composer.json`. |
-| `HYPERBLOCKS_PATH` | Absolute path to the HyperBlocks root directory (trailing slash). |
-| `HYPERBLOCKS_ABSPATH` | Same as `HYPERBLOCKS_PATH`. |
-| `HYPERBLOCKS_PLUGIN_FILE` | Absolute path to `bootstrap.php`. |
-| `HYPERBLOCKS_PLUGIN_URL` | URL to the HyperBlocks root (trailing slash). |
-| `HYPERBLOCKS_BOOTSTRAP_LOADED` | Set when `bootstrap.php` is first included. |
-| `HYPERBLOCKS_INSTANCE_LOADED` | Set when initialization logic runs (only once). |
+Runtime identity lives on `HyperBlocks\Config` (prefix-safe), not global constants:
+- `Config::VERSION` - semantic version (mirrors `composer.json`)
+- `Config::$abspath` - library root path, set at init
+- `Config::$pluginUrl` - public URL, or empty when not web-reachable
+- `Config::$pluginFile` - absolute path to the bootstrap file
 
-HyperFields constants (`HYPERFIELDS_VERSION`, `HYPERFIELDS_ABSPATH`, etc.) are set by HyperFields' own bootstrap, which HyperBlocks triggers automatically when running standalone.
+HyperBlocks defines no `HYPERBLOCKS_*` constants. HyperFields identity lives on `HyperFields\Config`, set by HyperFields' own bootstrap, which HyperBlocks triggers automatically when running standalone.
 
 ---
 
