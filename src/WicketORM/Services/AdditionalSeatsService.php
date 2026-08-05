@@ -568,7 +568,7 @@ class AdditionalSeatsService
             ];
 
             $client = wicket_api_client();
-            $api_path = "organization_memberships/{$membership_id}";
+            $api_path = "/organization_memberships/{$membership_id}";
 
             try {
                 $response = $client->patch($api_path, ['json' => $payload]);
