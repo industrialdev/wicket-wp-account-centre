@@ -403,6 +403,11 @@ class Schema extends Init
             return false;
         }
 
+        // Enum fields accept only their listed values, never an arbitrary URL.
+        if (isset($property['enum'])) {
+            return false;
+        }
+
         $type = $property['type'] ?? null;
         if ($type === 'string') {
             return true;
