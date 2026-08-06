@@ -223,6 +223,7 @@ class ProfileImageMdpFieldSettings extends WicketAcc
         $no_syncing_label = __('No syncing (keep image local)', 'wicket-acc');
         $refresh_label = __('Refresh fields', 'wicket-acc');
         $refreshing_label = __('Refreshing...', 'wicket-acc');
+        $success_label = __('Field list refreshed.', 'wicket-acc');
         $error_label = __('Could not refresh the field list. Check the MDP connection and try again.', 'wicket-acc');
         $help = __('Choose which MDP additional-info field stores the uploaded profile image URL. "No syncing" keeps the image in WordPress only.', 'wicket-acc');
         ?>
@@ -264,14 +265,18 @@ class ProfileImageMdpFieldSettings extends WicketAcc
                     </select>
 
                     <button type="button"
-                            class="button"
+                            class="button-link"
+                            style="display:inline-block; width:auto;"
                             data-wicket-acc-mdp-fields-refresh-button
                             data-rest-url="<?php echo esc_url($rest_url); ?>"
                             data-nonce="<?php echo esc_attr($nonce); ?>"
                             data-refreshing-label="<?php echo esc_attr($refreshing_label); ?>"
+                            data-success-label="<?php echo esc_attr($success_label); ?>"
                             data-error-label="<?php echo esc_attr($error_label); ?>">
                         <?php echo esc_html($refresh_label); ?>
                     </button>
+                    <span class="spinner" style="float:none; display:none;" data-wicket-acc-mdp-fields-spinner></span>
+                    <span class="description" data-wicket-acc-mdp-fields-status style="display:none;"></span>
 
                     <p class="description"><?php echo esc_html($help); ?></p>
                 </div>
