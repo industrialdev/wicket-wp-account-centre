@@ -2,7 +2,7 @@
 title: "AC Profile Picture Block"
 audience: [developer, agent, implementer]
 php_class: WicketAcc\Blocks\ProfilePicture\init
-source_files: ["includes/blocks/ac-profile-picture/init.php", "includes/blocks/ac-profile-picture/render.php", "includes/blocks/ac-profile-picture/block.json", "src/Profile.php", "src/ProfilePictureFallback.php", "src/Helpers.php"]
+source_files: ["includes/blocks/ac-profile-picture/init.php", "includes/blocks/ac-profile-picture/render.php", "includes/blocks/ac-profile-picture/block.json", "src/Profile.php", "src/ProfilePictureFallback.php", "src/ProfileImageMdpFieldSettings.php", "src/Mdp/Schema.php", "src/Helpers.php"]
 ---
 
 # AC Profile Picture Block
@@ -35,7 +35,7 @@ The block reads the current picture from the MDP, with a deterministic fallback 
 2. ACF/option attachment lookup (`getAttachmentUrlFromOption`) — used when the MDP does not carry a profile picture.
 3. A 404 fallback returns the configured default URL when neither source resolves to a working image (`src/ProfilePictureFallback.php`).
 
-The profile picture schema is identified by slug (`profile-picture`), not by tenant UUID, so the same schema name works across every site (`src/Profile.php`, `src/CFInitOptions.php`).
+The profile picture schema is identified by slug (`profile-picture`), not by tenant UUID, so the same schema name works across every site (`src/Profile.php`, `src/InitOptions.php`).
 
 ### File Management
 
@@ -55,6 +55,49 @@ There is an explicit, fail-closed delete flow (`Wicket()->profile()->clear_profi
 
 The delete flow is wired into `docs/engineering/hooks.md` (`profile-image delete` action hook) so plugins or themes can react to a profile-picture removal.
 
+## MDP Profile Image Sync
+
+After a successful upload, the block writes the new image URL into one MDP
+additional_info field, so downstream systems (such as Higher Logic) can read it.
+The target field is configurable per site, because the field slug is not the
+same on every tenant (OBA uses `profprofile.memberphotourl`; others use
+`personal_info.photo_link`).
+
+### Setting
+
+A single ACC Option, `acc_profile_picture_mdp_field_ref` (stored in the
+`wicket_acc_options` array), holds a composite ref: `{schema_slug}|{field_slug}`.
+The default is empty, which means **No syncing**: the upload stays local to
+WordPress and the MDP call is skipped entirely (`Profile::syncProfileImageToMdp()`
+short-circuits and returns true).
+
+The setting renders as a grouped `<select>` in **ACC Options** (one optgroup per
+MDP widget schema, field slugs inside). The list is sourced dynamically from the
+tenant `json_schemas` endpoint (`WicketAcc\Mdp\Schema::getProfileImageFieldOptions()`),
+cached in a transient, and refreshed on demand by a **Refresh fields** button that
+calls `POST /wicket-acc/v1/profile-image-mdp-fields/refresh`.
+
+| | |
+|---|---|
+| Option key | `acc_profile_picture_mdp_field_ref` |
+| Storage | composite `{schema}\|{field}`, or empty for No syncing |
+| REST refresh | `POST /wicket-acc/v1/profile-image-mdp-fields/refresh` (`manage_options`) |
+| Owner class | `WicketAcc\ProfileImageMdpFieldSettings` |
+
+### Validation and drift
+
+The ref is validated at **settings-save time** only (`sanitizeField`), never on
+the upload path. If the selected field is later removed from the MDP, the
+previous value is kept (a warning is logged); the upload path reads the stored
+ref as a plain string and never queries schemas.
+
+### Migration
+
+A one-time migration (`ProfileImageMdpFieldSettings::maybeMigrateLegacyRef()`,
+guarded by the `wicket_acc_mdp_field_ref_migrated` flag) reads the legacy free-text
+pair `acc_profile_picture_mdp_schema` / `acc_profile_picture_mdp_field` and writes
+the composite ref. An empty legacy pair is a valid terminal state (No syncing).
+
 ### Form Handling
 
 - Secure nonce verification
@@ -64,6 +107,8 @@ The delete flow is wired into `docs/engineering/hooks.md` (`profile-image delete
 
 ## Recent Changes
 
+- Added the configurable MDP profile image field picker (ACC Option `acc_profile_picture_mdp_field_ref`). Default is No syncing (local only). Replaces the two legacy free-text slug options.
+- Migrated the legacy slug pair into the composite ref once on upgrade.
 - Identified the profile picture schema by slug instead of tenant-specific UUID.
 - Fixed default redirect and double-slash URL bugs in `src/Helpers.php` and `src/Profile.php`.
 - Added a 404 fallback path that returns the configured default when no file exists.

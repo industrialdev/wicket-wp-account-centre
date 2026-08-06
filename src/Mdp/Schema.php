@@ -195,4 +195,287 @@ class Schema extends Init
 
         return $this->getSchemaOptions($targetSchema, $field, $subField);
     }
+
+    /**
+     * Transient key for the cached profile-image MDP field list.
+     */
+    public const PROFILE_IMAGE_FIELDS_TRANSIENT = 'wicket_acc_mdp_profile_image_fields';
+
+    /**
+     * List every additional_info widget schema and its storable sub-fields,
+     * grouped for a select dropdown.
+     *
+     * Source is getSchemas() (the tenant json_schemas endpoint). The list is
+     * tenant-wide and does not depend on any one person record.
+     *
+     * Used by the Account Centre profile-picture setting so the Implementation
+     * Specialist can pick which MDP additional_info field stores the uploaded
+     * image URL.
+     *
+     * @return array<int, array{schema_slug: string, schema_label: string, fields: array<int, array{slug: string, label: string}>}>
+     *     Empty array when no schemas or no storable fields are found.
+     */
+    public function getProfileImageFieldOptions(): array
+    {
+        $schemas = $this->getSchemas();
+        if (!is_array($schemas) || empty($schemas)) {
+            return [];
+        }
+
+        return self::buildProfileImageFieldOptions($schemas, $this->currentLanguage());
+    }
+
+    /**
+     * Cached profile-image MDP field options, transient-backed.
+     *
+     * Wraps getProfileImageFieldOptions() with a WordPress transient so the
+     * settings UI and refresh route do not hit MDP on every render.
+     *
+     * @param int $ttl Cache lifetime in seconds. Default 6 hours.
+     *
+     * @return array Grouped options (see getProfileImageFieldOptions()).
+     */
+    public function getCachedProfileImageFieldOptions(int $ttl = 21600): array
+    {
+        $cached = get_transient(self::PROFILE_IMAGE_FIELDS_TRANSIENT);
+        if (is_array($cached)) {
+            return $cached;
+        }
+
+        $options = $this->getProfileImageFieldOptions();
+        set_transient(self::PROFILE_IMAGE_FIELDS_TRANSIENT, $options, $ttl);
+
+        return $options;
+    }
+
+    /**
+     * Drop the cached field list and refetch once. Returns the fresh list.
+     *
+     * Called by the Refresh button REST route. Re-seeds the transient.
+     *
+     * @return array
+     */
+    public function refreshProfileImageFieldOptions(): array
+    {
+        delete_transient(self::PROFILE_IMAGE_FIELDS_TRANSIENT);
+
+        return $this->getCachedProfileImageFieldOptions();
+    }
+
+    /**
+     * Pure extractor: turn raw json_schemas data into a grouped field list.
+     *
+     * Separated from getProfileImageFieldOptions() so it is unit-testable with a
+     * fixture array and no MDP I/O. Walks both flat properties and oneOf
+     * branches. Keeps only scalar fields that can store a single URL string.
+     *
+     * @param array  $schemas  Raw return of getSchemas() (array of schema resources, or a JSON:API {data:[...]} wrapper).
+     * @param string $language ISO 639-1 code used to resolve ui_schema i18n labels (e.g. "en").
+     *
+     * @return array<int, array{schema_slug: string, schema_label: string, fields: array<int, array{slug: string, label: string}>}>
+     */
+    public static function buildProfileImageFieldOptions(array $schemas, string $language): array
+    {
+        $resources = self::normalizeSchemaResources($schemas);
+        $grouped = [];
+
+        foreach ($resources as $schema) {
+            $attributes = $schema['attributes'] ?? [];
+            if (!is_array($attributes)) {
+                continue;
+            }
+
+            $schema_slug = isset($attributes['key']) && is_string($attributes['key']) ? $attributes['key'] : '';
+            if ($schema_slug === '') {
+                continue;
+            }
+
+            $json_schema = $attributes['schema'] ?? [];
+            $ui_schema = isset($attributes['ui_schema']) && is_array($attributes['ui_schema']) ? $attributes['ui_schema'] : [];
+            if (!is_array($json_schema)) {
+                continue;
+            }
+
+            $fields = self::extractStorableStringFields($json_schema, $ui_schema, $language);
+            if (empty($fields)) {
+                continue;
+            }
+
+            $grouped[] = [
+                'schema_slug'  => $schema_slug,
+                'schema_label' => self::resolveSchemaLabel($attributes, $schema_slug),
+                'fields'       => $fields,
+            ];
+        }
+
+        return $grouped;
+    }
+
+    /**
+     * Normalize raw getSchemas() output into a flat list of resource arrays.
+     *
+     * Accepts either a JSON:API collection wrapper ({data:[resource,...]}) or an
+     * already-flat list of resources. Drops entries that are not resources.
+     *
+     * @param array $schemas
+     *
+     * @return array<int, array>
+     */
+    private static function normalizeSchemaResources(array $schemas): array
+    {
+        $list = isset($schemas['data']) && is_array($schemas['data']) ? $schemas['data'] : $schemas;
+
+        $resources = [];
+        foreach ($list as $item) {
+            if (is_array($item) && isset($item['attributes'])) {
+                $resources[] = $item;
+            }
+        }
+
+        return $resources;
+    }
+
+    /**
+     * Collect scalar, URL-capable sub-fields from a widget JSON schema.
+     *
+     * Merges properties from flat `properties` and from each `oneOf` branch
+     * (polymorphic widgets). Excludes composite field shapes (repeaters,
+     * objects) that cannot store a single URL string. De-duplicates by slug.
+     *
+     * @param array  $json_schema
+     * @param array  $ui_schema
+     * @param string $language
+     *
+     * @return array<int, array{slug: string, label: string}>
+     */
+    private static function extractStorableStringFields(array $json_schema, array $ui_schema, string $language): array
+    {
+        $property_sets = [];
+        if (isset($json_schema['properties']) && is_array($json_schema['properties'])) {
+            $property_sets[] = $json_schema['properties'];
+        }
+        if (isset($json_schema['oneOf']) && is_array($json_schema['oneOf'])) {
+            foreach ($json_schema['oneOf'] as $branch) {
+                if (is_array($branch) && isset($branch['properties']) && is_array($branch['properties'])) {
+                    $property_sets[] = $branch['properties'];
+                }
+            }
+        }
+
+        $fields = [];
+        $seen = [];
+        foreach ($property_sets as $properties) {
+            foreach ($properties as $slug => $definition) {
+                if (!is_string($slug) || isset($seen[$slug])) {
+                    continue;
+                }
+                if (!is_array($definition) || !self::isStorableScalarField($definition)) {
+                    continue;
+                }
+
+                $seen[$slug] = true;
+                $fields[] = [
+                    'slug'  => $slug,
+                    'label' => self::resolveFieldLabel($slug, $definition, $ui_schema, $language),
+                ];
+            }
+        }
+
+        usort($fields, static fn (array $a, array $b): int => strcasecmp($a['label'], $b['label']));
+
+        return $fields;
+    }
+
+    /**
+     * Decide whether a JSON schema property can store a single URL string.
+     *
+     * Excludes composite shapes (items, nested properties, oneOf/allOf) and
+     * non-string scalar types. An untyped scalar with no composite keys is
+     * treated as a candidate (MDP sometimes omits type on string fields).
+     *
+     * @param array $property
+     *
+     * @return bool
+     */
+    private static function isStorableScalarField(array $property): bool
+    {
+        if (isset($property['items']) || isset($property['properties']) || isset($property['oneOf']) || isset($property['allOf'])) {
+            return false;
+        }
+
+        $type = $property['type'] ?? null;
+        if ($type === 'string') {
+            return true;
+        }
+        if (isset($property['format']) && is_string($property['format']) && strtolower($property['format']) === 'url') {
+            return true;
+        }
+
+        return $type === null;
+    }
+
+    /**
+     * Resolve a human label for a sub-field, preferring UI i18n, then the JSON
+     * schema title, then the slug itself.
+     *
+     * @param string $slug
+     * @param array  $property
+     * @param array  $ui_schema
+     * @param string $language
+     *
+     * @return string
+     */
+    private static function resolveFieldLabel(string $slug, array $property, array $ui_schema, string $language): string
+    {
+        $ui = $ui_schema[$slug] ?? null;
+        if (is_array($ui)) {
+            $i18n_title = $ui['ui:i18n']['title'][$language] ?? null;
+            if (is_string($i18n_title) && trim($i18n_title) !== '') {
+                return trim($i18n_title);
+            }
+            $ui_title = $ui['ui:title'] ?? null;
+            if (is_string($ui_title) && trim($ui_title) !== '') {
+                return trim($ui_title);
+            }
+        }
+
+        $title = $property['title'] ?? null;
+        if (is_string($title) && trim($title) !== '') {
+            return trim($title);
+        }
+
+        return $slug;
+    }
+
+    /**
+     * Resolve a human label for a widget schema, falling back to its slug.
+     *
+     * @param array  $attributes
+     * @param string $fallback
+     *
+     * @return string
+     */
+    private static function resolveSchemaLabel(array $attributes, string $fallback): string
+    {
+        foreach (['name', 'title', 'label'] as $key) {
+            $value = $attributes[$key] ?? null;
+            if (is_string($value) && trim($value) !== '') {
+                return trim($value);
+            }
+        }
+
+        return $fallback;
+    }
+
+    /**
+     * Current site language as an ISO 639-1 code (e.g. "en", "fr").
+     *
+     * @return string
+     */
+    private function currentLanguage(): string
+    {
+        $code = strtok((string) get_bloginfo('language'), '-');
+
+        return is_string($code) && $code !== '' ? $code : 'en';
+    }
 }
