@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.8.1] - 2026-08-07
+
+### Fixed
+- normalize MDP membership PATCH path with leading slash
+
+
 ## [1.8.0] - 2026-07-31
 
 ### Changed
