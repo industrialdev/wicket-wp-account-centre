@@ -248,6 +248,19 @@ class Profile extends WicketAcc
         if ($ref === null) {
             return true;
         }
+
+        // Drift guard: if the cached field list is populated and the configured
+        // ref is no longer in it, the field was removed from the MDP. Skip the
+        // write (degrade to No syncing) so we do not fail on every upload. The
+        // check reads the raw transient only and never calls MDP.
+        if (ProfileImageMdpFieldSettings::configuredRefHasDrifted()) {
+            WACC()->Log()->warning('Profile image MDP field ref no longer in the cached schema list; skipping sync. Update the Account Centre "Profile image MDP field" setting.', [
+                'source' => __CLASS__,
+            ]);
+
+            return true;
+        }
+
         [$schema_slug, $field_slug] = $ref;
 
         $person_uuid = WACC()->Mdp()->Person()->getCurrentPersonUuid();

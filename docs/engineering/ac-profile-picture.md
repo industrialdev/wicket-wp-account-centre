@@ -86,10 +86,23 @@ calls `POST /wicket-acc/v1/profile-image-mdp-fields/refresh`.
 
 ### Validation and drift
 
-The ref is validated at **settings-save time** only (`sanitizeField`), never on
-the upload path. If the selected field is later removed from the MDP, the
-previous value is kept (a warning is logged); the upload path reads the stored
-ref as a plain string and never queries schemas.
+Drift (the configured field is later removed from the MDP) is handled at two
+times, plus a visible admin notice. All three agree on one trust rule: an empty
+field list gives no signal, so it never blocks a sync or raises a false alarm.
+
+- **Settings-save time** (`ProfileImageMdpFieldSettings::sanitizeField`). The ref
+  is validated against the live list. On drift, the previous value is kept and a
+  warning is logged. Never runs on the upload path.
+- **Upload time** (`Profile::syncProfileImageToMdp` calls
+  `ProfileImageMdpFieldSettings::configuredRefHasDrifted()`). Before the MDP write,
+  the stored ref is checked against the raw transient only. If the cache is
+  populated and the ref is absent, the write is skipped (degrade to No syncing)
+  and a warning is logged, so a removed field is not retried on every upload. An
+  empty/absent cache gives no signal: the check never calls MDP and the upload
+  path stays MDP-free.
+- **Settings UI** (`ProfileImageMdpFieldSettings::renderField`). When the stored
+  ref is not in a populated live list, a red notice tells the operator to pick a
+  valid field or set No syncing.
 
 ### Migration
 

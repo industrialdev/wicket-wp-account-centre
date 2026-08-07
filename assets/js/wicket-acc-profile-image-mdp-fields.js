@@ -103,6 +103,7 @@
         var originalText = button.textContent;
         var successLabel = button.getAttribute('data-success-label') || 'Field list refreshed.';
         var errorLabel = button.getAttribute('data-error-label') || 'Refresh failed.';
+        var emptyLabel = button.getAttribute('data-empty-label') || 'No MDP fields available.';
 
         button.disabled = true;
         button.textContent = button.getAttribute('data-refreshing-label') || 'Refreshing...';
@@ -127,8 +128,20 @@
             return response.json();
           })
           .then(function (data) {
-            var groups = data && Array.isArray(data.fields) ? data.fields : [];
-            rebuildSelect(select, groups, select.value);
+            // Distinguish three outcomes so a malformed or empty response never
+            // wipes the picker while reporting success.
+            //   - non-array data.fields -> malformed -> keep select, error.
+            //   - empty array           -> tenant has no fields -> keep select, warn.
+            //   - populated array       -> rebuild + success.
+            if (!data || !Array.isArray(data.fields)) {
+              showStatus(errorLabel, true);
+              return;
+            }
+            if (!data.fields.length) {
+              showStatus(emptyLabel, true);
+              return;
+            }
+            rebuildSelect(select, data.fields, select.value);
             showStatus(successLabel, false);
           })
           .catch(function () {

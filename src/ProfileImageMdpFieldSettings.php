@@ -225,7 +225,13 @@ class ProfileImageMdpFieldSettings extends WicketAcc
         $refreshing_label = __('Refreshing...', 'wicket-acc');
         $success_label = __('Field list refreshed.', 'wicket-acc');
         $error_label = __('Could not refresh the field list. Check the MDP connection and try again.', 'wicket-acc');
+        $empty_label = __('No MDP fields are available for this tenant.', 'wicket-acc');
         $help = __('Choose which MDP additional-info field stores the uploaded profile image URL. "No syncing" keeps the image in WordPress only.', 'wicket-acc');
+
+        // Drift flag: the stored ref is no longer in a populated (trustworthy)
+        // cached field list. An empty list gives no signal (MDP may just be
+        // unreachable), so we do not cry wolf in that case.
+        $drifted = self::storedRefHasDrifted($value, $options);
         ?>
         <div class="hyperpress-field-wrapper">
             <div class="hyperpress-field-row">
@@ -272,11 +278,18 @@ class ProfileImageMdpFieldSettings extends WicketAcc
                             data-nonce="<?php echo esc_attr($nonce); ?>"
                             data-refreshing-label="<?php echo esc_attr($refreshing_label); ?>"
                             data-success-label="<?php echo esc_attr($success_label); ?>"
-                            data-error-label="<?php echo esc_attr($error_label); ?>">
+                            data-error-label="<?php echo esc_attr($error_label); ?>"
+                            data-empty-label="<?php echo esc_attr($empty_label); ?>">
                         <?php echo esc_html($refresh_label); ?>
                     </button>
                     <span class="spinner" style="float:none; display:none;" data-wicket-acc-mdp-fields-spinner></span>
                     <span class="description" data-wicket-acc-mdp-fields-status style="display:none;"></span>
+
+                    <?php if ($drifted) : ?>
+                        <p class="description" style="color:#d63638;">
+                            <?php echo esc_html(__('The selected field no longer exists in the MDP schema. Pick a valid field, or set "No syncing". Until then, uploads stay local and are not sent to the MDP.', 'wicket-acc')); ?>
+                        </p>
+                    <?php endif; ?>
 
                     <p class="description"><?php echo esc_html($help); ?></p>
                 </div>
@@ -327,7 +340,27 @@ class ProfileImageMdpFieldSettings extends WicketAcc
      */
     private static function refExistsInLiveList(string $schema_slug, string $field_slug): bool
     {
-        foreach (WACC()->Mdp()->Schema()->getCachedProfileImageFieldOptions() as $group) {
+        return self::refInGroupedList(
+            $schema_slug,
+            $field_slug,
+            WACC()->Mdp()->Schema()->getCachedProfileImageFieldOptions()
+        );
+    }
+
+    /**
+     * Pure membership check: is a schema|field pair present in a grouped list?
+     *
+     * Shared by the save-time check (refExistsInLiveList), the settings UI
+     * drift notice (storedRefHasDrifted), and the upload-path guard
+     * (configuredRefHasDrifted) so all three agree on what "in the list" means.
+     *
+     * @param string $schema_slug
+     * @param string $field_slug
+     * @param array  $list        Grouped options (schema_slug/schema_label/fields).
+     */
+    private static function refInGroupedList(string $schema_slug, string $field_slug, array $list): bool
+    {
+        foreach ($list as $group) {
             if (($group['schema_slug'] ?? '') !== $schema_slug) {
                 continue;
             }
@@ -339,6 +372,49 @@ class ProfileImageMdpFieldSettings extends WicketAcc
         }
 
         return false;
+    }
+
+    /**
+     * Whether a given ref value has drifted out of a supplied (populated) list.
+     *
+     * Used by the settings UI. An empty list gives no signal (the MDP may be
+     * unreachable), so it returns false to avoid a false alarm.
+     *
+     * @param string $value   Stored composite ref (raw option value).
+     * @param array  $options Grouped field list already fetched for rendering.
+     */
+    private static function storedRefHasDrifted(string $value, array $options): bool
+    {
+        if ($value === '' || $options === []) {
+            return false;
+        }
+
+        $parsed = self::parseFieldRef($value);
+        if ($parsed === null) {
+            return true;
+        }
+
+        return !self::refInGroupedList($parsed[0], $parsed[1], $options);
+    }
+
+    /**
+     * Whether the stored ref has drifted out of a populated (trustworthy) cache.
+     *
+     * Upload-path guard. Reads the raw transient only: an empty/absent cache
+     * gives no drift signal, so this check never triggers an MDP schemas call
+     * and the upload path stays MDP-free in the worst case. When the cache is
+     * populated and the stored ref is absent, the configured field has been
+     * removed from the MDP and the caller should skip the write (degrade to
+     * No syncing) instead of failing on every upload.
+     */
+    public static function configuredRefHasDrifted(): bool
+    {
+        $cached = get_transient(Mdp\Schema::PROFILE_IMAGE_FIELDS_TRANSIENT);
+        if (!is_array($cached) || $cached === []) {
+            return false;
+        }
+
+        return self::storedRefHasDrifted(self::currentStoredRef(), $cached);
     }
 
     /**
