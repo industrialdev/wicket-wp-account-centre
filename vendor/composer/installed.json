@@ -167,17 +167,17 @@
         },
         {
             "name": "estebanforge/hyperblocks",
-            "version": "1.4.2",
-            "version_normalized": "1.4.2.0",
+            "version": "1.5.3",
+            "version_normalized": "1.5.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/EstebanForge/HyperBlocks.git",
-                "reference": "ecd3a6e13a12c6cbb1b5eb06763dc402e2a6de66"
+                "reference": "6a5827df3264d9d4b45687c631ce52e10d4b43d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EstebanForge/HyperBlocks/zipball/ecd3a6e13a12c6cbb1b5eb06763dc402e2a6de66",
-                "reference": "ecd3a6e13a12c6cbb1b5eb06763dc402e2a6de66",
+                "url": "https://api.github.com/repos/EstebanForge/HyperBlocks/zipball/6a5827df3264d9d4b45687c631ce52e10d4b43d1",
+                "reference": "6a5827df3264d9d4b45687c631ce52e10d4b43d1",
                 "shasum": ""
             },
             "require": {
@@ -192,7 +192,7 @@
                 "phpunit/phpunit": "^12",
                 "squizlabs/php_codesniffer": "^3"
             },
-            "time": "2026-08-03T22:52:34+00:00",
+            "time": "2026-08-09T20:52:42+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -236,17 +236,17 @@
         },
         {
             "name": "estebanforge/hyperfields",
-            "version": "1.5.1",
-            "version_normalized": "1.5.1.0",
+            "version": "1.5.2",
+            "version_normalized": "1.5.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/EstebanForge/HyperFields.git",
-                "reference": "38c6ed35b84a2106f456c2df646bee8526527be8"
+                "reference": "de47dc439da08525aea0537352eab498d1a4182e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EstebanForge/HyperFields/zipball/38c6ed35b84a2106f456c2df646bee8526527be8",
-                "reference": "38c6ed35b84a2106f456c2df646bee8526527be8",
+                "url": "https://api.github.com/repos/EstebanForge/HyperFields/zipball/de47dc439da08525aea0537352eab498d1a4182e",
+                "reference": "de47dc439da08525aea0537352eab498d1a4182e",
                 "shasum": ""
             },
             "require": {
@@ -259,7 +259,7 @@
                 "pestphp/pest": "^4",
                 "phpunit/phpunit": "^12"
             },
-            "time": "2026-08-03T19:02:28+00:00",
+            "time": "2026-08-09T20:46:21+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -283,7 +283,7 @@
             "description": "HyperFields: A powerful custom field system for WordPress, providing metaboxes, options pages, and conditional logic.",
             "support": {
                 "issues": "https://github.com/EstebanForge/HyperFields/issues",
-                "source": "https://github.com/EstebanForge/HyperFields/tree/1.5.1"
+                "source": "https://github.com/EstebanForge/HyperFields/tree/1.5.2"
             },
             "install-path": "../estebanforge/hyperfields"
         },
@@ -358,22 +358,22 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "7.15.2",
-            "version_normalized": "7.15.2.0",
+            "version": "7.15.3",
+            "version_normalized": "7.15.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "744101956d78b7c1384d0cbf379db13e859167bf"
+                "reference": "ae311b8f045ea93ce7b1c9cdb7cec06c53f944bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/744101956d78b7c1384d0cbf379db13e859167bf",
-                "reference": "744101956d78b7c1384d0cbf379db13e859167bf",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/ae311b8f045ea93ce7b1c9cdb7cec06c53f944bc",
+                "reference": "ae311b8f045ea93ce7b1c9cdb7cec06c53f944bc",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "guzzlehttp/promises": "^2.5.1",
+                "guzzlehttp/promises": "^2.5.2",
                 "guzzlehttp/psr7": "^2.13",
                 "php": "^7.2.5 || ^8.0",
                 "psr/http-client": "^1.0",
@@ -397,7 +397,7 @@
                 "ext-intl": "Required for Internationalized Domain Name (IDN) support",
                 "psr/log": "Required for using the Log middleware"
             },
-            "time": "2026-07-26T23:23:20+00:00",
+            "time": "2026-08-05T19:48:21+00:00",
             "type": "library",
             "extra": {
                 "bamarni-bin": {
@@ -469,7 +469,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/7.15.2"
+                "source": "https://github.com/guzzle/guzzle/tree/7.15.3"
             },
             "funding": [
                 {
@@ -489,17 +489,17 @@
         },
         {
             "name": "guzzlehttp/promises",
-            "version": "2.5.1",
-            "version_normalized": "2.5.1.0",
+            "version": "2.5.2",
+            "version_normalized": "2.5.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "9ad1e4fc607446a055b95870c7f668e93b5cff29"
+                "reference": "2823687acff28b2dbe67b2508a6b300e2c3fa4ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/9ad1e4fc607446a055b95870c7f668e93b5cff29",
-                "reference": "9ad1e4fc607446a055b95870c7f668e93b5cff29",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/2823687acff28b2dbe67b2508a6b300e2c3fa4ce",
+                "reference": "2823687acff28b2dbe67b2508a6b300e2c3fa4ce",
                 "shasum": ""
             },
             "require": {
@@ -510,7 +510,7 @@
                 "bamarni/composer-bin-plugin": "^1.8.2",
                 "phpunit/phpunit": "^8.5.52 || ^9.6.34"
             },
-            "time": "2026-07-08T15:48:39+00:00",
+            "time": "2026-08-05T19:30:54+00:00",
             "type": "library",
             "extra": {
                 "bamarni-bin": {
@@ -556,7 +556,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/promises/issues",
-                "source": "https://github.com/guzzle/promises/tree/2.5.1"
+                "source": "https://github.com/guzzle/promises/tree/2.5.2"
             },
             "funding": [
                 {

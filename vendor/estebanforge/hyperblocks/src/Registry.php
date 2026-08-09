@@ -33,6 +33,17 @@ final class Registry
     public const FLUENT_BLOCK_HEADER = 'HyperBlocks Block';
 
     /**
+     * Top-level key a block.json must declare (truthy) for HyperBlocks to own
+     * it: register it, surface it, and resolve it through the REST API. The
+     * JSON analog of FLUENT_BLOCK_HEADER: an explicit opt-in so discovery
+     * never touches foreign (WP-native/ACF) block.json files co-located in a
+     * registered path such as a theme's /blocks tree. WordPress core's
+     * register_block_type_from_metadata() ignores unknown top-level keys, so
+     * the marker is non-invasive.
+     */
+    public const JSON_BLOCK_MARKER = 'hyperblocks';
+
+    /**
      * The single instance of the class.
      *
      * @var Registry|null
@@ -59,6 +70,20 @@ final class Registry
      * @var string
      */
     private string $pluginPath;
+
+    /**
+     * Resolved JSON block name -> directory map.
+     *
+     * Populated as owned blocks are registered during init discovery, so the
+     * REST /block-fields and /render-preview lookups (findJsonBlockPath) are
+     * an O(1) array hit instead of a fresh glob plus block.json read on every
+     * request. Only positive results are cached (bounded by the block count);
+     * misses fall through to the scan so varied bogus names cannot grow the
+     * map.
+     *
+     * @var array<string, string>
+     */
+    private array $jsonBlockPathCache = [];
 
     /**
      * Private constructor to prevent direct instantiation.
@@ -354,6 +379,7 @@ final class Registry
                     $fluentBlockFiles = array_merge($fluentBlockFiles, $files);
                 }
             }
+            $fluentBlockFiles = array_unique($fluentBlockFiles);
 
             foreach ($fluentBlockFiles as $file) {
                 // Skip files in directories starting with underscore
@@ -422,70 +448,33 @@ final class Registry
     }
 
     /**
-     * Discover JSON blocks for editor registration.
+     * Whether a parsed block.json declares HyperBlocks ownership.
      *
-     * @return array Array of JSON block configurations for editor registration.
+     * The single ownership predicate for JSON blocks. Every code path that
+     * decides "this block.json is ours" (registration, REST field/preview
+     * lookup, editor discovery) goes through here, so the marker is one gate
+     * mirroring how isFluentBlockFile() gates fluent PHP files. A truthy
+     * JSON_BLOCK_MARKER value opts in; absent or falsy opts out.
+     *
+     * @param array $metadata Parsed block.json contents.
+     * @return bool
      */
-    public function discoverJsonBlocksForEditor(): array
+    private static function isOwnedJsonBlock(array $metadata): bool
     {
-        $jsonBlocks = [];
-
-        // Get scan paths from configuration
-        $scanPaths = Config::get('block_paths', []);
-
-        // Add default library path if set (runtime identity, prefix-safe).
-        if (Config::$abspath !== '') {
-            $pluginBlocksPath = Config::$abspath . 'blocks';
-            if (is_dir($pluginBlocksPath)) {
-                $scanPaths[] = $pluginBlocksPath;
-            }
-        }
-
-        // Allow 3rd party devs to add their paths via filter
-        $additionalPaths = apply_filters('hyperblocks/blocks/register_json_paths', []);
-        $scanPaths = array_merge($scanPaths, $additionalPaths);
-
-        foreach ($scanPaths as $basePath) {
-            if (!is_dir($basePath)) {
-                continue;
-            }
-
-            $blockDirectories = glob($basePath . '/*', GLOB_ONLYDIR);
-
-            if ($blockDirectories === false) {
-                continue;
-            }
-
-            foreach ($blockDirectories as $blockDirectory) {
-                $blockName = basename($blockDirectory);
-
-                // Skip directories starting with an underscore
-                if (str_starts_with($blockName, '_')) {
-                    continue;
-                }
-
-                $blockJsonFile = $blockDirectory . '/block.json';
-                if (file_exists($blockJsonFile)) {
-                    $metadata = json_decode(file_get_contents($blockJsonFile), true);
-                    if ($metadata && isset($metadata['name'])) {
-                        $jsonBlocks[] = [
-                            'name' => $metadata['name'],
-                            'title' => $metadata['title'] ?? $metadata['name'],
-                            'icon' => $metadata['icon'] ?? 'block-default',
-                        ];
-                    }
-                }
-            }
-        }
-
-        return $jsonBlocks;
+        return !empty($metadata[self::JSON_BLOCK_MARKER]);
     }
 
     /**
-     * Register a JSON block using our unified system.
+     * Register a JSON block from its block.json, gated on the ownership marker.
+     *
+     * Only block.json files that declare the HyperBlocks marker
+     * (JSON_BLOCK_MARKER) are registered, so discovery never sweeps up foreign
+     * (WP-native/ACF) blocks co-located in a registered path. The block is
+     * registered with WordPress from its metadata; core then handles inserter
+     * surfacing, editor scripts, and front-end rendering declared in block.json.
      *
      * @param string $blockPath Path to the block directory.
-     * @return bool Whether registration was successful
+     * @return bool True when the block was owned and registered.
      */
     private function registerJsonBlockFromPath(string $blockPath): bool
     {
@@ -502,7 +491,31 @@ final class Registry
             return false;
         }
 
-        return true;
+        // Ownership gate: the JSON analog of the fluent HyperBlocks Block:
+        // header. Without it, every co-located foreign block.json would be
+        // registered. See isOwnedJsonBlock().
+        if (!self::isOwnedJsonBlock($metadata)) {
+            return false;
+        }
+
+        // Cache the name -> path mapping so REST lookups avoid rescanning the
+        // block tree on every request. Recorded for every owned block, even
+        // if core registration below fails, so the path stays resolvable.
+        // See findJsonBlockPath().
+        $this->jsonBlockPathCache[$metadata['name']] = $blockPath;
+
+        // Fail soft: a malformed block.json must not take down the whole init
+        // pass (every block registration on the request). Skip the offending
+        // block and log when debug is on. Mirrors Bootstrap::sanitizeAttributes().
+        try {
+            return (bool) register_block_type_from_metadata($blockPath);
+        } catch (\Throwable $e) {
+            if (Config::isDebug()) {
+                error_log('HyperBlocks: JSON block registration failed for ' . $blockPath . ' - ' . $e->getMessage());
+            }
+
+            return false;
+        }
     }
 
     /**
@@ -513,6 +526,13 @@ final class Registry
      */
     public function findJsonBlockPath(string $blockName): ?string
     {
+        // O(1) lookup once init discovery has populated the name -> path map.
+        // See registerJsonBlockFromPath(). Misses are cached up to a 100-entry bound
+        // to prevent redundant disk rescans while capping memory growth.
+        if (array_key_exists($blockName, $this->jsonBlockPathCache)) {
+            return $this->jsonBlockPathCache[$blockName];
+        }
+
         $scanPaths = [];
 
         // Get scan paths from configuration
@@ -544,11 +564,18 @@ final class Registry
                 $blockJsonFile = $directory . '/block.json';
                 if (file_exists($blockJsonFile)) {
                     $metadata = json_decode(file_get_contents($blockJsonFile), true);
-                    if (isset($metadata['name']) && $metadata['name'] === $blockName) {
+                    // Only resolve owned blocks: the REST field/preview lookups
+                    // must not match foreign block.json files in the same path.
+                    if (isset($metadata['name']) && $metadata['name'] === $blockName && self::isOwnedJsonBlock($metadata)) {
+                        $this->jsonBlockPathCache[$metadata['name']] = $directory;
                         return $directory;
                     }
                 }
             }
+        }
+
+        if (count($this->jsonBlockPathCache) < 100) {
+            $this->jsonBlockPathCache[$blockName] = null;
         }
 
         return null;
@@ -564,5 +591,6 @@ final class Registry
         $instance = self::getInstance();
         $instance->fluentBlocks = [];
         $instance->fieldGroups = [];
+        $instance->jsonBlockPathCache = [];
     }
 }
