@@ -446,6 +446,7 @@ class WicketAcc
         new Shortcodes();
         new Registers();
         new Assets();
+        new ProfileImageMdpFieldSettings();
 
         if (is_admin() || (defined("\WP_CLI") && \WP_CLI)) {
             new HFMigration(); // Migrate CF -> HF options before any HF read
