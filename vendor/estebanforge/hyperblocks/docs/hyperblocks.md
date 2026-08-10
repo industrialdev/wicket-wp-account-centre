@@ -434,13 +434,17 @@ add_filter('hyperblocks/blocks/register_fluent_blocks', function (array $files):
 });
 ```
 
+### JSON block ownership
+
+A discovered `block.json` is only owned by HyperBlocks when it declares a truthy top-level `hyperblocks` key (the JSON analog of the `HyperBlocks Block:` PHP header). Without it, the block is not registered, not surfaced in the inserter, and not resolved by the REST `/block-fields` or `/render-preview` endpoints. This stops HyperBlocks from registering foreign (WP-native/ACF) `block.json` files co-located in a registered path such as a theme `/blocks` tree. WordPress core ignores the unknown key, so it is non-invasive. Owned JSON blocks surface in the editor through core once `register_block_type_from_metadata()` runs (their `block.json` carries its own `editorScript`/`render`); `assets/js/editor.js` is fluent-only and never handles JSON blocks.
+
 ### Editor registration
 
 Fluent blocks are **dynamic**: they are server-rendered through the `render_callback` that `Bootstrap::registerSingleBlock()` wires into `register_block_type()`. To make the editor aware of them (so they appear in the inserter and parse when present in saved post content), HyperBlocks ships a small vanilla-JS file, `assets/js/editor.js`, registered under the `editor_script_handle` (`hyperblocks-editor` by default).
 
 Registration is **register-only, not enqueue**: it happens as a side-effect of `init` block registration (once at least one fluent block exists), and `Bootstrap::registerEditorScript()` calls `wp_register_script()` rather than `wp_enqueue_script()`. This is deliberate — `init` fires on every request, including the public front end, so enqueueing there would leak the Gutenberg bundle (`wp-blocks`, `wp-element`, `wp-components`) onto every page. Instead, the handle is registered with WordPress and core's own `wp_enqueue_registered_block_scripts_and_styles()` enqueues it in the editor context only, driven by the `editor_script` argument that `registerSingleBlock()` passes to `register_block_type()`.
 
-As part of registration, HyperBlocks also injects each block's `{ name, title, icon }` as `window.hyperBlocksConfig` via `wp_add_inline_script(..., 'before')`, attached to the same handle.
+As part of registration, HyperBlocks also injects each block's `{ name, title, icon, apiVersion }` as `window.hyperBlocksConfig` via `wp_add_inline_script(..., 'before')`, attached to the same handle. The `apiVersion` is shared with the server-side `register_block_type()` call so the two never disagree; override it globally with the `hyperblocks/blocks/api_version` filter (default `3`, WordPress 7.1 iframed-editor ready).
 
 `editor.js` then:
 
@@ -520,54 +524,58 @@ All helpers are defined in `src/helpers.php` and available globally after bootst
 ### Factory helpers
 
 ```php
-hyperblocks_block(string $title): Block
-hyperblocks_field(string $type, string $name, string $label): Field
-hyperblocks_field_group(string $name, string $id): FieldGroup
+hb_block(string $title): Block
+hb_field(string $type, string $name, string $label): Field
+hb_field_group(string $name, string $id): FieldGroup
 ```
 
 ### Registration helpers
 
 ```php
-hyperblocks_register_block(Block $block): void
-hyperblocks_register_field_group(FieldGroup $group): void
-hyperblocks_register_path(string $path): void
-hyperblocks_register_template_path(string $path): void
+hb_register_block(Block $block): void
+hb_register_field_group(FieldGroup $group): void
+hb_register_path(string $path): void
+hb_register_template_path(string $path): void
 ```
 
 ### Query helpers
 
 ```php
-hyperblocks_registry(): Registry
-hyperblocks_has_block(string $blockName): bool
-hyperblocks_get_block(string $blockName): ?Block
+hb_registry(): Registry
+hb_has_block(string $blockName): bool
+hb_get_block(string $blockName): ?Block
 ```
 
 ### Config helper
 
 ```php
-hyperblocks_config(string $key, mixed $default = null): mixed
+hb_config(string $key, mixed $default = null): mixed
 ```
 
 ### Render helper
 
 ```php
-hyperblocks_render(string $template, array $attributes = []): string
+hb_render(string $template, array $attributes = []): string
 ```
 
 ---
 
-## Bootstrap constants
+## Bootstrap
 
-Set by `bootstrap.php` after `after_setup_theme` (priority 0) runs the version-resolution logic.
+HyperBlocks self-initializes via `HyperBlocks\WordPress\Bootstrap::init()`, which is idempotent (guarded by `Config::isInitialized()`). When loaded directly through Composer, `bootstrap.php` schedules `init()` at `after_setup_theme`; vendored or namespace-prefixed consumers call `WordPress\Bootstrap::init()` explicitly.
 
-| Constant | Description |
+Duplicate-load protection: the first copy to reach `init()` claims the namespace-scoped `HyperBlocks\WordPress\LOADED` constant and wins; later copies bail before bootstrapping, so two plugins shipping HyperBlocks do not double-init or fatal. First-to-boot guard, not newest-wins, no version resolution, no jetpack dependency.
+
+Runtime identity lives on `HyperBlocks\Config` (prefix-safe), not global constants:
+
+| Member | Description |
 |---|---|
-| `HYPERBLOCKS_VERSION` | Version string read from `composer.json`. |
-| `HYPERBLOCKS_PATH` | Absolute path to the HyperBlocks root (trailing slash). Same as `HYPERBLOCKS_ABSPATH`. |
-| `HYPERBLOCKS_PLUGIN_FILE` | Absolute path to `bootstrap.php`. |
-| `HYPERBLOCKS_PLUGIN_URL` | Public URL to the HyperBlocks root (trailing slash). |
-| `HYPERBLOCKS_BOOTSTRAP_LOADED` | Defined when `bootstrap.php` is first included. Prevents double-include. |
-| `HYPERBLOCKS_INSTANCE_LOADED` | Defined when initialization logic runs. Ensures single initialization even across multiple vendored copies. |
+| `Config::VERSION` | Semantic version (mirrors `composer.json`). |
+| `Config::$abspath` | Library root path with trailing slash, set at init. |
+| `Config::$pluginUrl` | Public URL with trailing slash, or `''` when not web-reachable. |
+| `Config::$pluginFile` | Absolute path to the bootstrap file. |
+
+HyperBlocks defines no `HYPERBLOCKS_*` constants.
 
 ---
 

@@ -913,6 +913,41 @@ class BulkMemberUploadService
     }
 
     /**
+     * Public read-only accessor for CSV export column definitions.
+     *
+     * Returns the same columns the front-end roster bulk-upload validates
+     * against (so an exported file round-trips through upload without
+     * missing-column errors), narrowed to only what the export consumer
+     * needs: column key => [enabled, header]. Order matches the upload
+     * template (first_name, last_name, email, relationship_type, roles).
+     *
+     * Introduced in WWID-1907 as the single shared source of truth between
+     * upload and download. The wider {@see getBulkColumnDefinitions()} stays
+     * private because its full shape (enabled/required/header/aliases) is an
+     * internal upload-pipeline concern.
+     *
+     * @return array<string, array{enabled: bool, header: string}>
+     */
+    public function getExportColumns(): array
+    {
+        $config = $this->configService->getFullConfig();
+        $bulk_upload_config = is_array($config['member_management']['bulk_upload'] ?? null)
+            ? $config['member_management']['bulk_upload']
+            : [];
+        $bulk_column_definitions = $this->getBulkColumnDefinitions($bulk_upload_config);
+
+        $export_columns = [];
+        foreach ($bulk_column_definitions as $key => $def) {
+            $export_columns[$key] = [
+                'enabled' => (bool) ($def['enabled'] ?? false),
+                'header'  => (string) ($def['header'] ?? $key),
+            ];
+        }
+
+        return $export_columns;
+    }
+
+    /**
      * @param array<int, string> $headers
      * @param array<string, array<string, mixed>> $bulk_column_definitions
      * @return array<string, int>
