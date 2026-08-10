@@ -239,6 +239,14 @@ class init extends Blocks
                         if ($renewal_type == 'multi_tier') {
                             continue;
                         }
+                        if ($renewal_type == 'switch') {
+                            // Rendered only by case 'switch'. Skipping here — before unset($links),
+                            // before the link chain and before the multi_tier parse_url() dereference —
+                            // keeps a switch entry out of all of that machinery. A switch entry matches
+                            // none of the link-chain branches, so without this skip it renders as a card
+                            // with no button.
+                            continue;
+                        }
                         foreach ($renewal_data as $membership) {
                             $skip_record = apply_filters(
                                 'wicket/acc/block/ac-callout/renewal_skip_record',
@@ -418,6 +426,47 @@ class init extends Blocks
                     return;
                 }
                 break;
+
+            case 'switch':
+                /*
+                 * Self-serve membership switch. This is the only place the 'switch' bucket is
+                 * rendered — the renewal loop skips it explicitly. Visibility is therefore an
+                 * editor action: the card appears where a switch block is placed, not wherever a
+                 * renewal block sits.
+                 */
+                if (!class_exists('\Wicket_Memberships\Membership_Controller')) {
+                    return;
+                }
+
+                $membership_callouts = (new \Wicket_Memberships\Membership_Controller())->get_membership_callouts();
+
+                if (empty($membership_callouts['switch'])) {
+                    return;
+                }
+
+                foreach ($membership_callouts['switch'] as $switch_data) {
+                    $links = [];
+
+                    // Each entry carries exactly one destination key, set from the tier's switch_type.
+                    if (!empty($switch_data['membership']['switch_target'])) {
+                        $links = wicket_ac_memberships_get_switch_product_link_data($switch_data);
+                    } elseif (!empty($switch_data['membership']['switch_form_page'])) {
+                        $links = wicket_ac_memberships_get_switch_page_link_data($switch_data);
+                    }
+
+                    // One card per entry: a member in two switch-enabled active tiers gets two.
+                    $attrs = get_block_wrapper_attributes(['class' => 'callout-' . $block_logic . ' callout-switch']);
+                    echo '<div ' . $attrs . '>';
+                    get_component('card-call-out', [
+                        'title'       => $switch_data['callout']['header'],
+                        'description' => $switch_data['callout']['content'],
+                        'links'       => $this->append_query_string($links),
+                        'style'       => '',
+                    ]);
+                    echo '</div>';
+                }
+
+                return;
 
             case 'profile':
                 $show_block = wicket_profile_widget_validation($mandatory_fields);

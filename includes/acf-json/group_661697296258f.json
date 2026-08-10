@@ -61,7 +61,8 @@
             "choices": {
                 "become_member": "Become a member",
                 "renewal": "Renewal",
-                "profile": "Complete your profile"
+                "profile": "Complete your profile",
+                "switch": "Membership switch"
             },
             "default_value": "become_member",
             "return_format": "value",

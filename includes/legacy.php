@@ -551,6 +551,82 @@ function wicket_ac_memberships_get_page_link_data($membership)
 }
 
 /**
+ * Returns the cart link for a self-serve membership switch callout.
+ *
+ * Used for the `specific_tier` switch type, where the tier names a single destination product.
+ * Unlike the renewal product builder there is no product_data loop, no org-seats filter and no
+ * late fee: a switch entry carries exactly one destination.
+ *
+ * The membership id in the URL is client-editable; ownership is enforced server-side by the
+ * memberships plugin in should_trigger_order_switch(), so no check belongs here.
+ *
+ * @deprecated 1.5.0 Pending reimplementation as a method
+ * @param mixed $membership
+ * @return array
+ */
+function wicket_ac_memberships_get_switch_product_link_data($membership)
+{
+    $membership_post_id = $membership['membership']['ID'];
+    $switch_target = $membership['membership']['switch_target'];
+
+    // Variation wins when non-zero — a variable subscription cannot be added to the cart by parent
+    // id alone. Mirrors the precedence in wicket_ac_memberships_get_product_link_data(): a
+    // variation_id of 0 makes wc_get_product() return false and we fall back to the product id.
+    $product = wc_get_product($switch_target['variation_id']);
+    if (empty($product)) {
+        $product = wc_get_product($switch_target['product_id']);
+    }
+
+    // A deleted target product yields no button rather than a fatal on ->get_id().
+    if (empty($product)) {
+        return [];
+    }
+
+    // The tier authors button_label specifically for this callout and there is only one
+    // destination, so the product name is not appended.
+    $link['link'] = [
+        'title' => $membership['callout']['button_label'],
+        'url'   => '/cart/?membership_post_id_switch=' . $membership_post_id . '&add-to-cart=' . $product->get_id() . '&quantity=1',
+    ];
+    $link['link']['target'] = '';
+    $link['link_style'] = '';
+    $links[] = $link;
+
+    return $links;
+}
+
+/**
+ * Returns the form-page link for a self-serve membership switch callout.
+ *
+ * Used for the `form_flow` switch type. Mirrors wicket_ac_memberships_get_page_link_data() minus
+ * the late-fee handling, which does not apply to switching.
+ *
+ * @deprecated 1.5.0 Pending reimplementation as a method
+ * @param mixed $membership
+ * @return array
+ */
+function wicket_ac_memberships_get_switch_page_link_data($membership)
+{
+    $url = $membership['membership']['switch_form_page']['permalink'] . '?membership_post_id_switch=' . $membership['membership']['ID'];
+
+    // Organization switching is in scope, and the form flow needs the same org context it gets on
+    // renewal to know which organization it is acting for.
+    if (!empty($membership['membership']['meta']['org_uuid'])) {
+        $url = add_query_arg('org_uuid', $membership['membership']['meta']['org_uuid'], $url);
+    }
+
+    $link['link'] = [
+        'title' => $membership['callout']['button_label'],
+        'url'   => $url,
+    ];
+    $link['link']['target'] = '';
+    $link['link_style'] = '';
+    $links[] = $link;
+
+    return $links;
+}
+
+/**
  * Alter the 'pages' admin settings to provide the wicket ACC pages along with normal pages.
  *
  * @deprecated 1.5.0 Pending reimplementation as a method
