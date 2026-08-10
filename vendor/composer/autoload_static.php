@@ -13,13 +13,10 @@ class ComposerStaticInit8c15133367c403743912873e7d8a156f
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         'a1105708a18b76903365ca1c4aa61b02' => __DIR__ . '/..' . '/symfony/translation/Resources/functions.php',
         '60799491728b879e74601d83e38b2cad' => __DIR__ . '/..' . '/illuminate/collections/helpers.php',
-        '13f65e44352b0407f05cb5a5e174612b' => __DIR__ . '/..' . '/estebanforge/hyperfields/includes/helpers.php',
-        '0522701f5d113a2ff6373ccc834dd7d6' => __DIR__ . '/..' . '/estebanforge/hyperfields/includes/backward-compatibility.php',
         'c1c635284e1ca7836efff979fb09390f' => __DIR__ . '/..' . '/estebanforge/hyperfields/bootstrap.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '72579e7bd17821bb1321b87411366eae' => __DIR__ . '/..' . '/illuminate/support/helpers.php',
         '7a417aa514b484622606bfc8f3893672' => __DIR__ . '/..' . '/estebanforge/hyperblocks/bootstrap.php',
-        '611bc1f60ae2ec6bee160ee5d1b75d78' => __DIR__ . '/..' . '/estebanforge/hyperblocks/src/helpers.php',
         '1ffd48fd2f3bb3fe50dd66b2bda72795' => __DIR__ . '/../..' . '/src/WicketORM/compat.php',
     );
 
@@ -81,10 +78,6 @@ class ComposerStaticInit8c15133367c403743912873e7d8a156f
         array (
             'Carbon\\Doctrine\\' => 16,
             'Carbon\\' => 7,
-        ),
-        'A' =>
-        array (
-            'Automattic\\Jetpack\\Autoloader\\' => 30,
         ),
     );
 
@@ -193,19 +186,10 @@ class ComposerStaticInit8c15133367c403743912873e7d8a156f
         array (
             0 => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon',
         ),
-        'Automattic\\Jetpack\\Autoloader\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/automattic/jetpack-autoloader/src',
-        ),
     );
 
     public static $classMap = array (
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
-        'Automattic\\Jetpack\\Autoloader\\AutoloadFileWriter' => __DIR__ . '/..' . '/automattic/jetpack-autoloader/src/AutoloadFileWriter.php',
-        'Automattic\\Jetpack\\Autoloader\\AutoloadGenerator' => __DIR__ . '/..' . '/automattic/jetpack-autoloader/src/AutoloadGenerator.php',
-        'Automattic\\Jetpack\\Autoloader\\AutoloadProcessor' => __DIR__ . '/..' . '/automattic/jetpack-autoloader/src/AutoloadProcessor.php',
-        'Automattic\\Jetpack\\Autoloader\\CustomAutoloaderPlugin' => __DIR__ . '/..' . '/automattic/jetpack-autoloader/src/CustomAutoloaderPlugin.php',
-        'Automattic\\Jetpack\\Autoloader\\ManifestGenerator' => __DIR__ . '/..' . '/automattic/jetpack-autoloader/src/ManifestGenerator.php',
         'Carbon\\AbstractTranslator' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/AbstractTranslator.php',
         'Carbon\\Carbon' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Carbon.php',
         'Carbon\\CarbonConverterInterface' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/CarbonConverterInterface.php',
@@ -375,6 +359,7 @@ class ComposerStaticInit8c15133367c403743912873e7d8a156f
         'GuzzleHttp\\Handler\\CurlVersion' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/Handler/CurlVersion.php',
         'GuzzleHttp\\Handler\\EasyHandle' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/Handler/EasyHandle.php',
         'GuzzleHttp\\Handler\\HeaderProcessor' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/Handler/HeaderProcessor.php',
+        'GuzzleHttp\\Handler\\HostValidator' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/Handler/HostValidator.php',
         'GuzzleHttp\\Handler\\MockHandler' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/Handler/MockHandler.php',
         'GuzzleHttp\\Handler\\Proxy' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/Handler/Proxy.php',
         'GuzzleHttp\\Handler\\ProxyEnvironment' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/Handler/ProxyEnvironment.php',
@@ -452,11 +437,10 @@ class ComposerStaticInit8c15133367c403743912873e7d8a156f
         'HyperFields\\Admin\\Activation' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/Admin/Activation.php',
         'HyperFields\\Admin\\ExportImportPageConfig' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/Admin/ExportImportPageConfig.php',
         'HyperFields\\Admin\\ExportImportUI' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/Admin/ExportImportUI.php',
-        'HyperFields\\Admin\\Options' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/Admin/Options.php',
-        'HyperFields\\Admin\\OptionsMigration' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/Admin/OptionsMigration.php',
         'HyperFields\\Admin\\TransferLogsUI' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/Admin/TransferLogsUI.php',
         'HyperFields\\Assets' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/Assets.php',
         'HyperFields\\BlockFieldAdapter' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/BlockFieldAdapter.php',
+        'HyperFields\\CacheInvalidator' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/CacheInvalidator.php',
         'HyperFields\\Compatibility\\CompatibilityMigrator' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/Compatibility/CompatibilityMigrator.php',
         'HyperFields\\Compatibility\\OptionTypeRegistry' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/Compatibility/OptionTypeRegistry.php',
         'HyperFields\\Compatibility\\SectionProxy' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/Compatibility/SectionProxy.php',
@@ -469,13 +453,12 @@ class ComposerStaticInit8c15133367c403743912873e7d8a156f
         'HyperFields\\Compatibility\\TabProxy' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/Compatibility/TabProxy.php',
         'HyperFields\\Compatibility\\WPSettingsCompatibility' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/Compatibility/WPSettingsCompatibility.php',
         'HyperFields\\ConditionalLogic' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/ConditionalLogic.php',
+        'HyperFields\\Config' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/Config.php',
         'HyperFields\\Container\\Container' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/Container/Container.php',
         'HyperFields\\Container\\ContainerFactory' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/Container/ContainerFactory.php',
         'HyperFields\\Container\\PostMetaContainer' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/Container/PostMetaContainer.php',
         'HyperFields\\Container\\TermMetaContainer' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/Container/TermMetaContainer.php',
         'HyperFields\\Container\\UserMetaContainer' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/Container/UserMetaContainer.php',
-        'HyperFields\\ContentExportImport' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/ContentExportImport.php',
-        'HyperFields\\ContentTransferAdapter' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/ContentTransferAdapter.php',
         'HyperFields\\CustomField' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/CustomField.php',
         'HyperFields\\ExportImport' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/ExportImport.php',
         'HyperFields\\Field' => __DIR__ . '/..' . '/estebanforge/hyperfields/src/Field.php',

@@ -13,27 +13,6 @@ defined('ABSPATH') || exit;
 class Profile extends WicketAcc
 {
     /**
-     * Default MDP schema slug that holds the profile image (photo_link) field.
-     *
-     * MDP schema UUIDs are tenant-specific, but the slug is stable across tenants,
-     * so we identify the schema by slug. Used as the fallback when the "Profile
-     * picture MDP schema" ACC Option is left blank.
-     *
-     * @var string
-     */
-    public const PROFILE_IMAGE_SCHEMA_SLUG_DEFAULT = 'personal_info';
-
-    /**
-     * Default field key (slug) within the schema that stores the profile image URL.
-     *
-     * The field slug is not guaranteed to be "photo_link" on every tenant, so it
-     * is configurable; this is the fallback when the ACC Option is left blank.
-     *
-     * @var string
-     */
-    public const PROFILE_IMAGE_FIELD_SLUG_DEFAULT = 'photo_link';
-
-    /**
      * Constructor.
      */
     public function __construct(
@@ -264,6 +243,26 @@ class Profile extends WicketAcc
      */
     public function syncProfileImageToMdp(?string $profile_image_url = null): bool
     {
+        // No syncing configured: keep the image local. Do not call MDP.
+        $ref = $this->getProfileImageFieldRef();
+        if ($ref === null) {
+            return true;
+        }
+
+        // Drift guard: if the cached field list is populated and the configured
+        // ref is no longer in it, the field was removed from the MDP. Skip the
+        // write (degrade to No syncing) so we do not fail on every upload. The
+        // check reads the raw transient only and never calls MDP.
+        if (ProfileImageMdpFieldSettings::configuredRefHasDrifted()) {
+            WACC()->Log()->warning('Profile image MDP field ref no longer in the cached schema list; skipping sync. Update the Account Centre "Profile image MDP field" setting.', [
+                'source' => __CLASS__,
+            ]);
+
+            return true;
+        }
+
+        [$schema_slug, $field_slug] = $ref;
+
         $person_uuid = WACC()->Mdp()->Person()->getCurrentPersonUuid();
         if (empty($person_uuid)) {
             WACC()->Log()->warning('Unable to sync profile image to MDP: current person UUID is missing.', [
@@ -274,13 +273,12 @@ class Profile extends WicketAcc
         }
 
         $photo_link = $this->normalizeProfileImageUrlForMdp($profile_image_url);
-        $schema_slug = $this->getProfileImageSchemaSlug();
-        $fields_to_update = $this->buildProfileImageDataFieldsPayload($person_uuid, $schema_slug, $photo_link);
+        $fields_to_update = $this->buildProfileImageDataFieldsPayload($person_uuid, $schema_slug, $field_slug, $photo_link);
         $result = WACC()->Mdp()->Person()->updatePerson($person_uuid, $fields_to_update);
 
         // Retry once on version conflict after refetching latest data_fields/version.
         if (empty($result['success']) && $this->isRecordConflictResponse($result)) {
-            $fields_to_update = $this->buildProfileImageDataFieldsPayload($person_uuid, $schema_slug, $photo_link);
+            $fields_to_update = $this->buildProfileImageDataFieldsPayload($person_uuid, $schema_slug, $field_slug, $photo_link);
             $result = WACC()->Mdp()->Person()->updatePerson($person_uuid, $fields_to_update);
         }
 
@@ -306,6 +304,22 @@ class Profile extends WicketAcc
     public function clearProfileImageFromMdp(): bool
     {
         return $this->syncProfileImageToMdp(null);
+    }
+
+    /**
+     * Resolve the configured profile-image MDP field ref.
+     *
+     * Reads the composite option (acc_profile_picture_mdp_field_ref) and parses
+     * it into [schema_slug, field_slug]. Returns null for "No syncing" or a
+     * malformed value, which short-circuits the sync.
+     *
+     * @return array{0: string, 1: string}|null
+     */
+    private function getProfileImageFieldRef(): ?array
+    {
+        $raw = WACC()->getOption(ProfileImageMdpFieldSettings::OPTION_KEY, ProfileImageMdpFieldSettings::NO_SYNCING);
+
+        return ProfileImageMdpFieldSettings::parseFieldRef(is_string($raw) ? $raw : null);
     }
 
     /**
@@ -481,7 +495,7 @@ class Profile extends WicketAcc
      *
      * @return array
      */
-    private function buildProfileImageDataFieldsPayload(string $person_uuid, string $schema_slug, ?string $photo_link): array
+    private function buildProfileImageDataFieldsPayload(string $person_uuid, string $schema_slug, string $field_slug, ?string $photo_link): array
     {
         $current_person = WACC()->Mdp()->Person()->getPersonByUuid($person_uuid);
         $current_data_fields = $this->extractPersonDataFields($current_person);
@@ -512,7 +526,6 @@ class Profile extends WicketAcc
         // Match MDP UI behavior: remove the key on delete, set full URL on update.
         // Sibling fields in $data_field_value are carried through unchanged.
         // The photo field is format:url in MDP, so it must be unset (not "") on delete.
-        $field_slug = $this->getProfileImageFieldSlug();
         if ($photo_link === null) {
             unset($data_field_value[$field_slug]);
         } else {
@@ -655,41 +668,6 @@ class Profile extends WicketAcc
     }
 
     /**
-     * Resolve the MDP schema slug that stores the profile image (photo_link).
-     *
-     * Reads the "Profile picture MDP schema slug" ACC Option, falling back to
-     * PROFILE_IMAGE_SCHEMA_SLUG_DEFAULT when unset or blank. The slug is stable
-     * across tenants (unlike the schema UUID), so no runtime schema lookup is
-     * needed.
-     *
-     * @return string
-     */
-    private function getProfileImageSchemaSlug(): string
-    {
-        $configured = WACC()->getOption('acc_profile_picture_mdp_schema', '');
-        $configured = is_string($configured) ? trim($configured) : '';
-
-        return $configured !== '' ? $configured : self::PROFILE_IMAGE_SCHEMA_SLUG_DEFAULT;
-    }
-
-    /**
-     * Resolve the MDP field slug (within the schema) that stores the profile image URL.
-     *
-     * Reads the "Profile picture MDP field slug" ACC Option, falling back to
-     * PROFILE_IMAGE_FIELD_SLUG_DEFAULT when unset or blank. The field is not
-     * guaranteed to be "photo_link" on every tenant, so it must be configurable.
-     *
-     * @return string
-     */
-    private function getProfileImageFieldSlug(): string
-    {
-        $configured = WACC()->getOption('acc_profile_picture_mdp_field', '');
-        $configured = is_string($configured) ? trim($configured) : '';
-
-        return $configured !== '' ? $configured : self::PROFILE_IMAGE_FIELD_SLUG_DEFAULT;
-    }
-
-    /**
      * Determine whether MDP data_fields currently contain a profile image photo_link.
      *
      * @param array $data_fields
@@ -698,7 +676,13 @@ class Profile extends WicketAcc
      */
     private function hasProfileImagePhotoLink(array $data_fields): bool
     {
-        $data_field = $this->findDataFieldBySchemaSlug($data_fields, $this->getProfileImageSchemaSlug());
+        $ref = $this->getProfileImageFieldRef();
+        if ($ref === null) {
+            return false;
+        }
+        [$schema_slug, $field_slug] = $ref;
+
+        $data_field = $this->findDataFieldBySchemaSlug($data_fields, $schema_slug);
         if (!is_array($data_field)) {
             return false;
         }
@@ -711,7 +695,7 @@ class Profile extends WicketAcc
             return false;
         }
 
-        $photo_link = $value[$this->getProfileImageFieldSlug()] ?? null;
+        $photo_link = $value[$field_slug] ?? null;
 
         return is_string($photo_link) && trim($photo_link) !== '';
     }

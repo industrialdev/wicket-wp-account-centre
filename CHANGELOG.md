@@ -2,6 +2,55 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.8.2] - 2026-08-10
+
+### Added
+- **profile-image:** configurable MDP field picker (WWID-1911)
+- **exports:** roster download with adaptive sync/async and round-trip columns
+
+### Changed
+- **profile-image:** refresh as subtle link with WP spinner (WWID-1911)
+- **rest:** rename namespace org-management/v1 -> wicket/orm/v1
+
+### Fixed
+- **profile-image:** guard refresh-empty and field drift (WWID-1911)
+- **profile-image:** exclude enum fields from MDP field picker (WWID-1911)
+- **exports:** show success panel after sync download instead of navigating
+- **exports:** modal close on completion + enrich roles/relationship_type columns
+- **exports:** correct Datastar signal syntax in roster download modal
+
+### Maintenance
+- update dependencies
+- update dependencies
+
+### Other
+- Revert "refactor(rest): rename namespace org-management/v1 -> wicket/orm/v1"
+
+
+## [1.8.1] - 2026-08-07
+
+### Fixed
+- normalize MDP membership PATCH path with leading slash
+
+
+## [1.8.0] - 2026-07-31
+
+### Changed
+- **rest:** rename org-management/v1 namespace to wicket-acc/v1 #minor
+
+
+## [1.7.16] - 2026-07-29
+
+### Fixed
+- do not require Gravity Forms API directly
+
+
+## [1.7.15] - 2026-07-28
+
+### Fixed
+- **ac-org-profile:** cast hide_alternate_name_field to bool
+
+
 ## [1.7.14] - 2026-07-27
 
 ### Fixed

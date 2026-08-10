@@ -23,7 +23,7 @@ $org_dom_suffix = isset($_POST['org_dom_suffix'])
     ? sanitize_html_class((string) wp_unslash($_POST['org_dom_suffix']))
     : sanitize_html_class($org_uuid ?: 'default');
 
-$error_signals = ['exportSubmitting' => false];
+$error_signals = [$org_dom_suffix . '_exportSubmitting' => false];
 
 // Nonce check
 $nonce = isset($_POST['_wpnonce']) ? sanitize_text_field(wp_unslash($_POST['_wpnonce'])) : '';
@@ -50,7 +50,7 @@ if (empty($org_uuid)) {
 }
 
 // Permission check
-if (!WicketORM\Helpers\PermissionHelper::can_manage_members($org_uuid)) {
+if (!WicketORM\Helpers\PermissionHelper::can_edit_members($org_uuid)) {
     status_header(200);
     WicketORM\Helpers\DatastarSSE::renderError(
         __('You do not have permission to export members for this organization.', 'wicket-acc'),
@@ -88,5 +88,5 @@ WicketORM\Helpers\DatastarSSE::renderSuccess(
         esc_html($recipient_email)
     ),
     '#export-messages-' . $org_dom_suffix,
-    ['exportSubmitting' => false, 'exportQueued' => true]
+    [$org_dom_suffix . '_exportSubmitting' => false, $org_dom_suffix . '_exportQueued' => true]
 );

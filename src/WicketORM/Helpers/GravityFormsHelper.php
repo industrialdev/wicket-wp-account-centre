@@ -11,10 +11,12 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Include Gravity Forms API
-if (!class_exists('GFAPI')) {
-    require_once WP_PLUGIN_DIR . '/gravityforms/includes/api.php';
-}
+// Gravity Forms loads its own API: gravityforms.php requires includes/api.php.
+// Never require that file directly. It calls die() unless GFForms is already
+// loaded, so requiring it while Gravity Forms is deactivated terminates the
+// request with no error, no log entry, and an empty HTTP 200 response.
+// Availability is gated by the class_exists('GFForms') check in init() below,
+// and by the matching check in the template that calls get_form_html().
 
 /**
  * Helper functions for Gravity Forms integration.
