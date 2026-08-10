@@ -238,7 +238,7 @@ class BusinessInfoService
             return new WP_Error('missing_client', __('MDP client is not available.', 'wicket-acc'));
         }
 
-        $client = WACC()->MdpApi->init_client();
+        $client = WACC()->Mdp()->init_client();
 
         $results = [];
 
