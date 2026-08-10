@@ -26,8 +26,6 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 HyperFields bootstrap is registered via Composer `autoload.files`.
 
-> **Using Jetpack Autoloader?** Composer `autoload.files` entries do **not** execute under `automattic/jetpack-autoloader` — you must explicitly require the bootstrap and call init. Consumers must also **directly** require `automattic/jetpack-autoloader` (transitive presence via this library leaves Jetpack inert). See [Library Bootstrap — Jetpack](docs/library-bootstrap.md#host-plugins-using-the-jetpack-autoloader).
-
 ## Basic usage
 
 ```php
@@ -53,7 +51,7 @@ Procedural helpers are available with `hf_` prefix (for example: `hf_field`, `hf
 
 JSON exports now include embedded type schemas alongside each value. When importing, HyperFields validates that values match their declared schemas, preventing malformed data or injection attacks.
 
-See [`docs/transfer-and-content-export-import.md`](docs/transfer-and-content-export-import.md) for:
+See [`docs/transfer-export-import.md`](docs/transfer-export-import.md) for:
 - Typed-node envelope format
 - SchemaValidator API
 - Building schema maps for exports

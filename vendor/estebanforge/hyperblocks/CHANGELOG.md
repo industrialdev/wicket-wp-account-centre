@@ -1,5 +1,42 @@
 # Changelog
 
+## [1.5.3] - 2026-08-09
+
+### Security
+- **Block field and preview REST routes are permission-gated.** The JSON block path lookup is now cached and bounded, and the `/block-fields` and preview endpoints verify the caller can edit posts before exposing field or preview data.
+- **Block preview attributes are sanitized correctly.** HTML attributes are preserved rather than stripped, and nested array attributes are recursed, so preview output stays safe without losing markup.
+
+### Fixed
+- **Template rendering cleans up its output buffer on error.** All buffer levels unwind when a template throws, and the engine isolates its internal scope so a block attribute named like an engine variable is preserved.
+- Discovery globs are deduplicated so a file matching both `.hb.php` and `.php` is no longer read twice.
+
+## [1.5.0] - 2026-08-04
+
+### Added
+- **JSON block ownership marker.** A `block.json` is now owned, registered, surfaced in the inserter, and resolved by the REST `/block-fields` and `/render-preview` endpoints only when it declares a truthy top-level `hyperblocks` key (e.g. `"hyperblocks": true`). This is the JSON analog of the fluent `HyperBlocks Block:` PHP header and exists for the same reason: a registered discovery path (including a theme's `/blocks` tree, auto-registered by default) often co-locates foreign `block.json` files from WordPress-native or ACF blocks, and without an explicit opt-in discovery would register those too. A single predicate, `Registry::isOwnedJsonBlock()`, gates registration, REST lookup (`findJsonBlockPath`), and editor discovery. WordPress core's `register_block_type_from_metadata()` ignores unknown top-level keys, so the marker is non-invasive.
+- **`hyperblocks/blocks/api_version` filter.** Override the apiVersion applied to every fluent block on both server (`register_block_type` `api_version`) and client (`wp.blocks.registerBlockType` via `window.hyperBlocksConfig`). Default `3`. The same value is threaded to both sides from one `Bootstrap::getApiVersion()` call so they never disagree.
+
+### Changed
+- **WordPress 7.1 iframed-editor readiness: fluent blocks now register as apiVersion 3** (was 2) on both the server (`Bootstrap::registerSingleBlock()`) and the client (`assets/js/editor.js`). The `edit()` output already used `useBlockProps()` + `ServerSideRender`, the canonical dynamic-block pattern, so no editor-logic change was required; only the declared version moved to 3 to opt out of the apiVersion 2 compatibility shim and its deprecation warnings. The client-side `apiVersion` is injected per block into `window.hyperBlocksConfig`.
+
+### Fixed
+- **JSON block registration was a silent no-op.** `Registry::registerJsonBlockFromPath()` parsed `block.json`, checked the `name`, and returned `true` without ever calling `register_block_type()` / `register_block_type_from_metadata()`, so discovered JSON blocks were validated but never registered server-side and never appeared in the inserter. It now registers owned blocks with WordPress from their metadata, gated on the ownership marker, and fails soft: a malformed `block.json` is caught (`try`/`catch` `\Throwable`), logged when `debug` is on, and skipped, so it cannot take down the whole `init` pass. Activates JSON-block support that had shipped non-functional since 2026-01-27.
+- `Registry::findJsonBlockPath()` (used by the REST field/preview endpoints) now matches only blocks that pass the ownership marker, so foreign `block.json` files in the same path can no longer leak into `/block-fields` or `/render-preview` responses.
+
+### Removed
+- `Registry::discoverJsonBlocksForEditor()` and `Bootstrap::getEditorBlockConfigs()`. Both had zero callers across the stack. The former was also a wrong abstraction: it existed to push JSON blocks into the fluent `editor.js` path, but JSON blocks surface in the editor through WordPress core once `register_block_type_from_metadata()` runs (their `block.json` carries its own `editorScript`/`render`); feeding them into `editor.js` would be a no-op (its `getBlockType()` guard skips already-registered blocks) or would override their own `edit`. `editor.js` is fluent-only. The HyperPress-Core `Blocks\Registry` facade proxy for `discoverJsonBlocksForEditor()` was removed in HyperPress-Core 1.5.2 to match.
+
+## [1.4.2] - 2026-08-03
+
+### Changed
+- Dependencies updated.
+
+## [1.4.0] - 2026-07-30
+
+### Changed
+- **PHP 8.2+ is now the declared minimum** (`composer.json` `require.php` `>=8.1` → `>=8.2`), aligning HyperBlocks with the Hyper stack's WordPress 6.5+ / PHP 8.2+ modernization (HyperFields 1.5.0, HyperPress-Core, HyperPress). HyperFields already enforced PHP 8.2+ transitively and the `AGENTS.md` requirement already documented it; `composer.json` now states it explicitly. Backwards-incompatible for consumers on PHP 8.1.
+- `src/Config.php` `VERSION` resynced to `1.4.0` to match `composer.json` (had been left at `1.3.4` during the manual bump).
+
 ## [1.3.4] - 2026-07-24
 
 ### Changed

@@ -68,35 +68,49 @@ class MemberExportController extends ApiController
         $membership_uuid = sanitize_text_field($request->get_param('membership_uuid'));
         $org_dom_suffix = sanitize_html_class($request->get_param('org_dom_suffix') ?: ($org_id ?: 'default'));
 
+        // Signal keys must be valid JS identifiers AND match exactly what the
+        // modal template registered. Template uses: <prefix>_<safe_suffix>
+        // where safe_suffix = str_replace('-', '_', sanitize_key($org_dom_suffix)).
+        // Mirror that here so SSE signal patches hit the registered keys.
+        $safe_suffix = str_replace('-', '_', sanitize_key($org_dom_suffix));
+        $sig_submitting = "exportSubmitting_{$safe_suffix}";
+        $sig_queued = "exportQueued_{$safe_suffix}";
+        $messages_target = '#export-messages-' . $org_dom_suffix;
+
         $error_signals = [
-            'exportSubmitting' => false,
+            $sig_submitting => false,
         ];
 
         if (empty($org_id)) {
             \WicketORM\Helpers\DatastarSSE::renderError(
                 __('Organization identifier is missing.', 'wicket-acc'),
-                '#export-messages-' . $org_dom_suffix,
+                $messages_target,
                 $error_signals
             );
 
             return;
         }
 
-        $nonce = $request->get_param('_wpnonce');
+        // Renamed from '_wpnonce': that field name is reserved by WP REST core
+        // (rest_cookie_check_errors reads $_REQUEST['_wpnonce'] before the
+        // X-WP-Nonce header and verifies it against the 'wp_rest' action). An
+        // app-level nonce under that name fails WP's check -> 403 before the
+        // permission_callback runs.
+        $nonce = $request->get_param('export_nonce');
         if (!$nonce || !wp_verify_nonce($nonce, 'wicket_orgman_export_' . $org_id)) {
             \WicketORM\Helpers\DatastarSSE::renderError(
                 __('Security verification failed. Please refresh and try again.', 'wicket-acc'),
-                '#export-messages-' . $org_dom_suffix,
+                $messages_target,
                 $error_signals
             );
 
             return;
         }
 
-        if (!$this->userCanManageOrganization($org_id)) {
+        if (!\WicketORM\Helpers\PermissionHelper::can_edit_members($org_id)) {
             \WicketORM\Helpers\DatastarSSE::renderError(
                 __('You do not have permission to export members for this organization.', 'wicket-acc'),
-                '#export-messages-' . $org_dom_suffix,
+                $messages_target,
                 $error_signals
             );
 
@@ -106,31 +120,68 @@ class MemberExportController extends ApiController
         $current_user = wp_get_current_user();
         $recipient_email = sanitize_email($request->get_param('recipient_email') ?: ($current_user->user_email ?? ''));
 
-        $result = $this->export_service->enqueueExport($org_id, $membership_uuid, $recipient_email);
+        // Adaptive sync/async: small rosters build in-request and redirect to
+        // a tokenized download; large rosters queue the cron path and email.
+        $result = $this->export_service->streamExport($org_id, $membership_uuid, $recipient_email);
 
         if (is_wp_error($result)) {
             \WicketORM\Helpers\DatastarSSE::renderError(
                 $result->get_error_message(),
-                '#export-messages-' . $org_dom_suffix,
+                $messages_target,
                 $error_signals
             );
 
             return;
         }
 
+        $mode = (string) ($result['mode'] ?? '');
+        if ($mode === 'sync' && !empty($result['token'])) {
+            $download_url = add_query_arg(
+                [MemberExportService::QUERY_VAR => (string) $result['token']],
+                home_url('/')
+            );
+            // Trigger the download in a hidden iframe (Content-Disposition: attachment
+            // makes the browser download rather than navigate), then surface a
+            // success message. Avoids window.location.href, which unloads the page
+            // and kills the modal before any confirmation can render.
+            $url_js = wp_json_encode($download_url);
+            $iframe_js = <<<JS
+                (function () {
+                    var f = document.createElement('iframe');
+                    f.style.display = 'none';
+                    f.src = {$url_js};
+                    document.body.appendChild(f);
+                    setTimeout(function () { if (f.parentNode) { f.parentNode.removeChild(f); } }, 60000);
+                })();
+                JS;
+            \WicketORM\Helpers\DatastarSSE::renderSuccess(
+                __('Your roster is ready and downloading now.', 'wicket-acc'),
+                $messages_target,
+                [$sig_submitting => false, $sig_done => true]
+            );
+            \WicketORM\Helpers\DatastarSSE::executeScript($iframe_js);
+
+            return;
+        }
+
+        // Async path.
         \WicketORM\Helpers\DatastarSSE::renderSuccess(
             sprintf(
                 /* translators: %s: email address */
                 esc_html__('Your export has been queued. You will receive an email at %s when it is ready to download.', 'wicket-acc'),
                 esc_html($recipient_email)
             ),
-            '#export-messages-' . $org_dom_suffix,
-            ['exportSubmitting' => false, 'exportQueued' => true]
+            $messages_target,
+            [$sig_submitting => false, $sig_queued => true]
         );
     }
 
     /**
      * Return the current status of an export job as HTML.
+     *
+     * Org-scoped: a user without can_edit_members on the job's org_id gets a
+     * 403 (WWID-1907 hardening — previously any logged-in user could poll any
+     * job).
      *
      * @param WP_REST_Request $request
      * @return WP_REST_Response
@@ -144,6 +195,13 @@ class MemberExportController extends ApiController
         }
 
         $status = $this->export_service->getJobStatus($job_id);
+
+        // Org-level permission check: the requester must be able to manage the
+        // org this job belongs to, otherwise the job's existence leaks.
+        $org_id = is_array($status) ? (string) ($status['org_id'] ?? '') : '';
+        if ($org_id !== '' && !\WicketORM\Helpers\PermissionHelper::can_edit_members($org_id)) {
+            return new WP_REST_Response('', 403);
+        }
 
         return $this->htmlResponse('export-members-status', [
             'job_id' => $job_id,

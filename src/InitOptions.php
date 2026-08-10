@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WicketAcc;
 
+use HyperFields\CustomField;
 use HyperFields\Field;
 use HyperFields\HyperFields;
 
@@ -112,15 +113,10 @@ class InitOptions extends WicketAcc
         );
 
         $section->addField(
-            Field::make('text', 'acc_profile_picture_mdp_schema', __('Profile picture MDP schema slug', 'wicket-acc'))
-                ->setHelp(__('MDP schema slug that contains the profile picture field. Stable across tenants. Leave blank to use the plugin default.', 'wicket-acc'))
-                ->setPlaceholder(Profile::PROFILE_IMAGE_SCHEMA_SLUG_DEFAULT)
-        );
-
-        $section->addField(
-            Field::make('text', 'acc_profile_picture_mdp_field', __('Profile picture MDP field slug', 'wicket-acc'))
-                ->setHelp(__('Field slug within the schema above that stores the profile picture URL. Leave blank to use the plugin default.', 'wicket-acc'))
-                ->setPlaceholder(Profile::PROFILE_IMAGE_FIELD_SLUG_DEFAULT)
+            CustomField::build(ProfileImageMdpFieldSettings::OPTION_KEY, __('Profile image MDP field', 'wicket-acc'))
+                ->setRenderCallback([ProfileImageMdpFieldSettings::class, 'renderField'])
+                ->setSanitizeCallback([ProfileImageMdpFieldSettings::class, 'sanitizeField'])
+                ->setAssets([WICKET_ACC_URL . 'assets/js/wicket-acc-profile-image-mdp-fields.js'])
         );
 
         $section->addField(
