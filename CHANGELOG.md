@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.8.3] - 2026-08-11
+
+### Fixed
+- **mdp:** access WACC MDP service via method call, not property
+
+
 ## [1.8.2] - 2026-08-10
 
 ### Added
