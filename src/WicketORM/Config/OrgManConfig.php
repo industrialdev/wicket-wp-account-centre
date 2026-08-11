@@ -251,6 +251,11 @@ final class OrgManConfig
                     ],
                     'relationship_type' => [
                         'required' => true,
+                        // Escape hatch for BulkMemberUploadService::adaptColumnsToRosterMode().
+                        // Seat-based strategies (direct, groups, membership_cycle) relax this
+                        // column by default because they do not consume a relationship. Set
+                        // true to keep the column required on those strategies.
+                        'force_required' => false,
                         'allowed_types' => [
                             'employee_staff',
                             'grade_4',

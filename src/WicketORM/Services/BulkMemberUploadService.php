@@ -20,6 +20,14 @@ class BulkMemberUploadService
     public const CRON_HOOK = 'wicket_orgman_process_bulk_upload_job';
 
     /**
+     * Roster strategies that assign membership seats without creating a
+     * person-to-organization relationship. For these strategies the bulk-upload
+     * relationship_type column is never required (see adaptColumnsToRosterMode).
+     * Only cascade uses relationships, so only cascade keeps the requirement.
+     */
+    private const STRATEGIES_WITHOUT_RELATIONSHIP_TYPE = ['direct', 'groups', 'membership_cycle'];
+
+    /**
      * @var ConfigService
      */
     private $configService;
@@ -343,8 +351,12 @@ class BulkMemberUploadService
             : [];
 
         $relationship_column_enabled = (bool) ($bulk_column_definitions['relationship_type']['enabled'] ?? false);
+        // getBulkColumnDefinitions() already folds bulk_upload.relationship_type.required
+        // into the column definition and then applies strategy-aware adaptation
+        // (adaptColumnsToRosterMode), so the column definition is the single source
+        // of truth for whether relationship_type is required for this site's strategy.
         $relationship_required = $relationship_column_enabled
-            && (bool) ($relationship_bulk_config['required'] ?? ($bulk_column_definitions['relationship_type']['required'] ?? false));
+            && (bool) ($bulk_column_definitions['relationship_type']['required'] ?? false);
 
         $relationship_allowed_types_raw = is_array($relationship_bulk_config['allowed_types'] ?? null)
             ? $relationship_bulk_config['allowed_types']
@@ -909,6 +921,51 @@ class BulkMemberUploadService
             );
         }
 
+        return $this->adaptColumnsToRosterMode($bulk_column_definitions, $bulk_upload_config);
+    }
+
+    /**
+     * Adapt bulk-upload column requirements to the site's roster strategy.
+     *
+     * The relationship_type CSV column only matters for strategies that create a
+     * person-to-organization relationship (cascade). The seat-based strategies
+     * (direct, groups, membership_cycle) assign membership seats without one, so
+     * a blank or omitted relationship_type column must not block the import on
+     * those tenants by default.
+     *
+     * Escape hatch: a tenant can set
+     * bulk_upload.relationship_type.force_required = true to keep the column
+     * required even on a seat-based strategy (for example, to collect
+     * relationship metadata the strategy does not itself consume). The default
+     * OrgManConfig ships relationship_type.required = true, so detecting a
+     * tenant override by key presence is not possible; force_required is the
+     * explicit, unambiguous opt-in.
+     *
+     * Non-breaking: cascade keeps its configured requirement; the seat-based
+     * modes relax only the default requirement; the column stays enabled, so a
+     * CSV that includes it is still parsed and forwarded to the active strategy.
+     *
+     * @param array<string, array<string, mixed>> $bulk_column_definitions
+     * @param array<string, mixed> $bulk_upload_config
+     * @return array<string, array<string, mixed>>
+     */
+    private function adaptColumnsToRosterMode(array $bulk_column_definitions, array $bulk_upload_config): array
+    {
+        if (
+            !isset($bulk_column_definitions['relationship_type'])
+            || !in_array($this->resolveRosterMode(), self::STRATEGIES_WITHOUT_RELATIONSHIP_TYPE, true)
+        ) {
+            return $bulk_column_definitions;
+        }
+
+        // Honor an explicit tenant opt-in to keep the column required.
+        $force_required = (bool) ($bulk_upload_config['relationship_type']['force_required'] ?? false);
+        if ($force_required) {
+            return $bulk_column_definitions;
+        }
+
+        $bulk_column_definitions['relationship_type']['required'] = false;
+
         return $bulk_column_definitions;
     }
 
@@ -945,6 +1002,16 @@ class BulkMemberUploadService
         }
 
         return $export_columns;
+    }
+
+    /**
+     * Resolve the active roster-management strategy for the current site.
+     *
+     * @return string
+     */
+    private function resolveRosterMode(): string
+    {
+        return (string) $this->configService->getRosterMode();
     }
 
     /**
