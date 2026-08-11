@@ -302,7 +302,7 @@ class Init
      */
     public function __call(string $name, array $arguments)
     {
-        // Support method-based access like WACC()->Mdp()->Person() instead of WACC()->Mdp->Person
+        // Support method-based access like WACC()->Mdp()->Person()
         return $this->__get($name);
     }
 }
