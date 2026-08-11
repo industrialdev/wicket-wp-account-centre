@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.8.4] - 2026-08-11
+
+### Added
+- **roster:** make bulk upload strategy-aware (#28)
+
+
 ## [1.8.3] - 2026-08-11
 
 ### Fixed
