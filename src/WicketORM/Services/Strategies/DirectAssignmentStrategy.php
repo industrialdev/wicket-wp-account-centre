@@ -152,6 +152,17 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
                         $relationship_description
                     );
 
+                    // A WP_Error here means the payload could not be built (missing
+                    // person/org/type). Surface the real cause instead of letting
+                    // createConnection() mask it as "Valid payload array is required."
+                    if (is_wp_error($connection_payload)) {
+                        $logger->error('Failed to build connection payload', array_merge($log_context, [
+                            'error' => $connection_payload->get_error_message(),
+                        ]));
+
+                        return $connection_payload;
+                    }
+
                     $response_connection = $this->connectionService()->createConnection($connection_payload);
 
                     if (is_wp_error($response_connection)) {
