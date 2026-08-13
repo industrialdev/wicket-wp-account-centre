@@ -451,7 +451,20 @@ class ConnectionService
      */
     public function createConnection($payload)
     {
+        // Propagate a caller-supplied WP_Error verbatim. buildConnectionPayload()
+        // can return a WP_Error (e.g. a missing required relationship type), and
+        // wrapping it here would mask the real cause behind "Valid payload array
+        // is required.", hiding the actual failure from operators and logs.
+        if (is_wp_error($payload)) {
+            return $payload;
+        }
+
         if (empty($payload) || !is_array($payload)) {
+            \Wicket()->log()->error('ConnectionService::createConnection() aborted: payload is not a valid connection array.', [
+                'source' => 'wicket-orgman',
+                'payload_type' => is_object($payload) ? get_class($payload) : gettype($payload),
+            ]);
+
             return new WP_Error('invalid_params', 'Valid payload array is required.');
         }
 

@@ -329,6 +329,17 @@ class CascadeStrategy implements RosterManagementStrategy
                         $relationship_type,
                         $relationship_description
                     );
+
+                    // Surface a payload-build failure directly instead of letting
+                    // createConnection() mask it as "Valid payload array is required."
+                    if (is_wp_error($connection_payload)) {
+                        $logger->error('[OrgMan] Cascade strategy failed to build connection payload', array_merge($log_context, [
+                            'error' => $connection_payload->get_error_message(),
+                        ]));
+
+                        return $connection_payload;
+                    }
+
                     $connection_response = $this->connectionService()->createConnection($connection_payload);
 
                     if (is_wp_error($connection_response)) {
