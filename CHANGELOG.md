@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.8.6] - 2026-08-13
+
+### Fixed
+- **roster:** stop createConnection masking payload-build errors (#30)
+
+
 ## [1.8.5] - 2026-08-13
 
 ### Fixed
