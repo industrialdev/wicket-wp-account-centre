@@ -291,7 +291,7 @@ class init extends Blocks
         $num_results = absint($num_results);
         $total_results = absint($total_results);
         $counter = absint($counter);
-        $touchpoint_data_input = base64_encode(maybe_serialize($touchpoint_data));
+        $touchpoint_data_input = base64_encode(wp_json_encode($touchpoint_data) ?: '[]');
         $received_results_count = count($touchpoint_data);
         ?>
 

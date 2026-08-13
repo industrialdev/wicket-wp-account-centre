@@ -45,10 +45,15 @@ class ajax extends init
         $total_results = isset($_POST['total_results']) ? absint($_POST['total_results']) : 0;
         $counter = isset($_POST['counter']) ? absint($_POST['counter']) : 0;
         $display_type = isset($_POST['type']) ? sanitize_text_field($_POST['type']) : 'upcoming';
-        $touchpoint_data_input = $_POST['touchpoint_data'] ?? '';
+        $touchpoint_data_input = isset($_POST['touchpoint_data']) ? wp_unslash($_POST['touchpoint_data']) : '';
 
-        // Get touchpoints data
-        $touchpoint_data = maybe_unserialize(base64_decode($touchpoint_data_input));
+        // Decode the touchpoint data. The producer (init.php) base64-encodes a
+        // JSON string, so we JSON-decode it here. Never unserialize request input.
+        $decoded = base64_decode($touchpoint_data_input, true);
+        $touchpoint_data = $decoded === false ? [] : json_decode($decoded, true);
+        if (!is_array($touchpoint_data)) {
+            $touchpoint_data = [];
+        }
 
         // We will get $this->display_touchpoints results and return it as html
         // Ideally, we should return the results as json, but... i don't know if Wicket has any standar way to render json results on the front-end

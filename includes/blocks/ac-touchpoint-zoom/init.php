@@ -310,7 +310,7 @@ class init extends Blocks
     public static function load_more_results($touchpoint_data = [], $num_results = 5, $total_results = 0, $counter = 0, $display_type = 'upcoming', $ajax = false, $block_id = 0)
     {
         // Encode touchpoint data for ajax
-        $touchpoint_data_encoded = base64_encode(serialize($touchpoint_data));
+        $touchpoint_data_encoded = base64_encode(wp_json_encode($touchpoint_data) ?: '[]');
 
         // Calculate remaining results
         $remaining_results = $total_results - $counter;

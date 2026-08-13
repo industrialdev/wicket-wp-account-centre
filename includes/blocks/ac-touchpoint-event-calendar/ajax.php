@@ -12,9 +12,9 @@ class ajax extends init
      */
     public function __construct()
     {
-        // Register Ajax actions
+        // Register Ajax actions. Logged-in users only: this endpoint serves the
+        // current member's personal touchpoint data, which a guest never has.
         add_action('wp_ajax_wicket_ac_touchpoint_tec_results', [$this, 'ajax_load_more_results']);
-        add_action('wp_ajax_nopriv_wicket_ac_touchpoint_tec_results', [$this, 'ajax_load_more_results']);
     }
 
     /**
@@ -46,10 +46,15 @@ class ajax extends init
         $total_results = isset($_POST['total_results']) ? absint($_POST['total_results']) : 0;
         $counter = isset($_POST['counter']) ? absint($_POST['counter']) : 0;
         $display_type = isset($_POST['type']) ? sanitize_text_field($_POST['type']) : 'upcoming';
-        $touchpoint_data_input = $_POST['touchpoint_data'] ?? '';
+        $touchpoint_data_input = isset($_POST['touchpoint_data']) ? wp_unslash($_POST['touchpoint_data']) : '';
 
-        // Get touchpoints data
-        $touchpoint_data = maybe_unserialize(base64_decode($touchpoint_data_input));
+        // Decode the touchpoint data. The producer (init.php) base64-encodes a
+        // JSON string, so we JSON-decode it here. Never unserialize request input.
+        $decoded = base64_decode($touchpoint_data_input, true);
+        $touchpoint_data = $decoded === false ? [] : json_decode($decoded, true);
+        if (!is_array($touchpoint_data)) {
+            $touchpoint_data = [];
+        }
 
         // Note: The Event Calendar block pre-filters data using the new Touchpoint filtering system
         // with start_date and end_date field keys, so this AJAX handler works with already-filtered data
