@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.8.5] - 2026-08-13
+
+### Fixed
+- **security:** close object injection and output XSS in touchpoint blocks (#31)
+
+
 ## [1.8.4] - 2026-08-11
 
 ### Added
