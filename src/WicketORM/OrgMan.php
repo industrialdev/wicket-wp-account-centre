@@ -168,6 +168,10 @@ final class OrgMan
             add_filter('the_content', [$this, 'cleanupOrgmanAutopArtifacts'], 9999);
             add_filter('body_class', [$this, 'addOrgmanBodyClass']);
             add_action('wp_enqueue_scripts', [$this, 'enqueueAssets']);
+
+            // org_id => org_uuid normalization only helps ORM-rendered routes.
+            // Legacy theme rosters read org_id and redirect back to it forever.
+            add_action('init', [Helpers\TemplateHelper::class, 'init']);
         }
 
         add_filter('query_vars', [Helpers\TemplateHelper::class, 'add_hypermedia_query_vars']);
@@ -175,7 +179,6 @@ final class OrgMan
 
         // Initialize helpers
         add_action('init', [Helpers\GravityFormsHelper::class, 'init']);
-        add_action('init', [Helpers\TemplateHelper::class, 'init']);
 
         // Initialize configuration controller
         add_action('init', [$this->controllers['configuration'], 'init']);
