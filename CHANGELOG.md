@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.8.7] - 2026-08-17
+
+### Fixed
+- **org-management:** stop org_id/org_uuid redirect loop on legacy rosters
+
+
 ## [1.8.6] - 2026-08-13
 
 ### Fixed
