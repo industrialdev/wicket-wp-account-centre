@@ -23,6 +23,15 @@ div[class*="wp-block"].callout-profile {
   margin-bottom: 1.5rem;
 }
 
+/* Self-serve membership switch. Kept out of the grouped selector above, and given its
+   own declarations below rather than being added to the .callout-renewal rules, so a
+   child theme can restyle the switch callout without dragging the renewal callout
+   along with it. The colours below only match renewal as a starting point. */
+div[class*="wp-block"].callout-switch {
+  padding: 0;
+  margin-bottom: 1.5rem;
+}
+
 .callout-become_member .component-card-call-out {
   border: var(--border-call-out, 1px) solid var(--state-info-primary, #C9E8F5);
   background-color: var(--state-info-primary-light, #C9E8F5);
@@ -57,6 +66,12 @@ div[class*="wp-block"].callout-profile {
   border: var(--border-call-out, 1px) solid var(--state-warning, #FFC107);
   background-color: var(--state-warning-light, #FFECB5);
   border-radius: var(--card-accent-corner-radius, 12px);
+}
+
+.callout-switch .component-card-call-out {
+  border: var(--border-call-out, 1px) solid var(--callout-switch-border-color, var(--state-warning, #FFC107));
+  background-color: var(--callout-switch-background-color, var(--state-warning-light, #FFECB5));
+  border-radius: var(--callout-switch-corner-radius, var(--card-accent-corner-radius, 12px));
 }
 
 .callout-profile .component-card-call-out {

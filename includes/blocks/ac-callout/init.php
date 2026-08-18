@@ -455,7 +455,11 @@ class init extends Blocks
                     }
 
                     // One card per entry: a member in two switch-enabled active tiers gets two.
-                    $attrs = get_block_wrapper_attributes(['class' => 'callout-' . $block_logic . ' callout-switch']);
+                    // 'callout-switch' is the styling hook (see block-styles.css). It is emitted once
+                    // here rather than as 'callout-' . $block_logic . ' callout-switch', which for this
+                    // case would repeat the same class twice. The rule set is its own, not shared with
+                    // .callout-renewal, so a child theme can restyle switch cards on their own.
+                    $attrs = get_block_wrapper_attributes(['class' => 'callout-switch']);
                     echo '<div ' . $attrs . '>';
                     get_component('card-call-out', [
                         'title'       => $switch_data['callout']['header'],
