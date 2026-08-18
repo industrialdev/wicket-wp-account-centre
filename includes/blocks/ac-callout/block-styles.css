@@ -26,7 +26,8 @@ div[class*="wp-block"].callout-profile {
 /* Self-serve membership switch. Kept out of the grouped selector above, and given its
    own declarations below rather than being added to the .callout-renewal rules, so a
    child theme can restyle the switch callout without dragging the renewal callout
-   along with it. The colours below only match renewal as a starting point. */
+   along with it. Green (success), not renewal's amber — switching is an offer, not a
+   deadline. */
 div[class*="wp-block"].callout-switch {
   padding: 0;
   margin-bottom: 1.5rem;
@@ -69,8 +70,8 @@ div[class*="wp-block"].callout-switch {
 }
 
 .callout-switch .component-card-call-out {
-  border: var(--border-call-out, 1px) solid var(--callout-switch-border-color, var(--state-warning, #FFC107));
-  background-color: var(--callout-switch-background-color, var(--state-warning-light, #FFECB5));
+  border: var(--border-call-out, 1px) solid var(--callout-switch-border-color, var(--state-success, rgba(25, 135, 84, 1)));
+  background-color: var(--callout-switch-background-color, var(--state-success-light, rgba(209, 231, 221, 1)));
   border-radius: var(--callout-switch-corner-radius, var(--card-accent-corner-radius, 12px));
 }
 

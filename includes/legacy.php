@@ -589,7 +589,10 @@ function wicket_ac_memberships_get_switch_product_link_data($membership)
         'url'   => '/cart/?membership_post_id_switch=' . $membership_post_id . '&add-to-cart=' . $product->get_id() . '&quantity=1',
     ];
     $link['link']['target'] = '';
-    $link['link_style'] = '';
+    // Named explicitly rather than left blank. The card-call-out component maps '' to 'primary'
+    // anyway, so this changes no markup — it just stops the switch CTA reading as unstyled by
+    // omission next to the renewal builders.
+    $link['link_style'] = 'primary';
     $links[] = $link;
 
     return $links;
@@ -620,7 +623,7 @@ function wicket_ac_memberships_get_switch_page_link_data($membership)
         'url'   => $url,
     ];
     $link['link']['target'] = '';
-    $link['link_style'] = '';
+    $link['link_style'] = 'primary';
     $links[] = $link;
 
     return $links;
