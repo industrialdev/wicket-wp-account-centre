@@ -450,9 +450,18 @@ class WicketAcc
         // src/WicketORM/). OrgMan reads the `wicket/org-roster/config` filter in
         // its constructor, so it must boot AFTER theme config filters are registered
         // (after_setup_theme priority 20).
+        //
+        // Kill switch: themes can return false on the `wicket/org-roster/enabled`
+        // filter to stop the orchestrator from booting at all (no hooks, no
+        // template redirects). Use this when a client fully replaces the roster
+        // surface. WicketORM classes stay autoloadable, so plugins that call
+        // WicketORM\Services\* directly keep working. Default: true.
         add_action(
             'after_setup_theme',
             static function (): void {
+                if (!apply_filters('wicket/org-roster/enabled', true)) {
+                    return;
+                }
                 if (class_exists(OrgMan::class)) {
                     OrgMan::getInstance();
                 }

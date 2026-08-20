@@ -34,7 +34,7 @@ The plugin defines several constants for path and URL management:
 1. **Composer autoloader** loads dependencies from `vendor/`.
 2. **Fatal error handler** is registered immediately via `Log::registerFatalErrorHandler()`.
 3. **`plugins_loaded` (priority 10)** fires `WicketAcc::get_instance()->plugin_setup()`. This is the actual setup hook.
-4. **`after_setup_theme` (priority 20)** boots `WicketORM\OrgMan` (`OrgMan::getInstance()`) when the class is available. The deferred priority lets theme-level `wicket/org-roster/config` filters register before `OrgMan` reads the config.
+4. **`after_setup_theme` (priority 20)** boots `WicketORM\OrgMan` (`OrgMan::getInstance()`) when the class is available and the `wicket/org-roster/enabled` filter has not returned `false`. The deferred priority lets theme-level `wicket/org-roster/config` filters register before `OrgMan` reads the config.
 
 ```php
 use WicketORM\OrgMan;
@@ -43,6 +43,9 @@ use WicketORM\OrgMan;
 add_action(
     'after_setup_theme',
     static function (): void {
+        if (!apply_filters('wicket/org-roster/enabled', true)) {
+            return;
+        }
         if (class_exists(OrgMan::class)) {
             OrgMan::getInstance();
         }
@@ -52,6 +55,16 @@ add_action(
 ```
 
 `OrgMan::getInstance()` is gated by a defer-guard that yields to the standalone WicketORM plugin if it is also active. See [BACKWARDS-COMPATIBILITY.md](../ORM/engineering/BACKWARDS-COMPATIBILITY.md).
+
+## Org-Roster Kill Switch
+
+The `wicket/org-roster/enabled` filter (default `true`) stops the `OrgMan` orchestrator from booting at all: no hooks, no template redirects. Use it when a client fully replaces the roster surface with their own theme code.
+
+```php
+add_filter('wicket/org-roster/enabled', '__return_false');
+```
+
+Skipping boot does not unload anything: `WicketORM\` classes stay autoloadable, so plugins that call `WicketORM\Services\*` directly (for example `wicket-wp-admin-org-roster`) keep working. Legacy roster themes that define `wicket_orgman_page_role_check` are already detected and skipped by `isLegacyRosterActive()`; the filter is the explicit, client-level override.
 
 ## Service Access (`WACC()`)
 
