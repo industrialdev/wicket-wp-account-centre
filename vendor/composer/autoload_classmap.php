@@ -696,6 +696,7 @@ return array(
     'WicketAcc\\OrganizationProfile' => $baseDir . '/src/OrganizationProfile.php',
     'WicketAcc\\OrganizationRoster' => $baseDir . '/src/OrganizationRoster.php',
     'WicketAcc\\Profile' => $baseDir . '/src/Profile.php',
+    'WicketAcc\\ProfileImageMdpFieldSettings' => $baseDir . '/src/ProfileImageMdpFieldSettings.php',
     'WicketAcc\\ProfilePictureFallback' => $baseDir . '/src/ProfilePictureFallback.php',
     'WicketAcc\\Registers' => $baseDir . '/src/Registers.php',
     'WicketAcc\\Router' => $baseDir . '/src/Router.php',

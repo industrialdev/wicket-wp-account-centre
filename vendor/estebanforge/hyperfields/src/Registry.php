@@ -26,6 +26,11 @@ class Registry
      */
     public static function getInstance(): self
     {
+        // Layer 2 safety net: if a consumer reached Registry before
+        // after_setup_theme fired, bring the library up now. Recursion-safe
+        // because init() runs Config::markInitialized() before it calls
+        // getInstance() (see the load-bearing invariant in LibraryBootstrap::init).
+        LibraryBootstrap::ensureInitialized();
         if (self::$instance === null) {
             self::$instance = new self();
         }
@@ -280,7 +285,16 @@ class Registry
      */
     public function init(): self
     {
-        add_action('init', [$this, 'registerAll']);
+        // Rule B (Layer 3): if the init hook already fired (this copy was
+        // reached late, e.g. via a Layer 2 ensureInitialized() fallback after
+        // init), run registerAll now instead of scheduling onto a hook that
+        // will never fire. Without this, a late bring-up leaves Registry
+        // registrations silent.
+        if (did_action('init') > 0) {
+            $this->registerAll();
+        } else {
+            add_action('init', [$this, 'registerAll']);
+        }
 
         return $this;
     }
@@ -308,6 +322,11 @@ class Registry
         }
 
         add_action('add_meta_boxes', [$this, 'registerPostMetaBoxes']);
+        // L6: the Registry metabox rendered its nonce + inputs but the save
+        // handler was never hooked, making the metabox display-only. Wired
+        // now; safe alongside PostMetaContainer because each path requires
+        // its own nonce.
+        add_action('save_post', [$this, 'savePostFields']);
         add_action('show_user_profile', [$this, 'renderUserFields']);
         add_action('edit_user_profile', [$this, 'renderUserFields']);
         add_action('personal_options_update', [$this, 'saveUserFields']);
@@ -315,8 +334,8 @@ class Registry
         add_action('edit_term', [$this, 'renderTermFields']);
         add_action('add_tag_form_fields', [$this, 'renderTermFields']);
         add_action('edit_tag_form_fields', [$this, 'renderTermFields']);
-        add_action('created_term', [$this, 'saveTermFields']);
-        add_action('edited_term', [$this, 'saveTermFields']);
+        add_action('created_term', [$this, 'saveTermFields'], 10, 3);
+        add_action('edited_term', [$this, 'saveTermFields'], 10, 3);
     }
 
     /**
@@ -500,15 +519,39 @@ class Registry
     /**
      * SaveTermFields.
      *
+     * Hooked to created_term and edited_term (accepted_args 3). Verifies the
+     * core edit-tags.php screen nonces: the edit form posts `_wpnonce` for
+     * action `update-tag_{term_id}`; the create form posts `_wpnonce_add-tag`
+     * for the literal action `add-tag`. Quick Edit (inline term editing) uses
+     * its own `taxinlineeditnonce` nonce and is intentionally not handled.
+     * A nonce that is present but invalid refuses the save, same as a
+     * missing one.
+     *
+     * @param int    $term_id  Term ID.
+     * @param int    $tt_id    Term taxonomy ID (unused, from the hook).
+     * @param string $taxonomy Taxonomy slug (unused; kept for the hook signature).
+     *
      * @return void
      */
-    public function saveTermFields(int $term_id): void
+    public function saveTermFields(int $term_id, int $tt_id = 0, string $taxonomy = ''): void
     {
-        if (!current_user_can('manage_categories')) {
+        // Per-taxonomy meta cap (aligns with TermMetaContainer): custom
+        // taxonomies map their own edit_terms capability, which
+        // manage_categories neither guarantees nor is guaranteed by.
+        if (!current_user_can('edit_term', $term_id)) {
             return;
         }
 
-        if (!isset($_POST['_wpnonce'])) {
+        $is_valid = false;
+        if (isset($_POST['_wpnonce'])) {
+            $nonce = sanitize_key(wp_unslash($_POST['_wpnonce']));
+            $is_valid = wp_verify_nonce($nonce, 'update-tag_' . $term_id) !== false;
+        }
+        if (!$is_valid && isset($_POST['_wpnonce_add-tag'])) {
+            $nonce = sanitize_key(wp_unslash($_POST['_wpnonce_add-tag']));
+            $is_valid = wp_verify_nonce($nonce, 'add-tag') !== false;
+        }
+        if (!$is_valid) {
             return;
         }
 
