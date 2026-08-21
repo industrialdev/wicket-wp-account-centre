@@ -189,7 +189,6 @@ final class OrgMan
         $this->registerAdditionalSeatsHook('woocommerce_order_status_on-hold');
         $this->registerAdditionalSeatsHook('woocommerce_payment_complete');
 
-        add_filter('woocommerce_get_return_url', [$this, 'filterWoocommerceReturnUrl'], 10, 2);
         add_action(Services\BulkMemberUploadService::CRON_HOOK, [$this, 'processBulkUploadJob'], 10, 1);
 
         if (isset($this->services['member_export'])) {
@@ -742,6 +741,11 @@ final class OrgMan
                 'mdp_membership_id' => $mdp_membership_id,
                 'success' => (bool) $mdp_updated,
             ]));
+
+            if ($mdp_updated) {
+                // Same stale-transient concern as the tier path (WWID-2257): refresh the roster cache.
+                (new Services\CacheService())->invalidateMemberCache($mdp_membership_id, $org_uuid !== '' ? $org_uuid : null);
+            }
         } else {
             $logger->warning('Missing membership UUID for MDP update', array_merge($context, [
                 'order_id' => $order_id,
@@ -786,144 +790,6 @@ final class OrgMan
             'previous_seats' => $current_seats,
             'new_seats' => $new_seats,
         ]);
-    }
-
-    public function filterWoocommerceReturnUrl($return_url, $order)
-    {
-        $logger = \Wicket()->log();
-        $context = ['source' => 'wicket-orgman'];
-
-        if (!$order || !is_object($order)) {
-            return $return_url;
-        }
-
-        $logger->debug('woocommerce_get_return_url invoked', array_merge($context, [
-            'order_id' => is_callable([$order, 'get_id']) ? (int) $order->get_id() : null,
-            'order_status' => is_callable([$order, 'get_status']) ? (string) $order->get_status() : null,
-            'return_url' => (string) $return_url,
-        ]));
-
-        if ($order->get_meta('additional_seats_processed', true)) {
-            $target_url = $this->getOrganizationMembersUrlFromOrder($order) ?: $return_url;
-            $logger->info('Return URL overridden (already processed additional seats)', array_merge($context, [
-                'order_id' => (int) $order->get_id(),
-                'target_url' => (string) $target_url,
-            ]));
-
-            return $target_url;
-        }
-
-        if (!$this->orderHasAdditionalSeats($order)) {
-            return $return_url;
-        }
-
-        $target_url = $this->getOrganizationMembersUrlFromOrder($order) ?: $return_url;
-        $logger->info('Return URL overridden (additional seats order)', array_merge($context, [
-            'order_id' => (int) $order->get_id(),
-            'target_url' => (string) $target_url,
-        ]));
-
-        return $target_url;
-    }
-
-    private function orderHasAdditionalSeats($order)
-    {
-        $logger = \Wicket()->log();
-        $context = ['source' => 'wicket-orgman'];
-
-        $additional_seats_service = $this->services['additional_seats'] ?? null;
-        if (!$additional_seats_service) {
-            $logger->error('Additional seats service missing; cannot detect product', array_merge($context, [
-                'order_id' => is_callable([$order, 'get_id']) ? (int) $order->get_id() : null,
-            ]));
-
-            return false;
-        }
-
-        // Multi-tier: any tier-specific seat product qualifies the order.
-        if ($additional_seats_service->isTierMode()) {
-            foreach ($order->get_items() as $item) {
-                $product = $item->get_product();
-                if (!$product) {
-                    continue;
-                }
-                $tier_slug = $additional_seats_service->classifySeatProduct((int) $product->get_id());
-                if ($tier_slug !== null) {
-                    $logger->debug('Tier seat product detected on order', array_merge($context, [
-                        'order_id' => (int) $order->get_id(),
-                        'order_item_id' => $item->get_id(),
-                        'tier_slug' => $tier_slug,
-                    ]));
-
-                    return true;
-                }
-            }
-        }
-
-        $product_id = $additional_seats_service->getAdditionalSeatsProduct();
-        if (!$product_id) {
-            $logger->error('Additional seats product not found; cannot detect additional seats order', array_merge($context, [
-                'order_id' => is_callable([$order, 'get_id']) ? (int) $order->get_id() : null,
-            ]));
-
-            return false;
-        }
-
-        foreach ($order->get_items() as $item) {
-            $product = $item->get_product();
-            if ($product && (int) $product->get_id() === (int) $product_id) {
-                $logger->debug('Additional seats product detected on order', array_merge($context, [
-                    'order_id' => (int) $order->get_id(),
-                    'order_item_id' => $item->get_id(),
-                    'product_id' => (int) $product_id,
-                ]));
-
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private function getOrganizationMembersUrlFromOrder($order)
-    {
-        $logger = \Wicket()->log();
-        $context = ['source' => 'wicket-orgman'];
-
-        $org_uuid = (string) $order->get_meta('org_uuid', true);
-        if ($org_uuid === '') {
-            foreach ($order->get_items() as $item) {
-                $org_uuid = (string) $item->get_meta('org_uuid', true);
-                if ($org_uuid !== '') {
-                    break;
-                }
-            }
-        }
-
-        $logger->debug('Resolved org_uuid for return URL', array_merge($context, [
-            'order_id' => is_callable([$order, 'get_id']) ? (int) $order->get_id() : null,
-            'org_uuid_present' => $org_uuid !== '',
-        ]));
-
-        // Get WPML-aware URL for organization-members page
-        $base_url = Helpers\Helper::getMyAccountPageUrl('organization-members', '/my-account/organization-members/');
-
-        $logger->debug('Resolved base organization-members URL', array_merge($context, [
-            'order_id' => is_callable([$order, 'get_id']) ? (int) $order->get_id() : null,
-            'base_url' => (string) $base_url,
-        ]));
-
-        if ($org_uuid !== '') {
-            $url = add_query_arg('org_uuid', $org_uuid, $base_url);
-            $logger->debug('Built organization-members return URL', array_merge($context, [
-                'order_id' => is_callable([$order, 'get_id']) ? (int) $order->get_id() : null,
-                'url' => (string) $url,
-            ]));
-
-            return $url;
-        }
-
-        return $base_url;
     }
 
     /**
@@ -1095,6 +961,10 @@ final class OrgMan
         $logger->info('Tier seat increase applied', array_merge($context, [
             'new_max_assignments' => $new_max,
         ]));
+
+        // Drop cached org-membership data so the Account Centre roster picks up the new seat
+        // limit immediately instead of serving the stale max_assignments transient (WWID-2257).
+        (new Services\CacheService())->invalidateMemberCache($membership_id, $org_uuid !== '' ? $org_uuid : null);
 
         return true;
     }
