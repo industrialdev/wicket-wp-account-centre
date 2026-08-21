@@ -2,6 +2,15 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.8.8] - 2026-08-21
+
+### Added
+- **org-roster:** add wicket/org-roster/enabled kill switch filter (#34)
+
+### Documentation
+- add PR description template #norelease
+
+
 ## [1.8.7] - 2026-08-17
 
 ### Fixed
