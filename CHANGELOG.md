@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.8.9] - 2026-08-21
+
+### Fixed
+- **seats:** remove checkout return URL override, purge roster cache (#35)
+
+
 ## [1.8.8] - 2026-08-21
 
 ### Added
