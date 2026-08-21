@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2716d6a4c790c605e1fa94dd7cc88ca0",
+    "content-hash": "905face5d85c5ba55c00d57705b284de",
     "packages": [
         {
             "name": "carbonphp/carbon-doctrine-types",
@@ -167,16 +167,16 @@
         },
         {
             "name": "estebanforge/hyperblocks",
-            "version": "1.5.3",
+            "version": "1.5.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/EstebanForge/HyperBlocks.git",
-                "reference": "6a5827df3264d9d4b45687c631ce52e10d4b43d1"
+                "reference": "bc39e12dec91c036d8e7f2fca3ab9d42e1046563"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EstebanForge/HyperBlocks/zipball/6a5827df3264d9d4b45687c631ce52e10d4b43d1",
-                "reference": "6a5827df3264d9d4b45687c631ce52e10d4b43d1",
+                "url": "https://api.github.com/repos/EstebanForge/HyperBlocks/zipball/bc39e12dec91c036d8e7f2fca3ab9d42e1046563",
+                "reference": "bc39e12dec91c036d8e7f2fca3ab9d42e1046563",
                 "shasum": ""
             },
             "require": {
@@ -229,20 +229,20 @@
                 "issues": "https://github.com/EstebanForge/HyperBlocks/issues",
                 "source": "https://github.com/EstebanForge/HyperBlocks"
             },
-            "time": "2026-08-09T20:52:42+00:00"
+            "time": "2026-08-17T15:34:34+00:00"
         },
         {
             "name": "estebanforge/hyperfields",
-            "version": "1.5.2",
+            "version": "1.5.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/EstebanForge/HyperFields.git",
-                "reference": "de47dc439da08525aea0537352eab498d1a4182e"
+                "reference": "cd53a36335e1c35a8f1e2c964eb324861fad20c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EstebanForge/HyperFields/zipball/de47dc439da08525aea0537352eab498d1a4182e",
-                "reference": "de47dc439da08525aea0537352eab498d1a4182e",
+                "url": "https://api.github.com/repos/EstebanForge/HyperFields/zipball/cd53a36335e1c35a8f1e2c964eb324861fad20c4",
+                "reference": "cd53a36335e1c35a8f1e2c964eb324861fad20c4",
                 "shasum": ""
             },
             "require": {
@@ -277,9 +277,9 @@
             "description": "HyperFields: A powerful custom field system for WordPress, providing metaboxes, options pages, and conditional logic.",
             "support": {
                 "issues": "https://github.com/EstebanForge/HyperFields/issues",
-                "source": "https://github.com/EstebanForge/HyperFields/tree/1.5.2"
+                "source": "https://github.com/EstebanForge/HyperFields/tree/1.5.5"
             },
-            "time": "2026-08-09T20:46:21+00:00"
+            "time": "2026-08-17T15:30:49+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -2502,16 +2502,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v3.95.18",
+            "version": "v3.95.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "a8b4e4216faabf67f4e96110ee99a48c96e4e683"
+                "reference": "4d6c9886a77dbc1db3b9eaca6472cedf9eb1fab7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/a8b4e4216faabf67f4e96110ee99a48c96e4e683",
-                "reference": "a8b4e4216faabf67f4e96110ee99a48c96e4e683",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/4d6c9886a77dbc1db3b9eaca6472cedf9eb1fab7",
+                "reference": "4d6c9886a77dbc1db3b9eaca6472cedf9eb1fab7",
                 "shasum": ""
             },
             "require": {
@@ -2547,7 +2547,6 @@
                 "infection/infection": "^0.32.7",
                 "justinrainbow/json-schema": "^6.10.0",
                 "keradus/cli-executor": "^2.3",
-                "mikey179/vfsstream": "^1.6.12",
                 "php-coveralls/php-coveralls": "^2.9.1",
                 "php-cs-fixer/phpunit-constraint-isidenticalstring": "^1.8",
                 "php-cs-fixer/phpunit-constraint-xmlmatchesxsd": "^1.8",
@@ -2595,7 +2594,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues",
-                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.95.18"
+                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.95.20"
             },
             "funding": [
                 {
@@ -2603,7 +2602,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-07-30T15:46:02+00:00"
+            "time": "2026-08-19T16:28:14+00:00"
         },
         {
             "name": "psr/event-dispatcher",

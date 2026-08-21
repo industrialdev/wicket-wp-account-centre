@@ -99,6 +99,15 @@ For the org-roster config filters specifically, see [config-filters.md](../ORM/e
 
 ## 5. Organization Management
 
+### `wicket/org-roster/enabled`
+- **Type**: Filter
+- **Description**: Kill switch for the `WicketORM\OrgMan` orchestrator. Returning `false` stops the orchestrator from booting at all (no hooks, no template redirects). Checked in the `after_setup_theme` boot gate before `OrgMan::getInstance()`. `WicketORM\` classes stay autoloadable for direct service calls.
+- **Default**: `true`
+- **Usage**:
+  ```php
+  add_filter('wicket/org-roster/enabled', '__return_false');
+  ```
+
 ### `wicket/acc/shortcodes/org-selector/org-uuid-list`
 - **Type**: Filter
 - **Description**: Filter the list of organization UUIDs available in the organization selector shortcode.

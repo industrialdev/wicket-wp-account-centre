@@ -879,6 +879,7 @@ class ComposerStaticInit8c15133367c403743912873e7d8a156f
         'WicketAcc\\OrganizationProfile' => __DIR__ . '/../..' . '/src/OrganizationProfile.php',
         'WicketAcc\\OrganizationRoster' => __DIR__ . '/../..' . '/src/OrganizationRoster.php',
         'WicketAcc\\Profile' => __DIR__ . '/../..' . '/src/Profile.php',
+        'WicketAcc\\ProfileImageMdpFieldSettings' => __DIR__ . '/../..' . '/src/ProfileImageMdpFieldSettings.php',
         'WicketAcc\\ProfilePictureFallback' => __DIR__ . '/../..' . '/src/ProfilePictureFallback.php',
         'WicketAcc\\Registers' => __DIR__ . '/../..' . '/src/Registers.php',
         'WicketAcc\\Router' => __DIR__ . '/../..' . '/src/Router.php',
