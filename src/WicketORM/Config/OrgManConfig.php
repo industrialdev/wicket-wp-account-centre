@@ -330,6 +330,13 @@ final class OrgManConfig
             'presentation' => [
                 'organization_details' => [
                     'show_actions' => true,
+                    // Shared labels for the org-profile and manage-members actions.
+                    // Used by the details action nav and the organization list cards
+                    // so both surfaces stay in sync (WWID-2259).
+                    'labels' => [
+                        'org_profile' => __('Org. Profile', 'wicket-acc'),
+                        'manage_members' => __('Manage Members', 'wicket-acc'),
+                    ],
                 ],
                 'organization_list' => [
                     'show_my_role' => true,
@@ -339,6 +346,10 @@ final class OrgManConfig
                     'show_membership_details' => false,
                     'show_organization_name' => true,
                     'show_managed_orgs_summary' => false,
+                    // When true and the user manages exactly one organization with
+                    // an actionable role, the management landing redirects straight
+                    // to that organization instead of showing the one-card list (WWID-2259).
+                    'single_org_skip' => false,
                 ],
                 'relationships' => [
                     'show_type' => false,

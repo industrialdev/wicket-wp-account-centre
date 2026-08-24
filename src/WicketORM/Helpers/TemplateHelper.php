@@ -39,6 +39,30 @@ class TemplateHelper extends Helper
     }
 
     /**
+     * Get a shared organization action label from orgman config.
+     *
+     * Labels for the org-profile and manage-members actions live under
+     * presentation.organization_details.labels so the details action nav and
+     * the organization list cards render identical wording (WWID-2259).
+     *
+     * Supported keys: 'org_profile', 'manage_members'.
+     *
+     * @param string $key Label key.
+     * @return string Label text; stack default when unset or blank.
+     */
+    public static function organization_action_label(string $key): string
+    {
+        $defaults = [
+            'org_profile' => __('Org. Profile', 'wicket-acc'),
+            'manage_members' => __('Manage Members', 'wicket-acc'),
+        ];
+        $labels = \WicketORM\Services\ConfigService::getConfig()['presentation']['organization_details']['labels'] ?? [];
+        $label = is_array($labels) ? trim((string) ($labels[$key] ?? '')) : '';
+
+        return $label !== '' ? $label : (string) ($defaults[$key] ?? $key);
+    }
+
+    /**
      * Detect if it's a template request for our org management system.
      *
      * @return bool
