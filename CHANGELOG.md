@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.9.0] - 2026-08-25
+
+### Added
+- **org-roster:** shared action labels, nav-style details actions, opt-in single-org landing skip #minor (#36)
+
+
 ## [1.8.9] - 2026-08-21
 
 ### Fixed
