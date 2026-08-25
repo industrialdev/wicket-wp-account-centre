@@ -3,6 +3,9 @@
     <?php
     $can_open_org = $can_edit_org || $is_membership_manager;
     $title_url = WicketORM\Helpers\Helper::getMyAccountPageUrl('organization-management', '/my-account/organization-management/') . '?org_uuid=' . urlencode($org_id);
+    // Shared action labels so card links match the details action nav (WWID-2259).
+    $org_profile_label = WicketORM\Helpers\TemplateHelper::organization_action_label('org_profile');
+    $manage_members_label = WicketORM\Helpers\TemplateHelper::organization_action_label('manage_members');
     ?>
     <h2 class="wp-block-heading has-heading-sm-font-size wt_text-2xl wt_mb-3">
         <?php if ($can_open_org): ?>
@@ -160,7 +163,7 @@
                         ?>
                         <a href="<?php echo esc_url(add_query_arg($profile_params, $profile_url_base)); ?>"
                             class="wt_inline-flex wt_items-center wt_text-primary-600 wt_hover_text-primary-700 underline underline-offset-4">
-                            <?php esc_html_e('Edit Organization', 'wicket-acc'); ?>
+                            <?php echo esc_html($org_profile_label); ?>
                         </a>
                     <?php endif; ?>
 
@@ -181,7 +184,7 @@
                         ?>
                         <a href="<?php echo esc_url(add_query_arg($members_params, $members_url_base)); ?>"
                             class="wt_inline-flex wt_items-center wt_text-primary-600 wt_hover_text-primary-700 underline underline-offset-4">
-                            <?php esc_html_e('Manage Members', 'wicket-acc'); ?>
+                            <?php echo esc_html($manage_members_label); ?>
                         </a>
                     <?php endif; ?>
 

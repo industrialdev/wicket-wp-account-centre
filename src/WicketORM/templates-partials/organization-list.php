@@ -419,7 +419,7 @@ if ($roster_mode === 'groups') {
                             <span class="wt_px-2 wt_h-4 wt_bg-border-white" aria-hidden="true"></span>
                             <a href="<?php echo esc_url($group_members_manage_url); ?>"
                                 class="wt_inline-flex wt_items-center wt_text-primary-600 wt_hover_text-primary-700 underline underline-offset-4">
-                                <?php esc_html_e('Manage Members', 'wicket-acc'); ?>
+                                <?php echo esc_html(\WicketORM\Helpers\TemplateHelper::organization_action_label('manage_members')); ?>
                             </a>
                         </div>
                     <?php endif; ?>
