@@ -515,8 +515,16 @@ class CascadeStrategy implements RosterManagementStrategy
             }
 
             // End every active person_membership this person holds under this org membership.
-            // Continue-on-error: a single record failure does not abort the rest.
+            // Fail closed on lookup failure: the removal state is unknown.
             $membership_result = $this->membershipService()->endAllActivePersonMembershipsForOrg($person_uuid, $membership_uuid);
+            if (is_wp_error($membership_result)) {
+                $logger->error('[OrgMan] Cascade strategy membership lookup failed', array_merge($log_context, [
+                    'error_code' => $membership_result->get_error_code(),
+                    'error_message' => $membership_result->get_error_message(),
+                ]));
+
+                return new \WP_Error('membership_end_failed', $membership_result->get_error_message());
+            }
             if (!empty($membership_result['errors'])) {
                 $logger->warning('[OrgMan] Cascade strategy ended memberships with per-record errors', array_merge($log_context, [
                     'ended_count' => count($membership_result['ended']),
