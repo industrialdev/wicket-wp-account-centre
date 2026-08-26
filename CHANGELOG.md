@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.10.0] - 2026-08-26
+
+### Fixed
+- **orgman:** direct roster removal ends membership, validate membership uuids #minor (#37)
+
+
 ## [1.9.0] - 2026-08-25
 
 ### Added
