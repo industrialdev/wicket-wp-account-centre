@@ -168,11 +168,7 @@ final class OrgManConfig
                         ],
                     ],
                 ],
-                'removal' => [
-                    'direct' => [
-                        'preserve_relationship' => false,
-                    ],
-                ],
+                'removal' => [],
                 'forms' => [
                     'add_member' => [
                         'layout' => 'full',

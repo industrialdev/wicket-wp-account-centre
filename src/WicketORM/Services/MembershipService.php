@@ -831,6 +831,38 @@ class MembershipService
      *   ended:  person_membership IDs that were successfully end-dated
      *   errors: map of person_membership_id => error message (non-fatal)
      */
+    /**
+     * Retrieve a single person membership record.
+     *
+     * Thin read wrapper used to validate that a person membership belongs to the
+     * organization membership being managed before ending it.
+     *
+     * @param string $person_membership_id
+     * @return array|null API payload, or null when the record is unavailable.
+     */
+    public function getPersonMembership(string $person_membership_id): ?array
+    {
+        if ('' === $person_membership_id || !function_exists('wicket_api_client')) {
+            return null;
+        }
+
+        try {
+            $response = wicket_api_client()->get('person_memberships/' . rawurlencode($person_membership_id));
+            if (empty($response) || !is_array($response) || empty($response['data'])) {
+                return null;
+            }
+
+            return $response;
+        } catch (\Throwable $e) {
+            \Wicket()->log()->error('MembershipService::getPersonMembership() - Exception: ' . $e->getMessage(), [
+                'source' => 'wicket-orgman',
+                'person_membership_id' => $person_membership_id,
+            ]);
+
+            return null;
+        }
+    }
+
     public function endAllActivePersonMembershipsForOrg($person_uuid, $org_membership_uuid)
     {
         $ended = [];
@@ -843,7 +875,10 @@ class MembershipService
         if (!function_exists('wicket_api_client')) {
             \Wicket()->log()->error('MembershipService::endAllActivePersonMembershipsForOrg() - API client unavailable', ['source' => 'wicket-orgman']);
 
-            return ['ended' => $ended, 'errors' => $errors];
+            return new \WP_Error(
+                'membership_query_failed',
+                'The membership API client is unavailable. The removal state is unknown; retry when the API is reachable.'
+            );
         }
 
         try {
@@ -865,7 +900,10 @@ class MembershipService
                     'error' => $response->get_error_message(),
                 ]);
 
-                return ['ended' => $ended, 'errors' => $errors];
+                return new \WP_Error(
+                    'membership_query_failed',
+                    'Failed looking up the person memberships: ' . $response->get_error_message()
+                );
             }
 
             if (empty($response['data']) || !is_array($response['data'])) {
@@ -900,6 +938,11 @@ class MembershipService
                 'person_uuid' => $person_uuid,
                 'org_membership_uuid' => $org_membership_uuid,
             ]);
+
+            return new \WP_Error(
+                'membership_query_failed',
+                'Failed looking up the person memberships: ' . $e->getMessage()
+            );
         }
 
         \Wicket()->log()->info('[OrgMan] endAllActivePersonMembershipsForOrg result', [

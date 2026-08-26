@@ -823,18 +823,10 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
     public function removeMember($org_id, $person_uuid, $context = [])
     {
         try {
-            $required_functions = [];
-            foreach ($required_functions as $func) {
-                if (!function_exists($func)) {
-                    return new WP_Error('missing_function', "Legacy function {$func} not found.");
-                }
-            }
-
-            // Direct mode ends connections and roles; it does not read person_membership_id.
-            // The value is intentionally not captured: connection-only removals are valid here.
+            $org_id = sanitize_text_field((string) $org_id);
+            $person_uuid = sanitize_text_field((string) $person_uuid);
 
             $config = $this->configService()->getFullConfig();
-            $preserve_relationship = (bool) ($config['member_management']['removal']['direct']['preserve_relationship'] ?? false);
             $prevent_owner_removal = (bool) ($config['access']['permissions']['prevent_owner_removal'] ?? false);
             $owner_must_have_membership_owner = (bool) ($config['access']['permissions']['owner_removal_requires_membership_owner_role'] ?? false);
 
@@ -850,53 +842,128 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
                 return $owner_guard;
             }
 
-            if (!$preserve_relationship) {
-                $connection_ids = [];
-                if (isset($context['connection_id'])) {
-                    $raw_connection_ids = is_string($context['connection_id'])
-                        ? explode(',', $context['connection_id'])
-                        : [(string) $context['connection_id']];
-                    $connection_ids = array_values(array_filter(array_map('trim', $raw_connection_ids)));
+            // Resolve the org membership before any mutation so a forged or stale
+            // UUID aborts with zero side effects. The context value is
+            // user-supplied: without the org-match check a manager could end
+            // memberships that belong to another organization.
+            $membership_uuid = '';
+            $context_membership_uuid = sanitize_text_field((string) ($context['membership_uuid'] ?? $context['membership_id'] ?? ''));
+            if ('' !== $context_membership_uuid) {
+                $resolved = $this->resolveMembershipUuid($org_id, $context);
+                if (is_wp_error($resolved)) {
+                    return $resolved;
                 }
+                $membership_uuid = $resolved;
+            } elseif ('' !== $org_id) {
+                $resolved = $this->membershipService()->getOrganizationMembershipUuid($org_id);
+                $membership_uuid = is_string($resolved) && '' !== $resolved ? $resolved : '';
+            }
 
-                if (empty($connection_ids)) {
-                    $connections = $this->connectionService()->getPersonConnectionsById($person_uuid);
-                    if (is_array($connections) && !empty($connections['data'])) {
-                        foreach ($connections['data'] as $connection) {
-                            $connection_org_id = (string) ($connection['relationships']['organization']['data']['id'] ?? '');
-                            $connection_id = (string) ($connection['id'] ?? '');
-                            $connection_active = (bool) ($connection['attributes']['active'] ?? false);
+            // Validate the row-level person membership against the resolved org
+            // membership. Same trust boundary as above: the ID is user-supplied.
+            $person_membership_id = sanitize_text_field((string) ($context['person_membership_id'] ?? ''));
+            if ('' !== $person_membership_id && '' !== $membership_uuid) {
+                $person_membership = $this->membershipService()->getPersonMembership($person_membership_id);
+                $pm_org_membership_id = is_array($person_membership)
+                    ? (string) ($person_membership['data']['relationships']['organization_membership']['data']['id'] ?? '')
+                    : '';
 
-                            if ($connection_org_id !== (string) $org_id || $connection_id === '' || !$connection_active) {
-                                continue;
-                            }
+                if ('' !== $pm_org_membership_id && $pm_org_membership_id !== $membership_uuid) {
+                    $this->getLogger()->error('Direct strategy refused cross-org person membership removal', [
+                        'source' => 'wicket-orgman',
+                        'strategy' => 'direct',
+                        'org_id' => $org_id,
+                        'person_uuid' => $person_uuid,
+                        'person_membership_id' => $person_membership_id,
+                        'org_membership_uuid' => $membership_uuid,
+                    ]);
 
-                            $connection_ids[] = $connection_id;
-                        }
-                    }
-                }
-
-                foreach (array_values(array_unique($connection_ids)) as $connection_id) {
-                    $result = $this->connectionService()->endRelationshipAtActionTime($person_uuid, $connection_id, $org_id);
-                    if (is_wp_error($result)) {
-                        return $result;
-                    }
+                    return new WP_Error(
+                        'person_membership_org_mismatch',
+                        'The selected membership belongs to a different organization membership.'
+                    );
                 }
             }
 
-            // Remove all org-scoped roles
+            // Strip org-scoped roles first. An abort later in the flow then leaves
+            // the pre-fix state (roles gone, membership active), which is the
+            // recoverable failure mode. Post-fix, roles are the only grant that
+            // survives a membership end, so silent strip failures are not acceptable.
+            $role_failures = [];
             if (function_exists('wicket_remove_role')) {
                 $roles_to_remove = $this->permissionService()->getPersonCurrentRolesByOrgId($person_uuid, $org_id);
                 if (!empty($roles_to_remove)) {
                     foreach ($roles_to_remove as $role) {
-                        wicket_remove_role($person_uuid, $role, $org_id);
+                        if (!wicket_remove_role($person_uuid, $role, $org_id)) {
+                            $role_failures[] = (string) $role;
+                        }
                     }
                 }
             }
 
+            if (!empty($role_failures)) {
+                $this->getLogger()->error('Direct strategy role removal failed', [
+                    'source' => 'wicket-orgman',
+                    'strategy' => 'direct',
+                    'org_id' => $org_id,
+                    'person_uuid' => $person_uuid,
+                    'failed_roles' => $role_failures,
+                ]);
+
+                return new WP_Error(
+                    'role_removal_failed',
+                    sprintf('Failed removing role(s): %s.', implode(', ', $role_failures))
+                );
+            }
+
+            // End the person's memberships under the validated org membership.
+            // Fail closed on unknown state: never report success while a paid
+            // seat may still be consumed.
+            if ('' !== $membership_uuid) {
+                if ('' !== $person_membership_id) {
+                    $direct_end = $this->membershipService()->endPersonMembershipToday($person_membership_id);
+                    if (is_wp_error($direct_end)) {
+                        return new WP_Error('membership_end_failed', $direct_end->get_error_message());
+                    }
+                }
+
+                $sweep_result = $this->membershipService()->endAllActivePersonMembershipsForOrg($person_uuid, $membership_uuid);
+                if (is_wp_error($sweep_result)) {
+                    return new WP_Error('membership_end_failed', $sweep_result->get_error_message());
+                }
+                if (empty($sweep_result['ended']) && !empty($sweep_result['errors'])) {
+                    return new WP_Error(
+                        'membership_end_failed',
+                        'Failed ending the person membership: ' . reset($sweep_result['errors'])
+                    );
+                }
+            }
+
+            // End every active person-to-organization connection (continue-on-error,
+            // cascade parity). Protected types are never touched.
+            $protected_types = $config['member_management']['addition']['protected_relationship_types'] ?? [];
+            $protected_types = is_array($protected_types) ? $protected_types : [];
+
+            $connection_result = $this->connectionService()->endAllActivePersonOrganizationConnections($person_uuid, $org_id, $protected_types);
+            if (!empty($connection_result['errors'])) {
+                $this->getLogger()->warning('Direct strategy ended connections with per-record errors', [
+                    'source' => 'wicket-orgman',
+                    'strategy' => 'direct',
+                    'org_id' => $org_id,
+                    'person_uuid' => $person_uuid,
+                    'ended_count' => count($connection_result['ended']),
+                    'error_count' => count($connection_result['errors']),
+                    'errors' => $connection_result['errors'],
+                ]);
+            }
+
             $this->logRemovalTouchpoint($person_uuid, $org_id, $context);
 
-            return ['status' => 'success', 'message' => 'Member removed successfully.'];
+            return [
+                'status'         => 'success',
+                'message'        => 'Member removed successfully.',
+                'membership_uuid' => '' !== $membership_uuid ? $membership_uuid : null,
+            ];
 
         } catch (\Exception $e) {
             return new WP_Error('remove_member_exception', $e->getMessage());

@@ -204,13 +204,6 @@ Use [SETUP.md](SETUP.md) for the child-theme override pattern.
 - `member_management.addition.auto_opt_in_communications.sublists`
   - Default: `['one', 'two', 'three', 'four', 'five']`
 
-#### `member_management.removal`
-
-- `member_management.removal.direct.preserve_relationship`
-  - Default: `false`
-  - When `false`, direct strategy sets the org relationship `ends_at` value to the action time.
-  - When `true`, direct strategy keeps the relationship active and only strips org-scoped roles.
-
 #### `member_management.forms.add_member`
 
 - `member_management.forms.add_member.layout`

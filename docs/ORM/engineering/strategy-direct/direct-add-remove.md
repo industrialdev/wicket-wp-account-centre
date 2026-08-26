@@ -39,11 +39,12 @@ Current add flow:
 
 Current remove flow:
 
-- sets person-to-organization relationship `ends_at` to the action time by default
-- strips org-scoped roles
+- validates the org membership from context (org-match check) before any mutation
+- strips org-scoped roles first, surfacing any role-removal failure
+- end-dates the person's memberships under the org membership, then sweeps for remaining active assignments; fails closed on lookup failure
+- end-dates every active person-to-organization connection except protected relationship types
 - respects owner-protection config:
   - `access.permissions.prevent_owner_removal` — when `true`, blocks owner removal entirely
   - `access.permissions.owner_removal_requires_membership_owner_role` — when `true`, only users who also hold `membership_owner` can remove another `membership_owner`
-- can preserve the relationship when `member_management.removal.direct.preserve_relationship = true`
 
 The owner-removal guard lives in `WicketORM\Helpers\PermissionHelper::guardOwnerRemoval()` and is invoked from every strategy's remove path, so the same rules apply across direct, cascade, groups, and membership_cycle modes.

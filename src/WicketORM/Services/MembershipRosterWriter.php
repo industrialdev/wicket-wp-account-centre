@@ -618,13 +618,17 @@ class MembershipRosterWriter
                 'error_message' => $result->get_error_message(),
             ]));
         } elseif (is_array($result)) {
-            $membership_uuid = $context['membership_uuid'] ?? '';
+            // Prefer the strategy-resolved membership UUID: the strategy may resolve
+            // one even when the caller sent none, and the cache must key off the
+            // membership that was actually mutated.
+            $membership_uuid = (string) ($result['membership_uuid'] ?? ($context['membership_uuid'] ?? ''));
             if ($membership_uuid !== '') {
                 $this->reader->clearMembersCache($membership_uuid);
                 $cache_invalidated = true;
             }
             $logger->info('[OrgMan] removeMember success', array_merge($log_context, [
                 'cache_invalidated' => $cache_invalidated,
+                'resolved_membership_uuid' => $membership_uuid,
             ]));
         }
 
