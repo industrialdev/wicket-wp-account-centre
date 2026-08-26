@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.10.1] - 2026-08-26
+
+### Fixed
+- **acc:** drop dynamic property self-registration in Notification service (#38)
+
+
 ## [1.10.0] - 2026-08-26
 
 ### Fixed
