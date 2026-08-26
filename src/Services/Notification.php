@@ -15,14 +15,6 @@ defined('ABSPATH') || exit;
 class Notification
 {
     /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-        WACC()->Notification = $this;
-    }
-
-    /**
      * Send an email to a user about their team assignment by an organization manager.
      *
      * @param WP_User $user The WordPress user object.
