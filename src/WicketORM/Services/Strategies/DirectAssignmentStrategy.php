@@ -866,7 +866,7 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
 
                     return new WP_Error(
                         'membership_uuid_unresolvable',
-                        'The organization membership record could not be verified, so the removal was cancelled before anything changed. Please try again in a moment; if it keeps failing, the membership may need to be ended manually.'
+                        'The organization membership record could not be verified, so the removal was cancelled before anything changed. Please try again in a moment. If this keeps happening, please contact support.'
                     );
                 }
                 $membership_uuid = $resolved;
@@ -953,11 +953,16 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
             }
 
             // End every active person-to-organization connection (continue-on-error,
-            // cascade parity). Protected types are never touched.
+            // cascade parity). Protected types are never touched. A lookup failure
+            // is not "nothing to end": fail closed so the removal reports an error
+            // instead of silently leaving connections active.
             $protected_types = $config['member_management']['addition']['protected_relationship_types'] ?? [];
             $protected_types = is_array($protected_types) ? $protected_types : [];
 
             $connection_result = $this->connectionService()->endAllActivePersonOrganizationConnections($person_uuid, $org_id, $protected_types);
+            if (is_wp_error($connection_result)) {
+                return new WP_Error('connection_end_failed', $connection_result->get_error_message());
+            }
             if (!empty($connection_result['errors'])) {
                 $this->getLogger()->warning('Direct strategy ended connections with per-record errors', [
                     'source' => 'wicket-orgman',

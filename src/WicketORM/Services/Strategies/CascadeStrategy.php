@@ -557,8 +557,12 @@ class CascadeStrategy implements RosterManagementStrategy
 
             // End every active person-to-organization connection. Continue-on-error sibling;
             // no removal-side skip-types config exists today, so pass an empty allowlist
-            // for exact parity with the current modal behavior.
+            // for exact parity with the current modal behavior. A lookup failure fails
+            // closed; per-record errors continue and are logged below.
             $connection_result = $this->connectionService()->endAllActivePersonOrganizationConnections($person_uuid, $org_id, []);
+            if (is_wp_error($connection_result)) {
+                return new \WP_Error('connection_end_failed', $connection_result->get_error_message());
+            }
             if (!empty($connection_result['errors'])) {
                 $logger->warning('[OrgMan] Cascade strategy ended connections with per-record errors', array_merge($log_context, [
                     'ended_count' => count($connection_result['ended']),

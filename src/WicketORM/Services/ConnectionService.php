@@ -721,7 +721,13 @@ class ConnectionService
                 'error_message' => $connections->get_error_message(),
             ]);
 
-            return ['ended' => $ended, 'errors' => $errors];
+            // A failed lookup is not "nothing to end". Returning empty results here
+            // made callers report clean success with unknown connection state, so
+            // fail closed instead (WWID-2360 sibling).
+            return new WP_Error(
+                'connections_query_failed',
+                'Could not list the active connections to end: ' . $connections->get_error_message()
+            );
         }
 
         $normalized_skip_types = $this->normalizeSkipTypes($skip_types);
