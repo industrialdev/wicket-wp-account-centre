@@ -856,7 +856,20 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
                 $membership_uuid = $resolved;
             } elseif ('' !== $org_id) {
                 $resolved = $this->membershipService()->getOrganizationMembershipUuid($org_id);
-                $membership_uuid = is_string($resolved) && '' !== $resolved ? $resolved : '';
+                if (!is_string($resolved) || '' === $resolved) {
+                    $this->getLogger()->error('Direct strategy could not resolve the org membership for removal', [
+                        'source' => 'wicket-orgman',
+                        'strategy' => 'direct',
+                        'org_id' => $org_id,
+                        'person_uuid' => $person_uuid,
+                    ]);
+
+                    return new WP_Error(
+                        'membership_uuid_unresolvable',
+                        'The organization membership record could not be verified, so the removal was cancelled before anything changed. Please try again in a moment; if it keeps failing, the membership may need to be ended manually.'
+                    );
+                }
+                $membership_uuid = $resolved;
             }
 
             // Validate the row-level person membership against the resolved org
