@@ -149,6 +149,10 @@ final class OrgMan
             $this->controllers['member_export'] = new Controllers\MemberExportController($this->services['member_export']);
         }
 
+        if (isset($this->services['bulk_upload'])) {
+            $this->controllers['bulk_upload'] = new Controllers\BulkUploadController($this->services['bulk_upload']);
+        }
+
         if (isset($this->services['engagement'])) {
             $this->controllers['engagement'] = new Controllers\EngagementController($this->services['engagement']);
         }
