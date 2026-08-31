@@ -309,6 +309,7 @@ $group_add_member_success_actions = "console.log('Group member added successfull
 if ($group_add_member_auto_close_on_success && $group_add_member_auto_close_delay_seconds > 0) {
     $group_add_member_success_actions .= " \$autoCloseCountdown = {$group_add_member_auto_close_delay_seconds};";
 }
+$clear_form_on_error = (bool) ($orgman_config['member_management']['forms']['add_member']['clear_form_on_error'] ?? false);
 $add_member_error_actions = "console.error('Failed to add member'); \$addMemberSubmitting = false; \$membersLoading = false; \$addMemberSuccess = false; \$autoCloseCountdown = 0;";
 if ($clear_form_on_error) {
     $add_member_error_actions .= " el.closest('form').reset();";

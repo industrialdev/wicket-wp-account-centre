@@ -63,6 +63,29 @@ class TemplateHelper extends Helper
     }
 
     /**
+     * Determine whether a membership cycle entry should be included in the organization list.
+     *
+     * @param array  $om_attrs  Membership attributes array (active, in_grace, starts_at, ends_at, etc.).
+     * @param array  $om_data   Full raw API entry data array.
+     * @param string $org_uuid  UUID of the organization being rendered.
+     * @return bool True if entry should be included, false otherwise.
+     */
+    public static function should_include_membership_cycle_entry(array $om_attrs, array $om_data = [], string $org_uuid = ''): bool
+    {
+        $is_active = !empty($om_attrs['active']);
+        $in_grace = !empty($om_attrs['in_grace']);
+        $include = $is_active || $in_grace;
+
+        return (bool) apply_filters(
+            'wicket/acc/orgman/membership_cycle_include_entry',
+            $include,
+            $om_attrs,
+            $om_data,
+            $org_uuid
+        );
+    }
+
+    /**
      * Detect if it's a template request for our org management system.
      *
      * @return bool
