@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.11.0] - 2026-08-31
+
+### Fixed
+- **orgman:** fail closed when direct removal cannot resolve membership #minor (#39)
+
+
 ## [1.10.1] - 2026-08-26
 
 ### Fixed
