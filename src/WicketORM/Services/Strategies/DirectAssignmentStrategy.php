@@ -856,7 +856,20 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
                 $membership_uuid = $resolved;
             } elseif ('' !== $org_id) {
                 $resolved = $this->membershipService()->getOrganizationMembershipUuid($org_id);
-                $membership_uuid = is_string($resolved) && '' !== $resolved ? $resolved : '';
+                if (!is_string($resolved) || '' === $resolved) {
+                    $this->getLogger()->error('Direct strategy could not resolve the org membership for removal', [
+                        'source' => 'wicket-orgman',
+                        'strategy' => 'direct',
+                        'org_id' => $org_id,
+                        'person_uuid' => $person_uuid,
+                    ]);
+
+                    return new WP_Error(
+                        'membership_uuid_unresolvable',
+                        'The organization membership record could not be verified, so the removal was cancelled before anything changed. Please try again in a moment. If this keeps happening, please contact support.'
+                    );
+                }
+                $membership_uuid = $resolved;
             }
 
             // Validate the row-level person membership against the resolved org
@@ -940,11 +953,16 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
             }
 
             // End every active person-to-organization connection (continue-on-error,
-            // cascade parity). Protected types are never touched.
+            // cascade parity). Protected types are never touched. A lookup failure
+            // is not "nothing to end": fail closed so the removal reports an error
+            // instead of silently leaving connections active.
             $protected_types = $config['member_management']['addition']['protected_relationship_types'] ?? [];
             $protected_types = is_array($protected_types) ? $protected_types : [];
 
             $connection_result = $this->connectionService()->endAllActivePersonOrganizationConnections($person_uuid, $org_id, $protected_types);
+            if (is_wp_error($connection_result)) {
+                return new WP_Error('connection_end_failed', $connection_result->get_error_message());
+            }
             if (!empty($connection_result['errors'])) {
                 $this->getLogger()->warning('Direct strategy ended connections with per-record errors', [
                     'source' => 'wicket-orgman',
