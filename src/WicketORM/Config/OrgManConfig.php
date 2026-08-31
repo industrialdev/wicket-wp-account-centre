@@ -332,6 +332,8 @@ final class OrgManConfig
                     'labels' => [
                         'org_profile' => __('Org. Profile', 'wicket-acc'),
                         'manage_members' => __('Manage Members', 'wicket-acc'),
+                        // Org-scoped contacts roster action (WWID-2385).
+                        'contact_list' => __('Manage Contact List', 'wicket-acc'),
                     ],
                 ],
                 'organization_list' => [
