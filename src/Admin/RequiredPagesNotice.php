@@ -38,6 +38,13 @@ class RequiredPagesNotice extends \WicketAcc\WicketAcc
     ];
 
     /**
+     * Guards createMissingPages() against concurrent runs (double-click,
+     * two admins). Short TTL so a crashed request cannot leave a
+     * permanent lock.
+     */
+    private const CREATE_LOCK_TRANSIENT = 'wicket_acc_create_required_pages_lock';
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -106,22 +113,40 @@ class RequiredPagesNotice extends \WicketAcc\WicketAcc
     /**
      * Create a published my-account page per missing slug.
      *
-     * @return array<string, int|\WP_Error> slug => new post ID or error
+     * The per-slug check-then-insert has a race window: a double-click or
+     * two simultaneous admins can both see a slug missing, and WP would
+     * suffix the loser's insert (organization-members-bulk-2) while the
+     * required slug stays missing. A short transient lock serializes runs.
+     *
+     * @return array<string, int|\WP_Error>|\WP_Error slug => new post ID or error, or WP_Error when creation is already in progress
      */
-    public function createMissingPages(): array
+    public function createMissingPages(): array|\WP_Error
     {
-        $created = [];
-
-        foreach ($this->missingPages() as $slug => $title) {
-            $created[$slug] = wp_insert_post([
-                'post_type' => 'my-account',
-                'post_status' => 'publish',
-                'post_title' => $title,
-                'post_name' => $slug,
-            ], true);
+        if (get_transient(self::CREATE_LOCK_TRANSIENT)) {
+            return new \WP_Error(
+                'wicket_acc_pages_in_progress',
+                __('Account Centre page creation is already in progress.', 'wicket-acc')
+            );
         }
 
-        return $created;
+        set_transient(self::CREATE_LOCK_TRANSIENT, 1, 15);
+
+        try {
+            $created = [];
+
+            foreach ($this->missingPages() as $slug => $title) {
+                $created[$slug] = wp_insert_post([
+                    'post_type' => 'my-account',
+                    'post_status' => 'publish',
+                    'post_title' => $title,
+                    'post_name' => $slug,
+                ], true);
+            }
+
+            return $created;
+        } finally {
+            delete_transient(self::CREATE_LOCK_TRANSIENT);
+        }
     }
 
     /**
@@ -133,6 +158,13 @@ class RequiredPagesNotice extends \WicketAcc\WicketAcc
     {
         if (!current_user_can('manage_options')) {
             return;
+        }
+
+        if (isset($_GET['wicket_acc_pages_busy'])) {
+            printf(
+                '<div class="notice notice-info is-dismissible"><p>%s</p></div>',
+                esc_html__('Account Centre: page creation is already in progress. Please wait a few seconds and reload.', 'wicket-acc')
+            );
         }
 
         $created = isset($_GET['wicket_acc_pages_created']) ? absint($_GET['wicket_acc_pages_created']) : null;
@@ -207,6 +239,12 @@ class RequiredPagesNotice extends \WicketAcc\WicketAcc
         check_admin_referer('wicket_acc_create_required_pages');
 
         $results = $this->createMissingPages();
+
+        if (is_wp_error($results)) {
+            $redirect = wp_get_referer() ?: admin_url();
+            wp_safe_redirect(add_query_arg(['wicket_acc_pages_busy' => '1'], $redirect));
+            exit;
+        }
 
         $created = 0;
         $failed = 0;
