@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.11.1] - 2026-09-01
+
+### Fixed
+- **orgman:** render contact list link once at organization level (#46)
+
+
 ## [1.11.0] - 2026-08-31
 
 ### Fixed
