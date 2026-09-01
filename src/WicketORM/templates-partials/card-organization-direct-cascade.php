@@ -6,6 +6,7 @@
     // Shared action labels so card links match the details action nav (WWID-2259).
     $org_profile_label = WicketORM\Helpers\TemplateHelper::organization_action_label('org_profile');
     $manage_members_label = WicketORM\Helpers\TemplateHelper::organization_action_label('manage_members');
+    $contact_list_label = WicketORM\Helpers\TemplateHelper::organization_action_label('contact_list');
     ?>
     <h2 class="wp-block-heading has-heading-sm-font-size wt_text-2xl wt_mb-3">
         <?php if ($can_open_org): ?>
@@ -187,22 +188,24 @@
                             <?php echo esc_html($manage_members_label); ?>
                         </a>
                     <?php endif; ?>
-
-                    <?php
-                    // Contacts roster link
-                    $contacts_config = WicketORM\Services\ConfigService::getConfig()['contacts'] ?? [];
-            if (!empty($contacts_config['enabled']) && WicketORM\Helpers\PermissionHelper::can_manage_contacts($org_id)):
-                $contacts_url_base = WicketORM\Helpers\Helper::getMyAccountPageUrl('organization-contacts', '/my-account/organization-contacts/');
-                $contacts_url = add_query_arg('org_uuid', $org_id, $contacts_url_base);
-                ?>
-                        <span class="wt_px-2 wt_h-4 wt_bg-border-white" aria-hidden="true"></span>
-                        <a href="<?php echo esc_url($contacts_url); ?>"
-                            class="wt_inline-flex wt_items-center wt_text-primary-600 wt_hover_text-primary-700 underline underline-offset-4">
-                            <?php esc_html_e('Manage Contact List', 'wicket-acc'); ?>
-                        </a>
-                    <?php endif; ?>
                 </div>
             </div>
         <?php endforeach; ?>
+
+        <?php
+        // Contacts roster is org-scoped: render it once per card at the
+        // organization level, never inside the per-membership loop (WWID-2385).
+        $contacts_config = WicketORM\Services\ConfigService::getConfig()['contacts'] ?? [];
+        if (!empty($contacts_config['enabled']) && WicketORM\Helpers\PermissionHelper::can_manage_contacts($org_id)):
+            $contacts_url_base = WicketORM\Helpers\Helper::getMyAccountPageUrl('organization-contacts', '/my-account/organization-contacts/');
+            $contacts_url = add_query_arg('org_uuid', $org_id, $contacts_url_base);
+        ?>
+        <div class="wt_flex wt_items-center wt_gap-2 wt_pt-4 wt_mt-1 wt_border-t wt_border-color">
+            <a href="<?php echo esc_url($contacts_url); ?>"
+                class="wt_inline-flex wt_items-center wt_text-primary-600 wt_hover_text-primary-700 underline underline-offset-4">
+                <?php echo esc_html($contact_list_label); ?>
+            </a>
+        </div>
+        <?php endif; ?>
     </div>
 </div>

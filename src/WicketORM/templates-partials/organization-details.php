@@ -294,6 +294,19 @@ if ($roster_mode === 'groups' && $group_uuid !== '') {
         <?php endif; ?>
 
         <?php
+        // Contact List is an organization-level action: the contacts roster page is
+        // org-scoped, so the nav exposes it next to the other org actions (WWID-2385).
+        // Empty org_uuid (groups landing without an org) skips the button: role_check
+        // would fall back to WP core roles and the page redirects without an org anyway.
+        if ($org_uuid !== '' && \WicketORM\Helpers\PermissionHelper::can_view_contacts($org_uuid)) :
+            $contacts_url = add_query_arg('org_uuid', $org_uuid, \WicketORM\Helpers\Helper::getMyAccountPageUrl('organization-contacts', '/my-account/organization-contacts/'));
+            ?>
+            <a href="<?php echo esc_url($contacts_url); ?>"
+                <?php if ($is_active_action($contacts_url)) : ?>aria-current="page"<?php endif; ?>
+                class="button component-button wt_flex-equal wt_inline-flex wt_items-center wt_justify-center wt_text-center <?php echo $is_active_action($contacts_url) ? 'button--primary' : 'button--secondary'; ?>"><?php echo esc_html(\WicketORM\Helpers\TemplateHelper::organization_action_label('contact_list')); ?></a>
+        <?php endif; ?>
+
+        <?php
         $member_list_config = \WicketORM\Services\ConfigService::getConfig()['presentation']['member_list'] ?? [];
 $show_bulk_upload = (bool) ($member_list_config['show_bulk_upload'] ?? false);
 // Bulk upload is a member-management action: only render it on the members page,

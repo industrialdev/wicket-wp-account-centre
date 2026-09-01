@@ -290,6 +290,7 @@ $orgman_token_attrs = 'title="' . esc_attr__('Click to copy', 'wicket-acc') . '"
     <?php endif; ?>
 
     <?php
+$clear_form_on_error = (bool) ($orgman_config['member_management']['forms']['add_member']['clear_form_on_error'] ?? false);
 $groups_config = is_array($orgman_config['groups'] ?? null) ? $orgman_config['groups'] : [];
 $groups_presentation = is_array($groups_config['presentation'] ?? null)
     ? $groups_config['presentation']

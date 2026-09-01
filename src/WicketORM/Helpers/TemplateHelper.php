@@ -45,7 +45,7 @@ class TemplateHelper extends Helper
      * presentation.organization_details.labels so the details action nav and
      * the organization list cards render identical wording (WWID-2259).
      *
-     * Supported keys: 'org_profile', 'manage_members'.
+     * Supported keys: 'org_profile', 'manage_members', 'contact_list'.
      *
      * @param string $key Label key.
      * @return string Label text; stack default when unset or blank.
@@ -55,6 +55,7 @@ class TemplateHelper extends Helper
         $defaults = [
             'org_profile' => __('Org. Profile', 'wicket-acc'),
             'manage_members' => __('Manage Members', 'wicket-acc'),
+            'contact_list' => __('Manage Contact List', 'wicket-acc'),
         ];
         $labels = \WicketORM\Services\ConfigService::getConfig()['presentation']['organization_details']['labels'] ?? [];
         $label = is_array($labels) ? trim((string) ($labels[$key] ?? '')) : '';
