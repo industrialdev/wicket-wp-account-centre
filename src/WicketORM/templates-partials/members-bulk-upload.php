@@ -56,6 +56,22 @@ foreach ($default_bulk_columns as $column_key => $defaults) {
     $expected_columns[] = (string) ($column_config['header'] ?? $defaults['header']);
 }
 $expected_columns_text = implode(', ', $expected_columns);
+
+// Job-status polling (WWID-1919): the upload response sets the job id signal,
+// a 3s interval polls the REST status endpoint until the partial reports a
+// terminal state (the partial swaps in the finished-signal patch itself).
+// Signals are global per page, so they carry the same DOM suffix the export
+// flow uses to keep two roster views from colliding.
+$bulk_upload_signal_suffix = str_replace('-', '_', sanitize_key($bulk_upload_dom_suffix_raw));
+$bulk_upload_job_signal = 'bulkUploadJobId' . $bulk_upload_signal_suffix;
+$bulk_upload_finished_signal = 'bulkUploadFinished' . $bulk_upload_signal_suffix;
+$bulk_upload_status_url = rest_url('wicket-acc/v1/bulk-upload/status');
+// Cookie-authenticated REST requests need the wp_rest nonce on every call,
+// GET included (same as the export modal's POST).
+$bulk_upload_rest_nonce = wp_create_nonce('wp_rest');
+$bulk_upload_poll = "if (!{$bulk_upload_finished_signal} && {$bulk_upload_job_signal} !== '') { @get('"
+    . $bulk_upload_status_url . "?job_id=' + {$bulk_upload_job_signal} + '&suffix={$bulk_upload_signal_suffix}',"
+    . " { headers: {'X-WP-Nonce': '{$bulk_upload_rest_nonce}'} }) >> select('#{$bulk_upload_messages_id}') | set(html) }";
 ?>
 
 <div class="orgman-bulk-upload <?php echo esc_attr($bulk_upload_wrapper_class); ?>">
@@ -64,7 +80,9 @@ $expected_columns_text = implode(', ', $expected_columns);
         <?php esc_html_e('Upload a CSV file to add multiple members at once. Existing active members are skipped automatically.', 'wicket-acc'); ?>
     </p>
 
-    <div id="<?php echo esc_attr($bulk_upload_messages_id); ?>" class="wt_mb-3"></div>
+    <div id="<?php echo esc_attr($bulk_upload_messages_id); ?>" class="wt_mb-3"
+        data-signals="<?php echo esc_attr(wp_json_encode([$bulk_upload_job_signal => '', $bulk_upload_finished_signal => true])); ?>"
+        data-on-interval__duration.3000="<?php echo esc_attr($bulk_upload_poll); ?>"></div>
 
     <div class="wt_mb-3">
         <a class="orgman-bulk-upload__template-link wt_text-sm"
