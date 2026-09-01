@@ -367,9 +367,24 @@ class BulkMemberUploadService
         // hooks in one request. Core's shutdown action still fires on those
         // paths, so restore there too. Must be registered BEFORE the batch:
         // a fatal mid-batch never reaches code placed after it.
-        add_action('shutdown', static function () use ($acting_user_id, $previous_user_id): void {
-            if ($acting_user_id > 0 && get_current_user_id() === $acting_user_id) {
+        add_action('shutdown', function () use ($job_id, $acting_user_id, $previous_user_id): void {
+            $current_user_id = get_current_user_id();
+            if ($acting_user_id > 0 && $current_user_id === $acting_user_id) {
                 wp_set_current_user($previous_user_id);
+
+                return;
+            }
+            // Restore skipped. Normal when finally{} already ran (identity is
+            // back to the cron user). A third identity means another hook
+            // swapped the current user mid-request: restoring here would
+            // clobber their switch, so leave it and log.
+            if ($acting_user_id > 0 && $current_user_id !== $previous_user_id) {
+                $this->logActivity('warning', 'Bulk upload shutdown restore skipped: current user changed mid-request', [
+                    'job_id' => $job_id,
+                    'acting_user_id' => $acting_user_id,
+                    'previous_user_id' => $previous_user_id,
+                    'current_user_id' => $current_user_id,
+                ]);
             }
         });
 
