@@ -930,21 +930,11 @@ class GroupService
                     $group_item = $included_lookup['groups'][$membership_group];
                     $org_id = $group_item['relationships']['organization']['data']['id'] ?? $org_id;
                 }
+                // Keep the UUID here. It flows into custom_data_field.value, which tenant
+                // schemas (e.g. IAA) validate as an enum of org UUIDs; a resolved legal
+                // name fails validation. Scope matching expands UUIDs to name tokens in
+                // memberMatchesOrgScope(), so names need no pre-resolution.
                 $org_identifier = $this->extractOrgIdentifier($membership, $org_id);
-
-                // If org_identifier is a UUID, try to resolve a name for better association matching.
-                if ($org_identifier === $org_id && function_exists('wicket_get_organization')) {
-                    try {
-                        $org_response = wicket_get_organization($org_id);
-                        $org_attrs = is_array($org_response) ? ($org_response['data']['attributes'] ?? []) : [];
-                        $resolved_name = (string) ($org_attrs['legal_name'] ?? $org_attrs['legal_name_en'] ?? $org_attrs['name'] ?? '');
-                        if ($resolved_name !== '') {
-                            $org_identifier = $resolved_name;
-                        }
-                    } catch (\Throwable $e) {
-                        // Fallback to UUID
-                    }
-                }
 
                 $result = [
                     'allowed' => true,
