@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.11.3] - 2026-09-02
+
+### Fixed
+- **orgman:** run bulk upload batches as the acting user (#43)
+
+
 ## [1.11.2] - 2026-09-02
 
 ### Added
