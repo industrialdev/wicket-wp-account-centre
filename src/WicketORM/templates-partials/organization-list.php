@@ -678,13 +678,10 @@ if ($roster_mode === 'membership_cycle') {
              *
              * @return bool True to include the row; false to skip it.
              */
-            $_mc_include = $_mc_is_active || $_mc_in_grace;
-            $_mc_include = (bool) apply_filters(
-                'wicket/acc/orgman/membership_cycle_include_entry',
-                $_mc_include,
+            $_mc_include = \WicketORM\Helpers\TemplateHelper::should_include_membership_cycle_entry(
                 $_mc_om_attrs,
                 $_mc_om_data,
-                $_mc_oid
+                (string) $_mc_oid
             );
 
             if (!$_mc_include) {

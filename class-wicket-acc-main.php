@@ -4,6 +4,7 @@ namespace WicketAcc;
 
 use WicketAcc\Admin\AdminSettings;
 use WicketAcc\Admin\HFMigration;
+use WicketAcc\Admin\RequiredPagesNotice;
 use WicketAcc\Admin\Safeguards;
 use WicketAcc\Admin\Tweaks;
 use WicketAcc\Mdp\Init as Mdp;
@@ -439,6 +440,7 @@ class WicketAcc
             new AdminSettings();
             new Tweaks();
             new Safeguards(); // Initialize the safeguard class for admin tasks and CLI
+            new RequiredPagesNotice(); // Warn when org-roster account pages are missing (WWID-1919)
         }
 
         // Load WooCommerce integration if active
