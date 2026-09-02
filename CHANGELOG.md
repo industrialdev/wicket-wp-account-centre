@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.11.4] - 2026-09-02
+
+### Fixed
+- **orgman:** keep org UUID in group member custom data (#47)
+
+
 ## [1.11.3] - 2026-09-02
 
 ### Fixed
