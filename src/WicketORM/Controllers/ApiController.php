@@ -160,4 +160,30 @@ abstract class ApiController
     {
         return $this->htmlResponse(['success' => false, 'error' => ['code' => $error_code, 'message' => $error_message]], $status);
     }
+
+    /**
+     * Render a templates-partials file into an HTML REST response.
+     * Variables in $data are extracted into the partial's scope.
+     *
+     * @param string $template Template name relative to templates-partials/.
+     * @param array  $data     Variables for the partial.
+     * @return \WP_REST_Response
+     */
+    protected function templateResponse(string $template, array $data): \WP_REST_Response
+    {
+        ob_start();
+        if (!empty($data)) {
+            extract($data);
+        }
+        $template_path = dirname(dirname(__FILE__)) . '/templates-partials/' . $template . '.php';
+        if (file_exists($template_path)) {
+            include $template_path;
+        }
+        $html = ob_get_clean();
+
+        $response = new \WP_REST_Response($html);
+        $response->header('Content-Type', 'text/html');
+
+        return $response;
+    }
 }
