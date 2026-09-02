@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.11.2] - 2026-09-02
+
+### Added
+- **admin:** add required account center pages notice (#45)
+
+
 ## [1.11.1] - 2026-09-01
 
 ### Fixed
