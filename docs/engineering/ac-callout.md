@@ -2,7 +2,7 @@
 title: "Callout Block"
 audience: [developer, agent, implementer]
 php_class: WicketAcc\Blocks\Callout\init
-source_files: ["includes/blocks/ac-callout/init.php", "includes/blocks/ac-callout/render.php", "includes/blocks/ac-callout/block.json"]
+source_files: ["includes/blocks/ac-callout/init.php", "includes/blocks/ac-callout/render.php", "includes/blocks/ac-callout/block.json", "includes/blocks/ac-callout/block-script.js"]
 ---
 ---
 
@@ -16,10 +16,11 @@ The Callout block provides dynamic notification displays within the Account Cent
 ### Directory Structure
 ```
 ac-callout/
-├── block.json       # Block registration and settings
-├── init.php        # Block initialization and logic
-├── render.php      # Template renderer
-└── block-styles.css # Callout styles
+├── block.json         # Block registration and settings
+├── init.php           # Block initialization and logic
+├── render.php         # Template renderer
+├── block-styles.css   # Callout styles
+└── block-script.js    # confirmation_renewal button: confirm + POST + in-place result
 ```
 
 ## Core Functionality
@@ -47,6 +48,21 @@ ac-callout/
    - Displays renewal notices based on expiration dates
    - Configurable renewal period
    - Supports both Wicket and WooCommerce memberships
+   - The callout's button dispatches on flags in the Wicket Memberships
+     `get_membership_callouts()`/`get_owner_callouts()` response:
+     `next_tier` (product link), `form_page` (external form link),
+     `subscription_renewal` (checkout link), and `confirmation_renewal`
+     (membership bundles only). The first three render a plain `<a href>`
+     via the shared `card-call-out` component
+     (`wicket-wp-base-plugin/includes/components/card-call-out.php`).
+     `confirmation_renewal` is the exception: it has no link target, so it
+     bypasses `card-call-out` and renders a real `<button>` directly
+     (`init::render_confirmation_renewal_callout()`, a private method on
+     the block's own class) that POSTs to the Membership Bundle
+     `confirm_renewal` REST endpoint via `block-script.js`, behind a
+     `window.confirm()` step. See the Membership Bundles renewal-types
+     docs in `wicket-wp-memberships` for the endpoint's own contract
+     (owner check, confirm window, idempotency).
 
 3. **Profile Completion (`profile_completion`)**
    - Tracks mandatory field completion
