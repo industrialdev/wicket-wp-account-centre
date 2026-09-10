@@ -53,7 +53,7 @@ if ($mode === 'groups') {
 } else {
     $search_action = "@get('{$members_list_endpoint}{$members_list_separator}org_uuid={$encoded_org_uuid}&page=1&query=' + encodeURIComponent(" . '$searchQuery' . '))';
 }
-$search_success = '$listLoading = false; ' . wp_sprintf("select('#%s') | set(html)", $members_list_target);
+$search_success = '$listLoading = false;';
 
 $signals = [
     'searchQuery' => $query,

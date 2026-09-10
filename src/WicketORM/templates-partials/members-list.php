@@ -451,7 +451,7 @@ $no_members_message = __('No members found.', 'wicket-acc');
                     <button type="button"
                         class="members-pagination__btn members-pagination__btn--prev button button--secondary wt_px-3 wt_py-2 wt_text-sm component-button"
                         data-on:click="<?php echo esc_attr($build_action($page - 1)); ?>"
-                        data-on:success="<?php echo esc_attr('$listLoading = false; ' . wp_sprintf("select('#%s') | set(html)", $members_list_target)); ?>"
+                        data-on:success="<?php echo esc_attr('$listLoading = false;'); ?>"
                         data-indicator:members-loading>
                         <?php esc_html_e('Previous', 'wicket-acc'); ?>
                     </button>
@@ -464,7 +464,7 @@ $no_members_message = __('No members found.', 'wicket-acc');
                             class="members-pagination__btn members-pagination__btn--page button wt_px-3 wt_py-2 wt_text-sm <?php echo $is_current ? 'button--primary' : 'button--secondary'; ?> component-button"
                             <?php if ($is_current) : ?>disabled<?php endif; ?>
                             <?php if (!$is_current) : ?>data-on:click="<?php echo esc_attr($build_action($i)); ?>" <?php endif; ?>
-                            data-on:success="<?php echo esc_attr('$listLoading = false; ' . wp_sprintf("select('#%s') | set(html)", $members_list_target)); ?>"
+                            data-on:success="<?php echo esc_attr('$listLoading = false;'); ?>"
                             data-indicator:members-loading>
                             <?php echo esc_html((string) $i); ?>
                         </button>
@@ -475,7 +475,7 @@ $no_members_message = __('No members found.', 'wicket-acc');
                     <button type="button"
                         class="members-pagination__btn members-pagination__btn--next button button--secondary wt_px-3 wt_py-2 wt_text-sm component-button"
                         data-on:click="<?php echo esc_attr($build_action($page + 1)); ?>"
-                        data-on:success="<?php echo esc_attr('$listLoading = false; ' . wp_sprintf("select('#%s') | set(html)", $members_list_target)); ?>"
+                        data-on:success="<?php echo esc_attr('$listLoading = false;'); ?>"
                         data-indicator:members-loading>
                         <?php esc_html_e('Next', 'wicket-acc'); ?>
                     </button>
