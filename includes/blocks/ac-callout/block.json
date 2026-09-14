@@ -3,6 +3,7 @@
 	"title": "ACC Callout Block",
 	"description": "A Wicket block for Callout Block",
 	"style": "file:./block-styles.css",
+	"script": "file:./block-script.js",
 	"category": "wicket-account-center",
 	"icon": "",
 	"apiVersion": 2,

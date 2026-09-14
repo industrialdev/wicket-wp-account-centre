@@ -1,0 +1,71 @@
+/*
+ * Wicket ACC — generic <dialog> modal shell.
+ *
+ * No existing modal/dialog CSS is loaded on account-centre's front end (the
+ * older .wicketAcc-modal template is orphaned and unstyled; wicket-wp-base-plugin's
+ * get_component('modal') depends on Tailwind utility classes that are not
+ * defined for it and get its native <dialog> centering stripped by Tailwind's
+ * Preflight reset where that's loaded). This partial is self-contained and
+ * requires no other plugin's CSS pipeline to be present on the page.
+ *
+ * This is layout/backdrop only — positioning, spacing, the close icon. It does
+ * NOT style buttons. Buttons inside a modal should use
+ * get_component('button', [...]) from wicket-wp-base-plugin so they match the
+ * site's existing button styling, not a separate look defined here.
+ *
+ * Every rule is scoped under dialog.wicket-acc-modal-dialog so nothing here can
+ * apply to any element outside an actual modal dialog using this component.
+ *
+ * Usage: <dialog class="wicket-acc-modal-dialog"> with the child structure
+ * below. Open with dialogEl.showModal(), close with dialogEl.close() — no JS
+ * needed for the styling itself.
+ */
+
+dialog.wicket-acc-modal-dialog {
+  position: fixed;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-width: 480px;
+  width: calc(100% - 2rem);
+  padding: 1.5rem;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  background-color: #fff;
+  color: #1e1e1e;
+}
+
+dialog.wicket-acc-modal-dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+dialog.wicket-acc-modal-dialog .wicket-acc-modal-dialog__close {
+  position: absolute;
+  top: 0.75rem;
+  right: 1rem;
+  border: none;
+  background: transparent;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #1e1e1e;
+}
+
+dialog.wicket-acc-modal-dialog .wicket-acc-modal-dialog__title {
+  margin: 0 1.5rem 1rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+dialog.wicket-acc-modal-dialog .wicket-acc-modal-dialog__body {
+  margin: 0 0 1.5rem;
+}
+
+dialog.wicket-acc-modal-dialog .wicket-acc-modal-dialog__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
