@@ -568,6 +568,8 @@ class init extends Blocks
         $view_invoice_label = __('View your invoice', 'wicket-acc');
         $already_renewed_label = __('This membership bundle has already been renewed for the current cycle.', 'wicket-acc');
         $error_label = __('Could not confirm renewal. Please try again.', 'wicket-acc');
+        $timeout_label = __('This is taking longer than expected. Please refresh the page to check the status.', 'wicket-acc');
+        $refresh_label = __('Refresh page', 'wicket-acc');
 
         // Render the state this cycle's claim is actually in, not always the initial
         // button — otherwise a page reload after confirming loses all trace of the
@@ -621,6 +623,8 @@ class init extends Blocks
                 data-view-invoice-label="<?php echo esc_attr($view_invoice_label); ?>"
                 data-already-renewed-label="<?php echo esc_attr($already_renewed_label); ?>"
                 data-error-label="<?php echo esc_attr($error_label); ?>"
+                data-timeout-label="<?php echo esc_attr($timeout_label); ?>"
+                data-refresh-label="<?php echo esc_attr($refresh_label); ?>"
             >
                 <div class="<?php echo $is_wicket_theme_v2 ? 'component-card-call-out__links' : 'flex flex-col @md:flex-row gap-2'; ?>" data-wicket-acc-confirmation-renewal-links<?php echo $renewal_state === 'pending' ? ' hidden' : ''; ?>>
                     <?php if ($renewal_state === 'complete' && $invoice_payment_url) : ?>

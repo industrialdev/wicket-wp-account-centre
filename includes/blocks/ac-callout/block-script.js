@@ -2,6 +2,7 @@
   'use strict';
 
   var POLL_INTERVAL_MS = 4000;
+  var POLL_MAX_ATTEMPTS = 45; // ~3 minutes at POLL_INTERVAL_MS
 
   /**
    * confirmation_renewal callout: opens a <dialog> modal styled by the shared
@@ -36,11 +37,30 @@
         status.style.color = isError ? '#d63638' : '#008a20';
       }
 
-      function pollRenewalOrderStatus() {
+      function pollRenewalOrderStatus(attempt) {
         var statusUrl = wrapper.getAttribute('data-status-url');
         var nonce = wrapper.getAttribute('data-nonce');
         var errorLabel = wrapper.getAttribute('data-error-label') || 'Could not confirm renewal. Please try again.';
+        var timeoutLabel = wrapper.getAttribute('data-timeout-label') || 'This is taking longer than expected. Please refresh the page to check the status.';
+        var refreshLabel = wrapper.getAttribute('data-refresh-label') || 'Refresh page';
         var viewInvoiceLabel = wrapper.getAttribute('data-view-invoice-label') || 'View your invoice';
+
+        if (attempt >= POLL_MAX_ATTEMPTS) {
+          preparing.hidden = true;
+          showStatus(timeoutLabel, true);
+
+          var refreshLink = document.createElement('a');
+          refreshLink.href = window.location.href;
+          refreshLink.textContent = refreshLabel;
+          // Matches wicket-wp-base-plugin's get_component('button', ['variant' =>
+          // 'primary', 'a_tag' => true, ...]) markup so this renders identically
+          // to a real button instead of a plain text link.
+          refreshLink.className = 'component-button inline-flex items-center button button--primary';
+          links.innerHTML = '';
+          links.hidden = false;
+          links.appendChild(refreshLink);
+          return;
+        }
 
         fetch(statusUrl, {
           method: 'GET',
@@ -50,7 +70,7 @@
           .then(function (response) { return response.json(); })
           .then(function (data) {
             if (!data || data.status === 'pending') {
-              window.setTimeout(pollRenewalOrderStatus, POLL_INTERVAL_MS);
+              window.setTimeout(function () { pollRenewalOrderStatus(attempt + 1); }, POLL_INTERVAL_MS);
               return;
             }
 
@@ -73,7 +93,7 @@
             showStatus(errorLabel, true);
           })
           .catch(function () {
-            window.setTimeout(pollRenewalOrderStatus, POLL_INTERVAL_MS);
+            window.setTimeout(function () { pollRenewalOrderStatus(attempt + 1); }, POLL_INTERVAL_MS);
           });
       }
 
@@ -82,7 +102,7 @@
       // must not let the member re-open the confirm modal, and a reload after
       // completion must not lose the invoice link.
       if (wrapper.getAttribute('data-initial-state') === 'pending') {
-        window.setTimeout(pollRenewalOrderStatus, POLL_INTERVAL_MS);
+        window.setTimeout(function () { pollRenewalOrderStatus(0); }, POLL_INTERVAL_MS);
       }
 
       if (modal && confirmButton && !confirmButton.dataset.bound) {
@@ -136,7 +156,7 @@
                 links.hidden = true;
                 preparing.hidden = false;
                 modal.close();
-                window.setTimeout(pollRenewalOrderStatus, POLL_INTERVAL_MS);
+                window.setTimeout(function () { pollRenewalOrderStatus(0); }, POLL_INTERVAL_MS);
                 return null;
               }
               return response.json().then(function (data) {
