@@ -30,12 +30,12 @@ dialog.wicket-acc-modal-dialog {
   bottom: 0;
   max-width: 480px;
   width: calc(100% - 2rem);
-  padding: 1.5rem;
+  padding: var(--wicket-acc-padding-lg);
   border: none;
-  border-radius: 10px;
+  border-radius: var(--wicket-acc-border-radius-lg);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-  background-color: #fff;
-  color: #1e1e1e;
+  background-color: var(--wicket-acc-bg-color-light);
+  color: var(--wicket-acc-text-color-light);
 }
 
 dialog.wicket-acc-modal-dialog::backdrop {
@@ -45,23 +45,23 @@ dialog.wicket-acc-modal-dialog::backdrop {
 dialog.wicket-acc-modal-dialog .wicket-acc-modal-dialog__close {
   position: absolute;
   top: 0.75rem;
-  right: 1rem;
+  right: var(--wicket-acc-padding);
   border: none;
   background: transparent;
   font-size: 1.5rem;
   line-height: 1;
   cursor: pointer;
-  color: #1e1e1e;
+  color: var(--wicket-acc-text-color-light);
 }
 
 dialog.wicket-acc-modal-dialog .wicket-acc-modal-dialog__title {
-  margin: 0 1.5rem 1rem 0;
-  font-size: 1.25rem;
-  font-weight: 600;
+  margin: 0 1.5rem var(--wicket-acc-margin) 0;
+  font-size: var(--wicket-acc-font-size-lg);
+  font-weight: var(--wicket-acc-font-weight-semibold);
 }
 
 dialog.wicket-acc-modal-dialog .wicket-acc-modal-dialog__body {
-  margin: 0 0 1.5rem;
+  margin: 0 0 var(--wicket-acc-margin-lg);
 }
 
 dialog.wicket-acc-modal-dialog .wicket-acc-modal-dialog__footer {

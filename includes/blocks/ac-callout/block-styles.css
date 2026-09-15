@@ -82,7 +82,7 @@ div[class*="wp-block"].callout-profile {
   width: 1.1rem;
   height: 1.1rem;
   border: 2px solid rgba(0, 0, 0, 0.15);
-  border-top-color: #2271b1;
+  border-top-color: var(--wicket-acc-link-color-light);
   border-radius: 50%;
   animation: wicket-acc-confirmation-renewal-spin 0.8s linear infinite;
 }
