@@ -2,6 +2,18 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.11.5] - 2026-09-16
+
+### Added
+- **ac-callout:** confirmation_renewal confirm modal, live status polling, and docs
+
+### Fixed
+- **ac-callout:** bound renewal-order-status polling with a max attempt count
+
+### Maintenance
+- **ac-callout:** use wicket-acc theme variables in modal and spinner styles
+
+
 ## [1.11.4] - 2026-09-02
 
 ### Fixed
