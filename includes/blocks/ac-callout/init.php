@@ -274,9 +274,15 @@ class init extends Blocks
                             }
                             unset($links);
                             //echo '<pre>'; var_dump( $membership ); echo '</pre>';
+                            $is_confirmation_renewal = !empty($membership['membership']['confirmation_renewal']);
                             if ($membership['membership']['meta']['membership_status'] == 'pending') {
                                 //this status is convered in the Become a Member block
                                 continue;
+                            } elseif ($is_confirmation_renewal) {
+                                // No link target — the button POSTs to confirm_renewal instead
+                                // of navigating anywhere. See
+                                // wicket_ac_memberships_render_confirmation_renewal_callout() below
+                                // for the actual markup; $links stays unset here on purpose.
                             } elseif (!empty($membership['membership']['next_tier']) && empty($membership['membership']['subscription_renewal'])) {
                                 //echo '<pre>'; var_dump( $membership['membership']['next_tier'] ); echo '</pre>';
                                 $links = wicket_ac_memberships_get_product_link_data($membership, $renewal_type);
@@ -360,8 +366,9 @@ class init extends Blocks
                                     'renewal_type' => $renewal_type,
                                     'title' => $title,
                                     'description' => $description,
-                                    'links' => $links,
+                                    'links' => $links ?? [],
                                     'membership' => $membership,
+                                    'is_confirmation_renewal' => $is_confirmation_renewal,
                                 ];
                                 $callouts[] = $callout;
                             }
@@ -406,12 +413,17 @@ class init extends Blocks
                     foreach ($callouts as $callout) {
                         $attrs = get_block_wrapper_attributes(['class' => 'callout-' . $block_logic . ' callout-' . $callout['renewal_type']]);
                         echo '<div ' . $attrs . '>';
-                        get_component('card-call-out', [
-                            'title'       => $callout['title'],
-                            'description' => $callout['description'] . '<!-- renewal-order_id: ' . $callout['membership']['membership']['meta']['membership_parent_order_id'] . ' //-->',
-                            'links'       => $this->append_query_string($callout['links']),
-                            'style'       => '',
-                        ]);
+                        if (!empty($callout['is_confirmation_renewal'])) {
+                            // No link target — see render_confirmation_renewal_callout()'s docblock.
+                            $this->render_confirmation_renewal_callout($callout);
+                        } else {
+                            get_component('card-call-out', [
+                                'title'       => $callout['title'],
+                                'description' => $callout['description'] . '<!-- renewal-order_id: ' . $callout['membership']['membership']['meta']['membership_parent_order_id'] . ' //-->',
+                                'links'       => $this->append_query_string($callout['links']),
+                                'style'       => '',
+                            ]);
+                        }
                         echo '</div>';
                     }
 
@@ -521,5 +533,167 @@ class init extends Blocks
         }
 
         return $links;
+    }
+
+    /**
+     * Renders a confirmation_renewal callout as a real <button> (POSTs to
+     * confirm_renewal) instead of the <a href> every other callout type renders.
+     *
+     * Mirrors card-call-out.php's markup rather than extending that component:
+     * its `links` field is an ACF repeater editors fill in from wp-admin
+     * (link_style is a fixed dropdown: primary/secondary/ghost), so it has no
+     * safe way to carry a non-link, code-only "this is an action, not a URL"
+     * signal without also polluting that editor-facing UI.
+     *
+     * @param array $callout Shape: ['title', 'description', 'membership' => ['membership' => [...]]].
+     */
+    private function render_confirmation_renewal_callout(array $callout): void
+    {
+        $bundle_post_id = (int) $callout['membership']['membership']['ID'];
+        $title = $callout['title'];
+        $description = $callout['description'];
+        $button_label = $callout['membership']['callout']['button_label'] ?? __('Confirm renewal', 'wicket-acc');
+
+        $rest_url = rest_url('wicket_member/v1/bundle/' . $bundle_post_id . '/confirm_renewal');
+        $status_url = rest_url('wicket_member/v1/bundle/' . $bundle_post_id . '/renewal_order_status');
+        $nonce = wp_create_nonce('wp_rest');
+
+        $modal_id = 'wicket-acc-confirmation-renewal-modal-' . $bundle_post_id;
+        $confirm_message = __('Are you sure you want to confirm renewal for this membership bundle?', 'wicket-acc');
+        $confirming_label = __('Confirming…', 'wicket-acc');
+        // Order creation is queued (202), not finished — see confirm_bundle_renewal()
+        // in wicket-wp-memberships (Milestone 10). preparing_label covers the polling
+        // window between that response and the background job actually finishing.
+        $preparing_label = __('Preparing your renewal order…', 'wicket-acc');
+        $view_invoice_label = __('View your invoice', 'wicket-acc');
+        $already_renewed_label = __('This membership bundle has already been renewed for the current cycle.', 'wicket-acc');
+        $error_label = __('Could not confirm renewal. Please try again.', 'wicket-acc');
+        $timeout_label = __('This is taking longer than expected. Please refresh the page to check the status.', 'wicket-acc');
+        $refresh_label = __('Refresh page', 'wicket-acc');
+
+        // Render the state this cycle's claim is actually in, not always the initial
+        // button — otherwise a page reload after confirming loses all trace of the
+        // in-flight/completed job and lets the member attempt to confirm again. The
+        // REST layer would still reject a duplicate via claim_renewal_order_creation(),
+        // but the UI should reflect reality instead of relying on that as a silent guard.
+        $renewal_state = 'idle';
+        $invoice_payment_url = '';
+        $raw_creation_meta = get_post_meta($bundle_post_id, 'membership_renewal_order_creation', true);
+        $creation_meta = $raw_creation_meta ? (json_decode($raw_creation_meta, true) ?: []) : [];
+        if (!empty($creation_meta['order_id'])) {
+            $renewal_state = 'complete';
+            if (function_exists('wc_get_order')) {
+                $existing_order = wc_get_order((int) $creation_meta['order_id']);
+                if ($existing_order) {
+                    $invoice_payment_url = $existing_order->get_checkout_payment_url();
+                }
+            }
+        } elseif (!empty($creation_meta) && empty($creation_meta['failed_at'])) {
+            $renewal_state = 'pending';
+        }
+
+        $is_wicket_theme_v2 = defined('WICKET_WP_THEME_V2');
+        $wrapper_classes = $is_wicket_theme_v2
+            ? ['component-card-call-out']
+            : ['component-card-call-out @container p-5 rounded-100'];
+        ?>
+        <div class="<?php echo esc_attr(implode(' ', $wrapper_classes)); ?>">
+            <?php if ($title) : ?>
+                <div class="<?php echo $is_wicket_theme_v2 ? 'component-card-call-out__title' : 'text-heading-xs font-bold mb-3'; ?>">
+                    <?php echo esc_html($title); ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if ($description) : ?>
+                <div class="mb-3 mce-content-body">
+                    <?php echo wp_kses_post($description); ?>
+                </div>
+            <?php endif; ?>
+
+            <div
+                class="wicket-acc-confirmation-renewal"
+                data-wicket-acc-confirmation-renewal
+                data-modal-id="<?php echo esc_attr($modal_id); ?>"
+                data-confirm-url="<?php echo esc_url($rest_url); ?>"
+                data-status-url="<?php echo esc_url($status_url); ?>"
+                data-nonce="<?php echo esc_attr($nonce); ?>"
+                data-initial-state="<?php echo esc_attr($renewal_state); ?>"
+                data-confirming-label="<?php echo esc_attr($confirming_label); ?>"
+                data-preparing-label="<?php echo esc_attr($preparing_label); ?>"
+                data-view-invoice-label="<?php echo esc_attr($view_invoice_label); ?>"
+                data-already-renewed-label="<?php echo esc_attr($already_renewed_label); ?>"
+                data-error-label="<?php echo esc_attr($error_label); ?>"
+                data-timeout-label="<?php echo esc_attr($timeout_label); ?>"
+                data-refresh-label="<?php echo esc_attr($refresh_label); ?>"
+            >
+                <div class="<?php echo $is_wicket_theme_v2 ? 'component-card-call-out__links' : 'flex flex-col @md:flex-row gap-2'; ?>" data-wicket-acc-confirmation-renewal-links<?php echo $renewal_state === 'pending' ? ' hidden' : ''; ?>>
+                    <?php if ($renewal_state === 'complete' && $invoice_payment_url) : ?>
+                        <?php
+                        get_component('button', [
+                            'variant' => 'primary',
+                            'label'   => $view_invoice_label,
+                            'a_tag'   => true,
+                            'link'    => $invoice_payment_url,
+                        ]);
+                        ?>
+                    <?php else : ?>
+                        <?php
+                        get_component('button', [
+                            'variant' => 'primary',
+                            'label'   => $button_label,
+                            'a_tag'   => false,
+                            'atts'    => [
+                                'data-wicket-acc-confirmation-renewal-button' => true,
+                                'onclick' => "document.getElementById('" . esc_js($modal_id) . "').showModal()",
+                            ],
+                        ]);
+                        ?>
+                    <?php endif; ?>
+                </div>
+                <div class="wicket-acc-confirmation-renewal__preparing" data-wicket-acc-confirmation-renewal-preparing<?php echo $renewal_state !== 'pending' ? ' hidden' : ''; ?>>
+                    <span class="wicket-acc-confirmation-renewal__spinner" aria-hidden="true"></span>
+                    <span data-wicket-acc-confirmation-renewal-preparing-text><?php echo esc_html($preparing_label); ?></span>
+                </div>
+                <div class="wicket-acc-confirmation-renewal__status" data-wicket-acc-confirmation-renewal-status hidden></div>
+            </div>
+
+            <!--
+                Generic <dialog> modal — layout/backdrop only, from the shared
+                dialog.wicket-acc-modal-dialog partial in assets/css/_wicket-acc-modal.css
+                (not wicket-wp-base-plugin's get_component('modal'): its Tailwind-based
+                styling is undefined for .modal/.modal__* and depends on a pipeline not
+                guaranteed to be loaded here). Buttons inside still use
+                get_component('button') so they match the site's actual button styling
+                instead of introducing a separate button look. Reuse this dialog shell
+                for any future account-centre front-end modal.
+            -->
+            <dialog id="<?php echo esc_attr($modal_id); ?>" class="wicket-acc-modal-dialog">
+                <button
+                    type="button"
+                    class="wicket-acc-modal-dialog__close"
+                    onclick="document.getElementById('<?php echo esc_js($modal_id); ?>').close()"
+                    aria-label="<?php echo esc_attr__('Close', 'wicket-acc'); ?>"
+                >&times;</button>
+                <h2 class="wicket-acc-modal-dialog__title"><?php esc_html_e('Confirm Renewal', 'wicket-acc'); ?></h2>
+                <p class="wicket-acc-modal-dialog__body"><?php echo esc_html($confirm_message); ?></p>
+                <div class="wicket-acc-modal-dialog__footer">
+                    <?php
+                    get_component('button', [
+                        'variant' => 'secondary',
+                        'label'   => __('Cancel', 'wicket-acc'),
+                        'a_tag'   => false,
+                        'atts'    => ['onclick' => "document.getElementById('" . esc_js($modal_id) . "').close()"],
+                    ]);
+                    get_component('button', [
+                        'variant' => 'primary',
+                        'label'   => $button_label,
+                        'a_tag'   => false,
+                        'atts'    => ['data-wicket-acc-confirmation-renewal-confirm' => true],
+                    ]);
+                    ?>
+                </div>
+            </dialog>
+        </div>
+        <?php
     }
 }

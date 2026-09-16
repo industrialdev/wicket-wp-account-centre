@@ -64,3 +64,31 @@ div[class*="wp-block"].callout-profile {
   background-color: var(--state-info-secondary-light, #E8E8E8);
   border-radius: var(--card-accent-corner-radius, 12px);
 }
+
+/*
+ * Confirmation renewal: indeterminate "preparing" state shown while polling
+ * renewal_order_status after confirm_renewal returns 202. No real progress is
+ * reported (wcs_create_renewal_order() is one atomic call), so this is a
+ * spinner, not a progress bar. See block-script.js.
+ */
+.wicket-acc-confirmation-renewal__preparing {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.wicket-acc-confirmation-renewal__spinner {
+  display: inline-block;
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 2px solid rgba(0, 0, 0, 0.15);
+  border-top-color: var(--wicket-acc-link-color-light);
+  border-radius: 50%;
+  animation: wicket-acc-confirmation-renewal-spin 0.8s linear infinite;
+}
+
+@keyframes wicket-acc-confirmation-renewal-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
