@@ -1597,7 +1597,34 @@ class GroupService
         $primary_access = $all_manager_access[0];
         $mgr_org_uuid = $primary_access['org_uuid'];
         $mgr_org_identifier = $primary_access['org_identifier'];
-        $org_name = ($mgr_org_identifier !== $mgr_org_uuid) ? $mgr_org_identifier : '';
+
+        // Display name resolved independently of org_identifier: org_identifier is
+        // always the org UUID now and can no longer double as a human-readable label.
+        $org_name = '';
+        if ('' !== $mgr_org_uuid && function_exists('wicket_get_organization')) {
+            static $mgr_org_name_cache = [];
+            if (!array_key_exists($mgr_org_uuid, $mgr_org_name_cache)) {
+                $resolved_name = '';
+                if (function_exists('isValidUuid') && isValidUuid($mgr_org_uuid)) {
+                    try {
+                        $org_response = wicket_get_organization($mgr_org_uuid);
+                        $org_attrs = is_array($org_response) ? ($org_response['data']['attributes'] ?? []) : [];
+                        if (is_array($org_attrs)) {
+                            $resolved_name = (string) (
+                                $org_attrs['legal_name']
+                                ?? $org_attrs['legal_name_en']
+                                ?? $org_attrs['name']
+                                ?? ''
+                            );
+                        }
+                    } catch (\Throwable $e) {
+                        $resolved_name = '';
+                    }
+                }
+                $mgr_org_name_cache[$mgr_org_uuid] = $resolved_name;
+            }
+            $org_name = (string) ($mgr_org_name_cache[$mgr_org_uuid] ?? '');
+        }
 
         foreach ($all_tagged as $group) {
             $group_id = (string) ($group['id'] ?? '');
@@ -1801,29 +1828,12 @@ class GroupService
                     continue;
                 }
 
-                // Resolve a human-readable org identifier (association name) for scope matching.
-                $org_identifier = $org_uuid;
-                if (function_exists('wicket_get_organization')) {
-                    try {
-                        $org_response = wicket_get_organization($org_uuid);
-                        $org_attrs = is_array($org_response) ? ($org_response['data']['attributes'] ?? []) : [];
-                        if (is_array($org_attrs)) {
-                            $resolved = (string) (
-                                $org_attrs['legal_name']
-                                ?? $org_attrs['legal_name_en']
-                                ?? $org_attrs['name']
-                                ?? ''
-                            );
-                            if ('' !== $resolved) {
-                                $org_identifier = $resolved;
-                            }
-                        }
-                    } catch (\Throwable $e) {
-                        // Keep UUID as fallback
-                    }
-                }
-
-                $all_access[] = ['org_uuid' => $org_uuid, 'org_identifier' => $org_identifier];
+                // org_identifier must stay a UUID: it flows into group member
+                // custom_data_field.value.name, which tenant schemas (e.g. IAA)
+                // validate as an enum of org UUIDs; a resolved legal name fails
+                // validation. Scope matching expands UUID targets to name tokens
+                // in memberMatchesOrgScope(), so names need no pre-resolution.
+                $all_access[] = ['org_uuid' => $org_uuid, 'org_identifier' => $org_uuid];
             }
 
             $this->getLogger()->info('resolveAllManagerOrgAccess: resolved manager access', array_merge($log_ctx, [
