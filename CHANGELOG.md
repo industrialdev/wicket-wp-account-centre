@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.11.6] - 2026-09-21
+
+### Fixed
+- **orgman:** stream bulk upload status via SSE with valid signal refs (#48)
+
+
 ## [1.11.5] - 2026-09-16
 
 ### Added
