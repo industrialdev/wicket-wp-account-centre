@@ -793,8 +793,7 @@ class GroupService
                 $org_attrs = $organization['attributes'] ?? [];
                 $org_name = $org_attrs['legal_name'] ?? $org_attrs['legal_name_en'] ?? $org_attrs['name'] ?? '';
             }
-            if ($org_name === '' && function_exists('wicket_get_organization')) {
-                static $resolved_org_name_cache = [];
+            if ($org_name === '') {
                 $org_candidates = array_values(array_unique(array_filter([
                     (string) $org_id,
                     (string) $org_identifier,
@@ -803,30 +802,7 @@ class GroupService
                 })));
 
                 foreach ($org_candidates as $org_candidate) {
-                    if (!array_key_exists($org_candidate, $resolved_org_name_cache)) {
-                        $resolved_name = '';
-                        if (function_exists('isValidUuid') && isValidUuid($org_candidate)) {
-                            try {
-                                $organization_response = wicket_get_organization($org_candidate);
-                                $organization_attrs = is_array($organization_response)
-                                    ? ($organization_response['data']['attributes'] ?? [])
-                                    : [];
-                                if (is_array($organization_attrs)) {
-                                    $resolved_name = (string) (
-                                        $organization_attrs['legal_name']
-                                        ?? $organization_attrs['legal_name_en']
-                                        ?? $organization_attrs['name']
-                                        ?? ''
-                                    );
-                                }
-                            } catch (\Throwable $e) {
-                                $resolved_name = '';
-                            }
-                        }
-                        $resolved_org_name_cache[$org_candidate] = $resolved_name;
-                    }
-
-                    $candidate_name = (string) ($resolved_org_name_cache[$org_candidate] ?? '');
+                    $candidate_name = $this->resolveOrgDisplayName($org_candidate);
                     if ($candidate_name !== '') {
                         $org_name = $candidate_name;
                         if ($org_id === '') {
@@ -1561,6 +1537,58 @@ class GroupService
     }
 
     /**
+     * Resolve a human-readable display name for an organization UUID.
+     *
+     * Falls back through legal_name, legal_name_en, then name. Returns '' when
+     * the lookup fails for any reason; failures are logged at debug level and
+     * cached so repeated lookups do not re-hit the API.
+     */
+    private function resolveOrgDisplayName(string $uuid): string
+    {
+        if ('' === $uuid || !function_exists('wicket_get_organization')) {
+            return '';
+        }
+
+        static $display_name_cache = [];
+        if (array_key_exists($uuid, $display_name_cache)) {
+            return $display_name_cache[$uuid];
+        }
+
+        $resolved_name = '';
+        if (function_exists('isValidUuid') && isValidUuid($uuid)) {
+            try {
+                $org_response = wicket_get_organization($uuid);
+                $org_attrs = is_array($org_response) ? ($org_response['data']['attributes'] ?? []) : [];
+                if (is_array($org_attrs)) {
+                    $resolved_name = (string) (
+                        $org_attrs['legal_name']
+                        ?? $org_attrs['legal_name_en']
+                        ?? $org_attrs['name']
+                        ?? ''
+                    );
+                }
+            } catch (\Throwable $e) {
+                $this->getLogger()->debug('resolveOrgDisplayName: organization lookup failed', [
+                    'source' => 'wicket-orgman',
+                    'org_uuid' => $uuid,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        if ('' === $resolved_name) {
+            $this->getLogger()->debug('resolveOrgDisplayName: no display name resolved', [
+                'source' => 'wicket-orgman',
+                'org_uuid' => $uuid,
+            ]);
+        }
+
+        $display_name_cache[$uuid] = $resolved_name;
+
+        return $resolved_name;
+    }
+
+    /**
      * Augment a groups list with groups accessible via the manager MDP org role.
      *
      * @param string $person_uuid
@@ -1600,31 +1628,7 @@ class GroupService
 
         // Display name resolved independently of org_identifier: org_identifier is
         // always the org UUID now and can no longer double as a human-readable label.
-        $org_name = '';
-        if ('' !== $mgr_org_uuid && function_exists('wicket_get_organization')) {
-            static $mgr_org_name_cache = [];
-            if (!array_key_exists($mgr_org_uuid, $mgr_org_name_cache)) {
-                $resolved_name = '';
-                if (function_exists('isValidUuid') && isValidUuid($mgr_org_uuid)) {
-                    try {
-                        $org_response = wicket_get_organization($mgr_org_uuid);
-                        $org_attrs = is_array($org_response) ? ($org_response['data']['attributes'] ?? []) : [];
-                        if (is_array($org_attrs)) {
-                            $resolved_name = (string) (
-                                $org_attrs['legal_name']
-                                ?? $org_attrs['legal_name_en']
-                                ?? $org_attrs['name']
-                                ?? ''
-                            );
-                        }
-                    } catch (\Throwable $e) {
-                        $resolved_name = '';
-                    }
-                }
-                $mgr_org_name_cache[$mgr_org_uuid] = $resolved_name;
-            }
-            $org_name = (string) ($mgr_org_name_cache[$mgr_org_uuid] ?? '');
-        }
+        $org_name = $this->resolveOrgDisplayName($mgr_org_uuid);
 
         foreach ($all_tagged as $group) {
             $group_id = (string) ($group['id'] ?? '');
