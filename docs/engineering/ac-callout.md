@@ -2,7 +2,7 @@
 title: "Callout Block"
 audience: [developer, agent, implementer]
 php_class: WicketAcc\Blocks\Callout\init
-source_files: ["includes/blocks/ac-callout/init.php", "includes/blocks/ac-callout/render.php", "includes/blocks/ac-callout/block.json", "includes/blocks/ac-callout/block-script.js"]
+source_files: ["includes/blocks/ac-callout/init.php", "includes/blocks/ac-callout/render.php", "includes/blocks/ac-callout/block.json"]
 ---
 ---
 
@@ -19,8 +19,7 @@ ac-callout/
 ├── block.json         # Block registration and settings
 ├── init.php           # Block initialization and logic
 ├── render.php         # Template renderer
-├── block-styles.css   # Callout styles
-└── block-script.js    # confirmation_renewal button: dialog confirm, POST, polls order status
+└── block-styles.css   # Callout styles
 ```
 
 ## Core Functionality
@@ -50,41 +49,10 @@ ac-callout/
    - Supports both Wicket and WooCommerce memberships
    - The callout's button dispatches on flags in the Wicket Memberships
      `get_membership_callouts()`/`get_owner_callouts()` response:
-     `next_tier` (product link), `form_page` (external form link),
-     `subscription_renewal` (checkout link), and `confirmation_renewal`
-     (membership bundles only). The first three render a plain `<a href>`
+     `next_tier` (product link), `form_page` (external form link), and
+     `subscription_renewal` (checkout link). Each renders a plain `<a href>`
      via the shared `card-call-out` component
      (`wicket-wp-base-plugin/includes/components/card-call-out.php`).
-     `confirmation_renewal` is the exception: it has no link target, so it
-     bypasses `card-call-out` and renders a real `<button>` directly
-     (`init::render_confirmation_renewal_callout()`, a private method on
-     the block's own class) that opens a `<dialog>` confirm modal (shared
-     `wicket-acc-modal-dialog` styling, not `window.confirm()`), then POSTs
-     to the Membership Bundle `confirm_renewal` REST endpoint via
-     `block-script.js` on the modal's own confirm click.
-
-     `confirm_renewal` queues renewal-order creation in the background
-     (Milestone 10) rather than creating it inline, and returns `202` —
-     `block-script.js` swaps the button for a "preparing…" spinner and
-     polls `GET .../renewal_order_status` (`POLL_INTERVAL_MS`, currently
-     4s) until it reports `complete` (swap in a "View your invoice" link)
-     or `failed` (show an error). A `409` response (already renewed this
-     cycle, or a confirm already in flight) is shown inline instead of
-     treated as a failure.
-
-     The server-rendered markup carries the callout's current state via a
-     `data-initial-state` attribute (`idle` / `pending` / `complete`) so a
-     page reload reflects whatever state the last confirm attempt actually
-     reached — `render_confirmation_renewal_callout()` reads the same
-     `membership_renewal_order_creation` post meta the status endpoint
-     reads, at render time, rather than always starting from the confirm
-     button. `block-script.js` resumes polling on load when the initial
-     state is `pending`.
-
-     See the Membership Bundles endpoint docs in `wicket-wp-memberships`
-     (`docs/public/membership-bundles/endpoints/bundle-status.md`) for the
-     `confirm_renewal` and `renewal_order_status` endpoints' own contracts
-     (owner check, confirm window, idempotency, response shapes).
 
 3. **Profile Completion (`profile_completion`)**
    - Tracks mandatory field completion
