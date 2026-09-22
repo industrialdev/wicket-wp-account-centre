@@ -793,8 +793,7 @@ class GroupService
                 $org_attrs = $organization['attributes'] ?? [];
                 $org_name = $org_attrs['legal_name'] ?? $org_attrs['legal_name_en'] ?? $org_attrs['name'] ?? '';
             }
-            if ($org_name === '' && function_exists('wicket_get_organization')) {
-                static $resolved_org_name_cache = [];
+            if ($org_name === '') {
                 $org_candidates = array_values(array_unique(array_filter([
                     (string) $org_id,
                     (string) $org_identifier,
@@ -803,30 +802,7 @@ class GroupService
                 })));
 
                 foreach ($org_candidates as $org_candidate) {
-                    if (!array_key_exists($org_candidate, $resolved_org_name_cache)) {
-                        $resolved_name = '';
-                        if (function_exists('isValidUuid') && isValidUuid($org_candidate)) {
-                            try {
-                                $organization_response = wicket_get_organization($org_candidate);
-                                $organization_attrs = is_array($organization_response)
-                                    ? ($organization_response['data']['attributes'] ?? [])
-                                    : [];
-                                if (is_array($organization_attrs)) {
-                                    $resolved_name = (string) (
-                                        $organization_attrs['legal_name']
-                                        ?? $organization_attrs['legal_name_en']
-                                        ?? $organization_attrs['name']
-                                        ?? ''
-                                    );
-                                }
-                            } catch (\Throwable $e) {
-                                $resolved_name = '';
-                            }
-                        }
-                        $resolved_org_name_cache[$org_candidate] = $resolved_name;
-                    }
-
-                    $candidate_name = (string) ($resolved_org_name_cache[$org_candidate] ?? '');
+                    $candidate_name = $this->resolveOrgDisplayName($org_candidate);
                     if ($candidate_name !== '') {
                         $org_name = $candidate_name;
                         if ($org_id === '') {
@@ -1561,6 +1537,58 @@ class GroupService
     }
 
     /**
+     * Resolve a human-readable display name for an organization UUID.
+     *
+     * Falls back through legal_name, legal_name_en, then name. Returns '' when
+     * the lookup fails for any reason; failures are logged at debug level and
+     * cached so repeated lookups do not re-hit the API.
+     */
+    private function resolveOrgDisplayName(string $uuid): string
+    {
+        if ('' === $uuid || !function_exists('wicket_get_organization')) {
+            return '';
+        }
+
+        static $display_name_cache = [];
+        if (array_key_exists($uuid, $display_name_cache)) {
+            return $display_name_cache[$uuid];
+        }
+
+        $resolved_name = '';
+        if (function_exists('isValidUuid') && isValidUuid($uuid)) {
+            try {
+                $org_response = wicket_get_organization($uuid);
+                $org_attrs = is_array($org_response) ? ($org_response['data']['attributes'] ?? []) : [];
+                if (is_array($org_attrs)) {
+                    $resolved_name = (string) (
+                        $org_attrs['legal_name']
+                        ?? $org_attrs['legal_name_en']
+                        ?? $org_attrs['name']
+                        ?? ''
+                    );
+                }
+            } catch (\Throwable $e) {
+                $this->getLogger()->debug('resolveOrgDisplayName: organization lookup failed', [
+                    'source' => 'wicket-orgman',
+                    'org_uuid' => $uuid,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        if ('' === $resolved_name) {
+            $this->getLogger()->debug('resolveOrgDisplayName: no display name resolved', [
+                'source' => 'wicket-orgman',
+                'org_uuid' => $uuid,
+            ]);
+        }
+
+        $display_name_cache[$uuid] = $resolved_name;
+
+        return $resolved_name;
+    }
+
+    /**
      * Augment a groups list with groups accessible via the manager MDP org role.
      *
      * @param string $person_uuid
@@ -1597,7 +1625,10 @@ class GroupService
         $primary_access = $all_manager_access[0];
         $mgr_org_uuid = $primary_access['org_uuid'];
         $mgr_org_identifier = $primary_access['org_identifier'];
-        $org_name = ($mgr_org_identifier !== $mgr_org_uuid) ? $mgr_org_identifier : '';
+
+        // Display name resolved independently of org_identifier: org_identifier is
+        // always the org UUID now and can no longer double as a human-readable label.
+        $org_name = $this->resolveOrgDisplayName($mgr_org_uuid);
 
         foreach ($all_tagged as $group) {
             $group_id = (string) ($group['id'] ?? '');
@@ -1801,29 +1832,12 @@ class GroupService
                     continue;
                 }
 
-                // Resolve a human-readable org identifier (association name) for scope matching.
-                $org_identifier = $org_uuid;
-                if (function_exists('wicket_get_organization')) {
-                    try {
-                        $org_response = wicket_get_organization($org_uuid);
-                        $org_attrs = is_array($org_response) ? ($org_response['data']['attributes'] ?? []) : [];
-                        if (is_array($org_attrs)) {
-                            $resolved = (string) (
-                                $org_attrs['legal_name']
-                                ?? $org_attrs['legal_name_en']
-                                ?? $org_attrs['name']
-                                ?? ''
-                            );
-                            if ('' !== $resolved) {
-                                $org_identifier = $resolved;
-                            }
-                        }
-                    } catch (\Throwable $e) {
-                        // Keep UUID as fallback
-                    }
-                }
-
-                $all_access[] = ['org_uuid' => $org_uuid, 'org_identifier' => $org_identifier];
+                // org_identifier must stay a UUID: it flows into group member
+                // custom_data_field.value.name, which tenant schemas (e.g. IAA)
+                // validate as an enum of org UUIDs; a resolved legal name fails
+                // validation. Scope matching expands UUID targets to name tokens
+                // in memberMatchesOrgScope(), so names need no pre-resolution.
+                $all_access[] = ['org_uuid' => $org_uuid, 'org_identifier' => $org_uuid];
             }
 
             $this->getLogger()->info('resolveAllManagerOrgAccess: resolved manager access', array_merge($log_ctx, [
