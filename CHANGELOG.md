@@ -2,6 +2,15 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.11.7] - 2026-09-22
+
+### Fixed
+- **orgman:** keep manager fallback org identifier a UUID (WWID-2381) (#51)
+
+### Other
+- remove confirmation_renewal confirm modal and status polling
+
+
 ## [1.11.6] - 2026-09-21
 
 ### Fixed
