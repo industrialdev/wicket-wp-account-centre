@@ -17,9 +17,14 @@ $configService = new \WicketORM\Services\ConfigService();
 $orgman_config = \WicketORM\Services\ConfigService::getConfig();
 $roster_mode = $configService->getRosterMode();
 $default_organization_title = __('Manage Organizations', 'wicket-acc');
-$use_custom_organization_title = !empty($orgman_config['ui']['organization_list']['use_custom_title']);
-$custom_organization_title = isset($orgman_config['ui']['organization_list']['custom_title'])
-    ? trim((string) $orgman_config['ui']['organization_list']['custom_title'])
+// Sites configure titles under presentation.organization_list (OrgManConfig default shape).
+// ui.organization_list is kept as an optional override, mirroring members-list-unified.php.
+$organization_list_config = is_array($orgman_config['ui']['organization_list'] ?? null)
+    ? $orgman_config['ui']['organization_list']
+    : (is_array($orgman_config['presentation']['organization_list'] ?? null) ? $orgman_config['presentation']['organization_list'] : []);
+$use_custom_organization_title = !empty($organization_list_config['use_custom_title']);
+$custom_organization_title = isset($organization_list_config['custom_title'])
+    ? trim((string) $organization_list_config['custom_title'])
     : '';
 $organization_title = ($use_custom_organization_title && $custom_organization_title !== '')
     ? $custom_organization_title
