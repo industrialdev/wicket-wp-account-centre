@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.11.8] - 2026-09-25
+
+### Fixed
+- **orgman:** read orgman config from presentation shape (WWID-1919) (#52)
+
+
 ## [1.11.7] - 2026-09-22
 
 ### Fixed
