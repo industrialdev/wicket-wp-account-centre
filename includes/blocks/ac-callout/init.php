@@ -522,5 +522,4 @@ class init extends Blocks
 
         return $links;
     }
-
 }

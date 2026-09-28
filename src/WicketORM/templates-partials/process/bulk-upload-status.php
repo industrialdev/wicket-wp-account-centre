@@ -27,7 +27,6 @@ if (!defined('ABSPATH')) {
  *   suffix (string) JS-safe signal suffix ([a-z0-9_]) shared with the modal.
  *   target (string) CSS id selector of the modal's messages div.
  */
-
 $request_method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 if ('GET' !== strtoupper((string) $request_method)) {
     return;

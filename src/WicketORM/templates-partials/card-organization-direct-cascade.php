@@ -196,9 +196,9 @@
         // Contacts roster is org-scoped: render it once per card at the
         // organization level, never inside the per-membership loop (WWID-2385).
         $contacts_config = WicketORM\Services\ConfigService::getConfig()['contacts'] ?? [];
-        if (!empty($contacts_config['enabled']) && WicketORM\Helpers\PermissionHelper::can_manage_contacts($org_id)):
-            $contacts_url_base = WicketORM\Helpers\Helper::getMyAccountPageUrl('organization-contacts', '/my-account/organization-contacts/');
-            $contacts_url = add_query_arg('org_uuid', $org_id, $contacts_url_base);
+    if (!empty($contacts_config['enabled']) && WicketORM\Helpers\PermissionHelper::can_manage_contacts($org_id)):
+        $contacts_url_base = WicketORM\Helpers\Helper::getMyAccountPageUrl('organization-contacts', '/my-account/organization-contacts/');
+        $contacts_url = add_query_arg('org_uuid', $org_id, $contacts_url_base);
         ?>
         <div class="wt_flex wt_items-center wt_gap-2 wt_pt-4 wt_mt-1 wt_border-t wt_border-color">
             <a href="<?php echo esc_url($contacts_url); ?>"
