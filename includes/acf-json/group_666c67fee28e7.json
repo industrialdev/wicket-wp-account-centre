@@ -395,7 +395,7 @@
             "name": "orgss_disable_ability_to_select_orgs_with_active_membership",
             "aria-label": "",
             "type": "true_false",
-            "instructions": "Will gray out the select button for an org that the user already has an active membership with.",
+            "instructions": "Will grey out the select button for an org that the user already has an active membership with.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {

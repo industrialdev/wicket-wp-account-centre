@@ -72,7 +72,7 @@ class Helpers extends WicketAcc
 
         // Check if we have center in the slug
         if (str_contains($locale, 'center')) {
-            return __('Account Center', 'wicket-acc');
+            return __('Account Centre', 'wicket-acc');
         }
 
         return __('Account Centre', 'wicket-acc');

@@ -84,7 +84,7 @@ class BusinessInfoService
                     'ingredients-raw-materials-supplier' => __('Ingredients & Raw Materials Supplier', 'wicket-acc'),
                     'legal-regulatory-services'      => __('Legal & Regulatory Services', 'wicket-acc'),
                     'marketing-advertising'          => __('Marketing & Advertising', 'wicket-acc'),
-                    'packaging-labeling'             => __('Packaging & Labeling', 'wicket-acc'),
+                    'packaging-labeling'             => __('Packaging & Labelling', 'wicket-acc'),
                     'quality-assurance-laboratory-testing' => __('Quality Assurance & Laboratory Testing', 'wicket-acc'),
                     'rd-formulation-flavouring'      => __('R&D, Formulation & Flavouring', 'wicket-acc'),
                     'research-data-services'         => __('Research & Data Services', 'wicket-acc'),
