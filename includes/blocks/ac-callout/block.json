@@ -1,5 +1,6 @@
 {
 	"name": "wicket-ac/ac-callout",
+	"textdomain": "wicket-acc",
 	"title": "ACC Callout Block",
 	"description": "A Wicket block for Callout Block",
 	"style": "file:./block-styles.css",

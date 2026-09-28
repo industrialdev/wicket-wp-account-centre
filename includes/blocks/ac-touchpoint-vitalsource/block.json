@@ -1,5 +1,6 @@
 {
 	"name": "wicket-ac/ac-touchpoint-vitalsource",
+	"textdomain": "wicket-acc",
 	"title": "ACC Touchpoint VitalSource",
 	"description": "Wicket block for AC Touchpoint VitalSource",
 	"style": "file:./block-styles.css",

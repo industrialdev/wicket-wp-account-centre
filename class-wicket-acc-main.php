@@ -307,6 +307,44 @@ class WicketAcc
     ];
 
     /**
+     * Translated ACC page titles, keyed by the same slugs as $acc_pages_map.
+     *
+     * Built at runtime (never at file-load time) so translations are available.
+     * $acc_pages_map keeps the English source titles for non-display lookups.
+     *
+     * @return array<string, string>
+     */
+    protected function getAccPageTitles(): array
+    {
+        return [
+            // Wicket pages
+            'edit-profile' => __('Edit Profile', 'wicket-acc'),
+            'events' => __('My Events', 'wicket-acc'),
+            'jobs' => __('My Jobs', 'wicket-acc'),
+            'job-post' => __('Post a Job', 'wicket-acc'),
+            'change-password' => __('Change Password', 'wicket-acc'),
+            'organization-management' => __('Organization Management', 'wicket-acc'),
+            'organization-profile' => __('Organization Profile', 'wicket-acc'),
+            'organization-members' => __('Organization Members', 'wicket-acc'),
+            'organization-members-bulk' => __('Bulk Upload Members', 'wicket-acc'),
+            'acc_global-headerbanner' => __('Global Header-Banner', 'wicket-acc'),
+            // WooCommerce endpoints
+            'add-payment-method' => __('Add Payment Method', 'wicket-acc'),
+            'set-default-payment-method' => __('Set Default Payment Method', 'wicket-acc'),
+            'orders' => __('Orders', 'wicket-acc'),
+            'view-order' => __('View Order', 'wicket-acc'),
+            'downloads' => __('Downloads', 'wicket-acc'),
+            'edit-account' => __('Edit Account', 'wicket-acc'),
+            'edit-address' => __('Edit Address', 'wicket-acc'),
+            'payment-methods' => __('Payment Methods', 'wicket-acc'),
+            // WooCommerce subscription endpoints
+            'subscriptions' => __('Subscriptions', 'wicket-acc'),
+            'view-subscription' => __('View Subscription', 'wicket-acc'),
+            'subscription-payment-method' => __('Subscription Payment Method', 'wicket-acc'),
+        ];
+    }
+
+    /**
      * Access this plugin's working instance.
      *
      * @wp-hook plugins_loaded

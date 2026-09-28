@@ -26,16 +26,16 @@ $event_link = $tp['attributes']['data']['url'];
 // Convert $tp['attributes']['data']['start_date']
 $raw_start_date = $tp['attributes']['data']['start_time'];
 $start_date = explode(' ', $raw_start_date);
-$start_date_day = date('j', strtotime($raw_start_date));
-$start_date_month = date('M', strtotime($raw_start_date));
-$start_date_full = date('m-d-Y', strtotime($raw_start_date));
+$start_date_day = date_i18n('j', strtotime($raw_start_date));
+$start_date_month = date_i18n('M', strtotime($raw_start_date));
+$start_date_full = date_i18n(get_option('date_format'), strtotime($raw_start_date));
 
 // Convert $tp['attributes']['data']['end_date']
 $raw_end_date = $tp['attributes']['data']['end_time'];
 $end_date = explode(' ', $raw_end_date);
-$end_date_day = date('j', strtotime($raw_end_date));
-$end_date_month = date('M', strtotime($raw_end_date));
-$end_date_full = date('m-d-Y', strtotime($raw_end_date));
+$end_date_day = date_i18n('j', strtotime($raw_end_date));
+$end_date_month = date_i18n('M', strtotime($raw_end_date));
+$end_date_full = date_i18n(get_option('date_format'), strtotime($raw_end_date));
 ?>
 
 <div class="event-card cvent <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'my-0 p-4 border border-gray-200 gap-4 rounded-md shadow-md flex flex-col md:flex-row' ?>"
@@ -64,6 +64,7 @@ $end_date_full = date('m-d-Y', strtotime($raw_end_date));
 			<?php endif; ?>
 
 			<?php if ($event_link) : ?>
+			<span class="webaim-hidden"><?php esc_html_e('(opens in a new window)', 'wicket-acc'); ?></span>
 			</a>
 		<?php endif; ?>
 		<p class="event-date <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm' ?>">

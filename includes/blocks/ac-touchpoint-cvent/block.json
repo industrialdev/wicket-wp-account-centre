@@ -1,5 +1,6 @@
 {
     "name": "wicket-ac/ac-touchpoint-cvent",
+    "textdomain": "wicket-acc",
     "title": "ACC Touchpoint Cvent",
     "description": "Wicket block for AC Touchpoint Cvent",
     "style": "file:./block-styles.css",

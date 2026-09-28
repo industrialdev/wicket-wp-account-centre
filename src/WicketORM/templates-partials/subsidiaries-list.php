@@ -137,14 +137,14 @@ document.addEventListener('DOMContentLoaded', function() {
 							<span class="candidate-type">${candidate.type}</span>
 						</div>
 						<button class="button button--small button--primary component-button"
-								onclick="addSubsidiary('${candidate.id}', '${candidate.name.replace(/'/g, "\\'")}')"><?php esc_html_e('Add', 'wicket-acc'); ?></button>
+								onclick="addSubsidiary('${candidate.id}', '${candidate.name.replace(/'/g, "\\'")}')"><?php echo esc_js(esc_html__('Add', 'wicket-acc')); ?></button>
 					</div>
 				`;
 			});
 			html += '</div>';
 			resultsContainer.innerHTML = html;
 		} else {
-			resultsContainer.innerHTML = '<div class="no-results"><?php esc_html_e('No organizations found.', 'wicket-acc'); ?></div>';
+			resultsContainer.innerHTML = '<div class="no-results"><?php echo esc_js(esc_html__('No organizations found.', 'wicket-acc')); ?></div>';
 		}
 	});
 });

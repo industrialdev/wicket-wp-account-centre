@@ -279,6 +279,7 @@ class SubsidiaryService
             return new WP_Error(
                 'invalid_file_type',
                 sprintf(
+                    /* translators: %s: uploaded file extension. */
                     __('File type %s is not allowed. Please upload an Excel file.', 'wicket-acc'),
                     $file_type
                 )

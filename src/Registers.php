@@ -47,7 +47,7 @@ class Registers extends WicketAcc
             'menu_name'          => esc_html__('Account Centre', 'wicket-acc'),
             'parent_item_colon'  => '',
             'all_items'          => esc_html__('All Pages', 'wicket-acc'),
-            'attributes'         => __('Pages Sorting Order'),
+            'attributes'         => esc_html__('Pages Sorting Order', 'wicket-acc'),
         ];
 
         // Set other options for custom post type

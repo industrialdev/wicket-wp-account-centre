@@ -59,7 +59,7 @@ class Tweaks
             return $output;
         }
         $output = str_replace('</select>', '', $output);
-        $output .= '<optgroup label="My Account (CPT)">';
+        $output .= '<optgroup label="' . esc_attr__('My Account (CPT)', 'wicket-acc') . '">';
         foreach ($cpt_posts as $cpt) {
             $output .= '<option value="' . esc_attr($cpt->ID) . '"' . selected($current, $cpt->ID, false) . '>' . esc_html($cpt->post_title) . '</option>';
         }

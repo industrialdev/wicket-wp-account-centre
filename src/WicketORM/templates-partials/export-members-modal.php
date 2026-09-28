@@ -79,8 +79,13 @@ if ($sync_threshold > 0 && $roster_count > $sync_threshold) :
         <p class="wt_mt-2 wt_mb-0 wt_text-xs wt_text-color-500 wt_text-center">
             <?php
             echo esc_html(sprintf(
-                /* translators: %d: member count threshold */
-                __('This roster is large (%1$d members) and will be prepared in the background. After clicking, a download link will be emailed to you.', 'wicket-acc'),
+                /* translators: %1$d: number of members in the roster. */
+                _n(
+                    'This roster is large (%1$d member) and will be prepared in the background. After clicking, a download link will be emailed to you.',
+                    'This roster is large (%1$d members) and will be prepared in the background. After clicking, a download link will be emailed to you.',
+                    $roster_count,
+                    'wicket-acc'
+                ),
                 $roster_count
             ));
     ?>

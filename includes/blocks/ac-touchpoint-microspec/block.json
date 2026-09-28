@@ -1,5 +1,6 @@
 {
 	"name": "wicket-ac/ac-touchpoint-microspec",
+	"textdomain": "wicket-acc",
 	"title": "ACC Touchpoint MicroSpec",
 	"description": "Wicket block for AC Touchpoint MicroSpec",
 	"style": "file:./block-styles.css",

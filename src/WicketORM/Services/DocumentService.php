@@ -86,6 +86,7 @@ class DocumentService
             return new WP_Error(
                 'invalid_file_type',
                 sprintf(
+                    /* translators: %s: uploaded file extension. */
                     __('File type %s is not allowed.', 'wicket-acc'),
                     $file_type
                 )
@@ -98,6 +99,7 @@ class DocumentService
             return new WP_Error(
                 'file_too_large',
                 sprintf(
+                    /* translators: %s: maximum allowed file size (e.g. 10 MB). */
                     __('File size exceeds the maximum allowed size of %s.', 'wicket-acc'),
                     size_format($max_size)
                 )

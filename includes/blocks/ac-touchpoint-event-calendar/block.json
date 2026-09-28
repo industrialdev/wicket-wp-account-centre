@@ -1,5 +1,6 @@
 {
 	"name": "wicket-ac/ac-touchpoint-event-calendar",
+	"textdomain": "wicket-acc",
 	"title": "ACC Touchpoint TEC",
 	"description": "Wicket block for The Events Calendar Touchpoints",
 	"style": "file:./block-styles.css",

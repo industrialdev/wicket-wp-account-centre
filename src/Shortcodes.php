@@ -30,7 +30,7 @@ class Shortcodes extends WicketAcc
 
         // Not on admin, REST API or AJAX
         if (is_admin() || defined('REST_REQUEST') || defined('DOING_AJAX')) {
-            return '<p>[Organization Selector]</p>';
+            return '<p>' . esc_html__('[Organization Selector]', 'wicket-acc') . '</p>';
         }
 
         // Org data is user-specific — fail closed when auth helpers are
@@ -61,7 +61,7 @@ class Shortcodes extends WicketAcc
         }
 
         if (empty($org_uuids_list)) {
-            return __('<p>No organizations found for your account.</p>', 'wicket-acc');
+            return '<p>' . esc_html__('No organizations found for your account.', 'wicket-acc') . '</p>';
         }
 
         // If user only has one organization, redirect to that organization with url parameters
@@ -116,7 +116,7 @@ class Shortcodes extends WicketAcc
                 }
 
                 $organization = $client->get("organizations/$i_org_id");
-                $org_name = $organization['data']['attributes']['legal_name_' . $lang] ?? 'N/A';
+                $org_name = $organization['data']['attributes']['legal_name_' . $lang] ?? __('N/A', 'wicket-acc');
                 ?>
                         <li class='flex items-center gap-3 py-1 leading-[2rem]'>
                             <?php if ($linked) { ?>

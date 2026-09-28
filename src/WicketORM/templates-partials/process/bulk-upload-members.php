@@ -170,7 +170,13 @@ $job_id = (string) ($result['job_id'] ?? '');
 $total_records = (int) ($result['total_records'] ?? 0);
 $batch_size = (int) ($result['batch_size'] ?? 0);
 $summary = sprintf(
-    __('Bulk upload queued. Job %1$s will process %2$d row(s) in batches of %3$d.', 'wicket-acc'),
+    /* translators: 1: bulk upload job ID, 2: number of rows to process, 3: batch size. */
+    _n(
+        'Bulk upload queued. Job %1$s will process %2$d row in batches of %3$d.',
+        'Bulk upload queued. Job %1$s will process %2$d rows in batches of %3$d.',
+        $total_records,
+        'wicket-acc'
+    ),
     esc_html($job_id),
     $total_records,
     $batch_size

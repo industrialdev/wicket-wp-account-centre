@@ -41,7 +41,8 @@
                         if ($years <= 0) {
                             $years = 1;
                         }
-                        $duration_str = sprintf(_n('%d Year', '%d Year', $years, 'wicket-acc'), $years);
+                        /* translators: %d: number of years. */
+                        $duration_str = sprintf(_n('%d Year', '%d Years', $years, 'wicket-acc'), $years);
                     }
                 }
 
@@ -55,11 +56,13 @@
 
                 $extra_details = '';
                 if ($duration_str !== '' && $start_year_str !== '') {
-                    $extra_details = sprintf(' - %s (Start %s)', $duration_str, $start_year_str);
+                    /* translators: 1: membership duration (e.g. "2 Years"), 2: start year. */
+                    $extra_details = sprintf(__(' - %1$s (Start %2$s)', 'wicket-acc'), $duration_str, $start_year_str);
                 } elseif ($duration_str !== '') {
                     $extra_details = sprintf(' - %s', $duration_str);
                 } elseif ($start_year_str !== '') {
-                    $extra_details = sprintf(' (Start %s)', $start_year_str);
+                    /* translators: %s: start year. */
+                    $extra_details = sprintf(__(' (Start %s)', 'wicket-acc'), $start_year_str);
                 }
 
                 $entry_membership_name .= $extra_details;

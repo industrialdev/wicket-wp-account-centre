@@ -37,14 +37,14 @@ $max_upload_size = $args['max_upload_size'] ?? '';
     <div class="org-logo">
         <?php if ($organization_logo_url) : ?>
             <img src="<?php echo $organization_logo_url; ?>?<?php echo time(); ?>"
-                alt="<?php esc_html_e('Profile Image', 'wicket-acc'); ?>" class="org-logo-img">
+                alt="<?php esc_attr_e('Organization Logo', 'wicket-acc'); ?>" class="org-logo-img">
 
             <form name="wicket-acc-org-profile-picture-remove-form" method="post">
                 <input type="hidden" name="org_id" value="<?php echo $org_id; ?>">
                 <input type="hidden" name="action" value="wicket-acc-org-profile-picture-remove-form">
                 <?php wp_nonce_field('wicket-acc-org-profile-picture-remove-form', 'nonce'); ?>
                 <button type="submit" class="remove-image circle-x"
-                    title="<?php esc_html_e('Remove Image', 'wicket-acc'); ?>">x</button>
+                    title="<?php esc_attr_e('Remove Image', 'wicket-acc'); ?>" aria-label="<?php esc_attr_e('Close', 'wicket-acc'); ?>">&times;</button>
             </form>
         <?php endif; ?>
     </div>
@@ -55,8 +55,10 @@ $max_upload_size = $args['max_upload_size'] ?? '';
         <input type="file" id="org-logo" name="org-logo" class="sr-only" accept="image/png, image/gif, image/jpeg">
         <div class="guidance text-sm">
             <?php esc_html_e('Upload an organization logo to represent your organization.', 'wicket-acc'); ?>
-            <?php esc_html_e('Max upload size:', 'wicket-acc'); ?> <?php echo $max_upload_size; ?>
-            <?php esc_html_e('MB', 'wicket-acc'); ?>
+            <?php
+            /* translators: %d: max upload size in megabytes. */
+            printf(esc_html__('Max upload size: %d MB', 'wicket-acc'), (int) $max_upload_size);
+            ?>
         </div>
         <div class="buttons">
             <label for="org-logo" class="btn choose-file">

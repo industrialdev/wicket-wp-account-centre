@@ -1,5 +1,6 @@
 {
 	"name": "wicket-ac/ac-password",
+	"textdomain": "wicket-acc",
 	"title": "[Deprecated] ACC Password Block",
 	"description": "[Deprecated] A Wicket block for Password",
 	"category": "wicket-account-center",

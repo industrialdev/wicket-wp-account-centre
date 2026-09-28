@@ -110,10 +110,15 @@ $show_assignment_info = (bool) ($orgman_config['presentation']['member_list']['s
     <?php if ($show_assignment_info): ?>
     <div class="wt_text-xl wt_font-semibold wt_mb-3">
         <?php if ($max_seats !== null) : ?>
-            <?php printf(esc_html__('Seats assigned: %1$d / %2$d', 'wicket-acc'), (int) $active_seats, (int) $max_seats); ?>
+            <?php
+            /* translators: 1: number of assigned seats, 2: maximum number of seats. */
+            printf(esc_html__('Seats assigned: %1$d / %2$d', 'wicket-acc'), (int) $active_seats, (int) $max_seats);
+            ?>
         <?php else : ?>
-            <?php esc_html_e('Number of assigned people:', 'wicket-acc'); ?>
-            <?php echo (int) $total_items; ?>
+            <?php
+            /* translators: %d: number of assigned people. */
+            printf(esc_html__('Number of assigned people: %d', 'wicket-acc'), (int) $total_items);
+            ?>
         <?php endif; ?>
     </div>
     <?php endif; ?>
@@ -223,6 +228,7 @@ $show_assignment_info = (bool) ($orgman_config['presentation']['member_list']['s
                 if ($total_items > 0) {
                     $first = (($page - 1) * $page_size) + 1;
                     $last = min($total_items, $page * $page_size);
+                    /* translators: 1: first item number on the page, 2: last item number on the page, 3: total number of items. */
                     echo esc_html(sprintf(__('Showing %1$d–%2$d of %3$d', 'wicket-acc'), $first, $last, $total_items));
                 } else {
                     // Pagination hidden when no members

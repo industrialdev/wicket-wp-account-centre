@@ -57,15 +57,35 @@ class init extends Blocks
 
         // We need to find these at the MDP at some point
         $relationship_translations = [
-            'Primary Contact'             => 'Personne-ressource principale',
-            'Voting Contact'              => 'Personne-ressource habilitée à voter',
-            'Primary Tradeshow Contact'   => 'Personne-ressource principale pour les salons',
-            'Secondary Tradeshow Contact' => 'Personne-ressource secondaire pour les salons',
-            'Accounting Contact'          => 'Personne-ressource à la comptabilité',
-            'Regulatory'                  => 'Affaires réglementaires',
-            'Member'                      => 'Membre',
-            'Employee'                    => 'Employé(e)',
+            'Primary Contact'             => __('Primary Contact', 'wicket-acc'),
+            'Voting Contact'              => __('Voting Contact', 'wicket-acc'),
+            'Primary Tradeshow Contact'   => __('Primary Tradeshow Contact', 'wicket-acc'),
+            'Secondary Tradeshow Contact' => __('Secondary Tradeshow Contact', 'wicket-acc'),
+            'Accounting Contact'          => __('Accounting Contact', 'wicket-acc'),
+            'Regulatory'                  => __('Regulatory', 'wicket-acc'),
+            'Member'                      => __('Member', 'wicket-acc'),
+            'Employee'                    => __('Employee', 'wicket-acc'),
         ];
+
+        // Keep the legacy French labels until a French translation file ships them.
+        if ($current_lang === 'fr') {
+            $legacy_fr_translations = [
+                'Primary Contact'             => 'Personne-ressource principale',
+                'Voting Contact'              => 'Personne-ressource habilitée à voter',
+                'Primary Tradeshow Contact'   => 'Personne-ressource principale pour les salons',
+                'Secondary Tradeshow Contact' => 'Personne-ressource secondaire pour les salons',
+                'Accounting Contact'          => 'Personne-ressource à la comptabilité',
+                'Regulatory'                  => 'Affaires réglementaires',
+                'Member'                      => 'Membre',
+                'Employee'                    => 'Employé(e)',
+            ];
+
+            foreach ($legacy_fr_translations as $english => $french) {
+                if ($relationship_translations[$english] === $english) {
+                    $relationship_translations[$english] = $french;
+                }
+            }
+        }
 
         // Edit profile button (link and title)
         if (
@@ -88,10 +108,11 @@ class init extends Blocks
                         echo '<img src="'
                             . $image_url
                             . '?' . time() . '" alt="'
-                            . $person->given_name
-                            . ' '
-                            . $person->family_name
-                            . __(' Profile Image', 'wicket-acc')
+                            . esc_attr(sprintf(
+                                /* translators: %s: person's full name. */
+                                __('%s Profile Image', 'wicket-acc'),
+                                $person->given_name . ' ' . $person->family_name
+                            ))
                             . '" />';
                     } ?>
                 </div>
@@ -176,7 +197,7 @@ class init extends Blocks
                                         $org_info = WACC()->Mdp()->Membership()->getActiveMembershipRelationship($org_uuid);
 
                                         $english_relationship = $org_info['relationship'];
-                                        $display_relationship = ($current_lang === 'fr' && isset($relationship_translations[$english_relationship]))
+                                        $display_relationship = isset($relationship_translations[$english_relationship])
                                             ? $relationship_translations[$english_relationship]
                                             : $english_relationship;
                                         ?>
@@ -203,7 +224,7 @@ class init extends Blocks
                                                 $individual_relationship = $org_info['relationship'] ?? '';
 
                                                 // Apply translation if needed
-                                                $display_relationship = ($current_lang === 'fr' && isset($relationship_translations[$individual_relationship]))
+                                                $display_relationship = isset($relationship_translations[$individual_relationship])
                                                     ? $relationship_translations[$individual_relationship]
                                                     : $individual_relationship;
                                             }
@@ -238,11 +259,11 @@ class init extends Blocks
                                         $shown_member_since = true;
                                         ?>
                                         <p class="wicket-welcome-member-since mb-0">
-                                            <?php esc_html_e(__('Member Since:', 'wicket-acc')); ?>
+                                            <?php esc_html_e('Member Since:', 'wicket-acc'); ?>
                                             <?php if (isset($membership_began_on) && !empty($membership_began_on)) {
-                                                echo wp_date('F j, Y', strtotime($membership_began_on));
+                                                echo wp_date(get_option('date_format'), strtotime($membership_began_on));
                                             } else {
-                                                echo wp_date('F j, Y', strtotime($membership['starts_at']));
+                                                echo wp_date(get_option('date_format'), strtotime($membership['starts_at']));
                                             } ?>
                                         </p>
                                     <?php endif; ?>
@@ -281,7 +302,7 @@ class init extends Blocks
                                         if ($renewal_date_timestamp > 0): ?>
                                             <p class="wicket-welcome-renewal mb-0">
                                                 <?php echo esc_html($renewal_date_label); ?>
-                                                <?php echo wp_date('F j, Y', $renewal_date_timestamp); ?>
+                                                <?php echo wp_date(get_option('date_format'), $renewal_date_timestamp); ?>
                                             </p>
                                     <?php
                                         endif;

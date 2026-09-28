@@ -72,8 +72,8 @@ class init extends Blocks
 
         if ($this->is_preview) {
             $args = [
-                'block_name'        => 'Touchpoint Maple',
-                'block_description' => 'This block displays registered data for Maple on the front-end.',
+                'block_name'        => __('Touchpoint Maple', 'wicket-acc'),
+                'block_description' => __('This block displays registered data for Maple on the front-end.', 'wicket-acc'),
                 'block_slug'        => 'wicket-ac-touchpoint-maple',
             ];
 
@@ -105,8 +105,8 @@ class init extends Blocks
         $switch_link = esc_url($switch_link);
 
         $args = [
-            'block_name'          => 'Touchpoint Maple',
-            'block_description'   => 'This block displays registered data for Maple on the front-end.',
+            'block_name'          => __('Touchpoint Maple', 'wicket-acc'),
+            'block_description'   => __('This block displays registered data for Maple on the front-end.', 'wicket-acc'),
             'block_slug'          => 'wicket-ac-touchpoint-maple',
             'block_id'            => $this->get_block_id(),
             'attrs'               => $attrs,

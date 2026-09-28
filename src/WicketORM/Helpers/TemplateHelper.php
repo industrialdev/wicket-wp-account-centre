@@ -27,6 +27,31 @@ class TemplateHelper extends Helper
     }
 
     /**
+     * Render the translated "dialog will close automatically" countdown sentence.
+     *
+     * The countdown value is driven client-side by a Datastar signal, so both the
+     * singular and plural sentence are rendered and toggled on the signal value.
+     *
+     * @param string $signal Datastar signal expression holding the seconds remaining.
+     * @return string Escaped HTML markup.
+     */
+    public static function auto_close_countdown_html(string $signal = '$autoCloseCountdown'): string
+    {
+        $count_markup = '<span class="wt_font-semibold" data-text="' . esc_attr($signal) . '"></span>';
+
+        /* translators: %s: number of seconds remaining before the dialog closes. */
+        $singular = _n('This dialog will close automatically in %s second.', 'This dialog will close automatically in %s seconds.', 1, 'wicket-acc');
+        /* translators: %s: number of seconds remaining before the dialog closes. */
+        $plural = _n('This dialog will close automatically in %s second.', 'This dialog will close automatically in %s seconds.', 2, 'wicket-acc');
+
+        return '<span data-show="' . esc_attr($signal . ' === 1') . '">'
+            . sprintf(esc_html($singular), $count_markup)
+            . '</span><span data-show="' . esc_attr($signal . ' !== 1') . '">'
+            . sprintf(esc_html($plural), $count_markup)
+            . '</span>';
+    }
+
+    /**
      * Returns the URL for the Org Management template endpoint.
      *
      * This function returns the home URL with query parameters for hypermedia.
@@ -181,7 +206,7 @@ class TemplateHelper extends Helper
                 'real_path' => $real_template_path ?: 'false',
                 'plugin_dir' => $real_plugin_dir,
             ]);
-            wp_die('Template not found.');
+            wp_die(esc_html__('Template not found.', 'wicket-acc'));
             exit;
         }
 
@@ -215,7 +240,7 @@ class TemplateHelper extends Helper
             include $real_template_path;
         } else {
             self::log_error('Template file does not exist: ' . $real_template_path);
-            wp_die('Template not found.');
+            wp_die(esc_html__('Template not found.', 'wicket-acc'));
             exit;
         }
     }

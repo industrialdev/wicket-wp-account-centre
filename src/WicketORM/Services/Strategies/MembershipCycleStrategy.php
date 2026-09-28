@@ -79,11 +79,11 @@ class MembershipCycleStrategy implements RosterManagementStrategy
     {
         $membership_uuid = $this->extractMembershipUuid($context);
         if ('' === $membership_uuid) {
-            return new WP_Error('missing_membership_uuid', 'Membership UUID is required for membership_cycle strategy.');
+            return new WP_Error('missing_membership_uuid', __('Membership UUID is required for membership_cycle strategy.', 'wicket-acc'));
         }
 
         if (!\WicketORM\Helpers\PermissionHelper::can_add_members($org_id)) {
-            return new WP_Error('no_permission', 'You do not have permission to add members to this organization.');
+            return new WP_Error('no_permission', __('You do not have permission to add members to this organization.', 'wicket-acc'));
         }
 
         $scope_valid = $this->validateMembershipScope($org_id, $membership_uuid);
@@ -108,16 +108,16 @@ class MembershipCycleStrategy implements RosterManagementStrategy
     {
         $membership_uuid = $this->extractMembershipUuid($context);
         if ('' === $membership_uuid) {
-            return new WP_Error('missing_membership_uuid', 'Membership UUID is required for membership_cycle strategy.');
+            return new WP_Error('missing_membership_uuid', __('Membership UUID is required for membership_cycle strategy.', 'wicket-acc'));
         }
 
         $person_membership_id = sanitize_text_field((string) ($context['person_membership_id'] ?? ''));
         if ('' === $person_membership_id) {
-            return new WP_Error('missing_person_membership_id', 'Person membership ID is required.');
+            return new WP_Error('missing_person_membership_id', __('Person membership ID is required.', 'wicket-acc'));
         }
 
         if (!\WicketORM\Helpers\PermissionHelper::can_remove_members($org_id)) {
-            return new WP_Error('no_permission', 'You do not have permission to remove members from this organization.');
+            return new WP_Error('no_permission', __('You do not have permission to remove members from this organization.', 'wicket-acc'));
         }
 
         $scope_valid = $this->validateMembershipScope($org_id, $membership_uuid);
@@ -162,7 +162,7 @@ class MembershipCycleStrategy implements RosterManagementStrategy
             }
         }
 
-        return ['status' => 'success', 'message' => 'Member removed successfully.'];
+        return ['status' => 'success', 'message' => __('Member removed successfully.', 'wicket-acc')];
     }
 
     /**
@@ -189,17 +189,17 @@ class MembershipCycleStrategy implements RosterManagementStrategy
     {
         $org_id = sanitize_text_field((string) $org_id);
         if ('' === $org_id) {
-            return new WP_Error('invalid_org_id', 'Organization identifier is required.');
+            return new WP_Error('invalid_org_id', __('Organization identifier is required.', 'wicket-acc'));
         }
 
         $membership_data = $this->membershipService()->getOrgMembershipData($membership_uuid);
         if (empty($membership_data) || !is_array($membership_data)) {
-            return new WP_Error('invalid_membership_uuid', 'Membership UUID is invalid or unavailable.');
+            return new WP_Error('invalid_membership_uuid', __('Membership UUID is invalid or unavailable.', 'wicket-acc'));
         }
 
         $membership_org_id = $membership_data['data']['relationships']['organization']['data']['id'] ?? '';
         if ('' !== $membership_org_id && $membership_org_id !== $org_id) {
-            return new WP_Error('membership_org_mismatch', 'Membership does not belong to the selected organization.');
+            return new WP_Error('membership_org_mismatch', __('Membership does not belong to the selected organization.', 'wicket-acc'));
         }
 
         return true;

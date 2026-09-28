@@ -69,8 +69,9 @@ class init extends Blocks
                 $block_logic == 'not-set';
             }
             $args = [
-                'block_name'        => 'Membership Block',
-                'block_description' => 'This block displays Membership Callouts [ ' . $block_logic . ' ]',
+                'block_name'        => __('Membership Block', 'wicket-acc'),
+                /* translators: %s: callout block logic type. */
+                'block_description' => sprintf(__('This block displays Membership Callouts [ %s ]', 'wicket-acc'), $block_logic),
                 'block_slug'        => 'wicket-ac-memberships',
             ];
 

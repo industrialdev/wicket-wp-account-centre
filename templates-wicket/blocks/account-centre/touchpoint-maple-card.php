@@ -32,6 +32,7 @@ if (!$course_name) {
 			<?php echo esc_html($course_name); ?>
 		</h3>
     <?php if ($course_url) : ?>
+    <span class="webaim-hidden"><?php esc_html_e('(opens in a new window)', 'wicket-acc'); ?></span>
     </a>
 	<?php endif; ?>
 

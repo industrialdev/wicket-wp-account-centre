@@ -1,5 +1,6 @@
 {
 	"name": "wicket-ac/acc-base-block",
+	"textdomain": "wicket-acc",
 	"title": "ACC Base Block",
 	"description": "Wicket Base block. Copy this block to create a new one.",
 	"style": "file:./block-styles.css",

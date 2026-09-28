@@ -1,5 +1,6 @@
 {
 	"name": "wicket-ac/ac-org-profile",
+	"textdomain": "wicket-acc",
 	"title": "ACC Org Profile",
 	"description": "A Wicket block for Org Profile",
 	"style": "file:./block-styles.css",

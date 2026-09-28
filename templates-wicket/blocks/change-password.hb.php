@@ -71,8 +71,9 @@ $passwordConfirmError = $hasFieldError('user.password_confirmation');
         <div class='alert alert-danger' role="alert">
             <strong>
                 <?= sprintf(
+                    /* translators: %s: number of form errors. */
                     _n(
-                        'The form could not be submitted because 1 error was found',
+                        'The form could not be submitted because %s error was found',
                         'The form could not be submitted because %s errors were found',
                         count($formErrors),
                         'wicket-acc'
@@ -95,8 +96,17 @@ $passwordConfirmError = $hasFieldError('user.password_confirmation');
                     ?>
                     <li>
                         <a href="<?= esc_attr($anchor) ?>">
-                            <strong><?= sprintf(__('Error: %d', 'wicket-acc'), $index + 1) ?></strong>
-                            <?= esc_html($prefix . ' ' . ($error->title ?? '')) ?>
+                            <strong><?= sprintf(
+                                /* translators: %d: error number in the list. */
+                                __('Error: %d', 'wicket-acc'),
+                                $index + 1
+                            ) ?></strong>
+                            <?= esc_html(sprintf(
+                                /* translators: 1: field label, 2: error message. */
+                                __('%1$s %2$s', 'wicket-acc'),
+                                $prefix,
+                                $error->title ?? ''
+                            )) ?>
                         </a>
                     </li>
                 <?php endforeach; ?>

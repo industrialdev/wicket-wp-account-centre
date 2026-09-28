@@ -254,7 +254,7 @@ $orgman_token_attrs = 'title="' . esc_attr__('Click to copy', 'wicket-acc') . '"
                 if (existing) existing.remove();
                 var tip = document.createElement('span');
                 tip.className = 'orgman-copy-feedback';
-                tip.textContent = '✓ Copied!';
+                tip.textContent = <?php echo wp_json_encode(__('✓ Copied!', 'wicket-acc')); ?>;
                 tip.style.cssText = 'margin-left:6px;font-size:0.8em;color:#155724;font-family:sans-serif;font-weight:600;';
                 token.appendChild(tip);
                 token.style.background = '#d4edda';
@@ -376,7 +376,7 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
                     <?php echo esc_attr($edit_permissions_reset_actions); ?>
                 ">
                 <div class="wt_bg-white wt_p-6 wt_relative">
-                    <button type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
+                    <button aria-label="<?php esc_attr_e('Close', 'wicket-acc'); ?>" type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
                         data-on:click="
                             $editPermissionsModalOpen = false;
                             <?php echo esc_attr($edit_permissions_reset_actions); ?>
@@ -388,7 +388,7 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
 
                     <h2 class="wp-block-heading has-heading-sm-font-size wt_text-2xl wt_font-semibold wt_mb-4">
                         <span
-                            data-text="$currentMemberName ? '<?php echo esc_js(__('Edit Permissions for', 'wicket-acc')); ?> ' + $currentMemberName : '<?php echo esc_js(__('Edit Permissions', 'wicket-acc')); ?>'">
+                            data-text="$currentMemberName ? '<?php /* translators: %s: member name. */ echo esc_js(__('Edit Permissions for %s', 'wicket-acc')); ?>'.split('%s').join($currentMemberName) : '<?php echo esc_js(__('Edit Permissions', 'wicket-acc')); ?>'">
                             <?php echo esc_html__('Edit Permissions', 'wicket-acc'); ?>
                         </span>
                     </h2>
@@ -522,7 +522,7 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
         data-effect="if ($addMemberModalOpen) el.showModal(); else el.close();"
         data-on:close="<?php echo esc_attr($add_member_modal_reset_actions); ?>">
         <div class="wt_bg-white wt_p-6 wt_relative">
-            <button type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
+            <button aria-label="<?php esc_attr_e('Close', 'wicket-acc'); ?>" type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
                 data-on:click="<?php echo esc_attr($add_member_request_close_actions); ?>" data-show="!$addMemberSuccess"
                 data-class="{ 'wt_pointer-events-none': $addMemberSubmitting, 'wt_opacity-50': $addMemberSubmitting }"
                 data-attr:aria-disabled="$addMemberSubmitting ? 'true' : 'false'">
@@ -609,9 +609,7 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
                     <?php if ($add_member_auto_close_enabled) : ?>
                         <p class="wt_text-sm wt_text-content wt_mb-3" data-show="$autoCloseCountdown > 0"
                             data-on-interval__duration.1000="if ($autoCloseCountdown > 1) { $autoCloseCountdown-- } else if ($autoCloseCountdown === 1) { <?php echo esc_attr($add_member_request_close_actions); ?> }">
-                            <?php esc_html_e('This dialog will close automatically in', 'wicket-acc'); ?>
-                            <span class="wt_font-semibold" data-text="$autoCloseCountdown"></span>
-                            <?php esc_html_e('seconds.', 'wicket-acc'); ?>
+                            <?php echo \WicketORM\Helpers\TemplateHelper::auto_close_countdown_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in helper. ?>
                         </p>
                     <?php endif; ?>
                     <div class="wt_mb-4 wt_bg-green-100 wt_border wt_border-green-400 wt_text-green-700 wt_px-4 wt_py-3 wt_rounded-sm" data-show="$addMemberSuccessMessage !== ''">
@@ -772,9 +770,7 @@ $available_roles = OrgHelpers\PermissionHelper::filter_role_choices(
                     <?php if ($add_member_auto_close_enabled) : ?>
                         <p class="wt_text-sm wt_text-content wt_mb-3" data-show="$autoCloseCountdown > 0"
                             data-on-interval__duration.1000="if ($autoCloseCountdown > 1) { $autoCloseCountdown-- } else if ($autoCloseCountdown === 1) { <?php echo esc_attr($add_member_request_close_actions); ?> }">
-                            <?php esc_html_e('This dialog will close automatically in', 'wicket-acc'); ?>
-                            <span class="wt_font-semibold" data-text="$autoCloseCountdown"></span>
-                            <?php esc_html_e('seconds.', 'wicket-acc'); ?>
+                            <?php echo \WicketORM\Helpers\TemplateHelper::auto_close_countdown_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in helper. ?>
                         </p>
                     <?php endif; ?>
                     <div class="wt_mb-4 wt_bg-green-100 wt_border wt_border-green-400 wt_text-green-700 wt_px-4 wt_py-3 wt_rounded-sm" data-show="$addMemberSuccessMessage !== ''">
@@ -803,7 +799,7 @@ $available_roles = OrgHelpers\PermissionHelper::filter_role_choices(
             data-effect="if ($bulkUploadModalOpen) el.showModal(); else el.close();"
             data-on:close="($membersLoading = false); $bulkUploadModalOpen = false">
             <div class="wt_bg-white wt_p-6 wt_relative">
-                <button type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
+                <button aria-label="<?php esc_attr_e('Close', 'wicket-acc'); ?>" type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
                     data-on:click="$bulkUploadModalOpen = false"
                     data-class="{ 'wt_pointer-events-none': $bulkUploadSubmitting, 'wt_opacity-50': $bulkUploadSubmitting }"
                     data-attr:aria-disabled="$bulkUploadSubmitting ? 'true' : 'false'">
@@ -820,7 +816,7 @@ $available_roles = OrgHelpers\PermissionHelper::filter_role_choices(
         data-effect="if ($removeMemberModalOpen) el.showModal(); else el.close();"
         data-on:close="<?php echo esc_attr($remove_member_reset_actions); ?>">
         <div class="wt_bg-white wt_p-6 wt_relative">
-            <button type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
+            <button aria-label="<?php esc_attr_e('Close', 'wicket-acc'); ?>" type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
                 data-on:click="<?php echo esc_attr($remove_member_request_close_actions); ?>" data-show="!$removeMemberSuccess"
                 data-class="{ 'wt_pointer-events-none': $removeMemberSubmitting, 'wt_opacity-50': $removeMemberSubmitting }"
                 data-attr:aria-disabled="$removeMemberSubmitting ? 'true' : 'false'">×</button>
@@ -833,8 +829,11 @@ $available_roles = OrgHelpers\PermissionHelper::filter_role_choices(
                         <?php echo esc_html__('Are you sure you want to remove this member?', 'wicket-acc'); ?>
                     </span>
                     <span data-class_wt_hidden="$currentRemoveMemberName !== ''">
-                        <?php echo esc_html__('Are you sure you want to remove', 'wicket-acc'); ?>
-                        <span data-text="$currentRemoveMemberName"></span>&nbsp;<?php echo esc_html__('from this organization?', 'wicket-acc'); ?>
+                        <?php
+                        /* translators: %s: name of the member being removed. */
+                        $remove_member_confirm_text = esc_html__('Are you sure you want to remove %s from this organization?', 'wicket-acc');
+                        echo sprintf($remove_member_confirm_text, '<span data-text="$currentRemoveMemberName"></span>'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                        ?>
                     </span>
                     <br>
                     <?php esc_html_e('This action cannot be undone.', 'wicket-acc'); ?>
@@ -893,9 +892,7 @@ $available_roles = OrgHelpers\PermissionHelper::filter_role_choices(
                 <?php if ($remove_member_auto_close_enabled) : ?>
                     <p class="wt_text-sm wt_text-content wt_mb-3" data-show="$autoCloseCountdown > 0"
                         data-on-interval__duration.1000="if ($autoCloseCountdown > 1) { $autoCloseCountdown-- } else if ($autoCloseCountdown === 1) { <?php echo esc_attr($remove_member_request_close_actions); ?> }">
-                        <?php esc_html_e('This dialog will close automatically in', 'wicket-acc'); ?>
-                        <span class="wt_font-semibold" data-text="$autoCloseCountdown"></span>
-                        <?php esc_html_e('seconds.', 'wicket-acc'); ?>
+                        <?php echo \WicketORM\Helpers\TemplateHelper::auto_close_countdown_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in helper. ?>
                     </p>
                 <?php endif; ?>
                 <div class="wt_flex wt_justify-end">

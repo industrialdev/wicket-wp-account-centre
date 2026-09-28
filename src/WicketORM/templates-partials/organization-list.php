@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 
 // Basic permission check.
 if (!is_user_logged_in()) {
-    wp_die('You must be logged in to access this content.');
+    wp_die(esc_html__('You must be logged in to access this content.', 'wicket-acc'));
 } ?>
 
 <?php
@@ -325,7 +325,10 @@ if ($roster_mode === 'groups') {
         endif;
     endif;
     ?>
-        <p class="mb-2"><?php echo esc_html(__('Groups Found:', 'wicket-acc') . ' ' . (int) $groups_count); ?></p>
+        <p class="mb-2"><?php
+        /* translators: %d: number of groups found. */
+        echo esc_html(sprintf(__('Groups Found: %d', 'wicket-acc'), (int) $groups_count));
+        ?></p>
         <div class="wt_w-full wt_flex wt_flex-col wt_gap-4" role="list">
             <?php foreach ($manageable_groups_page as $group_item) :
                 $item_params = [
@@ -586,7 +589,7 @@ if (function_exists('wicket_get_current_person_memberships')) {
                     // Find the membership name from the included memberships
                     foreach ($all_memberships['included'] as $membership) {
                         if ($membership['type'] === 'memberships' && $membership['id'] === $membership_id) {
-                            $membership_name = $membership['attributes']['name'] ?? $membership['attributes']['name_en'] ?? 'Active Membership';
+                            $membership_name = $membership['attributes']['name'] ?? $membership['attributes']['name_en'] ?? __('Active Membership', 'wicket-acc');
 
                             if ($roster_mode === 'membership_cycle') {
                                 if (!isset($membership_tiers[$org_id]) || !is_array($membership_tiers[$org_id])) {
@@ -739,7 +742,8 @@ $organizations_page = array_slice($organizations, $org_offset, $org_page_size);
 
 // Display organization count
 $count = $org_total_items;
-echo "<p class='mb-2'>" . __('Organizations Found:', 'wicket-acc') . ' ' . (int) $count . '</p>';
+/* translators: %d: number of organizations found. */
+echo "<p class='mb-2'>" . esc_html(sprintf(__('Organizations Found: %d', 'wicket-acc'), (int) $count)) . '</p>';
 
 // Start organization list
 echo '<div class="wt_w-full wt_flex wt_flex-col wt_gap-4" role="list">';

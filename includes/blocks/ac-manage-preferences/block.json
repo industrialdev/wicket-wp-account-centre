@@ -1,5 +1,6 @@
 {
 	"name": "wicket-ac/ac-manage-preferences",
+	"textdomain": "wicket-acc",
 	"title": "ACC Manage Preferences Block",
 	"description": "A Wicket block for Manage Preferences",
 	"style": "file:./block-styles.css",

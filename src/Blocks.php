@@ -30,9 +30,22 @@ class Blocks extends WicketAcc
         add_action('init', [$this, 'load_wicket_blocks'], 5); // We need to use WP's init here https://www.advancedcustomfields.com/resources/create-your-first-acf-block/
 
         add_filter('acf/settings/load_json', [$this, 'load_acf_field_group']);
+        add_filter('acf/settings/l10n_textdomain', [$this, 'acf_l10n_textdomain']);
 
         add_action('acf/update_field_group', [$this, 'update_field_group'], 1, 1);
         add_action('acf/settings/save_json', [$this, 'save_json_folder'], 100);
+    }
+
+    /**
+     * Translate ACF field group labels with the plugin text domain.
+     *
+     * @param string $domain
+     *
+     * @return string
+     */
+    public function acf_l10n_textdomain($domain)
+    {
+        return 'wicket-acc';
     }
 
     /**
@@ -42,7 +55,7 @@ class Blocks extends WicketAcc
     {
         $categories[] = [
             'slug'  => 'wicket-account-center',
-            'title' => 'Wicket_AC',
+            'title' => __('Wicket_AC', 'wicket-acc'),
         ];
 
         return $categories;
@@ -211,7 +224,8 @@ class Blocks extends WicketAcc
 
         // Avoid false include
         if ($this->get_block_template_path($template_name) === false) {
-            echo '<p>Template ' . $template_name . ' not found</p>';
+            /* translators: %s: template name. */
+            echo '<p>' . esc_html(sprintf(__('Template %s not found', 'wicket-acc'), $template_name)) . '</p>';
 
             return;
         }

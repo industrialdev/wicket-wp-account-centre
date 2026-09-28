@@ -1,5 +1,6 @@
 {
   "name": "wicket-ac/ac-org-search-select",
+  "textdomain": "wicket-acc",
   "title": "ACC Org. Search & Select",
   "description": "A Wicket block for searching and selecting an organization",
   "style": "file:./block-styles.css",

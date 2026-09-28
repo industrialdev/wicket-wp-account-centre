@@ -31,7 +31,10 @@ if (!isset($args['block_name']) || !isset($args['block_slug']) || !isset($args['
 <section class="wicket-acc-block-error <?php echo $args['block_slug']; ?> <?php echo $args['block_slug']; ?>__error">
     <div class="wicket-acc-block-error__content">
         <h2><?php esc_html_e('Error', 'wicket-acc'); ?></h2>
-        <p><?php esc_html_e('There was an error on block:', 'wicket-acc'); ?> <?php echo $args['block_name']; ?></p>
+        <p><?php
+        /* translators: %s: block name. */
+        printf(esc_html__('There was an error on block: %s', 'wicket-acc'), esc_html($args['block_name']));
+        ?></p>
         <p><?php echo $args['block_error']; ?></p>
     </div>
 </section>

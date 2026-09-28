@@ -175,10 +175,10 @@ class InitOptions extends WicketAcc
         );
 
         $env_section->addField(
-            Field::make('radio', 'wicket_admin_settings_environment', __('Wicket Environment', 'wicket'))
+            Field::make('radio', 'wicket_admin_settings_environment', __('Wicket Environment', 'wicket-acc'))
                 ->setOptions([
-                    'stage' => __('Staging', 'wicket'),
-                    'prod' => __('Production', 'wicket'),
+                    'stage' => __('Staging', 'wicket-acc'),
+                    'prod' => __('Production', 'wicket-acc'),
                 ])
         );
 
@@ -265,11 +265,11 @@ class InitOptions extends WicketAcc
 
         ?>
         <div style="display: flex; align-items: center; padding: 10px 0;">
-            <label style="margin-right: 10px; font-weight: bold;"><?php echo esc_html__('Status', 'wicket'); ?></label>
+            <label style="margin-right: 10px; font-weight: bold;"><?php echo esc_html__('Status', 'wicket-acc'); ?></label>
             <?php if ($can_connect) : ?>
-                <span style="background-color: #7ad03a; color: white; padding: 5px 10px; border-radius: 3px;"><?php echo esc_html__('CONNECTED', 'wicket'); ?></span>
+                <span style="background-color: #7ad03a; color: white; padding: 5px 10px; border-radius: 3px;"><?php echo esc_html__('CONNECTED', 'wicket-acc'); ?></span>
             <?php else : ?>
-                <span style="background-color: #dc3232; color: white; padding: 5px 10px; border-radius: 3px;"><?php echo esc_html__('NOT CONNECTED', 'wicket'); ?></span>
+                <span style="background-color: #dc3232; color: white; padding: 5px 10px; border-radius: 3px;"><?php echo esc_html__('NOT CONNECTED', 'wicket-acc'); ?></span>
             <?php endif; ?>
         </div>
         <?php

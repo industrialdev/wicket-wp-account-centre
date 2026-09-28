@@ -1375,7 +1375,7 @@ class GroupService
         }
 
         if (!function_exists('wicket_api_client')) {
-            return new \WP_Error('missing_client', 'MDP API client unavailable.');
+            return new \WP_Error('missing_client', __('MDP API client unavailable.', 'wicket-acc'));
         }
 
         $payload = [
@@ -1424,7 +1424,7 @@ class GroupService
     public function removeGroupMember(string $group_member_id)
     {
         if (empty($group_member_id) || !function_exists('wicket_api_client')) {
-            return new \WP_Error('missing_param', 'Group member id is required.');
+            return new \WP_Error('missing_param', __('Group member id is required.', 'wicket-acc'));
         }
 
         $mode = (string) ($this->getGroupsConfig()['removal']['mode'] ?? 'end_date');
@@ -1439,7 +1439,7 @@ class GroupService
                 return ['status' => 'success'];
             }
 
-            return new \WP_Error('delete_failed', 'Unable to delete group member.');
+            return new \WP_Error('delete_failed', __('Unable to delete group member.', 'wicket-acc'));
         }
 
         $removal_config = $this->getGroupsConfig()['removal'] ?? [];

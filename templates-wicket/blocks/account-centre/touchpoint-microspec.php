@@ -74,7 +74,7 @@ if (!empty($override_past_events_link)) {
                     <?php else: ?>
                         <h3 class="font-bold mb-4 md:mb-0 md:text-left text-center lg:text-left w-full md:w-auto text-2xl text-dark-100"><?php esc_html_e('Upcoming Registered Events', 'wicket-acc'); ?></h3>
                     <?php endif; ?>
-                    <a href="<?php echo $switch_link_past; ?>" class="past-link font-bold text-center md:text-right w-full md:w-auto mb-4 text-base"><?php esc_html_e($past_events_link_text, 'wicket-acc'); ?></a>
+                    <a href="<?php echo $switch_link_past; ?>" class="past-link font-bold text-center md:text-right w-full md:w-auto mb-4 text-base"><?php echo esc_html($past_events_link_text); ?></a>
                 <?php elseif ($display == 'past' && !$single_event) : ?>
                     <h3 class="font-bold mb-4 md:mb-0 md:text-left text-center w-full md:w-auto text-base"><?php esc_html_e('Past Registered Events', 'wicket-acc'); ?></h3>
                     <a href="<?php echo $switch_link; ?>" class="upcoming-link font-bold text-center md:text-right w-full md:w-auto mb-4 text-base"><?php esc_html_e('See Upcoming Registered Events', 'wicket-acc'); ?></a>
@@ -86,7 +86,7 @@ if (!empty($override_past_events_link)) {
         </div>
 
         <div class="data-quantity text-left mb-3 text-lg">
-            Results: <span id="total_results"><?php echo $total_results; ?></span>
+            <?php esc_html_e('Results:', 'wicket-acc'); ?> <span id="total_results"><?php echo $total_results; ?></span>
         </div>
 
         <div class="events-list grid gap-4 grid-cols-<?php echo $use_x_columns; ?> md:grid-cols-<?php echo $use_x_columns; ?> lg:grid-cols-<?php echo $use_x_columns; ?>">

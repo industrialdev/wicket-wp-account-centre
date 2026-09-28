@@ -119,8 +119,10 @@ $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' 
     <div data-show="!$contactsLoading">
 
         <div class="wt_text-xl wt_font-semibold wt_mb-3">
-            <?php esc_html_e('Number of assigned people:', 'wicket-acc'); ?>
-            <?php echo (int) $total_items; ?>
+            <?php
+            /* translators: %d: number of assigned people. */
+            printf(esc_html__('Number of assigned people: %d', 'wicket-acc'), (int) $total_items);
+            ?>
         </div>
 
         <!-- Search -->
@@ -216,6 +218,7 @@ $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' 
                     if ($total_items > 0) {
                         $first = (($page - 1) * $page_size) + 1;
                         $last = min($total_items, $page * $page_size);
+                        /* translators: 1: first item number on the page, 2: last item number on the page, 3: total number of items. */
                         echo esc_html(sprintf(__('Showing %1$d-%2$d of %3$d', 'wicket-acc'), $first, $last, $total_items));
                     }
 ?>
@@ -275,7 +278,7 @@ $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' 
         data-effect="if ($addContactModalOpen) el.showModal(); else el.close();"
         data-on:close="$addContactModalOpen = false; $addContactSubmitting = false;">
         <div class="wt_bg-white wt_p-6 wt_relative">
-            <button type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
+            <button aria-label="<?php esc_attr_e('Close', 'wicket-acc'); ?>" type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
                 data-on:click="$addContactModalOpen = false;"
                 data-show="!$addContactSuccess">
                 x
@@ -397,7 +400,7 @@ $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' 
         data-effect="if ($removeContactModalOpen) el.showModal(); else el.close();"
         data-on:close="<?php echo esc_attr($remove_contact_reset_actions); ?>">
         <div class="wt_bg-white wt_p-6 wt_relative">
-            <button type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
+            <button aria-label="<?php esc_attr_e('Close', 'wicket-acc'); ?>" type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
                 data-on:click="<?php echo esc_attr($remove_contact_reset_actions); ?>" data-show="!$removeContactSuccess">
                 x
             </button>
@@ -410,9 +413,11 @@ $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' 
 
             <div data-show="!$removeContactSuccess">
                 <p class="wt_mb-6">
-                    <?php esc_html_e('Are you sure you want to remove', 'wicket-acc'); ?>
-                    <strong data-text="$currentRemoveContactName"></strong>
-                    <?php esc_html_e('from the contact list?', 'wicket-acc'); ?>
+                    <?php
+                    /* translators: %s: name of the contact being removed. */
+                    $remove_contact_confirm_text = esc_html__('Are you sure you want to remove %s from the contact list?', 'wicket-acc');
+                    echo sprintf($remove_contact_confirm_text, '<strong data-text="$currentRemoveContactName"></strong>'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                    ?>
                     <br>
                     <?php esc_html_e('This will end their relationship with the organization. This action cannot be undone.', 'wicket-acc'); ?>
                 </p>

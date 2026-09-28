@@ -44,8 +44,8 @@ class init extends Blocks
 
         if ($this->is_preview) {
             $args = [
-                'block_name'        => 'Touchpoints TEC',
-                'block_description' => 'This block displays registered data for The Events Calendar on the front-end.',
+                'block_name'        => __('Touchpoints TEC', 'wicket-acc'),
+                'block_description' => __('This block displays registered data for The Events Calendar on the front-end.', 'wicket-acc'),
                 'block_slug'        => 'wicket-ac-touchpoint-tec',
             ];
 
@@ -127,8 +127,8 @@ class init extends Blocks
 
         $args = [
             'block_id'                       => $block_id,
-            'block_name'                     => 'Touchpoint TEC',
-            'block_description'              => 'This block displays registered data for TEC (The Events Calendar) on the front-end.',
+            'block_name'                     => __('Touchpoint TEC', 'wicket-acc'),
+            'block_description'              => __('This block displays registered data for TEC (The Events Calendar) on the front-end.', 'wicket-acc'),
             'block_slug'                     => 'wicket-ac-touchpoint-tec',
             'attrs'                          => $attrs,
             'title'                          => $title,
@@ -195,7 +195,13 @@ class init extends Blocks
         // No data
         if (empty($touchpoint_data)) {
             echo '<p class="no-data">';
-            _e('You do not have any ' . $display_type . ' data at this time.', 'wicket-acc');
+            if ($display_type === 'past') {
+                _e('You do not have any past data at this time.', 'wicket-acc');
+            } elseif ($display_type === 'all') {
+                _e('You do not have any data at this time.', 'wicket-acc');
+            } else {
+                _e('You do not have any upcoming data at this time.', 'wicket-acc');
+            }
             echo '</p>';
 
             return;
@@ -347,13 +353,13 @@ class init extends Blocks
                                     this.buttonClicked = true;
                                 } else {
                                     this.responseMessage_<?php echo esc_attr($block_id); ?> =
-                                        '<?php esc_html_e('An error occurred. No data.', 'wicket-acc'); ?>';
+                                        '<?php echo esc_js(__('An error occurred. No data.', 'wicket-acc')); ?>';
                                 }
                             })
                             .catch(error => {
                                 this.loading = false;
                                 this.responseMessage_<?php echo esc_attr($block_id); ?> =
-                                    '<?php esc_html_e('An error occurred. Failed.', 'wicket-acc'); ?>';
+                                    '<?php echo esc_js(__('An error occurred. Failed.', 'wicket-acc')); ?>';
                             });
                     }
                 };

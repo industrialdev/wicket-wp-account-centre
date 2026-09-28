@@ -1,5 +1,6 @@
 {
 	"name": "wicket-ac/ac-welcome",
+	"textdomain": "wicket-acc",
 	"title": "ACC Welcome Block",
 	"description": "A Wicket block for Welcome Block",
 	"style": "file:./block-styles.css",

@@ -18,7 +18,7 @@ defined('ABSPATH') || exit;
         <?php esc_html_e('Profile Image', 'wicket-acc'); ?>
     </h2>
     <div class="profile-image">
-        <img src="<?php echo $args['pp_url']; ?>?<?php echo time(); ?>" alt="<?php esc_html_e('Profile Image', 'wicket-acc'); ?>" class="profile-image-img">
+        <img src="<?php echo $args['pp_url']; ?>?<?php echo time(); ?>" alt="<?php esc_attr_e('Profile Image', 'wicket-acc'); ?>" class="profile-image-img">
         <?php if ($args['is_custom']) : ?>
             <form name="wicket-acc-profile-picture-remove-form" method="post">
                 <input type="hidden" name="action" value="wicket-acc-profile-picture-remove-form">
@@ -26,12 +26,12 @@ defined('ABSPATH') || exit;
                 <?php wp_nonce_field('wicket-acc-profile-picture-remove-form', 'nonce'); ?>
 
                 <?php if (defined('WICKET_WP_THEME_V2')) : ?>
-                    <button type="submit" class="remove-image circle-x" title="<?php esc_html_e('Remove Image', 'wicket-acc'); ?>">
+                    <button type="submit" class="remove-image circle-x" title="<?php esc_attr_e('Remove Image', 'wicket-acc'); ?>">
                         <i class="fa-regular fa-circle-xmark"></i>
                         <i class="fa-solid fa-circle-xmark"></i>
                     </button>
                 <?php else: ?>
-                    <button type="submit" class="remove-image circle-x" title="<?php esc_html_e('Remove Image', 'wicket-acc'); ?>">x</button>
+                    <button type="submit" class="remove-image circle-x" title="<?php esc_attr_e('Remove Image', 'wicket-acc'); ?>" aria-label="<?php esc_attr_e('Close', 'wicket-acc'); ?>">&times;</button>
                 <?php endif; ?>
             </form>
         <?php endif; ?>
@@ -39,7 +39,10 @@ defined('ABSPATH') || exit;
     <form name="wicket-acc-profile-picture-form" method="post" enctype="multipart/form-data">
         <div class="guidance text-sm">
             <?php esc_html_e('Upload a profile picture to personalize your profile.', 'wicket-acc'); ?>
-            <?php esc_html_e('Max upload size:', 'wicket-acc'); ?> <?php echo $args['pp_max_size']; ?> <?php esc_html_e('MB', 'wicket-acc'); ?>
+            <?php
+            /* translators: %d: max upload size in megabytes. */
+            printf(esc_html__('Max upload size: %d MB', 'wicket-acc'), (int) $args['pp_max_size']);
+            ?>
         </div>
         <div class="buttons">
             <input type="file" id="profile-image" name="profile-image" class="sr-only" accept="image/png, image/gif, image/jpeg">

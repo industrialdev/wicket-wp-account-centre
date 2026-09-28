@@ -37,7 +37,7 @@ class PermissionService
         }
 
         return array_map(static function ($label) {
-            return esc_html__($label, 'wicket-acc');
+            return esc_html($label);
         }, $roles);
     }
 
@@ -199,7 +199,7 @@ class PermissionService
     public function removePersonRolesFromOrg($person_uuid, $roles, $org_id)
     {
         if (empty($person_uuid) || empty($roles) || empty($org_id)) {
-            return new \WP_Error('invalid_params', 'Person UUID, roles, and organization ID are required.');
+            return new \WP_Error('invalid_params', __('Person UUID, roles, and organization ID are required.', 'wicket-acc'));
         }
 
         // Normalize roles to array
@@ -215,7 +215,7 @@ class PermissionService
         $roles = array_map('sanitize_key', array_filter($roles));
 
         if (empty($roles)) {
-            return new \WP_Error('invalid_roles', 'No valid roles provided.');
+            return new \WP_Error('invalid_roles', __('No valid roles provided.', 'wicket-acc'));
         }
 
         // Protected roles that should never be removed
@@ -239,7 +239,8 @@ class PermissionService
 
             if (!empty($failed_roles)) {
                 return new \WP_Error('role_removal_failed', sprintf(
-                    'Failed removing role(s): %s.',
+                    /* translators: %s: comma-separated list of role slugs. */
+                    _n('Failed removing role: %s.', 'Failed removing roles: %s.', count($failed_roles), 'wicket-acc'),
                     implode(', ', $failed_roles)
                 ));
             }
@@ -261,11 +262,11 @@ class PermissionService
     public function assignRoles($person_uuid, $roles, $org_id)
     {
         if (empty($person_uuid) || empty($roles) || empty($org_id)) {
-            return new \WP_Error('invalid_params', 'Person UUID, roles, and organization ID are required.');
+            return new \WP_Error('invalid_params', __('Person UUID, roles, and organization ID are required.', 'wicket-acc'));
         }
 
         if (!function_exists('wicket_assign_role')) {
-            return new \WP_Error('missing_dependency', 'Role assignment helper is unavailable.');
+            return new \WP_Error('missing_dependency', __('Role assignment helper is unavailable.', 'wicket-acc'));
         }
 
         // Normalize roles to array
@@ -281,14 +282,15 @@ class PermissionService
         $roles = array_map('sanitize_key', array_filter($roles));
 
         if (empty($roles)) {
-            return new \WP_Error('invalid_roles', 'No valid roles provided.');
+            return new \WP_Error('invalid_roles', __('No valid roles provided.', 'wicket-acc'));
         }
 
         try {
             foreach ($roles as $role) {
                 $result = wicket_assign_role($person_uuid, $role, $org_id);
                 if (false === $result) {
-                    return new \WP_Error('role_assignment_failed', sprintf('Failed assigning role %s.', $role));
+                    /* translators: %s: role slug. */
+                    return new \WP_Error('role_assignment_failed', sprintf(__('Failed assigning role %s.', 'wicket-acc'), $role));
                 }
             }
 
@@ -333,7 +335,7 @@ class PermissionService
             }
         }
 
-        return ['status' => 'success', 'message' => 'Permissions updated successfully.'];
+        return ['status' => 'success', 'message' => __('Permissions updated successfully.', 'wicket-acc')];
     }
 
     /**

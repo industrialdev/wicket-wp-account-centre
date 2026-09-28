@@ -133,7 +133,7 @@ class ConnectionService
     public function endRelationshipToday($person_uuid, $relationship_id, $org_id)
     {
         if (empty($person_uuid) || empty($relationship_id) || empty($org_id)) {
-            return new WP_Error('invalid_params', 'Person UUID, relationship ID, and organization ID are required.');
+            return new WP_Error('invalid_params', __('Person UUID, relationship ID, and organization ID are required.', 'wicket-acc'));
         }
 
         $ends_at = $this->getRemovalAnchor() === 'day_start_utc'
@@ -154,7 +154,7 @@ class ConnectionService
     public function endRelationshipAtActionTime($person_uuid, $relationship_id, $org_id)
     {
         if (empty($person_uuid) || empty($relationship_id) || empty($org_id)) {
-            return new WP_Error('invalid_params', 'Person UUID, relationship ID, and organization ID are required.');
+            return new WP_Error('invalid_params', __('Person UUID, relationship ID, and organization ID are required.', 'wicket-acc'));
         }
 
         try {
@@ -162,7 +162,7 @@ class ConnectionService
 
             $connection = wicket_get_connection_by_id($relationship_id);
             if (!$connection || empty($connection['data'])) {
-                return new WP_Error('connection_not_found', 'Connection not found.');
+                return new WP_Error('connection_not_found', __('Connection not found.', 'wicket-acc'));
             }
 
             $connection_data = $connection['data'];
@@ -231,7 +231,7 @@ class ConnectionService
     public function buildConnectionPayload($person_id = null, $org_id = null, $connection_type = null, $type = null, $description = null)
     {
         if (empty($person_id) || empty($org_id) || empty($connection_type)) {
-            return new WP_Error('invalid_params', 'Person ID, organization ID, and connection type are required.');
+            return new WP_Error('invalid_params', __('Person ID, organization ID, and connection type are required.', 'wicket-acc'));
         }
 
         try {
@@ -306,18 +306,18 @@ class ConnectionService
     public function updateConnectionDescription($person_uuid, $org_id, $description)
     {
         if (empty($person_uuid) || empty($org_id)) {
-            return new WP_Error('invalid_params', 'Person UUID and organization ID are required.');
+            return new WP_Error('invalid_params', __('Person UUID and organization ID are required.', 'wicket-acc'));
         }
 
         if (!function_exists('wicket_api_client')) {
-            return new WP_Error('missing_dependency', 'Wicket API client is unavailable.');
+            return new WP_Error('missing_dependency', __('Wicket API client is unavailable.', 'wicket-acc'));
         }
 
         try {
             $connections = $this->getPersonConnectionsById($person_uuid);
 
             if (empty($connections['data'])) {
-                return new WP_Error('no_connection', 'No connection found for this person and organization.');
+                return new WP_Error('no_connection', __('No connection found for this person and organization.', 'wicket-acc'));
             }
 
             $connection_ids = [];
@@ -333,7 +333,7 @@ class ConnectionService
             }
 
             if (empty($connection_ids)) {
-                return new WP_Error('no_connection', 'No active person-to-organization connection found.');
+                return new WP_Error('no_connection', __('No active person-to-organization connection found.', 'wicket-acc'));
             }
 
             $client = wicket_api_client();
@@ -428,7 +428,11 @@ class ConnectionService
                 if (!empty($response['errors'])) {
                     \Wicket()->log()->error('ConnectionService::updateConnectionDescription() - API error: ' . json_encode($response['errors']), ['source' => 'wicket-orgman']);
 
-                    return new WP_Error('api_error', 'Failed to update connection description: ' . ($response['errors'][0]['detail'] ?? 'Unknown error'));
+                    return new WP_Error('api_error', sprintf(
+                        /* translators: %s: error detail returned by the API. */
+                        __('Failed to update connection description: %s', 'wicket-acc'),
+                        $response['errors'][0]['detail'] ?? __('Unknown error', 'wicket-acc')
+                    ));
                 }
             }
 
@@ -465,11 +469,11 @@ class ConnectionService
                 'payload_type' => is_object($payload) ? get_class($payload) : gettype($payload),
             ]);
 
-            return new WP_Error('invalid_params', 'Valid payload array is required.');
+            return new WP_Error('invalid_params', __('Valid payload array is required.', 'wicket-acc'));
         }
 
         if (!function_exists('wicket_api_client')) {
-            return new WP_Error('missing_dependency', 'Wicket API client is unavailable.');
+            return new WP_Error('missing_dependency', __('Wicket API client is unavailable.', 'wicket-acc'));
         }
 
         try {
@@ -513,11 +517,11 @@ class ConnectionService
     public function personHasRelationship($person_uuid, $org_id)
     {
         if (empty($person_uuid) || empty($org_id)) {
-            return new WP_Error('invalid_params', 'Person UUID and organization ID are required.');
+            return new WP_Error('invalid_params', __('Person UUID and organization ID are required.', 'wicket-acc'));
         }
 
         if (!function_exists('wicket_api_client')) {
-            return new WP_Error('missing_dependency', 'Wicket API client is unavailable.');
+            return new WP_Error('missing_dependency', __('Wicket API client is unavailable.', 'wicket-acc'));
         }
 
         try {
@@ -558,7 +562,7 @@ class ConnectionService
     public function getActivePersonOrganizationConnections($person_uuid, $org_id)
     {
         if (empty($person_uuid) || empty($org_id)) {
-            return new WP_Error('invalid_params', 'Person UUID and organization ID are required.');
+            return new WP_Error('invalid_params', __('Person UUID and organization ID are required.', 'wicket-acc'));
         }
 
         $result = wicket_get_active_person_org_connections($person_uuid, $org_id);
@@ -726,7 +730,11 @@ class ConnectionService
             // fail closed instead (WWID-2360 sibling).
             return new WP_Error(
                 'connections_query_failed',
-                'Could not list the active connections to end: ' . $connections->get_error_message()
+                sprintf(
+                    /* translators: %s: error detail. */
+                    __('Could not list the active connections to end: %s', 'wicket-acc'),
+                    $connections->get_error_message()
+                )
             );
         }
 
@@ -809,11 +817,11 @@ class ConnectionService
     public function updateConnectionType($person_uuid, $org_id, $new_type)
     {
         if (empty($person_uuid) || empty($org_id) || empty($new_type)) {
-            return new WP_Error('invalid_params', 'Person UUID, organization ID, and new type are required.');
+            return new WP_Error('invalid_params', __('Person UUID, organization ID, and new type are required.', 'wicket-acc'));
         }
 
         if (!function_exists('wicket_api_client')) {
-            return new WP_Error('missing_dependency', 'Wicket API client is unavailable.');
+            return new WP_Error('missing_dependency', __('Wicket API client is unavailable.', 'wicket-acc'));
         }
 
         try {
@@ -821,7 +829,7 @@ class ConnectionService
             $connections = $this->getPersonConnectionsById($person_uuid);
 
             if (empty($connections['data'])) {
-                return new WP_Error('no_connection', 'No connection found for this person and organization.');
+                return new WP_Error('no_connection', __('No connection found for this person and organization.', 'wicket-acc'));
             }
 
             // Find the matching connection(s)
@@ -838,7 +846,7 @@ class ConnectionService
             }
 
             if (empty($connection_ids)) {
-                return new WP_Error('no_connection', 'No active person-to-organization connection found.');
+                return new WP_Error('no_connection', __('No active person-to-organization connection found.', 'wicket-acc'));
             }
 
             $client = wicket_api_client();
@@ -939,7 +947,11 @@ class ConnectionService
                 if (!empty($response['errors'])) {
                     \Wicket()->log()->error('ConnectionService::updateConnectionType() - API error: ' . json_encode($response['errors']), ['source' => 'wicket-orgman']);
 
-                    return new WP_Error('api_error', 'Failed to update connection type: ' . ($response['errors'][0]['detail'] ?? 'Unknown error'));
+                    return new WP_Error('api_error', sprintf(
+                        /* translators: %s: error detail returned by the API. */
+                        __('Failed to update connection type: %s', 'wicket-acc'),
+                        $response['errors'][0]['detail'] ?? __('Unknown error', 'wicket-acc')
+                    ));
                 }
             }
 
@@ -966,7 +978,7 @@ class ConnectionService
     public function getOrgConnections(string $org_uuid, array $filters = [], array $pagination = []): array|WP_Error
     {
         if (empty($org_uuid) || !function_exists('wicket_api_client')) {
-            return new WP_Error('invalid_params', 'Organization UUID and Wicket API client are required.');
+            return new WP_Error('invalid_params', __('Organization UUID and Wicket API client are required.', 'wicket-acc'));
         }
 
         $page = max(1, (int) ($pagination['page'] ?? 1));
@@ -1028,7 +1040,7 @@ class ConnectionService
                 'org_uuid' => $org_uuid,
             ]);
 
-            return new WP_Error('api_error', 'Failed to fetch organization connections.');
+            return new WP_Error('api_error', __('Failed to fetch organization connections.', 'wicket-acc'));
         }
     }
 }

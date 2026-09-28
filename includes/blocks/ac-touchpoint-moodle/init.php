@@ -44,8 +44,8 @@ class init extends Blocks
 
         if ($this->is_preview) {
             $args = [
-                'block_name'        => 'Touchpoints Moodle',
-                'block_description' => 'This block displays registered data from Moodle on the front-end.',
+                'block_name'        => __('Touchpoints Moodle', 'wicket-acc'),
+                'block_description' => __('This block displays registered data from Moodle on the front-end.', 'wicket-acc'),
                 'block_slug'        => 'wicket-ac-touchpoint-moodle',
             ];
 
@@ -123,8 +123,8 @@ class init extends Blocks
 
         $args = [
             'block_id'                       => $block_id,
-            'block_name'                     => 'Touchpoint Moodle',
-            'block_description'              => 'This block displays registered data from Moodle on the front-end.',
+            'block_name'                     => __('Touchpoint Moodle', 'wicket-acc'),
+            'block_description'              => __('This block displays registered data from Moodle on the front-end.', 'wicket-acc'),
             'block_slug'                     => 'wicket-ac-touchpoint-moodle',
             'attrs'                          => $attrs,
             'title'                          => $title,
@@ -371,13 +371,13 @@ class init extends Blocks
                                     this.buttonClicked = true;
                                 } else {
                                     this.responseMessage_<?php echo esc_attr($block_id); ?> =
-                                        '<?php esc_html_e('An error occurred. No data.', 'wicket-acc'); ?>';
+                                        '<?php echo esc_js(__('An error occurred. No data.', 'wicket-acc')); ?>';
                                 }
                             })
                             .catch(error => {
                                 this.loading = false;
                                 this.responseMessage_<?php echo esc_attr($block_id); ?> =
-                                    '<?php esc_html_e('An error occurred. Failed.', 'wicket-acc'); ?>';
+                                    '<?php echo esc_js(__('An error occurred. Failed.', 'wicket-acc')); ?>';
                             });
                     }
                 };

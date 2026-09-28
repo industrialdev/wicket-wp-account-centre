@@ -1,5 +1,6 @@
 {
 	"name": "wicket-ac/ac-additional-info",
+	"textdomain": "wicket-acc",
 	"title": "ACC Additional Info Block",
 	"description": "A Wicket block for Additional Info",
 	"style": "file:./block-styles.css",

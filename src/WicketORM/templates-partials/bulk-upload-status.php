@@ -94,13 +94,23 @@ $stale = in_array($state, ['queued', 'processing'], true)
                 $stale
                     ? sprintf(
                         /* translators: 1: rows processed, 2: total rows */
-                        __('Still working — %1$d of %2$d row(s) processed. This is taking longer than expected; you can leave this page and check the roster later.', 'wicket-acc'),
+                        _n(
+                            'Still working — %1$d of %2$d row processed. This is taking longer than expected; you can leave this page and check the roster later.',
+                            'Still working — %1$d of %2$d rows processed. This is taking longer than expected; you can leave this page and check the roster later.',
+                            $total,
+                            'wicket-acc'
+                        ),
                         $processed,
                         $total
                     )
                     : sprintf(
                         /* translators: 1: rows processed, 2: total rows */
-                        __('Bulk upload in progress — %1$d of %2$d row(s) processed…', 'wicket-acc'),
+                        _n(
+                            'Bulk upload in progress — %1$d of %2$d row processed…',
+                            'Bulk upload in progress — %1$d of %2$d rows processed…',
+                            $total,
+                            'wicket-acc'
+                        ),
                         $processed,
                         $total
                     )

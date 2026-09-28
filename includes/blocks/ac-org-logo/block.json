@@ -1,5 +1,6 @@
 {
 	"name": "wicket-ac/ac-org-logo",
+	"textdomain": "wicket-acc",
 	"title": "ACC Change Profile Picture - Org",
 	"description": "Wicket block for changing the organization logo",
 	"style": "file:./block-styles.css",

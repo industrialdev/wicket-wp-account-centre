@@ -1096,6 +1096,15 @@ final class OrgMan
         $notifications_js_path = $plugin_path . 'assets/js/orm-notifications.js';
         $notifications_js_version = file_exists($notifications_js_path) ? filemtime($notifications_js_path) : '1.0.0';
         wp_enqueue_script('orgman-notifications', $plugin_url . 'assets/js/orm-notifications.js', [], $notifications_js_version, true);
+        wp_localize_script('orgman-notifications', 'wicketOrmNotificationsL10n', [
+            'close'  => __('Close', 'wicket-acc'),
+            'titles' => [
+                'success' => __('Success', 'wicket-acc'),
+                'error'   => __('Error', 'wicket-acc'),
+                'warning' => __('Warning', 'wicket-acc'),
+                'info'    => __('Info', 'wicket-acc'),
+            ],
+        ]);
 
         $content_behaviors_js_path = $plugin_path . 'assets/js/orm-content-behaviors.js';
         $content_behaviors_js_version = file_exists($content_behaviors_js_path) ? filemtime($content_behaviors_js_path) : '1.0.0';

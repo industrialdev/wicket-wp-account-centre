@@ -125,7 +125,7 @@ class ChangePassword
         if ($current_password == '') {
             $current_pass_blank = [];
             $current_pass_blank['meta'] = (object) ['field' => 'user.current_password'];
-            $current_pass_blank['title'] = __("can't be blank");
+            $current_pass_blank['title'] = __("can't be blank", 'wicket-acc');
             $errors[] = (object) $current_pass_blank;
         }
 
@@ -133,7 +133,7 @@ class ChangePassword
         if ($password == '') {
             $pass_blank = [];
             $pass_blank['meta'] = (object) ['field' => 'user.password'];
-            $pass_blank['title'] = __("can't be blank");
+            $pass_blank['title'] = __("can't be blank", 'wicket-acc');
             $errors[] = (object) $pass_blank;
         }
 
@@ -141,7 +141,7 @@ class ChangePassword
         if ($password_confirmation == '') {
             $confirm_pass_blank = [];
             $confirm_pass_blank['meta'] = (object) ['field' => 'user.password_confirmation'];
-            $confirm_pass_blank['title'] = __("can't be blank");
+            $confirm_pass_blank['title'] = __("can't be blank", 'wicket-acc');
             $errors[] = (object) $confirm_pass_blank;
         }
 
@@ -149,7 +149,7 @@ class ChangePassword
         if ($password_confirmation != $password) {
             $pass_blank = [];
             $pass_blank['meta'] = (object) ['field' => 'user.password'];
-            $pass_blank['title'] = __(' - Passwords do not match');
+            $pass_blank['title'] = __('- Passwords do not match', 'wicket-acc');
             $errors[] = (object) $pass_blank;
         }
 

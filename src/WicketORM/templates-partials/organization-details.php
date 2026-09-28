@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 }
 // Basic permission check.
 if (!is_user_logged_in()) {
-    wp_die('You must be logged in to access this content.');
+    wp_die(esc_html__('You must be logged in to access this content.', 'wicket-acc'));
 }
 
 $org_uuid = isset($_GET['org_uuid']) ? sanitize_text_field($_GET['org_uuid']) : '';
@@ -177,7 +177,7 @@ if ($roster_mode !== 'groups') {
         if ($ends_at) {
             try {
                 $dt = new \DateTime($ends_at);
-                $renewal_date = $dt->format('F j, Y');
+                $renewal_date = (string) wp_date((string) get_option('date_format', 'F j, Y'), $dt->getTimestamp(), $dt->getTimezone());
             } catch (\Throwable $e) {
                 $renewal_date = '';
             }
@@ -186,8 +186,9 @@ if ($roster_mode !== 'groups') {
         $active = $membership_data['data']['attributes']['active_assignments_count'] ?? null;
         $max = $membershipService->getEffectiveMaxAssignments($membership_data);
         if ($active !== null || $max !== null) {
-            $max_label = $max !== null ? $max : esc_html__('Unlimited', 'wicket-acc');
-            $seats_label = sprintf('%s %s / %s', esc_html__('Seats:', 'wicket-acc'), (string) $active, (string) $max_label);
+            $max_label = $max !== null ? $max : __('Unlimited', 'wicket-acc');
+            /* translators: 1: number of active seat assignments, 2: maximum number of seats (or "Unlimited"). */
+            $seats_label = sprintf(__('Seats: %1$s / %2$s', 'wicket-acc'), (string) $active, (string) $max_label);
         }
     }
 }
@@ -201,13 +202,18 @@ if ($roster_mode !== 'groups') {
             <?php endif; ?>
             <?php if ($org_name): ?>
                 <p class="org-details__summary-item wt_leading-normal wt_text-content mb-1">
-                    <?php esc_html_e('Organization:', 'wicket-acc'); ?>
-                    <?php echo esc_html($org_name); ?>
+                    <?php
+                    /* translators: %s: organization name. */
+                    echo esc_html(sprintf(__('Organization: %s', 'wicket-acc'), $org_name));
+                    ?>
                 </p>
             <?php endif; ?>
             <?php if ($group_type): ?>
                 <p class="org-details__summary-item wt_leading-normal wt_text-content mb-1">
-                    <?php echo esc_html__('Type:', 'wicket-acc') . ' ' . esc_html(ucwords(str_replace('_', ' ', $group_type))); ?>
+                    <?php
+                    /* translators: %s: group type. */
+                    echo esc_html(sprintf(__('Type: %s', 'wicket-acc'), ucwords(str_replace('_', ' ', $group_type))));
+                    ?>
                 </p>
             <?php endif; ?>
         <?php else: ?>
@@ -215,7 +221,10 @@ if ($roster_mode !== 'groups') {
             <div class="org-details__summary-list wt_flex wt_flex-col wt_gap-0">
                 <p class="org-details__summary-heading wt_font-bold wt_mb-1"><?php esc_html_e('Summary', 'wicket-acc'); ?></p>
                 <?php if ($membership_name): ?>
-                    <p class="org-details__summary-item wt_leading-normal wt_text-content mb-1"><?php echo esc_html__('Membership Tier:', 'wicket-acc') . ' ' . esc_html($membership_name); ?></p>
+                    <p class="org-details__summary-item wt_leading-normal wt_text-content mb-1"><?php
+                    /* translators: %s: membership tier name. */
+                    echo esc_html(sprintf(__('Membership Tier: %s', 'wicket-acc'), $membership_name));
+                    ?></p>
                 <?php endif; ?>
                 <p class="org-details__summary-item wt_leading-normal wt_text-content mb-1"><?php echo esc_html__('Membership Owner:', 'wicket-acc') . ' ' . esc_html($owner_name !== '' ? $owner_name : '—'); ?></p>
                 <p class="org-details__summary-item wt_leading-normal wt_text-content mb-1"><?php echo esc_html__('Renewal Date:', 'wicket-acc') . ' ' . esc_html($renewal_date !== '' ? $renewal_date : __('Not set.', 'wicket-acc')); ?></p>

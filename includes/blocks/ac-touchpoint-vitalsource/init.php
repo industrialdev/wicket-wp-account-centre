@@ -54,8 +54,8 @@ class init extends Blocks
 
         if ($this->is_preview) {
             $args = [
-                'block_name'        => 'Touchpoint VitalSource',
-                'block_description' => 'This block displays registered data for VitalSource on the front-end.',
+                'block_name'        => __('Touchpoint VitalSource', 'wicket-acc'),
+                'block_description' => __('This block displays registered data for VitalSource on the front-end.', 'wicket-acc'),
                 'block_slug'        => 'wicket-ac-touchpoint-vitalsource',
             ];
 
@@ -90,8 +90,8 @@ class init extends Blocks
         // Debug logging removed to avoid dumping touchpoint payloads
 
         $args = [
-            'block_name'          => 'Touchpoint VitalSource',
-            'block_description'   => 'This block displays registered data for VitalSource on the front-end.',
+            'block_name'          => __('Touchpoint VitalSource', 'wicket-acc'),
+            'block_description'   => __('This block displays registered data for VitalSource on the front-end.', 'wicket-acc'),
             'block_slug'          => 'wicket-ac-touchpoint-vitalsource',
             'attrs'               => $attrs,
             'title'               => $title,

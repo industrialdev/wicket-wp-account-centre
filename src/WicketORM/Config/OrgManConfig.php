@@ -552,7 +552,8 @@ final class OrgManConfig
                             'legacy_soc'     => ['mdp_key' => 'fdn_legacy_soc',     'label' => __('Legacy Soc.', 'wicket-acc'), 'format' => 'yesno'],
                         ],
                         'badge_pattern'        => '/^fdn_Donor_FY(\d{2})$/',
-                        'badge_label_template' => 'Foundation Donor FY{year}',
+                        /* translators: Keep the {year} token; it is replaced with the two-digit fiscal year. */
+                        'badge_label_template' => __('Foundation Donor FY{year}', 'wicket-acc'),
                     ],
                     'pac' => [
                         'enabled'                    => true,
@@ -564,7 +565,8 @@ final class OrgManConfig
                             'last_giving_dt' => ['mdp_key' => 'pac_last_giving_dt', 'label' => __('Last Gift', 'wicket-acc'), 'format' => 'date'],
                         ],
                         'badge_pattern'        => '/^DonorPAC_FY(\d{2})$/',
-                        'badge_label_template' => 'PAC Donor FY{year}',
+                        /* translators: Keep the {year} token; it is replaced with the two-digit fiscal year. */
+                        'badge_label_template' => __('PAC Donor FY{year}', 'wicket-acc'),
                     ],
                 ],
             ],

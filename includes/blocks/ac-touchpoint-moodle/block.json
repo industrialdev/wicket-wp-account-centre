@@ -1,5 +1,6 @@
 {
 	"name": "wicket-ac/ac-touchpoint-moodle",
+	"textdomain": "wicket-acc",
 	"title": "ACC Touchpoint Moodle",
 	"description": "Wicket block for Moodle Touchpoints",
 	"style": "file:./block-styles.css",

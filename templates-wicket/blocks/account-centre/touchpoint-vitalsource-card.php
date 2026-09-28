@@ -18,12 +18,13 @@ $product_name = $touchpoint['attributes']['data']['product_name'];
 $ebook_url = $touchpoint['attributes']['data']['ebook_url'];
 $redemption_code = $touchpoint['attributes']['data']['redemption_code'];
 $created_at_raw = $touchpoint['attributes']['created_at'];
-$created_at = date('m/d/Y', strtotime($created_at_raw));
+$created_at = date_i18n(get_option('date_format'), strtotime($created_at_raw));
 ?>
 
 <div class="vitalsource-card">
 	<a href="<?php echo esc_url($ebook_url); ?>" class="vitalsource-card__title" target="_blank">
 		<?php echo esc_html($product_name); ?>
+		<span class="webaim-hidden"><?php esc_html_e('(opens in a new window)', 'wicket-acc'); ?></span>
 	</a>
 
 	<?php if ($redemption_code) : ?>

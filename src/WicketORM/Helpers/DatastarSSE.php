@@ -41,13 +41,11 @@ class DatastarSSE
             esc_html__('Success!', 'wicket-acc'),
             wp_kses_post($message),
             $reloadSeconds > 0
-                ? sprintf(
-                    '<p class="wt_mt-2 wt_text-sm">%1$s <span id="%2$s">%3$d</span> %4$s</p>',
-                    esc_html__('This page will reload in', 'wicket-acc'),
-                    esc_attr($countdownId),
-                    (int) $reloadSeconds,
-                    esc_html__('seconds...', 'wicket-acc')
-                )
+                ? '<p class="wt_mt-2 wt_text-sm">' . sprintf(
+                    /* translators: %s: number of seconds until the page reloads (wrapped in a countdown element). */
+                    esc_html(_n('This page will reload in %s second...', 'This page will reload in %s seconds...', (int) $reloadSeconds, 'wicket-acc')),
+                    sprintf('<span id="%1$s">%2$d</span>', esc_attr($countdownId), (int) $reloadSeconds)
+                ) . '</p>'
                 : ''
         );
 

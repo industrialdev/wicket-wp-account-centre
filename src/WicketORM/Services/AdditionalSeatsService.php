@@ -83,17 +83,23 @@ class AdditionalSeatsService
             }
 
             if (!$found_product) {
-                $parts = [
-                    ['type' => 'text', 'value' => __('No purchasable WooCommerce product found. Create a Simple product with SKU ', 'wicket-acc')],
-                ];
+                $sku_parts = [];
                 foreach ($skus_to_check as $i => $sku) {
-                    if ($i > 0) {
-                        $parts[] = ['type' => 'text', 'value' => __(' or ', 'wicket-acc')];
+                    if ($i === 0) {
+                        $sku_parts = [['type' => 'token', 'value' => $sku]];
+                        continue;
                     }
-                    $parts[] = ['type' => 'token', 'value' => $sku];
+                    $sku_parts = $this->buildIssueParts(
+                        /* translators: 1: previously listed SKU(s), 2: alternative SKU. */
+                        __('%1$s or %2$s', 'wicket-acc'),
+                        [$sku_parts, $sku]
+                    );
                 }
-                $parts[] = ['type' => 'text', 'value' => __(' and set it to Published/Purchasable.', 'wicket-acc')];
-                $issues[] = ['parts' => $parts];
+                $issues[] = ['parts' => $this->buildIssueParts(
+                    /* translators: %s: product SKU(s). */
+                    __('No purchasable WooCommerce product found. Create a Simple product with SKU %s and set it to Published/Purchasable.', 'wicket-acc'),
+                    [$sku_parts]
+                )];
             }
 
             // Multi-tier: each configured tier SKU must resolve to a purchasable product. When
@@ -113,13 +119,11 @@ class AdditionalSeatsService
                     $tier_product_id = wc_get_product_id_by_sku($tier_sku);
                     $tier_product = $tier_product_id ? wc_get_product($tier_product_id) : null;
                     if (!$tier_product || !$tier_product->is_purchasable()) {
-                        $issues[] = ['parts' => [
-                            ['type' => 'text',  'value' => __('Multi-tier additional seats: no purchasable product found for tier ', 'wicket-acc')],
-                            ['type' => 'token', 'value' => $tier_slug],
-                            ['type' => 'text',  'value' => __(' (expected SKU ', 'wicket-acc')],
-                            ['type' => 'token', 'value' => $tier_sku],
-                            ['type' => 'text',  'value' => __(').', 'wicket-acc')],
-                        ]];
+                        $issues[] = ['parts' => $this->buildIssueParts(
+                            /* translators: 1: tier slug, 2: expected product SKU. */
+                            __('Multi-tier additional seats: no purchasable product found for tier %1$s (expected SKU %2$s).', 'wicket-acc'),
+                            [(string) $tier_slug, (string) $tier_sku]
+                        )];
                     }
                 }
             }
@@ -130,11 +134,11 @@ class AdditionalSeatsService
         if (empty($form_id)) {
             $config = $this->configService->getFullConfig();
             $form_slug = $config['integrations']['additional_seats']['form_slug'] ?? 'additional-seats';
-            $issues[] = ['parts' => [
-                ['type' => 'text',  'value' => __('No Gravity Form configured for additional seats. Create a Gravity Form and map its slug ', 'wicket-acc')],
-                ['type' => 'token', 'value' => $form_slug],
-                ['type' => 'text',  'value' => __(' via Gravity Forms > Wicket Settings > Form Slug ID Mapping.', 'wicket-acc')],
-            ]];
+            $issues[] = ['parts' => $this->buildIssueParts(
+                /* translators: %s: Gravity Form slug. */
+                __('No Gravity Form configured for additional seats. Create a Gravity Form and map its slug %s via Gravity Forms > Wicket Settings > Form Slug ID Mapping.', 'wicket-acc'),
+                [(string) $form_slug]
+            )];
         }
 
         // --- 3. supplemental-members page ---
@@ -145,16 +149,62 @@ class AdditionalSeatsService
             'post_status' => 'publish',
         ]);
         if (empty($page_posts)) {
-            $issues[] = ['parts' => [
-                ['type' => 'text',  'value' => __('The ', 'wicket-acc')],
-                ['type' => 'token', 'value' => 'supplemental-members'],
-                ['type' => 'text',  'value' => __(' my-account page is missing. Create a "my-account" CPT entry with slug ', 'wicket-acc')],
-                ['type' => 'token', 'value' => 'supplemental-members'],
-                ['type' => 'text',  'value' => __(' and embed the additional seats Gravity Form on it.', 'wicket-acc')],
-            ]];
+            $issues[] = ['parts' => $this->buildIssueParts(
+                /* translators: 1: page slug, 2: page slug. */
+                __('The %1$s my-account page is missing. Create a "my-account" CPT entry with slug %2$s and embed the additional seats Gravity Form on it.', 'wicket-acc'),
+                ['supplemental-members', 'supplemental-members']
+            )];
         }
 
         return $issues;
+    }
+
+    /**
+     * Split a translated sentence containing numbered or plain %s placeholders
+     * into structured issue parts, so tokens stay copyable while the sentence
+     * remains a single translatable string.
+     *
+     * @param string $template Translated sentence with %s or %N$s placeholders.
+     * @param array  $tokens   Values for the placeholders, in order. A string becomes a
+     *                         token part; an array is inserted as pre-built parts.
+     * @return array[] List of ['type' => 'text'|'token', 'value' => string] parts.
+     */
+    private function buildIssueParts(string $template, array $tokens): array
+    {
+        $segments = preg_split('/%(\d+\$|)s/', $template, -1, PREG_SPLIT_DELIM_CAPTURE);
+        if (!is_array($segments)) {
+            return [['type' => 'text', 'value' => $template]];
+        }
+
+        $parts = [];
+        $sequential = 0;
+        $count = count($segments);
+        for ($i = 0; $i < $count; $i++) {
+            $text = $segments[$i];
+            if ($text !== '') {
+                $parts[] = ['type' => 'text', 'value' => $text];
+            }
+
+            if (!isset($segments[$i + 1])) {
+                break;
+            }
+
+            $position = rtrim($segments[$i + 1], '$');
+            $index = $position !== '' ? ((int) $position - 1) : $sequential;
+            $sequential++;
+            $i++;
+
+            $token = $tokens[$index] ?? '';
+            if (is_array($token)) {
+                foreach ($token as $token_part) {
+                    $parts[] = $token_part;
+                }
+            } else {
+                $parts[] = ['type' => 'token', 'value' => (string) $token];
+            }
+        }
+
+        return $parts;
     }
 
     /**
