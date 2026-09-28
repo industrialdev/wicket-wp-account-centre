@@ -95,7 +95,7 @@ if ('POST' === strtoupper($request_method)) {
         if (wicket_person_in_membership($membership_uuid, $member_data['email'])) {
             status_header(200);
             WicketORM\Helpers\DatastarSSE::renderError(
-                sprintf(__('A member with the email %s already exists in this membership.', 'wicket-acc'), '<strong>' . esc_html($member_data['email']) . '</strong>'),
+                sprintf(/* translators: %s: member email address. */ __('A member with the email %s already exists in this membership.', 'wicket-acc'), '<strong>' . esc_html($member_data['email']) . '</strong>'),
                 '#add-member-messages-' . $org_dom_suffix,
                 $error_signals
             );

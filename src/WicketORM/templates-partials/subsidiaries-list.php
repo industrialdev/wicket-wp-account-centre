@@ -52,7 +52,7 @@ if (!defined('ABSPATH')) {
 							<?php wp_nonce_field('org_management_subsidiary_remove_' . $org_id, '_wpnonce'); ?>
 							<button type="submit"
 									class="button button--secondary component-button"
-									data-on:click="confirm('<?php echo esc_js(sprintf(__('Are you sure you want to remove %s as a subsidiary?', 'wicket-acc'), $subsidiary['name'])); ?>')">
+									data-on:click="confirm('<?php echo esc_js(sprintf(/* translators: %s: subsidiary organization name. */ __('Are you sure you want to remove %s as a subsidiary?', 'wicket-acc'), $subsidiary['name'])); ?>')">
 								<?php esc_html_e('Remove', 'wicket-acc'); ?>
 							</button>
 						</form>

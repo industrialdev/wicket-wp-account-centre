@@ -222,7 +222,7 @@ if ($roster_mode !== 'groups') {
                 <p class="org-details__summary-heading wt_font-bold wt_mb-1"><?php esc_html_e('Summary', 'wicket-acc'); ?></p>
                 <?php if ($membership_name): ?>
                     <p class="org-details__summary-item wt_leading-normal wt_text-content mb-1"><?php
-                    /* translators: %s: membership tier name. */
+                    /* translators: %s: Membership tier name. */
                     echo esc_html(sprintf(__('Membership Tier: %s', 'wicket-acc'), $membership_name));
                     ?></p>
                 <?php endif; ?>

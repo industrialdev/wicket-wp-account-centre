@@ -102,7 +102,7 @@ try {
     // Build success message
     $display_name = $person_name !== '' ? $person_name : __('the contact', 'wicket-acc');
     $success_message = sprintf(
-        esc_html__('Successfully removed %1$s from the contact list.', 'wicket-acc'),
+        /* translators: %1$s: contact name. */ esc_html__('Successfully removed %1$s from the contact list.', 'wicket-acc'),
         '<strong>' . esc_html($display_name) . '</strong>'
     );
 

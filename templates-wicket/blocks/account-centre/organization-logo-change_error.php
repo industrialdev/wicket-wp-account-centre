@@ -27,8 +27,8 @@ defined('ABSPATH') || exit;
         <div class="upload-requirements">
             <h4><?php esc_html_e('Upload Requirements:', 'wicket-acc'); ?></h4>
             <ul>
-                <li><?php printf(esc_html__('Maximum file size: %dMB', 'wicket-acc'), $args['max_size']); ?></li>
-                <li><?php printf(esc_html__('Allowed formats: %s', 'wicket-acc'), implode(', ', array_map('strtoupper', $args['pp_extensions']))); ?></li>
+                <li><?php printf(/* translators: %d: maximum file size in megabytes. */ esc_html__('Maximum file size: %dMB', 'wicket-acc'), $args['max_size']); ?></li>
+                <li><?php printf(/* translators: %s: comma-separated list of allowed file extensions. */ esc_html__('Allowed formats: %s', 'wicket-acc'), implode(', ', array_map('strtoupper', $args['pp_extensions']))); ?></li>
                 <li><?php esc_html_e('File must be a valid image', 'wicket-acc'); ?></li>
             </ul>
         </div>

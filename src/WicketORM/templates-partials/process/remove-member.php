@@ -128,7 +128,7 @@ if ('POST' === strtoupper($request_method)) {
         }
 
         $success_message = sprintf(
-            esc_html__('Successfully removed %1$s from the organization.', 'wicket-acc'),
+            /* translators: %1$s: member name. */ esc_html__('Successfully removed %1$s from the organization.', 'wicket-acc'),
             '<strong>' . esc_html($member_name) . '</strong>'
         );
 

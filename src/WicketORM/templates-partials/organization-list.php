@@ -410,7 +410,7 @@ if ($roster_mode === 'groups') {
                 ?>
                     <?php if ($show_my_role && $group_role_label !== '') : ?>
                         <div class="wt_text-sm wt_text-content wt_mt-1">
-                            <?php echo esc_html(sprintf(__('My Role: %s', 'wicket-acc'), $group_role_label)); ?>
+                            <?php echo esc_html(sprintf(/* translators: %s: role label. */ __('My Role: %s', 'wicket-acc'), $group_role_label)); ?>
                         </div>
                     <?php endif; ?>
                     <?php if ($can_manage_group) : ?>

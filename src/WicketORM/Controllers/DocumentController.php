@@ -201,7 +201,7 @@ class DocumentController extends ApiController
             'notice' => [
                 'type'    => 'success',
                 'message' => sprintf(
-                    __('Document "%s" uploaded successfully.', 'wicket-acc'),
+                    /* translators: %s: document name. */ __('Document "%s" uploaded successfully.', 'wicket-acc'),
                     $result['title']
                 ),
             ],
