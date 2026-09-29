@@ -66,7 +66,7 @@ class Shortcodes extends WicketAcc
 
         // If user only has one organization, redirect to that organization with url parameters
         if (!empty($org_uuids_list) && count($org_uuids_list) === 1 && empty($org_uuid)) {
-            $url = strtok($_SERVER['REQUEST_URI'], '?');
+            $url = strtok((string) ($_SERVER['REQUEST_URI'] ?? ''), '?');
             $redirect_url = add_query_arg('org_uuid', $org_uuids_list[0], $url);
 
             // Use wp_safe_redirect if possible (check headers_sent)
@@ -157,6 +157,14 @@ class Shortcodes extends WicketAcc
 
         // Figure out orgs I should see. This association to the org is set on each role. The actual role types we look at might change depending on the project
         foreach ($person->included() as $person_included) {
+            // Only role entries qualify. The previous inline condition bound the
+            // type check to the first comparison only, so any included entity
+            // whose name happened to contain 'member' et al. leaked into the
+            // selector as a phantom org (WWID-2665).
+            if (($person_included['type'] ?? '') !== 'roles') {
+                continue;
+            }
+
             // Warning fix
             if (!isset($person_included['attributes']['name'])) {
                 $person_included['attributes']['name'] = '';
@@ -165,14 +173,14 @@ class Shortcodes extends WicketAcc
             // Assigned roles
             $roles = $person_included['attributes']['assignable_role_names'] ?? [];
 
+            $name = $person_included['attributes']['name'];
+
             if (
-                $person_included['type'] == 'roles' && stristr($person_included['attributes']['name'], 'owner')
-                || stristr($person_included['attributes']['name'], 'member')
-                || stristr($person_included['attributes']['name'], 'org_editor')
-                || stristr($person_included['attributes']['name'], 'membership_manager')
-                || isset(
-                    $person_included['attributes']['assignable_role_names']
-                ) && (
+                stristr($name, 'owner')
+                || stristr($name, 'member')
+                || stristr($name, 'org_editor')
+                || stristr($name, 'membership_manager')
+                || (
                     in_array('member', $roles)
                     || in_array('org_editor', $roles)
                     || in_array('membership_manager', $roles)

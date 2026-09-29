@@ -169,7 +169,7 @@ class ChangePassword
                 $client->people->update($update_user);
 
                 // On success, redirect to current page with success param
-                wp_safe_redirect(strtok($_SERVER['REQUEST_URI'], '?') . '?success');
+                wp_safe_redirect(strtok((string) ($_SERVER['REQUEST_URI'] ?? ''), '?') . '?success');
                 exit;
             } catch (\Exception $e) {
                 // On API error, store errors for display
