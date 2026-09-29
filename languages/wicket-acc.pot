@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-29T15:30:24+00:00\n"
+"POT-Creation-Date: 2026-09-29T18:20:27+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wicket-acc\n"
@@ -480,6 +480,9 @@ msgstr ""
 msgid "Account Centre"
 msgstr ""
 
+msgid "Account Center"
+msgstr ""
+
 msgid "Dashboard"
 msgstr ""
 
@@ -490,9 +493,6 @@ msgid "Main Options"
 msgstr ""
 
 msgid "Centre/Center localization"
-msgstr ""
-
-msgid "Account Center"
 msgstr ""
 
 msgid "Sidebar location"
