@@ -1,0 +1,2995 @@
+# Copyright (C) 2026 Wicket Inc.
+# This file is distributed under the same license as the Wicket Account Centre plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Wicket Account Centre 1.11.8\n"
+"Report-Msgid-Bugs-To: https://wicket.io\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-09-29T15:30:24+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: wicket-acc\n"
+
+#. Plugin Name of the plugin
+msgid "Wicket Account Centre"
+msgstr ""
+
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+msgid "https://wicket.io"
+msgstr ""
+
+#. Description of the plugin
+msgid "Custom account management system for Wicket. Provides user account features, organization management, and additional blocks and pages. Integrates with WooCommerce when available."
+msgstr ""
+
+#. Author of the plugin
+msgid "Wicket Inc."
+msgstr ""
+
+msgid "Edit Profile"
+msgstr ""
+
+msgid "My Events"
+msgstr ""
+
+msgid "My Jobs"
+msgstr ""
+
+msgid "Post a Job"
+msgstr ""
+
+msgid "Change Password"
+msgstr ""
+
+msgid "Organization Management"
+msgstr ""
+
+msgid "Organization Profile"
+msgstr ""
+
+msgid "Organization Members"
+msgstr ""
+
+msgid "Bulk Upload Members"
+msgstr ""
+
+msgid "Global Header-Banner"
+msgstr ""
+
+msgid "Add Payment Method"
+msgstr ""
+
+msgid "Set Default Payment Method"
+msgstr ""
+
+msgid "Orders"
+msgstr ""
+
+msgid "View Order"
+msgstr ""
+
+msgid "Downloads"
+msgstr ""
+
+msgid "Edit Account"
+msgstr ""
+
+msgid "Edit Address"
+msgstr ""
+
+msgid "Payment Methods"
+msgstr ""
+
+msgid "Subscriptions"
+msgstr ""
+
+msgid "View Subscription"
+msgstr ""
+
+msgid "Subscription Payment Method"
+msgstr ""
+
+msgid "Membership Block"
+msgstr ""
+
+#. translators: %s: callout block logic type.
+#, php-format
+msgid "This block displays Membership Callouts [ %s ]"
+msgstr ""
+
+msgid "Re: Pending Membership Request"
+msgstr ""
+
+msgid "Security verification failed. Please try again."
+msgstr ""
+
+msgid "No file was selected for upload."
+msgstr ""
+
+msgid "The uploaded file exceeds the server's maximum file size limit."
+msgstr ""
+
+msgid "The uploaded file exceeds the form's maximum file size limit."
+msgstr ""
+
+msgid "The file was only partially uploaded. Please try again."
+msgstr ""
+
+msgid "No file was uploaded."
+msgstr ""
+
+msgid "Missing temporary folder on server."
+msgstr ""
+
+msgid "Failed to write file to disk."
+msgstr ""
+
+msgid "File upload stopped by extension."
+msgstr ""
+
+msgid "Unknown upload error occurred."
+msgstr ""
+
+msgid "The uploaded file appears to be empty. Please select a valid image file."
+msgstr ""
+
+#. translators: %s: comma-separated list of allowed file extensions.
+#, php-format
+msgid "Invalid file format. Please upload a file with one of these extensions: %s"
+msgstr ""
+
+msgid "The uploaded file is not a valid image. Please upload a valid image file."
+msgstr ""
+
+#. translators: %d: maximum file size in megabytes.
+#, php-format
+msgid "The uploaded file is too large. Maximum file size allowed is %dMB."
+msgstr ""
+
+msgid "Invalid organization ID."
+msgstr ""
+
+msgid "Failed to save the uploaded file. Please try again."
+msgstr ""
+
+msgid "Widget-profile-org component is missing. Please update the Wicket Base Plugin."
+msgstr ""
+
+msgid "Additional Info"
+msgstr ""
+
+msgid "You currently have no organizations to manage information for."
+msgstr ""
+
+msgid "Could not determine the current user for this upload."
+msgstr ""
+
+msgid "Could not determine a valid profile picture filename."
+msgstr ""
+
+msgid "Failed to process the image. Please try uploading a different image."
+msgstr ""
+
+msgid "Failed to finalize the image processing. Please try again."
+msgstr ""
+
+msgid "Invalid profile image operation."
+msgstr ""
+
+msgid "Could not determine the current user for this request."
+msgstr ""
+
+msgid "Profile image was removed locally, but clearing the MDP URL failed. Please try again."
+msgstr ""
+
+msgid "Security validation failed."
+msgstr ""
+
+msgid "No data found."
+msgstr ""
+
+msgid "Touchpoint Cvent"
+msgstr ""
+
+msgid "This block displays registered data for Cvent on the front-end."
+msgstr ""
+
+msgid "You do not have any past events at this time."
+msgstr ""
+
+msgid "You do not have any events at this time."
+msgstr ""
+
+msgid "You do not have any upcoming events at this time."
+msgstr ""
+
+msgid "Show More"
+msgstr ""
+
+msgid "Touchpoints TEC"
+msgstr ""
+
+msgid "This block displays registered data for The Events Calendar on the front-end."
+msgstr ""
+
+msgid "Touchpoint TEC"
+msgstr ""
+
+msgid "This block displays registered data for TEC (The Events Calendar) on the front-end."
+msgstr ""
+
+msgid "You do not have any past data at this time."
+msgstr ""
+
+msgid "You do not have any data at this time."
+msgstr ""
+
+msgid "You do not have any upcoming data at this time."
+msgstr ""
+
+msgid "You have no upcoming events"
+msgstr ""
+
+msgid "An error occurred. No data."
+msgstr ""
+
+msgid "An error occurred. Failed."
+msgstr ""
+
+msgid "Touchpoint Maple"
+msgstr ""
+
+msgid "This block displays registered data for Maple on the front-end."
+msgstr ""
+
+msgid "You do not have any courses."
+msgstr ""
+
+msgid "Touchpoint MicroSpec"
+msgstr ""
+
+msgid "This block displays registered data for MicroSpec on the front-end."
+msgstr ""
+
+msgid "Touchpoints Moodle"
+msgstr ""
+
+msgid "This block displays registered data from Moodle on the front-end."
+msgstr ""
+
+msgid "Touchpoint Moodle"
+msgstr ""
+
+msgid "Touchpoint Pheedloop"
+msgstr ""
+
+msgid "This block displays registered data for Pheedloop on the front-end."
+msgstr ""
+
+msgid "Touchpoint VitalSource"
+msgstr ""
+
+msgid "This block displays registered data for VitalSource on the front-end."
+msgstr ""
+
+msgid "You do not have any ebooks."
+msgstr ""
+
+msgid "Touchpoints Zoom"
+msgstr ""
+
+msgid "This block displays registered data for Zoom Webinars on the front-end."
+msgstr ""
+
+msgid "Touchpoint Zoom"
+msgstr ""
+
+msgid "You have no upcoming webinars"
+msgstr ""
+
+#. translators: %d: number of remaining results.
+#, php-format
+msgid "Load More (%d remaining)"
+msgstr ""
+
+msgid "Loading..."
+msgstr ""
+
+msgid "Load More"
+msgstr ""
+
+msgid "Primary Contact"
+msgstr ""
+
+msgid "Voting Contact"
+msgstr ""
+
+msgid "Primary Tradeshow Contact"
+msgstr ""
+
+msgid "Secondary Tradeshow Contact"
+msgstr ""
+
+msgid "Accounting Contact"
+msgstr ""
+
+msgid "Regulatory"
+msgstr ""
+
+msgid "Member"
+msgstr ""
+
+msgid "Employee"
+msgstr ""
+
+#. translators: %s: person's full name.
+#, php-format
+msgid "%s Profile Image"
+msgstr ""
+
+msgid "Welcome"
+msgstr ""
+
+msgid "ID:"
+msgstr ""
+
+msgid "Membership Type:"
+msgstr ""
+
+msgid "Active Member"
+msgstr ""
+
+msgid "Member Since:"
+msgstr ""
+
+msgid "Renewal Date:"
+msgstr ""
+
+msgid "Non-Member"
+msgstr ""
+
+msgid "ACC Base Block"
+msgstr ""
+
+msgid "There was an error processing the form."
+msgstr ""
+
+msgid "Opens in a new window"
+msgstr ""
+
+msgid "Global Header"
+msgstr ""
+
+msgid "Menu Editor"
+msgstr ""
+
+msgid "ACF JSON folder not writable"
+msgstr ""
+
+#. translators: %s: filesystem path of the ACF JSON folder.
+#, php-format
+msgid "The %s folder is not writable. Please make sure the folder is writable by the server."
+msgstr ""
+
+msgid "Not solving this issue, will result in ACF fields not being saved at plugin level and will not be visible on other sites backend."
+msgstr ""
+
+msgid "Organization Members Bulk Upload"
+msgstr ""
+
+msgid "Purchase Additional Seats"
+msgstr ""
+
+msgid "Organization Contacts"
+msgstr ""
+
+msgid "Account Centre page creation is already in progress."
+msgstr ""
+
+msgid "Account Centre: page creation is already in progress. Please wait a few seconds and reload."
+msgstr ""
+
+#. translators: 1: number of pages created, 2: number of pages that failed.
+#, php-format
+msgid "Account Centre: created %1$d page, %2$d could not be created. Check the Account Centre page list for details."
+msgid_plural "Account Centre: created %1$d pages, %2$d could not be created. Check the Account Centre page list for details."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of pages created.
+#, php-format
+msgid "Account Centre: created %d missing page."
+msgid_plural "Account Centre: created %d missing pages."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Account Centre: missing account pages."
+msgstr ""
+
+#. translators: %s: comma-separated list of page slugs.
+#, php-format
+msgid "The Account Centre links to account pages that do not exist on this site, so those links lead to a 404. Missing: %s"
+msgstr ""
+
+msgid "Create missing pages"
+msgstr ""
+
+msgid "You are not allowed to create Account Centre pages."
+msgstr ""
+
+msgid "My Account Woo"
+msgstr ""
+
+msgid "This page is critical for Wicket's Account Centre and cannot be moved to trash."
+msgstr ""
+
+msgid "This page is critical for Wicket's Account Centre and cannot be deleted."
+msgstr ""
+
+msgid "My Account (CPT)"
+msgstr ""
+
+#. translators: %s: config key being migrated ("fields" or "sections").
+#, php-format
+msgid "Replace \"%s\" in MDP Widget Config"
+msgstr ""
+
+msgid "Wicket_AC"
+msgstr ""
+
+#. translators: %s: template name.
+#, php-format
+msgid "Template %s not found"
+msgstr ""
+
+msgid "ACC Change Password"
+msgstr ""
+
+msgid "Form Title"
+msgstr ""
+
+msgid "Form Instructions"
+msgstr ""
+
+msgid "Enter your current password and choose a new one."
+msgstr ""
+
+msgid "A Wicket block for changing the user password."
+msgstr ""
+
+msgid "account-centre"
+msgstr ""
+
+msgid "password"
+msgstr ""
+
+msgid "wicket"
+msgstr ""
+
+msgid "can't be blank"
+msgstr ""
+
+msgid "- Passwords do not match"
+msgstr ""
+
+msgid "Account Centre"
+msgstr ""
+
+msgid "Dashboard"
+msgstr ""
+
+msgid "ACC Options"
+msgstr ""
+
+msgid "Main Options"
+msgstr ""
+
+msgid "Centre/Center localization"
+msgstr ""
+
+msgid "Account Center"
+msgstr ""
+
+msgid "Sidebar location"
+msgstr ""
+
+msgid "Left"
+msgstr ""
+
+msgid "Right"
+msgstr ""
+
+msgid "Profile Picture Size (in MB)"
+msgstr ""
+
+msgid "Allowed range: 1 to 7 MB."
+msgstr ""
+
+msgid "Default profile picture"
+msgstr ""
+
+msgid "Profile image MDP field"
+msgstr ""
+
+msgid "Global sub-header"
+msgstr ""
+
+msgid "ACC Environment"
+msgstr ""
+
+msgid "Environment"
+msgstr ""
+
+msgid "Connection Status"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Wicket Environment"
+msgstr ""
+
+msgid "Staging"
+msgstr ""
+
+msgid "Production"
+msgstr ""
+
+msgid "Production Settings"
+msgstr ""
+
+msgid "Staging Settings"
+msgstr ""
+
+msgid "API Endpoint"
+msgstr ""
+
+msgid "JWT Secret Key"
+msgstr ""
+
+msgid "Person ID"
+msgstr ""
+
+msgid "Parent Org"
+msgstr ""
+
+msgid "Wicket Admin"
+msgstr ""
+
+msgid "CONNECTED"
+msgstr ""
+
+msgid "NOT CONNECTED"
+msgstr ""
+
+msgid "N/A"
+msgstr ""
+
+#. translators: %s: person UUID.
+#, php-format
+msgid "Wicket person with UUID %s not found."
+msgstr ""
+
+msgid "No arguments provided"
+msgstr ""
+
+msgid "Role updated successfully"
+msgstr ""
+
+msgid "No syncing (keep image local)"
+msgstr ""
+
+msgid "Refresh fields"
+msgstr ""
+
+msgid "Refreshing..."
+msgstr ""
+
+msgid "Field list refreshed."
+msgstr ""
+
+msgid "Could not refresh the field list. Check the MDP connection and try again."
+msgstr ""
+
+msgid "No MDP fields are available for this tenant."
+msgstr ""
+
+msgid "Choose which MDP additional-info field stores the uploaded profile image URL. \"No syncing\" keeps the image in WordPress only."
+msgstr ""
+
+msgid "The selected field no longer exists in the MDP schema. Pick a valid field, or set \"No syncing\". Until then, uploads stay local and are not sent to the MDP."
+msgstr ""
+
+msgid "Page"
+msgstr ""
+
+msgid "Add New Page"
+msgstr ""
+
+msgid "Edit Page"
+msgstr ""
+
+msgid "View Page"
+msgstr ""
+
+msgid "Update Page"
+msgstr ""
+
+msgid "Search Page"
+msgstr ""
+
+msgid "Not Found"
+msgstr ""
+
+msgid "Not found in Trash"
+msgstr ""
+
+msgid "All Pages"
+msgstr ""
+
+msgid "Pages Sorting Order"
+msgstr ""
+
+msgid "Account Centre Menu"
+msgstr ""
+
+msgid "Account Centre Secondary Menu"
+msgstr ""
+
+msgid "ACC Page"
+msgstr ""
+
+msgid "ACC Page with Org Selector"
+msgstr ""
+
+msgid "ACC Page (No Sidebar)"
+msgstr ""
+
+msgid "your organization"
+msgstr ""
+
+#. translators: %s: organization name.
+#, php-format
+msgid "Welcome to %s!"
+msgstr ""
+
+#. translators: 1: recipient first name, 2: organization name.
+#, php-format
+msgid "Hi %1$s, <br><br>You have been assigned a membership as part of %2$s.<br><br>Visit our website and login to complete your profile and explore your member benefits.<br><br>Thank you,<br><br>%2$s"
+msgstr ""
+
+#. translators: 1: recipient first name, 2: organization name, 3: website domain (e.g. example.org).
+#, php-format
+msgid "Hi %1$s, <br><br>You have been assigned a membership as part of %2$s.<br><br>You will soon receive an Account Confirmation email with instructions on how to finalize your login account.<br>Once you have confirmed your account, visit %3$s and login to complete your profile and explore your member benefits.<br><br>Thank you,<br><br>%2$s"
+msgstr ""
+
+msgid "Membership Pending Approval"
+msgstr ""
+
+#. translators: %1$s: membership approval URL.
+#, php-format
+msgid "You have a membership pending approval.<br>Please use the following link to process the membership request.<br><a href=\"%1$s\">%1$s</a>"
+msgstr ""
+
+#. translators: %s: organization name.
+#, php-format
+msgid "Welcome to %s"
+msgstr ""
+
+#. translators: 1: recipient first name, 2: organization name, 3: website URL, 4: website name.
+#, php-format
+msgid ""
+"Hi %1$s, <br>\n"
+"<p>You have been assigned a membership as part of %2$s.</p>\n"
+"<p>You will receive an account confirmation email from *@wicketcloud.com, this will allow you to set your password and login for the first time.</p>\n"
+"<p>Going forward you can visit <a href='%3$s'>%4$s</a> and login to complete your profile and access your resources.</p>\n"
+"<br>\n"
+"Thank you,\n"
+"<br>\n"
+"%2$s"
+msgstr ""
+
+msgid "[Organization Selector]"
+msgstr ""
+
+msgid "No organizations found for your account."
+msgstr ""
+
+msgid "Choose an Organization:"
+msgstr ""
+
+msgid "The uploaded file could not be found."
+msgstr ""
+
+msgid "Unable to open the uploaded file."
+msgstr ""
+
+msgid "The CSV file is empty or could not be read."
+msgstr ""
+
+#. translators: %s: comma-separated list of missing CSV column headers.
+#, php-format
+msgid "Missing required column: %s."
+msgid_plural "Missing required columns: %s."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Membership Manager"
+msgstr ""
+
+msgid "Org. Editor"
+msgstr ""
+
+msgid "Membership Owner"
+msgstr ""
+
+msgid "Primary owner role for this organization membership"
+msgstr ""
+
+msgid "Can add, remove, and edit users in the roster"
+msgstr ""
+
+msgid "Ability to edit Organization's profile"
+msgstr ""
+
+msgid "CEO"
+msgstr ""
+
+msgid "Primary HR Contact"
+msgstr ""
+
+msgid "Member Contact"
+msgstr ""
+
+msgid "Advertising/Sponsor Contact"
+msgstr ""
+
+msgid "Advertising/Sponsor Billing Contact"
+msgstr ""
+
+msgid "First Name"
+msgstr ""
+
+msgid "Last Name"
+msgstr ""
+
+msgid "Email Address"
+msgstr ""
+
+msgid "Relationship Type"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Permissions"
+msgstr ""
+
+msgid "Roles"
+msgstr ""
+
+msgid "Org. Profile"
+msgstr ""
+
+msgid "Manage Members"
+msgstr ""
+
+msgid "Manage Contact List"
+msgstr ""
+
+msgid "Account confirmed"
+msgstr ""
+
+msgid "Account not confirmed"
+msgstr ""
+
+msgid "All seats have been assigned. Please purchase additional seats to add more members."
+msgstr ""
+
+msgid "Remove Members"
+msgstr ""
+
+msgid "To remove a member from your organization, please contact your association directly."
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Job Title"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Relationship"
+msgstr ""
+
+msgid "President"
+msgstr ""
+
+msgid "President Elect"
+msgstr ""
+
+msgid "Secretary"
+msgstr ""
+
+msgid "Treasurer"
+msgstr ""
+
+msgid "Main Contact"
+msgstr ""
+
+msgid "Organization Editor"
+msgstr ""
+
+msgid "Foundation"
+msgstr ""
+
+msgid "Current FY"
+msgstr ""
+
+msgid "Last FY"
+msgstr ""
+
+msgid "Last Gift"
+msgstr ""
+
+msgid "Lifetime Level"
+msgstr ""
+
+msgid "Last FY Level"
+msgstr ""
+
+msgid "Leadership Soc."
+msgstr ""
+
+msgid "Legacy Soc."
+msgstr ""
+
+#. translators: Keep the {year} token; it is replaced with the two-digit fiscal year.
+msgid "Foundation Donor FY{year}"
+msgstr ""
+
+msgid "PAC"
+msgstr ""
+
+#. translators: Keep the {year} token; it is replaced with the two-digit fiscal year.
+msgid "PAC Donor FY{year}"
+msgstr ""
+
+msgid "You do not have permission to access this endpoint."
+msgstr ""
+
+msgid "Organization ID is required."
+msgstr ""
+
+msgid "Business information updated successfully."
+msgstr ""
+
+msgid "Need more seats?"
+msgstr ""
+
+msgid "As the membership owner, you can purchase additional seats for your organization membership. Click the \"Purchase Additional Seats\" button below to get started."
+msgstr ""
+
+msgid "File upload failed."
+msgstr ""
+
+msgid "File size exceeds the maximum allowed size."
+msgstr ""
+
+msgid "File was only partially uploaded."
+msgstr ""
+
+msgid "Missing temporary folder."
+msgstr ""
+
+#. translators: %s: document name.
+#, php-format
+msgid "Document \"%s\" uploaded successfully."
+msgstr ""
+
+msgid "Organization ID and Document ID are required."
+msgstr ""
+
+msgid "Document deleted successfully."
+msgstr ""
+
+msgid "Unable to determine the current person."
+msgstr ""
+
+msgid "Organization identifier is missing."
+msgstr ""
+
+msgid "Security verification failed. Please refresh and try again."
+msgstr ""
+
+msgid "You do not have permission to export members for this organization."
+msgstr ""
+
+msgid "Your roster is ready and downloading now."
+msgstr ""
+
+#. translators: %s: email address
+#, php-format
+msgid "Your export has been queued. You will receive an email at %s when it is ready to download."
+msgstr ""
+
+msgid "Organization ID and Subsidiary Organization ID are required."
+msgstr ""
+
+msgid "Subsidiary added successfully."
+msgstr ""
+
+msgid "Subsidiary removed successfully."
+msgstr ""
+
+msgid "Bulk upload processed successfully."
+msgstr ""
+
+msgid "Success!"
+msgstr ""
+
+#. translators: %s: number of seconds until the page reloads (wrapped in a countdown element).
+#, php-format
+msgid "This page will reload in %s second..."
+msgid_plural "This page will reload in %s seconds..."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Additional seats product not found. Please contact support."
+msgstr ""
+
+msgid "Unable to add additional seats to cart. Please try again."
+msgstr ""
+
+#. translators: %d: minimum seats per order
+#, php-format
+msgid "Please enter at least %d seat."
+msgid_plural "Please enter at least %d seats."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: maximum seats per order
+#, php-format
+msgid "Maximum %d seat can be purchased at once. Please contact support for larger orders."
+msgid_plural "Maximum %d seats can be purchased at once. Please contact support for larger orders."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "The organization owner (Primary Member) cannot be removed."
+msgstr ""
+
+#. translators: %s: number of seconds remaining before the dialog closes.
+#, php-format
+msgid "This dialog will close automatically in %s second."
+msgid_plural "This dialog will close automatically in %s seconds."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Template not found."
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Success"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Warning"
+msgstr ""
+
+msgid "Info"
+msgstr ""
+
+msgid "WooCommerce is not active. The additional seats feature requires WooCommerce."
+msgstr ""
+
+#. translators: 1: previously listed SKU(s), 2: alternative SKU.
+#, php-format
+msgid "%1$s or %2$s"
+msgstr ""
+
+#. translators: %s: product SKU(s).
+#, php-format
+msgid "No purchasable WooCommerce product found. Create a Simple product with SKU %s and set it to Published/Purchasable."
+msgstr ""
+
+msgid "Multi-tier additional seats: tier_mode is enabled but no tier_skus map is configured. Add a tier slug to SKU map (or rely on derived SKUs and ensure matching products exist) in the site org-roster config."
+msgstr ""
+
+#. translators: 1: tier slug, 2: expected product SKU.
+#, php-format
+msgid "Multi-tier additional seats: no purchasable product found for tier %1$s (expected SKU %2$s)."
+msgstr ""
+
+#. translators: %s: Gravity Form slug.
+#, php-format
+msgid "No Gravity Form configured for additional seats. Create a Gravity Form and map its slug %s via Gravity Forms > Wicket Settings > Form Slug ID Mapping."
+msgstr ""
+
+#. translators: 1: page slug, 2: page slug.
+#, php-format
+msgid "The %1$s my-account page is missing. Create a \"my-account\" CPT entry with slug %2$s and embed the additional seats Gravity Form on it."
+msgstr ""
+
+msgid "Unable to determine the uploading user."
+msgstr ""
+
+msgid "Unable to read the uploaded CSV file."
+msgstr ""
+
+msgid "CSV header row is missing or invalid."
+msgstr ""
+
+#. translators: %s: CSV column header name.
+#, php-format
+msgid "CSV is missing required column: %s."
+msgstr ""
+
+msgid "CSV has no member rows to process."
+msgstr ""
+
+#. translators: 1: existing job ID, 2: existing job status.
+#, php-format
+msgid "This exact same CSV is already in progress (matching file hash). Existing job: %1$s (status: %2$s)."
+msgstr ""
+
+#. translators: 1: existing job ID, 2: existing job status.
+#, php-format
+msgid "This exact same CSV was already processed before (matching file hash). Existing job: %1$s (status: %2$s). Please upload a different CSV with different users."
+msgstr ""
+
+msgid "Unable to schedule background processing."
+msgstr ""
+
+#. translators: %d: CSV row number.
+#, php-format
+msgid "Row %d skipped: missing required name/email fields."
+msgstr ""
+
+#. translators: %d: CSV row number.
+#, php-format
+msgid "Row %d skipped: relationship type is required for bulk upload."
+msgstr ""
+
+#. translators: %d: CSV row number.
+#, php-format
+msgid "Row %d failed: relationship type is not allowed."
+msgstr ""
+
+#. translators: 1: CSV row number, 2: member email address, 3: error message.
+#, php-format
+msgid "Row %1$d failed (%2$s): %3$s"
+msgstr ""
+
+msgid "Unable to schedule next background batch."
+msgstr ""
+
+msgid "Company Attributes"
+msgstr ""
+
+msgid "2SLGBTQIA+ Owned"
+msgstr ""
+
+msgid "Black, Indigenous, Person of Colour Owned"
+msgstr ""
+
+msgid "Quebec Based Business"
+msgstr ""
+
+msgid "Family Owned"
+msgstr ""
+
+msgid "Made in Canada"
+msgstr ""
+
+msgid "Women Owned"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
+msgid "Certifications"
+msgstr ""
+
+msgid "Carbon Neutral"
+msgstr ""
+
+msgid "Certified B Corp"
+msgstr ""
+
+msgid "Cruelty Free"
+msgstr ""
+
+msgid "ECOCERT"
+msgstr ""
+
+msgid "Fair Trade Certified"
+msgstr ""
+
+msgid "Non-GMO Certified"
+msgstr ""
+
+msgid "NSF Certified"
+msgstr ""
+
+msgid "Organic Certified"
+msgstr ""
+
+msgid "Regenerative Organic Certified"
+msgstr ""
+
+msgid "Sustainably Sourced"
+msgstr ""
+
+msgid "Business Services"
+msgstr ""
+
+msgid "Certification Services"
+msgstr ""
+
+msgid "Consulting Services"
+msgstr ""
+
+msgid "Contract Manufacturing"
+msgstr ""
+
+msgid "Display Fixtures"
+msgstr ""
+
+msgid "Financial Services / Investment Firm"
+msgstr ""
+
+msgid "Ingredients & Raw Materials Supplier"
+msgstr ""
+
+msgid "Legal & Regulatory Services"
+msgstr ""
+
+msgid "Marketing & Advertising"
+msgstr ""
+
+msgid "Packaging & Labelling"
+msgstr ""
+
+msgid "Quality Assurance & Laboratory Testing"
+msgstr ""
+
+msgid "R&D, Formulation & Flavouring"
+msgstr ""
+
+msgid "Research & Data Services"
+msgstr ""
+
+msgid "Retail Services"
+msgstr ""
+
+msgid "Shipping & Logistics"
+msgstr ""
+
+msgid "Technology Solutions"
+msgstr ""
+
+msgid "Product Segments"
+msgstr ""
+
+msgid "Food & Beverage"
+msgstr ""
+
+msgid "Personal Care & Beauty"
+msgstr ""
+
+msgid "Healthy Home & Lifestyle"
+msgstr ""
+
+msgid "Natural Health Products, Vitamins & Herbal Supplements"
+msgstr ""
+
+msgid "Pet Food & Wellness Supplies"
+msgstr ""
+
+msgid "MDP client is not available."
+msgstr ""
+
+msgid "Unexpected response from the MDP API."
+msgstr ""
+
+msgid "Person UUID, relationship ID, and organization ID are required."
+msgstr ""
+
+msgid "Connection not found."
+msgstr ""
+
+msgid "Person ID, organization ID, and connection type are required."
+msgstr ""
+
+msgid "Person UUID and organization ID are required."
+msgstr ""
+
+msgid "Wicket API client is unavailable."
+msgstr ""
+
+msgid "No connection found for this person and organization."
+msgstr ""
+
+msgid "No active person-to-organization connection found."
+msgstr ""
+
+#. translators: %s: error detail returned by the API.
+#, php-format
+msgid "Failed to update connection description: %s"
+msgstr ""
+
+msgid "Unknown error"
+msgstr ""
+
+msgid "Valid payload array is required."
+msgstr ""
+
+#. translators: %s: error detail.
+#, php-format
+msgid "Could not list the active connections to end: %s"
+msgstr ""
+
+msgid "Person UUID, organization ID, and new type are required."
+msgstr ""
+
+#. translators: %s: error detail returned by the API.
+#, php-format
+msgid "Failed to update connection type: %s"
+msgstr ""
+
+msgid "Organization UUID and Wicket API client are required."
+msgstr ""
+
+msgid "Failed to fetch organization connections."
+msgstr ""
+
+msgid "Relationship type is required."
+msgstr ""
+
+msgid "First name, last name, and email are required."
+msgstr ""
+
+msgid "Person creation helper not available."
+msgstr ""
+
+msgid "This person already has this relationship type."
+msgstr ""
+
+msgid "Contact added but role assignment failed. Please set roles manually."
+msgstr ""
+
+msgid "Failed to end contact relationships."
+msgstr ""
+
+msgid "File data is required."
+msgstr ""
+
+#. translators: %s: uploaded file extension.
+#, php-format
+msgid "File type %s is not allowed."
+msgstr ""
+
+#. translators: %s: maximum allowed file size (e.g. 10 MB).
+#, php-format
+msgid "File size exceeds the maximum allowed size of %s."
+msgstr ""
+
+msgid "Document ID is required."
+msgstr ""
+
+msgid "Document not found."
+msgstr ""
+
+msgid "Invalid document."
+msgstr ""
+
+msgid "Failed to delete document."
+msgstr ""
+
+msgid "Person UUID is required."
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "MDP API client unavailable."
+msgstr ""
+
+msgid "Group member id is required."
+msgstr ""
+
+msgid "Unable to delete group member."
+msgstr ""
+
+msgid "Membership UUID is required."
+msgstr ""
+
+msgid "A valid recipient email is required."
+msgstr ""
+
+#. translators: 1: existing export job ID, 2: existing export job status.
+#, php-format
+msgid "An export for this organization is already in progress (job: %1$s, status: %2$s)."
+msgstr ""
+
+msgid "Unable to schedule background export."
+msgstr ""
+
+msgid "Unable to write to export file."
+msgstr ""
+
+msgid "Export file is missing or inaccessible."
+msgstr ""
+
+msgid "Unable to schedule next export batch."
+msgstr ""
+
+msgid "Download link not found."
+msgstr ""
+
+msgid "This download link has expired."
+msgstr ""
+
+msgid "This download link has reached its maximum usage limit."
+msgstr ""
+
+msgid "Export file not found."
+msgstr ""
+
+msgid "Unable to create export directory."
+msgstr ""
+
+msgid "Unable to create export file."
+msgstr ""
+
+msgid "Your member export is ready"
+msgstr ""
+
+msgid "Your member export is ready."
+msgstr ""
+
+#. translators: %d: number of days the download link stays valid.
+#, php-format
+msgid "The download link is valid for %d day."
+msgid_plural "The download link is valid for %d days."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: maximum number of times the download link can be used.
+#, php-format
+msgid "It can be used up to %d time."
+msgid_plural "It can be used up to %d times."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Download Export"
+msgstr ""
+
+msgid "If the button above does not work, copy and paste this URL into your browser:"
+msgstr ""
+
+msgid "Your member export could not be completed"
+msgstr ""
+
+msgid "Your member export could not be completed. Please try again or contact support."
+msgstr ""
+
+msgid "Wicket API client is not available."
+msgstr ""
+
+msgid "Person UUID, organization UUID, and membership UUID are required."
+msgstr ""
+
+msgid "Person membership not found in this organization."
+msgstr ""
+
+msgid "Cannot update roles for an inactive member."
+msgstr ""
+
+#. translators: %s: role name.
+#, php-format
+msgid "Failed to remove role '%s'."
+msgstr ""
+
+#. translators: %s: role name.
+#, php-format
+msgid "Failed to verify removal of role '%s'."
+msgstr ""
+
+#. translators: %s: role name.
+#, php-format
+msgid "Failed to add role '%s'."
+msgstr ""
+
+#. translators: %s: error detail.
+#, php-format
+msgid "Failed to update member roles: %s"
+msgstr ""
+
+msgid "Person UUID, organization UUID, and relationship type are required."
+msgstr ""
+
+#. translators: %s: error detail.
+#, php-format
+msgid "Failed to update member relationship: %s"
+msgstr ""
+
+msgid "Person UUID and organization UUID are required."
+msgstr ""
+
+#. translators: %s: error detail.
+#, php-format
+msgid "Failed to update member description: %s"
+msgstr ""
+
+msgid "Organization UUID is required."
+msgstr ""
+
+msgid "No membership found for this organization."
+msgstr ""
+
+msgid "Membership UUID and arguments are required."
+msgstr ""
+
+msgid "Search query is required."
+msgstr ""
+
+msgid "No search results found."
+msgstr ""
+
+msgid "No membership members found."
+msgstr ""
+
+msgid "Person membership ID is required."
+msgstr ""
+
+msgid "Person membership not found."
+msgstr ""
+
+#. translators: %s: error detail returned by the API.
+#, php-format
+msgid "Failed to end-date person membership: %s"
+msgstr ""
+
+msgid "The membership API client is unavailable. The removal state is unknown; retry when the API is reachable."
+msgstr ""
+
+#. translators: %s: error detail.
+#, php-format
+msgid "Failed looking up the person memberships: %s"
+msgstr ""
+
+msgid "Wicket API functions are unavailable."
+msgstr ""
+
+msgid "Person not found."
+msgstr ""
+
+msgid "Person does not have a primary email address."
+msgstr ""
+
+#. translators: %s: recipient first name.
+#, php-format
+msgid "Hi %s,"
+msgstr ""
+
+#. translators: %s: organization name.
+#, php-format
+msgid "You have been assigned a membership as part of %s."
+msgstr ""
+
+#. translators: %s: sender email address for the account confirmation email.
+#, php-format
+msgid "You will receive an account confirmation email from %s, this will allow you to set your password and login for the first time."
+msgstr ""
+
+#. translators: %s: link to the site (site name).
+#, php-format
+msgid "Going forward you can visit %s and login to complete your profile and access your resources."
+msgstr ""
+
+msgid "Thank you,"
+msgstr ""
+
+msgid "Failed to send assignment email."
+msgstr ""
+
+msgid "Person input is required."
+msgstr ""
+
+msgid "Data array is required."
+msgstr ""
+
+msgid "Notification type is required."
+msgstr ""
+
+msgid "Invalid person input type."
+msgstr ""
+
+msgid "Organization not found."
+msgstr ""
+
+msgid "Person email address is required."
+msgstr ""
+
+msgid "Invalid email address."
+msgstr ""
+
+msgid "Your Representative Information Has Been Updated"
+msgstr ""
+
+#. translators: %s: organization name.
+#, php-format
+msgid "Your representative information has been updated in the %s organization."
+msgstr ""
+
+msgid "Please log in to your account to review the changes."
+msgstr ""
+
+#. translators: %s: link to the site (site name).
+#, php-format
+msgid "Visit %s to access your account."
+msgstr ""
+
+#. translators: %s: organization name.
+#, php-format
+msgid "Update from %s"
+msgstr ""
+
+#. translators: %s: organization name.
+#, php-format
+msgid "You have received an update from %s."
+msgstr ""
+
+msgid "Please log in to your account for more details."
+msgstr ""
+
+msgid "Failed to send group assignment email."
+msgstr ""
+
+msgid "Unknown Organization"
+msgstr ""
+
+msgid "Unable to fetch memberships. Please try again later."
+msgstr ""
+
+msgid "Required Wicket functions are not available."
+msgstr ""
+
+msgid "No memberships found for this organization."
+msgstr ""
+
+msgid "No owner found for this organization."
+msgstr ""
+
+msgid "Owner person not found."
+msgstr ""
+
+msgid "Person UUID, roles, and organization ID are required."
+msgstr ""
+
+msgid "No valid roles provided."
+msgstr ""
+
+#. translators: %s: comma-separated list of role slugs.
+#, php-format
+msgid "Failed removing role: %s."
+msgid_plural "Failed removing roles: %s."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Role assignment helper is unavailable."
+msgstr ""
+
+#. translators: %s: role slug.
+#, php-format
+msgid "Failed assigning role %s."
+msgstr ""
+
+msgid "Permissions updated successfully."
+msgstr ""
+
+msgid "Role is required."
+msgstr ""
+
+msgid "Could not find a valid corporate membership for this organization."
+msgstr ""
+
+msgid "Failed to create organization connection."
+msgstr ""
+
+#. translators: %s: member email address.
+#, php-format
+msgid "A member with email %s already exists in this organization."
+msgstr ""
+
+msgid "This person is already a member of this organization."
+msgstr ""
+
+msgid "Member added successfully."
+msgstr ""
+
+msgid "Organization membership UUID is required to remove a member."
+msgstr ""
+
+msgid "Organization membership is invalid or unavailable."
+msgstr ""
+
+msgid "Membership does not belong to this organization."
+msgstr ""
+
+msgid "Member removed successfully."
+msgstr ""
+
+msgid "Membership details unavailable."
+msgstr ""
+
+msgid "Failed to add employee connection"
+msgstr ""
+
+msgid "Organization identifier is required."
+msgstr ""
+
+msgid "Membership UUID is invalid or unavailable."
+msgstr ""
+
+msgid "Membership does not belong to the selected organization."
+msgstr ""
+
+msgid "Membership assignment helper is unavailable."
+msgstr ""
+
+msgid "Could not find membership type ID."
+msgstr ""
+
+msgid "Failed to assign person to membership seat."
+msgstr ""
+
+msgid "Email notification dependencies are unavailable."
+msgstr ""
+
+msgid "Unable to determine person email address."
+msgstr ""
+
+msgid "The organization membership record could not be verified, so the removal was cancelled before anything changed. Please try again in a moment. If this keeps happening, please contact support."
+msgstr ""
+
+msgid "The selected membership belongs to a different organization membership."
+msgstr ""
+
+#. translators: %s: error detail.
+#, php-format
+msgid "Failed ending the person membership: %s"
+msgstr ""
+
+msgid "Group UUID is required for this operation."
+msgstr ""
+
+msgid "Invalid roster role for group membership."
+msgstr ""
+
+msgid "You do not have permission to manage this group."
+msgstr ""
+
+msgid "This member already has this role in the group."
+msgstr ""
+
+#. translators: %s: group role slug.
+#, php-format
+msgid "This group already has a person '%s' for your organization."
+msgstr ""
+
+msgid "Unknown Group"
+msgstr ""
+
+msgid "Member added to group successfully."
+msgstr ""
+
+msgid "Could not find the person in the specified group."
+msgstr ""
+
+msgid "Managing roles cannot be removed."
+msgstr ""
+
+msgid "Could not verify member role before removal."
+msgstr ""
+
+msgid "Group member removed successfully."
+msgstr ""
+
+msgid "No seats available for this organization."
+msgstr ""
+
+msgid "Membership UUID is required for membership_cycle strategy."
+msgstr ""
+
+msgid "You do not have permission to add members to this organization."
+msgstr ""
+
+msgid "You do not have permission to remove members from this organization."
+msgstr ""
+
+msgid "Parent organization ID is required."
+msgstr ""
+
+msgid "Subsidiary organization ID is required."
+msgstr ""
+
+msgid "Parent organization not found."
+msgstr ""
+
+msgid "Subsidiary organization not found."
+msgstr ""
+
+msgid "This subsidiary relationship already exists."
+msgstr ""
+
+msgid "Subsidiary relationship not found."
+msgstr ""
+
+#. translators: %s: uploaded file extension.
+#, php-format
+msgid "File type %s is not allowed. Please upload an Excel file."
+msgstr ""
+
+msgid "Bulk subsidiary upload feature is not yet implemented."
+msgstr ""
+
+msgid "This upload job is no longer available. If the roster did not update, please upload the CSV again."
+msgstr ""
+
+#. translators: 1: number added, 2: number skipped, 3: number failed
+#, php-format
+msgid "Bulk upload complete — %1$d added, %2$d skipped, %3$d failed."
+msgstr ""
+
+msgid "Bulk upload failed. Please upload the CSV again or contact support."
+msgstr ""
+
+#. translators: 1: rows processed, 2: total rows
+#, php-format
+msgid "Still working — %1$d of %2$d row processed. This is taking longer than expected; you can leave this page and check the roster later."
+msgid_plural "Still working — %1$d of %2$d rows processed. This is taking longer than expected; you can leave this page and check the roster later."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: 1: rows processed, 2: total rows
+#, php-format
+msgid "Bulk upload in progress — %1$d of %2$d row processed…"
+msgid_plural "Bulk upload in progress — %1$d of %2$d rows processed…"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "This upload job is in an unknown state. If the roster did not update, please upload the CSV again."
+msgstr ""
+
+msgid "Business information is not available for this organization."
+msgstr ""
+
+msgid "Please specify"
+msgstr ""
+
+msgid "Save Changes"
+msgstr ""
+
+#. translators: %d: number of years.
+#, php-format
+msgid "%d Year"
+msgid_plural "%d Years"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of months.
+#, php-format
+msgid "%d Month"
+msgid_plural "%d Months"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: 1: membership duration (e.g. "2 Years"), 2: start year.
+#, php-format
+msgid " - %1$s (Start %2$s)"
+msgstr ""
+
+#. translators: %s: start year.
+#, php-format
+msgid " (Start %s)"
+msgstr ""
+
+#. translators: %s: Membership tier name.
+#, php-format
+msgid "Membership Tier: %s"
+msgstr ""
+
+msgid "Active Membership"
+msgstr ""
+
+msgid "No membership found"
+msgstr ""
+
+msgid "Inactive Membership"
+msgstr ""
+
+msgid "My Role(s):"
+msgstr ""
+
+msgid "No roles assigned"
+msgstr ""
+
+msgid "Group(s):"
+msgstr ""
+
+msgid "Type:"
+msgstr ""
+
+msgid "Tag(s):"
+msgstr ""
+
+msgid "Processing. Please wait..."
+msgstr ""
+
+#. translators: %d: number of assigned people.
+#, php-format
+msgid "Number of assigned people: %d"
+msgstr ""
+
+msgid "Search by name or email..."
+msgstr ""
+
+msgid "Search"
+msgstr ""
+
+msgid "Clear"
+msgstr ""
+
+msgid "No contacts found."
+msgstr ""
+
+msgid "Relationship:"
+msgstr ""
+
+#. translators: %s: subsidiary organization name.
+msgid "Remove"
+msgstr ""
+
+msgid "Contacts pagination"
+msgstr ""
+
+#. translators: 1: first item number on the page, 2: last item number on the page, 3: total number of items.
+#, php-format
+msgid "Showing %1$d-%2$d of %3$d"
+msgstr ""
+
+msgid "Previous"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
+msgid "Add Individual Contact"
+msgstr ""
+
+msgid "Add Contact"
+msgstr ""
+
+msgid "Select a relationship type"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Remove Contact"
+msgstr ""
+
+#. translators: %s: name of the contact being removed.
+#, php-format
+msgid "Are you sure you want to remove %s from the contact list?"
+msgstr ""
+
+msgid "This will end their relationship with the organization. This action cannot be undone."
+msgstr ""
+
+msgid "Select Document"
+msgstr ""
+
+msgid "Document Title"
+msgstr ""
+
+msgid "Enter document title"
+msgstr ""
+
+msgid "Upload Document"
+msgstr ""
+
+msgid "Description (Optional)"
+msgstr ""
+
+msgid "Enter document description"
+msgstr ""
+
+msgid "Download"
+msgstr ""
+
+msgid "Are you sure you want to delete this document?"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "No documents found"
+msgstr ""
+
+msgid "Upload your first document using the form above."
+msgstr ""
+
+msgid "No engagement data available."
+msgstr ""
+
+msgid "No engagement data available for this period."
+msgstr ""
+
+msgid "Download Roster"
+msgstr ""
+
+#. translators: %1$d: number of members in the roster.
+#, php-format
+msgid "This roster is large (%1$d member) and will be prepared in the background. After clicking, a download link will be emailed to you."
+msgid_plural "This roster is large (%1$d members) and will be prepared in the background. After clicking, a download link will be emailed to you."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Download the current roster as a CSV file. Small rosters download immediately; large rosters are prepared in the background and a download link is emailed to you."
+msgstr ""
+
+msgid "Your roster is large and is being prepared in the background. A download link will be emailed to you shortly."
+msgstr ""
+
+msgid "Your roster is ready and downloading now. If the download did not start automatically, check your browser's download settings."
+msgstr ""
+
+#. translators: %d: number of members exported
+#, php-format
+msgid "Export complete — %d member exported."
+msgid_plural "Export complete — %d members exported."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Export failed. Please try again or contact support."
+msgstr ""
+
+#. translators: 1: current page, 2: total pages
+#, php-format
+msgid "Export in progress — page %1$d of %2$d…"
+msgstr ""
+
+msgid "Export queued — processing will begin shortly…"
+msgstr ""
+
+msgid "No group selected."
+msgstr ""
+
+msgid "Start typing to search for members..."
+msgstr ""
+
+msgid "Need More Seats?"
+msgstr ""
+
+msgid "Purchase additional seats for your organization membership to accommodate more team members."
+msgstr ""
+
+msgid "Add Member"
+msgstr ""
+
+msgid "user@mail.com"
+msgstr ""
+
+msgid "Role"
+msgstr ""
+
+msgid "Observer"
+msgstr ""
+
+msgid "Remove Member"
+msgstr ""
+
+msgid "Are you sure you want to remove this member from the group?"
+msgstr ""
+
+#. translators: %s: name of the member being removed.
+#, php-format
+msgid "Are you sure you want to remove %s from this group?"
+msgstr ""
+
+msgid "This action cannot be undone."
+msgstr ""
+
+msgid "Group Information"
+msgstr ""
+
+msgid "No description available."
+msgstr ""
+
+msgid "Group Name"
+msgstr ""
+
+msgid "Save Group"
+msgstr ""
+
+msgid "Role(s):"
+msgstr ""
+
+msgid "No additional details available"
+msgstr ""
+
+msgid "Upload a CSV file to add multiple members at once. Existing active members are skipped automatically."
+msgstr ""
+
+msgid "Download CSV Template"
+msgstr ""
+
+msgid "CSV File"
+msgstr ""
+
+#. translators: %s list of configured CSV columns
+#, php-format
+msgid "Expected columns: %s"
+msgstr ""
+
+msgid "For multiple roles, separate values with \"|\" only."
+msgstr ""
+
+msgid "Upload and Add Members"
+msgstr ""
+
+#. translators: 1: number of assigned seats, 2: maximum number of seats.
+#, php-format
+msgid "Seats assigned: %1$d / %2$d"
+msgstr ""
+
+msgid "No seats available. Please purchase additional seats to add more members."
+msgstr ""
+
+msgid "No members found."
+msgstr ""
+
+msgid "Role:"
+msgstr ""
+
+msgid "Group members pagination"
+msgstr ""
+
+#. translators: 1: first item number on the page, 2: last item number on the page, 3: total number of items.
+#, php-format
+msgid "Showing %1$d–%2$d of %3$d"
+msgstr ""
+
+msgid "All seats have been assigned. You can still add Observers, but purchase additional seats to add more Members."
+msgstr ""
+
+#. translators: 1: number of assigned seats, 2: maximum number of seats.
+#, php-format
+msgid "Seats assigned: %1$s / %2$s"
+msgstr ""
+
+#. translators: %s: number of assigned people.
+#, php-format
+msgid "Number of assigned people: %s"
+msgstr ""
+
+msgid "Organization Owner"
+msgstr ""
+
+#. translators: %s: member name.
+msgid "Edit Permissions"
+msgstr ""
+
+msgid "Members pagination"
+msgstr ""
+
+msgid "Roles:"
+msgstr ""
+
+#. translators: %s: member name.
+#, php-format
+msgid "Edit Permissions for %s"
+msgstr ""
+
+msgid "No roles available."
+msgstr ""
+
+msgid "Save Permissions"
+msgstr ""
+
+msgid "Are you sure you want to remove this member from the organization?"
+msgstr ""
+
+#. translators: %s: name of the member being removed.
+#, php-format
+msgid "Are you sure you want to remove %s from this organization?"
+msgstr ""
+
+msgid "Visible to administrators only"
+msgstr ""
+
+msgid "Additional Seats: Setup Incomplete."
+msgstr ""
+
+msgid "The \"Purchase Additional Seats\" button is hidden because the following items are not yet configured:"
+msgstr ""
+
+msgid "Click to copy"
+msgstr ""
+
+msgid "Expected Gravity Form slug:"
+msgstr ""
+
+msgid "Map this slug to the additional-seats Gravity Form under Gravity Forms > Wicket Settings > Form Slug ID Mapping."
+msgstr ""
+
+msgid "Tier slug hidden-field parameter:"
+msgstr ""
+
+msgid "Name of the hidden field (Parameter Name) on the form that receives the membership tier slug from the URL. GF conditional logic reads it to show only that tier’s quantity input, and the submission handler reads it to pick the right tier-specific product."
+msgstr ""
+
+msgid "✓ Copied!"
+msgstr ""
+
+msgid "Security Roles"
+msgstr ""
+
+msgid "Are you sure you want to remove this member?"
+msgstr ""
+
+msgid "You must be logged in to access this content."
+msgstr ""
+
+msgid "Organization not specified."
+msgstr ""
+
+msgid "Organization"
+msgstr ""
+
+msgid "Unlimited"
+msgstr ""
+
+#. translators: 1: number of active seat assignments, 2: maximum number of seats (or "Unlimited").
+#, php-format
+msgid "Seats: %1$s / %2$s"
+msgstr ""
+
+#. translators: %s: organization name.
+#, php-format
+msgid "Organization: %s"
+msgstr ""
+
+#. translators: %s: group type.
+#, php-format
+msgid "Type: %s"
+msgstr ""
+
+msgid "Summary"
+msgstr ""
+
+msgid "Membership Owner:"
+msgstr ""
+
+msgid "Not set."
+msgstr ""
+
+msgid "Organization actions"
+msgstr ""
+
+msgid "Bulk Upload"
+msgstr ""
+
+msgid "Unable to connect to the organization service. Please try again later."
+msgstr ""
+
+msgid "Connection Error"
+msgstr ""
+
+msgid "Try Again"
+msgstr ""
+
+msgid "You currently have no organizations to manage members for."
+msgstr ""
+
+msgid "You currently have no groups to manage members for."
+msgstr ""
+
+msgid "Your Associations"
+msgstr ""
+
+#. translators: %d: number of groups found.
+#, php-format
+msgid "Groups Found: %d"
+msgstr ""
+
+#. translators: %s: role label.
+#, php-format
+msgid "My Role: %s"
+msgstr ""
+
+msgid "Group Profile"
+msgstr ""
+
+msgid "Groups pagination"
+msgstr ""
+
+#. translators: 1: first item number, 2: last item number, 3: total items.
+#, php-format
+msgid "Showing %1$d-%2$d of %3$d groups"
+msgstr ""
+
+msgid "Unknown"
+msgstr ""
+
+msgid "You currently have no active organization memberships."
+msgstr ""
+
+#. translators: %d: number of organizations found.
+#, php-format
+msgid "Organizations Found: %d"
+msgstr ""
+
+msgid "Organizations pagination"
+msgstr ""
+
+#. translators: 1: first item number, 2: last item number, 3: total items.
+#, php-format
+msgid "Showing %1$d-%2$d of %3$d organizations"
+msgstr ""
+
+msgid "Invalid or missing security token. Please refresh and try again."
+msgstr ""
+
+msgid "Organization identifier missing."
+msgstr ""
+
+msgid "You do not have permission to add contacts to this organization."
+msgstr ""
+
+#. translators: 1: member full name, 2: member email address
+#, php-format
+msgid "Successfully added %1$s with email %2$s."
+msgstr ""
+
+msgid "the contact"
+msgstr ""
+
+msgid "An unexpected error occurred. Please try again."
+msgstr ""
+
+msgid "Group identifier missing."
+msgstr ""
+
+msgid "the member"
+msgstr ""
+
+msgid "Membership UUID is required for membership cycle additions."
+msgstr ""
+
+#. translators: %s: member email address.
+#, php-format
+msgid "A member with the email %s already exists in this membership."
+msgstr ""
+
+msgid "Bulk upload is disabled."
+msgstr ""
+
+msgid "Please select a valid CSV file."
+msgstr ""
+
+msgid "You do not have permission to bulk add members to this group."
+msgstr ""
+
+msgid "You do not have permission to bulk add members to this organization."
+msgstr ""
+
+msgid "No active organization membership was found for this organization."
+msgstr ""
+
+#. translators: 1: bulk upload job ID, 2: number of rows to process, 3: batch size.
+#, php-format
+msgid "Bulk upload queued. Job %1$s will process %2$d row in batches of %3$d."
+msgid_plural "Bulk upload queued. Job %1$s will process %2$d rows in batches of %3$d."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Processing runs in the background with WordPress Cron."
+msgstr ""
+
+msgid "Your session has expired. Please refresh the page."
+msgstr ""
+
+msgid "You do not have permission to view this upload."
+msgstr ""
+
+#. translators: %s: email address
+#, php-format
+msgid "Your export has been queued. You will receive an email at %s when the download link is ready."
+msgstr ""
+
+msgid "Organization and person identifiers are required."
+msgstr ""
+
+msgid "You do not have permission to remove contacts from this organization."
+msgstr ""
+
+msgid "The organization owner cannot be removed."
+msgstr ""
+
+#. translators: %1$s: contact name.
+#, php-format
+msgid "Successfully removed %1$s from the contact list."
+msgstr ""
+
+msgid "Roles preserved due to active membership."
+msgstr ""
+
+msgid "Missing group or member identifiers."
+msgstr ""
+
+msgid "Organization UUID, person UUID, and connection IDs are required."
+msgstr ""
+
+msgid "Membership UUID is required for membership cycle removals."
+msgstr ""
+
+#. translators: %1$s: member name.
+#, php-format
+msgid "Successfully removed %1$s from the organization."
+msgstr ""
+
+msgid "No editable fields provided."
+msgstr ""
+
+msgid "API client unavailable."
+msgstr ""
+
+msgid "Group updated successfully."
+msgstr ""
+
+msgid "Failed to update group."
+msgstr ""
+
+msgid "Organization UUID, membership UUID, and person UUID are required."
+msgstr ""
+
+msgid "this member"
+msgstr ""
+
+#. translators: %1$s: member name.
+#, php-format
+msgid "Successfully updated permissions for %1$s."
+msgstr ""
+
+#. translators: %s: subsidiary organization name.
+#, php-format
+msgid "Are you sure you want to remove %s as a subsidiary?"
+msgstr ""
+
+msgid "No subsidiaries found for this organization."
+msgstr ""
+
+msgid "Add Subsidiary"
+msgstr ""
+
+msgid "Search for an organization to add as a subsidiary:"
+msgstr ""
+
+msgid "Type organization name..."
+msgstr ""
+
+msgid "Bulk Upload Subsidiaries"
+msgstr ""
+
+msgid "Upload an Excel spreadsheet to add multiple subsidiaries at once."
+msgstr ""
+
+msgid "Select Excel File (.xlsx, .xls):"
+msgstr ""
+
+msgid "Upload and Process"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "No organizations found."
+msgstr ""
+
+msgid "Are you sure you want to add this subsidiary?"
+msgstr ""
+
+msgid "Please complete the form below to purchase additional seats for your organization membership."
+msgstr ""
+
+msgid "After purchase, the additional seats will be automatically added to your subscription."
+msgstr ""
+
+msgid "Gravity Forms is not available. Please contact support."
+msgstr ""
+
+msgid "Back to Organization Members"
+msgstr ""
+
+msgid "You do not have permission to view contacts for this organization."
+msgstr ""
+
+msgid "Manage my Organizations"
+msgstr ""
+
+msgid "Back to My Organization"
+msgstr ""
+
+msgid "Manage Organizations"
+msgstr ""
+
+msgid "Manage Groups"
+msgstr ""
+
+msgid "Bulk upload is currently disabled by configuration."
+msgstr ""
+
+msgid "Select a group to continue with bulk member upload."
+msgstr ""
+
+msgid "You do not have access to bulk upload members for any groups."
+msgstr ""
+
+msgid "You do not have permission to bulk add members for this group."
+msgstr ""
+
+msgid "Select an organization to continue with bulk member upload."
+msgstr ""
+
+msgid "You do not have access to bulk upload members for any organizations."
+msgstr ""
+
+msgid "You do not have permission to bulk add members for this organization."
+msgstr ""
+
+msgid "Back to Manage Groups"
+msgstr ""
+
+msgid "Back to Manage Organizations"
+msgstr ""
+
+msgid "Organization updated successfully!"
+msgstr ""
+
+msgid "You are not authorized to purchase additional seats for this organization."
+msgstr ""
+
+msgid "Please enter a valid number for additional seats."
+msgstr ""
+
+msgid "Number of additional seats cannot be negative."
+msgstr ""
+
+msgid "You cannot purchase zero seats. Please enter a number greater than 0 to proceed with your purchase."
+msgstr ""
+
+msgid "Please enter a whole number for additional seats."
+msgstr ""
+
+msgid "Organization Details"
+msgstr ""
+
+msgid "Organization:"
+msgstr ""
+
+msgid "Membership ID:"
+msgstr ""
+
+msgid "Invalid payment method."
+msgstr ""
+
+msgid "Payment method deleted."
+msgstr ""
+
+msgid "This payment method was successfully set as your default."
+msgstr ""
+
+#. translators: %s: post publish date.
+#, php-format
+msgid "Published: %s"
+msgstr ""
+
+msgid "No content found."
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "This are the available variables:"
+msgstr ""
+
+msgid "No name"
+msgstr ""
+
+msgid "Forgot something?:"
+msgstr ""
+
+#. translators: %s: block name.
+#, php-format
+msgid "There was an error on block: %s"
+msgstr ""
+
+msgid "Modal title"
+msgstr ""
+
+msgid "Deactivate"
+msgstr ""
+
+msgid "Organization Logo"
+msgstr ""
+
+msgid "Remove Image"
+msgstr ""
+
+msgid "Choose File"
+msgstr ""
+
+msgid "Upload an organization logo to represent your organization."
+msgstr ""
+
+#. translators: %d: max upload size in megabytes.
+#, php-format
+msgid "Max upload size: %d MB"
+msgstr ""
+
+msgid "Update Image"
+msgstr ""
+
+msgid "File selected. Ready to upload!"
+msgstr ""
+
+msgid "There was an error while trying to upload the organization logo. Please try again."
+msgstr ""
+
+msgid "Upload Requirements:"
+msgstr ""
+
+#. translators: %d: maximum file size in megabytes.
+#, php-format
+msgid "Maximum file size: %dMB"
+msgstr ""
+
+#. translators: %s: comma-separated list of allowed file extensions.
+#, php-format
+msgid "Allowed formats: %s"
+msgstr ""
+
+#. translators: %s: comma-separated list of allowed file extensions.
+msgid "File must be a valid image"
+msgstr ""
+
+msgid "Your organization logo has been updated successfully."
+msgstr ""
+
+msgid "Phone Number"
+msgstr ""
+
+msgid "No memberships found"
+msgstr ""
+
+msgid "Profile Image"
+msgstr ""
+
+msgid "Upload a profile picture to personalize your profile."
+msgstr ""
+
+msgid "There was an error while trying to upload the profile picture. Please try again."
+msgstr ""
+
+msgid "Your profile picture has been updated successfully."
+msgstr ""
+
+msgid "(opens in a new window)"
+msgstr ""
+
+msgid "Date:"
+msgstr ""
+
+msgid "See Past Registered Events"
+msgstr ""
+
+msgid "Upcoming Registered Events"
+msgstr ""
+
+msgid "Past Registered Events"
+msgstr ""
+
+msgid "See Upcoming Registered Events"
+msgstr ""
+
+msgid "All Events"
+msgstr ""
+
+msgid "Go Back ←"
+msgstr ""
+
+msgid "Results:"
+msgstr ""
+
+msgid "Location:"
+msgstr ""
+
+msgid "Event Details"
+msgstr ""
+
+msgid "Course ID:"
+msgstr ""
+
+msgid "Start Date:"
+msgstr ""
+
+msgid "End Date:"
+msgstr ""
+
+msgid "Grade Achieved:"
+msgstr ""
+
+msgid "Grade Percentage:"
+msgstr ""
+
+msgid "Time:"
+msgstr ""
+
+msgid "Redemption Codes:"
+msgstr ""
+
+msgid "Purchase Date:"
+msgstr ""
+
+msgid "Duration:"
+msgstr ""
+
+#. translators: %s: event duration in minutes.
+#, php-format
+msgid "%s minute"
+msgid_plural "%s minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "See Past Registered Webinars"
+msgstr ""
+
+msgid "See Upcoming Registered Webinars"
+msgstr ""
+
+msgid "Webinar Details"
+msgstr ""
+
+#. translators: %s: number of form errors.
+#, php-format
+msgid "The form could not be submitted because %s error was found"
+msgid_plural "The form could not be submitted because %s errors were found"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Current Password"
+msgstr ""
+
+msgid "New Password"
+msgstr ""
+
+msgid "Confirm Password"
+msgstr ""
+
+#. translators: %d: error number in the list.
+#, php-format
+msgid "Error: %d"
+msgstr ""
+
+#. translators: 1: field label, 2: error message.
+#, php-format
+msgid "%1$s %2$s"
+msgstr ""
+
+msgid "Your password has been updated."
+msgstr ""
+
+msgid "Current password"
+msgstr ""
+
+msgid "New password"
+msgstr ""
+
+msgid "Minimum of 8 characters"
+msgstr ""
+
+msgid "Confirm new password"
+msgstr ""
+
+msgid "Change password"
+msgstr ""
+
+msgctxt "block title"
+msgid "ACC Additional Info Block"
+msgstr ""
+
+msgctxt "block description"
+msgid "A Wicket block for Additional Info"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "account-center"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "additional"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "info"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "wicket"
+msgstr ""
+
+msgctxt "block title"
+msgid "ACC Callout Block"
+msgstr ""
+
+msgctxt "block description"
+msgid "A Wicket block for Callout Block"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "callout"
+msgstr ""
+
+msgctxt "block title"
+msgid "ACC Individual Profile Block"
+msgstr ""
+
+msgctxt "block description"
+msgid "A Wicket block for Individual Profile"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "profile"
+msgstr ""
+
+msgctxt "block title"
+msgid "ACC Manage Preferences Block"
+msgstr ""
+
+msgctxt "block description"
+msgid "A Wicket block for Manage Preferences"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "preferences"
+msgstr ""
+
+msgctxt "block title"
+msgid "ACC Change Profile Picture - Org"
+msgstr ""
+
+msgctxt "block description"
+msgid "Wicket block for changing the organization logo"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "organization"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "picture"
+msgstr ""
+
+msgctxt "block title"
+msgid "ACC Org Profile"
+msgstr ""
+
+msgctxt "block description"
+msgid "A Wicket block for Org Profile"
+msgstr ""
+
+msgctxt "block title"
+msgid "ACC Org. Search & Select"
+msgstr ""
+
+msgctxt "block description"
+msgid "A Wicket block for searching and selecting an organization"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "search"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "select"
+msgstr ""
+
+msgctxt "block title"
+msgid "[Deprecated] ACC Password Block"
+msgstr ""
+
+msgctxt "block description"
+msgid "[Deprecated] A Wicket block for Password"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "password"
+msgstr ""
+
+msgctxt "block title"
+msgid "ACC Change Profile Picture"
+msgstr ""
+
+msgctxt "block description"
+msgid "Wicket block for Change Profile Picture"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "profile-picture"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "avatar"
+msgstr ""
+
+msgctxt "block title"
+msgid "ACC Touchpoint Cvent"
+msgstr ""
+
+msgctxt "block description"
+msgid "Wicket block for AC Touchpoint Cvent"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "touchpoints"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "service"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "cvent"
+msgstr ""
+
+msgctxt "block title"
+msgid "ACC Touchpoint TEC"
+msgstr ""
+
+msgctxt "block description"
+msgid "Wicket block for The Events Calendar Touchpoints"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "event calendar"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "events"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "calendar"
+msgstr ""
+
+msgctxt "block title"
+msgid "ACC Touchpoint Maple"
+msgstr ""
+
+msgctxt "block description"
+msgid "Wicket block for AC Touchpoint Maple"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "maple"
+msgstr ""
+
+msgctxt "block title"
+msgid "ACC Touchpoint MicroSpec"
+msgstr ""
+
+msgctxt "block description"
+msgid "Wicket block for AC Touchpoint MicroSpec"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "micropoint"
+msgstr ""
+
+msgctxt "block title"
+msgid "ACC Touchpoint Moodle"
+msgstr ""
+
+msgctxt "block description"
+msgid "Wicket block for Moodle Touchpoints"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "moodle"
+msgstr ""
+
+msgctxt "block title"
+msgid "ACC Touchpoint Pheedloop"
+msgstr ""
+
+msgctxt "block description"
+msgid "Wicket block for AC Touchpoint Pheedloop"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "pheedloop"
+msgstr ""
+
+msgctxt "block title"
+msgid "ACC Touchpoint VitalSource"
+msgstr ""
+
+msgctxt "block description"
+msgid "Wicket block for AC Touchpoint VitalSource"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "vitalsource"
+msgstr ""
+
+msgctxt "block title"
+msgid "ACC Touchpoint Zoom"
+msgstr ""
+
+msgctxt "block description"
+msgid "Wicket block for Zoom Webinars Touchpoints"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "zoom"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "webinars"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "meetings"
+msgstr ""
+
+msgctxt "block title"
+msgid "ACC Welcome Block"
+msgstr ""
+
+msgctxt "block description"
+msgid "A Wicket block for Welcome Block"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "welcome"
+msgstr ""
+
+msgctxt "block title"
+msgid "ACC Base Block"
+msgstr ""
+
+msgctxt "block description"
+msgid "Wicket Base block. Copy this block to create a new one."
+msgstr ""
+
+msgctxt "block keyword"
+msgid "base-block"
+msgstr ""
