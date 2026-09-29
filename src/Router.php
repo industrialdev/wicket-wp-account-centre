@@ -320,6 +320,12 @@ class Router extends WicketAcc
      * If an authenticated user lands on restricted-access with a referrer,
      * redirect to that referrer URL.
      *
+     * A one-shot marker (user + validated target) suppresses the bounce when
+     * the target just bounced the user back here. Access guards such as
+     * WP-Private-Content-Plus redirect denied users to restricted-access; a
+     * logged-in denial would otherwise ping-pong with this redirect until
+     * the browser aborts (WWID-2664).
+     *
      * @return void
      */
     public function maybeRedirectRestrictedAccessWithReferrer(): void
@@ -349,6 +355,12 @@ class Router extends WicketAcc
         if ($target_path === '' || untrailingslashit($target_path) === untrailingslashit($restricted_path)) {
             return;
         }
+
+        $bounce_key = 'wacc_restricted_access_bounce_' . get_current_user_id() . '_' . md5($target_url);
+        if (get_transient($bounce_key)) {
+            return;
+        }
+        set_transient($bounce_key, 1, 2 * MINUTE_IN_SECONDS);
 
         wp_safe_redirect($target_url);
         exit;
