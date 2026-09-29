@@ -21,6 +21,18 @@ class Blocks extends WicketAcc
     private $current_group_being_saved;
 
     /**
+     * Field settings that hold translatable text.
+     */
+    private const ACF_TEXT_SETTINGS = ['label', 'instructions', 'placeholder', 'prepend', 'append', 'message', 'button_label', 'ui_on_text', 'ui_off_text'];
+
+    /**
+     * Keys of the ACF fields shipped in includes/acf-json, loaded on first use.
+     *
+     * @var array<string, true>|null
+     */
+    private ?array $acc_acf_field_keys = null;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -30,22 +42,75 @@ class Blocks extends WicketAcc
         add_action('init', [$this, 'load_wicket_blocks'], 5); // We need to use WP's init here https://www.advancedcustomfields.com/resources/create-your-first-acf-block/
 
         add_filter('acf/settings/load_json', [$this, 'load_acf_field_group']);
-        add_filter('acf/settings/l10n_textdomain', [$this, 'acf_l10n_textdomain']);
+        add_filter('acf/prepare_field', [$this, 'translate_acf_field']);
 
         add_action('acf/update_field_group', [$this, 'update_field_group'], 1, 1);
         add_action('acf/settings/save_json', [$this, 'save_json_folder'], 100);
     }
 
     /**
-     * Translate ACF field group labels with the plugin text domain.
+     * Translate ACC's own ACF fields only; ACF's l10n_textdomain setting is site-wide.
+     * The .pot picks these strings up from languages/acf-strings.php.
      *
-     * @param string $domain
+     * @param array|false $field
      *
-     * @return string
+     * @return array|false
      */
-    public function acf_l10n_textdomain($domain)
+    public function translate_acf_field($field)
     {
-        return 'wicket-acc';
+        if (!is_array($field) || empty($field['key']) || !isset($this->get_acc_acf_field_keys()[$field['key']])) {
+            return $field;
+        }
+
+        foreach (self::ACF_TEXT_SETTINGS as $setting) {
+            if (!empty($field[$setting]) && is_string($field[$setting])) {
+                $field[$setting] = _x($field[$setting], 'admin field ' . str_replace('_', ' ', $setting), 'wicket-acc');
+            }
+        }
+
+        if (!empty($field['choices']) && is_array($field['choices'])) {
+            foreach ($field['choices'] as $value => $label) {
+                if (is_string($label) && $label !== '') {
+                    $field['choices'][$value] = _x($label, 'admin field option', 'wicket-acc');
+                }
+            }
+        }
+
+        return $field;
+    }
+
+    /**
+     * Collect the field keys defined in includes/acf-json.
+     *
+     * @return array<string, true>
+     */
+    private function get_acc_acf_field_keys(): array
+    {
+        if ($this->acc_acf_field_keys !== null) {
+            return $this->acc_acf_field_keys;
+        }
+
+        $keys = [];
+        $collect = function (array $fields) use (&$collect, &$keys): void {
+            foreach ($fields as $field) {
+                if (!empty($field['key'])) {
+                    $keys[$field['key']] = true;
+                }
+                $collect($field['sub_fields'] ?? []);
+                foreach ($field['layouts'] ?? [] as $layout) {
+                    $collect($layout['sub_fields'] ?? []);
+                }
+            }
+        };
+
+        foreach (glob(WICKET_ACC_PATH . 'includes/acf-json/*.json') ?: [] as $file) {
+            $group = json_decode((string) file_get_contents($file), true);
+            if (is_array($group)) {
+                $collect($group['fields'] ?? []);
+            }
+        }
+
+        return $this->acc_acf_field_keys = $keys;
     }
 
     /**

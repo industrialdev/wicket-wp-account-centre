@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-29T18:20:27+00:00\n"
+"POT-Creation-Date: 2026-09-29T18:20:38+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wicket-acc\n"
@@ -360,6 +360,818 @@ msgid "There was an error processing the form."
 msgstr ""
 
 msgid "Opens in a new window"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts, ACC Additional Info.
+msgctxt "admin field button label"
+msgid "Add Row"
+msgstr ""
+
+#. translators: ACF field group: ACC Organization Profile.
+msgctxt "admin field instructions"
+msgid "<p>This expects JSON data for configuring the widget, supporting all options documented for the MDP JS Widget (<code>fields</code>, <code>resourceLimits</code>, <code>resourcePermissions</code>, and more). Please do not modify unless you know what you are doing.</p><p>Note: <code>rootEl</code>, <code>apiRoot</code>, <code>accessToken</code>, and <code>orgId</code> are always set automatically and any value provided for them here is ignored.</p><p>See <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#editorganizationprofile\" target=\"_blank\">full documentation for MDP JS Widgets</a>.</p>"
+msgstr ""
+
+#. translators: ACF field group: ACC Individual Profile.
+msgctxt "admin field instructions"
+msgid "<p>This expects JSON data for configuring the widget, supporting all options documented for the MDP JS Widget (<code>fields</code>, <code>sections</code>, <code>resourceLimits</code>, <code>resourcePermissions</code>, and more). Please do not modify unless you know what you are doing.</p><p>Note: <code>rootEl</code>, <code>apiRoot</code>, <code>accessToken</code>, and <code>personId</code>/<code>orgId</code> are always set automatically and any value provided for them here is ignored.</p><p>See <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#createpersonprofile\" target=\"_blank\">full documentation for MDP JS Widgets</a>.</p>"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgctxt "admin field instructions"
+msgid "Configure events touchpoints display."
+msgstr ""
+
+#. translators: ACF field group: ACC Welcome.
+msgctxt "admin field instructions"
+msgid "Control the visiblity of the profile picture in the Welcome block."
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field instructions"
+msgid "Enable filtering of relationships by the selected relationship type. When enabled, only relationships of the type specified in 'Relationship Type Upon Org Creation' will be displayed."
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "admin field instructions"
+msgid "For EN only. Which word to use on the spelling of Centre/Center."
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
+msgctxt "admin field instructions"
+msgid "How many columns do you want to use for touchpoints results. 1 will yield a list view."
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field instructions"
+msgid "How the org will be shown on the frontend, e.g. \"Organization\" or \"Chapter\". Can be left blank to use default."
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field instructions"
+msgid "How the org will be shown on the frontend, e.g. \"Organizations\" or \"Chapters\". Can be left blank to use default."
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field instructions"
+msgid "ID of a checkbox to be checked if a new org gets created. Usually this will be a hidden checkbox used for later conditional logic."
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgctxt "admin field instructions"
+msgid "If an override URL is set, you must specify a title for that link."
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "admin field instructions"
+msgid "If enabled, a new item will be shown on ACC admin menu. Page content from that item, will be used as a global \"sub-header\" on all ACC pages on the front."
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "admin field instructions"
+msgid "If enabled, the current URL's query string will be captured and appended to the links in this callout."
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field instructions"
+msgid "If left blank, all organization types will be searchable. If you wish to filter, you'll need to provide the \"slug\" of the organization type, e.g., \"it_company\". It's also possible to provide multiple slugs, separated by commas, e.g., \"it_company,non_profit\"."
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "admin field instructions"
+msgid "If left blank, the Org UUID will be set by the URL parameter \"org_id\""
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field instructions"
+msgid "If left blank, the user will be allowed to select the organization type themselves from the frontend."
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "admin field instructions"
+msgid "If not set, a default \"person\" image will be used as default profile picture."
+msgstr ""
+
+#. translators: ACF field group: ACC Welcome.
+msgctxt "admin field instructions"
+msgid "Leave empty to use ACC page mapping (in ACC Options). URL to which the button will point."
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "admin field instructions"
+msgid "Location of the sidebar navigation menu inside ACC pages."
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field instructions"
+msgid "Message that will display if nothing is found by their search. Can be left blank to use default."
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "admin field instructions"
+msgid "Note that the year in the date picker will not apply, as these date ranges will recur annually."
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgctxt "admin field instructions"
+msgid "Optional."
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar.
+msgctxt "admin field instructions"
+msgid "Optional. Full URL where the user will be redirected when clicking on the \"see past events\" link."
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint VitalSource, ACC Touchpoint Cvent, ACC Touchpoint Maple, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
+msgctxt "admin field instructions"
+msgid "Optional. Leave it empty so as not to be shown to the user."
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar.
+msgctxt "admin field instructions"
+msgid "Optional. Title to display when viewing past events. If empty, the regular title will be used."
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "admin field instructions"
+msgid "Same for both stage and prod"
+msgstr ""
+
+#. translators: ACF field group: ACC Welcome.
+msgctxt "admin field instructions"
+msgid "Show or hide the member status line (\"Active Member\" / \"Non-Member\") in the Welcome block."
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar.
+msgctxt "admin field instructions"
+msgid "Show the link that switches between past and upcoming events views."
+msgstr ""
+
+#. translators: ACF field group: ACC Individual Profile.
+msgctxt "admin field instructions"
+msgid "This expects JSON data for the fields property as defined here: <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#createpersonprofile\" target=\"_blank\">https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#createpersonprofile</a>. Please do not modify unless you know what you are doing. This must be valid JSON, otherwise this field is ignored. Superseded by the MDP Widget Config setting above — if that is set, this value is ignored entirely. A \"Copy this value into MDP Widget Config\" link appears below this field in the editor to copy it over pre-formatted."
+msgstr ""
+
+#. translators: ACF field group: ACC Organization Profile.
+msgctxt "admin field instructions"
+msgid "This expects JSON data for the fields property as defined here: <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#editorganizationprofile\" target=\"_blank\">https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html</a>. Please do not modify unless you know what you are doing. This must be valid JSON, otherwise this field is ignored. Superseded by the MDP Widget Config setting above — if that is set, this value is ignored entirely. A \"Copy this value into MDP Widget Config\" link appears below this field in the editor to copy it over pre-formatted."
+msgstr ""
+
+#. translators: ACF field group: ACC Individual Profile.
+msgctxt "admin field instructions"
+msgid "This expects JSON data for the sections property (address / email / phone / web field config) as defined here: <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#addresssectionconfig\" target=\"_blank\">https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#addresssectionconfig</a>. Please do not modify unless you know what you are doing. This must be valid JSON, otherwise this field is ignored. Superseded by the MDP Widget Config setting above — if that is set, this value is ignored entirely."
+msgstr ""
+
+#. translators: ACF field group: ACC Organization Profile.
+msgctxt "admin field instructions"
+msgid "This field has no effect on this block — the organization profile widget component does not support a sections option, unlike the individual profile widget. Superseded by the MDP Widget Config setting above. A \"Copy this value into MDP Widget Config\" link appears below this field in the editor to copy it over pre-formatted, in case the widget gains section support later."
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field instructions"
+msgid "Will grey out the select button for an org that the user already has an active membership with."
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field instructions"
+msgid "Will prompt the user with a popup to confirm if they really want to remove their relationship with an org."
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field label"
+msgid "'New Org Created' checkbox ID"
+msgstr ""
+
+#. translators: ACF field group: ACC Organization Profile.
+msgctxt "admin field label"
+msgid "ACC Organization Profile options"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint VitalSource.
+msgctxt "admin field label"
+msgid "Action"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "admin field label"
+msgid "Additional Info Schema"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field label"
+msgid "Advanced"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "admin field label"
+msgid "Block Logic"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "admin field label"
+msgid "Capture and use current URL query string"
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "admin field label"
+msgid "Centre/Center localization"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
+msgctxt "admin field label"
+msgid "Columns"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgctxt "admin field label"
+msgid "Default Display"
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "admin field label"
+msgid "Default profile picture"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts, ACC Touchpoint VitalSource.
+msgctxt "admin field label"
+msgid "Description"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field label"
+msgid "Disable ability to create new org/entity? (Hide create org UI)"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field label"
+msgid "Disable ability to select orgs with active membership?"
+msgstr ""
+
+#. translators: ACF field group: ACC Welcome.
+msgctxt "admin field label"
+msgid "Display MDP ID"
+msgstr ""
+
+#. translators: ACF field group: ACC Welcome.
+msgctxt "admin field label"
+msgid "Display Member Status"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field label"
+msgid "Display Org Fields"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field label"
+msgid "Display Org Type"
+msgstr ""
+
+#. translators: ACF field group: ACC Welcome.
+msgctxt "admin field label"
+msgid "Display Profile Picture"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
+msgctxt "admin field label"
+msgid "Display Registered Actions"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field label"
+msgid "Display Removal Alert Message"
+msgstr ""
+
+#. translators: ACF field group: ACC Welcome.
+msgctxt "admin field label"
+msgid "Edit Profile Button"
+msgstr ""
+
+#. translators: ACF field group: ACC Welcome.
+msgctxt "admin field label"
+msgid "Edit Profile Button (Show/Hide)"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field label"
+msgid "Enable Relationship Filtering"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "admin field label"
+msgid "From"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field label"
+msgid "General"
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "admin field label"
+msgid "Global sub-header"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field label"
+msgid "Grant org_editor role on selection?"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field label"
+msgid "Grant roster management on next purchase?"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint VitalSource.
+msgctxt "admin field label"
+msgid "Helper Text"
+msgstr ""
+
+#. translators: ACF field group: ACC Organization Profile.
+msgctxt "admin field label"
+msgid "Hide Additional Info"
+msgstr ""
+
+#. translators: ACF field group: ACC Organization Profile.
+msgctxt "admin field label"
+msgid "Hide Alternate Name Field"
+msgstr ""
+
+#. translators: ACF field group: ACC Manage Preferences.
+msgctxt "admin field label"
+msgid "Hide Language Preference"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field label"
+msgid "Hide membership status?"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field label"
+msgid "Hide remove buttons?"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field label"
+msgid "Hide select buttons?"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "admin field label"
+msgid "Link"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "admin field label"
+msgid "Link Style"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "admin field label"
+msgid "Links"
+msgstr ""
+
+#. translators: ACF field group: ACC Organization Profile, ACC Individual Profile.
+msgctxt "admin field label"
+msgid "MDP JSON Fields (Deprecated)"
+msgstr ""
+
+#. translators: ACF field group: ACC Organization Profile, ACC Individual Profile.
+msgctxt "admin field label"
+msgid "MDP JSON Sections (Deprecated)"
+msgstr ""
+
+#. translators: ACF field group: ACC Organization Profile, ACC Individual Profile.
+msgctxt "admin field label"
+msgid "MDP Widget Config (JSON)"
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "admin field label"
+msgid "Main Options"
+msgstr ""
+
+#. translators: ACF field group: ACC Welcome.
+msgctxt "admin field label"
+msgid "Member since (Show/Hide)"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field label"
+msgid "No results found message"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "admin field label"
+msgid "Only Activate Resource Override Within This Month/Day Range (Optional)"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field label"
+msgid "Org Type When User Creates New Org"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field label"
+msgid "Org name plural"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field label"
+msgid "Org name singular"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field label"
+msgid "Organization Type"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "admin field label"
+msgid "Organization UUID Override (Optional)"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgctxt "admin field label"
+msgid "Override \"see past events\" link"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgctxt "admin field label"
+msgid "Override past events link text"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar.
+msgctxt "admin field label"
+msgid "Past Events Title"
+msgstr ""
+
+#. translators: ACF field group: ACC Profile Picture Change.
+msgctxt "admin field label"
+msgid "Picture max size (in MB)"
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "admin field label"
+msgid "Profile Picture Size (in MB)"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field label"
+msgid "Relationship Mode"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field label"
+msgid "Relationship Type Upon Org Creation/Selection"
+msgstr ""
+
+#. translators: ACF field group: ACC Welcome.
+msgctxt "admin field label"
+msgid "Renewal date (Show/Hide)"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "admin field label"
+msgid "Renewal period"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "admin field label"
+msgid "Resource Type"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "admin field label"
+msgid "Schema Slug"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "admin field label"
+msgid "Schema UUID ($id) - Prod"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "admin field label"
+msgid "Schema UUID ($id) - Stage"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "admin field label"
+msgid "Schema override resource Slug"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "admin field label"
+msgid "Schema override resource UUID - Prod"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "admin field label"
+msgid "Schema override resource UUID - Stage"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field label"
+msgid "Search Mode"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "admin field label"
+msgid "Select Profile Mandatory Fields"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Maple.
+msgctxt "admin field label"
+msgid "Service"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Pheedloop.
+msgctxt "admin field label"
+msgid "Service ID"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint VitalSource, ACC Touchpoint Maple.
+msgctxt "admin field label"
+msgid "Show \"View More\""
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
+msgctxt "admin field label"
+msgid "Show \"View More\" events"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "admin field label"
+msgid "Show as required"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar.
+msgctxt "admin field label"
+msgid "Show switch view link"
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "admin field label"
+msgid "Sidebar location"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts, ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint VitalSource, ACC Touchpoint Cvent, ACC Touchpoint Maple, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
+msgctxt "admin field label"
+msgid "Title"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "admin field label"
+msgid "To"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Maple.
+msgctxt "admin field label"
+msgid "Touchpoint Action"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint VitalSource, ACC Touchpoint Cvent, ACC Touchpoint Maple, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
+msgctxt "admin field label"
+msgid "Touchpoints per page"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "admin field label"
+msgid "Use UI schema override resource UUID or Slug"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "admin field label"
+msgid "Use slugs instead of schema IDs"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field label"
+msgid "Visual: Text, Messages, and Elements"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint MicroSpec.
+msgctxt "admin field option"
+msgid "10"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint MicroSpec.
+msgctxt "admin field option"
+msgid "5"
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "admin field option"
+msgid "Account Center"
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "admin field option"
+msgid "Account Centre"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "admin field option"
+msgid "Addresses"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgctxt "admin field option"
+msgid "All Events"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Maple.
+msgctxt "admin field option"
+msgid "Aptify Conversion"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Zoom.
+msgctxt "admin field option"
+msgid "Attended an Event"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "admin field option"
+msgid "Become a member"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "admin field option"
+msgid "Birth Date"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "admin field option"
+msgid "Complete your profile"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Maple.
+msgctxt "admin field option"
+msgid "Completed"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Moodle.
+msgctxt "admin field option"
+msgid "Completed a course"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Moodle.
+msgctxt "admin field option"
+msgid "Created Account"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Maple.
+msgctxt "admin field option"
+msgid "Enrolled"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Moodle.
+msgctxt "admin field option"
+msgid "Enrolled in a course"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "admin field option"
+msgid "First Name"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "admin field option"
+msgid "Gender"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "admin field option"
+msgid "Ghost"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field option"
+msgid "Groups (Soon)"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "admin field option"
+msgid "Last Name"
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "admin field option"
+msgid "Left"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Maple.
+msgctxt "admin field option"
+msgid "Maple LMS"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field option"
+msgid "Org Name"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field option"
+msgid "Org Name and Address"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field option"
+msgid "Org Name and Location"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info, ACC Org. Search & Select.
+msgctxt "admin field option"
+msgid "Organizations"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgctxt "admin field option"
+msgid "Past Events"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "admin field option"
+msgid "People"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "admin field option"
+msgid "Primary"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Zoom.
+msgctxt "admin field option"
+msgid "RSVP to Event"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Zoom.
+msgctxt "admin field option"
+msgid "Registered for an Event"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "admin field option"
+msgid "Renewal"
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "admin field option"
+msgid "Right"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgctxt "admin field option"
+msgid "Upcoming Events"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint VitalSource.
+msgctxt "admin field option"
+msgid "eBook Codes for others"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint VitalSource.
+msgctxt "admin field option"
+msgid "eBook Fulfilment"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "admin field placeholder"
+msgid "E.g. choice_5_12_1"
+msgstr ""
+
+#. translators: ACF field group: ACC Organization Profile.
+msgctxt "admin field placeholder"
+msgid ""
+"{\n"
+"  \"fields\": {...}\n"
+"}"
+msgstr ""
+
+#. translators: ACF field group: ACC Individual Profile.
+msgctxt "admin field placeholder"
+msgid ""
+"{\n"
+"  \"fields\": {...},\n"
+"  \"sections\": {...}\n"
+"}"
+msgstr ""
+
+#. translators: ACF field group: ACC Individual Profile.
+msgctxt "admin field placeholder"
+msgid "{\"addresses\": { \"fields\": { \"companyName\": { \"readOnly\": true } } }}"
+msgstr ""
+
+#. translators: ACF field group: ACC Organization Profile.
+msgctxt "admin field placeholder"
+msgid "{\"legalName\": { \"hidden\": true }}"
+msgstr ""
+
+#. translators: ACF field group: ACC Individual Profile.
+msgctxt "admin field placeholder"
+msgid "{\"personType\": { \"hidden\": false }}"
 msgstr ""
 
 msgid "Global Header"

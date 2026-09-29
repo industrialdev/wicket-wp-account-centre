@@ -57,6 +57,7 @@
         "cs:fix": "php-cs-fixer fix",
         "cs:format": "php-cs-fixer fix",
         "cs:lint": "php-cs-fixer fix --dry-run --diff",
+        "i18n:acf": "@php ./.ci/acf-i18n-strings.php",
         "post-autoload-dump": [
             "@build-pico-css"
         ],
