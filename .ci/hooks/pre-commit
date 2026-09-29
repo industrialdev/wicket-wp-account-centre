@@ -82,8 +82,20 @@ fi
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 
+# Optional package-specific excludes: comma-separated paths in .ci/pot-exclude.
+if [ -f .ci/pot-exclude ]; then
+    extra="$(tr -d '[:space:]' < .ci/pot-exclude)"
+    [ -n "$extra" ] && EXCLUDE="${EXCLUDE},${extra}"
+fi
+
 # Generate from the staged snapshot, so unstaged edits stay out of the .pot.
-git checkout-index --all --prefix="$tmp/src/"
+# Excluded paths are left out of the snapshot, so large folders are not copied.
+pathspec=()
+IFS=',' read -ra excluded <<< "$EXCLUDE"
+for path in "${excluded[@]}"; do
+    pathspec+=(":(exclude)${path}")
+done
+git ls-files -z -- . "${pathspec[@]}" | git checkout-index -z --stdin --prefix="$tmp/src/"
 
 text_domain="$(grep -hm1 -E 'Text Domain:' "$tmp"/src/*.php "$tmp"/src/style.css 2>/dev/null \
     | head -1 | sed -E 's/.*Text Domain:[[:space:]]*//; s/[[:space:]]*$//')"
@@ -107,7 +119,8 @@ fi
 # Compare without the header block: it holds dates and tool versions that change on every run.
 strip_header() { sed '1,/^$/d' "$1"; }
 
-if [ -f "$pot_file" ] && diff -q <(strip_header "$pot_file") <(strip_header "$tmp/new.pot") >/dev/null; then
+if [ -f "$pot_file" ] && git ls-files --error-unmatch "$pot_file" >/dev/null 2>&1 \
+    && diff -q <(strip_header "$pot_file") <(strip_header "$tmp/new.pot") >/dev/null; then
     exit 0
 fi
 
