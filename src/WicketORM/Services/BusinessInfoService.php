@@ -44,6 +44,7 @@ class BusinessInfoService
                     'family-owned'           => __('Family Owned', 'wicket-acc'),
                     'made-in-canada'         => __('Made in Canada', 'wicket-acc'),
                     'women-owned'            => __('Women Owned', 'wicket-acc'),
+                    /* translators: Business ownership option. */
                     'other'                  => __('Other', 'wicket-acc'),
                 ]),
             ],
@@ -58,13 +59,17 @@ class BusinessInfoService
                     'carbon-neutral'                    => __('Carbon Neutral', 'wicket-acc'),
                     'certified-b-corp'                  => __('Certified B Corp', 'wicket-acc'),
                     'cruelty-free'                      => __('Cruelty Free', 'wicket-acc'),
+                    /* translators: Certification brand name; usually left untranslated. */
                     'ecocert'                           => __('ECOCERT', 'wicket-acc'),
                     'fair-trade-certified'              => __('Fair Trade Certified', 'wicket-acc'),
+                    /* translators: GMO is short for genetically modified organism. */
                     'non-gmo-certified'                 => __('Non-GMO Certified', 'wicket-acc'),
+                    /* translators: NSF is a certification body (NSF International); keep the name. */
                     'nsf-certified'                     => __('NSF Certified', 'wicket-acc'),
                     'organic-certified'                 => __('Organic Certified', 'wicket-acc'),
                     'regenerative-organic-certified'    => __('Regenerative Organic Certified', 'wicket-acc'),
                     'sustainably-sourced'              => __('Sustainably Sourced', 'wicket-acc'),
+                    /* translators: Certification option. */
                     'other'                            => __('Other', 'wicket-acc'),
                 ]),
             ],
@@ -91,6 +96,7 @@ class BusinessInfoService
                     'retail-services'                => __('Retail Services', 'wicket-acc'),
                     'shipping-logistics'             => __('Shipping & Logistics', 'wicket-acc'),
                     'technology-solutions'           => __('Technology Solutions', 'wicket-acc'),
+                    /* translators: Business services option. */
                     'other'                          => __('Other', 'wicket-acc'),
                 ]),
             ],
@@ -107,6 +113,7 @@ class BusinessInfoService
                     'healthy-home-lifestyle'                      => __('Healthy Home & Lifestyle', 'wicket-acc'),
                     'natural-health-products-vitamin-herbal-supplements' => __('Natural Health Products, Vitamins & Herbal Supplements', 'wicket-acc'),
                     'pet-food-wellness-supplies'                   => __('Pet Food & Wellness Supplies', 'wicket-acc'),
+                    /* translators: Business option. */
                     'other'                                       => __('Other', 'wicket-acc'),
                 ]),
             ],

@@ -66,10 +66,12 @@ class InitOptions extends WicketAcc
     public function registerMainOptionsPage(): void
     {
         $page = HyperFields::makeOptionPage(
+            /* translators: ACC is short for Account Centre. */
             __('ACC Options', 'wicket-acc'),
             self::MAIN_MENU_SLUG
         )
             ->setOptionName(self::MAIN_OPTION_NAME)
+            /* translators: ACC is short for Account Centre. */
             ->setMenuTitle(__('ACC Options', 'wicket-acc'))
             ->setCapability('manage_options')
             ->setParentSlug(self::PARENT_SLUG);
@@ -91,7 +93,9 @@ class InitOptions extends WicketAcc
         $section->addField(
             Field::make('radio', 'acc_sidebar_location', __('Sidebar location', 'wicket-acc'))
                 ->setOptions([
+                    /* translators: Sidebar position option (left side of the page). */
                     'left' => __('Left', 'wicket-acc'),
+                    /* translators: Sidebar position option (right side of the page). */
                     'right' => __('Right', 'wicket-acc'),
                 ])
                 ->setDefault('right')
@@ -147,6 +151,7 @@ class InitOptions extends WicketAcc
             self::ENV_MENU_SLUG
         )
             ->setOptionName(self::SETTINGS_OPTION_NAME)
+            /* translators: Admin menu title for the Wicket server environment (staging or production) settings. */
             ->setMenuTitle(__('Environment', 'wicket-acc'))
             ->setCapability('manage_options')
             ->setParentSlug(self::PARENT_SLUG);
@@ -164,6 +169,7 @@ class InitOptions extends WicketAcc
         );
 
         $status_section->addField(
+            /* translators: Label for the MDP connection status. */
             Field::make('html', 'acc_status_html', __('Status', 'wicket-acc'))
                 ->setHtml($this->getApiStatusHtml())
         );
@@ -177,7 +183,9 @@ class InitOptions extends WicketAcc
         $env_section->addField(
             Field::make('radio', 'wicket_admin_settings_environment', __('Wicket Environment', 'wicket-acc'))
                 ->setOptions([
+                    /* translators: Wicket server environment option: the test (staging) environment. */
                     'stage' => __('Staging', 'wicket-acc'),
+                    /* translators: Wicket server environment option: the live (production) environment. */
                     'prod' => __('Production', 'wicket-acc'),
                 ])
         );
@@ -265,7 +273,7 @@ class InitOptions extends WicketAcc
 
         ?>
         <div style="display: flex; align-items: center; padding: 10px 0;">
-            <label style="margin-right: 10px; font-weight: bold;"><?php echo esc_html__('Status', 'wicket-acc'); ?></label>
+            <label style="margin-right: 10px; font-weight: bold;"><?php echo /* translators: Label for the MDP connection status. */ esc_html__('Status', 'wicket-acc'); ?></label>
             <?php if ($can_connect) : ?>
                 <span style="background-color: #7ad03a; color: white; padding: 5px 10px; border-radius: 3px;"><?php echo esc_html__('CONNECTED', 'wicket-acc'); ?></span>
             <?php else : ?>

@@ -47,6 +47,7 @@ class Notification
 
         // Determine language for localized content
         $lang = WACC()->Language()->getCurrentLanguage();
+        /* translators: Fallback organization name when the org has none; used in the welcome email subject, body, sign-off and sender name. */
         $organizationName = $org['data']['attributes']["legal_name_{$lang}"] ?? $org['data']['attributes']['legal_name'] ?? __('your organization', 'wicket-acc');
 
         // Prepare email content
@@ -110,6 +111,7 @@ class Notification
 
         // Determine language for localized content
         $lang = WACC()->Language()->getCurrentLanguage();
+        /* translators: Fallback organization name when the org has none; used in the welcome email subject, body, sign-off and sender name. */
         $organizationName = $org['data']['attributes']["legal_name_{$lang}"] ?? $org['data']['attributes']['legal_name'] ?? __('your organization', 'wicket-acc');
 
         // Prepare email content

@@ -166,7 +166,7 @@ $clear_action = '(' . '$listLoading' . ' = true, ' . '$searchQuery' . " = '', " 
                 data-on:error="$listLoading = false"
                 data-show="!$searchSubmitted"
                 data-indicator:members-loading>
-                <?php esc_html_e('Search', 'wicket-acc'); ?>
+                <?php /* translators: Button: run the search. */ esc_html_e('Search', 'wicket-acc'); ?>
             </button>
             <button type="button" class="members-search__clear button button--secondary wt_whitespace-nowrap component-button"
                 data-on:click="<?php echo esc_attr($clear_action); ?>"
@@ -174,7 +174,7 @@ $clear_action = '(' . '$listLoading' . ' = true, ' . '$searchQuery' . " = '', " 
                 data-on:error="$listLoading = false"
                 data-show="$searchSubmitted && $searchQuery && $searchQuery.trim() !== ''"
                 data-indicator:members-loading>
-                <?php esc_html_e('Clear', 'wicket-acc'); ?>
+                <?php /* translators: Button: clear the search. */ esc_html_e('Clear', 'wicket-acc'); ?>
             </button>
         </div>
     </div>
@@ -386,9 +386,13 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
                         ×
                     </button>
 
+                    <?php
+                    /* translators: %s: member name. */
+                    $edit_permissions_for_label = __('Edit Permissions for %s', 'wicket-acc');
+                    ?>
                     <h2 class="wp-block-heading has-heading-sm-font-size wt_text-2xl wt_font-semibold wt_mb-4">
                         <span
-                            data-text="$currentMemberName ? '<?php /* translators: %s: member name. */ echo esc_js(__('Edit Permissions for %s', 'wicket-acc')); ?>'.split('%s').join($currentMemberName) : '<?php echo esc_js(__('Edit Permissions', 'wicket-acc')); ?>'">
+                            data-text="$currentMemberName ? '<?php echo esc_js($edit_permissions_for_label); ?>'.split('%s').join($currentMemberName) : '<?php echo esc_js(__('Edit Permissions', 'wicket-acc')); ?>'">
                             <?php echo esc_html__('Edit Permissions', 'wicket-acc'); ?>
                         </span>
                     </h2>
@@ -584,7 +588,7 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
                 $observer_role = $group_roles['observer'] ?? ($groups_config['observer_role'] ?? 'observer');
                 $default_member_role = $groups_config['presentation']['add_member_default_role'] ?? ($groups_config['ui']['add_member_default_role'] ?? 'member');
                 ?>
-                            <option value="<?php echo esc_attr($member_role); ?>"<?php echo $default_member_role !== 'observer' ? ' selected' : ''; ?>><?php esc_html_e('Member', 'wicket-acc'); ?></option>
+                            <option value="<?php echo esc_attr($member_role); ?>"<?php echo $default_member_role !== 'observer' ? ' selected' : ''; ?>><?php /* translators: Group role options (Member, Observer). */ esc_html_e('Member', 'wicket-acc'); ?></option>
                             <option value="<?php echo esc_attr($observer_role); ?>"<?php echo $default_member_role === 'observer' ? ' selected' : ''; ?>><?php esc_html_e('Observer', 'wicket-acc'); ?></option>
                         </select>
                     </div>

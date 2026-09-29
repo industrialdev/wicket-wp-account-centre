@@ -91,7 +91,7 @@ class ChangePassword
             ])
             ->setDescription(__('A Wicket block for changing the user password.', 'wicket-acc'))
             ->setCategory('wicket-account-center')
-            ->setKeywords([__('account-centre', 'wicket-acc'), __('password', 'wicket-acc'), __('wicket', 'wicket-acc')])
+            ->setKeywords([__('account-centre', 'wicket-acc'), _x('account-center', 'block search keyword', 'wicket-acc'), __('password', 'wicket-acc'), __('wicket', 'wicket-acc')])
             ->setStyle('wicket-acc-password-block')
             ->setRenderTemplateFile('change-password.hb.php');
 

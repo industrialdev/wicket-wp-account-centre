@@ -62,8 +62,11 @@ class init extends Blocks
             'Primary Tradeshow Contact'   => __('Primary Tradeshow Contact', 'wicket-acc'),
             'Secondary Tradeshow Contact' => __('Secondary Tradeshow Contact', 'wicket-acc'),
             'Accounting Contact'          => __('Accounting Contact', 'wicket-acc'),
+            /* translators: Organization relationship type: regulatory contact. */
             'Regulatory'                  => __('Regulatory', 'wicket-acc'),
+            /* translators: Organization relationship type: the person is a member of the organization. */
             'Member'                      => __('Member', 'wicket-acc'),
+            /* translators: Organization relationship type: the person works for the organization. */
             'Employee'                    => __('Employee', 'wicket-acc'),
         ];
 
@@ -121,7 +124,7 @@ class init extends Blocks
             <div class="wicket-welcome-content-container col row w-full">
                 <div class="wicket-welcome-content col w-full">
                     <p class="wicket-welcome-label">
-                        <?php _e('Welcome', 'wicket-acc'); ?>
+                        <?php /* translators: Greeting shown above the user's name. */ _e('Welcome', 'wicket-acc'); ?>
                     </p>
                     <p class="wicket-welcome-name">
                         <?php $member_name = $person->given_name . ' ' . $person->family_name; ?>
@@ -314,7 +317,7 @@ class init extends Blocks
                     <?php } else { ?>
                         <?php if ($display_member_status): ?>
                             <p class="wicket-welcome-pending-membership">
-                                <?php echo apply_filters('wicket/acc/block/welcome_non_member_text', __('Non-Member', 'wicket-acc')); ?>
+                                <?php echo apply_filters('wicket/acc/block/welcome_non_member_text', /* translators: Membership status: the user has no active membership. */ __('Non-Member', 'wicket-acc')); ?>
                             </p>
                         <?php endif; ?>
                     <?php } ?>

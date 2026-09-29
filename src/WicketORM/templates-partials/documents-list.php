@@ -143,7 +143,7 @@ $notice ??= null;
 						   target="_blank"
 						   class="wt_text-blue-600 wt_hover_text-blue-900 wt_text-sm wt_font-medium"
 						   download>
-							<?php esc_html_e('Download', 'wicket-acc'); ?>
+							<?php /* translators: Button: download the document. */ esc_html_e('Download', 'wicket-acc'); ?>
 						</a>
 						|
 						<button
@@ -152,7 +152,7 @@ $notice ??= null;
 							ds-swap="innerHTML"
 							ds-confirm="<?php esc_attr_e('Are you sure you want to delete this document?', 'wicket-acc'); ?>"
 							class="wt_text-red-600 wt_hover_text-red-900 wt_text-sm wt_font-medium">
-							<?php esc_html_e('Delete', 'wicket-acc'); ?>
+							<?php /* translators: Button: delete the document. */ esc_html_e('Delete', 'wicket-acc'); ?>
 						</button>
 					</div>
 				</div>

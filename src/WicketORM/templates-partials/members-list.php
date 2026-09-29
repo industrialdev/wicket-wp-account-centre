@@ -571,9 +571,13 @@ $no_members_message = __('No members found.', 'wicket-acc');
                 ×
             </button>
 
+            <?php
+            /* translators: %s: member name. */
+            $edit_permissions_for_label = __('Edit Permissions for %s', 'wicket-acc');
+            ?>
             <h2 class="wp-block-heading has-heading-sm-font-size wt_text-2xl wt_font-semibold wt_mb-4">
                 <span
-                    data-text="$currentMemberName ? '<?php /* translators: %s: member name. */ echo esc_js(__('Edit Permissions for %s', 'wicket-acc')); ?>'.split('%s').join($currentMemberName) : '<?php echo esc_js(__('Edit Permissions', 'wicket-acc')); ?>'">
+                    data-text="$currentMemberName ? '<?php echo esc_js($edit_permissions_for_label); ?>'.split('%s').join($currentMemberName) : '<?php echo esc_js(__('Edit Permissions', 'wicket-acc')); ?>'">
                     <?php echo esc_html__('Edit Permissions', 'wicket-acc'); ?>
                 </span>
             </h2>

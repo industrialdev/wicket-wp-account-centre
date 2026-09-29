@@ -116,6 +116,7 @@ class Shortcodes extends WicketAcc
                 }
 
                 $organization = $client->get("organizations/$i_org_id");
+                /* translators: Not available: shown when the organization name is missing. */
                 $org_name = $organization['data']['attributes']['legal_name_' . $lang] ?? __('N/A', 'wicket-acc');
                 ?>
                         <li class='flex items-center gap-3 py-1 leading-[2rem]'>

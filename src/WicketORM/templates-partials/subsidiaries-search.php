@@ -43,7 +43,7 @@ ob_start();
                     </div>
                     <button class="button button--small button--primary component-button"
                             onclick="addSubsidiary('<?php echo esc_js($candidate['id']); ?>', '<?php echo esc_js($candidate['name']); ?>')">
-                        <?php esc_html_e('Add', 'wicket-acc'); ?>
+                        <?php /* translators: Button: add the organization as a subsidiary. */ esc_html_e('Add', 'wicket-acc'); ?>
                     </button>
                 </div>
             <?php endforeach; ?>

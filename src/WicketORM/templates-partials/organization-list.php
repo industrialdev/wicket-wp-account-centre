@@ -541,6 +541,7 @@ if ($roster_mode === 'groups' && !empty($groups_by_org)) {
             'org_identifier' => $group_org_identifier,
             'org_name' => $group_org_name !== ''
                 ? $group_org_name
+                /* translators: Fallback organization or group name. */
                 : ($group_fallback_name !== '' ? $group_fallback_name : __('Unknown', 'wicket-acc')),
             'roles' => [],
         ];
@@ -751,6 +752,7 @@ echo '<div class="wt_w-full wt_flex wt_flex-col wt_gap-4" role="list">';
 $membershipService = new \WicketORM\Services\MembershipService();
 foreach ($organizations_page as $org) :
     $org_id = (string) ($org['id'] ?? '');
+    /* translators: Fallback organization or group name. */
     $org_name = $org['org_name'] ?? __('Unknown', 'wicket-acc');
     $group_details = $groups_by_org[$org_id] ?? [];
     $resolved_org_uuid = (string) ($org['resolved_org_uuid'] ?? '');

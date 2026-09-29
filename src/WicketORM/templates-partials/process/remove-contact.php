@@ -100,11 +100,12 @@ try {
     }
 
     // Build success message
-    $display_name = $person_name !== '' ? $person_name : __('the contact', 'wicket-acc');
-    $success_message = sprintf(
-        /* translators: %1$s: contact name. */ esc_html__('Successfully removed %1$s from the contact list.', 'wicket-acc'),
-        '<strong>' . esc_html($display_name) . '</strong>'
-    );
+    $success_message = $person_name !== ''
+        ? sprintf(
+            /* translators: %1$s: contact name. */ esc_html__('Successfully removed %1$s from the contact list.', 'wicket-acc'),
+            '<strong>' . esc_html($person_name) . '</strong>'
+        )
+        : esc_html_x('Successfully removed the contact from the contact list.', 'org contacts success message', 'wicket-acc');
 
     if (!empty($result['membership_preserved'])) {
         $success_message .= ' ' . esc_html__('Roles preserved due to active membership.', 'wicket-acc');

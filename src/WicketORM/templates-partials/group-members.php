@@ -164,12 +164,12 @@ $clearAction = "(\$listLoading = true, \$searchQuery = '', \$searchSubmitted = f
                 data-on:click="<?php echo esc_attr($searchSubmitAction); ?>"
                 data-on:success="<?php echo esc_attr($search_success); ?>"
                 data-show="!$searchSubmitted"
-                data-indicator:members-loading"><?php esc_html_e('Search', 'wicket-acc'); ?></button>
+                data-indicator:members-loading"><?php /* translators: Button: run the search. */ esc_html_e('Search', 'wicket-acc'); ?></button>
             <button class="members-search__clear button button--secondary wt_whitespace-nowrap component-button"
                 data-on:click="<?php echo esc_attr($clearAction); ?>"
                 data-on:success="<?php echo esc_attr($search_success); ?>"
                 data-show="$searchSubmitted && $searchQuery && $searchQuery.trim() !== ''"
-                data-indicator:members-loading"><?php esc_html_e('Clear', 'wicket-acc'); ?></button>
+                data-indicator:members-loading"><?php /* translators: Button: clear the search. */ esc_html_e('Clear', 'wicket-acc'); ?></button>
         </div>
     </div>
 
@@ -334,7 +334,7 @@ $default_member_role = $groups_presentation['add_member_default_role'] ?? 'membe
                     </label>
                     <select id="group-member-role" name="role"
                         class="wt_w-full wt_border wt_border-color wt_rounded-md wt_p-2">
-                        <option value="<?php echo esc_attr($member_role); ?>"<?php echo $default_member_role !== 'observer' ? ' selected' : ''; ?>><?php esc_html_e('Member', 'wicket-acc'); ?></option>
+                        <option value="<?php echo esc_attr($member_role); ?>"<?php echo $default_member_role !== 'observer' ? ' selected' : ''; ?>><?php /* translators: Group role options (Member, Observer). */ esc_html_e('Member', 'wicket-acc'); ?></option>
                         <option value="<?php echo esc_attr($observer_role); ?>"<?php echo $default_member_role === 'observer' ? ' selected' : ''; ?>><?php esc_html_e('Observer', 'wicket-acc'); ?></option>
                     </select>
                 </div>

@@ -26,6 +26,7 @@ final class OrgManConfig
                     'aliases' => [],
                     'labels' => [
                         'membership_manager' => __('Membership Manager', 'wicket-acc'),
+                        /* translators: Role name; Org. is short for Organization. */
                         'org_editor' => __('Org. Editor', 'wicket-acc'),
                         'membership_owner' => __('Membership Owner', 'wicket-acc'),
                     ],
@@ -139,8 +140,10 @@ final class OrgManConfig
                 ],
                 'labels' => [
                     'custom' => [
+                        /* translators: Relationship type: Chief Executive Officer. */
                         'ceo' => __('CEO', 'wicket-acc'),
                         'primary_hr_contact' => __('Primary HR Contact', 'wicket-acc'),
+                        /* translators: Relationship type: the person works for the organization. */
                         'employee_staff' => __('Employee', 'wicket-acc'),
                         'member_contact' => __('Member Contact', 'wicket-acc'),
                     ],
@@ -330,6 +333,7 @@ final class OrgManConfig
                     // Used by the details action nav and the organization list cards
                     // so both surfaces stay in sync (WWID-2259).
                     'labels' => [
+                        /* translators: Org. is short for Organization. */
                         'org_profile' => __('Org. Profile', 'wicket-acc'),
                         'manage_members' => __('Manage Members', 'wicket-acc'),
                         // Org-scoped contacts roster action (WWID-2385).
@@ -503,6 +507,7 @@ final class OrgManConfig
                         'president' => __('President', 'wicket-acc'),
                         'president_elect' => __('President Elect', 'wicket-acc'),
                         'secretary' => __('Secretary', 'wicket-acc'),
+                        /* translators: Relationship type: Chief Executive Officer. */
                         'ceo' => __('CEO', 'wicket-acc'),
                         'treasurer' => __('Treasurer', 'wicket-acc'),
                         'main_contact' => __('Main Contact', 'wicket-acc'),
@@ -540,15 +545,23 @@ final class OrgManConfig
                 'sections'               => [
                     'foundation' => [
                         'enabled'                    => true,
+                        /* translators: Section title for charitable foundation donations. */
                         'label'                      => __('Foundation', 'wicket-acc'),
                         'requires_active_membership' => false,
                         'fields'                     => [
+                            /* translators: FY is short for fiscal year. Donation total for the current fiscal year. */
                             'current_fy'     => ['mdp_key' => 'fdn_current_fy',     'label' => __('Current FY', 'wicket-acc'), 'format' => 'currency'],
+                            /* translators: FY is short for fiscal year. Donation total for the previous fiscal year. */
                             'last_fy'        => ['mdp_key' => 'fdn_last_fy',        'label' => __('Last FY', 'wicket-acc'), 'format' => 'currency'],
+                            /* translators: Date of the most recent donation. */
                             'last_giving_dt' => ['mdp_key' => 'fdn_last_giving_dt', 'label' => __('Last Gift', 'wicket-acc'), 'format' => 'date'],
+                            /* translators: Donor recognition level based on all-time giving. */
                             'lifetime_level' => ['mdp_key' => 'fdn_lifetime_level', 'label' => __('Lifetime Level', 'wicket-acc'), 'format' => 'string'],
+                            /* translators: Donor recognition level for the previous fiscal year (FY). */
                             'last_fy_level'  => ['mdp_key' => 'fdn_last_fy_level',  'label' => __('Last FY Level', 'wicket-acc'), 'format' => 'string'],
+                            /* translators: Soc. is short for Society: membership in the Leadership Society donor group. */
                             'leadership_soc' => ['mdp_key' => 'fdn_leadership_soc', 'label' => __('Leadership Soc.', 'wicket-acc'), 'format' => 'yesno'],
+                            /* translators: Soc. is short for Society: membership in the Legacy Society donor group (planned giving). */
                             'legacy_soc'     => ['mdp_key' => 'fdn_legacy_soc',     'label' => __('Legacy Soc.', 'wicket-acc'), 'format' => 'yesno'],
                         ],
                         'badge_pattern'        => '/^fdn_Donor_FY(\d{2})$/',
@@ -557,11 +570,15 @@ final class OrgManConfig
                     ],
                     'pac' => [
                         'enabled'                    => true,
+                        /* translators: PAC is short for Political Action Committee. */
                         'label'                      => __('PAC', 'wicket-acc'),
                         'requires_active_membership' => true,
                         'fields'                     => [
+                            /* translators: FY is short for fiscal year. Donation total for the current fiscal year. */
                             'current_fy'     => ['mdp_key' => 'pac_current_fy',     'label' => __('Current FY', 'wicket-acc'), 'format' => 'currency'],
+                            /* translators: FY is short for fiscal year. Donation total for the previous fiscal year. */
                             'last_fy'        => ['mdp_key' => 'pac_last_fy',        'label' => __('Last FY', 'wicket-acc'), 'format' => 'currency'],
+                            /* translators: Date of the most recent donation. */
                             'last_giving_dt' => ['mdp_key' => 'pac_last_giving_dt', 'label' => __('Last Gift', 'wicket-acc'), 'format' => 'date'],
                         ],
                         'badge_pattern'        => '/^DonorPAC_FY(\d{2})$/',

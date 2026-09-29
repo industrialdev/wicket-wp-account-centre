@@ -8,6 +8,7 @@
 	"icon": "",
 	"apiVersion": 2,
 	"keywords": [
+		"account-centre",
 		"account-center",
 		"preferences",
 		"wicket"

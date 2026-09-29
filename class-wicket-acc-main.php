@@ -331,8 +331,10 @@ class WicketAcc
             // WooCommerce endpoints
             'add-payment-method' => __('Add Payment Method', 'wicket-acc'),
             'set-default-payment-method' => __('Set Default Payment Method', 'wicket-acc'),
+            /* translators: My Account menu item: the user's WooCommerce orders. */
             'orders' => __('Orders', 'wicket-acc'),
             'view-order' => __('View Order', 'wicket-acc'),
+            /* translators: My Account menu item: the user's downloadable purchases. */
             'downloads' => __('Downloads', 'wicket-acc'),
             'edit-account' => __('Edit Account', 'wicket-acc'),
             'edit-address' => __('Edit Address', 'wicket-acc'),

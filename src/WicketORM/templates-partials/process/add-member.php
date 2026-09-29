@@ -205,12 +205,18 @@ if ('POST' === strtoupper($request_method)) {
 
         // Success message
         $full_name = trim(($member_data['first_name'] ?? '') . ' ' . ($member_data['last_name'] ?? ''));
-        $success_message = wp_sprintf(
-            /* translators: 1: member full name, 2: member email address */
-            __('Successfully added %1$s with email %2$s.', 'wicket-acc'),
-            $full_name !== '' ? $full_name : __('the member', 'wicket-acc'),
-            (string) ($member_data['email'] ?? '')
-        );
+        $success_message = $full_name !== ''
+            ? wp_sprintf(
+                /* translators: 1: member full name, 2: member email address */
+                __('Successfully added %1$s with email %2$s.', 'wicket-acc'),
+                $full_name,
+                (string) ($member_data['email'] ?? '')
+            )
+            : wp_sprintf(
+                /* translators: %s: member email address. */
+                _x('Successfully added the member with email %s.', 'org roster success message', 'wicket-acc'),
+                (string) ($member_data['email'] ?? '')
+            );
 
         $element_patches = WicketORM\Helpers\MemberListRefresh::buildOrgMembersListPatches(
             $org_uuid,

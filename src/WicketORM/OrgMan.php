@@ -1099,9 +1099,13 @@ final class OrgMan
         wp_localize_script('orgman-notifications', 'wicketOrmNotificationsL10n', [
             'close'  => __('Close', 'wicket-acc'),
             'titles' => [
+                /* translators: Notification type label. */
                 'success' => __('Success', 'wicket-acc'),
+                /* translators: Notification type label. */
                 'error'   => __('Error', 'wicket-acc'),
+                /* translators: Notification type label. */
                 'warning' => __('Warning', 'wicket-acc'),
+                /* translators: Notification type label (information). */
                 'info'    => __('Info', 'wicket-acc'),
             ],
         ]);

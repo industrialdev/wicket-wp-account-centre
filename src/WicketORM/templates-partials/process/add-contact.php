@@ -126,12 +126,18 @@ try {
 
     // Build success message
     $full_name = trim($contact_data['first_name'] . ' ' . $contact_data['last_name']);
-    $success_message = wp_sprintf(
-        /* translators: 1: member full name, 2: member email address */
-        __('Successfully added %1$s with email %2$s.', 'wicket-acc'),
-        $full_name !== '' ? $full_name : __('the contact', 'wicket-acc'),
-        $contact_data['email']
-    );
+    $success_message = $full_name !== ''
+        ? wp_sprintf(
+            /* translators: 1: member full name, 2: member email address */
+            __('Successfully added %1$s with email %2$s.', 'wicket-acc'),
+            $full_name,
+            $contact_data['email']
+        )
+        : wp_sprintf(
+            /* translators: %s: contact email address. */
+            _x('Successfully added the contact with email %s.', 'org contacts success message', 'wicket-acc'),
+            $contact_data['email']
+        );
 
     // Append warnings if any
     $warnings = $result['warnings'] ?? [];

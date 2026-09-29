@@ -8,7 +8,7 @@
     "category": "wicket-account-center",
     "icon": "",
     "apiVersion": 2,
-    "keywords": ["account-center", "touchpoints", "service", "maple", "wicket"],
+    "keywords": ["account-centre", "account-center", "touchpoints", "service", "maple", "wicket"],
     "acf": {
         "mode": "preview",
         "renderTemplate": "render.php"

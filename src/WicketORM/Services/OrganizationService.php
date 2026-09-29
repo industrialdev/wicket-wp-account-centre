@@ -454,6 +454,7 @@ class OrganizationService
                                     $organizations[] = [
                                         'id' => $org_id,
                                         'org_name' => $org_name,
+                                        /* translators: The user's role in the organization. */
                                         'user_role' => __('Member', 'wicket-acc'),
                                     ];
 

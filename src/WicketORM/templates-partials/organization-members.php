@@ -190,14 +190,14 @@ if (!empty($searchAction)) {
 				data-show="!$searchSubmitted"
 				data-indicator:members-loading
 				class="members-search__submit button button--primary wt_whitespace-nowrap component-button"
-				<?php disabled(empty($membershipUuid)); ?>><?php esc_html_e('Search', 'wicket-acc'); ?></button>
+				<?php disabled(empty($membershipUuid)); ?>><?php /* translators: Button: run the search. */ esc_html_e('Search', 'wicket-acc'); ?></button>
 			<button
 				<?php if (!empty($clearButtonAction)) : ?>data-on:click="<?php echo esc_attr($clearButtonAction); ?>"<?php endif; ?>
 				<?php if (!empty($searchSuccess)) : ?>data-on:success="<?php echo esc_attr($searchSuccess); ?>"<?php endif; ?>
 				data-show="$searchSubmitted && $searchQuery && $searchQuery.trim() !== ''"
 				data-indicator:members-loading
 				class="members-search__clear button button--secondary wt_whitespace-nowrap component-button"
-				<?php disabled(empty($membershipUuid)); ?>><?php esc_html_e('Clear', 'wicket-acc'); ?></button>
+				<?php disabled(empty($membershipUuid)); ?>><?php /* translators: Button: clear the search. */ esc_html_e('Clear', 'wicket-acc'); ?></button>
 		</div>
 	</div>
     </div>

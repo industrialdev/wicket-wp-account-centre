@@ -1202,10 +1202,12 @@ class WooCommerce extends WicketAcc
         // Add WooCommerce menu items
         $wc_items = [
             'orders' => [
+                /* translators: My Account menu item: the user's WooCommerce orders. */
                 'title' => __('Orders', 'wicket-acc'),
                 'url' => wc_get_account_endpoint_url('orders'),
             ],
             'downloads' => [
+                /* translators: My Account menu item: the user's downloadable purchases. */
                 'title' => __('Downloads', 'wicket-acc'),
                 'url' => wc_get_account_endpoint_url('downloads'),
             ],

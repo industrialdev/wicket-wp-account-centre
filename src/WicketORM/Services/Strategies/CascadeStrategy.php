@@ -643,7 +643,7 @@ class CascadeStrategy implements RosterManagementStrategy
                 'active_seats' => $active_seats,
             ]));
 
-            return new \WP_Error('seat_limit_reached', 'No seats available for this organization.');
+            return new \WP_Error('seat_limit_reached', __('No seats available for this organization.', 'wicket-acc'));
         }
 
         return true;

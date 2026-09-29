@@ -146,7 +146,7 @@ if ($sync_threshold > 0 && $roster_count > $sync_threshold) :
                             data-class="{ 'wt_pointer-events-none': $<?php echo esc_attr($sig_submitting); ?>, 'wt_opacity-50': $<?php echo esc_attr($sig_submitting); ?>, 'wt_is-loading': $<?php echo esc_attr($sig_submitting); ?> }"
                             data-attr:aria-disabled="$<?php echo esc_attr($sig_submitting); ?> ? 'true' : 'false'"
                             aria-disabled="false">
-                            <span class="wt_submit_label"><?php esc_html_e('Download', 'wicket-acc'); ?></span>
+                            <span class="wt_submit_label"><?php /* translators: Button: download the member export file. */ esc_html_e('Download', 'wicket-acc'); ?></span>
                             <span class="wt_loader wt_loader_button wt_submit_loader" aria-hidden="true"></span>
                         </button>
                     </div>

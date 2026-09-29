@@ -318,6 +318,7 @@ class EngagementService
     private function formatValue(mixed $value, string $format): string
     {
         if ($value === null || $value === '') {
+            /* translators: Not available: shown when a value is missing. */
             return __('N/A', 'wicket-acc');
         }
 
@@ -330,6 +331,7 @@ class EngagementService
             case 'date':
                 $timestamp = is_numeric($value) ? (int) $value : strtotime((string) $value);
                 if (!$timestamp) {
+                    /* translators: Not available: shown when a value is missing. */
                     return __('N/A', 'wicket-acc');
                 }
 
@@ -339,7 +341,9 @@ class EngagementService
                 $normalized = strtolower(trim((string) $value));
 
                 return in_array($normalized, ['yes', '1', 'true'], true)
+                    /* translators: Yes/No field value. */
                     ? __('Yes', 'wicket-acc')
+                    /* translators: Yes/No field value. */
                     : __('No', 'wicket-acc');
 
             default:

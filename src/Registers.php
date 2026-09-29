@@ -35,6 +35,7 @@ class Registers extends WicketAcc
         // Set UI labels for custom post type
         $labels = [
             'name'               => esc_html__('Account Centre', 'wicket-acc'),
+            /* translators: Singular name of an Account Centre page (post type). */
             'singular_name'      => esc_html__('Page', 'wicket-acc'),
             'add_new_item'       => esc_html__('Add New Page', 'wicket-acc'),
             'add_new'            => esc_html__('Add New Page', 'wicket-acc'),
@@ -115,6 +116,7 @@ class Registers extends WicketAcc
         // Ensure we only add these templates for the 'my-account' post type
         if ($post && $post->post_type === 'my-account') {
             $templates = [
+                /* translators: Page template name. ACC is short for Account Centre. */
                 'account-centre/page-acc.php'            => __('ACC Page', 'wicket-acc'),
                 'account-centre/page-acc-org_id.php'     => __('ACC Page with Org Selector', 'wicket-acc'),
                 'account-centre/page-acc-no-sidebar.php' => __('ACC Page (No Sidebar)', 'wicket-acc'),

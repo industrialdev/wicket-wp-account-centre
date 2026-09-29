@@ -52,7 +52,10 @@ if (!defined('ABSPATH')) {
 							<?php wp_nonce_field('org_management_subsidiary_remove_' . $org_id, '_wpnonce'); ?>
 							<button type="submit"
 									class="button button--secondary component-button"
-									data-on:click="confirm('<?php echo esc_js(sprintf(/* translators: %s: subsidiary organization name. */ __('Are you sure you want to remove %s as a subsidiary?', 'wicket-acc'), $subsidiary['name'])); ?>')">
+									data-on:click="confirm('<?php
+										/* translators: %s: subsidiary organization name. */
+										echo esc_js(sprintf(__('Are you sure you want to remove %s as a subsidiary?', 'wicket-acc'), $subsidiary['name']));
+									?>')">
 								<?php esc_html_e('Remove', 'wicket-acc'); ?>
 							</button>
 						</form>
@@ -137,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
 							<span class="candidate-type">${candidate.type}</span>
 						</div>
 						<button class="button button--small button--primary component-button"
-								onclick="addSubsidiary('${candidate.id}', '${candidate.name.replace(/'/g, "\\'")}')"><?php echo esc_js(esc_html__('Add', 'wicket-acc')); ?></button>
+								onclick="addSubsidiary('${candidate.id}', '${candidate.name.replace(/'/g, "\\'")}')"><?php echo esc_js(/* translators: Button: add the organization as a subsidiary. */ esc_html__('Add', 'wicket-acc')); ?></button>
 					</div>
 				`;
 			});

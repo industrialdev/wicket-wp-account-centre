@@ -140,14 +140,14 @@ $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' 
                 data-on:click="<?php echo esc_attr($contacts_search_submit); ?>"
                 data-show="!$contactsSubmitted"
                 data-indicator:contacts-loading>
-                <?php esc_html_e('Search', 'wicket-acc'); ?>
+                <?php /* translators: Button: run the search. */ esc_html_e('Search', 'wicket-acc'); ?>
             </button>
             <button type="button"
                 class="button button--secondary wt_px-4 wt_py-2 wt_text-sm component-button wt_whitespace-nowrap"
                 data-on:click="<?php echo esc_attr($contacts_clear_action); ?>"
                 data-show="$contactsSubmitted"
                 data-indicator:contacts-loading>
-                <?php esc_html_e('Clear', 'wicket-acc'); ?>
+                <?php /* translators: Button: clear the search. */ esc_html_e('Clear', 'wicket-acc'); ?>
             </button>
         </div>
 

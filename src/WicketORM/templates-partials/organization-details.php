@@ -186,6 +186,7 @@ if ($roster_mode !== 'groups') {
         $active = $membership_data['data']['attributes']['active_assignments_count'] ?? null;
         $max = $membershipService->getEffectiveMaxAssignments($membership_data);
         if ($active !== null || $max !== null) {
+            /* translators: Seat limit: no maximum number of seats. */
             $max_label = $max !== null ? $max : __('Unlimited', 'wicket-acc');
             /* translators: 1: number of active seat assignments, 2: maximum number of seats (or "Unlimited"). */
             $seats_label = sprintf(__('Seats: %1$s / %2$s', 'wicket-acc'), (string) $active, (string) $max_label);
@@ -219,7 +220,7 @@ if ($roster_mode !== 'groups') {
         <?php else: ?>
             <h2 class="wp-block-heading has-heading-sm-font-size org-details__title wt_text-lg wt_mb-2 wt_text-heading-color wt_font-bold"><?php echo esc_html($org_name); ?></h2>
             <div class="org-details__summary-list wt_flex wt_flex-col wt_gap-0">
-                <p class="org-details__summary-heading wt_font-bold wt_mb-1"><?php esc_html_e('Summary', 'wicket-acc'); ?></p>
+                <p class="org-details__summary-heading wt_font-bold wt_mb-1"><?php /* translators: Heading for the membership summary. */ esc_html_e('Summary', 'wicket-acc'); ?></p>
                 <?php if ($membership_name): ?>
                     <p class="org-details__summary-item wt_leading-normal wt_text-content mb-1"><?php
                     /* translators: %s: Membership tier name. */
