@@ -114,7 +114,7 @@ class SubsidiaryService
 
         return [
             'success' => true,
-            'message' => __('Subsidiary added successfully.', 'wicket-acc'),
+            'message' => _x('Subsidiary added successfully.', 'message', 'wicket-acc'),
             'parent_org_id' => $parent_org_id,
             'subsidiary_org_id' => $subsidiary_org_id,
         ];
@@ -159,7 +159,7 @@ class SubsidiaryService
 
         return [
             'success' => true,
-            'message' => __('Subsidiary removed successfully.', 'wicket-acc'),
+            'message' => _x('Subsidiary removed successfully.', 'message', 'wicket-acc'),
             'parent_org_id' => $parent_org_id,
             'subsidiary_org_id' => $subsidiary_org_id,
         ];

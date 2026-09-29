@@ -84,7 +84,7 @@ class OrganizationService
      */
     private function unknownOrganizationLabel(): string
     {
-        return __('Unknown Organization', 'wicket-acc');
+        return _x('Unknown Organization', 'value placeholder', 'wicket-acc');
     }
 
     /**
@@ -358,7 +358,7 @@ class OrganizationService
                         $organizations[$org_id] = [
                             'id' => $org_id,
                             'org_name' => $org_name_by_id[$org_id] ?? $this->unknownOrganizationLabel(),
-                            'user_role' => __('Membership Owner', 'wicket-acc'),
+                            'user_role' => _x('Membership Owner', 'role name', 'wicket-acc'),
                             'roles' => [],
                         ];
                     }
@@ -455,7 +455,7 @@ class OrganizationService
                                         'id' => $org_id,
                                         'org_name' => $org_name,
                                         /* translators: The user's role in the organization. */
-                                        'user_role' => __('Member', 'wicket-acc'),
+                                        'user_role' => _x('Member', 'role name', 'wicket-acc'),
                                     ];
 
                                     break;

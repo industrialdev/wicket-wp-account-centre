@@ -116,7 +116,7 @@ class DocumentService
         $moved = move_uploaded_file($file_tmp, $upload_file);
 
         if (!$moved) {
-            return new WP_Error('upload_failed', __('File upload failed.', 'wicket-acc'));
+            return new WP_Error('upload_failed', _x('File upload failed.', 'message', 'wicket-acc'));
         }
 
         // Insert as WordPress attachment
@@ -176,13 +176,13 @@ class DocumentService
 
         $document = get_post($document_id);
         if (!$document || $document->post_type !== 'attachment') {
-            return new WP_Error('document_not_found', __('Document not found.', 'wicket-acc'));
+            return new WP_Error('document_not_found', _x('Document not found.', 'message', 'wicket-acc'));
         }
 
         // Only delete attachments that belong to org management
         $org_id = get_post_meta($document_id, '_org_management_org_id', true);
         if (empty($org_id)) {
-            return new WP_Error('invalid_document', __('Invalid document.', 'wicket-acc'));
+            return new WP_Error('invalid_document', _x('Invalid document.', 'message', 'wicket-acc'));
         }
 
         $deleted = wp_delete_attachment($document_id, $force_delete);

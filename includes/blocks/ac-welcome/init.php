@@ -57,17 +57,17 @@ class init extends Blocks
 
         // We need to find these at the MDP at some point
         $relationship_translations = [
-            'Primary Contact'             => __('Primary Contact', 'wicket-acc'),
-            'Voting Contact'              => __('Voting Contact', 'wicket-acc'),
-            'Primary Tradeshow Contact'   => __('Primary Tradeshow Contact', 'wicket-acc'),
-            'Secondary Tradeshow Contact' => __('Secondary Tradeshow Contact', 'wicket-acc'),
-            'Accounting Contact'          => __('Accounting Contact', 'wicket-acc'),
+            'Primary Contact'             => _x('Primary Contact', 'relationship type', 'wicket-acc'),
+            'Voting Contact'              => _x('Voting Contact', 'relationship type', 'wicket-acc'),
+            'Primary Tradeshow Contact'   => _x('Primary Tradeshow Contact', 'relationship type', 'wicket-acc'),
+            'Secondary Tradeshow Contact' => _x('Secondary Tradeshow Contact', 'relationship type', 'wicket-acc'),
+            'Accounting Contact'          => _x('Accounting Contact', 'relationship type', 'wicket-acc'),
             /* translators: Organization relationship type: regulatory contact. */
-            'Regulatory'                  => __('Regulatory', 'wicket-acc'),
+            'Regulatory'                  => _x('Regulatory', 'relationship type', 'wicket-acc'),
             /* translators: Organization relationship type: the person is a member of the organization. */
-            'Member'                      => __('Member', 'wicket-acc'),
+            'Member'                      => _x('Member', 'relationship type', 'wicket-acc'),
             /* translators: Organization relationship type: the person works for the organization. */
-            'Employee'                    => __('Employee', 'wicket-acc'),
+            'Employee'                    => _x('Employee', 'relationship type', 'wicket-acc'),
         ];
 
         // Keep the legacy French labels until a French translation file ships them.
@@ -97,7 +97,7 @@ class init extends Blocks
         ) {
             // Use ACC mapping
             $editprofile_page_link = WACC()->get_account_page_url('edit-profile');
-            $editprofile_page_title = __('Edit Profile', 'wicket-acc');
+            $editprofile_page_title = _x('Edit Profile', 'button label', 'wicket-acc');
         } else {
             // Use user defined URL
             $editprofile_page_link = $edit_profile_button_link['url'];
@@ -113,7 +113,7 @@ class init extends Blocks
                             . '?' . time() . '" alt="'
                             . esc_attr(sprintf(
                                 /* translators: %s: person's full name. */
-                                __('%s Profile Image', 'wicket-acc'),
+                                _x('%s Profile Image', 'accessibility label', 'wicket-acc'),
                                 $person->given_name . ' ' . $person->family_name
                             ))
                             . '" />';
@@ -124,7 +124,7 @@ class init extends Blocks
             <div class="wicket-welcome-content-container col row w-full">
                 <div class="wicket-welcome-content col w-full">
                     <p class="wicket-welcome-label">
-                        <?php /* translators: Greeting shown above the user's name. */ _e('Welcome', 'wicket-acc'); ?>
+                        <?php /* translators: Greeting shown above the user's name. */ _ex('Welcome', 'label', 'wicket-acc'); ?>
                     </p>
                     <p class="wicket-welcome-name">
                         <?php $member_name = $person->given_name . ' ' . $person->family_name; ?>
@@ -137,7 +137,7 @@ class init extends Blocks
                     <?php if ($active_memberships) { ?>
                         <?php if ($display_mdp_id): ?>
                             <p class="wicket-welcome-member-mdp-id mb-2">
-                                <span><?php echo __('ID:', 'wicket-acc'); ?></span>
+                                <span><?php echo _x('ID:', 'label', 'wicket-acc'); ?></span>
                                 <?php echo $identifying_number; ?>
                             </p>
                         <?php endif; ?>
@@ -178,7 +178,7 @@ class init extends Blocks
 
                                 <div class="my-0 wicket-welcome-memberships">
                                     <p class="mb-0 wicket-welcome-member-type">
-                                        <strong><?php echo __('Membership Type:', 'wicket-acc'); ?></strong>
+                                        <strong><?php echo _x('Membership Type:', 'label', 'wicket-acc'); ?></strong>
                                         <?php
                                         $membership_name = $membership['name_' . $current_lang] ?? $membership['name'] ?? ''; // Added fallback and ensure we have a value
 
@@ -245,7 +245,7 @@ class init extends Blocks
                                     <?php if ($display_member_status): ?>
                                     <p class="mt-0 mb-2 wicket-welcome-member-active flex items-center space-x-2">
                                         <span
-                                            class="text-gray-700"><?php echo __('Active Member', 'wicket-acc'); ?></span>
+                                            class="text-gray-700"><?php echo _x('Active Member', 'status', 'wicket-acc'); ?></span>
                                     </p>
                                     <?php endif; ?>
 
@@ -262,7 +262,7 @@ class init extends Blocks
                                         $shown_member_since = true;
                                         ?>
                                         <p class="wicket-welcome-member-since mb-0">
-                                            <?php esc_html_e('Member Since:', 'wicket-acc'); ?>
+                                            <?php echo esc_html_x('Member Since:', 'label', 'wicket-acc'); ?>
                                             <?php if (isset($membership_began_on) && !empty($membership_began_on)) {
                                                 echo wp_date(get_option('date_format'), strtotime($membership_began_on));
                                             } else {
@@ -283,7 +283,7 @@ class init extends Blocks
                             $renewal_date_payload = apply_filters(
                                 'wicket/acc/block/welcome/renewal_date_payload',
                                 [
-                                    'label' => __('Renewal Date:', 'wicket-acc'),
+                                    'label' => _x('Renewal Date:', 'label', 'wicket-acc'),
                                     'timestamp' => $renewal_end_timestamps[$membership['type']] ?? null,
                                 ],
                                 $person,
@@ -295,7 +295,7 @@ class init extends Blocks
                                 $renewal_date_payload = [];
                             }
 
-                            $renewal_date_label = $renewal_date_payload['label'] ?? __('Renewal Date:', 'wicket-acc');
+                            $renewal_date_label = $renewal_date_payload['label'] ?? _x('Renewal Date:', 'label', 'wicket-acc');
                             $renewal_date_timestamp = isset($renewal_date_payload['timestamp'])
                                 ? (int) $renewal_date_payload['timestamp']
                                 : 0;
@@ -317,7 +317,7 @@ class init extends Blocks
                     <?php } else { ?>
                         <?php if ($display_member_status): ?>
                             <p class="wicket-welcome-pending-membership">
-                                <?php echo apply_filters('wicket/acc/block/welcome_non_member_text', /* translators: Membership status: the user has no active membership. */ __('Non-Member', 'wicket-acc')); ?>
+                                <?php echo apply_filters('wicket/acc/block/welcome_non_member_text', /* translators: Membership status: the user has no active membership. */ _x('Non-Member', 'status', 'wicket-acc')); ?>
                             </p>
                         <?php endif; ?>
                     <?php } ?>

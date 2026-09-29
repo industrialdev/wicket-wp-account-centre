@@ -59,7 +59,7 @@ if (!empty($org_uuid)) {
 ?>
 <div id="org-management-contacts-app" class="org-management-app wicket-orgman wt_w-full wt_mt-6 wt_mb-6">
     <h2 class="wp-block-heading has-heading-sm-font-size wt_text-2xl wt_font-bold wt_mb-4">
-        <?php esc_html_e('Manage my Organizations', 'wicket-acc'); ?>
+        <?php echo esc_html_x('Manage my Organizations', 'label', 'wicket-acc'); ?>
     </h2>
 
     <a href="<?php echo esc_url($back_url); ?>" class="wt_inline-flex wt_items-center wt_text-primary-600 wt_hover_underline wt_mb-4">

@@ -174,7 +174,7 @@ if ('POST' === strtoupper($request_method)) {
                 /* translators: %1$s: member name. */ esc_html__('Successfully updated permissions for %1$s.', 'wicket-acc'),
                 '<strong>' . esc_html($full_name) . '</strong>'
             )
-            : esc_html_x('Successfully updated permissions for this member.', 'org roster success message', 'wicket-acc');
+            : esc_html__('Successfully updated permissions for this member.', 'wicket-acc');
         if ($logger) {
             $logger->info('[OrgMan] update-permissions completed successfully', $log_context + [
                 'org_uuid' => $org_uuid,

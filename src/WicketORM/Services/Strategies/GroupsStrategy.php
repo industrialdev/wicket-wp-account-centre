@@ -261,7 +261,7 @@ class GroupsStrategy implements RosterManagementStrategy
             }
 
             $group_details = function_exists('wicket_get_group') ? wicket_get_group($group_uuid) : null;
-            $group_name = $group_details['data']['attributes']['name'] ?? __('Unknown Group', 'wicket-acc');
+            $group_name = $group_details['data']['attributes']['name'] ?? _x('Unknown Group', 'value placeholder', 'wicket-acc');
 
             $logger->debug('Groups strategy sending notification', array_merge($log_context, [
                 'group_name' => $group_name,

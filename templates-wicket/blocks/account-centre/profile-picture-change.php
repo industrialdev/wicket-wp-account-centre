@@ -15,10 +15,10 @@ defined('ABSPATH') || exit;
 ?>
 <section class="container wicket-acc-profile-picture <?php echo defined('WICKET_WP_THEME_V2') ? 'wicket-acc-profile-picture--v2' : '' ?>">
     <h2>
-        <?php esc_html_e('Profile Image', 'wicket-acc'); ?>
+        <?php echo esc_html_x('Profile Image', 'label', 'wicket-acc'); ?>
     </h2>
     <div class="profile-image">
-        <img src="<?php echo $args['pp_url']; ?>?<?php echo time(); ?>" alt="<?php esc_attr_e('Profile Image', 'wicket-acc'); ?>" class="profile-image-img">
+        <img src="<?php echo $args['pp_url']; ?>?<?php echo time(); ?>" alt="<?php echo esc_attr_x('Profile Image', 'accessibility label', 'wicket-acc'); ?>" class="profile-image-img">
         <?php if ($args['is_custom']) : ?>
             <form name="wicket-acc-profile-picture-remove-form" method="post">
                 <input type="hidden" name="action" value="wicket-acc-profile-picture-remove-form">
@@ -26,12 +26,12 @@ defined('ABSPATH') || exit;
                 <?php wp_nonce_field('wicket-acc-profile-picture-remove-form', 'nonce'); ?>
 
                 <?php if (defined('WICKET_WP_THEME_V2')) : ?>
-                    <button type="submit" class="remove-image circle-x" title="<?php esc_attr_e('Remove Image', 'wicket-acc'); ?>">
+                    <button type="submit" class="remove-image circle-x" title="<?php echo esc_attr_x('Remove Image', 'tooltip', 'wicket-acc'); ?>">
                         <i class="fa-regular fa-circle-xmark"></i>
                         <i class="fa-solid fa-circle-xmark"></i>
                     </button>
                 <?php else: ?>
-                    <button type="submit" class="remove-image circle-x" title="<?php esc_attr_e('Remove Image', 'wicket-acc'); ?>" aria-label="<?php esc_attr_e('Close', 'wicket-acc'); ?>">&times;</button>
+                    <button type="submit" class="remove-image circle-x" title="<?php echo esc_attr_x('Remove Image', 'tooltip', 'wicket-acc'); ?>" aria-label="<?php echo esc_attr_x('Close', 'accessibility label', 'wicket-acc'); ?>">&times;</button>
                 <?php endif; ?>
             </form>
         <?php endif; ?>
@@ -47,10 +47,10 @@ defined('ABSPATH') || exit;
         <div class="buttons">
             <input type="file" id="profile-image" name="profile-image" class="sr-only" accept="image/png, image/gif, image/jpeg">
             <label for="profile-image" class="btn choose-file">
-                <?php esc_html_e('Choose File', 'wicket-acc'); ?>
+                <?php echo esc_html_x('Choose File', 'button label', 'wicket-acc'); ?>
             </label>
             <button type="submit" class="btn update-image" id="update-image" disabled="disabled">
-                <?php esc_html_e('Update Image', 'wicket-acc'); ?>
+                <?php echo esc_html_x('Update Image', 'button label', 'wicket-acc'); ?>
             </button>
         </div>
         <div id="file-alert" class="file-alert" style="display: none;">

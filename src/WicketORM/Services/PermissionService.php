@@ -240,7 +240,7 @@ class PermissionService
             if (!empty($failed_roles)) {
                 return new \WP_Error('role_removal_failed', sprintf(
                     /* translators: %s: comma-separated list of role slugs. */
-                    _n('Failed removing role: %s.', 'Failed removing roles: %s.', count($failed_roles), 'wicket-acc'),
+                    _nx('Failed removing role: %s.', 'Failed removing roles: %s.', count($failed_roles), 'message', 'wicket-acc'),
                     implode(', ', $failed_roles)
                 ));
             }
@@ -290,7 +290,7 @@ class PermissionService
                 $result = wicket_assign_role($person_uuid, $role, $org_id);
                 if (false === $result) {
                     /* translators: %s: role slug. */
-                    return new \WP_Error('role_assignment_failed', sprintf(__('Failed assigning role %s.', 'wicket-acc'), $role));
+                    return new \WP_Error('role_assignment_failed', sprintf(_x('Failed assigning role %s.', 'message', 'wicket-acc'), $role));
                 }
             }
 
@@ -335,7 +335,7 @@ class PermissionService
             }
         }
 
-        return ['status' => 'success', 'message' => __('Permissions updated successfully.', 'wicket-acc')];
+        return ['status' => 'success', 'message' => _x('Permissions updated successfully.', 'message', 'wicket-acc')];
     }
 
     /**

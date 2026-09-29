@@ -682,7 +682,7 @@ class BulkMemberUploadService
                     $job,
                     sprintf(
                         /* translators: 1: CSV row number, 2: member email address, 3: error message. */
-                        __('Row %1$d failed (%2$s): %3$s', 'wicket-acc'),
+                        _x('Row %1$d failed (%2$s): %3$s', 'message', 'wicket-acc'),
                         $row_num,
                         esc_html($email),
                         esc_html($result->get_error_message())

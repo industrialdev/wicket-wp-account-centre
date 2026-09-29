@@ -67,14 +67,14 @@ $end_date_full = date_i18n(get_option('date_format'), strtotime($raw_end_date));
             </a>
         <?php endif; ?>
         <p class="event-date <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm' ?>">
-            <strong><?php _e('Date:', 'wicket-acc'); ?></strong> <?php echo $start_date_full; ?> - <?php echo $end_date_full; ?>
+            <strong><?php _ex('Date:', 'label', 'wicket-acc'); ?></strong> <?php echo $start_date_full; ?> - <?php echo $end_date_full; ?>
         </p>
         <p class="event-time <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm' ?>">
-            <strong><?php _e('Time:', 'wicket-acc'); ?></strong> <?php echo date_i18n(get_option('time_format'), strtotime($tp['attributes']['data']['start_date'])) . ' - ' . date_i18n(get_option('time_format'), strtotime($tp['attributes']['data']['end_date'])); ?>
+            <strong><?php _ex('Time:', 'label', 'wicket-acc'); ?></strong> <?php echo date_i18n(get_option('time_format'), strtotime($tp['attributes']['data']['start_date'])) . ' - ' . date_i18n(get_option('time_format'), strtotime($tp['attributes']['data']['end_date'])); ?>
         </p>
         <?php if ($location) : ?>
             <p class="event-location <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm' ?>">
-                <strong><?php _e('Location:', 'wicket-acc'); ?></strong> <?php echo $tp['attributes']['data']['location']; ?>
+                <strong><?php _ex('Location:', 'label', 'wicket-acc'); ?></strong> <?php echo $tp['attributes']['data']['location']; ?>
             </p>
         <?php endif; ?>
     </div>

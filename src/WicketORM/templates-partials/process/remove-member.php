@@ -80,7 +80,7 @@ if ('POST' === strtoupper($request_method)) {
         }
 
         // Resolve a friendly name for the success message.
-        $member_name = __('Member', 'wicket-acc');
+        $member_name = _x('Member', 'value placeholder', 'wicket-acc');
         if (!empty($person_name)) {
             $member_name = $person_name;
         } elseif (function_exists('wicket_get_person_by_id')) {
@@ -98,7 +98,7 @@ if ('POST' === strtoupper($request_method)) {
                     $last_name = $attributes['last_name'] ?? '';
                     $member_name = trim($first_name . ' ' . $last_name);
                     if (empty($member_name)) {
-                        $member_name = __('Member', 'wicket-acc');
+                        $member_name = _x('Member', 'value placeholder', 'wicket-acc');
                     }
                 }
             }

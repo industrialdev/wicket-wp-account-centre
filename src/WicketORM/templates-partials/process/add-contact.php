@@ -49,7 +49,7 @@ $org_uuid = isset($_POST['org_uuid']) ? sanitize_text_field(wp_unslash($_POST['o
 if (empty($org_uuid)) {
     status_header(200);
     WicketORM\Helpers\DatastarSSE::renderError(
-        __('Organization identifier missing.', 'wicket-acc'),
+        _x('Organization identifier missing.', 'message', 'wicket-acc'),
         '#add-contact-messages-' . $org_dom_suffix,
         $error_signals
     );
@@ -135,7 +135,7 @@ try {
         )
         : wp_sprintf(
             /* translators: %s: contact email address. */
-            _x('Successfully added the contact with email %s.', 'org contacts success message', 'wicket-acc'),
+            __('Successfully added the contact with email %s.', 'wicket-acc'),
             $contact_data['email']
         );
 
@@ -167,7 +167,7 @@ try {
     // Success message
     $success_html = sprintf(
         '<div class="wt_bg-green-100 wt_border wt_border-green-400 wt_text-green-700 wt_px-4 wt_py-3 wt_rounded-sm wt_mb-4"><p><strong>%1$s</strong></p><p>%2$s</p></div>',
-        esc_html__('Success!', 'wicket-acc'),
+        esc_html_x('Success!', 'label', 'wicket-acc'),
         wp_kses_post($success_message)
     );
     $generator->patchElements($success_html, [

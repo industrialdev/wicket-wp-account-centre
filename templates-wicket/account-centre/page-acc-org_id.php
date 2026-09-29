@@ -54,7 +54,7 @@ if ($acc_display_breadcrumb) {
 if ($acc_display_publish_date) {
     echo '<div class="wp-block-published-date">'; // Having the `wp-block-` prefix will help align it with the other Blocks
     /* translators: %s: post publish date. */
-    echo "<p class='mt-3 mb-4'><strong>" . sprintf(__('Published: %s', 'wicket-acc'), get_the_date()) . '</strong></p>';
+    echo "<p class='mt-3 mb-4'><strong>" . sprintf(_x('Published: %s', 'label', 'wicket-acc'), get_the_date()) . '</strong></p>';
     echo '</div>';
 }
 ?>
@@ -96,7 +96,7 @@ if (empty($org_id) || $org_id === null) {
             the_content();
         endwhile;
     } else {
-        echo '<p>' . __('No content found.', 'wicket-acc') . '</p>';
+        echo '<p>' . _x('No content found.', 'message', 'wicket-acc') . '</p>';
     }
 }
 

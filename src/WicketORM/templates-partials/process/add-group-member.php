@@ -48,7 +48,7 @@ $logger->info('Add group member request received', $log_context);
 if (empty($group_uuid)) {
     $logger->error('Add group member missing group_uuid', $log_context);
     status_header(200);
-    WicketORM\Helpers\DatastarSSE::renderError(__('Group identifier missing.', 'wicket-acc'), $message_target, ['addMemberSubmitting' => false, 'addMemberSuccess' => false, 'membersLoading' => false]);
+    WicketORM\Helpers\DatastarSSE::renderError(_x('Group identifier missing.', 'message', 'wicket-acc'), $message_target, ['addMemberSubmitting' => false, 'addMemberSuccess' => false, 'membersLoading' => false]);
 
     return;
 }
@@ -92,7 +92,7 @@ $success_message = $full_name !== ''
     )
     : wp_sprintf(
         /* translators: %s: member email address. */
-        _x('Successfully added the member with email %s.', 'org roster success message', 'wicket-acc'),
+        __('Successfully added the member with email %s.', 'wicket-acc'),
         (string) ($member_data['email'] ?? '')
     );
 

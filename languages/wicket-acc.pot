@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-29T18:20:45+00:00\n"
+"POT-Creation-Date: 2026-09-29T20:11:47+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wicket-acc\n"
@@ -31,36 +31,47 @@ msgstr ""
 msgid "Wicket Inc."
 msgstr ""
 
+msgctxt "label"
 msgid "Edit Profile"
 msgstr ""
 
+msgctxt "label"
 msgid "My Events"
 msgstr ""
 
+msgctxt "label"
 msgid "My Jobs"
 msgstr ""
 
+msgctxt "label"
 msgid "Post a Job"
 msgstr ""
 
+msgctxt "label"
 msgid "Change Password"
 msgstr ""
 
+msgctxt "label"
 msgid "Organization Management"
 msgstr ""
 
+msgctxt "label"
 msgid "Organization Profile"
 msgstr ""
 
+msgctxt "label"
 msgid "Organization Members"
 msgstr ""
 
+msgctxt "label"
 msgid "Bulk Upload Members"
 msgstr ""
 
+msgctxt "label"
 msgid "Global Header-Banner"
 msgstr ""
 
+msgctxt "label"
 msgid "Add Payment Method"
 msgstr ""
 
@@ -68,34 +79,44 @@ msgid "Set Default Payment Method"
 msgstr ""
 
 #. translators: My Account menu item: the user's WooCommerce orders.
+msgctxt "label"
 msgid "Orders"
 msgstr ""
 
+msgctxt "label"
 msgid "View Order"
 msgstr ""
 
 #. translators: My Account menu item: the user's downloadable purchases.
+msgctxt "label"
 msgid "Downloads"
 msgstr ""
 
+msgctxt "label"
 msgid "Edit Account"
 msgstr ""
 
+msgctxt "label"
 msgid "Edit Address"
 msgstr ""
 
+msgctxt "label"
 msgid "Payment Methods"
 msgstr ""
 
+msgctxt "label"
 msgid "Subscriptions"
 msgstr ""
 
+msgctxt "label"
 msgid "View Subscription"
 msgstr ""
 
+msgctxt "label"
 msgid "Subscription Payment Method"
 msgstr ""
 
+msgctxt "block title"
 msgid "Membership Block"
 msgstr ""
 
@@ -153,6 +174,7 @@ msgstr ""
 msgid "The uploaded file is too large. Maximum file size allowed is %dMB."
 msgstr ""
 
+msgctxt "message"
 msgid "Invalid organization ID."
 msgstr ""
 
@@ -162,6 +184,7 @@ msgstr ""
 msgid "Widget-profile-org component is missing. Please update the Wicket Base Plugin."
 msgstr ""
 
+msgctxt "label"
 msgid "Additional Info"
 msgstr ""
 
@@ -189,12 +212,15 @@ msgstr ""
 msgid "Profile image was removed locally, but clearing the MDP URL failed. Please try again."
 msgstr ""
 
+msgctxt "message"
 msgid "Security validation failed."
 msgstr ""
 
+msgctxt "message"
 msgid "No data found."
 msgstr ""
 
+msgctxt "block title"
 msgid "Touchpoint Cvent"
 msgstr ""
 
@@ -210,15 +236,18 @@ msgstr ""
 msgid "You do not have any upcoming events at this time."
 msgstr ""
 
+msgctxt "button label"
 msgid "Show More"
 msgstr ""
 
+msgctxt "block title"
 msgid "Touchpoints TEC"
 msgstr ""
 
 msgid "This block displays registered data for The Events Calendar on the front-end."
 msgstr ""
 
+msgctxt "block title"
 msgid "Touchpoint TEC"
 msgstr ""
 
@@ -243,6 +272,7 @@ msgstr ""
 msgid "An error occurred. Failed."
 msgstr ""
 
+msgctxt "block title"
 msgid "Touchpoint Maple"
 msgstr ""
 
@@ -252,27 +282,32 @@ msgstr ""
 msgid "You do not have any courses."
 msgstr ""
 
+msgctxt "block title"
 msgid "Touchpoint MicroSpec"
 msgstr ""
 
 msgid "This block displays registered data for MicroSpec on the front-end."
 msgstr ""
 
+msgctxt "block title"
 msgid "Touchpoints Moodle"
 msgstr ""
 
 msgid "This block displays registered data from Moodle on the front-end."
 msgstr ""
 
+msgctxt "block title"
 msgid "Touchpoint Moodle"
 msgstr ""
 
+msgctxt "block title"
 msgid "Touchpoint Pheedloop"
 msgstr ""
 
 msgid "This block displays registered data for Pheedloop on the front-end."
 msgstr ""
 
+msgctxt "block title"
 msgid "Touchpoint VitalSource"
 msgstr ""
 
@@ -282,12 +317,14 @@ msgstr ""
 msgid "You do not have any ebooks."
 msgstr ""
 
+msgctxt "block title"
 msgid "Touchpoints Zoom"
 msgstr ""
 
 msgid "This block displays registered data for Zoom Webinars on the front-end."
 msgstr ""
 
+msgctxt "block title"
 msgid "Touchpoint Zoom"
 msgstr ""
 
@@ -296,73 +333,95 @@ msgstr ""
 
 #. translators: %d: number of remaining results.
 #, php-format
+msgctxt "button label"
 msgid "Load More (%d remaining)"
 msgstr ""
 
+msgctxt "message"
 msgid "Loading..."
 msgstr ""
 
+msgctxt "button label"
 msgid "Load More"
 msgstr ""
 
+msgctxt "relationship type"
 msgid "Primary Contact"
 msgstr ""
 
+msgctxt "relationship type"
 msgid "Voting Contact"
 msgstr ""
 
+msgctxt "relationship type"
 msgid "Primary Tradeshow Contact"
 msgstr ""
 
+msgctxt "relationship type"
 msgid "Secondary Tradeshow Contact"
 msgstr ""
 
+msgctxt "relationship type"
 msgid "Accounting Contact"
 msgstr ""
 
 #. translators: Organization relationship type: regulatory contact.
+msgctxt "relationship type"
 msgid "Regulatory"
 msgstr ""
 
 #. translators: Organization relationship type: the person is a member of the organization.
-#. translators: The user's role in the organization.
-#. translators: Group role options (Member, Observer).
+msgctxt "relationship type"
 msgid "Member"
 msgstr ""
 
 #. translators: Organization relationship type: the person works for the organization.
 #. translators: Relationship type: the person works for the organization.
+msgctxt "relationship type"
 msgid "Employee"
+msgstr ""
+
+msgctxt "button label"
+msgid "Edit Profile"
 msgstr ""
 
 #. translators: %s: person's full name.
 #, php-format
+msgctxt "accessibility label"
 msgid "%s Profile Image"
 msgstr ""
 
 #. translators: Greeting shown above the user's name.
+msgctxt "label"
 msgid "Welcome"
 msgstr ""
 
+msgctxt "label"
 msgid "ID:"
 msgstr ""
 
+msgctxt "label"
 msgid "Membership Type:"
 msgstr ""
 
+msgctxt "status"
 msgid "Active Member"
 msgstr ""
 
+msgctxt "label"
 msgid "Member Since:"
 msgstr ""
 
+msgctxt "label"
 msgid "Renewal Date:"
 msgstr ""
 
 #. translators: Membership status: the user has no active membership.
+msgctxt "status"
 msgid "Non-Member"
 msgstr ""
 
+msgctxt "block title"
 msgid "ACC Base Block"
 msgstr ""
 
@@ -373,787 +432,16 @@ msgid "Opens in a new window"
 msgstr ""
 
 #. translators: ACF field group: ACC Callouts, ACC Additional Info.
-msgctxt "admin field button label"
+msgctxt "button label"
 msgid "Add Row"
 msgstr ""
 
-#. translators: ACF field group: ACC Organization Profile.
-msgctxt "admin field instructions"
-msgid "<p>This expects JSON data for configuring the widget, supporting all options documented for the MDP JS Widget (<code>fields</code>, <code>resourceLimits</code>, <code>resourcePermissions</code>, and more). Please do not modify unless you know what you are doing.</p><p>Note: <code>rootEl</code>, <code>apiRoot</code>, <code>accessToken</code>, and <code>orgId</code> are always set automatically and any value provided for them here is ignored.</p><p>See <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#editorganizationprofile\" target=\"_blank\">full documentation for MDP JS Widgets</a>.</p>"
-msgstr ""
-
-#. translators: ACF field group: ACC Individual Profile.
-msgctxt "admin field instructions"
-msgid "<p>This expects JSON data for configuring the widget, supporting all options documented for the MDP JS Widget (<code>fields</code>, <code>sections</code>, <code>resourceLimits</code>, <code>resourcePermissions</code>, and more). Please do not modify unless you know what you are doing.</p><p>Note: <code>rootEl</code>, <code>apiRoot</code>, <code>accessToken</code>, and <code>personId</code>/<code>orgId</code> are always set automatically and any value provided for them here is ignored.</p><p>See <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#createpersonprofile\" target=\"_blank\">full documentation for MDP JS Widgets</a>.</p>"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
-msgctxt "admin field instructions"
-msgid "Configure events touchpoints display."
-msgstr ""
-
-#. translators: ACF field group: ACC Welcome.
-msgctxt "admin field instructions"
-msgid "Control the visiblity of the profile picture in the Welcome block."
-msgstr ""
-
 #. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field instructions"
-msgid "Enable filtering of relationships by the selected relationship type. When enabled, only relationships of the type specified in 'Relationship Type Upon Org Creation' will be displayed."
-msgstr ""
-
-#. translators: ACF field group: ACC Main Options.
-msgctxt "admin field instructions"
-msgid "For EN only. Which word to use on the spelling of Centre/Center."
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
-msgctxt "admin field instructions"
-msgid "How many columns do you want to use for touchpoints results. 1 will yield a list view."
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field instructions"
-msgid "How the org will be shown on the frontend, e.g. \"Organization\" or \"Chapter\". Can be left blank to use default."
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field instructions"
-msgid "How the org will be shown on the frontend, e.g. \"Organizations\" or \"Chapters\". Can be left blank to use default."
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field instructions"
-msgid "ID of a checkbox to be checked if a new org gets created. Usually this will be a hidden checkbox used for later conditional logic."
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
-msgctxt "admin field instructions"
-msgid "If an override URL is set, you must specify a title for that link."
-msgstr ""
-
-#. translators: ACF field group: ACC Main Options.
-msgctxt "admin field instructions"
-msgid "If enabled, a new item will be shown on ACC admin menu. Page content from that item, will be used as a global \"sub-header\" on all ACC pages on the front."
-msgstr ""
-
-#. translators: ACF field group: ACC Callouts.
-msgctxt "admin field instructions"
-msgid "If enabled, the current URL's query string will be captured and appended to the links in this callout."
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field instructions"
-msgid "If left blank, all organization types will be searchable. If you wish to filter, you'll need to provide the \"slug\" of the organization type, e.g., \"it_company\". It's also possible to provide multiple slugs, separated by commas, e.g., \"it_company,non_profit\"."
-msgstr ""
-
-#. translators: ACF field group: ACC Additional Info.
-msgctxt "admin field instructions"
-msgid "If left blank, the Org UUID will be set by the URL parameter \"org_id\""
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field instructions"
-msgid "If left blank, the user will be allowed to select the organization type themselves from the frontend."
-msgstr ""
-
-#. translators: ACF field group: ACC Main Options.
-msgctxt "admin field instructions"
-msgid "If not set, a default \"person\" image will be used as default profile picture."
-msgstr ""
-
-#. translators: ACF field group: ACC Welcome.
-msgctxt "admin field instructions"
-msgid "Leave empty to use ACC page mapping (in ACC Options). URL to which the button will point."
-msgstr ""
-
-#. translators: ACF field group: ACC Main Options.
-msgctxt "admin field instructions"
-msgid "Location of the sidebar navigation menu inside ACC pages."
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field instructions"
-msgid "Message that will display if nothing is found by their search. Can be left blank to use default."
-msgstr ""
-
-#. translators: ACF field group: ACC Additional Info.
-msgctxt "admin field instructions"
-msgid "Note that the year in the date picker will not apply, as these date ranges will recur annually."
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
-msgctxt "admin field instructions"
-msgid "Optional."
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Events Calendar.
-msgctxt "admin field instructions"
-msgid "Optional. Full URL where the user will be redirected when clicking on the \"see past events\" link."
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint VitalSource, ACC Touchpoint Cvent, ACC Touchpoint Maple, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
-msgctxt "admin field instructions"
-msgid "Optional. Leave it empty so as not to be shown to the user."
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Events Calendar.
-msgctxt "admin field instructions"
-msgid "Optional. Title to display when viewing past events. If empty, the regular title will be used."
-msgstr ""
-
-#. translators: ACF field group: ACC Additional Info.
-msgctxt "admin field instructions"
-msgid "Same for both stage and prod"
-msgstr ""
-
-#. translators: ACF field group: ACC Welcome.
-msgctxt "admin field instructions"
-msgid "Show or hide the member status line (\"Active Member\" / \"Non-Member\") in the Welcome block."
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Events Calendar.
-msgctxt "admin field instructions"
-msgid "Show the link that switches between past and upcoming events views."
-msgstr ""
-
-#. translators: ACF field group: ACC Individual Profile.
-msgctxt "admin field instructions"
-msgid "This expects JSON data for the fields property as defined here: <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#createpersonprofile\" target=\"_blank\">https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#createpersonprofile</a>. Please do not modify unless you know what you are doing. This must be valid JSON, otherwise this field is ignored. Superseded by the MDP Widget Config setting above — if that is set, this value is ignored entirely. A \"Copy this value into MDP Widget Config\" link appears below this field in the editor to copy it over pre-formatted."
-msgstr ""
-
-#. translators: ACF field group: ACC Organization Profile.
-msgctxt "admin field instructions"
-msgid "This expects JSON data for the fields property as defined here: <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#editorganizationprofile\" target=\"_blank\">https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html</a>. Please do not modify unless you know what you are doing. This must be valid JSON, otherwise this field is ignored. Superseded by the MDP Widget Config setting above — if that is set, this value is ignored entirely. A \"Copy this value into MDP Widget Config\" link appears below this field in the editor to copy it over pre-formatted."
-msgstr ""
-
-#. translators: ACF field group: ACC Individual Profile.
-msgctxt "admin field instructions"
-msgid "This expects JSON data for the sections property (address / email / phone / web field config) as defined here: <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#addresssectionconfig\" target=\"_blank\">https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#addresssectionconfig</a>. Please do not modify unless you know what you are doing. This must be valid JSON, otherwise this field is ignored. Superseded by the MDP Widget Config setting above — if that is set, this value is ignored entirely."
-msgstr ""
-
-#. translators: ACF field group: ACC Organization Profile.
-msgctxt "admin field instructions"
-msgid "This field has no effect on this block — the organization profile widget component does not support a sections option, unlike the individual profile widget. Superseded by the MDP Widget Config setting above. A \"Copy this value into MDP Widget Config\" link appears below this field in the editor to copy it over pre-formatted, in case the widget gains section support later."
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field instructions"
-msgid "Will grey out the select button for an org that the user already has an active membership with."
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field instructions"
-msgid "Will prompt the user with a popup to confirm if they really want to remove their relationship with an org."
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field label"
-msgid "'New Org Created' checkbox ID"
-msgstr ""
-
-#. translators: ACF field group: ACC Organization Profile.
-msgctxt "admin field label"
-msgid "ACC Organization Profile options"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint VitalSource.
-msgctxt "admin field label"
-msgid "Action"
-msgstr ""
-
-#. translators: ACF field group: ACC Additional Info.
-msgctxt "admin field label"
-msgid "Additional Info Schema"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field label"
-msgid "Advanced"
-msgstr ""
-
-#. translators: ACF field group: ACC Callouts.
-msgctxt "admin field label"
-msgid "Block Logic"
-msgstr ""
-
-#. translators: ACF field group: ACC Callouts.
-msgctxt "admin field label"
-msgid "Capture and use current URL query string"
-msgstr ""
-
-#. translators: ACF field group: ACC Main Options.
-msgctxt "admin field label"
-msgid "Centre/Center localization"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
-msgctxt "admin field label"
-msgid "Columns"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
-msgctxt "admin field label"
-msgid "Default Display"
-msgstr ""
-
-#. translators: ACF field group: ACC Main Options.
-msgctxt "admin field label"
-msgid "Default profile picture"
-msgstr ""
-
-#. translators: ACF field group: ACC Callouts, ACC Touchpoint VitalSource.
-msgctxt "admin field label"
-msgid "Description"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field label"
-msgid "Disable ability to create new org/entity? (Hide create org UI)"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field label"
-msgid "Disable ability to select orgs with active membership?"
-msgstr ""
-
-#. translators: ACF field group: ACC Welcome.
-msgctxt "admin field label"
-msgid "Display MDP ID"
-msgstr ""
-
-#. translators: ACF field group: ACC Welcome.
-msgctxt "admin field label"
-msgid "Display Member Status"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field label"
-msgid "Display Org Fields"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field label"
-msgid "Display Org Type"
-msgstr ""
-
-#. translators: ACF field group: ACC Welcome.
-msgctxt "admin field label"
-msgid "Display Profile Picture"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
-msgctxt "admin field label"
-msgid "Display Registered Actions"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field label"
-msgid "Display Removal Alert Message"
-msgstr ""
-
-#. translators: ACF field group: ACC Welcome.
-msgctxt "admin field label"
-msgid "Edit Profile Button"
-msgstr ""
-
-#. translators: ACF field group: ACC Welcome.
-msgctxt "admin field label"
-msgid "Edit Profile Button (Show/Hide)"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field label"
-msgid "Enable Relationship Filtering"
-msgstr ""
-
-#. translators: ACF field group: ACC Additional Info.
-msgctxt "admin field label"
-msgid "From"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field label"
-msgid "General"
-msgstr ""
-
-#. translators: ACF field group: ACC Main Options.
-msgctxt "admin field label"
-msgid "Global sub-header"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field label"
-msgid "Grant org_editor role on selection?"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field label"
-msgid "Grant roster management on next purchase?"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint VitalSource.
-msgctxt "admin field label"
-msgid "Helper Text"
-msgstr ""
-
-#. translators: ACF field group: ACC Organization Profile.
-msgctxt "admin field label"
-msgid "Hide Additional Info"
-msgstr ""
-
-#. translators: ACF field group: ACC Organization Profile.
-msgctxt "admin field label"
-msgid "Hide Alternate Name Field"
-msgstr ""
-
-#. translators: ACF field group: ACC Manage Preferences.
-msgctxt "admin field label"
-msgid "Hide Language Preference"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field label"
-msgid "Hide membership status?"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field label"
-msgid "Hide remove buttons?"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field label"
-msgid "Hide select buttons?"
-msgstr ""
-
-#. translators: ACF field group: ACC Callouts.
-msgctxt "admin field label"
-msgid "Link"
-msgstr ""
-
-#. translators: ACF field group: ACC Callouts.
-msgctxt "admin field label"
-msgid "Link Style"
-msgstr ""
-
-#. translators: ACF field group: ACC Callouts.
-msgctxt "admin field label"
-msgid "Links"
-msgstr ""
-
-#. translators: ACF field group: ACC Organization Profile, ACC Individual Profile.
-msgctxt "admin field label"
-msgid "MDP JSON Fields (Deprecated)"
-msgstr ""
-
-#. translators: ACF field group: ACC Organization Profile, ACC Individual Profile.
-msgctxt "admin field label"
-msgid "MDP JSON Sections (Deprecated)"
-msgstr ""
-
-#. translators: ACF field group: ACC Organization Profile, ACC Individual Profile.
-msgctxt "admin field label"
-msgid "MDP Widget Config (JSON)"
-msgstr ""
-
-#. translators: ACF field group: ACC Main Options.
-msgctxt "admin field label"
-msgid "Main Options"
-msgstr ""
-
-#. translators: ACF field group: ACC Welcome.
-msgctxt "admin field label"
-msgid "Member since (Show/Hide)"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field label"
-msgid "No results found message"
-msgstr ""
-
-#. translators: ACF field group: ACC Additional Info.
-msgctxt "admin field label"
-msgid "Only Activate Resource Override Within This Month/Day Range (Optional)"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field label"
-msgid "Org Type When User Creates New Org"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field label"
-msgid "Org name plural"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field label"
-msgid "Org name singular"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field label"
-msgid "Organization Type"
-msgstr ""
-
-#. translators: ACF field group: ACC Additional Info.
-msgctxt "admin field label"
-msgid "Organization UUID Override (Optional)"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
-msgctxt "admin field label"
-msgid "Override \"see past events\" link"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
-msgctxt "admin field label"
-msgid "Override past events link text"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Events Calendar.
-msgctxt "admin field label"
-msgid "Past Events Title"
-msgstr ""
-
-#. translators: ACF field group: ACC Profile Picture Change.
-msgctxt "admin field label"
-msgid "Picture max size (in MB)"
-msgstr ""
-
-#. translators: ACF field group: ACC Main Options.
-msgctxt "admin field label"
-msgid "Profile Picture Size (in MB)"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field label"
-msgid "Relationship Mode"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field label"
-msgid "Relationship Type Upon Org Creation/Selection"
-msgstr ""
-
-#. translators: ACF field group: ACC Welcome.
-msgctxt "admin field label"
-msgid "Renewal date (Show/Hide)"
-msgstr ""
-
-#. translators: ACF field group: ACC Callouts.
-msgctxt "admin field label"
-msgid "Renewal period"
-msgstr ""
-
-#. translators: ACF field group: ACC Additional Info.
-msgctxt "admin field label"
-msgid "Resource Type"
-msgstr ""
-
-#. translators: ACF field group: ACC Additional Info.
-msgctxt "admin field label"
-msgid "Schema Slug"
-msgstr ""
-
-#. translators: ACF field group: ACC Additional Info.
-msgctxt "admin field label"
-msgid "Schema UUID ($id) - Prod"
-msgstr ""
-
-#. translators: ACF field group: ACC Additional Info.
-msgctxt "admin field label"
-msgid "Schema UUID ($id) - Stage"
-msgstr ""
-
-#. translators: ACF field group: ACC Additional Info.
-msgctxt "admin field label"
-msgid "Schema override resource Slug"
-msgstr ""
-
-#. translators: ACF field group: ACC Additional Info.
-msgctxt "admin field label"
-msgid "Schema override resource UUID - Prod"
-msgstr ""
-
-#. translators: ACF field group: ACC Additional Info.
-msgctxt "admin field label"
-msgid "Schema override resource UUID - Stage"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field label"
-msgid "Search Mode"
-msgstr ""
-
-#. translators: ACF field group: ACC Callouts.
-msgctxt "admin field label"
-msgid "Select Profile Mandatory Fields"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Maple.
-msgctxt "admin field label"
-msgid "Service"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Pheedloop.
-msgctxt "admin field label"
-msgid "Service ID"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint VitalSource, ACC Touchpoint Maple.
-msgctxt "admin field label"
-msgid "Show \"View More\""
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
-msgctxt "admin field label"
-msgid "Show \"View More\" events"
-msgstr ""
-
-#. translators: ACF field group: ACC Additional Info.
-msgctxt "admin field label"
-msgid "Show as required"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Events Calendar.
-msgctxt "admin field label"
-msgid "Show switch view link"
-msgstr ""
-
-#. translators: ACF field group: ACC Main Options.
-msgctxt "admin field label"
-msgid "Sidebar location"
-msgstr ""
-
-#. translators: ACF field group: ACC Callouts, ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint VitalSource, ACC Touchpoint Cvent, ACC Touchpoint Maple, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
-msgctxt "admin field label"
-msgid "Title"
-msgstr ""
-
-#. translators: ACF field group: ACC Additional Info.
-msgctxt "admin field label"
-msgid "To"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Maple.
-msgctxt "admin field label"
-msgid "Touchpoint Action"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint VitalSource, ACC Touchpoint Cvent, ACC Touchpoint Maple, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
-msgctxt "admin field label"
-msgid "Touchpoints per page"
-msgstr ""
-
-#. translators: ACF field group: ACC Additional Info.
-msgctxt "admin field label"
-msgid "Use UI schema override resource UUID or Slug"
-msgstr ""
-
-#. translators: ACF field group: ACC Additional Info.
-msgctxt "admin field label"
-msgid "Use slugs instead of schema IDs"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field label"
-msgid "Visual: Text, Messages, and Elements"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint MicroSpec.
-msgctxt "admin field option"
-msgid "10"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint MicroSpec.
-msgctxt "admin field option"
-msgid "5"
-msgstr ""
-
-#. translators: ACF field group: ACC Main Options.
-msgctxt "admin field option"
-msgid "Account Center"
-msgstr ""
-
-#. translators: ACF field group: ACC Main Options.
-msgctxt "admin field option"
-msgid "Account Centre"
-msgstr ""
-
-#. translators: ACF field group: ACC Callouts.
-msgctxt "admin field option"
-msgid "Addresses"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
-msgctxt "admin field option"
-msgid "All Events"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Maple.
-msgctxt "admin field option"
-msgid "Aptify Conversion"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Zoom.
-msgctxt "admin field option"
-msgid "Attended an Event"
-msgstr ""
-
-#. translators: ACF field group: ACC Callouts.
-msgctxt "admin field option"
-msgid "Become a member"
-msgstr ""
-
-#. translators: ACF field group: ACC Callouts.
-msgctxt "admin field option"
-msgid "Birth Date"
-msgstr ""
-
-#. translators: ACF field group: ACC Callouts.
-msgctxt "admin field option"
-msgid "Complete your profile"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Maple.
-msgctxt "admin field option"
-msgid "Completed"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Moodle.
-msgctxt "admin field option"
-msgid "Completed a course"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Moodle.
-msgctxt "admin field option"
-msgid "Created Account"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Maple.
-msgctxt "admin field option"
-msgid "Enrolled"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Moodle.
-msgctxt "admin field option"
-msgid "Enrolled in a course"
-msgstr ""
-
-#. translators: ACF field group: ACC Callouts.
-msgctxt "admin field option"
-msgid "First Name"
-msgstr ""
-
-#. translators: ACF field group: ACC Callouts.
-msgctxt "admin field option"
-msgid "Gender"
-msgstr ""
-
-#. translators: ACF field group: ACC Callouts.
-msgctxt "admin field option"
-msgid "Ghost"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field option"
-msgid "Groups (Soon)"
-msgstr ""
-
-#. translators: ACF field group: ACC Callouts.
-msgctxt "admin field option"
-msgid "Last Name"
-msgstr ""
-
-#. translators: ACF field group: ACC Main Options.
-msgctxt "admin field option"
-msgid "Left"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Maple.
-msgctxt "admin field option"
-msgid "Maple LMS"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field option"
-msgid "Org Name"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field option"
-msgid "Org Name and Address"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field option"
-msgid "Org Name and Location"
-msgstr ""
-
-#. translators: ACF field group: ACC Additional Info, ACC Org. Search & Select.
-msgctxt "admin field option"
-msgid "Organizations"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
-msgctxt "admin field option"
-msgid "Past Events"
-msgstr ""
-
-#. translators: ACF field group: ACC Additional Info.
-msgctxt "admin field option"
-msgid "People"
-msgstr ""
-
-#. translators: ACF field group: ACC Callouts.
-msgctxt "admin field option"
-msgid "Primary"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Zoom.
-msgctxt "admin field option"
-msgid "RSVP to Event"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Zoom.
-msgctxt "admin field option"
-msgid "Registered for an Event"
-msgstr ""
-
-#. translators: ACF field group: ACC Callouts.
-msgctxt "admin field option"
-msgid "Renewal"
-msgstr ""
-
-#. translators: ACF field group: ACC Main Options.
-msgctxt "admin field option"
-msgid "Right"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
-msgctxt "admin field option"
-msgid "Upcoming Events"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint VitalSource.
-msgctxt "admin field option"
-msgid "eBook Codes for others"
-msgstr ""
-
-#. translators: ACF field group: ACC Touchpoint VitalSource.
-msgctxt "admin field option"
-msgid "eBook Fulfilment"
-msgstr ""
-
-#. translators: ACF field group: ACC Org. Search & Select.
-msgctxt "admin field placeholder"
 msgid "E.g. choice_5_12_1"
 msgstr ""
 
 #. translators: ACF field group: ACC Organization Profile.
-msgctxt "admin field placeholder"
+msgctxt "field placeholder"
 msgid ""
 "{\n"
 "  \"fields\": {...}\n"
@@ -1161,7 +449,7 @@ msgid ""
 msgstr ""
 
 #. translators: ACF field group: ACC Individual Profile.
-msgctxt "admin field placeholder"
+msgctxt "field placeholder"
 msgid ""
 "{\n"
 "  \"fields\": {...},\n"
@@ -1170,23 +458,724 @@ msgid ""
 msgstr ""
 
 #. translators: ACF field group: ACC Individual Profile.
-msgctxt "admin field placeholder"
 msgid "{\"addresses\": { \"fields\": { \"companyName\": { \"readOnly\": true } } }}"
 msgstr ""
 
 #. translators: ACF field group: ACC Organization Profile.
-msgctxt "admin field placeholder"
+msgctxt "field placeholder"
 msgid "{\"legalName\": { \"hidden\": true }}"
 msgstr ""
 
 #. translators: ACF field group: ACC Individual Profile.
-msgctxt "admin field placeholder"
+msgctxt "field placeholder"
 msgid "{\"personType\": { \"hidden\": false }}"
 msgstr ""
 
+#. translators: ACF field group: ACC Organization Profile.
+msgid "<p>This expects JSON data for configuring the widget, supporting all options documented for the MDP JS Widget (<code>fields</code>, <code>resourceLimits</code>, <code>resourcePermissions</code>, and more). Please do not modify unless you know what you are doing.</p><p>Note: <code>rootEl</code>, <code>apiRoot</code>, <code>accessToken</code>, and <code>orgId</code> are always set automatically and any value provided for them here is ignored.</p><p>See <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#editorganizationprofile\" target=\"_blank\">full documentation for MDP JS Widgets</a>.</p>"
+msgstr ""
+
+#. translators: ACF field group: ACC Individual Profile.
+msgid "<p>This expects JSON data for configuring the widget, supporting all options documented for the MDP JS Widget (<code>fields</code>, <code>sections</code>, <code>resourceLimits</code>, <code>resourcePermissions</code>, and more). Please do not modify unless you know what you are doing.</p><p>Note: <code>rootEl</code>, <code>apiRoot</code>, <code>accessToken</code>, and <code>personId</code>/<code>orgId</code> are always set automatically and any value provided for them here is ignored.</p><p>See <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#createpersonprofile\" target=\"_blank\">full documentation for MDP JS Widgets</a>.</p>"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgid "Configure events touchpoints display."
+msgstr ""
+
+#. translators: ACF field group: ACC Welcome.
+msgid "Control the visiblity of the profile picture in the Welcome block."
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Enable filtering of relationships by the selected relationship type. When enabled, only relationships of the type specified in 'Relationship Type Upon Org Creation' will be displayed."
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgid "For EN only. Which word to use on the spelling of Centre/Center."
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
+msgid "How many columns do you want to use for touchpoints results. 1 will yield a list view."
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "How the org will be shown on the frontend, e.g. \"Organization\" or \"Chapter\". Can be left blank to use default."
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "How the org will be shown on the frontend, e.g. \"Organizations\" or \"Chapters\". Can be left blank to use default."
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "ID of a checkbox to be checked if a new org gets created. Usually this will be a hidden checkbox used for later conditional logic."
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgid "If an override URL is set, you must specify a title for that link."
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgid "If enabled, a new item will be shown on ACC admin menu. Page content from that item, will be used as a global \"sub-header\" on all ACC pages on the front."
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgid "If enabled, the current URL's query string will be captured and appended to the links in this callout."
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "If left blank, all organization types will be searchable. If you wish to filter, you'll need to provide the \"slug\" of the organization type, e.g., \"it_company\". It's also possible to provide multiple slugs, separated by commas, e.g., \"it_company,non_profit\"."
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgid "If left blank, the Org UUID will be set by the URL parameter \"org_id\""
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "If left blank, the user will be allowed to select the organization type themselves from the frontend."
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgid "If not set, a default \"person\" image will be used as default profile picture."
+msgstr ""
+
+#. translators: ACF field group: ACC Welcome.
+msgid "Leave empty to use ACC page mapping (in ACC Options). URL to which the button will point."
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgid "Location of the sidebar navigation menu inside ACC pages."
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Message that will display if nothing is found by their search. Can be left blank to use default."
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgid "Note that the year in the date picker will not apply, as these date ranges will recur annually."
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgctxt "help text"
+msgid "Optional."
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar.
+msgid "Optional. Full URL where the user will be redirected when clicking on the \"see past events\" link."
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint VitalSource, ACC Touchpoint Cvent, ACC Touchpoint Maple, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
+msgid "Optional. Leave it empty so as not to be shown to the user."
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar.
+msgid "Optional. Title to display when viewing past events. If empty, the regular title will be used."
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgid "Same for both stage and prod"
+msgstr ""
+
+#. translators: ACF field group: ACC Welcome.
+msgid "Show or hide the member status line (\"Active Member\" / \"Non-Member\") in the Welcome block."
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar.
+msgid "Show the link that switches between past and upcoming events views."
+msgstr ""
+
+#. translators: ACF field group: ACC Individual Profile.
+msgid "This expects JSON data for the fields property as defined here: <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#createpersonprofile\" target=\"_blank\">https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#createpersonprofile</a>. Please do not modify unless you know what you are doing. This must be valid JSON, otherwise this field is ignored. Superseded by the MDP Widget Config setting above — if that is set, this value is ignored entirely. A \"Copy this value into MDP Widget Config\" link appears below this field in the editor to copy it over pre-formatted."
+msgstr ""
+
+#. translators: ACF field group: ACC Organization Profile.
+msgid "This expects JSON data for the fields property as defined here: <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#editorganizationprofile\" target=\"_blank\">https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html</a>. Please do not modify unless you know what you are doing. This must be valid JSON, otherwise this field is ignored. Superseded by the MDP Widget Config setting above — if that is set, this value is ignored entirely. A \"Copy this value into MDP Widget Config\" link appears below this field in the editor to copy it over pre-formatted."
+msgstr ""
+
+#. translators: ACF field group: ACC Individual Profile.
+msgid "This expects JSON data for the sections property (address / email / phone / web field config) as defined here: <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#addresssectionconfig\" target=\"_blank\">https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#addresssectionconfig</a>. Please do not modify unless you know what you are doing. This must be valid JSON, otherwise this field is ignored. Superseded by the MDP Widget Config setting above — if that is set, this value is ignored entirely."
+msgstr ""
+
+#. translators: ACF field group: ACC Organization Profile.
+msgid "This field has no effect on this block — the organization profile widget component does not support a sections option, unlike the individual profile widget. Superseded by the MDP Widget Config setting above. A \"Copy this value into MDP Widget Config\" link appears below this field in the editor to copy it over pre-formatted, in case the widget gains section support later."
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Will grey out the select button for an org that the user already has an active membership with."
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Will prompt the user with a popup to confirm if they really want to remove their relationship with an org."
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "'New Org Created' checkbox ID"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint MicroSpec.
+msgctxt "label"
+msgid "10"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint MicroSpec.
+msgctxt "label"
+msgid "5"
+msgstr ""
+
+#. translators: ACF field group: ACC Organization Profile.
+msgid "ACC Organization Profile options"
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "label"
+msgid "Account Center"
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "label"
+msgid "Account Centre"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint VitalSource.
+msgctxt "label"
+msgid "Action"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "label"
+msgid "Additional Info Schema"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Addresses"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Advanced"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgctxt "label"
+msgid "All Events"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Maple.
+msgctxt "label"
+msgid "Aptify Conversion"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Zoom.
+msgctxt "label"
+msgid "Attended an Event"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Become a member"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Birth Date"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Block Logic"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgid "Capture and use current URL query string"
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "label"
+msgid "Centre/Center localization"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
+msgctxt "label"
+msgid "Columns"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Complete your profile"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Maple.
+msgctxt "label"
+msgid "Completed"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Moodle.
+msgctxt "label"
+msgid "Completed a course"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Moodle.
+msgctxt "label"
+msgid "Created Account"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgctxt "label"
+msgid "Default Display"
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "label"
+msgid "Default profile picture"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts, ACC Touchpoint VitalSource.
+msgctxt "label"
+msgid "Description"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Disable ability to create new org/entity? (Hide create org UI)"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Disable ability to select orgs with active membership?"
+msgstr ""
+
+#. translators: ACF field group: ACC Welcome.
+msgctxt "label"
+msgid "Display MDP ID"
+msgstr ""
+
+#. translators: ACF field group: ACC Welcome.
+msgctxt "label"
+msgid "Display Member Status"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Display Org Fields"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Display Org Type"
+msgstr ""
+
+#. translators: ACF field group: ACC Welcome.
+msgctxt "label"
+msgid "Display Profile Picture"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
+msgctxt "label"
+msgid "Display Registered Actions"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Display Removal Alert Message"
+msgstr ""
+
+#. translators: ACF field group: ACC Welcome.
+msgctxt "label"
+msgid "Edit Profile Button"
+msgstr ""
+
+#. translators: ACF field group: ACC Welcome.
+msgid "Edit Profile Button (Show/Hide)"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Enable Relationship Filtering"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Maple.
+msgctxt "label"
+msgid "Enrolled"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Moodle.
+msgid "Enrolled in a course"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "First Name"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "label"
+msgid "From"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Gender"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "General"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Ghost"
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "label"
+msgid "Global sub-header"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Grant org_editor role on selection?"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Grant roster management on next purchase?"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Groups (Soon)"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint VitalSource.
+msgctxt "label"
+msgid "Helper Text"
+msgstr ""
+
+#. translators: ACF field group: ACC Organization Profile.
+msgctxt "label"
+msgid "Hide Additional Info"
+msgstr ""
+
+#. translators: ACF field group: ACC Organization Profile.
+msgid "Hide Alternate Name Field"
+msgstr ""
+
+#. translators: ACF field group: ACC Manage Preferences.
+msgctxt "label"
+msgid "Hide Language Preference"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Hide membership status?"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Hide remove buttons?"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Hide select buttons?"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Last Name"
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+#. translators: Sidebar position option (left side of the page).
+msgctxt "label"
+msgid "Left"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Link"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Link Style"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Links"
+msgstr ""
+
+#. translators: ACF field group: ACC Organization Profile, ACC Individual Profile.
+msgid "MDP JSON Fields (Deprecated)"
+msgstr ""
+
+#. translators: ACF field group: ACC Organization Profile, ACC Individual Profile.
+msgid "MDP JSON Sections (Deprecated)"
+msgstr ""
+
+#. translators: ACF field group: ACC Organization Profile, ACC Individual Profile.
+msgid "MDP Widget Config (JSON)"
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "label"
+msgid "Main Options"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Maple.
+msgctxt "label"
+msgid "Maple LMS"
+msgstr ""
+
+#. translators: ACF field group: ACC Welcome.
+msgid "Member since (Show/Hide)"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "No results found message"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgid "Only Activate Resource Override Within This Month/Day Range (Optional)"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Org Name"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Org Name and Address"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Org Name and Location"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Org Type When User Creates New Org"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Org name plural"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Org name singular"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Organization Type"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgid "Organization UUID Override (Optional)"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info, ACC Org. Search & Select.
+msgctxt "label"
+msgid "Organizations"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgid "Override \"see past events\" link"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgid "Override past events link text"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgctxt "label"
+msgid "Past Events"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar.
+msgctxt "label"
+msgid "Past Events Title"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "label"
+msgid "People"
+msgstr ""
+
+#. translators: ACF field group: ACC Profile Picture Change.
+msgid "Picture max size (in MB)"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Primary"
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgid "Profile Picture Size (in MB)"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Zoom.
+msgctxt "label"
+msgid "RSVP to Event"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Zoom.
+msgid "Registered for an Event"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Relationship Mode"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Relationship Type Upon Org Creation/Selection"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Renewal"
+msgstr ""
+
+#. translators: ACF field group: ACC Welcome.
+msgid "Renewal date (Show/Hide)"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Renewal period"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "label"
+msgid "Resource Type"
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+#. translators: Sidebar position option (right side of the page).
+msgctxt "label"
+msgid "Right"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "label"
+msgid "Schema Slug"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgid "Schema UUID ($id) - Prod"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgid "Schema UUID ($id) - Stage"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgid "Schema override resource Slug"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgid "Schema override resource UUID - Prod"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgid "Schema override resource UUID - Stage"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Search Mode"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts.
+msgid "Select Profile Mandatory Fields"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Maple.
+msgctxt "label"
+msgid "Service"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Pheedloop.
+msgctxt "label"
+msgid "Service ID"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint VitalSource, ACC Touchpoint Maple.
+msgctxt "label"
+msgid "Show \"View More\""
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
+msgid "Show \"View More\" events"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "label"
+msgid "Show as required"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar.
+msgid "Show switch view link"
+msgstr ""
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "label"
+msgid "Sidebar location"
+msgstr ""
+
+#. translators: ACF field group: ACC Callouts, ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint VitalSource, ACC Touchpoint Cvent, ACC Touchpoint Maple, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
+#. translators: Placeholder block heading.
+msgctxt "label"
+msgid "Title"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "label"
+msgid "To"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Maple.
+msgctxt "label"
+msgid "Touchpoint Action"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint VitalSource, ACC Touchpoint Cvent, ACC Touchpoint Maple, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
+msgctxt "label"
+msgid "Touchpoints per page"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgctxt "label"
+msgid "Upcoming Events"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgid "Use UI schema override resource UUID or Slug"
+msgstr ""
+
+#. translators: ACF field group: ACC Additional Info.
+msgid "Use slugs instead of schema IDs"
+msgstr ""
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Visual: Text, Messages, and Elements"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint VitalSource.
+msgid "eBook Codes for others"
+msgstr ""
+
+#. translators: ACF field group: ACC Touchpoint VitalSource.
+msgctxt "label"
+msgid "eBook Fulfilment"
+msgstr ""
+
+msgctxt "label"
 msgid "Global Header"
 msgstr ""
 
+msgctxt "label"
 msgid "Menu Editor"
 msgstr ""
 
@@ -1204,9 +1193,11 @@ msgstr ""
 msgid "Organization Members Bulk Upload"
 msgstr ""
 
+msgctxt "label"
 msgid "Purchase Additional Seats"
 msgstr ""
 
+msgctxt "label"
 msgid "Organization Contacts"
 msgstr ""
 
@@ -1238,12 +1229,14 @@ msgstr ""
 msgid "The Account Centre links to account pages that do not exist on this site, so those links lead to a 404. Missing: %s"
 msgstr ""
 
+msgctxt "button label"
 msgid "Create missing pages"
 msgstr ""
 
 msgid "You are not allowed to create Account Centre pages."
 msgstr ""
 
+msgctxt "label"
 msgid "My Account Woo"
 msgstr ""
 
@@ -1253,6 +1246,7 @@ msgstr ""
 msgid "This page is critical for Wicket's Account Centre and cannot be deleted."
 msgstr ""
 
+msgctxt "label"
 msgid "My Account (CPT)"
 msgstr ""
 
@@ -1261,20 +1255,25 @@ msgstr ""
 msgid "Replace \"%s\" in MDP Widget Config"
 msgstr ""
 
+msgctxt "block category name"
 msgid "Wicket_AC"
 msgstr ""
 
 #. translators: %s: template name.
 #, php-format
+msgctxt "message"
 msgid "Template %s not found"
 msgstr ""
 
+msgctxt "block title"
 msgid "ACC Change Password"
 msgstr ""
 
+msgctxt "label"
 msgid "Form Title"
 msgstr ""
 
+msgctxt "label"
 msgid "Form Instructions"
 msgstr ""
 
@@ -1284,125 +1283,124 @@ msgstr ""
 msgid "A Wicket block for changing the user password."
 msgstr ""
 
+msgctxt "block keyword"
 msgid "account-centre"
 msgstr ""
 
-msgctxt "block search keyword"
+msgctxt "block keyword"
 msgid "account-center"
 msgstr ""
 
+msgctxt "block keyword"
 msgid "password"
 msgstr ""
 
+msgctxt "block keyword"
 msgid "wicket"
 msgstr ""
 
+msgctxt "message"
 msgid "can't be blank"
 msgstr ""
 
 msgid "- Passwords do not match"
 msgstr ""
 
+msgctxt "product name"
 msgid "Account Centre"
 msgstr ""
 
+msgctxt "product name"
 msgid "Account Center"
 msgstr ""
 
+msgctxt "label"
 msgid "Dashboard"
 msgstr ""
 
 #. translators: ACC is short for Account Centre.
+msgctxt "label"
 msgid "ACC Options"
-msgstr ""
-
-msgid "Main Options"
-msgstr ""
-
-msgid "Centre/Center localization"
-msgstr ""
-
-msgid "Sidebar location"
-msgstr ""
-
-#. translators: Sidebar position option (left side of the page).
-msgid "Left"
-msgstr ""
-
-#. translators: Sidebar position option (right side of the page).
-msgid "Right"
-msgstr ""
-
-msgid "Profile Picture Size (in MB)"
 msgstr ""
 
 msgid "Allowed range: 1 to 7 MB."
 msgstr ""
 
-msgid "Default profile picture"
-msgstr ""
-
 msgid "Profile image MDP field"
 msgstr ""
 
-msgid "Global sub-header"
-msgstr ""
-
+msgctxt "label"
 msgid "ACC Environment"
 msgstr ""
 
 #. translators: Admin menu title for the Wicket server environment (staging or production) settings.
+msgctxt "label"
 msgid "Environment"
 msgstr ""
 
+msgctxt "label"
 msgid "Connection Status"
 msgstr ""
 
 #. translators: Label for the MDP connection status.
+msgctxt "label"
 msgid "Status"
 msgstr ""
 
+msgctxt "label"
 msgid "Wicket Environment"
 msgstr ""
 
 #. translators: Wicket server environment option: the test (staging) environment.
+msgctxt "label"
 msgid "Staging"
 msgstr ""
 
 #. translators: Wicket server environment option: the live (production) environment.
+msgctxt "label"
 msgid "Production"
 msgstr ""
 
+msgctxt "label"
 msgid "Production Settings"
 msgstr ""
 
+msgctxt "label"
 msgid "Staging Settings"
 msgstr ""
 
+msgctxt "label"
 msgid "API Endpoint"
 msgstr ""
 
+msgctxt "label"
 msgid "JWT Secret Key"
 msgstr ""
 
+msgctxt "label"
 msgid "Person ID"
 msgstr ""
 
+msgctxt "label"
 msgid "Parent Org"
 msgstr ""
 
+msgctxt "label"
 msgid "Wicket Admin"
 msgstr ""
 
+msgctxt "status"
 msgid "CONNECTED"
 msgstr ""
 
+msgctxt "status"
 msgid "NOT CONNECTED"
 msgstr ""
 
 #. translators: Not available: shown when the membership tier name is missing.
 #. translators: Not available: shown when the organization name is missing.
 #. translators: Not available: shown when a value is missing.
+msgctxt "value placeholder"
 msgid "N/A"
 msgstr ""
 
@@ -1411,21 +1409,26 @@ msgstr ""
 msgid "Wicket person with UUID %s not found."
 msgstr ""
 
+msgctxt "message"
 msgid "No arguments provided"
 msgstr ""
 
+msgctxt "message"
 msgid "Role updated successfully"
 msgstr ""
 
 msgid "No syncing (keep image local)"
 msgstr ""
 
+msgctxt "button label"
 msgid "Refresh fields"
 msgstr ""
 
+msgctxt "message"
 msgid "Refreshing..."
 msgstr ""
 
+msgctxt "message"
 msgid "Field list refreshed."
 msgstr ""
 
@@ -1441,37 +1444,51 @@ msgstr ""
 msgid "The selected field no longer exists in the MDP schema. Pick a valid field, or set \"No syncing\". Until then, uploads stay local and are not sent to the MDP."
 msgstr ""
 
+msgctxt "post type label"
+msgid "Account Centre"
+msgstr ""
+
 #. translators: Singular name of an Account Centre page (post type).
+msgctxt "post type label"
 msgid "Page"
 msgstr ""
 
+msgctxt "post type label"
 msgid "Add New Page"
 msgstr ""
 
+msgctxt "post type label"
 msgid "Edit Page"
 msgstr ""
 
+msgctxt "post type label"
 msgid "View Page"
 msgstr ""
 
+msgctxt "post type label"
 msgid "Update Page"
 msgstr ""
 
+msgctxt "post type label"
 msgid "Search Page"
 msgstr ""
 
+msgctxt "post type label"
 msgid "Not Found"
 msgstr ""
 
 msgid "Not found in Trash"
 msgstr ""
 
+msgctxt "post type label"
 msgid "All Pages"
 msgstr ""
 
+msgctxt "post type label"
 msgid "Pages Sorting Order"
 msgstr ""
 
+msgctxt "menu location"
 msgid "Account Centre Menu"
 msgstr ""
 
@@ -1479,6 +1496,7 @@ msgid "Account Centre Secondary Menu"
 msgstr ""
 
 #. translators: Page template name. ACC is short for Account Centre.
+msgctxt "template name"
 msgid "ACC Page"
 msgstr ""
 
@@ -1489,11 +1507,13 @@ msgid "ACC Page (No Sidebar)"
 msgstr ""
 
 #. translators: Fallback organization name when the org has none; used in the welcome email subject, body, sign-off and sender name.
+msgctxt "value placeholder"
 msgid "your organization"
 msgstr ""
 
 #. translators: %s: organization name.
 #, php-format
+msgctxt "email subject"
 msgid "Welcome to %s!"
 msgstr ""
 
@@ -1507,6 +1527,7 @@ msgstr ""
 msgid "Hi %1$s, <br><br>You have been assigned a membership as part of %2$s.<br><br>You will soon receive an Account Confirmation email with instructions on how to finalize your login account.<br>Once you have confirmed your account, visit %3$s and login to complete your profile and explore your member benefits.<br><br>Thank you,<br><br>%2$s"
 msgstr ""
 
+msgctxt "email subject"
 msgid "Membership Pending Approval"
 msgstr ""
 
@@ -1517,6 +1538,7 @@ msgstr ""
 
 #. translators: %s: organization name.
 #, php-format
+msgctxt "email subject"
 msgid "Welcome to %s"
 msgstr ""
 
@@ -1533,12 +1555,14 @@ msgid ""
 "%2$s"
 msgstr ""
 
+msgctxt "value placeholder"
 msgid "[Organization Selector]"
 msgstr ""
 
 msgid "No organizations found for your account."
 msgstr ""
 
+msgctxt "label"
 msgid "Choose an Organization:"
 msgstr ""
 
@@ -1553,18 +1577,22 @@ msgstr ""
 
 #. translators: %s: comma-separated list of missing CSV column headers.
 #, php-format
+msgctxt "message"
 msgid "Missing required column: %s."
 msgid_plural "Missing required columns: %s."
 msgstr[0] ""
 msgstr[1] ""
 
+msgctxt "role name"
 msgid "Membership Manager"
 msgstr ""
 
 #. translators: Role name; Org. is short for Organization.
+msgctxt "role name"
 msgid "Org. Editor"
 msgstr ""
 
+msgctxt "role name"
 msgid "Membership Owner"
 msgstr ""
 
@@ -1578,138 +1606,168 @@ msgid "Ability to edit Organization's profile"
 msgstr ""
 
 #. translators: Relationship type: Chief Executive Officer.
+msgctxt "relationship type"
 msgid "CEO"
 msgstr ""
 
+msgctxt "relationship type"
 msgid "Primary HR Contact"
 msgstr ""
 
+msgctxt "relationship type"
 msgid "Member Contact"
 msgstr ""
 
+msgctxt "relationship type"
 msgid "Advertising/Sponsor Contact"
 msgstr ""
 
 msgid "Advertising/Sponsor Billing Contact"
 msgstr ""
 
-msgid "First Name"
-msgstr ""
-
-msgid "Last Name"
-msgstr ""
-
+msgctxt "label"
 msgid "Email Address"
 msgstr ""
 
+msgctxt "label"
 msgid "Relationship Type"
 msgstr ""
 
-msgid "Description"
-msgstr ""
-
+msgctxt "label"
 msgid "Permissions"
 msgstr ""
 
+msgctxt "label"
 msgid "Roles"
 msgstr ""
 
 #. translators: Org. is short for Organization.
+msgctxt "button label"
 msgid "Org. Profile"
 msgstr ""
 
+msgctxt "button label"
 msgid "Manage Members"
 msgstr ""
 
+msgctxt "button label"
 msgid "Manage Contact List"
 msgstr ""
 
+msgctxt "tooltip"
 msgid "Account confirmed"
 msgstr ""
 
+msgctxt "tooltip"
+msgid "Account not confirmed"
+msgstr ""
+
+msgctxt "status"
 msgid "Account not confirmed"
 msgstr ""
 
 msgid "All seats have been assigned. Please purchase additional seats to add more members."
 msgstr ""
 
+msgctxt "label"
 msgid "Remove Members"
 msgstr ""
 
 msgid "To remove a member from your organization, please contact your association directly."
 msgstr ""
 
+msgctxt "label"
 msgid "Name"
 msgstr ""
 
+msgctxt "label"
 msgid "Job Title"
 msgstr ""
 
+msgctxt "label"
 msgid "Email"
 msgstr ""
 
+msgctxt "label"
 msgid "Relationship"
 msgstr ""
 
+msgctxt "relationship type"
 msgid "President"
 msgstr ""
 
+msgctxt "relationship type"
 msgid "President Elect"
 msgstr ""
 
+msgctxt "relationship type"
 msgid "Secretary"
 msgstr ""
 
+msgctxt "relationship type"
 msgid "Treasurer"
 msgstr ""
 
+msgctxt "relationship type"
 msgid "Main Contact"
 msgstr ""
 
+msgctxt "role name"
 msgid "Organization Editor"
 msgstr ""
 
 #. translators: Section title for charitable foundation donations.
+msgctxt "label"
 msgid "Foundation"
 msgstr ""
 
 #. translators: FY is short for fiscal year. Donation total for the current fiscal year.
+msgctxt "label"
 msgid "Current FY"
 msgstr ""
 
 #. translators: FY is short for fiscal year. Donation total for the previous fiscal year.
+msgctxt "label"
 msgid "Last FY"
 msgstr ""
 
 #. translators: Date of the most recent donation.
+msgctxt "label"
 msgid "Last Gift"
 msgstr ""
 
 #. translators: Donor recognition level based on all-time giving.
+msgctxt "label"
 msgid "Lifetime Level"
 msgstr ""
 
 #. translators: Donor recognition level for the previous fiscal year (FY).
+msgctxt "label"
 msgid "Last FY Level"
 msgstr ""
 
 #. translators: Soc. is short for Society: membership in the Leadership Society donor group.
+msgctxt "label"
 msgid "Leadership Soc."
 msgstr ""
 
 #. translators: Soc. is short for Society: membership in the Legacy Society donor group (planned giving).
+msgctxt "label"
 msgid "Legacy Soc."
 msgstr ""
 
 #. translators: Keep the {year} token; it is replaced with the two-digit fiscal year.
+msgctxt "status"
 msgid "Foundation Donor FY{year}"
 msgstr ""
 
 #. translators: PAC is short for Political Action Committee.
+msgctxt "label"
 msgid "PAC"
 msgstr ""
 
 #. translators: Keep the {year} token; it is replaced with the two-digit fiscal year.
+msgctxt "status"
 msgid "PAC Donor FY{year}"
 msgstr ""
 
@@ -1722,12 +1780,14 @@ msgstr ""
 msgid "Business information updated successfully."
 msgstr ""
 
+msgctxt "label"
 msgid "Need more seats?"
 msgstr ""
 
 msgid "As the membership owner, you can purchase additional seats for your organization membership. Click the \"Purchase Additional Seats\" button below to get started."
 msgstr ""
 
+msgctxt "message"
 msgid "File upload failed."
 msgstr ""
 
@@ -1737,17 +1797,20 @@ msgstr ""
 msgid "File was only partially uploaded."
 msgstr ""
 
+msgctxt "message"
 msgid "Missing temporary folder."
 msgstr ""
 
 #. translators: %s: document name.
 #, php-format
+msgctxt "message"
 msgid "Document \"%s\" uploaded successfully."
 msgstr ""
 
 msgid "Organization ID and Document ID are required."
 msgstr ""
 
+msgctxt "message"
 msgid "Document deleted successfully."
 msgstr ""
 
@@ -1774,15 +1837,18 @@ msgstr ""
 msgid "Organization ID and Subsidiary Organization ID are required."
 msgstr ""
 
+msgctxt "message"
 msgid "Subsidiary added successfully."
 msgstr ""
 
+msgctxt "message"
 msgid "Subsidiary removed successfully."
 msgstr ""
 
 msgid "Bulk upload processed successfully."
 msgstr ""
 
+msgctxt "label"
 msgid "Success!"
 msgstr ""
 
@@ -1823,25 +1889,31 @@ msgid_plural "This dialog will close automatically in %s seconds."
 msgstr[0] ""
 msgstr[1] ""
 
+msgctxt "message"
 msgid "Template not found."
 msgstr ""
 
+msgctxt "button label"
 msgid "Close"
 msgstr ""
 
 #. translators: Notification type label.
+msgctxt "notification type"
 msgid "Success"
 msgstr ""
 
 #. translators: Notification type label.
+msgctxt "notification type"
 msgid "Error"
 msgstr ""
 
 #. translators: Notification type label.
+msgctxt "notification type"
 msgid "Warning"
 msgstr ""
 
 #. translators: Notification type label (information).
+msgctxt "notification type"
 msgid "Info"
 msgstr ""
 
@@ -1850,6 +1922,7 @@ msgstr ""
 
 #. translators: 1: previously listed SKU(s), 2: alternative SKU.
 #, php-format
+msgctxt "list separator"
 msgid "%1$s or %2$s"
 msgstr ""
 
@@ -1923,30 +1996,37 @@ msgstr ""
 
 #. translators: 1: CSV row number, 2: member email address, 3: error message.
 #, php-format
+msgctxt "message"
 msgid "Row %1$d failed (%2$s): %3$s"
 msgstr ""
 
 msgid "Unable to schedule next background batch."
 msgstr ""
 
+msgctxt "label"
 msgid "Company Attributes"
 msgstr ""
 
+msgctxt "label"
 msgid "2SLGBTQIA+ Owned"
 msgstr ""
 
 msgid "Black, Indigenous, Person of Colour Owned"
 msgstr ""
 
+msgctxt "label"
 msgid "Quebec Based Business"
 msgstr ""
 
+msgctxt "label"
 msgid "Family Owned"
 msgstr ""
 
+msgctxt "label"
 msgid "Made in Canada"
 msgstr ""
 
+msgctxt "label"
 msgid "Women Owned"
 msgstr ""
 
@@ -1954,57 +2034,74 @@ msgstr ""
 #. translators: Certification option.
 #. translators: Business services option.
 #. translators: Business option.
+msgctxt "label"
 msgid "Other"
 msgstr ""
 
+msgctxt "label"
 msgid "Certifications"
 msgstr ""
 
+msgctxt "label"
 msgid "Carbon Neutral"
 msgstr ""
 
+msgctxt "label"
 msgid "Certified B Corp"
 msgstr ""
 
+msgctxt "label"
 msgid "Cruelty Free"
 msgstr ""
 
 #. translators: Certification brand name; usually left untranslated.
+msgctxt "label"
 msgid "ECOCERT"
 msgstr ""
 
+msgctxt "label"
 msgid "Fair Trade Certified"
 msgstr ""
 
 #. translators: GMO is short for genetically modified organism.
+msgctxt "label"
 msgid "Non-GMO Certified"
 msgstr ""
 
 #. translators: NSF is a certification body (NSF International); keep the name.
+msgctxt "label"
 msgid "NSF Certified"
 msgstr ""
 
+msgctxt "label"
 msgid "Organic Certified"
 msgstr ""
 
+msgctxt "label"
 msgid "Regenerative Organic Certified"
 msgstr ""
 
+msgctxt "label"
 msgid "Sustainably Sourced"
 msgstr ""
 
+msgctxt "label"
 msgid "Business Services"
 msgstr ""
 
+msgctxt "label"
 msgid "Certification Services"
 msgstr ""
 
+msgctxt "label"
 msgid "Consulting Services"
 msgstr ""
 
+msgctxt "label"
 msgid "Contract Manufacturing"
 msgstr ""
 
+msgctxt "label"
 msgid "Display Fixtures"
 msgstr ""
 
@@ -2014,12 +2111,15 @@ msgstr ""
 msgid "Ingredients & Raw Materials Supplier"
 msgstr ""
 
+msgctxt "label"
 msgid "Legal & Regulatory Services"
 msgstr ""
 
+msgctxt "label"
 msgid "Marketing & Advertising"
 msgstr ""
 
+msgctxt "label"
 msgid "Packaging & Labelling"
 msgstr ""
 
@@ -2029,27 +2129,35 @@ msgstr ""
 msgid "R&D, Formulation & Flavouring"
 msgstr ""
 
+msgctxt "label"
 msgid "Research & Data Services"
 msgstr ""
 
+msgctxt "label"
 msgid "Retail Services"
 msgstr ""
 
+msgctxt "label"
 msgid "Shipping & Logistics"
 msgstr ""
 
+msgctxt "label"
 msgid "Technology Solutions"
 msgstr ""
 
+msgctxt "label"
 msgid "Product Segments"
 msgstr ""
 
+msgctxt "label"
 msgid "Food & Beverage"
 msgstr ""
 
+msgctxt "label"
 msgid "Personal Care & Beauty"
 msgstr ""
 
+msgctxt "label"
 msgid "Healthy Home & Lifestyle"
 msgstr ""
 
@@ -2068,6 +2176,7 @@ msgstr ""
 msgid "Person UUID, relationship ID, and organization ID are required."
 msgstr ""
 
+msgctxt "message"
 msgid "Connection not found."
 msgstr ""
 
@@ -2091,6 +2200,7 @@ msgstr ""
 msgid "Failed to update connection description: %s"
 msgstr ""
 
+msgctxt "value placeholder"
 msgid "Unknown error"
 msgstr ""
 
@@ -2150,9 +2260,11 @@ msgstr ""
 msgid "Document ID is required."
 msgstr ""
 
+msgctxt "message"
 msgid "Document not found."
 msgstr ""
 
+msgctxt "message"
 msgid "Invalid document."
 msgstr ""
 
@@ -2163,10 +2275,12 @@ msgid "Person UUID is required."
 msgstr ""
 
 #. translators: Yes/No field value.
+msgctxt "label"
 msgid "Yes"
 msgstr ""
 
 #. translators: Yes/No field value.
+msgctxt "label"
 msgid "No"
 msgstr ""
 
@@ -2240,6 +2354,7 @@ msgid_plural "It can be used up to %d times."
 msgstr[0] ""
 msgstr[1] ""
 
+msgctxt "button label"
 msgid "Download Export"
 msgstr ""
 
@@ -2340,6 +2455,7 @@ msgstr ""
 msgid "Wicket API functions are unavailable."
 msgstr ""
 
+msgctxt "message"
 msgid "Person not found."
 msgstr ""
 
@@ -2348,6 +2464,7 @@ msgstr ""
 
 #. translators: %s: recipient first name.
 #, php-format
+msgctxt "email text"
 msgid "Hi %s,"
 msgstr ""
 
@@ -2366,6 +2483,7 @@ msgstr ""
 msgid "Going forward you can visit %s and login to complete your profile and access your resources."
 msgstr ""
 
+msgctxt "email text"
 msgid "Thank you,"
 msgstr ""
 
@@ -2384,12 +2502,14 @@ msgstr ""
 msgid "Invalid person input type."
 msgstr ""
 
+msgctxt "message"
 msgid "Organization not found."
 msgstr ""
 
 msgid "Person email address is required."
 msgstr ""
 
+msgctxt "message"
 msgid "Invalid email address."
 msgstr ""
 
@@ -2411,6 +2531,7 @@ msgstr ""
 
 #. translators: %s: organization name.
 #, php-format
+msgctxt "email subject"
 msgid "Update from %s"
 msgstr ""
 
@@ -2425,7 +2546,13 @@ msgstr ""
 msgid "Failed to send group assignment email."
 msgstr ""
 
+msgctxt "value placeholder"
 msgid "Unknown Organization"
+msgstr ""
+
+#. translators: The user's role in the organization.
+msgctxt "role name"
+msgid "Member"
 msgstr ""
 
 msgid "Unable to fetch memberships. Please try again later."
@@ -2451,6 +2578,7 @@ msgstr ""
 
 #. translators: %s: comma-separated list of role slugs.
 #, php-format
+msgctxt "message"
 msgid "Failed removing role: %s."
 msgid_plural "Failed removing roles: %s."
 msgstr[0] ""
@@ -2461,12 +2589,15 @@ msgstr ""
 
 #. translators: %s: role slug.
 #, php-format
+msgctxt "message"
 msgid "Failed assigning role %s."
 msgstr ""
 
+msgctxt "message"
 msgid "Permissions updated successfully."
 msgstr ""
 
+msgctxt "message"
 msgid "Role is required."
 msgstr ""
 
@@ -2484,6 +2615,7 @@ msgstr ""
 msgid "This person is already a member of this organization."
 msgstr ""
 
+msgctxt "message"
 msgid "Member added successfully."
 msgstr ""
 
@@ -2496,9 +2628,11 @@ msgstr ""
 msgid "Membership does not belong to this organization."
 msgstr ""
 
+msgctxt "message"
 msgid "Member removed successfully."
 msgstr ""
 
+msgctxt "message"
 msgid "Membership details unavailable."
 msgstr ""
 
@@ -2560,6 +2694,7 @@ msgstr ""
 msgid "This group already has a person '%s' for your organization."
 msgstr ""
 
+msgctxt "value placeholder"
 msgid "Unknown Group"
 msgstr ""
 
@@ -2644,14 +2779,17 @@ msgstr ""
 msgid "Business information is not available for this organization."
 msgstr ""
 
+msgctxt "label"
 msgid "Please specify"
 msgstr ""
 
+msgctxt "button label"
 msgid "Save Changes"
 msgstr ""
 
 #. translators: %d: number of years.
 #, php-format
+msgctxt "duration"
 msgid "%d Year"
 msgid_plural "%d Years"
 msgstr[0] ""
@@ -2659,6 +2797,7 @@ msgstr[1] ""
 
 #. translators: %d: number of months.
 #, php-format
+msgctxt "duration"
 msgid "%d Month"
 msgid_plural "%d Months"
 msgstr[0] ""
@@ -2666,45 +2805,55 @@ msgstr[1] ""
 
 #. translators: 1: membership duration (e.g. "2 Years"), 2: start year.
 #, php-format
-msgctxt "org membership card detail"
+msgctxt "label"
 msgid "%1$s (Start %2$s)"
 msgstr ""
 
 #. translators: %s: start year.
 #, php-format
-msgctxt "org membership card detail"
+msgctxt "label"
 msgid "(Start %s)"
 msgstr ""
 
 #. translators: %s: Membership tier name.
 #, php-format
+msgctxt "label"
 msgid "Membership Tier: %s"
 msgstr ""
 
+msgctxt "status"
 msgid "Active Membership"
 msgstr ""
 
+msgctxt "status"
 msgid "No membership found"
 msgstr ""
 
+msgctxt "status"
 msgid "Inactive Membership"
 msgstr ""
 
+msgctxt "label"
 msgid "My Role(s):"
 msgstr ""
 
+msgctxt "value placeholder"
 msgid "No roles assigned"
 msgstr ""
 
+msgctxt "label"
 msgid "Group(s):"
 msgstr ""
 
+msgctxt "label"
 msgid "Type:"
 msgstr ""
 
+msgctxt "label"
 msgid "Tag(s):"
 msgstr ""
 
+msgctxt "message"
 msgid "Processing. Please wait..."
 msgstr ""
 
@@ -2717,48 +2866,69 @@ msgid "Search by name or email..."
 msgstr ""
 
 #. translators: Button: run the search.
+msgctxt "button label"
 msgid "Search"
 msgstr ""
 
 #. translators: Button: clear the search.
+msgctxt "button label"
 msgid "Clear"
 msgstr ""
 
+msgctxt "message"
 msgid "No contacts found."
 msgstr ""
 
+msgctxt "label"
 msgid "Relationship:"
 msgstr ""
 
+msgctxt "button label"
 msgid "Remove"
 msgstr ""
 
+msgctxt "accessibility label"
 msgid "Contacts pagination"
 msgstr ""
 
 #. translators: 1: first item number on the page, 2: last item number on the page, 3: total number of items.
 #, php-format
+msgctxt "count label"
 msgid "Showing %1$d-%2$d of %3$d"
 msgstr ""
 
+msgctxt "button label"
 msgid "Previous"
 msgstr ""
 
+msgctxt "button label"
 msgid "Next"
 msgstr ""
 
+msgctxt "button label"
 msgid "Add Individual Contact"
 msgstr ""
 
+msgctxt "accessibility label"
+msgid "Close"
+msgstr ""
+
+msgctxt "label"
 msgid "Add Contact"
 msgstr ""
 
 msgid "Select a relationship type"
 msgstr ""
 
+msgctxt "button label"
 msgid "Cancel"
 msgstr ""
 
+msgctxt "button label"
+msgid "Add Contact"
+msgstr ""
+
+msgctxt "label"
 msgid "Remove Contact"
 msgstr ""
 
@@ -2770,26 +2940,37 @@ msgstr ""
 msgid "This will end their relationship with the organization. This action cannot be undone."
 msgstr ""
 
+msgctxt "button label"
+msgid "Remove Contact"
+msgstr ""
+
+msgctxt "label"
 msgid "Select Document"
 msgstr ""
 
+msgctxt "label"
 msgid "Document Title"
 msgstr ""
 
+msgctxt "field placeholder"
 msgid "Enter document title"
 msgstr ""
 
+msgctxt "button label"
 msgid "Upload Document"
 msgstr ""
 
+msgctxt "label"
 msgid "Description (Optional)"
 msgstr ""
 
+msgctxt "field placeholder"
 msgid "Enter document description"
 msgstr ""
 
 #. translators: Button: download the document.
 #. translators: Button: download the member export file.
+msgctxt "button label"
 msgid "Download"
 msgstr ""
 
@@ -2797,9 +2978,11 @@ msgid "Are you sure you want to delete this document?"
 msgstr ""
 
 #. translators: Button: delete the document.
+msgctxt "button label"
 msgid "Delete"
 msgstr ""
 
+msgctxt "message"
 msgid "No documents found"
 msgstr ""
 
@@ -2812,6 +2995,7 @@ msgstr ""
 msgid "No engagement data available for this period."
 msgstr ""
 
+msgctxt "button label"
 msgid "Download Roster"
 msgstr ""
 
@@ -2821,6 +3005,10 @@ msgid "This roster is large (%1$d member) and will be prepared in the background
 msgid_plural "This roster is large (%1$d members) and will be prepared in the background. After clicking, a download link will be emailed to you."
 msgstr[0] ""
 msgstr[1] ""
+
+msgctxt "label"
+msgid "Download Roster"
+msgstr ""
 
 msgid "Download the current roster as a CSV file. Small rosters download immediately; large rosters are prepared in the background and a download link is emailed to you."
 msgstr ""
@@ -2849,31 +3037,47 @@ msgstr ""
 msgid "Export queued — processing will begin shortly…"
 msgstr ""
 
+msgctxt "message"
 msgid "No group selected."
 msgstr ""
 
 msgid "Start typing to search for members..."
 msgstr ""
 
+msgctxt "label"
 msgid "Need More Seats?"
 msgstr ""
 
 msgid "Purchase additional seats for your organization membership to accommodate more team members."
 msgstr ""
 
+msgctxt "button label"
+msgid "Purchase Additional Seats"
+msgstr ""
+
+msgctxt "button label"
 msgid "Add Member"
 msgstr ""
 
+msgctxt "field placeholder"
 msgid "user@mail.com"
 msgstr ""
 
+msgctxt "label"
 msgid "Role"
 msgstr ""
 
 #. translators: Group role options (Member, Observer).
+msgctxt "group role"
+msgid "Member"
+msgstr ""
+
+#. translators: Group role options (Member, Observer).
+msgctxt "group role"
 msgid "Observer"
 msgstr ""
 
+msgctxt "label"
 msgid "Remove Member"
 msgstr ""
 
@@ -2888,18 +3092,27 @@ msgstr ""
 msgid "This action cannot be undone."
 msgstr ""
 
+msgctxt "button label"
+msgid "Remove Member"
+msgstr ""
+
+msgctxt "label"
 msgid "Group Information"
 msgstr ""
 
+msgctxt "value placeholder"
 msgid "No description available."
 msgstr ""
 
+msgctxt "label"
 msgid "Group Name"
 msgstr ""
 
+msgctxt "button label"
 msgid "Save Group"
 msgstr ""
 
+msgctxt "label"
 msgid "Role(s):"
 msgstr ""
 
@@ -2909,14 +3122,17 @@ msgstr ""
 msgid "Upload a CSV file to add multiple members at once. Existing active members are skipped automatically."
 msgstr ""
 
+msgctxt "button label"
 msgid "Download CSV Template"
 msgstr ""
 
+msgctxt "label"
 msgid "CSV File"
 msgstr ""
 
 #. translators: %s list of configured CSV columns
 #, php-format
+msgctxt "help text"
 msgid "Expected columns: %s"
 msgstr ""
 
@@ -2928,23 +3144,28 @@ msgstr ""
 
 #. translators: 1: number of assigned seats, 2: maximum number of seats.
 #, php-format
+msgctxt "count label"
 msgid "Seats assigned: %1$d / %2$d"
 msgstr ""
 
 msgid "No seats available. Please purchase additional seats to add more members."
 msgstr ""
 
+msgctxt "message"
 msgid "No members found."
 msgstr ""
 
+msgctxt "label"
 msgid "Role:"
 msgstr ""
 
+msgctxt "accessibility label"
 msgid "Group members pagination"
 msgstr ""
 
 #. translators: 1: first item number on the page, 2: last item number on the page, 3: total number of items.
 #, php-format
+msgctxt "count label"
 msgid "Showing %1$d–%2$d of %3$d"
 msgstr ""
 
@@ -2953,6 +3174,7 @@ msgstr ""
 
 #. translators: 1: number of assigned seats, 2: maximum number of seats.
 #, php-format
+msgctxt "count label"
 msgid "Seats assigned: %1$s / %2$s"
 msgstr ""
 
@@ -2961,26 +3183,41 @@ msgstr ""
 msgid "Number of assigned people: %s"
 msgstr ""
 
+msgctxt "status"
 msgid "Organization Owner"
 msgstr ""
 
+msgctxt "button label"
 msgid "Edit Permissions"
 msgstr ""
 
+msgctxt "accessibility label"
 msgid "Members pagination"
 msgstr ""
 
+msgctxt "button label"
+msgid "Bulk Upload Members"
+msgstr ""
+
+msgctxt "label"
 msgid "Roles:"
 msgstr ""
 
 #. translators: %s: member name.
 #, php-format
+msgctxt "label"
 msgid "Edit Permissions for %s"
 msgstr ""
 
+msgctxt "label"
+msgid "Edit Permissions"
+msgstr ""
+
+msgctxt "message"
 msgid "No roles available."
 msgstr ""
 
+msgctxt "button label"
 msgid "Save Permissions"
 msgstr ""
 
@@ -3001,6 +3238,7 @@ msgstr ""
 msgid "The \"Purchase Additional Seats\" button is hidden because the following items are not yet configured:"
 msgstr ""
 
+msgctxt "tooltip"
 msgid "Click to copy"
 msgstr ""
 
@@ -3016,9 +3254,11 @@ msgstr ""
 msgid "Name of the hidden field (Parameter Name) on the form that receives the membership tier slug from the URL. GF conditional logic reads it to show only that tier’s quantity input, and the submission handler reads it to pick the right tier-specific product."
 msgstr ""
 
+msgctxt "message"
 msgid "✓ Copied!"
 msgstr ""
 
+msgctxt "label"
 msgid "Security Roles"
 msgstr ""
 
@@ -3028,53 +3268,66 @@ msgstr ""
 msgid "You must be logged in to access this content."
 msgstr ""
 
+msgctxt "message"
 msgid "Organization not specified."
 msgstr ""
 
+msgctxt "value placeholder"
 msgid "Organization"
 msgstr ""
 
 #. translators: Seat limit: no maximum number of seats.
+msgctxt "value placeholder"
 msgid "Unlimited"
 msgstr ""
 
 #. translators: 1: number of active seat assignments, 2: maximum number of seats (or "Unlimited").
 #, php-format
+msgctxt "count label"
 msgid "Seats: %1$s / %2$s"
 msgstr ""
 
 #. translators: %s: organization name.
 #, php-format
+msgctxt "label"
 msgid "Organization: %s"
 msgstr ""
 
 #. translators: %s: group type.
 #, php-format
+msgctxt "label"
 msgid "Type: %s"
 msgstr ""
 
 #. translators: Heading for the membership summary.
+msgctxt "label"
 msgid "Summary"
 msgstr ""
 
+msgctxt "label"
 msgid "Membership Owner:"
 msgstr ""
 
+msgctxt "value placeholder"
 msgid "Not set."
 msgstr ""
 
+msgctxt "accessibility label"
 msgid "Organization actions"
 msgstr ""
 
+msgctxt "button label"
 msgid "Bulk Upload"
 msgstr ""
 
 msgid "Unable to connect to the organization service. Please try again later."
 msgstr ""
 
+msgctxt "label"
 msgid "Connection Error"
 msgstr ""
 
+msgctxt "button label"
 msgid "Try Again"
 msgstr ""
 
@@ -3084,32 +3337,43 @@ msgstr ""
 msgid "You currently have no groups to manage members for."
 msgstr ""
 
+msgctxt "label"
 msgid "Your Associations"
 msgstr ""
 
 #. translators: %d: number of groups found.
 #, php-format
+msgctxt "count label"
 msgid "Groups Found: %d"
 msgstr ""
 
 #. translators: %s: role label.
 #, php-format
+msgctxt "label"
 msgid "My Role: %s"
 msgstr ""
 
+msgctxt "button label"
 msgid "Group Profile"
 msgstr ""
 
+msgctxt "accessibility label"
 msgid "Groups pagination"
 msgstr ""
 
 #. translators: 1: first item number, 2: last item number, 3: total items.
 #, php-format
+msgctxt "count label"
 msgid "Showing %1$d-%2$d of %3$d groups"
 msgstr ""
 
 #. translators: Fallback organization or group name.
+msgctxt "value placeholder"
 msgid "Unknown"
+msgstr ""
+
+msgctxt "value placeholder"
+msgid "Active Membership"
 msgstr ""
 
 msgid "You currently have no active organization memberships."
@@ -3117,20 +3381,24 @@ msgstr ""
 
 #. translators: %d: number of organizations found.
 #, php-format
+msgctxt "count label"
 msgid "Organizations Found: %d"
 msgstr ""
 
+msgctxt "accessibility label"
 msgid "Organizations pagination"
 msgstr ""
 
 #. translators: 1: first item number, 2: last item number, 3: total items.
 #, php-format
+msgctxt "count label"
 msgid "Showing %1$d-%2$d of %3$d organizations"
 msgstr ""
 
 msgid "Invalid or missing security token. Please refresh and try again."
 msgstr ""
 
+msgctxt "message"
 msgid "Organization identifier missing."
 msgstr ""
 
@@ -3144,19 +3412,18 @@ msgstr ""
 
 #. translators: %s: contact email address.
 #, php-format
-msgctxt "org contacts success message"
 msgid "Successfully added the contact with email %s."
 msgstr ""
 
 msgid "An unexpected error occurred. Please try again."
 msgstr ""
 
+msgctxt "message"
 msgid "Group identifier missing."
 msgstr ""
 
 #. translators: %s: member email address.
 #, php-format
-msgctxt "org roster success message"
 msgid "Successfully added the member with email %s."
 msgstr ""
 
@@ -3218,7 +3485,6 @@ msgstr ""
 msgid "Successfully removed %1$s from the contact list."
 msgstr ""
 
-msgctxt "org contacts success message"
 msgid "Successfully removed the contact from the contact list."
 msgstr ""
 
@@ -3234,6 +3500,10 @@ msgstr ""
 msgid "Membership UUID is required for membership cycle removals."
 msgstr ""
 
+msgctxt "value placeholder"
+msgid "Member"
+msgstr ""
+
 #. translators: %1$s: member name.
 #, php-format
 msgid "Successfully removed %1$s from the organization."
@@ -3242,9 +3512,11 @@ msgstr ""
 msgid "No editable fields provided."
 msgstr ""
 
+msgctxt "message"
 msgid "API client unavailable."
 msgstr ""
 
+msgctxt "message"
 msgid "Group updated successfully."
 msgstr ""
 
@@ -3259,7 +3531,6 @@ msgstr ""
 msgid "Successfully updated permissions for %1$s."
 msgstr ""
 
-msgctxt "org roster success message"
 msgid "Successfully updated permissions for this member."
 msgstr ""
 
@@ -3271,15 +3542,18 @@ msgstr ""
 msgid "No subsidiaries found for this organization."
 msgstr ""
 
+msgctxt "label"
 msgid "Add Subsidiary"
 msgstr ""
 
 msgid "Search for an organization to add as a subsidiary:"
 msgstr ""
 
+msgctxt "field placeholder"
 msgid "Type organization name..."
 msgstr ""
 
+msgctxt "label"
 msgid "Bulk Upload Subsidiaries"
 msgstr ""
 
@@ -3289,13 +3563,16 @@ msgstr ""
 msgid "Select Excel File (.xlsx, .xls):"
 msgstr ""
 
+msgctxt "button label"
 msgid "Upload and Process"
 msgstr ""
 
 #. translators: Button: add the organization as a subsidiary.
+msgctxt "button label"
 msgid "Add"
 msgstr ""
 
+msgctxt "message"
 msgid "No organizations found."
 msgstr ""
 
@@ -3317,15 +3594,18 @@ msgstr ""
 msgid "You do not have permission to view contacts for this organization."
 msgstr ""
 
+msgctxt "label"
 msgid "Manage my Organizations"
 msgstr ""
 
 msgid "Back to My Organization"
 msgstr ""
 
+msgctxt "label"
 msgid "Manage Organizations"
 msgstr ""
 
+msgctxt "label"
 msgid "Manage Groups"
 msgstr ""
 
@@ -3356,6 +3636,7 @@ msgstr ""
 msgid "Back to Manage Organizations"
 msgstr ""
 
+msgctxt "message"
 msgid "Organization updated successfully!"
 msgstr ""
 
@@ -3374,18 +3655,23 @@ msgstr ""
 msgid "Please enter a whole number for additional seats."
 msgstr ""
 
+msgctxt "label"
 msgid "Organization Details"
 msgstr ""
 
+msgctxt "label"
 msgid "Organization:"
 msgstr ""
 
+msgctxt "label"
 msgid "Membership ID:"
 msgstr ""
 
+msgctxt "message"
 msgid "Invalid payment method."
 msgstr ""
 
+msgctxt "message"
 msgid "Payment method deleted."
 msgstr ""
 
@@ -3394,23 +3680,27 @@ msgstr ""
 
 #. translators: %s: post publish date.
 #, php-format
+msgctxt "label"
 msgid "Published: %s"
 msgstr ""
 
+msgctxt "message"
 msgid "No content found."
-msgstr ""
-
-#. translators: Placeholder block heading.
-msgid "Title"
 msgstr ""
 
 msgid "This are the available variables:"
 msgstr ""
 
+msgctxt "value placeholder"
 msgid "No name"
 msgstr ""
 
+msgctxt "message"
 msgid "Forgot something?:"
+msgstr ""
+
+msgctxt "label"
+msgid "Error"
 msgstr ""
 
 #. translators: %s: block name.
@@ -3418,19 +3708,28 @@ msgstr ""
 msgid "There was an error on block: %s"
 msgstr ""
 
+msgctxt "value placeholder"
 msgid "Modal title"
 msgstr ""
 
 #. translators: Button: confirm deactivation.
+msgctxt "button label"
 msgid "Deactivate"
 msgstr ""
 
+msgctxt "label"
 msgid "Organization Logo"
 msgstr ""
 
+msgctxt "accessibility label"
+msgid "Organization Logo"
+msgstr ""
+
+msgctxt "tooltip"
 msgid "Remove Image"
 msgstr ""
 
+msgctxt "button label"
 msgid "Choose File"
 msgstr ""
 
@@ -3442,6 +3741,7 @@ msgstr ""
 msgid "Max upload size: %d MB"
 msgstr ""
 
+msgctxt "button label"
 msgid "Update Image"
 msgstr ""
 
@@ -3451,6 +3751,7 @@ msgstr ""
 msgid "There was an error while trying to upload the organization logo. Please try again."
 msgstr ""
 
+msgctxt "label"
 msgid "Upload Requirements:"
 msgstr ""
 
@@ -3461,21 +3762,33 @@ msgstr ""
 
 #. translators: %s: comma-separated list of allowed file extensions.
 #, php-format
+msgctxt "help text"
 msgid "Allowed formats: %s"
 msgstr ""
 
 msgid "File must be a valid image"
 msgstr ""
 
+msgctxt "label"
+msgid "Success"
+msgstr ""
+
 msgid "Your organization logo has been updated successfully."
 msgstr ""
 
+msgctxt "label"
 msgid "Phone Number"
 msgstr ""
 
+msgctxt "message"
 msgid "No memberships found"
 msgstr ""
 
+msgctxt "label"
+msgid "Profile Image"
+msgstr ""
+
+msgctxt "accessibility label"
 msgid "Profile Image"
 msgstr ""
 
@@ -3491,65 +3804,79 @@ msgstr ""
 msgid "(opens in a new window)"
 msgstr ""
 
+msgctxt "label"
 msgid "Date:"
 msgstr ""
 
 msgid "See Past Registered Events"
 msgstr ""
 
+msgctxt "label"
 msgid "Upcoming Registered Events"
 msgstr ""
 
+msgctxt "label"
 msgid "Past Registered Events"
 msgstr ""
 
 msgid "See Upcoming Registered Events"
 msgstr ""
 
-msgid "All Events"
-msgstr ""
-
+msgctxt "button label"
 msgid "Go Back ←"
 msgstr ""
 
+msgctxt "count label"
 msgid "Results:"
 msgstr ""
 
+msgctxt "label"
 msgid "Location:"
 msgstr ""
 
+msgctxt "label"
 msgid "Event Details"
 msgstr ""
 
+msgctxt "label"
 msgid "Course ID:"
 msgstr ""
 
+msgctxt "label"
 msgid "Start Date:"
 msgstr ""
 
+msgctxt "label"
 msgid "End Date:"
 msgstr ""
 
+msgctxt "label"
 msgid "Grade Achieved:"
 msgstr ""
 
+msgctxt "label"
 msgid "Grade Percentage:"
 msgstr ""
 
+msgctxt "label"
 msgid "Time:"
 msgstr ""
 
+msgctxt "label"
 msgid "Redemption Codes:"
 msgstr ""
 
+msgctxt "label"
 msgid "Purchase Date:"
 msgstr ""
 
+msgctxt "label"
 msgid "Duration:"
 msgstr ""
 
 #. translators: %s: event duration in minutes.
 #, php-format
+msgctxt "duration"
 msgid "%s minute"
 msgid_plural "%s minutes"
 msgstr[0] ""
@@ -3561,6 +3888,7 @@ msgstr ""
 msgid "See Upcoming Registered Webinars"
 msgstr ""
 
+msgctxt "label"
 msgid "Webinar Details"
 msgstr ""
 
@@ -3571,40 +3899,49 @@ msgid_plural "The form could not be submitted because %s errors were found"
 msgstr[0] ""
 msgstr[1] ""
 
+msgctxt "label"
 msgid "Current Password"
 msgstr ""
 
+msgctxt "label"
 msgid "New Password"
 msgstr ""
 
+msgctxt "label"
 msgid "Confirm Password"
 msgstr ""
 
 #. translators: %d: error number in the list.
 #, php-format
+msgctxt "error list item"
 msgid "Error: %d"
 msgstr ""
 
 #. translators: 1: field label, 2: error message.
 #, php-format
+msgctxt "error list item"
 msgid "%1$s %2$s"
 msgstr ""
 
 msgid "Your password has been updated."
 msgstr ""
 
+msgctxt "label"
 msgid "Current password"
 msgstr ""
 
+msgctxt "label"
 msgid "New password"
 msgstr ""
 
 msgid "Minimum of 8 characters"
 msgstr ""
 
+msgctxt "label"
 msgid "Confirm new password"
 msgstr ""
 
+msgctxt "button label"
 msgid "Change password"
 msgstr ""
 
@@ -3617,23 +3954,11 @@ msgid "A Wicket block for Additional Info"
 msgstr ""
 
 msgctxt "block keyword"
-msgid "account-centre"
-msgstr ""
-
-msgctxt "block keyword"
-msgid "account-center"
-msgstr ""
-
-msgctxt "block keyword"
 msgid "additional"
 msgstr ""
 
 msgctxt "block keyword"
 msgid "info"
-msgstr ""
-
-msgctxt "block keyword"
-msgid "wicket"
 msgstr ""
 
 msgctxt "block title"
@@ -3718,10 +4043,6 @@ msgstr ""
 
 msgctxt "block description"
 msgid "[Deprecated] A Wicket block for Password"
-msgstr ""
-
-msgctxt "block keyword"
-msgid "password"
 msgstr ""
 
 msgctxt "block title"
@@ -3870,10 +4191,6 @@ msgstr ""
 
 msgctxt "block keyword"
 msgid "welcome"
-msgstr ""
-
-msgctxt "block title"
-msgid "ACC Base Block"
 msgstr ""
 
 msgctxt "block description"

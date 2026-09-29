@@ -135,7 +135,7 @@ class NotificationService
         }
 
         $message = $wp_error->get_error_message();
-        $title = __('Error', 'wicket-acc');
+        $title = _x('Error', 'notification type', 'wicket-acc');
 
         return $this->error($message, $title, $options);
     }
@@ -249,7 +249,7 @@ class NotificationService
             if (!$person) {
                 $logger->error('[OrgMan] Assignment email aborted: person not found', $context);
 
-                return new WP_Error('person_not_found', __('Person not found.', 'wicket-acc'));
+                return new WP_Error('person_not_found', _x('Person not found.', 'message', 'wicket-acc'));
             }
 
             // Get person details
@@ -267,10 +267,10 @@ class NotificationService
             $first_name = $person->given_name ?? '';
             $last_name = $person->family_name ?? '';
             /* translators: %s: organization name. */
-            $subject = sprintf(__('Welcome to %s', 'wicket-acc'), $organization_name);
+            $subject = sprintf(_x('Welcome to %s', 'email subject', 'wicket-acc'), $organization_name);
 
             /* translators: %s: recipient first name. */
-            $body = sprintf(__('Hi %s,', 'wicket-acc'), $first_name) . " <br>
+            $body = sprintf(_x('Hi %s,', 'email text', 'wicket-acc'), $first_name) . " <br>
 		 <p>" . sprintf(
                 /* translators: %s: organization name. */
                 __('You have been assigned a membership as part of %s.', 'wicket-acc'),
@@ -287,7 +287,7 @@ class NotificationService
                 "<a href='$home_url'>$site_name</a>"
             ) . "</p>
 		 <br>
-		 " . __('Thank you,', 'wicket-acc') . "
+		 " . _x('Thank you,', 'email text', 'wicket-acc') . "
 		 <br>
 		 $organization_name";
 
@@ -390,7 +390,7 @@ class NotificationService
             if (is_string($person_input)) {
                 $person = wicket_get_person_by_id($person_input);
                 if (!$person) {
-                    return new WP_Error('person_not_found', __('Person not found.', 'wicket-acc'));
+                    return new WP_Error('person_not_found', _x('Person not found.', 'message', 'wicket-acc'));
                 }
             } elseif (is_object($person_input)) {
                 $person = $person_input;
@@ -401,7 +401,7 @@ class NotificationService
             // Get organization data
             $org = wicket_get_organization($org_id);
             if (!$org) {
-                return new WP_Error('organization_not_found', __('Organization not found.', 'wicket-acc'));
+                return new WP_Error('organization_not_found', _x('Organization not found.', 'message', 'wicket-acc'));
             }
 
             // Get email address
@@ -416,7 +416,7 @@ class NotificationService
 
             // Validate email format
             if (!is_email($person_email)) {
-                return new WP_Error('invalid_email', __('Invalid email address.', 'wicket-acc'));
+                return new WP_Error('invalid_email', _x('Invalid email address.', 'message', 'wicket-acc'));
             }
 
             // Get language
@@ -445,10 +445,10 @@ class NotificationService
             switch ($notification_type) {
                 case 'group_assignment':
                     /* translators: %s: organization name. */
-                    $subject = sprintf(__('Welcome to %s', 'wicket-acc'), $organization_name);
+                    $subject = sprintf(_x('Welcome to %s', 'email subject', 'wicket-acc'), $organization_name);
                     $group_name = sanitize_text_field($data['group_name'] ?? '');
                     /* translators: %s: recipient first name. */
-                    $body = sprintf(__('Hi %s,', 'wicket-acc'), $first_name) . " <br>
+                    $body = sprintf(_x('Hi %s,', 'email text', 'wicket-acc'), $first_name) . " <br>
 					 <p>" . sprintf(
                         /* translators: %s: organization name. */
                         __('You have been assigned a membership as part of %s.', 'wicket-acc'),
@@ -465,7 +465,7 @@ class NotificationService
                         "<a href='{$home_url}'>{$site_name}</a>"
                     ) . "</p>
 					 <br>
-					 " . __('Thank you,', 'wicket-acc') . "
+					 " . _x('Thank you,', 'email text', 'wicket-acc') . "
 					 <br>
 					 {$organization_name}";
                     break;
@@ -473,7 +473,7 @@ class NotificationService
                 case 'representative_change':
                     $subject = __('Your Representative Information Has Been Updated', 'wicket-acc');
                     /* translators: %s: recipient first name. */
-                    $body = sprintf(__('Hi %s,', 'wicket-acc'), $first_name) . " <br>
+                    $body = sprintf(_x('Hi %s,', 'email text', 'wicket-acc'), $first_name) . " <br>
 					 <p>" . sprintf(
                         /* translators: %s: organization name. */
                         __('Your representative information has been updated in the %s organization.', 'wicket-acc'),
@@ -486,16 +486,16 @@ class NotificationService
                         "<a href='{$home_url}'>{$site_name}</a>"
                     ) . "</p>
 					 <br>
-					 " . __('Thank you,', 'wicket-acc') . "
+					 " . _x('Thank you,', 'email text', 'wicket-acc') . "
 					 <br>
 					 {$organization_name}";
                     break;
 
                 default:
                     /* translators: %s: organization name. */
-                    $subject = sprintf(__('Update from %s', 'wicket-acc'), $organization_name);
+                    $subject = sprintf(_x('Update from %s', 'email subject', 'wicket-acc'), $organization_name);
                     /* translators: %s: recipient first name. */
-                    $body = sprintf(__('Hi %s,', 'wicket-acc'), $first_name) . " <br>
+                    $body = sprintf(_x('Hi %s,', 'email text', 'wicket-acc'), $first_name) . " <br>
 					 <p>" . sprintf(
                         /* translators: %s: organization name. */
                         __('You have received an update from %s.', 'wicket-acc'),
@@ -508,7 +508,7 @@ class NotificationService
                         "<a href='{$home_url}'>{$site_name}</a>"
                     ) . "</p>
 					 <br>
-					 " . __('Thank you,', 'wicket-acc') . "
+					 " . _x('Thank you,', 'email text', 'wicket-acc') . "
 					 <br>
 					 {$organization_name}";
                     break;

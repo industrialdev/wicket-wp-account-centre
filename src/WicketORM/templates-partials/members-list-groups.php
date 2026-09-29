@@ -101,7 +101,7 @@ $show_assignment_info = (bool) ($orgman_config['presentation']['member_list']['s
         style="display: none;">
         <span class="wt_loader" aria-hidden="true"></span>
         <p class="members-loading-state__message wt_text-base wt_font-semibold wt_text-content wt_leading-normal" role="status" aria-live="polite">
-            <?php esc_html_e('Processing. Please wait...', 'wicket-acc'); ?>
+            <?php echo esc_html_x('Processing. Please wait...', 'message', 'wicket-acc'); ?>
         </p>
     </div>
 
@@ -112,7 +112,7 @@ $show_assignment_info = (bool) ($orgman_config['presentation']['member_list']['s
         <?php if ($max_seats !== null) : ?>
             <?php
             /* translators: 1: number of assigned seats, 2: maximum number of seats. */
-            printf(esc_html__('Seats assigned: %1$d / %2$d', 'wicket-acc'), (int) $active_seats, (int) $max_seats);
+            printf(esc_html_x('Seats assigned: %1$d / %2$d', 'count label', 'wicket-acc'), (int) $active_seats, (int) $max_seats);
             ?>
         <?php else : ?>
             <?php
@@ -131,7 +131,7 @@ $show_assignment_info = (bool) ($orgman_config['presentation']['member_list']['s
             <?php if ($can_purchase_seats && $purchase_seats_url) : ?>
                 <div class="wt_mt-3">
                     <a class="button button--primary additional-seats-cta" href="<?php echo esc_url($purchase_seats_url); ?>">
-                        <?php esc_html_e('Purchase Additional Seats', 'wicket-acc'); ?>
+                        <?php echo esc_html_x('Purchase Additional Seats', 'button label', 'wicket-acc'); ?>
                     </a>
                 </div>
             <?php endif; ?>
@@ -139,13 +139,13 @@ $show_assignment_info = (bool) ($orgman_config['presentation']['member_list']['s
     <?php elseif ($can_purchase_seats && $purchase_seats_url) : ?>
         <div class="wt_rounded-md wt_bg-light-neutral wt_p-4">
             <a class="button button--primary additional-seats-cta" href="<?php echo esc_url($purchase_seats_url); ?>">
-                <?php esc_html_e('Purchase Additional Seats', 'wicket-acc'); ?>
+                <?php echo esc_html_x('Purchase Additional Seats', 'button label', 'wicket-acc'); ?>
             </a>
         </div>
     <?php endif; ?>
 
     <?php if (empty($members)) : ?>
-        <p class="wt_text-gray-500 wt_p-4"><?php esc_html_e('No members found.', 'wicket-acc'); ?></p>
+        <p class="wt_text-gray-500 wt_p-4"><?php echo esc_html_x('No members found.', 'message', 'wicket-acc'); ?></p>
     <?php else : ?>
         <?php foreach ($members as $member) :
             $member_uuid = $member['person_uuid'] ?? '';
@@ -167,15 +167,15 @@ $show_assignment_info = (bool) ($orgman_config['presentation']['member_list']['s
                                 </h3>
                                 <?php endif; ?>
                                 <?php if ($is_confirmed) : ?>
-                                    <span class="wt_text-content" title="<?php esc_attr_e('Account confirmed', 'wicket-acc'); ?>">
+                                    <span class="wt_text-content" title="<?php echo esc_attr_x('Account confirmed', 'tooltip', 'wicket-acc'); ?>">
                                         <span class="wt_inline-block wt_w-2 wt_h-2 wt_rounded-full wt_bg-green-500" aria-hidden="true"></span>
                                     </span>
                                 <?php else : ?>
-                                    <span class="wt_text-content" title="<?php esc_attr_e('Account not confirmed', 'wicket-acc'); ?>">
+                                    <span class="wt_text-content" title="<?php echo esc_attr_x('Account not confirmed', 'tooltip', 'wicket-acc'); ?>">
                                         <span class="wt_inline-block wt_w-2 wt_h-2 wt_rounded-full wt_bg-gray-400" aria-hidden="true"></span>
                                     </span>
-                                    <span class="wt_text-warning wt_whitespace-nowrap" title="<?php esc_attr_e('Account not confirmed', 'wicket-acc'); ?>">
-                                        <?php esc_html_e('Account not confirmed', 'wicket-acc'); ?>
+                                    <span class="wt_text-warning wt_whitespace-nowrap" title="<?php echo esc_attr_x('Account not confirmed', 'tooltip', 'wicket-acc'); ?>">
+                                        <?php echo esc_html_x('Account not confirmed', 'status', 'wicket-acc'); ?>
                                     </span>
                                 <?php endif; ?>
                             </div>
@@ -189,7 +189,7 @@ $show_assignment_info = (bool) ($orgman_config['presentation']['member_list']['s
                         <?php endif; ?>
                         <?php if ($member_role_label && WicketORM\Helpers\Helper::should_show_member_roles()) : ?>
                             <div class="wt_flex wt_items-baseline wt_gap-2 wt_text-sm">
-                                <strong><?php esc_html_e('Role:', 'wicket-acc'); ?></strong>
+                                <strong><?php echo esc_html_x('Role:', 'label', 'wicket-acc'); ?></strong>
                                 <span class="wt_text-content">
                                     <?php echo esc_html(ucwords(str_replace('_', ' ', $member_role_label))); ?>
                                 </span>
@@ -210,7 +210,7 @@ $show_assignment_info = (bool) ($orgman_config['presentation']['member_list']['s
                                 $currentRemoveMemberRole = '<?php echo esc_js($member_role_label); ?>';
                                 $removeMemberModalOpen = true
                             ">
-                            <?php esc_html_e('Remove', 'wicket-acc'); ?>
+                            <?php echo esc_html_x('Remove', 'button label', 'wicket-acc'); ?>
                             <svg class="wt_w-4 wt_h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M19 7l-.867 12.142A2 2 0 0 1 16.138 21H7.862a2 2 0 0 1-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v3M4 7h16" />
                             </svg>
@@ -222,14 +222,14 @@ $show_assignment_info = (bool) ($orgman_config['presentation']['member_list']['s
         <?php endforeach; ?>
     <?php endif; ?>
 
-    <nav class="members-pagination wt_mt-6 wt_flex wt_flex-col wt_gap-4" aria-label="<?php esc_attr_e('Group members pagination', 'wicket-acc'); ?>">
+    <nav class="members-pagination wt_mt-6 wt_flex wt_flex-col wt_gap-4" aria-label="<?php echo esc_attr_x('Group members pagination', 'accessibility label', 'wicket-acc'); ?>">
         <div class="members-pagination__info wt_w-full wt_text-left wt_text-sm wt_text-content">
             <?php
                 if ($total_items > 0) {
                     $first = (($page - 1) * $page_size) + 1;
                     $last = min($total_items, $page * $page_size);
                     /* translators: 1: first item number on the page, 2: last item number on the page, 3: total number of items. */
-                    echo esc_html(sprintf(__('Showing %1$d–%2$d of %3$d', 'wicket-acc'), $first, $last, $total_items));
+                    echo esc_html(sprintf(_x('Showing %1$d–%2$d of %3$d', 'count label', 'wicket-acc'), $first, $last, $total_items));
                 } else {
                     // Pagination hidden when no members
                 }
@@ -244,7 +244,7 @@ $show_assignment_info = (bool) ($orgman_config['presentation']['member_list']['s
                     <?php if (!$prev_disabled) : ?>data-on:click="<?php echo esc_attr($build_action($page - 1)); ?>" <?php endif; ?>
                     data-on:success="<?php echo esc_attr('$listLoading = false;'); ?>"
                     data-indicator:members-loading>
-                    <?php esc_html_e('Previous', 'wicket-acc'); ?>
+                    <?php echo esc_html_x('Previous', 'button label', 'wicket-acc'); ?>
                 </button>
                 <div class="members-pagination__pages wt_flex wt_items-center wt_gap-1">
                     <?php for ($i = 1; $i <= $total_pages; $i++) :
@@ -267,7 +267,7 @@ $show_assignment_info = (bool) ($orgman_config['presentation']['member_list']['s
                     <?php if (!$next_disabled) : ?>data-on:click="<?php echo esc_attr($build_action($page + 1)); ?>" <?php endif; ?>
                     data-on:success="<?php echo esc_attr('$listLoading = false;'); ?>"
                     data-indicator:members-loading>
-                    <?php esc_html_e('Next', 'wicket-acc'); ?>
+                    <?php echo esc_html_x('Next', 'button label', 'wicket-acc'); ?>
                 </button>
             </div>
         <?php endif; ?>
@@ -281,7 +281,7 @@ $show_assignment_info = (bool) ($orgman_config['presentation']['member_list']['s
 ?>
         <button type="button"
             class="button button--primary add-member-button wt_w-full wt_py-2 component-button"
-            data-on:click="$addMemberSuccess = false; $addMemberSubmitting = false; $addMemberSuccessMessage = ''; (() => { const modal = document.getElementById('groupMembersAddModal'); if (!modal) return; const form = modal.querySelector('form'); if (form) form.reset(); const messages = modal.querySelector('#group-member-add-messages'); if (messages) messages.innerHTML = ''; })(); $addMemberModalOpen = true"><?php esc_html_e('Add Member', 'wicket-acc'); ?></button>
+            data-on:click="$addMemberSuccess = false; $addMemberSubmitting = false; $addMemberSuccessMessage = ''; (() => { const modal = document.getElementById('groupMembersAddModal'); if (!modal) return; const form = modal.querySelector('form'); if (form) form.reset(); const messages = modal.querySelector('#group-member-add-messages'); if (messages) messages.innerHTML = ''; })(); $addMemberModalOpen = true"><?php echo esc_html_x('Add Member', 'button label', 'wicket-acc'); ?></button>
         
         <?php if (!$has_seats_available) : ?>
             <div class="wt_mt-2 wt_p-3 wt_bg-yellow-50 wt_border wt_border-yellow-200 wt_rounded-md wt_text-yellow-800 wt_text-sm">

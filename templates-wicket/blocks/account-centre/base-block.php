@@ -17,7 +17,7 @@ defined('ABSPATH') || exit;
 ?>
 <section class="wicket-acc-base-block <?php echo $args['block_slug']; ?>">
     <div class="wicket-acc-base-block__content">
-        <h2><?php /* translators: Placeholder block heading. */ esc_html_e('Title', 'wicket-acc'); ?></h2>
+        <h2><?php /* translators: Placeholder block heading. */ echo esc_html_x('Title', 'label', 'wicket-acc'); ?></h2>
         <p>
             <?php esc_html_e('This are the available variables:', 'wicket-acc'); ?>
         </p>

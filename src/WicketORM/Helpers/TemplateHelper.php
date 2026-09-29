@@ -78,9 +78,9 @@ class TemplateHelper extends Helper
     public static function organization_action_label(string $key): string
     {
         $defaults = [
-            'org_profile' => __('Org. Profile', 'wicket-acc'),
-            'manage_members' => __('Manage Members', 'wicket-acc'),
-            'contact_list' => __('Manage Contact List', 'wicket-acc'),
+            'org_profile' => _x('Org. Profile', 'button label', 'wicket-acc'),
+            'manage_members' => _x('Manage Members', 'button label', 'wicket-acc'),
+            'contact_list' => _x('Manage Contact List', 'button label', 'wicket-acc'),
         ];
         $labels = \WicketORM\Services\ConfigService::getConfig()['presentation']['organization_details']['labels'] ?? [];
         $label = is_array($labels) ? trim((string) ($labels[$key] ?? '')) : '';
@@ -206,7 +206,7 @@ class TemplateHelper extends Helper
                 'real_path' => $real_template_path ?: 'false',
                 'plugin_dir' => $real_plugin_dir,
             ]);
-            wp_die(esc_html__('Template not found.', 'wicket-acc'));
+            wp_die(esc_html_x('Template not found.', 'message', 'wicket-acc'));
             exit;
         }
 
@@ -240,7 +240,7 @@ class TemplateHelper extends Helper
             include $real_template_path;
         } else {
             self::log_error('Template file does not exist: ' . $real_template_path);
-            wp_die(esc_html__('Template not found.', 'wicket-acc'));
+            wp_die(esc_html_x('Template not found.', 'message', 'wicket-acc'));
             exit;
         }
     }

@@ -105,7 +105,7 @@ try {
             /* translators: %1$s: contact name. */ esc_html__('Successfully removed %1$s from the contact list.', 'wicket-acc'),
             '<strong>' . esc_html($person_name) . '</strong>'
         )
-        : esc_html_x('Successfully removed the contact from the contact list.', 'org contacts success message', 'wicket-acc');
+        : esc_html__('Successfully removed the contact from the contact list.', 'wicket-acc');
 
     if (!empty($result['membership_preserved'])) {
         $success_message .= ' ' . esc_html__('Roles preserved due to active membership.', 'wicket-acc');
@@ -130,7 +130,7 @@ try {
     // Success message
     $success_html = sprintf(
         '<div class="wt_bg-green-100 wt_border wt_border-green-400 wt_text-green-700 wt_px-4 wt_py-3 wt_rounded-sm wt_mb-4"><p><strong>%1$s</strong></p><p>%2$s</p></div>',
-        esc_html__('Success!', 'wicket-acc'),
+        esc_html_x('Success!', 'label', 'wicket-acc'),
         wp_kses_post($success_message)
     );
     $generator->patchElements($success_html, [

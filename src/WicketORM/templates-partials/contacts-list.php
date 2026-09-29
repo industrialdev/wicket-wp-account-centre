@@ -112,7 +112,7 @@ $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' 
         style="display: none;">
         <span class="wt_loader" aria-hidden="true"></span>
         <p class="wt_text-base wt_font-semibold wt_text-content wt_leading-normal" role="status" aria-live="polite">
-            <?php esc_html_e('Processing. Please wait...', 'wicket-acc'); ?>
+            <?php echo esc_html_x('Processing. Please wait...', 'message', 'wicket-acc'); ?>
         </p>
     </div>
 
@@ -140,19 +140,19 @@ $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' 
                 data-on:click="<?php echo esc_attr($contacts_search_submit); ?>"
                 data-show="!$contactsSubmitted"
                 data-indicator:contacts-loading>
-                <?php /* translators: Button: run the search. */ esc_html_e('Search', 'wicket-acc'); ?>
+                <?php /* translators: Button: run the search. */ echo esc_html_x('Search', 'button label', 'wicket-acc'); ?>
             </button>
             <button type="button"
                 class="button button--secondary wt_px-4 wt_py-2 wt_text-sm component-button wt_whitespace-nowrap"
                 data-on:click="<?php echo esc_attr($contacts_clear_action); ?>"
                 data-show="$contactsSubmitted"
                 data-indicator:contacts-loading>
-                <?php /* translators: Button: clear the search. */ esc_html_e('Clear', 'wicket-acc'); ?>
+                <?php /* translators: Button: clear the search. */ echo esc_html_x('Clear', 'button label', 'wicket-acc'); ?>
             </button>
         </div>
 
         <?php if (empty($contacts)): ?>
-            <p class="wt_text-gray-500 wt_p-4"><?php esc_html_e('No contacts found.', 'wicket-acc'); ?></p>
+            <p class="wt_text-gray-500 wt_p-4"><?php echo esc_html_x('No contacts found.', 'message', 'wicket-acc'); ?></p>
         <?php else: ?>
             <?php foreach ($contacts as $contact):
                 $person_uuid = $contact['person_uuid'] ?? '';
@@ -181,7 +181,7 @@ $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' 
                             <?php endif; ?>
                             <?php if ($type_names_csv !== ''): ?>
                             <div class="wt_flex wt_items-center wt_gap-2 wt_text-sm">
-                                <strong><?php esc_html_e('Relationship:', 'wicket-acc'); ?></strong>
+                                <strong><?php echo esc_html_x('Relationship:', 'label', 'wicket-acc'); ?></strong>
                                 <span class="wt_text-content"><?php echo esc_html($type_names_csv); ?></span>
                             </div>
                             <?php endif; ?>
@@ -199,7 +199,7 @@ $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' 
                                 $currentRemoveConnectionIds = '<?php echo esc_js($connection_ids_csv); ?>';
                                 $removeContactModalOpen = true
                             ">
-                            <?php esc_html_e('Remove', 'wicket-acc'); ?>
+                            <?php echo esc_html_x('Remove', 'button label', 'wicket-acc'); ?>
                             <svg class="wt_w-4 wt_h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M19 7l-.867 12.142A2 2 0 0 1 16.138 21H7.862a2 2 0 0 1-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v3M4 7h16" />
                             </svg>
@@ -212,14 +212,14 @@ $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' 
         <?php endif; ?>
 
         <!-- Pagination -->
-        <nav class="contacts-pagination wt_mt-6 wt_flex wt_flex-col wt_gap-4" aria-label="<?php esc_attr_e('Contacts pagination', 'wicket-acc'); ?>">
+        <nav class="contacts-pagination wt_mt-6 wt_flex wt_flex-col wt_gap-4" aria-label="<?php echo esc_attr_x('Contacts pagination', 'accessibility label', 'wicket-acc'); ?>">
             <div class="contacts-pagination__info wt_w-full wt_text-left wt_text-sm wt_text-content">
                 <?php
                     if ($total_items > 0) {
                         $first = (($page - 1) * $page_size) + 1;
                         $last = min($total_items, $page * $page_size);
                         /* translators: 1: first item number on the page, 2: last item number on the page, 3: total number of items. */
-                        echo esc_html(sprintf(__('Showing %1$d-%2$d of %3$d', 'wicket-acc'), $first, $last, $total_items));
+                        echo esc_html(sprintf(_x('Showing %1$d-%2$d of %3$d', 'count label', 'wicket-acc'), $first, $last, $total_items));
                     }
 ?>
             </div>
@@ -230,7 +230,7 @@ $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' 
                         class="button button--secondary wt_px-3 wt_py-2 wt_text-sm component-button"
                         data-on:click="<?php echo esc_attr($build_action($page - 1)); ?>"
                         data-indicator:contacts-loading>
-                        <?php esc_html_e('Previous', 'wicket-acc'); ?>
+                        <?php echo esc_html_x('Previous', 'button label', 'wicket-acc'); ?>
                     </button>
                 <?php endif; ?>
                 <div class="wt_flex wt_items-center wt_gap-1">
@@ -251,7 +251,7 @@ $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' 
                         class="button button--secondary wt_px-3 wt_py-2 wt_text-sm component-button"
                         data-on:click="<?php echo esc_attr($build_action($page + 1)); ?>"
                         data-indicator:contacts-loading>
-                        <?php esc_html_e('Next', 'wicket-acc'); ?>
+                        <?php echo esc_html_x('Next', 'button label', 'wicket-acc'); ?>
                     </button>
                 <?php endif; ?>
             </div>
@@ -263,7 +263,7 @@ $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' 
             <button type="button"
                 class="button button--primary add-contact-button wt_w-full wt_py-2 component-button"
                 data-on:click="$addContactSuccess = false; $addContactSubmitting = false; (() => { const modal = document.getElementById('addContactModal'); const form = modal ? modal.querySelector('form') : null; if (form && form.reset) form.reset(); const messages = document.querySelector('[id^=\'add-contact-messages-\']'); if (messages) messages.innerHTML = ''; })(); $addContactModalOpen = true">
-                <?php esc_html_e('Add Individual Contact', 'wicket-acc'); ?>
+                <?php echo esc_html_x('Add Individual Contact', 'button label', 'wicket-acc'); ?>
             </button>
         </div>
         <?php endif; ?>
@@ -278,14 +278,14 @@ $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' 
         data-effect="if ($addContactModalOpen) el.showModal(); else el.close();"
         data-on:close="$addContactModalOpen = false; $addContactSubmitting = false;">
         <div class="wt_bg-white wt_p-6 wt_relative">
-            <button aria-label="<?php esc_attr_e('Close', 'wicket-acc'); ?>" type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
+            <button aria-label="<?php echo esc_attr_x('Close', 'accessibility label', 'wicket-acc'); ?>" type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
                 data-on:click="$addContactModalOpen = false;"
                 data-show="!$addContactSuccess">
                 x
             </button>
 
             <h2 class="wp-block-heading has-heading-sm-font-size wt_text-2xl wt_font-semibold wt_mb-4">
-                <?php esc_html_e('Add Contact', 'wicket-acc'); ?>
+                <?php echo esc_html_x('Add Contact', 'label', 'wicket-acc'); ?>
             </h2>
 
             <div id="add-contact-messages-<?php echo esc_attr($org_dom_suffix); ?>">
@@ -307,14 +307,14 @@ $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' 
                 <div class="wt_grid wt_grid-cols-2 wt_gap-4 wt_mb-4">
                     <div>
                         <label class="wt_block wt_text-sm wt_font-medium wt_mb-2" for="contact-first-name">
-                            <?php esc_html_e('First Name', 'wicket-acc'); ?> *
+                            <?php echo esc_html_x('First Name', 'label', 'wicket-acc'); ?> *
                         </label>
                         <input type="text" id="contact-first-name" name="first_name" required
                             class="wt_w-full wt_border wt_border-color wt_rounded-md wt_p-2 wt_text-sm">
                     </div>
                     <div>
                         <label class="wt_block wt_text-sm wt_font-medium wt_mb-2" for="contact-last-name">
-                            <?php esc_html_e('Last Name', 'wicket-acc'); ?> *
+                            <?php echo esc_html_x('Last Name', 'label', 'wicket-acc'); ?> *
                         </label>
                         <input type="text" id="contact-last-name" name="last_name" required
                             class="wt_w-full wt_border wt_border-color wt_rounded-md wt_p-2 wt_text-sm">
@@ -323,7 +323,7 @@ $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' 
 
                 <div class="wt_mb-4">
                     <label class="wt_block wt_text-sm wt_font-medium wt_mb-2" for="contact-email">
-                        <?php esc_html_e('Email Address', 'wicket-acc'); ?> *
+                        <?php echo esc_html_x('Email Address', 'label', 'wicket-acc'); ?> *
                     </label>
                     <input type="email" id="contact-email" name="email" required
                         class="wt_w-full wt_border wt_border-color wt_rounded-md wt_p-2 wt_text-sm">
@@ -331,7 +331,7 @@ $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' 
 
                 <div class="wt_mb-4">
                     <label class="wt_block wt_text-sm wt_font-medium wt_mb-2" for="contact-relationship-type">
-                        <?php esc_html_e('Relationship Type', 'wicket-acc'); ?> *
+                        <?php echo esc_html_x('Relationship Type', 'label', 'wicket-acc'); ?> *
                     </label>
                     <select id="contact-relationship-type" name="relationship_type" required
                         class="wt_w-full wt_border wt_border-color wt_rounded-md wt_p-2 wt_text-sm">
@@ -346,7 +346,7 @@ $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' 
 
                 <?php if (!empty($assign_roles)): ?>
                 <div class="wt_mb-6">
-                    <p class="wt_font-bold wt_mb-3"><?php esc_html_e('Permissions', 'wicket-acc'); ?></p>
+                    <p class="wt_font-bold wt_mb-3"><?php echo esc_html_x('Permissions', 'label', 'wicket-acc'); ?></p>
                     <div class="wt_space-y-2">
                         <?php foreach ($permission_labels as $slug => $label): ?>
                             <?php if (!in_array($slug, $assign_roles, true)) {
@@ -368,13 +368,13 @@ $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' 
                     <button type="button"
                         data-on:click="$addContactModalOpen = false;"
                         class="button button--secondary wt_px-4 wt_py-2 wt_text-sm component-button">
-                        <?php esc_html_e('Cancel', 'wicket-acc'); ?>
+                        <?php echo esc_html_x('Cancel', 'button label', 'wicket-acc'); ?>
                     </button>
                     <button type="submit"
                         class="button button--primary wt_button_submit_async wt_inline-flex wt_items-center wt_gap-2 wt_px-4 wt_py-2 wt_text-sm component-button"
                         data-class="{ 'wt_pointer-events-none': $addContactSubmitting, 'wt_opacity-50': $addContactSubmitting, 'wt_is-loading': $addContactSubmitting }"
                         data-attr:aria-disabled="$addContactSubmitting ? 'true' : 'false'">
-                        <span class="wt_submit_label"><?php esc_html_e('Add Contact', 'wicket-acc'); ?></span>
+                        <span class="wt_submit_label"><?php echo esc_html_x('Add Contact', 'button label', 'wicket-acc'); ?></span>
                         <span class="wt_loader wt_loader_button wt_submit_loader" aria-hidden="true"></span>
                     </button>
                 </div>
@@ -384,7 +384,7 @@ $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' 
                 <button type="button"
                     class="button button--primary wt_px-4 wt_py-2 wt_text-sm component-button"
                     data-on:click="$addContactModalOpen = false;">
-                    <?php esc_html_e('Close', 'wicket-acc'); ?>
+                    <?php echo esc_html_x('Close', 'button label', 'wicket-acc'); ?>
                 </button>
             </div>
         </div>
@@ -400,12 +400,12 @@ $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' 
         data-effect="if ($removeContactModalOpen) el.showModal(); else el.close();"
         data-on:close="<?php echo esc_attr($remove_contact_reset_actions); ?>">
         <div class="wt_bg-white wt_p-6 wt_relative">
-            <button aria-label="<?php esc_attr_e('Close', 'wicket-acc'); ?>" type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
+            <button aria-label="<?php echo esc_attr_x('Close', 'accessibility label', 'wicket-acc'); ?>" type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
                 data-on:click="<?php echo esc_attr($remove_contact_reset_actions); ?>" data-show="!$removeContactSuccess">
                 x
             </button>
             <h2 class="wp-block-heading has-heading-sm-font-size wt_text-2xl wt_font-semibold wt_mb-4">
-                <?php esc_html_e('Remove Contact', 'wicket-acc'); ?>
+                <?php echo esc_html_x('Remove Contact', 'label', 'wicket-acc'); ?>
             </h2>
             <div id="remove-contact-messages">
                 <!-- Messages inserted here by Datastar -->
@@ -439,14 +439,14 @@ $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' 
                         <button type="button"
                             data-on:click="<?php echo esc_attr($remove_contact_reset_actions); ?>"
                             class="button button--secondary wt_px-4 wt_py-2 wt_text-sm component-button">
-                            <?php esc_html_e('Cancel', 'wicket-acc'); ?>
+                            <?php echo esc_html_x('Cancel', 'button label', 'wicket-acc'); ?>
                         </button>
                         <button type="submit"
                             class="button button--danger wt_inline-flex wt_items-center wt_gap-2 wt_px-4 wt_py-2 wt_text-sm component-button"
                             data-class="{ 'wt_pointer-events-none': $removeContactSubmitting, 'wt_opacity-50': $removeContactSubmitting, 'wt_is-loading': $removeContactSubmitting }"
                             data-attr:aria-disabled="$removeContactSubmitting ? 'true' : 'false'">
                             <span class="wt_submit_label" data-show="!$removeContactSubmitting">
-                                <?php esc_html_e('Remove Contact', 'wicket-acc'); ?>
+                                <?php echo esc_html_x('Remove Contact', 'button label', 'wicket-acc'); ?>
                             </span>
                             <span class="wt_loader wt_loader_button wt_submit_loader" data-show="$removeContactSubmitting" aria-hidden="true"></span>
                         </button>
@@ -459,7 +459,7 @@ $contacts_clear_action = '($contactsQuery = \'\', $contactsSubmitted = false, ' 
                     <button type="button"
                         class="button button--primary wt_px-4 wt_py-2 wt_text-sm component-button"
                         data-on:click="<?php echo esc_attr($remove_contact_reset_actions); ?>">
-                        <?php esc_html_e('Close', 'wicket-acc'); ?>
+                        <?php echo esc_html_x('Close', 'button label', 'wicket-acc'); ?>
                     </button>
                 </div>
             </div>

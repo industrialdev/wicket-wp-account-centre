@@ -23,7 +23,7 @@ class Blocks extends WicketAcc
     /**
      * Field settings that hold translatable text.
      */
-    private const ACF_TEXT_SETTINGS = ['label', 'instructions', 'placeholder', 'prepend', 'append', 'message', 'button_label', 'ui_on_text', 'ui_off_text'];
+    private const ACF_TEXT_SETTINGS = ['label' => 'label', 'instructions' => 'help text', 'placeholder' => 'field placeholder', 'prepend' => 'field affix', 'append' => 'field affix', 'message' => 'help text', 'button_label' => 'button label', 'ui_on_text' => 'label', 'ui_off_text' => 'label'];
 
     /**
      * Keys of the ACF fields shipped in includes/acf-json, loaded on first use.
@@ -62,21 +62,34 @@ class Blocks extends WicketAcc
             return $field;
         }
 
-        foreach (self::ACF_TEXT_SETTINGS as $setting) {
+        foreach (self::ACF_TEXT_SETTINGS as $setting => $context) {
             if (!empty($field[$setting]) && is_string($field[$setting])) {
-                $field[$setting] = _x($field[$setting], 'admin field ' . str_replace('_', ' ', $setting), 'wicket-acc');
+                $field[$setting] = $this->translate_acf_text($field[$setting], $context);
             }
         }
 
         if (!empty($field['choices']) && is_array($field['choices'])) {
             foreach ($field['choices'] as $value => $label) {
                 if (is_string($label) && $label !== '') {
-                    $field['choices'][$value] = _x($label, 'admin field option', 'wicket-acc');
+                    $field['choices'][$value] = $this->translate_acf_text($label, 'label');
                 }
             }
         }
 
         return $field;
+    }
+
+    /**
+     * Short strings (1 to 3 words) get a context; full sentences do not.
+     * Keep in sync with .ci/acf-i18n-strings.php.
+     */
+    private function translate_acf_text(string $text, string $context): string
+    {
+        $plain = preg_replace(['#<[^>]+>#', '#%(\d+\$)?[sdfu]#', '#&[a-z]+;#'], ' ', $text);
+
+        return preg_match_all("/[\p{L}\p{N}][\p{L}\p{N}'’.-]*/u", $plain) <= 3
+            ? _x($text, $context, 'wicket-acc')
+            : __($text, 'wicket-acc');
     }
 
     /**
@@ -120,7 +133,7 @@ class Blocks extends WicketAcc
     {
         $categories[] = [
             'slug'  => 'wicket-account-center',
-            'title' => __('Wicket_AC', 'wicket-acc'),
+            'title' => _x('Wicket_AC', 'block category name', 'wicket-acc'),
         ];
 
         return $categories;
@@ -290,7 +303,7 @@ class Blocks extends WicketAcc
         // Avoid false include
         if ($this->get_block_template_path($template_name) === false) {
             /* translators: %s: template name. */
-            echo '<p>' . esc_html(sprintf(__('Template %s not found', 'wicket-acc'), $template_name)) . '</p>';
+            echo '<p>' . esc_html(sprintf(_x('Template %s not found', 'message', 'wicket-acc'), $template_name)) . '</p>';
 
             return;
         }

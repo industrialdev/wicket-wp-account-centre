@@ -265,7 +265,7 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
 
             return [
                 'status'      => 'success',
-                'message'     => __('Member added successfully.', 'wicket-acc'),
+                'message'     => _x('Member added successfully.', 'message', 'wicket-acc'),
                 'person_uuid' => $person_uuid,
             ];
 
@@ -477,7 +477,7 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
             if (empty($membership_data) || empty($membership_data['data'])) {
                 $logger->error('Membership data missing payload', $context);
 
-                return new WP_Error('membership_data_missing', __('Membership details unavailable.', 'wicket-acc'));
+                return new WP_Error('membership_data_missing', _x('Membership details unavailable.', 'message', 'wicket-acc'));
             }
 
             // Extract membership type ID from relationships
@@ -561,7 +561,7 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
     {
         $role = sanitize_key($role);
         if ('' === $role) {
-            return new WP_Error('invalid_role', __('Role is required.', 'wicket-acc'));
+            return new WP_Error('invalid_role', _x('Role is required.', 'message', 'wicket-acc'));
         }
 
         if (!function_exists('wicket_assign_role')) {
@@ -584,7 +584,7 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
 
         if (false === $result) {
             /* translators: %s: role slug. */
-            return new WP_Error('role_assignment_failed', sprintf(__('Failed assigning role %s.', 'wicket-acc'), $role));
+            return new WP_Error('role_assignment_failed', sprintf(_x('Failed assigning role %s.', 'message', 'wicket-acc'), $role));
         }
 
         return true;
@@ -760,14 +760,14 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
         }
         $first_name = sanitize_text_field($first_name);
         /* translators: %s: organization name. */
-        $subject = sprintf(__('Welcome to %s', 'wicket-acc'), $organization_name);
+        $subject = sprintf(_x('Welcome to %s', 'email subject', 'wicket-acc'), $organization_name);
 
         // Get configuration for email
         $config = $this->configService()->getFullConfig();
         $confirmation_email_from = $config['integrations']['notifications']['confirmation_email_from'] ?? 'no-reply@wicketcloud.com';
 
         /* translators: %s: recipient first name. */
-        $body = sprintf(__('Hi %s,', 'wicket-acc'), esc_html($first_name)) . "<br>
+        $body = sprintf(_x('Hi %s,', 'email text', 'wicket-acc'), esc_html($first_name)) . "<br>
             <p>" . sprintf(
                 /* translators: %s: organization name. */
                 __('You have been assigned a membership as part of %s.', 'wicket-acc'),
@@ -784,7 +784,7 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
                 sprintf("<a href='%s'>%s</a>", esc_url($home_url), esc_html($site_name))
             ) . "</p>
             <br>
-            " . __('Thank you,', 'wicket-acc') . "<br>
+            " . _x('Thank you,', 'email text', 'wicket-acc') . "<br>
             " . esc_html($organization_name);
 
         $headers = ['Content-Type: text/html; charset=UTF-8'];
@@ -935,7 +935,7 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
                     'role_removal_failed',
                     sprintf(
                         /* translators: %s: comma-separated list of role slugs. */
-                        _n('Failed removing role: %s.', 'Failed removing roles: %s.', count($role_failures), 'wicket-acc'),
+                        _nx('Failed removing role: %s.', 'Failed removing roles: %s.', count($role_failures), 'message', 'wicket-acc'),
                         implode(', ', $role_failures)
                     )
                 );
@@ -995,7 +995,7 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
 
             return [
                 'status'         => 'success',
-                'message'        => __('Member removed successfully.', 'wicket-acc'),
+                'message'        => _x('Member removed successfully.', 'message', 'wicket-acc'),
                 'membership_uuid' => '' !== $membership_uuid ? $membership_uuid : null,
             ];
 

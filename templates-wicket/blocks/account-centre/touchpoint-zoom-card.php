@@ -88,19 +88,19 @@ $event_duration = $tp['attributes']['data']['event_duration'] ?? '';
 			</a>
 		<?php endif; ?>
 		<p class="event-date <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm leading-relaxed' ?>">
-			<strong><?php _e('Date:', 'wicket-acc'); ?></strong> <?php echo esc_html($start_date_full); ?> -
+			<strong><?php _ex('Date:', 'label', 'wicket-acc'); ?></strong> <?php echo esc_html($start_date_full); ?> -
 			<?php echo esc_html($end_date_full); ?>
 		</p>
 		<p class="event-time <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm leading-relaxed' ?>">
-			<strong><?php _e('Time:', 'wicket-acc'); ?></strong> <?php echo esc_html($start_time); ?> - <?php echo esc_html($end_time); ?>
+			<strong><?php _ex('Time:', 'label', 'wicket-acc'); ?></strong> <?php echo esc_html($start_time); ?> - <?php echo esc_html($end_time); ?>
 		</p>
 
 		<?php if (isset($event_duration)) : ?>
 			<p class="event-duration <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm leading-relaxed' ?>">
-				<strong><?php _e('Duration:', 'wicket-acc'); ?></strong>
+				<strong><?php _ex('Duration:', 'label', 'wicket-acc'); ?></strong>
 				<?php
 				/* translators: %s: event duration in minutes. */
-				echo esc_html(sprintf(_n('%s minute', '%s minutes', (int) $event_duration, 'wicket-acc'), $event_duration));
+				echo esc_html(sprintf(_nx('%s minute', '%s minutes', (int) $event_duration, 'duration', 'wicket-acc'), $event_duration));
 				?>
 			</p>
 		<?php endif; ?>

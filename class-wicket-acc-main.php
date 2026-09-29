@@ -318,31 +318,31 @@ class WicketAcc
     {
         return [
             // Wicket pages
-            'edit-profile' => __('Edit Profile', 'wicket-acc'),
-            'events' => __('My Events', 'wicket-acc'),
-            'jobs' => __('My Jobs', 'wicket-acc'),
-            'job-post' => __('Post a Job', 'wicket-acc'),
-            'change-password' => __('Change Password', 'wicket-acc'),
-            'organization-management' => __('Organization Management', 'wicket-acc'),
-            'organization-profile' => __('Organization Profile', 'wicket-acc'),
-            'organization-members' => __('Organization Members', 'wicket-acc'),
-            'organization-members-bulk' => __('Bulk Upload Members', 'wicket-acc'),
-            'acc_global-headerbanner' => __('Global Header-Banner', 'wicket-acc'),
+            'edit-profile' => _x('Edit Profile', 'label', 'wicket-acc'),
+            'events' => _x('My Events', 'label', 'wicket-acc'),
+            'jobs' => _x('My Jobs', 'label', 'wicket-acc'),
+            'job-post' => _x('Post a Job', 'label', 'wicket-acc'),
+            'change-password' => _x('Change Password', 'label', 'wicket-acc'),
+            'organization-management' => _x('Organization Management', 'label', 'wicket-acc'),
+            'organization-profile' => _x('Organization Profile', 'label', 'wicket-acc'),
+            'organization-members' => _x('Organization Members', 'label', 'wicket-acc'),
+            'organization-members-bulk' => _x('Bulk Upload Members', 'label', 'wicket-acc'),
+            'acc_global-headerbanner' => _x('Global Header-Banner', 'label', 'wicket-acc'),
             // WooCommerce endpoints
-            'add-payment-method' => __('Add Payment Method', 'wicket-acc'),
+            'add-payment-method' => _x('Add Payment Method', 'label', 'wicket-acc'),
             'set-default-payment-method' => __('Set Default Payment Method', 'wicket-acc'),
             /* translators: My Account menu item: the user's WooCommerce orders. */
-            'orders' => __('Orders', 'wicket-acc'),
-            'view-order' => __('View Order', 'wicket-acc'),
+            'orders' => _x('Orders', 'label', 'wicket-acc'),
+            'view-order' => _x('View Order', 'label', 'wicket-acc'),
             /* translators: My Account menu item: the user's downloadable purchases. */
-            'downloads' => __('Downloads', 'wicket-acc'),
-            'edit-account' => __('Edit Account', 'wicket-acc'),
-            'edit-address' => __('Edit Address', 'wicket-acc'),
-            'payment-methods' => __('Payment Methods', 'wicket-acc'),
+            'downloads' => _x('Downloads', 'label', 'wicket-acc'),
+            'edit-account' => _x('Edit Account', 'label', 'wicket-acc'),
+            'edit-address' => _x('Edit Address', 'label', 'wicket-acc'),
+            'payment-methods' => _x('Payment Methods', 'label', 'wicket-acc'),
             // WooCommerce subscription endpoints
-            'subscriptions' => __('Subscriptions', 'wicket-acc'),
-            'view-subscription' => __('View Subscription', 'wicket-acc'),
-            'subscription-payment-method' => __('Subscription Payment Method', 'wicket-acc'),
+            'subscriptions' => _x('Subscriptions', 'label', 'wicket-acc'),
+            'view-subscription' => _x('View Subscription', 'label', 'wicket-acc'),
+            'subscription-payment-method' => _x('Subscription Payment Method', 'label', 'wicket-acc'),
         ];
     }
 

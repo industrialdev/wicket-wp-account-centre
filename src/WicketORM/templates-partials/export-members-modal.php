@@ -65,7 +65,7 @@ $data_signals = wp_json_encode([
         class="button button--secondary add-member-button wt_w-full wt_mt-3 wt_py-2 component-button"
         data-on:click="$<?php echo esc_js($sig_open); ?> = true"
     >
-        <?php esc_html_e('Download Roster', 'wicket-acc'); ?>
+        <?php echo esc_html_x('Download Roster', 'button label', 'wicket-acc'); ?>
     </button>
     <?php
     // WWID-1907: when the roster exceeds the configured sync_threshold, the
@@ -104,11 +104,11 @@ if ($sync_threshold > 0 && $roster_count > $sync_threshold) :
                 type="button"
                 class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
                 data-on:click="$<?php echo esc_attr($sig_open); ?> = false"
-                aria-label="<?php esc_attr_e('Close', 'wicket-acc'); ?>"
+                aria-label="<?php echo esc_attr_x('Close', 'accessibility label', 'wicket-acc'); ?>"
             >x</button>
 
             <h2 class="wp-block-heading has-heading-sm-font-size wt_text-2xl wt_font-semibold wt_mb-4">
-                <?php esc_html_e('Download Roster', 'wicket-acc'); ?>
+                <?php echo esc_html_x('Download Roster', 'label', 'wicket-acc'); ?>
             </h2>
 
             <div id="<?php echo esc_attr($messages_id); ?>"></div>
@@ -140,13 +140,13 @@ if ($sync_threshold > 0 && $roster_count > $sync_threshold) :
                             data-class="{ 'wt_pointer-events-none': $<?php echo esc_attr($sig_submitting); ?>, 'wt_opacity-50': $<?php echo esc_attr($sig_submitting); ?> }"
                             data-attr:aria-disabled="$<?php echo esc_attr($sig_submitting); ?> ? 'true' : 'false'"
                             aria-disabled="false">
-                            <?php esc_html_e('Cancel', 'wicket-acc'); ?>
+                            <?php echo esc_html_x('Cancel', 'button label', 'wicket-acc'); ?>
                         </button>
                         <button type="submit" class="button button--primary wt_button_submit_async wt_inline-flex wt_items-center wt_gap-2 component-button"
                             data-class="{ 'wt_pointer-events-none': $<?php echo esc_attr($sig_submitting); ?>, 'wt_opacity-50': $<?php echo esc_attr($sig_submitting); ?>, 'wt_is-loading': $<?php echo esc_attr($sig_submitting); ?> }"
                             data-attr:aria-disabled="$<?php echo esc_attr($sig_submitting); ?> ? 'true' : 'false'"
                             aria-disabled="false">
-                            <span class="wt_submit_label"><?php /* translators: Button: download the member export file. */ esc_html_e('Download', 'wicket-acc'); ?></span>
+                            <span class="wt_submit_label"><?php /* translators: Button: download the member export file. */ echo esc_html_x('Download', 'button label', 'wicket-acc'); ?></span>
                             <span class="wt_loader wt_loader_button wt_submit_loader" aria-hidden="true"></span>
                         </button>
                     </div>
@@ -160,7 +160,7 @@ if ($sync_threshold > 0 && $roster_count > $sync_threshold) :
                     class="wt_button wt_button--secondary"
                     data-on:click="$<?php echo esc_attr($sig_open); ?> = false; $<?php echo esc_attr($sig_queued); ?> = false"
                 >
-                    <?php esc_html_e('Close', 'wicket-acc'); ?>
+                    <?php echo esc_html_x('Close', 'button label', 'wicket-acc'); ?>
                 </button>
             </div>
 
@@ -171,7 +171,7 @@ if ($sync_threshold > 0 && $roster_count > $sync_threshold) :
                     class="wt_button wt_button--secondary"
                     data-on:click="$<?php echo esc_attr($sig_open); ?> = false; $<?php echo esc_attr($sig_done); ?> = false"
                 >
-                    <?php esc_html_e('Close', 'wicket-acc'); ?>
+                    <?php echo esc_html_x('Close', 'button label', 'wicket-acc'); ?>
                 </button>
             </div>
         </div>

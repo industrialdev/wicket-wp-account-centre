@@ -38,7 +38,7 @@ class DatastarSSE
     ): void {
         $html = sprintf(
             '<div class="wt_bg-green-100 wt_border wt_border-green-400 wt_text-green-700 wt_px-4 wt_py-3 wt_rounded-sm wt_mb-4"><p><strong>%1$s</strong></p><p>%2$s</p>%3$s</div>',
-            esc_html__('Success!', 'wicket-acc'),
+            esc_html_x('Success!', 'label', 'wicket-acc'),
             wp_kses_post($message),
             $reloadSeconds > 0
                 ? '<p class="wt_mt-2 wt_text-sm">' . sprintf(

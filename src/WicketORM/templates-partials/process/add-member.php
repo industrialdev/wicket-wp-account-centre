@@ -51,7 +51,7 @@ if ('POST' === strtoupper($request_method)) {
     if (empty($org_uuid)) {
         status_header(200);
         WicketORM\Helpers\DatastarSSE::renderError(
-            __('Organization identifier missing.', 'wicket-acc'),
+            _x('Organization identifier missing.', 'message', 'wicket-acc'),
             '#add-member-messages-' . $org_dom_suffix,
             $error_signals
         );
@@ -214,7 +214,7 @@ if ('POST' === strtoupper($request_method)) {
             )
             : wp_sprintf(
                 /* translators: %s: member email address. */
-                _x('Successfully added the member with email %s.', 'org roster success message', 'wicket-acc'),
+                __('Successfully added the member with email %s.', 'wicket-acc'),
                 (string) ($member_data['email'] ?? '')
             );
 

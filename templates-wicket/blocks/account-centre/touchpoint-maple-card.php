@@ -38,7 +38,7 @@ if (!$course_name) {
 
 	<?php if ($course_id) : ?>
 		<div class="maple-card__course-id <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm' ?>">
-			<strong><?php _e('ID:', 'wicket-acc'); ?></strong> <?php echo esc_html($course_id); ?>
+			<strong><?php _ex('ID:', 'label', 'wicket-acc'); ?></strong> <?php echo esc_html($course_id); ?>
 		</div>
 	<?php endif; ?>
 

@@ -271,7 +271,7 @@ class Membership extends Init
                     'starts_at'           => $entry['attributes']['starts_at'],
                     'ends_at'             => $entry['attributes']['ends_at'],
                     /* translators: Not available: shown when the membership tier name is missing. */
-                    'name'                => $membership_tier['attributes']['name_' . $iso_code] ?? $membership_tier['attributes']['name'] ?? __('N/A', 'wicket-acc'),
+                    'name'                => $membership_tier['attributes']['name_' . $iso_code] ?? $membership_tier['attributes']['name'] ?? _x('N/A', 'value placeholder', 'wicket-acc'),
                     'type'                => $membership_tier['attributes']['type'],
                 ];
 

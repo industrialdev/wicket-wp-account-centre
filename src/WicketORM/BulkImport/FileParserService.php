@@ -173,7 +173,7 @@ class FileParserService
                 return new ParseResult(
                     error: sprintf(
                         /* translators: %s: comma-separated list of missing CSV column headers. */
-                        _n('Missing required column: %s.', 'Missing required columns: %s.', count($missing), 'wicket-acc'),
+                        _nx('Missing required column: %s.', 'Missing required columns: %s.', count($missing), 'message', 'wicket-acc'),
                         implode(', ', $missing)
                     ),
                     missingHeaders: $missing,

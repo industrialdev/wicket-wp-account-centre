@@ -12,22 +12,23 @@
 declare(strict_types=1);
 
 $root = dirname(__DIR__);
-$textSettings = ['label', 'instructions', 'placeholder', 'prepend', 'append', 'message', 'button_label', 'ui_on_text', 'ui_off_text'];
+// Same setting => context map as the runtime translator.
+$textSettings = ['label' => 'label', 'instructions' => 'help text', 'placeholder' => 'field placeholder', 'prepend' => 'field affix', 'append' => 'field affix', 'message' => 'help text', 'button_label' => 'button label', 'ui_on_text' => 'label', 'ui_off_text' => 'label'];
 
 /** @var array<string, array<string, array<string, true>>> $strings context => string => group titles */
 $strings = [];
 
 $collect = function (array $fields, string $group) use (&$collect, &$strings, $textSettings): void {
     foreach ($fields as $field) {
-        foreach ($textSettings as $setting) {
+        foreach ($textSettings as $setting => $context) {
             $value = $field[$setting] ?? '';
             if (is_string($value) && trim($value) !== '') {
-                $strings['admin field ' . str_replace('_', ' ', $setting)][$value][$group] = true;
+                $strings[$context][$value][$group] = true;
             }
         }
         foreach ((array) ($field['choices'] ?? []) as $label) {
             if (is_string($label) && trim($label) !== '') {
-                $strings['admin field option'][$label][$group] = true;
+                $strings['label'][$label][$group] = true;
             }
         }
         $collect($field['sub_fields'] ?? [], $group);
@@ -58,13 +59,30 @@ $out = "<?php\n\n"
     . "defined('ABSPATH') || exit;\n\n"
     . "return;\n";
 
+// Same rule as the runtime translator: context only for 1 to 3 words.
+$isShort = static function (string $text): bool {
+    $plain = preg_replace(['#<[^>]+>#', '#%(\d+\$)?[sdfu]#', '#&[a-z]+;#'], ' ', $text);
+
+    return preg_match_all("/[\p{L}\p{N}][\p{L}\p{N}'’.-]*/u", $plain) <= 3;
+};
+
 $count = 0;
+$seen = [];
 foreach ($strings as $context => $entries) {
     ksort($entries, SORT_STRING);
     foreach ($entries as $string => $groups) {
+        $string = (string) $string;
+        $short = $isShort($string);
+        $key = $short ? $context . "\4" . $string : $string;
         $comment = str_replace('*/', '* /', 'ACF field group: ' . implode(', ', array_keys($groups)));
-        $out .= "\n/* translators: " . $comment . ". */\n";
-        $out .= "_x(" . var_export((string) $string, true) . ', ' . var_export($context, true) . ", 'wicket-acc');\n";
+        $call = $short
+            ? "_x(" . var_export($string, true) . ', ' . var_export($context, true) . ", 'wicket-acc');"
+            : "__(" . var_export($string, true) . ", 'wicket-acc');";
+        if (isset($seen[$key])) {
+            continue;
+        }
+        $seen[$key] = true;
+        $out .= "\n/* translators: " . $comment . ". */\n" . $call . "\n";
         $count++;
     }
 }

@@ -908,7 +908,7 @@ class MemberExportService
                 $max_downloads
             )
         ) . '</p>'
-        . '<p><a href="' . esc_url($download_url) . '">' . esc_html__('Download Export', 'wicket-acc') . '</a></p>'
+        . '<p><a href="' . esc_url($download_url) . '">' . esc_html_x('Download Export', 'button label', 'wicket-acc') . '</a></p>'
         . '<p>' . esc_html__('If the button above does not work, copy and paste this URL into your browser:', 'wicket-acc') . '<br>' . esc_url($download_url) . '</p>';
 
         wp_mail($recipient, $subject, $message, [

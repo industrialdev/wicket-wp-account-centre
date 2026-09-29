@@ -45,7 +45,7 @@ if (isset($tp['attributes']['data']['location']) && $tp['attributes']['data']['l
         </p>
         <?php if ($location) : ?>
             <p class="text-sm event-location">
-                <strong><?php _e('Location:', 'wicket-acc'); ?></strong> <?php echo $tp['attributes']['data']['location']; ?>
+                <strong><?php _ex('Location:', 'label', 'wicket-acc'); ?></strong> <?php echo $tp['attributes']['data']['location']; ?>
             </p>
         <?php endif; ?>
     </a>

@@ -33,12 +33,12 @@ class RequiredPagesNotice extends \WicketAcc\WicketAcc
     private function pageTitles(): array
     {
         return [
-            'organization-management' => __('Organization Management', 'wicket-acc'),
-            'organization-profile' => __('Organization Profile', 'wicket-acc'),
-            'organization-members' => __('Organization Members', 'wicket-acc'),
+            'organization-management' => _x('Organization Management', 'label', 'wicket-acc'),
+            'organization-profile' => _x('Organization Profile', 'label', 'wicket-acc'),
+            'organization-members' => _x('Organization Members', 'label', 'wicket-acc'),
             'organization-members-bulk' => __('Organization Members Bulk Upload', 'wicket-acc'),
-            'supplemental-members' => __('Purchase Additional Seats', 'wicket-acc'),
-            'organization-contacts' => __('Organization Contacts', 'wicket-acc'),
+            'supplemental-members' => _x('Purchase Additional Seats', 'label', 'wicket-acc'),
+            'organization-contacts' => _x('Organization Contacts', 'label', 'wicket-acc'),
         ];
     }
 
@@ -233,7 +233,7 @@ class RequiredPagesNotice extends \WicketAcc\WicketAcc
                 <?php wp_nonce_field('wicket_acc_create_required_pages'); ?>
                 <input type="hidden" name="_wp_http_referer" value="<?php echo esc_url($_SERVER['REQUEST_URI'] ?? ''); ?>">
                 <button type="submit" class="button button-primary">
-                    <?php esc_html_e('Create missing pages', 'wicket-acc'); ?>
+                    <?php echo esc_html_x('Create missing pages', 'button label', 'wicket-acc'); ?>
                 </button>
             </form>
         </div>

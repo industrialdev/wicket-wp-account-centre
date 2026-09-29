@@ -162,7 +162,7 @@ class MembershipCycleStrategy implements RosterManagementStrategy
             }
         }
 
-        return ['status' => 'success', 'message' => __('Member removed successfully.', 'wicket-acc')];
+        return ['status' => 'success', 'message' => _x('Member removed successfully.', 'message', 'wicket-acc')];
     }
 
     /**

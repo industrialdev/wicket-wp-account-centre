@@ -44,7 +44,7 @@ class init extends Blocks
 
         if ($this->is_preview) {
             $args = [
-                'block_name'        => __('Touchpoints Zoom', 'wicket-acc'),
+                'block_name'        => _x('Touchpoints Zoom', 'block title', 'wicket-acc'),
                 'block_description' => __('This block displays registered data for Zoom Webinars on the front-end.', 'wicket-acc'),
                 'block_slug'        => 'wicket-ac-touchpoint-zoom',
             ];
@@ -118,7 +118,7 @@ class init extends Blocks
 
         $args = [
             'block_id'                       => $block_id,
-            'block_name'                     => __('Touchpoint Zoom', 'wicket-acc'),
+            'block_name'                     => _x('Touchpoint Zoom', 'block title', 'wicket-acc'),
             'block_description'              => __('This block displays registered data for Zoom Webinars on the front-end.', 'wicket-acc'),
             'block_slug'                     => 'wicket-ac-touchpoint-zoom',
             'attrs'                          => $attrs,
@@ -337,7 +337,7 @@ class init extends Blocks
 				onclick="loadMoreZoomResults(this)">
 				<?php
 				/* translators: %d: number of remaining results. */
-				printf(esc_html__('Load More (%d remaining)', 'wicket-acc'), (int) $remaining_results);
+				printf(esc_html_x('Load More (%d remaining)', 'button label', 'wicket-acc'), (int) $remaining_results);
 				?>
 			</button>
 		</div>
@@ -355,7 +355,7 @@ class init extends Blocks
 
 				// Disable button
 				button.disabled = true;
-				button.innerHTML = '<?php echo esc_js(__('Loading...', 'wicket-acc')); ?>';
+				button.innerHTML = '<?php echo esc_js(_x('Loading...', 'message', 'wicket-acc')); ?>';
 
 				// AJAX request
 				const xhr = new XMLHttpRequest();
@@ -383,7 +383,7 @@ class init extends Blocks
 						} else {
 							// Re-enable button on error
 							button.disabled = false;
-							button.innerHTML = '<?php echo esc_js(__('Load More', 'wicket-acc')); ?>';
+							button.innerHTML = '<?php echo esc_js(_x('Load More', 'button label', 'wicket-acc')); ?>';
 							console.error('Error loading more results');
 						}
 					}

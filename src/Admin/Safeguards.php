@@ -248,7 +248,7 @@ class Safeguards extends \WicketAcc\WicketAcc
 
         // 4) If slug differs from "my-account", resolve conflicts and rename
         $desiredSlug = 'my-account';
-        $desiredTitle = __('My Account Woo', 'wicket-acc');
+        $desiredTitle = _x('My Account Woo', 'label', 'wicket-acc');
 
         $update = ['ID' => $pageId];
 

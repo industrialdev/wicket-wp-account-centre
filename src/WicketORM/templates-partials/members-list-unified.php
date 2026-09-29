@@ -84,9 +84,9 @@ if ($canonical_account_status_config !== []) {
 $show_account_status_default = (bool) ($account_status_config['enabled'] ?? true);
 $show_account_status = isset($show_account_status) ? (bool) $show_account_status : $show_account_status_default;
 $show_unconfirmed_label = (bool) ($account_status_config['show_unconfirmed_label'] ?? true);
-$confirmed_tooltip = (string) ($account_status_config['confirmed_tooltip'] ?? __('Account confirmed', 'wicket-acc'));
-$unconfirmed_tooltip = (string) ($account_status_config['unconfirmed_tooltip'] ?? __('Account not confirmed', 'wicket-acc'));
-$unconfirmed_label = (string) ($account_status_config['unconfirmed_label'] ?? __('Account not confirmed', 'wicket-acc'));
+$confirmed_tooltip = (string) ($account_status_config['confirmed_tooltip'] ?? _x('Account confirmed', 'tooltip', 'wicket-acc'));
+$unconfirmed_tooltip = (string) ($account_status_config['unconfirmed_tooltip'] ?? _x('Account not confirmed', 'tooltip', 'wicket-acc'));
+$unconfirmed_label = (string) ($account_status_config['unconfirmed_label'] ?? _x('Account not confirmed', 'status', 'wicket-acc'));
 $show_add_member_button = isset($show_add_member_button) ? (bool) $show_add_member_button : true;
 $show_remove_button = isset($show_remove_button) ? (bool) $show_remove_button : $show_remove_button_default;
 $show_bulk_upload = isset($show_bulk_upload)
@@ -153,7 +153,7 @@ if ($mode === 'groups') {
     }
 }
 
-$role_label = __('Role(s):', 'wicket-acc');
+$role_label = _x('Role(s):', 'label', 'wicket-acc');
 $show_remove_policy_callout = (
     $mode !== 'groups'
     && !$show_remove_button
@@ -172,7 +172,7 @@ $show_remove_policy_callout = (
         style="display: none;">
         <span class="wt_loader" aria-hidden="true"></span>
         <p class="members-loading-state__message wt_text-base wt_font-semibold wt_text-content wt_leading-normal" role="status" aria-live="polite">
-            <?php esc_html_e('Processing. Please wait...', 'wicket-acc'); ?>
+            <?php echo esc_html_x('Processing. Please wait...', 'message', 'wicket-acc'); ?>
         </p>
     </div>
 
@@ -183,7 +183,7 @@ $show_remove_policy_callout = (
         <?php if ($max_seats !== null): ?>
             <?php
             /* translators: 1: number of assigned seats, 2: maximum number of seats. */
-            $seat_summary_text = esc_html__('Seats assigned: %1$s / %2$s', 'wicket-acc');
+            $seat_summary_text = esc_html_x('Seats assigned: %1$s / %2$s', 'count label', 'wicket-acc');
             printf(
                 $seat_summary_text, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                 '<span class="members-seat-summary__value">' . esc_html((string) (int) $active_seats) . '</span>',
@@ -222,7 +222,7 @@ $show_remove_policy_callout = (
         ?>    <?php endif; ?>
 
     <?php if (empty($members)) : ?>
-        <p class="wt_text-gray-500 wt_p-4"><?php esc_html_e('No members found.', 'wicket-acc'); ?></p>
+        <p class="wt_text-gray-500 wt_p-4"><?php echo esc_html_x('No members found.', 'message', 'wicket-acc'); ?></p>
     <?php else : ?>
         <?php foreach ($members as $member) :
             $member_uuid = $member['person_uuid'] ?? '';
@@ -302,7 +302,7 @@ $show_remove_policy_callout = (
 
                         <?php if ($is_owner) : ?>
                             <div class="wt_flex wt_items-center wt_gap-2">
-                                <strong><?php esc_html_e('Organization Owner', 'wicket-acc'); ?></strong>
+                                <strong><?php echo esc_html_x('Organization Owner', 'status', 'wicket-acc'); ?></strong>
                             </div>
                         <?php endif; ?>
 
@@ -395,7 +395,7 @@ $show_remove_policy_callout = (
                                     $currentMemberDescription = '<?php echo esc_js($member['relationship_description'] ?? ''); ?>';
                                     $editPermissionsModalOpen = true
                                 ">
-                                <?php esc_html_e('Edit Permissions', 'wicket-acc'); ?>
+                                <?php echo esc_html_x('Edit Permissions', 'button label', 'wicket-acc'); ?>
                                 <svg class="wt_w-4 wt_h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M12 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6M18.414 8.414 19.5 7.328a2 2 0 0 0 0-2.828 2 2 0 0 0-2.828 0L15.586 5.586M18.414 8.414l-6.036 6.036a2 2 0 0 1-1.388.584L8.414 15.586l.586-2.95A2 2 0 0 1 10 11.248l5.586-5.662M18.414 8.414 15.586 5.586" />
                                 </svg>
@@ -420,7 +420,7 @@ $show_remove_policy_callout = (
                                     <?php endif; ?>
                                     $removeMemberModalOpen = true
                                 ">
-                                <?php esc_html_e('Remove', 'wicket-acc'); ?>
+                                <?php echo esc_html_x('Remove', 'button label', 'wicket-acc'); ?>
                                 <svg class="wt_w-4 wt_h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M19 7l-.867 12.142A2 2 0 0 1 16.138 21H7.862a2 2 0 0 1-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v3M4 7h16" />
                                 </svg>
@@ -433,13 +433,13 @@ $show_remove_policy_callout = (
     <?php endif; ?>
 
     <?php if ($total_items > 0) : ?>
-    <nav class="members-pagination wt_mt-6 wt_flex wt_flex-col wt_gap-4" aria-label="<?php esc_attr_e('Members pagination', 'wicket-acc'); ?>">
+    <nav class="members-pagination wt_mt-6 wt_flex wt_flex-col wt_gap-4" aria-label="<?php echo esc_attr_x('Members pagination', 'accessibility label', 'wicket-acc'); ?>">
         <div class="members-pagination__info wt_w-full wt_text-left wt_text-sm wt_text-content">
             <?php
                 $first = (($page - 1) * $page_size) + 1;
         $last = min($total_items, $page * $page_size);
         /* translators: 1: first item number on the page, 2: last item number on the page, 3: total number of items. */
-        echo esc_html(sprintf(__('Showing %1$d–%2$d of %3$d', 'wicket-acc'), $first, $last, $total_items));
+        echo esc_html(sprintf(_x('Showing %1$d–%2$d of %3$d', 'count label', 'wicket-acc'), $first, $last, $total_items));
         ?>
         </div>
         <?php if ($total_pages > 1) : ?>
@@ -449,7 +449,7 @@ $show_remove_policy_callout = (
                     <?php
                 get_component('button', [
                     'variant' => 'secondary',
-                    'label' => __('Previous', 'wicket-acc'),
+                    'label' => _x('Previous', 'button label', 'wicket-acc'),
                     'type' => 'button',
                     'classes' => ['members-pagination__btn', 'members-pagination__btn--prev', 'wt_px-3', 'wt_py-2', 'wt_text-sm'],
                     'atts' => [
@@ -488,7 +488,7 @@ $show_remove_policy_callout = (
                     <?php
                         get_component('button', [
                             'variant' => 'secondary',
-                            'label' => __('Next', 'wicket-acc'),
+                            'label' => _x('Next', 'button label', 'wicket-acc'),
                             'type' => 'button',
                             'classes' => ['members-pagination__btn', 'members-pagination__btn--next', 'wt_px-3', 'wt_py_2', 'wt_text-sm'],
                             'atts' => [
@@ -509,12 +509,12 @@ $show_remove_policy_callout = (
             <?php if ($has_seats_available) : ?>
                 <button type="button"
                     class="button button--primary add-member-button wt_w-full wt_py-2 component-button"
-                    data-on:click="$addMemberSuccess = false; $addMemberSubmitting = false; $addMemberSuccessMessage = ''; (() => { const modal = document.getElementById('membersAddModal'); const form = modal ? modal.querySelector('form') : document.querySelector('#membersAddModal form'); if (form && form.reset) form.reset(); const messages = document.querySelector('[id^=\'add-member-messages-\']'); if (messages) messages.innerHTML = ''; })(); $addMemberModalOpen = true"><?php esc_html_e('Add Member', 'wicket-acc'); ?></button>
+                    data-on:click="$addMemberSuccess = false; $addMemberSubmitting = false; $addMemberSuccessMessage = ''; (() => { const modal = document.getElementById('membersAddModal'); const form = modal ? modal.querySelector('form') : document.querySelector('#membersAddModal form'); if (form && form.reset) form.reset(); const messages = document.querySelector('[id^=\'add-member-messages-\']'); if (messages) messages.innerHTML = ''; })(); $addMemberModalOpen = true"><?php echo esc_html_x('Add Member', 'button label', 'wicket-acc'); ?></button>
                 <?php if ($mode !== 'groups' && $show_bulk_upload) : ?>
                     <div class="wt_mt-3">
                         <button type="button"
                             class="button button--primary add-member-button wt_w-full wt_py-2 component-button"
-                            data-on:click="$bulkUploadModalOpen = true"><?php esc_html_e('Bulk Upload Members', 'wicket-acc'); ?></button>
+                            data-on:click="$bulkUploadModalOpen = true"><?php echo esc_html_x('Bulk Upload Members', 'button label', 'wicket-acc'); ?></button>
                     </div>
                 <?php endif; ?>
             <?php endif; ?>

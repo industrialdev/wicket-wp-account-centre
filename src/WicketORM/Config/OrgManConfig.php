@@ -25,10 +25,10 @@ final class OrgManConfig
                     'editor' => 'org_editor',
                     'aliases' => [],
                     'labels' => [
-                        'membership_manager' => __('Membership Manager', 'wicket-acc'),
+                        'membership_manager' => _x('Membership Manager', 'role name', 'wicket-acc'),
                         /* translators: Role name; Org. is short for Organization. */
-                        'org_editor' => __('Org. Editor', 'wicket-acc'),
-                        'membership_owner' => __('Membership Owner', 'wicket-acc'),
+                        'org_editor' => _x('Org. Editor', 'role name', 'wicket-acc'),
+                        'membership_owner' => _x('Membership Owner', 'role name', 'wicket-acc'),
                     ],
                     'descriptions' => [
                         'membership_owner' => __('Primary owner role for this organization membership', 'wicket-acc'),
@@ -141,14 +141,14 @@ final class OrgManConfig
                 'labels' => [
                     'custom' => [
                         /* translators: Relationship type: Chief Executive Officer. */
-                        'ceo' => __('CEO', 'wicket-acc'),
-                        'primary_hr_contact' => __('Primary HR Contact', 'wicket-acc'),
+                        'ceo' => _x('CEO', 'relationship type', 'wicket-acc'),
+                        'primary_hr_contact' => _x('Primary HR Contact', 'relationship type', 'wicket-acc'),
                         /* translators: Relationship type: the person works for the organization. */
-                        'employee_staff' => __('Employee', 'wicket-acc'),
-                        'member_contact' => __('Member Contact', 'wicket-acc'),
+                        'employee_staff' => _x('Employee', 'relationship type', 'wicket-acc'),
+                        'member_contact' => _x('Member Contact', 'relationship type', 'wicket-acc'),
                     ],
                     'special' => [
-                        'advertising_sponsor_contact' => __('Advertising/Sponsor Contact', 'wicket-acc'),
+                        'advertising_sponsor_contact' => _x('Advertising/Sponsor Contact', 'relationship type', 'wicket-acc'),
                         'advertising_sponsor_billing' => __('Advertising/Sponsor Billing Contact', 'wicket-acc'),
                     ],
                 ],
@@ -179,33 +179,33 @@ final class OrgManConfig
                             'first_name' => [
                                 'enabled' => true,
                                 'required' => true,
-                                'label' => __('First Name', 'wicket-acc'),
+                                'label' => _x('First Name', 'label', 'wicket-acc'),
                             ],
                             'last_name' => [
                                 'enabled' => true,
                                 'required' => true,
-                                'label' => __('Last Name', 'wicket-acc'),
+                                'label' => _x('Last Name', 'label', 'wicket-acc'),
                             ],
                             'email' => [
                                 'enabled' => true,
                                 'required' => true,
-                                'label' => __('Email Address', 'wicket-acc'),
+                                'label' => _x('Email Address', 'label', 'wicket-acc'),
                             ],
                             'relationship_type' => [
                                 'enabled' => false,
                                 'required' => false,
-                                'label' => __('Relationship Type', 'wicket-acc'),
+                                'label' => _x('Relationship Type', 'label', 'wicket-acc'),
                             ],
                             'description' => [
                                 'enabled' => true,
                                 'required' => false,
-                                'label' => __('Description', 'wicket-acc'),
+                                'label' => _x('Description', 'label', 'wicket-acc'),
                                 'input_type' => 'textarea',
                             ],
                             'permissions' => [
                                 'enabled' => true,
                                 'required' => true,
-                                'label' => __('Permissions', 'wicket-acc'),
+                                'label' => _x('Permissions', 'label', 'wicket-acc'),
                                 'allowlist' => [],
                                 'denylist' => [],
                             ],
@@ -220,31 +220,31 @@ final class OrgManConfig
                         'first_name' => [
                             'enabled' => true,
                             'required' => true,
-                            'header' => __('First Name', 'wicket-acc'),
+                            'header' => _x('First Name', 'label', 'wicket-acc'),
                             'aliases' => ['first name', 'firstname', 'first'],
                         ],
                         'last_name' => [
                             'enabled' => true,
                             'required' => true,
-                            'header' => __('Last Name', 'wicket-acc'),
+                            'header' => _x('Last Name', 'label', 'wicket-acc'),
                             'aliases' => ['last name', 'lastname', 'last'],
                         ],
                         'email' => [
                             'enabled' => true,
                             'required' => true,
-                            'header' => __('Email Address', 'wicket-acc'),
+                            'header' => _x('Email Address', 'label', 'wicket-acc'),
                             'aliases' => ['email address', 'email', 'e-mail'],
                         ],
                         'relationship_type' => [
                             'enabled' => true,
                             'required' => true,
-                            'header' => __('Relationship Type', 'wicket-acc'),
+                            'header' => _x('Relationship Type', 'label', 'wicket-acc'),
                             'aliases' => ['relationship type', 'relationship'],
                         ],
                         'roles' => [
                             'enabled' => true,
                             'required' => false,
-                            'header' => __('Roles', 'wicket-acc'),
+                            'header' => _x('Roles', 'label', 'wicket-acc'),
                             'aliases' => ['roles', 'permissions', 'role'],
                         ],
                     ],
@@ -334,10 +334,10 @@ final class OrgManConfig
                     // so both surfaces stay in sync (WWID-2259).
                     'labels' => [
                         /* translators: Org. is short for Organization. */
-                        'org_profile' => __('Org. Profile', 'wicket-acc'),
-                        'manage_members' => __('Manage Members', 'wicket-acc'),
+                        'org_profile' => _x('Org. Profile', 'button label', 'wicket-acc'),
+                        'manage_members' => _x('Manage Members', 'button label', 'wicket-acc'),
                         // Org-scoped contacts roster action (WWID-2385).
-                        'contact_list' => __('Manage Contact List', 'wicket-acc'),
+                        'contact_list' => _x('Manage Contact List', 'button label', 'wicket-acc'),
                     ],
                 ],
                 'organization_list' => [
@@ -369,16 +369,16 @@ final class OrgManConfig
                     'account_status' => [
                         'enabled' => true,
                         'show_unconfirmed_label' => true,
-                        'confirmed_tooltip' => __('Account confirmed', 'wicket-acc'),
-                        'unconfirmed_tooltip' => __('Account not confirmed', 'wicket-acc'),
-                        'unconfirmed_label' => __('Account not confirmed', 'wicket-acc'),
+                        'confirmed_tooltip' => _x('Account confirmed', 'tooltip', 'wicket-acc'),
+                        'unconfirmed_tooltip' => _x('Account not confirmed', 'tooltip', 'wicket-acc'),
+                        'unconfirmed_label' => _x('Account not confirmed', 'status', 'wicket-acc'),
                     ],
                     'show_assignment_info' => true,
                     'seat_limit_message' => __('All seats have been assigned. Please purchase additional seats to add more members.', 'wicket-acc'),
                     'remove_policy_callout' => [
                         'enabled' => false,
                         'placement' => 'above_members',
-                        'title' => __('Remove Members', 'wicket-acc'),
+                        'title' => _x('Remove Members', 'label', 'wicket-acc'),
                         'message' => __('To remove a member from your organization, please contact your association directly.', 'wicket-acc'),
                         'email' => '',
                     ],
@@ -393,28 +393,28 @@ final class OrgManConfig
                     'fields' => [
                         'name' => [
                             'enabled' => true,
-                            'label' => __('Name', 'wicket-acc'),
+                            'label' => _x('Name', 'label', 'wicket-acc'),
                         ],
                         'job_title' => [
                             'enabled' => true,
-                            'label' => __('Job Title', 'wicket-acc'),
+                            'label' => _x('Job Title', 'label', 'wicket-acc'),
                         ],
                         'description' => [
                             'enabled' => true,
-                            'label' => __('Description', 'wicket-acc'),
+                            'label' => _x('Description', 'label', 'wicket-acc'),
                             'input_type' => 'textarea',
                         ],
                         'email' => [
                             'enabled' => true,
-                            'label' => __('Email', 'wicket-acc'),
+                            'label' => _x('Email', 'label', 'wicket-acc'),
                         ],
                         'roles' => [
                             'enabled' => true,
-                            'label' => __('Roles', 'wicket-acc'),
+                            'label' => _x('Roles', 'label', 'wicket-acc'),
                         ],
                         'relationship_type' => [
                             'enabled' => false,
-                            'label' => __('Relationship', 'wicket-acc'),
+                            'label' => _x('Relationship', 'label', 'wicket-acc'),
                         ],
                     ],
                 ],
@@ -504,17 +504,17 @@ final class OrgManConfig
                 ],
                 'form' => [
                     'relationship_type' => [
-                        'president' => __('President', 'wicket-acc'),
-                        'president_elect' => __('President Elect', 'wicket-acc'),
-                        'secretary' => __('Secretary', 'wicket-acc'),
+                        'president' => _x('President', 'relationship type', 'wicket-acc'),
+                        'president_elect' => _x('President Elect', 'relationship type', 'wicket-acc'),
+                        'secretary' => _x('Secretary', 'relationship type', 'wicket-acc'),
                         /* translators: Relationship type: Chief Executive Officer. */
-                        'ceo' => __('CEO', 'wicket-acc'),
-                        'treasurer' => __('Treasurer', 'wicket-acc'),
-                        'main_contact' => __('Main Contact', 'wicket-acc'),
+                        'ceo' => _x('CEO', 'relationship type', 'wicket-acc'),
+                        'treasurer' => _x('Treasurer', 'relationship type', 'wicket-acc'),
+                        'main_contact' => _x('Main Contact', 'relationship type', 'wicket-acc'),
                     ],
                     'permissions' => [
-                        'org_editor' => __('Organization Editor', 'wicket-acc'),
-                        'membership_manager' => __('Membership Manager', 'wicket-acc'),
+                        'org_editor' => _x('Organization Editor', 'role name', 'wicket-acc'),
+                        'membership_manager' => _x('Membership Manager', 'role name', 'wicket-acc'),
                     ],
                 ],
             ],
@@ -546,44 +546,44 @@ final class OrgManConfig
                     'foundation' => [
                         'enabled'                    => true,
                         /* translators: Section title for charitable foundation donations. */
-                        'label'                      => __('Foundation', 'wicket-acc'),
+                        'label'                      => _x('Foundation', 'label', 'wicket-acc'),
                         'requires_active_membership' => false,
                         'fields'                     => [
                             /* translators: FY is short for fiscal year. Donation total for the current fiscal year. */
-                            'current_fy'     => ['mdp_key' => 'fdn_current_fy',     'label' => __('Current FY', 'wicket-acc'), 'format' => 'currency'],
+                            'current_fy'     => ['mdp_key' => 'fdn_current_fy',     'label' => _x('Current FY', 'label', 'wicket-acc'), 'format' => 'currency'],
                             /* translators: FY is short for fiscal year. Donation total for the previous fiscal year. */
-                            'last_fy'        => ['mdp_key' => 'fdn_last_fy',        'label' => __('Last FY', 'wicket-acc'), 'format' => 'currency'],
+                            'last_fy'        => ['mdp_key' => 'fdn_last_fy',        'label' => _x('Last FY', 'label', 'wicket-acc'), 'format' => 'currency'],
                             /* translators: Date of the most recent donation. */
-                            'last_giving_dt' => ['mdp_key' => 'fdn_last_giving_dt', 'label' => __('Last Gift', 'wicket-acc'), 'format' => 'date'],
+                            'last_giving_dt' => ['mdp_key' => 'fdn_last_giving_dt', 'label' => _x('Last Gift', 'label', 'wicket-acc'), 'format' => 'date'],
                             /* translators: Donor recognition level based on all-time giving. */
-                            'lifetime_level' => ['mdp_key' => 'fdn_lifetime_level', 'label' => __('Lifetime Level', 'wicket-acc'), 'format' => 'string'],
+                            'lifetime_level' => ['mdp_key' => 'fdn_lifetime_level', 'label' => _x('Lifetime Level', 'label', 'wicket-acc'), 'format' => 'string'],
                             /* translators: Donor recognition level for the previous fiscal year (FY). */
-                            'last_fy_level'  => ['mdp_key' => 'fdn_last_fy_level',  'label' => __('Last FY Level', 'wicket-acc'), 'format' => 'string'],
+                            'last_fy_level'  => ['mdp_key' => 'fdn_last_fy_level',  'label' => _x('Last FY Level', 'label', 'wicket-acc'), 'format' => 'string'],
                             /* translators: Soc. is short for Society: membership in the Leadership Society donor group. */
-                            'leadership_soc' => ['mdp_key' => 'fdn_leadership_soc', 'label' => __('Leadership Soc.', 'wicket-acc'), 'format' => 'yesno'],
+                            'leadership_soc' => ['mdp_key' => 'fdn_leadership_soc', 'label' => _x('Leadership Soc.', 'label', 'wicket-acc'), 'format' => 'yesno'],
                             /* translators: Soc. is short for Society: membership in the Legacy Society donor group (planned giving). */
-                            'legacy_soc'     => ['mdp_key' => 'fdn_legacy_soc',     'label' => __('Legacy Soc.', 'wicket-acc'), 'format' => 'yesno'],
+                            'legacy_soc'     => ['mdp_key' => 'fdn_legacy_soc',     'label' => _x('Legacy Soc.', 'label', 'wicket-acc'), 'format' => 'yesno'],
                         ],
                         'badge_pattern'        => '/^fdn_Donor_FY(\d{2})$/',
                         /* translators: Keep the {year} token; it is replaced with the two-digit fiscal year. */
-                        'badge_label_template' => __('Foundation Donor FY{year}', 'wicket-acc'),
+                        'badge_label_template' => _x('Foundation Donor FY{year}', 'status', 'wicket-acc'),
                     ],
                     'pac' => [
                         'enabled'                    => true,
                         /* translators: PAC is short for Political Action Committee. */
-                        'label'                      => __('PAC', 'wicket-acc'),
+                        'label'                      => _x('PAC', 'label', 'wicket-acc'),
                         'requires_active_membership' => true,
                         'fields'                     => [
                             /* translators: FY is short for fiscal year. Donation total for the current fiscal year. */
-                            'current_fy'     => ['mdp_key' => 'pac_current_fy',     'label' => __('Current FY', 'wicket-acc'), 'format' => 'currency'],
+                            'current_fy'     => ['mdp_key' => 'pac_current_fy',     'label' => _x('Current FY', 'label', 'wicket-acc'), 'format' => 'currency'],
                             /* translators: FY is short for fiscal year. Donation total for the previous fiscal year. */
-                            'last_fy'        => ['mdp_key' => 'pac_last_fy',        'label' => __('Last FY', 'wicket-acc'), 'format' => 'currency'],
+                            'last_fy'        => ['mdp_key' => 'pac_last_fy',        'label' => _x('Last FY', 'label', 'wicket-acc'), 'format' => 'currency'],
                             /* translators: Date of the most recent donation. */
-                            'last_giving_dt' => ['mdp_key' => 'pac_last_giving_dt', 'label' => __('Last Gift', 'wicket-acc'), 'format' => 'date'],
+                            'last_giving_dt' => ['mdp_key' => 'pac_last_giving_dt', 'label' => _x('Last Gift', 'label', 'wicket-acc'), 'format' => 'date'],
                         ],
                         'badge_pattern'        => '/^DonorPAC_FY(\d{2})$/',
                         /* translators: Keep the {year} token; it is replaced with the two-digit fiscal year. */
-                        'badge_label_template' => __('PAC Donor FY{year}', 'wicket-acc'),
+                        'badge_label_template' => _x('PAC Donor FY{year}', 'status', 'wicket-acc'),
                     ],
                 ],
             ],

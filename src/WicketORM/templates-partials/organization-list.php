@@ -47,7 +47,7 @@ if (isset($error) && is_array($error)) {
 
     get_component('alert', [
         'classes' => ['wt_bg-red-50', 'wt_border', 'wt_border-red-200', 'wt_rounded-md', 'wt_shadow-sm', 'wt_p-6'],
-        'content' => '<div class="wt_flex wt_items-center"><svg class="wt_w-5 wt_h-5 wt_text-red-500 wt_mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg><h3 class="wt_text-lg wt_font-medium wt_text-red-800">' . esc_html__('Connection Error', 'wicket-acc') . '</h3></div><p class="wt_mt-2 wt_text-red-700">' . $error_content . '</p><button onclick="location.reload()" class="wt_mt-4 wt_px-4 wt_py-2 wt_bg-red-600 wt_text-white wt_rounded-md wt_hover_bg-red-700 wt_focus_outline-hidden wt_focus_ring-2 wt_focus_ring-red-500">' . esc_html__('Try Again', 'wicket-acc') . '</button>',
+        'content' => '<div class="wt_flex wt_items-center"><svg class="wt_w-5 wt_h-5 wt_text-red-500 wt_mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg><h3 class="wt_text-lg wt_font-medium wt_text-red-800">' . esc_html_x('Connection Error', 'label', 'wicket-acc') . '</h3></div><p class="wt_mt-2 wt_text-red-700">' . $error_content . '</p><button onclick="location.reload()" class="wt_mt-4 wt_px-4 wt_py-2 wt_bg-red-600 wt_text-white wt_rounded-md wt_hover_bg-red-700 wt_focus_outline-hidden wt_focus_ring-2 wt_focus_ring-red-500">' . esc_html_x('Try Again', 'button label', 'wicket-acc') . '</button>',
     ]);
     ?><?php
     return;
@@ -196,7 +196,7 @@ if ($roster_mode === 'groups') {
 
             $group_name = (string) ($group_detail['name'] ?? '');
             if ($group_name === '') {
-                $group_name = __('Unknown Group', 'wicket-acc');
+                $group_name = _x('Unknown Group', 'value placeholder', 'wicket-acc');
             }
 
             $manageable_groups[] = [
@@ -314,7 +314,7 @@ if ($roster_mode === 'groups') {
         if (!empty($grp_unique_orgs)) :
             ?>
             <div class="wt_w-full wt_rounded-card-accent wt_p-4 wt_mb-4 wt_bg-card wt_border wt_border-color">
-                <h3 class="wt_text-lg wt_font-semibold wt_text-content wt_mb-2"><?php esc_html_e('Your Associations', 'wicket-acc'); ?></h3>
+                <h3 class="wt_text-lg wt_font-semibold wt_text-content wt_mb-2"><?php echo esc_html_x('Your Associations', 'label', 'wicket-acc'); ?></h3>
                 <ul class="wt_pl-5 wt_list-disc wt_text-content wt_text-base">
                     <?php foreach ($grp_unique_orgs as $grp_org_item) : ?>
                         <li><?php echo esc_html($grp_org_item); ?></li>
@@ -327,7 +327,7 @@ if ($roster_mode === 'groups') {
     ?>
         <p class="mb-2"><?php
         /* translators: %d: number of groups found. */
-        echo esc_html(sprintf(__('Groups Found: %d', 'wicket-acc'), (int) $groups_count));
+        echo esc_html(sprintf(_x('Groups Found: %d', 'count label', 'wicket-acc'), (int) $groups_count));
         ?></p>
         <div class="wt_w-full wt_flex wt_flex-col wt_gap-4" role="list">
             <?php foreach ($manageable_groups_page as $group_item) :
@@ -402,7 +402,7 @@ if ($roster_mode === 'groups') {
                 <?php endif; ?>
                     <?php if ($grp_card_show_org_name && $group_org_label !== '') : ?>
                         <div class="wt_text-sm wt_text-content wt_mt-1">
-                            <?php echo esc_html(sprintf(__('Organization: %s', 'wicket-acc'), $group_org_label)); ?>
+                            <?php echo esc_html(sprintf(_x('Organization: %s', 'label', 'wicket-acc'), $group_org_label)); ?>
                         </div>
                     <?php endif; ?>
                     <?php
@@ -410,14 +410,14 @@ if ($roster_mode === 'groups') {
                 ?>
                     <?php if ($show_my_role && $group_role_label !== '') : ?>
                         <div class="wt_text-sm wt_text-content wt_mt-1">
-                            <?php echo esc_html(sprintf(/* translators: %s: role label. */ __('My Role: %s', 'wicket-acc'), $group_role_label)); ?>
+                            <?php echo esc_html(sprintf(/* translators: %s: role label. */ _x('My Role: %s', 'label', 'wicket-acc'), $group_role_label)); ?>
                         </div>
                     <?php endif; ?>
                     <?php if ($can_manage_group) : ?>
                         <div class="wt_flex wt_items-center wt_gap-4 wt_mt-4">
                             <a href="<?php echo esc_url($group_profile_url); ?>"
                                 class="wt_inline-flex wt_items-center wt_text-primary-600 wt_hover_text-primary-700 underline underline-offset-4">
-                                <?php esc_html_e('Group Profile', 'wicket-acc'); ?>
+                                <?php echo esc_html_x('Group Profile', 'button label', 'wicket-acc'); ?>
                             </a>
                             <span class="wt_px-2 wt_h-4 wt_bg-border-white" aria-hidden="true"></span>
                             <a href="<?php echo esc_url($group_members_manage_url); ?>"
@@ -457,12 +457,12 @@ if ($roster_mode === 'groups') {
             $groups_list_first_item = $groups_list_offset + 1;
             $groups_list_last_item = min($groups_count, $groups_list_offset + count($manageable_groups_page));
             ?>
-            <nav class="members-pagination wt_mt-6 wt_flex wt_flex-col wt_gap-4" aria-label="<?php esc_attr_e('Groups pagination', 'wicket-acc'); ?>">
+            <nav class="members-pagination wt_mt-6 wt_flex wt_flex-col wt_gap-4" aria-label="<?php echo esc_attr_x('Groups pagination', 'accessibility label', 'wicket-acc'); ?>">
                 <div class="members-pagination__info wt_w-full wt_text-left wt_text-sm wt_text-content">
                     <?php
                     printf(
                         /* translators: 1: first item number, 2: last item number, 3: total items. */
-                        esc_html__('Showing %1$d-%2$d of %3$d groups', 'wicket-acc'),
+                        esc_html_x('Showing %1$d-%2$d of %3$d groups', 'count label', 'wicket-acc'),
                         (int) $groups_list_first_item,
                         (int) $groups_list_last_item,
                         (int) $groups_count
@@ -473,7 +473,7 @@ if ($roster_mode === 'groups') {
                     <?php if ($groups_list_page > 1) : ?>
                         <a href="<?php echo esc_url($build_groups_page_url($groups_list_page - 1)); ?>"
                             class="members-pagination__btn members-pagination__btn--prev button button--secondary wt_px-3 wt_py-2 wt_text-sm">
-                            <?php esc_html_e('Previous', 'wicket-acc'); ?>
+                            <?php echo esc_html_x('Previous', 'button label', 'wicket-acc'); ?>
                         </a>
                     <?php endif; ?>
                     <div class="members-pagination__pages wt_flex wt_items-center wt_gap-1">
@@ -488,7 +488,7 @@ if ($roster_mode === 'groups') {
                     <?php if ($groups_list_page < $groups_list_total_pages) : ?>
                         <a href="<?php echo esc_url($build_groups_page_url($groups_list_page + 1)); ?>"
                             class="members-pagination__btn members-pagination__btn--next button button--secondary wt_px-3 wt_py-2 wt_text-sm">
-                            <?php esc_html_e('Next', 'wicket-acc'); ?>
+                            <?php echo esc_html_x('Next', 'button label', 'wicket-acc'); ?>
                         </a>
                     <?php endif; ?>
                 </div>
@@ -542,7 +542,7 @@ if ($roster_mode === 'groups' && !empty($groups_by_org)) {
             'org_name' => $group_org_name !== ''
                 ? $group_org_name
                 /* translators: Fallback organization or group name. */
-                : ($group_fallback_name !== '' ? $group_fallback_name : __('Unknown', 'wicket-acc')),
+                : ($group_fallback_name !== '' ? $group_fallback_name : _x('Unknown', 'value placeholder', 'wicket-acc')),
             'roles' => [],
         ];
         $org_index[$group_org_key] = true;
@@ -590,7 +590,7 @@ if (function_exists('wicket_get_current_person_memberships')) {
                     // Find the membership name from the included memberships
                     foreach ($all_memberships['included'] as $membership) {
                         if ($membership['type'] === 'memberships' && $membership['id'] === $membership_id) {
-                            $membership_name = $membership['attributes']['name'] ?? $membership['attributes']['name_en'] ?? __('Active Membership', 'wicket-acc');
+                            $membership_name = $membership['attributes']['name'] ?? $membership['attributes']['name_en'] ?? _x('Active Membership', 'value placeholder', 'wicket-acc');
 
                             if ($roster_mode === 'membership_cycle') {
                                 if (!isset($membership_tiers[$org_id]) || !is_array($membership_tiers[$org_id])) {
@@ -695,7 +695,7 @@ if ($roster_mode === 'membership_cycle') {
             $_mc_tier_attrs = (array) ($_mc_om_data['included']['attributes'] ?? []);
             $_mc_name = (string) ($_mc_tier_attrs['name'] ?? $_mc_tier_attrs['name_en'] ?? $_mc_tier_attrs['name_fr'] ?? '');
             if ($_mc_name === '') {
-                $_mc_name = __('Active Membership', 'wicket-acc');
+                $_mc_name = _x('Active Membership', 'value placeholder', 'wicket-acc');
             }
 
             $membership_tiers[$_mc_oid][] = $_mc_name;
@@ -744,7 +744,7 @@ $organizations_page = array_slice($organizations, $org_offset, $org_page_size);
 // Display organization count
 $count = $org_total_items;
 /* translators: %d: number of organizations found. */
-echo "<p class='mb-2'>" . esc_html(sprintf(__('Organizations Found: %d', 'wicket-acc'), (int) $count)) . '</p>';
+echo "<p class='mb-2'>" . esc_html(sprintf(_x('Organizations Found: %d', 'count label', 'wicket-acc'), (int) $count)) . '</p>';
 
 // Start organization list
 echo '<div class="wt_w-full wt_flex wt_flex-col wt_gap-4" role="list">';
@@ -753,7 +753,7 @@ $membershipService = new \WicketORM\Services\MembershipService();
 foreach ($organizations_page as $org) :
     $org_id = (string) ($org['id'] ?? '');
     /* translators: Fallback organization or group name. */
-    $org_name = $org['org_name'] ?? __('Unknown', 'wicket-acc');
+    $org_name = $org['org_name'] ?? _x('Unknown', 'value placeholder', 'wicket-acc');
     $group_details = $groups_by_org[$org_id] ?? [];
     $resolved_org_uuid = (string) ($org['resolved_org_uuid'] ?? '');
     if ($resolved_org_uuid === '' && !empty($group_details)) {
@@ -1037,12 +1037,12 @@ endforeach; ?>
         $first_item = $org_offset + 1;
         $last_item = min($org_total_items, $org_offset + count($organizations_page));
         ?>
-        <nav class="members-pagination wt_mt-6 wt_flex wt_flex-col wt_gap-4" aria-label="<?php esc_attr_e('Organizations pagination', 'wicket-acc'); ?>">
+        <nav class="members-pagination wt_mt-6 wt_flex wt_flex-col wt_gap-4" aria-label="<?php echo esc_attr_x('Organizations pagination', 'accessibility label', 'wicket-acc'); ?>">
             <div class="members-pagination__info wt_w-full wt_text-left wt_text-sm wt_text-content">
                 <?php
                 printf(
                     /* translators: 1: first item number, 2: last item number, 3: total items. */
-                    esc_html__('Showing %1$d-%2$d of %3$d organizations', 'wicket-acc'),
+                    esc_html_x('Showing %1$d-%2$d of %3$d organizations', 'count label', 'wicket-acc'),
                     (int) $first_item,
                     (int) $last_item,
                     (int) $org_total_items
@@ -1053,7 +1053,7 @@ endforeach; ?>
                 <?php if ($org_page > 1) : ?>
                     <a href="<?php echo esc_url($build_page_url($org_page - 1)); ?>"
                         class="members-pagination__btn members-pagination__btn--prev button button--secondary wt_px-3 wt_py-2 wt_text-sm">
-                        <?php esc_html_e('Previous', 'wicket-acc'); ?>
+                        <?php echo esc_html_x('Previous', 'button label', 'wicket-acc'); ?>
                     </a>
                 <?php endif; ?>
                 <div class="members-pagination__pages wt_flex wt_items-center wt_gap-1">
@@ -1068,7 +1068,7 @@ endforeach; ?>
                 <?php if ($org_page < $org_total_pages) : ?>
                     <a href="<?php echo esc_url($build_page_url($org_page + 1)); ?>"
                         class="members-pagination__btn members-pagination__btn--next button button--secondary wt_px-3 wt_py-2 wt_text-sm">
-                        <?php esc_html_e('Next', 'wicket-acc'); ?>
+                        <?php echo esc_html_x('Next', 'button label', 'wicket-acc'); ?>
                     </a>
                 <?php endif; ?>
             </div>

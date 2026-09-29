@@ -800,7 +800,7 @@ class MembershipService
                 return new \WP_Error('api_error', sprintf(
                     /* translators: %s: error detail returned by the API. */
                     __('Failed to end-date person membership: %s', 'wicket-acc'),
-                    $response['errors'][0]['detail'] ?? __('Unknown error', 'wicket-acc')
+                    $response['errors'][0]['detail'] ?? _x('Unknown error', 'value placeholder', 'wicket-acc')
                 ));
             }
 

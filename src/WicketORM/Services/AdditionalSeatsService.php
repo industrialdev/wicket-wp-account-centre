@@ -91,7 +91,7 @@ class AdditionalSeatsService
                     }
                     $sku_parts = $this->buildIssueParts(
                         /* translators: 1: previously listed SKU(s), 2: alternative SKU. */
-                        __('%1$s or %2$s', 'wicket-acc'),
+                        _x('%1$s or %2$s', 'list separator', 'wicket-acc'),
                         [$sku_parts, $sku]
                     );
                 }

@@ -98,7 +98,7 @@ class CascadeStrategy implements RosterManagementStrategy
     {
         $role = sanitize_key($role);
         if ('' === $role) {
-            return new \WP_Error('invalid_role', __('Role is required.', 'wicket-acc'));
+            return new \WP_Error('invalid_role', _x('Role is required.', 'message', 'wicket-acc'));
         }
 
         if (!function_exists('wicket_assign_role')) {
@@ -118,7 +118,7 @@ class CascadeStrategy implements RosterManagementStrategy
 
         if (false === $result) {
             /* translators: %s: role slug. */
-            return new \WP_Error('role_assignment_failed', sprintf(__('Failed assigning role %s.', 'wicket-acc'), $role));
+            return new \WP_Error('role_assignment_failed', sprintf(_x('Failed assigning role %s.', 'message', 'wicket-acc'), $role));
         }
 
         return true;
@@ -469,7 +469,7 @@ class CascadeStrategy implements RosterManagementStrategy
 
             return [
                 'status' => 'success',
-                'message' => __('Member added successfully.', 'wicket-acc'),
+                'message' => _x('Member added successfully.', 'message', 'wicket-acc'),
                 'person_uuid' => $person_uuid,
             ];
 
@@ -609,7 +609,7 @@ class CascadeStrategy implements RosterManagementStrategy
 
             $logger->info('[OrgMan] Cascade strategy removed member successfully', $log_context);
 
-            return ['status' => 'success', 'message' => __('Member removed successfully.', 'wicket-acc')];
+            return ['status' => 'success', 'message' => _x('Member removed successfully.', 'message', 'wicket-acc')];
         } catch (\Exception $e) {
             $logger->error('[OrgMan] Cascade strategy remove_member exception', array_merge($log_context, [
                 'exception' => $e->getMessage(),
@@ -631,7 +631,7 @@ class CascadeStrategy implements RosterManagementStrategy
     {
         $membership_data = $this->membershipService()->getOrgMembershipData($membership_uuid);
         if (!is_array($membership_data) || empty($membership_data['data'])) {
-            return new \WP_Error('membership_data_missing', __('Membership details unavailable.', 'wicket-acc'));
+            return new \WP_Error('membership_data_missing', _x('Membership details unavailable.', 'message', 'wicket-acc'));
         }
 
         $max_seats = $this->membershipService()->getEffectiveMaxAssignments($membership_data);

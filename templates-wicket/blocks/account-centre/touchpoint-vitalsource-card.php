@@ -29,13 +29,13 @@ $created_at = date_i18n(get_option('date_format'), strtotime($created_at_raw));
 
 	<?php if ($redemption_code) : ?>
 		<div class="vitalsource-card__redemption-code">
-			<?php esc_html_e('Redemption Codes:', 'wicket-acc'); ?>
+			<?php echo esc_html_x('Redemption Codes:', 'label', 'wicket-acc'); ?>
 			<?php echo esc_html($redemption_code); ?>
 		</div>
 	<?php endif; ?>
 
 	<div class="vitalsource-card__created-at">
-		<?php esc_html_e('Purchase Date:', 'wicket-acc'); ?>
+		<?php echo esc_html_x('Purchase Date:', 'label', 'wicket-acc'); ?>
 		<?php echo esc_html($created_at); ?>
 	</div>
 </div>

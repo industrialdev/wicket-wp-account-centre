@@ -48,13 +48,13 @@ class Notification
         // Determine language for localized content
         $lang = WACC()->Language()->getCurrentLanguage();
         /* translators: Fallback organization name when the org has none; used in the welcome email subject, body, sign-off and sender name. */
-        $organizationName = $org['data']['attributes']["legal_name_{$lang}"] ?? $org['data']['attributes']['legal_name'] ?? __('your organization', 'wicket-acc');
+        $organizationName = $org['data']['attributes']["legal_name_{$lang}"] ?? $org['data']['attributes']['legal_name'] ?? _x('your organization', 'value placeholder', 'wicket-acc');
 
         // Prepare email content
         $to = $person->primary_email_address;
         $firstName = $person->given_name;
         /* translators: %s: organization name. */
-        $subject = sprintf(__('Welcome to %s!', 'wicket-acc'), $organizationName);
+        $subject = sprintf(_x('Welcome to %s!', 'email subject', 'wicket-acc'), $organizationName);
 
         $body = sprintf(
             /* translators: 1: recipient first name, 2: organization name. */
@@ -112,12 +112,12 @@ class Notification
         // Determine language for localized content
         $lang = WACC()->Language()->getCurrentLanguage();
         /* translators: Fallback organization name when the org has none; used in the welcome email subject, body, sign-off and sender name. */
-        $organizationName = $org['data']['attributes']["legal_name_{$lang}"] ?? $org['data']['attributes']['legal_name'] ?? __('your organization', 'wicket-acc');
+        $organizationName = $org['data']['attributes']["legal_name_{$lang}"] ?? $org['data']['attributes']['legal_name'] ?? _x('your organization', 'value placeholder', 'wicket-acc');
 
         // Prepare email content
         $to = $email;
         /* translators: %s: organization name. */
-        $subject = sprintf(__('Welcome to %s!', 'wicket-acc'), $organizationName);
+        $subject = sprintf(_x('Welcome to %s!', 'email subject', 'wicket-acc'), $organizationName);
 
         $siteHost = (string) (parse_url(home_url(), PHP_URL_HOST) ?: home_url());
 
@@ -179,7 +179,7 @@ class Notification
     public function sendApprovalRequiredEmail(string $email, string $membershipLink): bool
     {
         $to = $email;
-        $subject = __('Membership Pending Approval', 'wicket-acc');
+        $subject = _x('Membership Pending Approval', 'email subject', 'wicket-acc');
         $body = sprintf(
             /* translators: %1$s: membership approval URL. */
             __('You have a membership pending approval.<br>Please use the following link to process the membership request.<br><a href="%1$s">%1$s</a>', 'wicket-acc'),
@@ -246,7 +246,7 @@ class Notification
 
         $first_name = $person['given_name'] ?? '';
         /* translators: %s: organization name. */
-        $subject = sprintf(__('Welcome to %s', 'wicket-acc'), $organization_name);
+        $subject = sprintf(_x('Welcome to %s', 'email subject', 'wicket-acc'), $organization_name);
 
         $body = sprintf(
             /* translators: 1: recipient first name, 2: organization name, 3: website URL, 4: website name. */

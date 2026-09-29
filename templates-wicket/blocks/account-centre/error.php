@@ -16,9 +16,9 @@ defined('ABSPATH') || exit;
 // Not set?
 if (!isset($args['block_name']) || !isset($args['block_slug']) || !isset($args['block_error'])) {
     $args = [
-        'block_name'  => __('No name', 'wicket-acc'),
+        'block_name'  => _x('No name', 'value placeholder', 'wicket-acc'),
         'block_slug'  => 'wicket-acc-error-block',
-        'block_error' => __('Forgot something?:', 'wicket-acc'),
+        'block_error' => _x('Forgot something?:', 'message', 'wicket-acc'),
     ];
 }
 ?>
@@ -30,7 +30,7 @@ if (!isset($args['block_name']) || !isset($args['block_slug']) || !isset($args['
 </style>
 <section class="wicket-acc-block-error <?php echo $args['block_slug']; ?> <?php echo $args['block_slug']; ?>__error">
     <div class="wicket-acc-block-error__content">
-        <h2><?php esc_html_e('Error', 'wicket-acc'); ?></h2>
+        <h2><?php echo esc_html_x('Error', 'label', 'wicket-acc'); ?></h2>
         <p><?php
         /* translators: %s: block name. */
         printf(esc_html__('There was an error on block: %s', 'wicket-acc'), esc_html($args['block_name']));

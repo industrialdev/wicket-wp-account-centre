@@ -45,7 +45,7 @@ $notice ??= null;
 			<div class="grid wt_grid-cols-1 md_wt_grid-cols-12 wt_gap-4 wt_items-end">
 				<div class="md:col-span-5">
 					<label for="document_file" class="wt_block wt_text-sm wt_font-medium wt_text-gray-700 wt_mb-1">
-						<?php esc_html_e('Select Document', 'wicket-acc'); ?>
+						<?php echo esc_html_x('Select Document', 'label', 'wicket-acc'); ?>
 					</label>
 					<input type="file"
 					       id="document_file"
@@ -61,29 +61,29 @@ $notice ??= null;
 
 				<div class="md:col-span-4">
 					<label for="document_title" class="wt_block wt_text-sm wt_font-medium wt_text-gray-700 wt_mb-1">
-						<?php esc_html_e('Document Title', 'wicket-acc'); ?>
+						<?php echo esc_html_x('Document Title', 'label', 'wicket-acc'); ?>
 					</label>
 					<input type="text"
 					       id="document_title"
 					       name="title"
 					       class="wt_w-full wt_px-3 wt_py-2 wt_border wt_border-gray-300 wt_rounded-md wt_shadow-xs wt_focus_outline-hidden wt_focus_ring-2 wt_focus_ring-blue-500 wt_focus_border-blue-500 sm_wt_text-sm"
-					       placeholder="<?php esc_attr_e('Enter document title', 'wicket-acc'); ?>">
+					       placeholder="<?php echo esc_attr_x('Enter document title', 'field placeholder', 'wicket-acc'); ?>">
 				</div>
 
 				<div class="md:col-span-2">
-					<button type="submit" class="wt_w-full wt_flex wt_justify-center wt_py-2 wt_px-4 wt_border wt_border-transparent wt_rounded-md wt_shadow-xs wt_text-sm wt_font-medium wt_text-white wt_bg-blue-600 wt_hover_bg-blue-700 wt_focus_outline-hidden wt_focus_ring-2 wt_focus_ring-offset-2 wt_focus_ring-blue-500"><?php esc_html_e('Upload Document', 'wicket-acc'); ?></button>
+					<button type="submit" class="wt_w-full wt_flex wt_justify-center wt_py-2 wt_px-4 wt_border wt_border-transparent wt_rounded-md wt_shadow-xs wt_text-sm wt_font-medium wt_text-white wt_bg-blue-600 wt_hover_bg-blue-700 wt_focus_outline-hidden wt_focus_ring-2 wt_focus_ring-offset-2 wt_focus_ring-blue-500"><?php echo esc_html_x('Upload Document', 'button label', 'wicket-acc'); ?></button>
 				</div>
 			</div>
 
 			<div class="wt_mt-2">
 				<label for="document_description" class="wt_block wt_text-sm wt_font-medium wt_text-gray-700 wt_mb-1">
-					<?php esc_html_e('Description (Optional)', 'wicket-acc'); ?>
+					<?php echo esc_html_x('Description (Optional)', 'label', 'wicket-acc'); ?>
 				</label>
 				<textarea id="document_description"
 				          name="description"
 				          rows="2"
 				          class="wt_shadow-xs wt_focus_ring-2 wt_focus_ring-blue-500 wt_focus_border-blue-500 wt_mt-1 wt_block wt_w-full sm_wt_text-sm wt_border wt_border-gray-300 wt_rounded-md wt_p-2"
-				          placeholder="<?php esc_attr_e('Enter document description', 'wicket-acc'); ?>"></textarea>
+				          placeholder="<?php echo esc_attr_x('Enter document description', 'field placeholder', 'wicket-acc'); ?>"></textarea>
 			</div>
 		</form>
 	</div>
@@ -143,7 +143,7 @@ $notice ??= null;
 						   target="_blank"
 						   class="wt_text-blue-600 wt_hover_text-blue-900 wt_text-sm wt_font-medium"
 						   download>
-							<?php /* translators: Button: download the document. */ esc_html_e('Download', 'wicket-acc'); ?>
+							<?php /* translators: Button: download the document. */ echo esc_html_x('Download', 'button label', 'wicket-acc'); ?>
 						</a>
 						|
 						<button
@@ -152,7 +152,7 @@ $notice ??= null;
 							ds-swap="innerHTML"
 							ds-confirm="<?php esc_attr_e('Are you sure you want to delete this document?', 'wicket-acc'); ?>"
 							class="wt_text-red-600 wt_hover_text-red-900 wt_text-sm wt_font-medium">
-							<?php /* translators: Button: delete the document. */ esc_html_e('Delete', 'wicket-acc'); ?>
+							<?php /* translators: Button: delete the document. */ echo esc_html_x('Delete', 'button label', 'wicket-acc'); ?>
 						</button>
 					</div>
 				</div>
@@ -161,7 +161,7 @@ $notice ??= null;
 	<?php else : ?>
 		<div class="empty-documents-state wt_text-center wt_py-8">
 			<div class="wt_text-gray-400 wt_text-5xl wt_mb-4">📁</div>
-			<h3 class="wt_text-lg wt_font-medium wt_text-gray-900 wt_mb-1"><?php esc_html_e('No documents found', 'wicket-acc'); ?></h3>
+			<h3 class="wt_text-lg wt_font-medium wt_text-gray-900 wt_mb-1"><?php echo esc_html_x('No documents found', 'message', 'wicket-acc'); ?></h3>
 			<p class="wt_text-gray-500"><?php esc_html_e('Upload your first document using the form above.', 'wicket-acc'); ?></p>
 		</div>
 	<?php endif; ?>

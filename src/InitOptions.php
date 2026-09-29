@@ -67,36 +67,36 @@ class InitOptions extends WicketAcc
     {
         $page = HyperFields::makeOptionPage(
             /* translators: ACC is short for Account Centre. */
-            __('ACC Options', 'wicket-acc'),
+            _x('ACC Options', 'label', 'wicket-acc'),
             self::MAIN_MENU_SLUG
         )
             ->setOptionName(self::MAIN_OPTION_NAME)
             /* translators: ACC is short for Account Centre. */
-            ->setMenuTitle(__('ACC Options', 'wicket-acc'))
+            ->setMenuTitle(_x('ACC Options', 'label', 'wicket-acc'))
             ->setCapability('manage_options')
             ->setParentSlug(self::PARENT_SLUG);
 
         $section = $page->addSection(
             'acc_main_options',
-            __('Main Options', 'wicket-acc')
+            _x('Main Options', 'label', 'wicket-acc')
         );
 
         $section->addField(
-            Field::make('radio', 'ac_localization', __('Centre/Center localization', 'wicket-acc'))
+            Field::make('radio', 'ac_localization', _x('Centre/Center localization', 'label', 'wicket-acc'))
                 ->setOptions([
-                    'account-centre' => __('Account Centre', 'wicket-acc'),
-                    'account-center' => __('Account Center', 'wicket-acc'),
+                    'account-centre' => _x('Account Centre', 'label', 'wicket-acc'),
+                    'account-center' => _x('Account Center', 'label', 'wicket-acc'),
                 ])
                 ->setDefault('account-centre')
         );
 
         $section->addField(
-            Field::make('radio', 'acc_sidebar_location', __('Sidebar location', 'wicket-acc'))
+            Field::make('radio', 'acc_sidebar_location', _x('Sidebar location', 'label', 'wicket-acc'))
                 ->setOptions([
                     /* translators: Sidebar position option (left side of the page). */
-                    'left' => __('Left', 'wicket-acc'),
+                    'left' => _x('Left', 'label', 'wicket-acc'),
                     /* translators: Sidebar position option (right side of the page). */
-                    'right' => __('Right', 'wicket-acc'),
+                    'right' => _x('Right', 'label', 'wicket-acc'),
                 ])
                 ->setDefault('right')
         );
@@ -113,7 +113,7 @@ class InitOptions extends WicketAcc
         );
 
         $section->addField(
-            Field::make('image', 'acc_profile_picture_default', __('Default profile picture', 'wicket-acc'))
+            Field::make('image', 'acc_profile_picture_default', _x('Default profile picture', 'label', 'wicket-acc'))
         );
 
         $section->addField(
@@ -124,7 +124,7 @@ class InitOptions extends WicketAcc
         );
 
         $section->addField(
-            Field::make('checkbox', 'acc_global-headerbanner', __('Global sub-header', 'wicket-acc'))
+            Field::make('checkbox', 'acc_global-headerbanner', _x('Global sub-header', 'label', 'wicket-acc'))
         );
 
         $page->register();
@@ -147,12 +147,12 @@ class InitOptions extends WicketAcc
         }
 
         $page = HyperFields::makeOptionPage(
-            __('ACC Environment', 'wicket-acc'),
+            _x('ACC Environment', 'label', 'wicket-acc'),
             self::ENV_MENU_SLUG
         )
             ->setOptionName(self::SETTINGS_OPTION_NAME)
             /* translators: Admin menu title for the Wicket server environment (staging or production) settings. */
-            ->setMenuTitle(__('Environment', 'wicket-acc'))
+            ->setMenuTitle(_x('Environment', 'label', 'wicket-acc'))
             ->setCapability('manage_options')
             ->setParentSlug(self::PARENT_SLUG);
 
@@ -165,35 +165,35 @@ class InitOptions extends WicketAcc
         $status_section = $page->addSectionToTab(
             $tab_id,
             'acc_environment_status',
-            __('Connection Status', 'wicket-acc')
+            _x('Connection Status', 'label', 'wicket-acc')
         );
 
         $status_section->addField(
             /* translators: Label for the MDP connection status. */
-            Field::make('html', 'acc_status_html', __('Status', 'wicket-acc'))
+            Field::make('html', 'acc_status_html', _x('Status', 'label', 'wicket-acc'))
                 ->setHtml($this->getApiStatusHtml())
         );
 
         $env_section = $page->addSectionToTab(
             $tab_id,
             'acc_environment_selection',
-            __('Wicket Environment', 'wicket-acc')
+            _x('Wicket Environment', 'label', 'wicket-acc')
         );
 
         $env_section->addField(
-            Field::make('radio', 'wicket_admin_settings_environment', __('Wicket Environment', 'wicket-acc'))
+            Field::make('radio', 'wicket_admin_settings_environment', _x('Wicket Environment', 'label', 'wicket-acc'))
                 ->setOptions([
                     /* translators: Wicket server environment option: the test (staging) environment. */
-                    'stage' => __('Staging', 'wicket-acc'),
+                    'stage' => _x('Staging', 'label', 'wicket-acc'),
                     /* translators: Wicket server environment option: the live (production) environment. */
-                    'prod' => __('Production', 'wicket-acc'),
+                    'prod' => _x('Production', 'label', 'wicket-acc'),
                 ])
         );
 
         $prod_section = $page->addSectionToTab(
             $tab_id,
             'acc_environment_prod',
-            __('Production Settings', 'wicket-acc')
+            _x('Production Settings', 'label', 'wicket-acc')
         );
 
         $this->addEnvironmentFields($prod_section, 'prod');
@@ -201,7 +201,7 @@ class InitOptions extends WicketAcc
         $stage_section = $page->addSectionToTab(
             $tab_id,
             'acc_environment_stage',
-            __('Staging Settings', 'wicket-acc')
+            _x('Staging Settings', 'label', 'wicket-acc')
         );
 
         $this->addEnvironmentFields($stage_section, 'stage');
@@ -221,23 +221,23 @@ class InitOptions extends WicketAcc
     {
         $fields = [
             'api_endpoint' => [
-                'label' => __('API Endpoint', 'wicket-acc'),
+                'label' => _x('API Endpoint', 'label', 'wicket-acc'),
                 'placeholder' => 'https://[client]-api.wicketcloud.com',
             ],
             'secret_key' => [
-                'label' => __('JWT Secret Key', 'wicket-acc'),
+                'label' => _x('JWT Secret Key', 'label', 'wicket-acc'),
                 'placeholder' => '',
             ],
             'person_id' => [
-                'label' => __('Person ID', 'wicket-acc'),
+                'label' => _x('Person ID', 'label', 'wicket-acc'),
                 'placeholder' => '',
             ],
             'parent_org' => [
-                'label' => __('Parent Org', 'wicket-acc'),
+                'label' => _x('Parent Org', 'label', 'wicket-acc'),
                 'placeholder' => '',
             ],
             'wicket_admin' => [
-                'label' => __('Wicket Admin', 'wicket-acc'),
+                'label' => _x('Wicket Admin', 'label', 'wicket-acc'),
                 'placeholder' => 'https://[client]-admin.wicketcloud.com',
             ],
         ];
@@ -273,11 +273,11 @@ class InitOptions extends WicketAcc
 
         ?>
         <div style="display: flex; align-items: center; padding: 10px 0;">
-            <label style="margin-right: 10px; font-weight: bold;"><?php echo /* translators: Label for the MDP connection status. */ esc_html__('Status', 'wicket-acc'); ?></label>
+            <label style="margin-right: 10px; font-weight: bold;"><?php echo /* translators: Label for the MDP connection status. */ esc_html_x('Status', 'label', 'wicket-acc'); ?></label>
             <?php if ($can_connect) : ?>
-                <span style="background-color: #7ad03a; color: white; padding: 5px 10px; border-radius: 3px;"><?php echo esc_html__('CONNECTED', 'wicket-acc'); ?></span>
+                <span style="background-color: #7ad03a; color: white; padding: 5px 10px; border-radius: 3px;"><?php echo esc_html_x('CONNECTED', 'status', 'wicket-acc'); ?></span>
             <?php else : ?>
-                <span style="background-color: #dc3232; color: white; padding: 5px 10px; border-radius: 3px;"><?php echo esc_html__('NOT CONNECTED', 'wicket-acc'); ?></span>
+                <span style="background-color: #dc3232; color: white; padding: 5px 10px; border-radius: 3px;"><?php echo esc_html_x('NOT CONNECTED', 'status', 'wicket-acc'); ?></span>
             <?php endif; ?>
         </div>
         <?php

@@ -44,7 +44,7 @@ class init extends Blocks
 
         if ($this->is_preview) {
             $args = [
-                'block_name'        => __('Touchpoints TEC', 'wicket-acc'),
+                'block_name'        => _x('Touchpoints TEC', 'block title', 'wicket-acc'),
                 'block_description' => __('This block displays registered data for The Events Calendar on the front-end.', 'wicket-acc'),
                 'block_slug'        => 'wicket-ac-touchpoint-tec',
             ];
@@ -127,7 +127,7 @@ class init extends Blocks
 
         $args = [
             'block_id'                       => $block_id,
-            'block_name'                     => __('Touchpoint TEC', 'wicket-acc'),
+            'block_name'                     => _x('Touchpoint TEC', 'block title', 'wicket-acc'),
             'block_description'              => __('This block displays registered data for TEC (The Events Calendar) on the front-end.', 'wicket-acc'),
             'block_slug'                     => 'wicket-ac-touchpoint-tec',
             'attrs'                          => $attrs,
@@ -312,7 +312,7 @@ class init extends Blocks
                                 'variant' => 'secondary',
                                 'type'    => 'submit',
                                 'classes' => ['touchpoint-show-more', 'my-4', $show_more_classes],
-                                'label'   => __('Show More', 'wicket-acc'),
+                                'label'   => _x('Show More', 'button label', 'wicket-acc'),
                                 'prefix_icon' => 'fa-solid fa-caret-down',
                                 'atts'   => [
                                     'x-show="!loading && !buttonClicked"',

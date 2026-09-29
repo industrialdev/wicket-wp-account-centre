@@ -44,7 +44,7 @@ class init extends Blocks
 
         if ($this->is_preview) {
             $args = [
-                'block_name'        => __('Touchpoint Pheedloop', 'wicket-acc'),
+                'block_name'        => _x('Touchpoint Pheedloop', 'block title', 'wicket-acc'),
                 'block_description' => __('This block displays registered data for Pheedloop on the front-end.', 'wicket-acc'),
                 'block_slug'        => 'wicket-ac-touchpoint-pheedloop',
             ];
@@ -107,7 +107,7 @@ class init extends Blocks
         $switch_link = esc_url($switch_link);
 
         $args = [
-            'block_name'                     => __('Touchpoint Pheedloop', 'wicket-acc'),
+            'block_name'                     => _x('Touchpoint Pheedloop', 'block title', 'wicket-acc'),
             'block_description'              => __('This block displays registered data for Pheedloop on the front-end.', 'wicket-acc'),
             'block_slug'                     => 'wicket-ac-touchpoint-pheedloop',
             'attrs'                          => $attrs,
@@ -276,7 +276,7 @@ class init extends Blocks
 						class="button button-primary show-more flex items-center font-bold text-color-dark-100 my-4"
 						x-show="!loading">
 						<span class="arrow mr-2">&#9660;</span>
-						<span class="text"><?php esc_html_e('Show More', 'wicket-acc'); ?></span>
+						<span class="text"><?php echo esc_html_x('Show More', 'button label', 'wicket-acc'); ?></span>
 					</button>
 				</form>
 			</div>

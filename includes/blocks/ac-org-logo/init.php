@@ -229,7 +229,7 @@ class init extends Blocks
         $org_id = WACC()->sanitizeUuid($form['org_id'] ?? '');
 
         if (empty($org_id)) {
-            $this->setError('invalid_org', __('Invalid organization ID.', 'wicket-acc'));
+            $this->setError('invalid_org', _x('Invalid organization ID.', 'message', 'wicket-acc'));
 
             return false;
         }
@@ -298,7 +298,7 @@ class init extends Blocks
         $org_id = WACC()->sanitizeUuid($form['org_id'] ?? '');
 
         if (empty($org_id)) {
-            $this->setError('invalid_org', __('Invalid organization ID.', 'wicket-acc'));
+            $this->setError('invalid_org', _x('Invalid organization ID.', 'message', 'wicket-acc'));
 
             return false;
         }

@@ -78,7 +78,7 @@ if ($roster_mode === 'groups') {
     if ($group_uuid === '') {
         status_header(200);
         WicketORM\Helpers\DatastarSSE::renderError(
-            __('Group identifier missing.', 'wicket-acc'),
+            _x('Group identifier missing.', 'message', 'wicket-acc'),
             $message_target,
             ['membersLoading' => false, 'bulkUploadSubmitting' => false]
         );
@@ -110,7 +110,7 @@ if ($roster_mode === 'groups') {
     if (empty($org_uuid)) {
         status_header(200);
         WicketORM\Helpers\DatastarSSE::renderError(
-            __('Organization identifier missing.', 'wicket-acc'),
+            _x('Organization identifier missing.', 'message', 'wicket-acc'),
             $message_target,
             ['membersLoading' => false, 'bulkUploadSubmitting' => false]
         );

@@ -84,14 +84,14 @@ $end_time .= $end_timezone_abbr;
             </a>
         <?php endif; ?>
         <p class="event-date <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm leading-relaxed' ?>">
-            <strong><?php _e('Date:', 'wicket-acc'); ?></strong> <?php echo $start_date_full; ?> - <?php echo $end_date_full; ?>
+            <strong><?php _ex('Date:', 'label', 'wicket-acc'); ?></strong> <?php echo $start_date_full; ?> - <?php echo $end_date_full; ?>
         </p>
         <p class="event-time <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm leading-relaxed' ?>">
-            <strong><?php _e('Time:', 'wicket-acc'); ?></strong> <?php echo $start_time; ?> - <?php echo $end_time; ?>
+            <strong><?php _ex('Time:', 'label', 'wicket-acc'); ?></strong> <?php echo $start_time; ?> - <?php echo $end_time; ?>
         </p>
         <?php if ($location) : ?>
             <p class="event-location <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm leading-relaxed' ?>">
-                <strong><?php _e('Location:', 'wicket-acc'); ?></strong> <?php echo $tp['attributes']['data']['location']; ?>
+                <strong><?php _ex('Location:', 'label', 'wicket-acc'); ?></strong> <?php echo $tp['attributes']['data']['location']; ?>
             </p>
         <?php endif; ?>
     </div>

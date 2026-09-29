@@ -68,7 +68,7 @@ $end_date_full = date_i18n(get_option('date_format'), strtotime($raw_end_date));
 			</a>
 		<?php endif; ?>
 		<p class="event-date <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm' ?>">
-			<strong><?php _e('Date:', 'wicket-acc'); ?></strong> <?php echo $start_date_full; ?> -
+			<strong><?php _ex('Date:', 'label', 'wicket-acc'); ?></strong> <?php echo $start_date_full; ?> -
 			<?php echo $end_date_full; ?>
 		</p>
 	</div>

@@ -319,7 +319,7 @@ class EngagementService
     {
         if ($value === null || $value === '') {
             /* translators: Not available: shown when a value is missing. */
-            return __('N/A', 'wicket-acc');
+            return _x('N/A', 'value placeholder', 'wicket-acc');
         }
 
         switch ($format) {
@@ -332,7 +332,7 @@ class EngagementService
                 $timestamp = is_numeric($value) ? (int) $value : strtotime((string) $value);
                 if (!$timestamp) {
                     /* translators: Not available: shown when a value is missing. */
-                    return __('N/A', 'wicket-acc');
+                    return _x('N/A', 'value placeholder', 'wicket-acc');
                 }
 
                 return date_i18n(get_option('date_format', 'Y-m-d'), $timestamp);
@@ -342,9 +342,9 @@ class EngagementService
 
                 return in_array($normalized, ['yes', '1', 'true'], true)
                     /* translators: Yes/No field value. */
-                    ? __('Yes', 'wicket-acc')
+                    ? _x('Yes', 'label', 'wicket-acc')
                     /* translators: Yes/No field value. */
-                    : __('No', 'wicket-acc');
+                    : _x('No', 'label', 'wicket-acc');
 
             default:
                 return sanitize_text_field((string) $value);

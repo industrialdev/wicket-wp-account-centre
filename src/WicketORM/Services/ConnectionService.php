@@ -162,7 +162,7 @@ class ConnectionService
 
             $connection = wicket_get_connection_by_id($relationship_id);
             if (!$connection || empty($connection['data'])) {
-                return new WP_Error('connection_not_found', __('Connection not found.', 'wicket-acc'));
+                return new WP_Error('connection_not_found', _x('Connection not found.', 'message', 'wicket-acc'));
             }
 
             $connection_data = $connection['data'];
@@ -431,7 +431,7 @@ class ConnectionService
                     return new WP_Error('api_error', sprintf(
                         /* translators: %s: error detail returned by the API. */
                         __('Failed to update connection description: %s', 'wicket-acc'),
-                        $response['errors'][0]['detail'] ?? __('Unknown error', 'wicket-acc')
+                        $response['errors'][0]['detail'] ?? _x('Unknown error', 'value placeholder', 'wicket-acc')
                     ));
                 }
             }
@@ -950,7 +950,7 @@ class ConnectionService
                     return new WP_Error('api_error', sprintf(
                         /* translators: %s: error detail returned by the API. */
                         __('Failed to update connection type: %s', 'wicket-acc'),
-                        $response['errors'][0]['detail'] ?? __('Unknown error', 'wicket-acc')
+                        $response['errors'][0]['detail'] ?? _x('Unknown error', 'value placeholder', 'wicket-acc')
                     ));
                 }
             }

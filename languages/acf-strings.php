@@ -10,489 +10,489 @@ defined('ABSPATH') || exit;
 return;
 
 /* translators: ACF field group: ACC Callouts, ACC Additional Info. */
-_x('Add Row', 'admin field button label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Organization Profile. */
-_x('<p>This expects JSON data for configuring the widget, supporting all options documented for the MDP JS Widget (<code>fields</code>, <code>resourceLimits</code>, <code>resourcePermissions</code>, and more). Please do not modify unless you know what you are doing.</p><p>Note: <code>rootEl</code>, <code>apiRoot</code>, <code>accessToken</code>, and <code>orgId</code> are always set automatically and any value provided for them here is ignored.</p><p>See <a href="https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#editorganizationprofile" target="_blank">full documentation for MDP JS Widgets</a>.</p>', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Individual Profile. */
-_x('<p>This expects JSON data for configuring the widget, supporting all options documented for the MDP JS Widget (<code>fields</code>, <code>sections</code>, <code>resourceLimits</code>, <code>resourcePermissions</code>, and more). Please do not modify unless you know what you are doing.</p><p>Note: <code>rootEl</code>, <code>apiRoot</code>, <code>accessToken</code>, and <code>personId</code>/<code>orgId</code> are always set automatically and any value provided for them here is ignored.</p><p>See <a href="https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#createpersonprofile" target="_blank">full documentation for MDP JS Widgets</a>.</p>', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom. */
-_x('Configure events touchpoints display.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Welcome. */
-_x('Control the visiblity of the profile picture in the Welcome block.', 'admin field instructions', 'wicket-acc');
+_x('Add Row', 'button label', 'wicket-acc');
 
 /* translators: ACF field group: ACC Org. Search & Select. */
-_x('Enable filtering of relationships by the selected relationship type. When enabled, only relationships of the type specified in \'Relationship Type Upon Org Creation\' will be displayed.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Main Options. */
-_x('For EN only. Which word to use on the spelling of Centre/Center.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Moodle, ACC Touchpoint Zoom. */
-_x('How many columns do you want to use for touchpoints results. 1 will yield a list view.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('How the org will be shown on the frontend, e.g. "Organization" or "Chapter". Can be left blank to use default.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('How the org will be shown on the frontend, e.g. "Organizations" or "Chapters". Can be left blank to use default.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('ID of a checkbox to be checked if a new org gets created. Usually this will be a hidden checkbox used for later conditional logic.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom. */
-_x('If an override URL is set, you must specify a title for that link.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Main Options. */
-_x('If enabled, a new item will be shown on ACC admin menu. Page content from that item, will be used as a global "sub-header" on all ACC pages on the front.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Callouts. */
-_x('If enabled, the current URL\'s query string will be captured and appended to the links in this callout.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('If left blank, all organization types will be searchable. If you wish to filter, you\'ll need to provide the "slug" of the organization type, e.g., "it_company". It\'s also possible to provide multiple slugs, separated by commas, e.g., "it_company,non_profit".', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Additional Info. */
-_x('If left blank, the Org UUID will be set by the URL parameter "org_id"', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('If left blank, the user will be allowed to select the organization type themselves from the frontend.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Main Options. */
-_x('If not set, a default "person" image will be used as default profile picture.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Welcome. */
-_x('Leave empty to use ACC page mapping (in ACC Options). URL to which the button will point.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Main Options. */
-_x('Location of the sidebar navigation menu inside ACC pages.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Message that will display if nothing is found by their search. Can be left blank to use default.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Additional Info. */
-_x('Note that the year in the date picker will not apply, as these date ranges will recur annually.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom. */
-_x('Optional.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Events Calendar. */
-_x('Optional. Full URL where the user will be redirected when clicking on the "see past events" link.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint VitalSource, ACC Touchpoint Cvent, ACC Touchpoint Maple, ACC Touchpoint Moodle, ACC Touchpoint Zoom. */
-_x('Optional. Leave it empty so as not to be shown to the user.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Events Calendar. */
-_x('Optional. Title to display when viewing past events. If empty, the regular title will be used.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Additional Info. */
-_x('Same for both stage and prod', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Welcome. */
-_x('Show or hide the member status line ("Active Member" / "Non-Member") in the Welcome block.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Events Calendar. */
-_x('Show the link that switches between past and upcoming events views.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Individual Profile. */
-_x('This expects JSON data for the fields property as defined here: <a href="https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#createpersonprofile" target="_blank">https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#createpersonprofile</a>. Please do not modify unless you know what you are doing. This must be valid JSON, otherwise this field is ignored. Superseded by the MDP Widget Config setting above — if that is set, this value is ignored entirely. A "Copy this value into MDP Widget Config" link appears below this field in the editor to copy it over pre-formatted.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Organization Profile. */
-_x('This expects JSON data for the fields property as defined here: <a href="https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#editorganizationprofile" target="_blank">https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html</a>. Please do not modify unless you know what you are doing. This must be valid JSON, otherwise this field is ignored. Superseded by the MDP Widget Config setting above — if that is set, this value is ignored entirely. A "Copy this value into MDP Widget Config" link appears below this field in the editor to copy it over pre-formatted.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Individual Profile. */
-_x('This expects JSON data for the sections property (address / email / phone / web field config) as defined here: <a href="https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#addresssectionconfig" target="_blank">https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#addresssectionconfig</a>. Please do not modify unless you know what you are doing. This must be valid JSON, otherwise this field is ignored. Superseded by the MDP Widget Config setting above — if that is set, this value is ignored entirely.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Organization Profile. */
-_x('This field has no effect on this block — the organization profile widget component does not support a sections option, unlike the individual profile widget. Superseded by the MDP Widget Config setting above. A "Copy this value into MDP Widget Config" link appears below this field in the editor to copy it over pre-formatted, in case the widget gains section support later.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Will grey out the select button for an org that the user already has an active membership with.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Will prompt the user with a popup to confirm if they really want to remove their relationship with an org.', 'admin field instructions', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('\'New Org Created\' checkbox ID', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Organization Profile. */
-_x('ACC Organization Profile options', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint VitalSource. */
-_x('Action', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Additional Info. */
-_x('Additional Info Schema', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Advanced', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Callouts. */
-_x('Block Logic', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Callouts. */
-_x('Capture and use current URL query string', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Main Options. */
-_x('Centre/Center localization', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Moodle, ACC Touchpoint Zoom. */
-_x('Columns', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom. */
-_x('Default Display', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Main Options. */
-_x('Default profile picture', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Callouts, ACC Touchpoint VitalSource. */
-_x('Description', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Disable ability to create new org/entity? (Hide create org UI)', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Disable ability to select orgs with active membership?', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Welcome. */
-_x('Display MDP ID', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Welcome. */
-_x('Display Member Status', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Display Org Fields', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Display Org Type', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Welcome. */
-_x('Display Profile Picture', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Moodle, ACC Touchpoint Zoom. */
-_x('Display Registered Actions', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Display Removal Alert Message', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Welcome. */
-_x('Edit Profile Button', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Welcome. */
-_x('Edit Profile Button (Show/Hide)', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Enable Relationship Filtering', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Additional Info. */
-_x('From', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('General', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Main Options. */
-_x('Global sub-header', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Grant org_editor role on selection?', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Grant roster management on next purchase?', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint VitalSource. */
-_x('Helper Text', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Organization Profile. */
-_x('Hide Additional Info', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Organization Profile. */
-_x('Hide Alternate Name Field', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Manage Preferences. */
-_x('Hide Language Preference', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Hide membership status?', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Hide remove buttons?', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Hide select buttons?', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Callouts. */
-_x('Link', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Callouts. */
-_x('Link Style', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Callouts. */
-_x('Links', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Organization Profile, ACC Individual Profile. */
-_x('MDP JSON Fields (Deprecated)', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Organization Profile, ACC Individual Profile. */
-_x('MDP JSON Sections (Deprecated)', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Organization Profile, ACC Individual Profile. */
-_x('MDP Widget Config (JSON)', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Main Options. */
-_x('Main Options', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Welcome. */
-_x('Member since (Show/Hide)', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('No results found message', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Additional Info. */
-_x('Only Activate Resource Override Within This Month/Day Range (Optional)', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Org Type When User Creates New Org', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Org name plural', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Org name singular', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Organization Type', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Additional Info. */
-_x('Organization UUID Override (Optional)', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom. */
-_x('Override "see past events" link', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom. */
-_x('Override past events link text', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Events Calendar. */
-_x('Past Events Title', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Profile Picture Change. */
-_x('Picture max size (in MB)', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Main Options. */
-_x('Profile Picture Size (in MB)', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Relationship Mode', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Relationship Type Upon Org Creation/Selection', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Welcome. */
-_x('Renewal date (Show/Hide)', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Callouts. */
-_x('Renewal period', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Additional Info. */
-_x('Resource Type', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Additional Info. */
-_x('Schema Slug', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Additional Info. */
-_x('Schema UUID ($id) - Prod', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Additional Info. */
-_x('Schema UUID ($id) - Stage', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Additional Info. */
-_x('Schema override resource Slug', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Additional Info. */
-_x('Schema override resource UUID - Prod', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Additional Info. */
-_x('Schema override resource UUID - Stage', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Search Mode', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Callouts. */
-_x('Select Profile Mandatory Fields', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Maple. */
-_x('Service', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Pheedloop. */
-_x('Service ID', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint VitalSource, ACC Touchpoint Maple. */
-_x('Show "View More"', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Moodle, ACC Touchpoint Zoom. */
-_x('Show "View More" events', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Additional Info. */
-_x('Show as required', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Events Calendar. */
-_x('Show switch view link', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Main Options. */
-_x('Sidebar location', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Callouts, ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint VitalSource, ACC Touchpoint Cvent, ACC Touchpoint Maple, ACC Touchpoint Moodle, ACC Touchpoint Zoom. */
-_x('Title', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Additional Info. */
-_x('To', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Maple. */
-_x('Touchpoint Action', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint VitalSource, ACC Touchpoint Cvent, ACC Touchpoint Maple, ACC Touchpoint Moodle, ACC Touchpoint Zoom. */
-_x('Touchpoints per page', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Additional Info. */
-_x('Use UI schema override resource UUID or Slug', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Additional Info. */
-_x('Use slugs instead of schema IDs', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Visual: Text, Messages, and Elements', 'admin field label', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint MicroSpec. */
-_x('10', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint MicroSpec. */
-_x('5', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Main Options. */
-_x('Account Center', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Main Options. */
-_x('Account Centre', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Callouts. */
-_x('Addresses', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom. */
-_x('All Events', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Maple. */
-_x('Aptify Conversion', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Zoom. */
-_x('Attended an Event', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Callouts. */
-_x('Become a member', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Callouts. */
-_x('Birth Date', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Callouts. */
-_x('Complete your profile', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Maple. */
-_x('Completed', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Moodle. */
-_x('Completed a course', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Moodle. */
-_x('Created Account', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Maple. */
-_x('Enrolled', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Moodle. */
-_x('Enrolled in a course', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Callouts. */
-_x('First Name', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Callouts. */
-_x('Gender', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Callouts. */
-_x('Ghost', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Groups (Soon)', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Callouts. */
-_x('Last Name', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Main Options. */
-_x('Left', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Maple. */
-_x('Maple LMS', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Org Name', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Org Name and Address', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('Org Name and Location', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Additional Info, ACC Org. Search & Select. */
-_x('Organizations', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom. */
-_x('Past Events', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Additional Info. */
-_x('People', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Callouts. */
-_x('Primary', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Zoom. */
-_x('RSVP to Event', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Zoom. */
-_x('Registered for an Event', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Callouts. */
-_x('Renewal', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Main Options. */
-_x('Right', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom. */
-_x('Upcoming Events', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint VitalSource. */
-_x('eBook Codes for others', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Touchpoint VitalSource. */
-_x('eBook Fulfilment', 'admin field option', 'wicket-acc');
-
-/* translators: ACF field group: ACC Org. Search & Select. */
-_x('E.g. choice_5_12_1', 'admin field placeholder', 'wicket-acc');
+__('E.g. choice_5_12_1', 'wicket-acc');
 
 /* translators: ACF field group: ACC Organization Profile. */
 _x('{
   "fields": {...}
-}', 'admin field placeholder', 'wicket-acc');
+}', 'field placeholder', 'wicket-acc');
 
 /* translators: ACF field group: ACC Individual Profile. */
 _x('{
   "fields": {...},
   "sections": {...}
-}', 'admin field placeholder', 'wicket-acc');
+}', 'field placeholder', 'wicket-acc');
 
 /* translators: ACF field group: ACC Individual Profile. */
-_x('{"addresses": { "fields": { "companyName": { "readOnly": true } } }}', 'admin field placeholder', 'wicket-acc');
+__('{"addresses": { "fields": { "companyName": { "readOnly": true } } }}', 'wicket-acc');
 
 /* translators: ACF field group: ACC Organization Profile. */
-_x('{"legalName": { "hidden": true }}', 'admin field placeholder', 'wicket-acc');
+_x('{"legalName": { "hidden": true }}', 'field placeholder', 'wicket-acc');
 
 /* translators: ACF field group: ACC Individual Profile. */
-_x('{"personType": { "hidden": false }}', 'admin field placeholder', 'wicket-acc');
+_x('{"personType": { "hidden": false }}', 'field placeholder', 'wicket-acc');
+
+/* translators: ACF field group: ACC Organization Profile. */
+__('<p>This expects JSON data for configuring the widget, supporting all options documented for the MDP JS Widget (<code>fields</code>, <code>resourceLimits</code>, <code>resourcePermissions</code>, and more). Please do not modify unless you know what you are doing.</p><p>Note: <code>rootEl</code>, <code>apiRoot</code>, <code>accessToken</code>, and <code>orgId</code> are always set automatically and any value provided for them here is ignored.</p><p>See <a href="https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#editorganizationprofile" target="_blank">full documentation for MDP JS Widgets</a>.</p>', 'wicket-acc');
+
+/* translators: ACF field group: ACC Individual Profile. */
+__('<p>This expects JSON data for configuring the widget, supporting all options documented for the MDP JS Widget (<code>fields</code>, <code>sections</code>, <code>resourceLimits</code>, <code>resourcePermissions</code>, and more). Please do not modify unless you know what you are doing.</p><p>Note: <code>rootEl</code>, <code>apiRoot</code>, <code>accessToken</code>, and <code>personId</code>/<code>orgId</code> are always set automatically and any value provided for them here is ignored.</p><p>See <a href="https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#createpersonprofile" target="_blank">full documentation for MDP JS Widgets</a>.</p>', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom. */
+__('Configure events touchpoints display.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Welcome. */
+__('Control the visiblity of the profile picture in the Welcome block.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+__('Enable filtering of relationships by the selected relationship type. When enabled, only relationships of the type specified in \'Relationship Type Upon Org Creation\' will be displayed.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Main Options. */
+__('For EN only. Which word to use on the spelling of Centre/Center.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Moodle, ACC Touchpoint Zoom. */
+__('How many columns do you want to use for touchpoints results. 1 will yield a list view.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+__('How the org will be shown on the frontend, e.g. "Organization" or "Chapter". Can be left blank to use default.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+__('How the org will be shown on the frontend, e.g. "Organizations" or "Chapters". Can be left blank to use default.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+__('ID of a checkbox to be checked if a new org gets created. Usually this will be a hidden checkbox used for later conditional logic.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom. */
+__('If an override URL is set, you must specify a title for that link.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Main Options. */
+__('If enabled, a new item will be shown on ACC admin menu. Page content from that item, will be used as a global "sub-header" on all ACC pages on the front.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Callouts. */
+__('If enabled, the current URL\'s query string will be captured and appended to the links in this callout.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+__('If left blank, all organization types will be searchable. If you wish to filter, you\'ll need to provide the "slug" of the organization type, e.g., "it_company". It\'s also possible to provide multiple slugs, separated by commas, e.g., "it_company,non_profit".', 'wicket-acc');
+
+/* translators: ACF field group: ACC Additional Info. */
+__('If left blank, the Org UUID will be set by the URL parameter "org_id"', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+__('If left blank, the user will be allowed to select the organization type themselves from the frontend.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Main Options. */
+__('If not set, a default "person" image will be used as default profile picture.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Welcome. */
+__('Leave empty to use ACC page mapping (in ACC Options). URL to which the button will point.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Main Options. */
+__('Location of the sidebar navigation menu inside ACC pages.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+__('Message that will display if nothing is found by their search. Can be left blank to use default.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Additional Info. */
+__('Note that the year in the date picker will not apply, as these date ranges will recur annually.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom. */
+_x('Optional.', 'help text', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Events Calendar. */
+__('Optional. Full URL where the user will be redirected when clicking on the "see past events" link.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint VitalSource, ACC Touchpoint Cvent, ACC Touchpoint Maple, ACC Touchpoint Moodle, ACC Touchpoint Zoom. */
+__('Optional. Leave it empty so as not to be shown to the user.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Events Calendar. */
+__('Optional. Title to display when viewing past events. If empty, the regular title will be used.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Additional Info. */
+__('Same for both stage and prod', 'wicket-acc');
+
+/* translators: ACF field group: ACC Welcome. */
+__('Show or hide the member status line ("Active Member" / "Non-Member") in the Welcome block.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Events Calendar. */
+__('Show the link that switches between past and upcoming events views.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Individual Profile. */
+__('This expects JSON data for the fields property as defined here: <a href="https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#createpersonprofile" target="_blank">https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#createpersonprofile</a>. Please do not modify unless you know what you are doing. This must be valid JSON, otherwise this field is ignored. Superseded by the MDP Widget Config setting above — if that is set, this value is ignored entirely. A "Copy this value into MDP Widget Config" link appears below this field in the editor to copy it over pre-formatted.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Organization Profile. */
+__('This expects JSON data for the fields property as defined here: <a href="https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#editorganizationprofile" target="_blank">https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html</a>. Please do not modify unless you know what you are doing. This must be valid JSON, otherwise this field is ignored. Superseded by the MDP Widget Config setting above — if that is set, this value is ignored entirely. A "Copy this value into MDP Widget Config" link appears below this field in the editor to copy it over pre-formatted.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Individual Profile. */
+__('This expects JSON data for the sections property (address / email / phone / web field config) as defined here: <a href="https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#addresssectionconfig" target="_blank">https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#addresssectionconfig</a>. Please do not modify unless you know what you are doing. This must be valid JSON, otherwise this field is ignored. Superseded by the MDP Widget Config setting above — if that is set, this value is ignored entirely.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Organization Profile. */
+__('This field has no effect on this block — the organization profile widget component does not support a sections option, unlike the individual profile widget. Superseded by the MDP Widget Config setting above. A "Copy this value into MDP Widget Config" link appears below this field in the editor to copy it over pre-formatted, in case the widget gains section support later.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+__('Will grey out the select button for an org that the user already has an active membership with.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+__('Will prompt the user with a popup to confirm if they really want to remove their relationship with an org.', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+__('\'New Org Created\' checkbox ID', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint MicroSpec. */
+_x('10', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint MicroSpec. */
+_x('5', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Organization Profile. */
+__('ACC Organization Profile options', 'wicket-acc');
+
+/* translators: ACF field group: ACC Main Options. */
+_x('Account Center', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Main Options. */
+_x('Account Centre', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint VitalSource. */
+_x('Action', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Additional Info. */
+_x('Additional Info Schema', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Callouts. */
+_x('Addresses', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+_x('Advanced', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom. */
+_x('All Events', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Maple. */
+_x('Aptify Conversion', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Zoom. */
+_x('Attended an Event', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Callouts. */
+_x('Become a member', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Callouts. */
+_x('Birth Date', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Callouts. */
+_x('Block Logic', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Callouts. */
+__('Capture and use current URL query string', 'wicket-acc');
+
+/* translators: ACF field group: ACC Main Options. */
+_x('Centre/Center localization', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Moodle, ACC Touchpoint Zoom. */
+_x('Columns', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Callouts. */
+_x('Complete your profile', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Maple. */
+_x('Completed', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Moodle. */
+_x('Completed a course', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Moodle. */
+_x('Created Account', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom. */
+_x('Default Display', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Main Options. */
+_x('Default profile picture', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Callouts, ACC Touchpoint VitalSource. */
+_x('Description', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+__('Disable ability to create new org/entity? (Hide create org UI)', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+__('Disable ability to select orgs with active membership?', 'wicket-acc');
+
+/* translators: ACF field group: ACC Welcome. */
+_x('Display MDP ID', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Welcome. */
+_x('Display Member Status', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+_x('Display Org Fields', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+_x('Display Org Type', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Welcome. */
+_x('Display Profile Picture', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Moodle, ACC Touchpoint Zoom. */
+_x('Display Registered Actions', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+__('Display Removal Alert Message', 'wicket-acc');
+
+/* translators: ACF field group: ACC Welcome. */
+_x('Edit Profile Button', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Welcome. */
+__('Edit Profile Button (Show/Hide)', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+_x('Enable Relationship Filtering', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Maple. */
+_x('Enrolled', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Moodle. */
+__('Enrolled in a course', 'wicket-acc');
+
+/* translators: ACF field group: ACC Callouts. */
+_x('First Name', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Additional Info. */
+_x('From', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Callouts. */
+_x('Gender', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+_x('General', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Callouts. */
+_x('Ghost', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Main Options. */
+_x('Global sub-header', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+__('Grant org_editor role on selection?', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+__('Grant roster management on next purchase?', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+_x('Groups (Soon)', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint VitalSource. */
+_x('Helper Text', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Organization Profile. */
+_x('Hide Additional Info', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Organization Profile. */
+__('Hide Alternate Name Field', 'wicket-acc');
+
+/* translators: ACF field group: ACC Manage Preferences. */
+_x('Hide Language Preference', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+_x('Hide membership status?', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+_x('Hide remove buttons?', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+_x('Hide select buttons?', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Callouts. */
+_x('Last Name', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Main Options. */
+_x('Left', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Callouts. */
+_x('Link', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Callouts. */
+_x('Link Style', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Callouts. */
+_x('Links', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Organization Profile, ACC Individual Profile. */
+__('MDP JSON Fields (Deprecated)', 'wicket-acc');
+
+/* translators: ACF field group: ACC Organization Profile, ACC Individual Profile. */
+__('MDP JSON Sections (Deprecated)', 'wicket-acc');
+
+/* translators: ACF field group: ACC Organization Profile, ACC Individual Profile. */
+__('MDP Widget Config (JSON)', 'wicket-acc');
+
+/* translators: ACF field group: ACC Main Options. */
+_x('Main Options', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Maple. */
+_x('Maple LMS', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Welcome. */
+__('Member since (Show/Hide)', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+__('No results found message', 'wicket-acc');
+
+/* translators: ACF field group: ACC Additional Info. */
+__('Only Activate Resource Override Within This Month/Day Range (Optional)', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+_x('Org Name', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+__('Org Name and Address', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+__('Org Name and Location', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+__('Org Type When User Creates New Org', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+_x('Org name plural', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+_x('Org name singular', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+_x('Organization Type', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Additional Info. */
+__('Organization UUID Override (Optional)', 'wicket-acc');
+
+/* translators: ACF field group: ACC Additional Info, ACC Org. Search & Select. */
+_x('Organizations', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom. */
+__('Override "see past events" link', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom. */
+__('Override past events link text', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom. */
+_x('Past Events', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Events Calendar. */
+_x('Past Events Title', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Additional Info. */
+_x('People', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Profile Picture Change. */
+__('Picture max size (in MB)', 'wicket-acc');
+
+/* translators: ACF field group: ACC Callouts. */
+_x('Primary', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Main Options. */
+__('Profile Picture Size (in MB)', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Zoom. */
+_x('RSVP to Event', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Zoom. */
+__('Registered for an Event', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+_x('Relationship Mode', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+__('Relationship Type Upon Org Creation/Selection', 'wicket-acc');
+
+/* translators: ACF field group: ACC Callouts. */
+_x('Renewal', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Welcome. */
+__('Renewal date (Show/Hide)', 'wicket-acc');
+
+/* translators: ACF field group: ACC Callouts. */
+_x('Renewal period', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Additional Info. */
+_x('Resource Type', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Main Options. */
+_x('Right', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Additional Info. */
+_x('Schema Slug', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Additional Info. */
+__('Schema UUID ($id) - Prod', 'wicket-acc');
+
+/* translators: ACF field group: ACC Additional Info. */
+__('Schema UUID ($id) - Stage', 'wicket-acc');
+
+/* translators: ACF field group: ACC Additional Info. */
+__('Schema override resource Slug', 'wicket-acc');
+
+/* translators: ACF field group: ACC Additional Info. */
+__('Schema override resource UUID - Prod', 'wicket-acc');
+
+/* translators: ACF field group: ACC Additional Info. */
+__('Schema override resource UUID - Stage', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+_x('Search Mode', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Callouts. */
+__('Select Profile Mandatory Fields', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Maple. */
+_x('Service', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Pheedloop. */
+_x('Service ID', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint VitalSource, ACC Touchpoint Maple. */
+_x('Show "View More"', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Moodle, ACC Touchpoint Zoom. */
+__('Show "View More" events', 'wicket-acc');
+
+/* translators: ACF field group: ACC Additional Info. */
+_x('Show as required', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Events Calendar. */
+__('Show switch view link', 'wicket-acc');
+
+/* translators: ACF field group: ACC Main Options. */
+_x('Sidebar location', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Callouts, ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint VitalSource, ACC Touchpoint Cvent, ACC Touchpoint Maple, ACC Touchpoint Moodle, ACC Touchpoint Zoom. */
+_x('Title', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Additional Info. */
+_x('To', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Maple. */
+_x('Touchpoint Action', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint VitalSource, ACC Touchpoint Cvent, ACC Touchpoint Maple, ACC Touchpoint Moodle, ACC Touchpoint Zoom. */
+_x('Touchpoints per page', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom. */
+_x('Upcoming Events', 'label', 'wicket-acc');
+
+/* translators: ACF field group: ACC Additional Info. */
+__('Use UI schema override resource UUID or Slug', 'wicket-acc');
+
+/* translators: ACF field group: ACC Additional Info. */
+__('Use slugs instead of schema IDs', 'wicket-acc');
+
+/* translators: ACF field group: ACC Org. Search & Select. */
+__('Visual: Text, Messages, and Elements', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint VitalSource. */
+__('eBook Codes for others', 'wicket-acc');
+
+/* translators: ACF field group: ACC Touchpoint VitalSource. */
+_x('eBook Fulfilment', 'label', 'wicket-acc');

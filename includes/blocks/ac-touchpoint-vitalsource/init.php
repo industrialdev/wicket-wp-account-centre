@@ -54,7 +54,7 @@ class init extends Blocks
 
         if ($this->is_preview) {
             $args = [
-                'block_name'        => __('Touchpoint VitalSource', 'wicket-acc'),
+                'block_name'        => _x('Touchpoint VitalSource', 'block title', 'wicket-acc'),
                 'block_description' => __('This block displays registered data for VitalSource on the front-end.', 'wicket-acc'),
                 'block_slug'        => 'wicket-ac-touchpoint-vitalsource',
             ];
@@ -90,7 +90,7 @@ class init extends Blocks
         // Debug logging removed to avoid dumping touchpoint payloads
 
         $args = [
-            'block_name'          => __('Touchpoint VitalSource', 'wicket-acc'),
+            'block_name'          => _x('Touchpoint VitalSource', 'block title', 'wicket-acc'),
             'block_description'   => __('This block displays registered data for VitalSource on the front-end.', 'wicket-acc'),
             'block_slug'          => 'wicket-ac-touchpoint-vitalsource',
             'attrs'               => $attrs,
@@ -226,7 +226,7 @@ class init extends Blocks
                     <button type="submit"
                         class="button button--secondary show-more flex items-center font-bold text-color-dark-100 my-4"
                         x-show="!loading">
-                        <span class="text"><?php esc_html_e('Show More', 'wicket-acc'); ?></span>
+                        <span class="text"><?php echo esc_html_x('Show More', 'button label', 'wicket-acc'); ?></span>
                     </button>
                 </form>
             </div>

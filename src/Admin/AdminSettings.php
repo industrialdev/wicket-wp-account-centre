@@ -89,8 +89,8 @@ class AdminSettings extends \WicketAcc\WicketAcc
 
             add_submenu_page(
                 $parent_slug,
-                __('Global Header', 'wicket-acc'),
-                __('Global Header', 'wicket-acc'),
+                _x('Global Header', 'label', 'wicket-acc'),
+                _x('Global Header', 'label', 'wicket-acc'),
                 'manage_options',
                 'post.php?post=' . $global_header_post_id . '&action=edit'
             );
@@ -98,8 +98,8 @@ class AdminSettings extends \WicketAcc\WicketAcc
 
         add_submenu_page(
             $parent_slug,
-            __('Menu Editor', 'wicket-acc'),
-            __('Menu Editor', 'wicket-acc'),
+            _x('Menu Editor', 'label', 'wicket-acc'),
+            _x('Menu Editor', 'label', 'wicket-acc'),
             'manage_options',
             'nav-menus.php'
         );
