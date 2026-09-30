@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.11.10] - 2026-09-30
+
+### Fixed
+- break restricted-access redirect loop with one-shot bounce marker (#55)
+
+
 ## [1.11.9] - 2026-09-30
 
 ### Maintenance
