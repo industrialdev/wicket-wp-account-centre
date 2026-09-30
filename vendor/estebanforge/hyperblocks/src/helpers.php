@@ -157,13 +157,14 @@ if (!function_exists('hb_render')) {
      *
      * @param string $template   The template path or string.
      * @param array  $attributes The block attributes.
+     * @param string $content    Inner-blocks markup injected at the <InnerBlocks /> marker.
      * @return string The rendered HTML.
      */
-    function hb_render(string $template, array $attributes = []): string
+    function hb_render(string $template, array $attributes = [], string $content = ''): string
     {
         $renderer = new Renderer();
 
-        return $renderer->render($template, $attributes);
+        return $renderer->render($template, $attributes, $content);
     }
 }
 
@@ -303,5 +304,36 @@ if (!function_exists('hb_resolve_content_url')) {
         }
 
         return '';
+    }
+}
+
+if (!function_exists('hb_path_within_base')) {
+    /**
+     * Report whether a realpath-resolved path equals a realpath-resolved base
+     * directory or sits inside it.
+     *
+     * Both sides are compared through wp_normalize_path: realpath() returns
+     * backslash separators on Windows, so appending '/' to the raw base never
+     * prefix-matches there and rejects every legitimate file: template. The
+     * trailing separator stays in the comparison so a sibling directory whose
+     * name shares a prefix ("blocks" vs "blocks-evil") is never treated as
+     * inside the base.
+     *
+     * @param string $realPath realpath()-resolved candidate path.
+     * @param string $realBase realpath()-resolved base directory.
+     * @return bool True when $realPath is the base or inside it.
+     */
+    function hb_path_within_base(string $realPath, string $realBase): bool
+    {
+        $normalize = static function (string $p): string {
+            $p = str_replace('\\', '/', $p);
+
+            return function_exists('wp_normalize_path') ? wp_normalize_path($p) : $p;
+        };
+
+        $normalizedPath = $normalize($realPath);
+        $normalizedBase = rtrim($normalize($realBase), '/');
+
+        return $normalizedPath === $normalizedBase || str_starts_with($normalizedPath, $normalizedBase . '/');
     }
 }

@@ -92,6 +92,13 @@ class Block
     public ?string $style = null;
 
     /**
+     * Inner-blocks configuration. Null = the block has no inner-blocks area.
+     *
+     * @var array{allowedBlocks?: string[], template?: array<mixed>, templateLock?: string|false}|null
+     */
+    public ?array $inner_blocks = null;
+
+    /**
      * Constructor.
      *
      * @param string $title The block title.
@@ -263,8 +270,10 @@ class Block
             // Without it, str_starts_with('/var/www/blocks-evil/x',
             // '/var/www/blocks') would treat an unregistered sibling directory
             // whose name shares a prefix as "inside" the allowed base.
-            $baseWithSep = rtrim($realBase, '/') . '/';
-            if ($real === $realBase || str_starts_with($real, $baseWithSep)) {
+            // hb_path_within_base() normalizes both sides first: realpath()
+            // returns backslash separators on Windows, where a raw '/'-suffixed
+            // base never prefix-matched and rejected every file: template.
+            if (\hb_path_within_base($real, $realBase)) {
                 $valid = true;
                 break;
             }
@@ -349,6 +358,29 @@ class Block
     }
 
     /**
+     * Enable the inner-blocks area for this block.
+     *
+     * Marks the block as accepting nested blocks: <InnerBlocks /> markers in
+     * the render template resolve to the block's saved inner markup, the
+     * editor renders a live inner-blocks area inside the server preview, and
+     * save() serializes inner content between the block delimiters.
+     *
+     * @param array{allowedBlocks?: string[], template?: array<mixed>, templateLock?: string|false}|null $config
+     *        allowedBlocks: block names insertable as children; also bridged to
+     *        the client through the native allowed_blocks registration argument.
+     *        template: Gutenberg block-template array prefilled on insert.
+     *        templateLock: 'all' | 'insert' | false.
+     *        Null config = defaults: all blocks allowed, empty template, no lock.
+     * @return self
+     */
+    public function innerBlocks(?array $config = null): self
+    {
+        $this->inner_blocks = $config ?? [];
+
+        return $this;
+    }
+
+    /**
      * Get the underlying HyperFields adapter for the block's fields.
      *
      * @return array Array of BlockFieldAdapter instances
@@ -381,6 +413,7 @@ class Block
             'description' => $this->description,
             'keywords' => $this->keywords,
             'style' => $this->style,
+            'inner_blocks' => $this->inner_blocks,
         ];
     }
 }
