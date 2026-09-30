@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.11.9] - 2026-09-30
+
+### Maintenance
+- **deps:** refresh vendor after composer update (WWID-2650) (#53)
+
+
 ## [1.11.8] - 2026-09-25
 
 ### Fixed
