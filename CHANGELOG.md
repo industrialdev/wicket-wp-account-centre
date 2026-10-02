@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.11.11] - 2026-10-02
+
+### Maintenance
+- **ci:** fail closed when main moves before release push (#57)
+
+
 ## [1.11.10] - 2026-09-30
 
 ### Fixed
