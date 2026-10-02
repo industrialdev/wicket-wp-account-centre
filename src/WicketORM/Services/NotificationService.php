@@ -135,7 +135,7 @@ class NotificationService
         }
 
         $message = $wp_error->get_error_message();
-        $title = $wp_error->get_error_code();
+        $title = _x('Error', 'notification type', 'wicket-acc');
 
         return $this->error($message, $title, $options);
     }
@@ -203,13 +203,13 @@ class NotificationService
         if (empty($person_uuid) || empty($org_id)) {
             $logger->error('[OrgMan] Assignment email aborted: missing identifiers', $context);
 
-            return new WP_Error('invalid_params', 'Person UUID and organization ID are required.');
+            return new WP_Error('invalid_params', __('Person UUID and organization ID are required.', 'wicket-acc'));
         }
 
         if (!function_exists('wicket_get_organization') || !function_exists('wicket_get_person_by_id')) {
             $logger->error('[OrgMan] Assignment email dependencies missing', $context);
 
-            return new WP_Error('missing_dependency', 'Wicket API functions are unavailable.');
+            return new WP_Error('missing_dependency', __('Wicket API functions are unavailable.', 'wicket-acc'));
         }
 
         try {
@@ -249,7 +249,7 @@ class NotificationService
             if (!$person) {
                 $logger->error('[OrgMan] Assignment email aborted: person not found', $context);
 
-                return new WP_Error('person_not_found', 'Person not found.');
+                return new WP_Error('person_not_found', _x('Person not found.', 'message', 'wicket-acc'));
             }
 
             // Get person details
@@ -257,7 +257,7 @@ class NotificationService
             if (empty($to)) {
                 $logger->error('[OrgMan] Assignment email aborted: person missing primary email', $context);
 
-                return new WP_Error('email_missing', 'Person does not have a primary email address.');
+                return new WP_Error('email_missing', __('Person does not have a primary email address.', 'wicket-acc'));
             }
 
             // Get configuration for email
@@ -266,14 +266,28 @@ class NotificationService
 
             $first_name = $person->given_name ?? '';
             $last_name = $person->family_name ?? '';
-            $subject = 'Welcome to ' . $organization_name;
+            /* translators: %s: organization name. */
+            $subject = sprintf(_x('Welcome to %s', 'email subject', 'wicket-acc'), $organization_name);
 
-            $body = "Hi $first_name, <br>
-		 <p>You have been assigned a membership as part of $organization_name.</p>
-		 <p>You will receive an account confirmation email from $confirmation_email_from, this will allow you to set your password and login for the first time.</p>
-		 <p>Going forward you can visit <a href='$home_url'>$site_name</a> and login to complete your profile and access your resources.</p>
+            /* translators: %s: recipient first name. */
+            $body = sprintf(_x('Hi %s,', 'email text', 'wicket-acc'), $first_name) . " <br>
+		 <p>" . sprintf(
+                /* translators: %s: organization name. */
+                __('You have been assigned a membership as part of %s.', 'wicket-acc'),
+                $organization_name
+            ) . "</p>
+		 <p>" . sprintf(
+                /* translators: %s: sender email address for the account confirmation email. */
+                __('You will receive an account confirmation email from %s, this will allow you to set your password and login for the first time.', 'wicket-acc'),
+                $confirmation_email_from
+            ) . "</p>
+		 <p>" . sprintf(
+                /* translators: %s: link to the site (site name). */
+                __('Going forward you can visit %s and login to complete your profile and access your resources.', 'wicket-acc'),
+                "<a href='$home_url'>$site_name</a>"
+            ) . "</p>
 		 <br>
-		 Thank you,
+		 " . _x('Thank you,', 'email text', 'wicket-acc') . "
 		 <br>
 		 $organization_name";
 
@@ -292,7 +306,7 @@ class NotificationService
                     'recipient' => $to,
                 ]));
 
-                return new WP_Error('email_failed', 'Failed to send assignment email.');
+                return new WP_Error('email_failed', __('Failed to send assignment email.', 'wicket-acc'));
             }
 
             $logger->info('[OrgMan] Assignment email sent successfully', array_merge($context, [
@@ -349,26 +363,26 @@ class NotificationService
     {
         // Validate required parameters
         if (empty($person_input)) {
-            return new WP_Error('invalid_params', 'Person input is required.');
+            return new WP_Error('invalid_params', __('Person input is required.', 'wicket-acc'));
         }
 
         if (empty($data) || !is_array($data)) {
-            return new WP_Error('invalid_params', 'Data array is required.');
+            return new WP_Error('invalid_params', __('Data array is required.', 'wicket-acc'));
         }
 
         $notification_type = $data['notification_type'] ?? '';
         if (empty($notification_type)) {
-            return new WP_Error('invalid_params', 'Notification type is required.');
+            return new WP_Error('invalid_params', __('Notification type is required.', 'wicket-acc'));
         }
 
         $org_id = $data['org_id'] ?? '';
         if (empty($org_id)) {
-            return new WP_Error('invalid_params', 'Organization ID is required.');
+            return new WP_Error('invalid_params', __('Organization ID is required.', 'wicket-acc'));
         }
 
         // Check for required dependencies
         if (!function_exists('wicket_get_organization') || !function_exists('wicket_get_person_by_id')) {
-            return new WP_Error('missing_dependency', 'Wicket API functions are unavailable.');
+            return new WP_Error('missing_dependency', __('Wicket API functions are unavailable.', 'wicket-acc'));
         }
 
         try {
@@ -376,18 +390,18 @@ class NotificationService
             if (is_string($person_input)) {
                 $person = wicket_get_person_by_id($person_input);
                 if (!$person) {
-                    return new WP_Error('person_not_found', 'Person not found.');
+                    return new WP_Error('person_not_found', _x('Person not found.', 'message', 'wicket-acc'));
                 }
             } elseif (is_object($person_input)) {
                 $person = $person_input;
             } else {
-                return new WP_Error('invalid_person_input', 'Invalid person input type.');
+                return new WP_Error('invalid_person_input', __('Invalid person input type.', 'wicket-acc'));
             }
 
             // Get organization data
             $org = wicket_get_organization($org_id);
             if (!$org) {
-                return new WP_Error('organization_not_found', 'Organization not found.');
+                return new WP_Error('organization_not_found', _x('Organization not found.', 'message', 'wicket-acc'));
             }
 
             // Get email address
@@ -396,13 +410,13 @@ class NotificationService
                 if (isset($person->primary_email_address) && !empty($person->primary_email_address)) {
                     $person_email = $person->primary_email_address;
                 } else {
-                    return new WP_Error('email_missing', 'Person email address is required.');
+                    return new WP_Error('email_missing', __('Person email address is required.', 'wicket-acc'));
                 }
             }
 
             // Validate email format
             if (!is_email($person_email)) {
-                return new WP_Error('invalid_email', 'Invalid email address.');
+                return new WP_Error('invalid_email', _x('Invalid email address.', 'message', 'wicket-acc'));
             }
 
             // Get language
@@ -430,38 +444,71 @@ class NotificationService
             // Generate email content based on notification type
             switch ($notification_type) {
                 case 'group_assignment':
-                    $subject = "Welcome to {$organization_name}";
+                    /* translators: %s: organization name. */
+                    $subject = sprintf(_x('Welcome to %s', 'email subject', 'wicket-acc'), $organization_name);
                     $group_name = sanitize_text_field($data['group_name'] ?? '');
-                    $body = "Hi {$first_name}, <br>
-					 <p>You have been assigned a membership as part of {$organization_name}.</p>
-					 <p>You will receive an account confirmation email from {$confirmation_email_from}, this will allow you to set your password and login for the first time.</p>
-					 <p>Going forward you can visit <a href='{$home_url}'>{$site_name}</a> and login to complete your profile and access your resources.</p>
+                    /* translators: %s: recipient first name. */
+                    $body = sprintf(_x('Hi %s,', 'email text', 'wicket-acc'), $first_name) . " <br>
+					 <p>" . sprintf(
+                        /* translators: %s: organization name. */
+                        __('You have been assigned a membership as part of %s.', 'wicket-acc'),
+                        $organization_name
+                    ) . "</p>
+					 <p>" . sprintf(
+                        /* translators: %s: sender email address for the account confirmation email. */
+                        __('You will receive an account confirmation email from %s, this will allow you to set your password and login for the first time.', 'wicket-acc'),
+                        $confirmation_email_from
+                    ) . "</p>
+					 <p>" . sprintf(
+                        /* translators: %s: link to the site (site name). */
+                        __('Going forward you can visit %s and login to complete your profile and access your resources.', 'wicket-acc'),
+                        "<a href='{$home_url}'>{$site_name}</a>"
+                    ) . "</p>
 					 <br>
-					 Thank you,
+					 " . _x('Thank you,', 'email text', 'wicket-acc') . "
 					 <br>
 					 {$organization_name}";
                     break;
 
                 case 'representative_change':
-                    $subject = 'Your Representative Information Has Been Updated';
-                    $body = "Hi {$first_name}, <br>
-					 <p>Your representative information has been updated in the {$organization_name} organization.</p>
-					 <p>Please log in to your account to review the changes.</p>
-					 <p>Visit <a href='{$home_url}'>{$site_name}</a> to access your account.</p>
+                    $subject = __('Your Representative Information Has Been Updated', 'wicket-acc');
+                    /* translators: %s: recipient first name. */
+                    $body = sprintf(_x('Hi %s,', 'email text', 'wicket-acc'), $first_name) . " <br>
+					 <p>" . sprintf(
+                        /* translators: %s: organization name. */
+                        __('Your representative information has been updated in the %s organization.', 'wicket-acc'),
+                        $organization_name
+                    ) . "</p>
+					 <p>" . __('Please log in to your account to review the changes.', 'wicket-acc') . "</p>
+					 <p>" . sprintf(
+                        /* translators: %s: link to the site (site name). */
+                        __('Visit %s to access your account.', 'wicket-acc'),
+                        "<a href='{$home_url}'>{$site_name}</a>"
+                    ) . "</p>
 					 <br>
-					 Thank you,
+					 " . _x('Thank you,', 'email text', 'wicket-acc') . "
 					 <br>
 					 {$organization_name}";
                     break;
 
                 default:
-                    $subject = "Update from {$organization_name}";
-                    $body = "Hi {$first_name}, <br>
-					 <p>You have received an update from {$organization_name}.</p>
-					 <p>Please log in to your account for more details.</p>
-					 <p>Visit <a href='{$home_url}'>{$site_name}</a> to access your account.</p>
+                    /* translators: %s: organization name. */
+                    $subject = sprintf(_x('Update from %s', 'email subject', 'wicket-acc'), $organization_name);
+                    /* translators: %s: recipient first name. */
+                    $body = sprintf(_x('Hi %s,', 'email text', 'wicket-acc'), $first_name) . " <br>
+					 <p>" . sprintf(
+                        /* translators: %s: organization name. */
+                        __('You have received an update from %s.', 'wicket-acc'),
+                        $organization_name
+                    ) . "</p>
+					 <p>" . __('Please log in to your account for more details.', 'wicket-acc') . "</p>
+					 <p>" . sprintf(
+                        /* translators: %s: link to the site (site name). */
+                        __('Visit %s to access your account.', 'wicket-acc'),
+                        "<a href='{$home_url}'>{$site_name}</a>"
+                    ) . "</p>
 					 <br>
-					 Thank you,
+					 " . _x('Thank you,', 'email text', 'wicket-acc') . "
 					 <br>
 					 {$organization_name}";
                     break;
@@ -478,7 +525,7 @@ class NotificationService
             $result = wp_mail($to, $subject, $body, $headers);
 
             if (!$result) {
-                return new WP_Error('email_failed', 'Failed to send group assignment email.');
+                return new WP_Error('email_failed', __('Failed to send group assignment email.', 'wicket-acc'));
             }
 
             return true;

@@ -109,6 +109,7 @@ class MemberExportService
             return new WP_Error(
                 'export_duplicate_active_job',
                 sprintf(
+                    /* translators: 1: existing export job ID, 2: existing export job status. */
                     __('An export for this organization is already in progress (job: %1$s, status: %2$s).', 'wicket-acc'),
                     (string) ($existing['id'] ?? ''),
                     (string) ($existing['status'] ?? '')
@@ -894,13 +895,20 @@ class MemberExportService
         $download_url = add_query_arg([self::QUERY_VAR => $token], home_url('/'));
 
         $subject = __('Your member export is ready', 'wicket-acc');
-        $message = '<p>' . esc_html(sprintf(
-            /* translators: 1: number of days, 2: number of downloads */
-            __('Your member export is ready. The download link is valid for %1$d day(s) and can be used up to %2$d time(s).', 'wicket-acc'),
-            $expiration_days,
-            $max_downloads
-        )) . '</p>'
-        . '<p><a href="' . esc_url($download_url) . '">' . esc_html__('Download Export', 'wicket-acc') . '</a></p>'
+        $message = '<p>' . esc_html(
+            __('Your member export is ready.', 'wicket-acc')
+            . ' ' . sprintf(
+                /* translators: %d: number of days the download link stays valid. */
+                _n('The download link is valid for %d day.', 'The download link is valid for %d days.', $expiration_days, 'wicket-acc'),
+                $expiration_days
+            )
+            . ' ' . sprintf(
+                /* translators: %d: maximum number of times the download link can be used. */
+                _n('It can be used up to %d time.', 'It can be used up to %d times.', $max_downloads, 'wicket-acc'),
+                $max_downloads
+            )
+        ) . '</p>'
+        . '<p><a href="' . esc_url($download_url) . '">' . esc_html_x('Download Export', 'button label', 'wicket-acc') . '</a></p>'
         . '<p>' . esc_html__('If the button above does not work, copy and paste this URL into your browser:', 'wicket-acc') . '<br>' . esc_url($download_url) . '</p>';
 
         wp_mail($recipient, $subject, $message, [

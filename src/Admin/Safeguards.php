@@ -187,9 +187,10 @@ class Safeguards extends \WicketAcc\WicketAcc
 
         // Step 2: Find missing pages
         $missingPages = [];
+        $pageTitles = $this->getAccPageTitles();
         foreach ($this->acc_pages_map_auto_create as $slug) {
             if (!isset($existingSlugs[$slug])) {
-                $missingPages[$slug] = $this->acc_pages_map[$slug] ?? ucwords(str_replace(['-', '_'], ' ', $slug));
+                $missingPages[$slug] = $pageTitles[$slug] ?? $this->acc_pages_map[$slug] ?? ucwords(str_replace(['-', '_'], ' ', $slug));
             }
         }
 
@@ -247,7 +248,7 @@ class Safeguards extends \WicketAcc\WicketAcc
 
         // 4) If slug differs from "my-account", resolve conflicts and rename
         $desiredSlug = 'my-account';
-        $desiredTitle = 'My Account Woo';
+        $desiredTitle = _x('My Account Woo', 'label', 'wicket-acc');
 
         $update = ['ID' => $pageId];
 
@@ -351,7 +352,10 @@ class Safeguards extends \WicketAcc\WicketAcc
      */
     public function preventMyAccountTrash(int $post_id): void
     {
-        $this->dieIfProtected($post_id, __('moved to trash', 'wicket-acc'));
+        $this->dieIfProtected(
+            $post_id,
+            __('This page is critical for Wicket\'s Account Centre and cannot be moved to trash.', 'wicket-acc')
+        );
     }
 
     /**
@@ -362,25 +366,23 @@ class Safeguards extends \WicketAcc\WicketAcc
      */
     public function preventMyAccountDelete(int $post_id): void
     {
-        $this->dieIfProtected($post_id, __('deleted', 'wicket-acc'));
+        $this->dieIfProtected(
+            $post_id,
+            __('This page is critical for Wicket\'s Account Centre and cannot be deleted.', 'wicket-acc')
+        );
     }
 
     /**
      * Internal helper to die if a post is protected.
      *
      * @param int    $post_id
-     * @param string $action  The action being prevented (untranslated)
+     * @param string $message Translated message to display.
      * @return void
      */
-    private function dieIfProtected(int $post_id, string $action): void
+    private function dieIfProtected(int $post_id, string $message): void
     {
         if ($this->isProtectedPost($post_id)) {
-            $message = sprintf(
-                /* translators: %s: action (e.g. moved to trash, deleted) */
-                __('This page is critical for Wicket\'s Account Centre and cannot be %s.', 'wicket-acc'),
-                $action
-            );
-            wp_die($message);
+            wp_die(esc_html($message));
         }
     }
 

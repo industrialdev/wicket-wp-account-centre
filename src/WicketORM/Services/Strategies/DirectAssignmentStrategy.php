@@ -168,7 +168,7 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
                     if (is_wp_error($response_connection)) {
                         return new WP_Error(
                             'connection_creation_failed',
-                            $response_connection->get_error_message() ?? 'Failed to add employee connection'
+                            $response_connection->get_error_message() ?? __('Failed to add employee connection', 'wicket-acc')
                         );
                     }
                 } elseif (!$has_relationship) {
@@ -192,8 +192,9 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
                 return new WP_Error(
                     'member_already_exists',
                     $email !== ''
-                        ? sprintf('A member with email %s already exists in this organization.', $email)
-                        : 'This person is already a member of this organization.'
+                        /* translators: %s: member email address. */
+                        ? sprintf(__('A member with email %s already exists in this organization.', 'wicket-acc'), $email)
+                        : __('This person is already a member of this organization.', 'wicket-acc')
                 );
             }
 
@@ -264,7 +265,7 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
 
             return [
                 'status'      => 'success',
-                'message'     => 'Member added successfully.',
+                'message'     => _x('Member added successfully.', 'message', 'wicket-acc'),
                 'person_uuid' => $person_uuid,
             ];
 
@@ -344,19 +345,19 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
     {
         $org_id = sanitize_text_field((string) $org_id);
         if ('' === $org_id) {
-            return new WP_Error('invalid_org_id', 'Organization identifier is required.');
+            return new WP_Error('invalid_org_id', __('Organization identifier is required.', 'wicket-acc'));
         }
 
         $context_membership_uuid = sanitize_text_field((string) ($context['membership_uuid'] ?? $context['membership_id'] ?? ''));
         if ('' !== $context_membership_uuid) {
             $membership_data = $this->membershipService()->getOrgMembershipData($context_membership_uuid);
             if (empty($membership_data) || !is_array($membership_data)) {
-                return new WP_Error('invalid_membership_uuid', 'Membership UUID is invalid or unavailable.');
+                return new WP_Error('invalid_membership_uuid', __('Membership UUID is invalid or unavailable.', 'wicket-acc'));
             }
 
             $membership_org_id = $membership_data['data']['relationships']['organization']['data']['id'] ?? '';
             if ('' !== $membership_org_id && $membership_org_id !== $org_id) {
-                return new WP_Error('membership_org_mismatch', 'Membership does not belong to the selected organization.');
+                return new WP_Error('membership_org_mismatch', __('Membership does not belong to the selected organization.', 'wicket-acc'));
             }
 
             return $context_membership_uuid;
@@ -365,7 +366,7 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
         $membership_uuid = $this->membershipService()->getOrganizationMembershipUuid($org_id);
 
         if (empty($membership_uuid)) {
-            return new WP_Error('no_membership', 'Could not find a valid corporate membership for this organization.');
+            return new WP_Error('no_membership', __('Could not find a valid corporate membership for this organization.', 'wicket-acc'));
         }
 
         return $membership_uuid;
@@ -459,7 +460,7 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
         if (!function_exists('wicket_assign_person_to_org_membership')) {
             $logger->error('Membership assignment helper missing', $context);
 
-            return new WP_Error('missing_dependency', 'Membership assignment helper is unavailable.');
+            return new WP_Error('missing_dependency', __('Membership assignment helper is unavailable.', 'wicket-acc'));
         }
 
         try {
@@ -476,7 +477,7 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
             if (empty($membership_data) || empty($membership_data['data'])) {
                 $logger->error('Membership data missing payload', $context);
 
-                return new WP_Error('membership_data_missing', 'Membership details unavailable.');
+                return new WP_Error('membership_data_missing', _x('Membership details unavailable.', 'message', 'wicket-acc'));
             }
 
             // Extract membership type ID from relationships
@@ -498,7 +499,7 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
             if (empty($membership_type_id)) {
                 $logger->error('Membership type ID missing in membership data', $context);
 
-                return new WP_Error('membership_type_missing', 'Could not find membership type ID.');
+                return new WP_Error('membership_type_missing', __('Could not find membership type ID.', 'wicket-acc'));
             }
 
             // Pass membership data as array; the helper expects array access
@@ -511,7 +512,7 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
 
             // Check if the API call was successful
             if (empty($result) || isset($result['errors'])) {
-                $error_message = $result['errors'][0]['detail'] ?? 'Failed to assign person to membership seat.';
+                $error_message = $result['errors'][0]['detail'] ?? __('Failed to assign person to membership seat.', 'wicket-acc');
                 $logger->warning('Membership assignment API returned error, verifying existing membership', array_merge($context, [
                     'membership_type_id' => $membership_type_id,
                     'api_error' => $error_message,
@@ -560,11 +561,11 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
     {
         $role = sanitize_key($role);
         if ('' === $role) {
-            return new WP_Error('invalid_role', 'Role is required.');
+            return new WP_Error('invalid_role', _x('Role is required.', 'message', 'wicket-acc'));
         }
 
         if (!function_exists('wicket_assign_role')) {
-            return new WP_Error('missing_dependency', 'Role assignment helper is unavailable.');
+            return new WP_Error('missing_dependency', __('Role assignment helper is unavailable.', 'wicket-acc'));
         }
 
         $permission_service = $this->permissionService();
@@ -582,7 +583,8 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
         }
 
         if (false === $result) {
-            return new WP_Error('role_assignment_failed', sprintf('Failed assigning role %s.', $role));
+            /* translators: %s: role slug. */
+            return new WP_Error('role_assignment_failed', sprintf(_x('Failed assigning role %s.', 'message', 'wicket-acc'), $role));
         }
 
         return true;
@@ -703,7 +705,7 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
         if (!function_exists('wicket_get_organization') || !function_exists('wicket_get_person_by_id')) {
             $logger->error('Email notification dependencies missing', $context);
 
-            return new WP_Error('missing_dependency', 'Email notification dependencies are unavailable.');
+            return new WP_Error('missing_dependency', __('Email notification dependencies are unavailable.', 'wicket-acc'));
         }
 
         $logger->debug('Preparing assignment email payload', $context);
@@ -735,7 +737,7 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
         if (empty($to)) {
             $logger->error('Assignment email aborted: missing person email', $context);
 
-            return new WP_Error('person_email_missing', 'Unable to determine person email address.');
+            return new WP_Error('person_email_missing', __('Unable to determine person email address.', 'wicket-acc'));
         }
 
         $lang = wicket_get_current_language();
@@ -757,27 +759,33 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
             $first_name = $person->given_name ?? '';
         }
         $first_name = sanitize_text_field($first_name);
-        $subject = sprintf('Welcome to %s', $organization_name);
+        /* translators: %s: organization name. */
+        $subject = sprintf(_x('Welcome to %s', 'email subject', 'wicket-acc'), $organization_name);
 
         // Get configuration for email
         $config = $this->configService()->getFullConfig();
         $confirmation_email_from = $config['integrations']['notifications']['confirmation_email_from'] ?? 'no-reply@wicketcloud.com';
 
-        $body = sprintf(
-            "Hi %s,<br>
-            <p>You have been assigned a membership as part of %s.</p>
-            <p>You will receive an account confirmation email from %s, this will allow you to set your password and login for the first time.</p>
-            <p>Going forward you can visit <a href='%s'>%s</a> and login to complete your profile and access your resources.</p>
+        /* translators: %s: recipient first name. */
+        $body = sprintf(_x('Hi %s,', 'email text', 'wicket-acc'), esc_html($first_name)) . "<br>
+            <p>" . sprintf(
+                /* translators: %s: organization name. */
+                __('You have been assigned a membership as part of %s.', 'wicket-acc'),
+                esc_html($organization_name)
+            ) . "</p>
+            <p>" . sprintf(
+                /* translators: %s: sender email address for the account confirmation email. */
+                __('You will receive an account confirmation email from %s, this will allow you to set your password and login for the first time.', 'wicket-acc'),
+                esc_html($confirmation_email_from)
+            ) . "</p>
+            <p>" . sprintf(
+                /* translators: %s: link to the site (site name). */
+                __('Going forward you can visit %s and login to complete your profile and access your resources.', 'wicket-acc'),
+                sprintf("<a href='%s'>%s</a>", esc_url($home_url), esc_html($site_name))
+            ) . "</p>
             <br>
-            Thank you,<br>
-            %s",
-            esc_html($first_name),
-            esc_html($organization_name),
-            esc_html($confirmation_email_from),
-            esc_url($home_url),
-            esc_html($site_name),
-            esc_html($organization_name)
-        );
+            " . _x('Thank you,', 'email text', 'wicket-acc') . "<br>
+            " . esc_html($organization_name);
 
         $headers = ['Content-Type: text/html; charset=UTF-8'];
         if ($base_domain) {
@@ -796,7 +804,7 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
                 'recipient' => $to,
             ]));
 
-            return new WP_Error('email_failed', 'Failed to send assignment email.');
+            return new WP_Error('email_failed', __('Failed to send assignment email.', 'wicket-acc'));
         }
 
         $logger->info('Assignment email sent', array_merge($context, [
@@ -866,7 +874,7 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
 
                     return new WP_Error(
                         'membership_uuid_unresolvable',
-                        'The organization membership record could not be verified, so the removal was cancelled before anything changed. Please try again in a moment. If this keeps happening, please contact support.'
+                        __('The organization membership record could not be verified, so the removal was cancelled before anything changed. Please try again in a moment. If this keeps happening, please contact support.', 'wicket-acc')
                     );
                 }
                 $membership_uuid = $resolved;
@@ -893,7 +901,7 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
 
                     return new WP_Error(
                         'person_membership_org_mismatch',
-                        'The selected membership belongs to a different organization membership.'
+                        __('The selected membership belongs to a different organization membership.', 'wicket-acc')
                     );
                 }
             }
@@ -925,7 +933,11 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
 
                 return new WP_Error(
                     'role_removal_failed',
-                    sprintf('Failed removing role(s): %s.', implode(', ', $role_failures))
+                    sprintf(
+                        /* translators: %s: comma-separated list of role slugs. */
+                        _nx('Failed removing role: %s.', 'Failed removing roles: %s.', count($role_failures), 'message', 'wicket-acc'),
+                        implode(', ', $role_failures)
+                    )
                 );
             }
 
@@ -947,7 +959,11 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
                 if (empty($sweep_result['ended']) && !empty($sweep_result['errors'])) {
                     return new WP_Error(
                         'membership_end_failed',
-                        'Failed ending the person membership: ' . reset($sweep_result['errors'])
+                        sprintf(
+                            /* translators: %s: error detail. */
+                            __('Failed ending the person membership: %s', 'wicket-acc'),
+                            reset($sweep_result['errors'])
+                        )
                     );
                 }
             }
@@ -979,7 +995,7 @@ class DirectAssignmentStrategy implements RosterManagementStrategy
 
             return [
                 'status'         => 'success',
-                'message'        => 'Member removed successfully.',
+                'message'        => _x('Member removed successfully.', 'message', 'wicket-acc'),
                 'membership_uuid' => '' !== $membership_uuid ? $membership_uuid : null,
             ];
 

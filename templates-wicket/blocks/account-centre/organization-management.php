@@ -27,14 +27,14 @@ defined('ABSPATH') || exit;
 
             <p class="email_address mb-4">
             <h5 class="font-bold">
-                <?php _e('Email Address', 'wicket-acc') ?>
+                <?php _ex('Email Address', 'label', 'wicket-acc') ?>
             </h5>
             <?php echo $args['organization_info']['org_email']['address']; ?>
             </p>
 
             <p class="phone_number mb-4">
             <h5 class="font-bold">
-                <?php _e('Phone Number', 'wicket-acc') ?>
+                <?php _ex('Phone Number', 'label', 'wicket-acc') ?>
             </h5>
             <?php echo $args['organization_info']['org_phone']['number_international_format']; ?>
             </p>
@@ -46,7 +46,7 @@ defined('ABSPATH') || exit;
     <?php
     if (empty($args['organization_memberships'])) {
         ?>
-        <p><?php _e('No memberships found', 'wicket-acc'); ?>
+        <p><?php _ex('No memberships found', 'message', 'wicket-acc'); ?>
         </p>
     <?php
     }

@@ -29,12 +29,12 @@ if (isset($tp['attributes']['data']['location']) && $tp['attributes']['data']['l
 // Convert $tp['attributes']['data']['start_date']
 // Example output: 2024-11-19 9:00 AM EST
 $start_date = explode(' ', $tp['attributes']['data']['start_date']);
-$start_date_day = date('j', strtotime($tp['attributes']['data']['start_date']));
-$start_date_month = date('M', strtotime($tp['attributes']['data']['start_date']));
+$start_date_day = date_i18n('j', strtotime($tp['attributes']['data']['start_date']));
+$start_date_month = date_i18n('M', strtotime($tp['attributes']['data']['start_date']));
 $timezone = new DateTimeZone(get_option('timezone_string') ?: 'UTC');
 $datetime = new DateTime($tp['attributes']['data']['start_date'], $timezone);
-$start_date_full = $datetime->format('F j, Y');
-$start_time = $datetime->format('g:i a');
+$start_date_full = wp_date(get_option('date_format'), $datetime->getTimestamp(), $datetime->getTimezone());
+$start_time = wp_date(get_option('time_format'), $datetime->getTimestamp(), $datetime->getTimezone());
 
 // Extract timezone from original string if present
 $start_parts = explode(' ', $tp['attributes']['data']['start_date']);
@@ -43,11 +43,11 @@ $start_time .= $timezone_abbr;
 
 // Now for the end date
 $end_date = explode(' ', $tp['attributes']['data']['end_date']);
-$end_date_day = date('j', strtotime($tp['attributes']['data']['end_date']));
-$end_date_month = date('M', strtotime($tp['attributes']['data']['end_date']));
+$end_date_day = date_i18n('j', strtotime($tp['attributes']['data']['end_date']));
+$end_date_month = date_i18n('M', strtotime($tp['attributes']['data']['end_date']));
 $end_datetime = new DateTime($tp['attributes']['data']['end_date'], $timezone);
-$end_date_full = $end_datetime->format('F j, Y');
-$end_time = $end_datetime->format('g:i a');
+$end_date_full = wp_date(get_option('date_format'), $end_datetime->getTimestamp(), $end_datetime->getTimezone());
+$end_time = wp_date(get_option('time_format'), $end_datetime->getTimestamp(), $end_datetime->getTimezone());
 
 // Extract timezone from original string if present
 $end_parts = explode(' ', $tp['attributes']['data']['end_date']);
@@ -84,20 +84,24 @@ $event_duration = $tp['attributes']['data']['event_duration'] ?? '';
 				<?php echo esc_html($event_name); ?>
 			</h3>
 			<?php if (isset($event_url)) : ?>
+			<span class="webaim-hidden"><?php esc_html_e('(opens in a new window)', 'wicket-acc'); ?></span>
 			</a>
 		<?php endif; ?>
 		<p class="event-date <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm leading-relaxed' ?>">
-			<strong><?php _e('Date:', 'wicket-acc'); ?></strong> <?php echo esc_html($start_date_full); ?> -
+			<strong><?php _ex('Date:', 'label', 'wicket-acc'); ?></strong> <?php echo esc_html($start_date_full); ?> -
 			<?php echo esc_html($end_date_full); ?>
 		</p>
 		<p class="event-time <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm leading-relaxed' ?>">
-			<strong><?php _e('Time:', 'wicket-acc'); ?></strong> <?php echo esc_html($start_time); ?> - <?php echo esc_html($end_time); ?>
+			<strong><?php _ex('Time:', 'label', 'wicket-acc'); ?></strong> <?php echo esc_html($start_time); ?> - <?php echo esc_html($end_time); ?>
 		</p>
 
 		<?php if (isset($event_duration)) : ?>
 			<p class="event-duration <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm leading-relaxed' ?>">
-				<strong><?php _e('Duration:', 'wicket-acc'); ?></strong> <?php echo esc_html($event_duration); ?>
-				<?php _e('minutes', 'wicket-acc'); ?>
+				<strong><?php _ex('Duration:', 'label', 'wicket-acc'); ?></strong>
+				<?php
+				/* translators: %s: event duration in minutes. */
+				echo esc_html(sprintf(_nx('%s minute', '%s minutes', (int) $event_duration, 'duration', 'wicket-acc'), $event_duration));
+				?>
 			</p>
 		<?php endif; ?>
 	</div>

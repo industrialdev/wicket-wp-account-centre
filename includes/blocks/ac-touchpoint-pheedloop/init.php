@@ -44,8 +44,8 @@ class init extends Blocks
 
         if ($this->is_preview) {
             $args = [
-                'block_name'        => 'Touchpoint Pheedloop',
-                'block_description' => 'This block displays registered data for Pheedloop on the front-end.',
+                'block_name'        => _x('Touchpoint Pheedloop', 'block title', 'wicket-acc'),
+                'block_description' => __('This block displays registered data for Pheedloop on the front-end.', 'wicket-acc'),
                 'block_slug'        => 'wicket-ac-touchpoint-pheedloop',
             ];
 
@@ -107,8 +107,8 @@ class init extends Blocks
         $switch_link = esc_url($switch_link);
 
         $args = [
-            'block_name'                     => 'Touchpoint Pheedloop',
-            'block_description'              => 'This block displays registered data for Pheedloop on the front-end.',
+            'block_name'                     => _x('Touchpoint Pheedloop', 'block title', 'wicket-acc'),
+            'block_description'              => __('This block displays registered data for Pheedloop on the front-end.', 'wicket-acc'),
             'block_slug'                     => 'wicket-ac-touchpoint-pheedloop',
             'attrs'                          => $attrs,
             'title'                          => $title,
@@ -185,7 +185,13 @@ class init extends Blocks
         // No data
         if (empty($touchpoint_data)) {
             echo '<p class="no-data">';
-            _e('You do not have any ' . $display_type . ' events at this time.', 'wicket-acc');
+            if ($display_type === 'past') {
+                _e('You do not have any past events at this time.', 'wicket-acc');
+            } elseif ($display_type === 'all') {
+                _e('You do not have any events at this time.', 'wicket-acc');
+            } else {
+                _e('You do not have any upcoming events at this time.', 'wicket-acc');
+            }
             echo '</p>';
 
             return;
@@ -270,7 +276,7 @@ class init extends Blocks
 						class="button button-primary show-more flex items-center font-bold text-color-dark-100 my-4"
 						x-show="!loading">
 						<span class="arrow mr-2">&#9660;</span>
-						<span class="text"><?php esc_html_e('Show More', 'wicket-acc'); ?></span>
+						<span class="text"><?php echo esc_html_x('Show More', 'button label', 'wicket-acc'); ?></span>
 					</button>
 				</form>
 			</div>

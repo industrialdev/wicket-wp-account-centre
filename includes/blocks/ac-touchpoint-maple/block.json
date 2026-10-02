@@ -1,5 +1,6 @@
 {
     "name": "wicket-ac/ac-touchpoint-maple",
+    "textdomain": "wicket-acc",
     "title": "ACC Touchpoint Maple",
     "description": "Wicket block for AC Touchpoint Maple",
     "style": "file:./block-styles.css",
@@ -7,7 +8,7 @@
     "category": "wicket-account-center",
     "icon": "",
     "apiVersion": 2,
-    "keywords": ["account-center", "touchpoints", "service", "maple", "wicket"],
+    "keywords": ["account-centre", "account-center", "touchpoints", "service", "maple", "wicket"],
     "acf": {
         "mode": "preview",
         "renderTemplate": "render.php"

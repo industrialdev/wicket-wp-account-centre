@@ -189,7 +189,7 @@ class wicket_acc_menu_walker extends Walker_Nav_Menu
         } elseif (isset($permalink)) {
             if ($target == '_blank') {
                 $output .= '<a  target="_blank" rel="noopener" href="' . $permalink . '">' . $title;
-                $output .= '<i class="fas fa-external-link" aria-hidden="true"></i> <span class="webaim-hidden">Opens in a new window</span>';
+                $output .= '<i class="fas fa-external-link" aria-hidden="true"></i> <span class="webaim-hidden">' . esc_html__('Opens in a new window', 'wicket-acc') . '</span>';
             } else {
                 $output .= '<a href="' . $permalink . '">' . $title;
             }
@@ -266,7 +266,7 @@ class wicket_acc_menu_mobile_walker extends Walker_Nav_Menu
         } elseif (isset($permalink)) {
             if ($target == '_blank') {
                 $output .= '<a  target="_blank" rel="noopener" href="' . $permalink . '">' . $title;
-                $output .= '<i class="fas fa-external-link" aria-hidden="true"></i> <span class="webaim-hidden">Opens in a new window</span>';
+                $output .= '<i class="fas fa-external-link" aria-hidden="true"></i> <span class="webaim-hidden">' . esc_html__('Opens in a new window', 'wicket-acc') . '</span>';
             } else {
                 $output .= '<a href="' . $permalink . '">' . $title;
             }

@@ -42,8 +42,8 @@ class init extends WicketAcc
         if ($process_form === false) {
             $args = [
                 'block_name'  => 'wicket-ac/acc-base-block',
-                'block_title' => 'ACC Base Block',
-                'block_error' => 'There was an error processing the form.',
+                'block_title' => _x('ACC Base Block', 'block title', 'wicket-acc'),
+                'block_error' => __('There was an error processing the form.', 'wicket-acc'),
             ];
 
             $this->blocks->render_template('error', $args);
@@ -52,7 +52,7 @@ class init extends WicketAcc
         if ($process_form === true) {
             $args = [
                 'block_name'  => 'wicket-ac/acc-base-block',
-                'block_title' => 'ACC Base Block',
+                'block_title' => _x('ACC Base Block', 'block title', 'wicket-acc'),
             ];
 
             $this->blocks->render_template('success');

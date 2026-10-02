@@ -1,5 +1,6 @@
 {
     "name": "wicket-ac/ac-touchpoint-zoom",
+    "textdomain": "wicket-acc",
     "title": "ACC Touchpoint Zoom",
     "description": "Wicket block for Zoom Webinars Touchpoints",
     "style": "file:./block-styles.css",
@@ -8,6 +9,7 @@
     "icon": "",
     "apiVersion": 2,
     "keywords": [
+        "account-centre",
         "account-center",
         "touchpoints",
         "zoom",

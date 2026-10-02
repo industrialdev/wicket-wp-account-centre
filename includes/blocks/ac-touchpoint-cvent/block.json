@@ -1,5 +1,6 @@
 {
     "name": "wicket-ac/ac-touchpoint-cvent",
+    "textdomain": "wicket-acc",
     "title": "ACC Touchpoint Cvent",
     "description": "Wicket block for AC Touchpoint Cvent",
     "style": "file:./block-styles.css",
@@ -7,7 +8,7 @@
     "category": "wicket-account-center",
     "icon": "",
     "apiVersion": 2,
-    "keywords": ["account-center", "touchpoints", "service", "cvent", "wicket"],
+    "keywords": ["account-centre", "account-center", "touchpoints", "service", "cvent", "wicket"],
     "acf": {
         "mode": "preview",
         "renderTemplate": "render.php"

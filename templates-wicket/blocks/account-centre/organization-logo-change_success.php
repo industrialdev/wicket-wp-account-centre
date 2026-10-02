@@ -12,6 +12,6 @@ defined('ABSPATH') || exit;
  */
 ?>
 <section class="container wicket-acc-profile-picture wicket-acc-profile-picture__success">
-    <h3><?php esc_html_e('Success', 'wicket-acc'); ?></h3>
+    <h3><?php echo esc_html_x('Success', 'label', 'wicket-acc'); ?></h3>
     <p><?php esc_html_e('Your organization logo has been updated successfully.', 'wicket-acc'); ?></p>
 </section>

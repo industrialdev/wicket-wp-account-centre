@@ -32,12 +32,13 @@ if (!$course_name) {
 			<?php echo esc_html($course_name); ?>
 		</h3>
     <?php if ($course_url) : ?>
+    <span class="webaim-hidden"><?php esc_html_e('(opens in a new window)', 'wicket-acc'); ?></span>
     </a>
 	<?php endif; ?>
 
 	<?php if ($course_id) : ?>
 		<div class="maple-card__course-id <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm' ?>">
-			<strong><?php _e('ID:', 'wicket-acc'); ?></strong> <?php echo esc_html($course_id); ?>
+			<strong><?php _ex('ID:', 'label', 'wicket-acc'); ?></strong> <?php echo esc_html($course_id); ?>
 		</div>
 	<?php endif; ?>
 

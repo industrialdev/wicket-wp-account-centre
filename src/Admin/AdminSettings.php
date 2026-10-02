@@ -89,8 +89,8 @@ class AdminSettings extends \WicketAcc\WicketAcc
 
             add_submenu_page(
                 $parent_slug,
-                __('Global Header', 'wicket-acc'),
-                __('Global Header', 'wicket-acc'),
+                _x('Global Header', 'label', 'wicket-acc'),
+                _x('Global Header', 'label', 'wicket-acc'),
                 'manage_options',
                 'post.php?post=' . $global_header_post_id . '&action=edit'
             );
@@ -98,8 +98,8 @@ class AdminSettings extends \WicketAcc\WicketAcc
 
         add_submenu_page(
             $parent_slug,
-            __('Menu Editor', 'wicket-acc'),
-            __('Menu Editor', 'wicket-acc'),
+            _x('Menu Editor', 'label', 'wicket-acc'),
+            _x('Menu Editor', 'label', 'wicket-acc'),
             'manage_options',
             'nav-menus.php'
         );
@@ -204,7 +204,11 @@ class AdminSettings extends \WicketAcc\WicketAcc
         $acf_json_folder = WICKET_ACC_PATH . 'includes/acf-json/';
 
         if (!is_writable($acf_json_folder)) {
-            echo '<div class="notice notice-error"><p><strong>ACF JSON folder not writable</strong></p><p>The ' . esc_html($acf_json_folder) . ' folder is not writable. Please make sure the folder is writable by the server.</p><p>Not solving this issue, will result in ACF fields not being saved at plugin level and will not be visible on other sites backend.</p></div>';
+            echo '<div class="notice notice-error"><p><strong>' . esc_html__('ACF JSON folder not writable', 'wicket-acc') . '</strong></p><p>' . esc_html(sprintf(
+                /* translators: %s: filesystem path of the ACF JSON folder. */
+                __('The %s folder is not writable. Please make sure the folder is writable by the server.', 'wicket-acc'),
+                $acf_json_folder
+            )) . '</p><p>' . esc_html__('Not solving this issue, will result in ACF fields not being saved at plugin level and will not be visible on other sites backend.', 'wicket-acc') . '</p></div>';
         }
     }
 }

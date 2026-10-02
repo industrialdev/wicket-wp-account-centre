@@ -118,9 +118,9 @@ $config = ConfigService::getConfig();
 $member_list_config = $config['presentation']['member_list'] ?? [];
 $show_account_status = (bool) ($member_list_config['account_status']['enabled'] ?? true);
 $show_unconfirmed_label = (bool) ($member_list_config['account_status']['show_unconfirmed_label'] ?? true);
-$unconfirmed_label = (string) ($member_list_config['account_status']['unconfirmed_label'] ?? __('Account not confirmed', 'wicket-acc'));
-$confirmed_tooltip = (string) ($member_list_config['account_status']['confirmed_tooltip'] ?? __('Account confirmed', 'wicket-acc'));
-$unconfirmed_tooltip = (string) ($member_list_config['account_status']['unconfirmed_tooltip'] ?? __('Account not confirmed', 'wicket-acc'));
+$unconfirmed_label = (string) ($member_list_config['account_status']['unconfirmed_label'] ?? _x('Account not confirmed', 'status', 'wicket-acc'));
+$confirmed_tooltip = (string) ($member_list_config['account_status']['confirmed_tooltip'] ?? _x('Account confirmed', 'tooltip', 'wicket-acc'));
+$unconfirmed_tooltip = (string) ($member_list_config['account_status']['unconfirmed_tooltip'] ?? _x('Account not confirmed', 'tooltip', 'wicket-acc'));
 $member_email = $member['email'] ?? '';
 
 // Fragment 1: Update Status Indicator for ALL instances of this member
@@ -193,7 +193,7 @@ if (!empty($member['relationship_description']) && \WicketORM\Helpers\Helper::sh
         $has_details = true;
         ?>
         <div class="wt_flex wt_items-baseline wt_gap-2 wt_text-sm">
-            <strong><?php esc_html_e('Role(s):', 'wicket-acc'); ?></strong>
+            <strong><?php echo esc_html_x('Role(s):', 'label', 'wicket-acc'); ?></strong>
             <span class="wt_text-content"><?php echo esc_html($roles_text); ?></span>
         </div>
     <?php endif; ?>

@@ -44,8 +44,8 @@ class init extends Blocks
 
         if ($this->is_preview) {
             $args = [
-                'block_name'        => 'Touchpoints Zoom',
-                'block_description' => 'This block displays registered data for Zoom Webinars on the front-end.',
+                'block_name'        => _x('Touchpoints Zoom', 'block title', 'wicket-acc'),
+                'block_description' => __('This block displays registered data for Zoom Webinars on the front-end.', 'wicket-acc'),
                 'block_slug'        => 'wicket-ac-touchpoint-zoom',
             ];
 
@@ -118,8 +118,8 @@ class init extends Blocks
 
         $args = [
             'block_id'                       => $block_id,
-            'block_name'                     => 'Touchpoint Zoom',
-            'block_description'              => 'This block displays registered data for Zoom Webinars on the front-end.',
+            'block_name'                     => _x('Touchpoint Zoom', 'block title', 'wicket-acc'),
+            'block_description'              => __('This block displays registered data for Zoom Webinars on the front-end.', 'wicket-acc'),
             'block_slug'                     => 'wicket-ac-touchpoint-zoom',
             'attrs'                          => $attrs,
             'title'                          => $title,
@@ -183,7 +183,13 @@ class init extends Blocks
         // No data
         if (empty($touchpoint_data)) {
             echo '<p class="no-data">';
-            _e('You do not have any ' . $display_type . ' data at this time.', 'wicket-acc');
+            if ($display_type === 'past') {
+                _e('You do not have any past data at this time.', 'wicket-acc');
+            } elseif ($display_type === 'all') {
+                _e('You do not have any data at this time.', 'wicket-acc');
+            } else {
+                _e('You do not have any upcoming data at this time.', 'wicket-acc');
+            }
             echo '</p>';
 
             return;
@@ -329,8 +335,10 @@ class init extends Blocks
 				data-type="<?php echo $display_type; ?>" data-<?php echo $num_param; ?>="<?php echo $num_results; ?>"
 				data-touchpoint-data="<?php echo $touchpoint_data_encoded; ?>" data-nonce="<?php echo $nonce; ?>"
 				onclick="loadMoreZoomResults(this)">
-				<?php _e('Load More', 'wicket-acc'); ?> (<?php echo $remaining_results; ?>
-				<?php _e('remaining', 'wicket-acc'); ?>)
+				<?php
+				/* translators: %d: number of remaining results. */
+				printf(esc_html_x('Load More (%d remaining)', 'button label', 'wicket-acc'), (int) $remaining_results);
+				?>
 			</button>
 		</div>
 
@@ -347,7 +355,7 @@ class init extends Blocks
 
 				// Disable button
 				button.disabled = true;
-				button.innerHTML = '<?php _e('Loading...', 'wicket-acc'); ?>';
+				button.innerHTML = '<?php echo esc_js(_x('Loading...', 'message', 'wicket-acc')); ?>';
 
 				// AJAX request
 				const xhr = new XMLHttpRequest();
@@ -375,7 +383,7 @@ class init extends Blocks
 						} else {
 							// Re-enable button on error
 							button.disabled = false;
-							button.innerHTML = '<?php _e('Load More', 'wicket-acc'); ?>';
+							button.innerHTML = '<?php echo esc_js(_x('Load More', 'button label', 'wicket-acc')); ?>';
 							console.error('Error loading more results');
 						}
 					}

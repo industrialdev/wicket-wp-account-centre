@@ -139,6 +139,7 @@ class BulkMemberUploadService
                 return new WP_Error(
                     'bulk_required_column_missing',
                     sprintf(
+                        /* translators: %s: CSV column header name. */
                         __('CSV is missing required column: %s.', 'wicket-acc'),
                         esc_html((string) ($column_definition['header'] ?? $column_key))
                     )
@@ -212,6 +213,7 @@ class BulkMemberUploadService
                     return new WP_Error(
                         'bulk_duplicate_active_job',
                         sprintf(
+                            /* translators: 1: existing job ID, 2: existing job status. */
                             __('This exact same CSV is already in progress (matching file hash). Existing job: %1$s (status: %2$s).', 'wicket-acc'),
                             $existing_job_id,
                             $existing_status
@@ -242,6 +244,7 @@ class BulkMemberUploadService
                     return new WP_Error(
                         'bulk_duplicate_finished_job',
                         sprintf(
+                            /* translators: 1: existing job ID, 2: existing job status. */
                             __('This exact same CSV was already processed before (matching file hash). Existing job: %1$s (status: %2$s). Please upload a different CSV with different users.', 'wicket-acc'),
                             $existing_job_id,
                             $existing_status
@@ -503,7 +506,11 @@ class BulkMemberUploadService
                 $job['failed'] = (int) ($job['failed'] ?? 0) + 1;
                 $this->appendErrorSnippet(
                     $job,
-                    sprintf(__('Row %d skipped: missing required name/email fields.', 'wicket-acc'), $row_num)
+                    sprintf(
+                        /* translators: %d: CSV row number. */
+                        __('Row %d skipped: missing required name/email fields.', 'wicket-acc'),
+                        $row_num
+                    )
                 );
                 $this->logActivity('warning', 'Bulk upload row failed validation', [
                     'job_id' => $job_id,
@@ -529,7 +536,11 @@ class BulkMemberUploadService
                 $job['skipped'] = (int) ($job['skipped'] ?? 0) + 1;
                 $this->appendErrorSnippet(
                     $job,
-                    sprintf(__('Row %d skipped: relationship type is required for bulk upload.', 'wicket-acc'), $row_num)
+                    sprintf(
+                        /* translators: %d: CSV row number. */
+                        __('Row %d skipped: relationship type is required for bulk upload.', 'wicket-acc'),
+                        $row_num
+                    )
                 );
                 $this->logActivity('warning', 'Bulk upload row skipped: missing required relationship type', [
                     'job_id' => $job_id,
@@ -543,7 +554,11 @@ class BulkMemberUploadService
                 $job['failed'] = (int) ($job['failed'] ?? 0) + 1;
                 $this->appendErrorSnippet(
                     $job,
-                    sprintf(__('Row %d failed: relationship type is not allowed.', 'wicket-acc'), $row_num)
+                    sprintf(
+                        /* translators: %d: CSV row number. */
+                        __('Row %d failed: relationship type is not allowed.', 'wicket-acc'),
+                        $row_num
+                    )
                 );
                 $this->logActivity('warning', 'Bulk upload row failed: disallowed relationship type', [
                     'job_id' => $job_id,
@@ -666,7 +681,8 @@ class BulkMemberUploadService
                 $this->appendErrorSnippet(
                     $job,
                     sprintf(
-                        __('Row %1$d failed (%2$s): %3$s', 'wicket-acc'),
+                        /* translators: 1: CSV row number, 2: member email address, 3: error message. */
+                        _x('Row %1$d failed (%2$s): %3$s', 'message', 'wicket-acc'),
                         $row_num,
                         esc_html($email),
                         esc_html($result->get_error_message())

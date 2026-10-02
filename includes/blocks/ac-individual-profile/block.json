@@ -1,5 +1,6 @@
 {
 	"name": "wicket-ac/ac-individual-profile",
+	"textdomain": "wicket-acc",
 	"title": "ACC Individual Profile Block",
 	"description": "A Wicket block for Individual Profile",
 	"style": "file:./block-styles.css",
@@ -7,6 +8,7 @@
 	"icon": "",
 	"apiVersion": 2,
 	"keywords": [
+		"account-centre",
 		"account-center",
 		"profile",
 		"wicket"

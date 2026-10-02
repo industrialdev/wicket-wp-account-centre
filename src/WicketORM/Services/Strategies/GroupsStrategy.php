@@ -93,7 +93,7 @@ class GroupsStrategy implements RosterManagementStrategy
             if (empty($context['group_uuid'])) {
                 $logger->error('Groups strategy missing group_uuid', $log_context);
 
-                return new \WP_Error('missing_group_uuid', 'Group UUID is required for this operation.');
+                return new \WP_Error('missing_group_uuid', __('Group UUID is required for this operation.', 'wicket-acc'));
             }
 
             $group_uuid = $context['group_uuid'];
@@ -104,7 +104,7 @@ class GroupsStrategy implements RosterManagementStrategy
                     'role' => $role_slug,
                 ]));
 
-                return new \WP_Error('invalid_role', 'Invalid roster role for group membership.');
+                return new \WP_Error('invalid_role', __('Invalid roster role for group membership.', 'wicket-acc'));
             }
 
             $current_person = wp_get_current_user();
@@ -115,7 +115,7 @@ class GroupsStrategy implements RosterManagementStrategy
                     'manager_uuid' => $manager_uuid,
                 ]));
 
-                return new \WP_Error('no_group_access', 'You do not have permission to manage this group.');
+                return new \WP_Error('no_group_access', __('You do not have permission to manage this group.', 'wicket-acc'));
             }
 
             $org_identifier = (string) ($manager_access['org_identifier'] ?? '');
@@ -167,7 +167,7 @@ class GroupsStrategy implements RosterManagementStrategy
                     'existing_group_member_id' => $existing_group_member_id,
                 ]));
 
-                return new \WP_Error('group_member_exists', 'This member already has this role in the group.');
+                return new \WP_Error('group_member_exists', __('This member already has this role in the group.', 'wicket-acc'));
             }
 
             if (!empty($org_uuid)) {
@@ -212,7 +212,7 @@ class GroupsStrategy implements RosterManagementStrategy
                             'error' => $connection_result->get_error_message(),
                         ]));
 
-                        return new \WP_Error('connection_failed', $connection_result->get_error_message() ?? 'Failed to create organization connection.');
+                        return new \WP_Error('connection_failed', $connection_result->get_error_message() ?? __('Failed to create organization connection.', 'wicket-acc'));
                     }
                 }
             }
@@ -241,7 +241,8 @@ class GroupsStrategy implements RosterManagementStrategy
                             'role' => $role_slug,
                         ]));
 
-                        return new \WP_Error('seat_unavailable', "This group already has a person '{$role_slug}' for your organization.");
+                        /* translators: %s: group role slug. */
+                        return new \WP_Error('seat_unavailable', sprintf(__("This group already has a person '%s' for your organization.", 'wicket-acc'), $role_slug));
                     }
                 }
             }
@@ -260,7 +261,7 @@ class GroupsStrategy implements RosterManagementStrategy
             }
 
             $group_details = function_exists('wicket_get_group') ? wicket_get_group($group_uuid) : null;
-            $group_name = $group_details['data']['attributes']['name'] ?? 'Unknown Group';
+            $group_name = $group_details['data']['attributes']['name'] ?? _x('Unknown Group', 'value placeholder', 'wicket-acc');
 
             $logger->debug('Groups strategy sending notification', array_merge($log_context, [
                 'group_name' => $group_name,
@@ -302,7 +303,7 @@ class GroupsStrategy implements RosterManagementStrategy
 
             return [
                 'status' => 'success',
-                'message' => 'Member added to group successfully.',
+                'message' => __('Member added to group successfully.', 'wicket-acc'),
                 'person_uuid' => $person_uuid,
             ];
 
@@ -332,7 +333,7 @@ class GroupsStrategy implements RosterManagementStrategy
             if (empty($context['group_uuid'])) {
                 $logger->error('Groups strategy remove_member missing group_uuid', $log_context);
 
-                return new \WP_Error('missing_group_uuid', 'Group UUID is required for this operation.');
+                return new \WP_Error('missing_group_uuid', __('Group UUID is required for this operation.', 'wicket-acc'));
             }
 
             $group_uuid = $context['group_uuid'];
@@ -346,7 +347,7 @@ class GroupsStrategy implements RosterManagementStrategy
                     'manager_uuid' => $manager_uuid,
                 ]));
 
-                return new \WP_Error('no_group_access', 'You do not have permission to manage this group.');
+                return new \WP_Error('no_group_access', __('You do not have permission to manage this group.', 'wicket-acc'));
             }
 
             $org_identifier = (string) ($manager_access['org_identifier'] ?? '');
@@ -382,7 +383,7 @@ class GroupsStrategy implements RosterManagementStrategy
             if ('' === $group_member_id) {
                 $logger->error('Groups strategy could not locate group member', $log_context);
 
-                return new \WP_Error('group_member_not_found', 'Could not find the person in the specified group.');
+                return new \WP_Error('group_member_not_found', __('Could not find the person in the specified group.', 'wicket-acc'));
             }
 
             // Verify the role of the member we are about to remove if role_slug was not provided or to be extra safe.
@@ -397,14 +398,14 @@ class GroupsStrategy implements RosterManagementStrategy
                                 'group_member_id' => $group_member_id,
                             ]));
 
-                            return new \WP_Error('role_removal_forbidden', 'Managing roles cannot be removed.');
+                            return new \WP_Error('role_removal_forbidden', __('Managing roles cannot be removed.', 'wicket-acc'));
                         }
                     } catch (\Throwable $e) {
                         // If we can't verify, we should probably be cautious if we don't know the role.
                         if (empty($role_slug)) {
                             $logger->error('Groups strategy could not verify role before removal', $log_context);
 
-                            return new \WP_Error('role_verification_failed', 'Could not verify member role before removal.');
+                            return new \WP_Error('role_verification_failed', __('Could not verify member role before removal.', 'wicket-acc'));
                         }
                     }
                 }
@@ -415,7 +416,7 @@ class GroupsStrategy implements RosterManagementStrategy
                     'role' => $role_slug,
                 ]));
 
-                return new \WP_Error('role_removal_forbidden', 'Managing roles cannot be removed.');
+                return new \WP_Error('role_removal_forbidden', __('Managing roles cannot be removed.', 'wicket-acc'));
             }
 
             $remove_result = $this->groupService()->removeGroupMember($group_member_id);
@@ -443,7 +444,7 @@ class GroupsStrategy implements RosterManagementStrategy
 
             $logger->info('Groups strategy remove_member complete', $log_context);
 
-            return ['status' => 'success', 'message' => 'Group member removed successfully.'];
+            return ['status' => 'success', 'message' => __('Group member removed successfully.', 'wicket-acc')];
 
         } catch (\Exception $e) {
             $logger->error('Groups strategy remove_member exception', array_merge($log_context, [
@@ -608,7 +609,7 @@ class GroupsStrategy implements RosterManagementStrategy
                 'active_seats' => $active_seats,
             ]));
 
-            return new \WP_Error('seat_limit_reached', 'No seats available for this organization.');
+            return new \WP_Error('seat_limit_reached', __('No seats available for this organization.', 'wicket-acc'));
         }
 
         return true;

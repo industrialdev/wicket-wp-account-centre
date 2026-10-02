@@ -103,11 +103,11 @@ class MembershipRosterWriter
     public function updateMemberRoles($personUuid, $orgUuid, $membershipUuid, $roles)
     {
         if (!function_exists('wicket_api_client')) {
-            return new \WP_Error('api_unavailable', 'Wicket API client is not available.');
+            return new \WP_Error('api_unavailable', __('Wicket API client is not available.', 'wicket-acc'));
         }
 
         if (empty($personUuid) || empty($orgUuid) || empty($membershipUuid)) {
-            return new \WP_Error('invalid_params', 'Person UUID, organization UUID, and membership UUID are required.');
+            return new \WP_Error('invalid_params', __('Person UUID, organization UUID, and membership UUID are required.', 'wicket-acc'));
         }
 
         try {
@@ -142,7 +142,7 @@ class MembershipRosterWriter
             } while ($page <= $totalPages);
 
             if (empty($person_memberships)) {
-                return new \WP_Error('membership_not_found', 'Person membership not found in this organization.');
+                return new \WP_Error('membership_not_found', __('Person membership not found in this organization.', 'wicket-acc'));
             }
 
             if ($logger) {
@@ -183,7 +183,7 @@ class MembershipRosterWriter
             $person_membership = $person_memberships[0];
 
             if (!$person_membership) {
-                return new \WP_Error('membership_not_found', 'Person membership not found in this organization.');
+                return new \WP_Error('membership_not_found', __('Person membership not found in this organization.', 'wicket-acc'));
             }
 
             $require_active_membership = (bool) ($this->config['member_management']['edit']['require_active_membership_for_role_updates'] ?? false);
@@ -241,7 +241,7 @@ class MembershipRosterWriter
                 if (!$is_active_membership) {
                     return new \WP_Error(
                         'inactive_member_role_update_forbidden',
-                        'Cannot update roles for an inactive member.'
+                        __('Cannot update roles for an inactive member.', 'wicket-acc')
                     );
                 }
             }
@@ -358,7 +358,11 @@ class MembershipRosterWriter
 
                     return new \WP_Error(
                         'role_remove_failed',
-                        sprintf("Failed to remove role '%s'.", $role_name)
+                        sprintf(
+                            /* translators: %s: role name. */
+                            __("Failed to remove role '%s'.", 'wicket-acc'),
+                            $role_name
+                        )
                     );
                 }
 
@@ -377,7 +381,11 @@ class MembershipRosterWriter
 
                     return new \WP_Error(
                         'role_remove_verify_failed',
-                        sprintf("Failed to verify removal of role '%s'.", $role_name)
+                        sprintf(
+                            /* translators: %s: role name. */
+                            __("Failed to verify removal of role '%s'.", 'wicket-acc'),
+                            $role_name
+                        )
                     );
                 }
             }
@@ -405,7 +413,11 @@ class MembershipRosterWriter
 
                     return new \WP_Error(
                         'role_add_failed',
-                        sprintf("Failed to add role '%s'.", $role_name)
+                        sprintf(
+                            /* translators: %s: role name. */
+                            __("Failed to add role '%s'.", 'wicket-acc'),
+                            $role_name
+                        )
                     );
                 }
             }
@@ -430,7 +442,8 @@ class MembershipRosterWriter
                 ]);
             }
 
-            return new \WP_Error('update_exception', 'Failed to update member roles: ' . $e->getMessage());
+            /* translators: %s: error detail. */
+            return new \WP_Error('update_exception', sprintf(__('Failed to update member roles: %s', 'wicket-acc'), $e->getMessage()));
         }
     }
 
@@ -445,11 +458,11 @@ class MembershipRosterWriter
     public function updateMemberRelationship($personUuid, $orgUuid, $relationshipType)
     {
         if (!function_exists('wicket_api_client')) {
-            return new \WP_Error('api_unavailable', 'Wicket API client is not available.');
+            return new \WP_Error('api_unavailable', __('Wicket API client is not available.', 'wicket-acc'));
         }
 
         if (empty($personUuid) || empty($orgUuid) || empty($relationshipType)) {
-            return new \WP_Error('invalid_params', 'Person UUID, organization UUID, and relationship type are required.');
+            return new \WP_Error('invalid_params', __('Person UUID, organization UUID, and relationship type are required.', 'wicket-acc'));
         }
 
         try {
@@ -514,7 +527,8 @@ class MembershipRosterWriter
                 'relationship_type' => $relationshipType,
             ];
         } catch (\Exception $e) {
-            return new \WP_Error('update_exception', 'Failed to update member relationship: ' . $e->getMessage());
+            /* translators: %s: error detail. */
+            return new \WP_Error('update_exception', sprintf(__('Failed to update member relationship: %s', 'wicket-acc'), $e->getMessage()));
         }
     }
 
@@ -529,11 +543,11 @@ class MembershipRosterWriter
     public function updateMemberDescription($personUuid, $orgUuid, $description)
     {
         if (!function_exists('wicket_api_client')) {
-            return new \WP_Error('api_unavailable', 'Wicket API client is not available.');
+            return new \WP_Error('api_unavailable', __('Wicket API client is not available.', 'wicket-acc'));
         }
 
         if (empty($personUuid) || empty($orgUuid)) {
-            return new \WP_Error('invalid_params', 'Person UUID and organization UUID are required.');
+            return new \WP_Error('invalid_params', __('Person UUID and organization UUID are required.', 'wicket-acc'));
         }
 
         try {
@@ -541,7 +555,8 @@ class MembershipRosterWriter
 
             return $this->connectionService()->updateConnectionDescription($personUuid, $orgUuid, $description);
         } catch (\Exception $e) {
-            return new \WP_Error('update_exception', 'Failed to update member description: ' . $e->getMessage());
+            /* translators: %s: error detail. */
+            return new \WP_Error('update_exception', sprintf(__('Failed to update member description: %s', 'wicket-acc'), $e->getMessage()));
         }
     }
 
@@ -559,7 +574,7 @@ class MembershipRosterWriter
     public function addMember($org_id, $member_data, $context = [])
     {
         if (!function_exists('wicket_api_client')) {
-            return new \WP_Error('api_unavailable', 'Wicket API client is not available.');
+            return new \WP_Error('api_unavailable', __('Wicket API client is not available.', 'wicket-acc'));
         }
 
         $result = $this->getStrategy()->addMember($org_id, $member_data, $context);
@@ -603,7 +618,7 @@ class MembershipRosterWriter
         if (!function_exists('wicket_api_client')) {
             $logger->error('[OrgMan] removeMember aborted: wicket_api_client unavailable', $log_context);
 
-            return new \WP_Error('api_unavailable', 'Wicket API client is not available.');
+            return new \WP_Error('api_unavailable', __('Wicket API client is not available.', 'wicket-acc'));
         }
 
         $logger->info('[OrgMan] removeMember start', $log_context);

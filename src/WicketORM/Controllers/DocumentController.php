@@ -139,7 +139,7 @@ class DocumentController extends ApiController
         $uploaded_file = $_FILES['document'] ?? null;
 
         if (!$uploaded_file || $uploaded_file['error'] !== UPLOAD_ERR_OK) {
-            $error_message = __('File upload failed.', 'wicket-acc');
+            $error_message = _x('File upload failed.', 'message', 'wicket-acc');
 
             if ($uploaded_file && isset($uploaded_file['error'])) {
                 switch ($uploaded_file['error']) {
@@ -154,7 +154,7 @@ class DocumentController extends ApiController
                         $error_message = __('No file was uploaded.', 'wicket-acc');
                         break;
                     case UPLOAD_ERR_NO_TMP_DIR:
-                        $error_message = __('Missing temporary folder.', 'wicket-acc');
+                        $error_message = _x('Missing temporary folder.', 'message', 'wicket-acc');
                         break;
                     case UPLOAD_ERR_CANT_WRITE:
                         $error_message = __('Failed to write file to disk.', 'wicket-acc');
@@ -201,7 +201,7 @@ class DocumentController extends ApiController
             'notice' => [
                 'type'    => 'success',
                 'message' => sprintf(
-                    __('Document "%s" uploaded successfully.', 'wicket-acc'),
+                    /* translators: %s: document name. */ _x('Document "%s" uploaded successfully.', 'message', 'wicket-acc'),
                     $result['title']
                 ),
             ],
@@ -262,7 +262,7 @@ class DocumentController extends ApiController
             'category' => $category,
             'notice' => [
                 'type'    => 'success',
-                'message' => __('Document deleted successfully.', 'wicket-acc'),
+                'message' => _x('Document deleted successfully.', 'message', 'wicket-acc'),
             ],
         ];
 

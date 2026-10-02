@@ -98,11 +98,11 @@ class CascadeStrategy implements RosterManagementStrategy
     {
         $role = sanitize_key($role);
         if ('' === $role) {
-            return new \WP_Error('invalid_role', 'Role is required.');
+            return new \WP_Error('invalid_role', _x('Role is required.', 'message', 'wicket-acc'));
         }
 
         if (!function_exists('wicket_assign_role')) {
-            return new \WP_Error('missing_dependency', 'Role assignment helper is unavailable.');
+            return new \WP_Error('missing_dependency', __('Role assignment helper is unavailable.', 'wicket-acc'));
         }
 
         $current_roles = $this->getPersonCurrentRolesByOrgId($person_uuid, $org_id);
@@ -117,7 +117,8 @@ class CascadeStrategy implements RosterManagementStrategy
         }
 
         if (false === $result) {
-            return new \WP_Error('role_assignment_failed', sprintf('Failed assigning role %s.', $role));
+            /* translators: %s: role slug. */
+            return new \WP_Error('role_assignment_failed', sprintf(_x('Failed assigning role %s.', 'message', 'wicket-acc'), $role));
         }
 
         return true;
@@ -256,7 +257,7 @@ class CascadeStrategy implements RosterManagementStrategy
             if (!$membership_uuid) {
                 $logger->error('[OrgMan] Cascade strategy missing corporate membership for org', $log_context);
 
-                return new \WP_Error('no_membership', 'Could not find a valid corporate membership for this organization.');
+                return new \WP_Error('no_membership', __('Could not find a valid corporate membership for this organization.', 'wicket-acc'));
             }
             $log_context['membership_uuid'] = $membership_uuid;
 
@@ -347,7 +348,7 @@ class CascadeStrategy implements RosterManagementStrategy
                             'error' => $connection_response->get_error_message(),
                         ]));
 
-                        return new \WP_Error('connection_failed', $connection_response->get_error_message() ?? 'Failed to create organization connection.');
+                        return new \WP_Error('connection_failed', $connection_response->get_error_message() ?? __('Failed to create organization connection.', 'wicket-acc'));
                     }
                     $logger->debug('[OrgMan] Cascade strategy created org connection', $log_context);
                     if ($repaired_stale_relationship) {
@@ -364,8 +365,9 @@ class CascadeStrategy implements RosterManagementStrategy
                 return new \WP_Error(
                     'member_already_exists',
                     $email !== ''
-                        ? sprintf('A member with email %s already exists in this organization.', $email)
-                        : 'This person is already a member of this organization.'
+                        /* translators: %s: member email address. */
+                        ? sprintf(__('A member with email %s already exists in this organization.', 'wicket-acc'), $email)
+                        : __('This person is already a member of this organization.', 'wicket-acc')
                 );
             }
 
@@ -467,7 +469,7 @@ class CascadeStrategy implements RosterManagementStrategy
 
             return [
                 'status' => 'success',
-                'message' => 'Member added successfully.',
+                'message' => _x('Member added successfully.', 'message', 'wicket-acc'),
                 'person_uuid' => $person_uuid,
             ];
 
@@ -511,7 +513,7 @@ class CascadeStrategy implements RosterManagementStrategy
             $membership_uuid = sanitize_text_field((string) ($context['membership_uuid'] ?? ''));
 
             if ('' === $membership_uuid) {
-                return new \WP_Error('missing_membership_uuid', 'Organization membership UUID is required to remove a member.');
+                return new \WP_Error('missing_membership_uuid', __('Organization membership UUID is required to remove a member.', 'wicket-acc'));
             }
 
             // The context UUID is user-supplied. Without the org-match check a
@@ -519,7 +521,7 @@ class CascadeStrategy implements RosterManagementStrategy
             // another organization by posting a foreign membership UUID.
             $membership_data = $this->membershipService()->getOrgMembershipData($membership_uuid);
             if (empty($membership_data) || !is_array($membership_data)) {
-                return new \WP_Error('invalid_membership_uuid', 'Organization membership is invalid or unavailable.');
+                return new \WP_Error('invalid_membership_uuid', __('Organization membership is invalid or unavailable.', 'wicket-acc'));
             }
 
             $membership_org_id = (string) ($membership_data['data']['relationships']['organization']['data']['id'] ?? '');
@@ -529,7 +531,7 @@ class CascadeStrategy implements RosterManagementStrategy
                     'membership_org_id' => $membership_org_id,
                 ]));
 
-                return new \WP_Error('membership_org_mismatch', 'Membership does not belong to this organization.');
+                return new \WP_Error('membership_org_mismatch', __('Membership does not belong to this organization.', 'wicket-acc'));
             }
 
             // End every active person_membership this person holds under this org membership.
@@ -607,7 +609,7 @@ class CascadeStrategy implements RosterManagementStrategy
 
             $logger->info('[OrgMan] Cascade strategy removed member successfully', $log_context);
 
-            return ['status' => 'success', 'message' => 'Member removed successfully.'];
+            return ['status' => 'success', 'message' => _x('Member removed successfully.', 'message', 'wicket-acc')];
         } catch (\Exception $e) {
             $logger->error('[OrgMan] Cascade strategy remove_member exception', array_merge($log_context, [
                 'exception' => $e->getMessage(),
@@ -629,7 +631,7 @@ class CascadeStrategy implements RosterManagementStrategy
     {
         $membership_data = $this->membershipService()->getOrgMembershipData($membership_uuid);
         if (!is_array($membership_data) || empty($membership_data['data'])) {
-            return new \WP_Error('membership_data_missing', 'Membership details unavailable.');
+            return new \WP_Error('membership_data_missing', _x('Membership details unavailable.', 'message', 'wicket-acc'));
         }
 
         $max_seats = $this->membershipService()->getEffectiveMaxAssignments($membership_data);
@@ -641,7 +643,7 @@ class CascadeStrategy implements RosterManagementStrategy
                 'active_seats' => $active_seats,
             ]));
 
-            return new \WP_Error('seat_limit_reached', 'No seats available for this organization.');
+            return new \WP_Error('seat_limit_reached', __('No seats available for this organization.', 'wicket-acc'));
         }
 
         return true;

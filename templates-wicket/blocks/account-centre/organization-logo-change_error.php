@@ -15,7 +15,7 @@ defined('ABSPATH') || exit;
  */
 ?>
 <section class="container wicket-acc-org-logo-change wicket-acc-org-logo-change__error <?php echo defined('WICKET_WP_THEME_V2') ? 'wicket-acc-org-logo-change--v2' : '' ?>">
-    <h3><?php esc_html_e('Error', 'wicket-acc'); ?></h3>
+    <h3><?php echo esc_html_x('Error', 'label', 'wicket-acc'); ?></h3>
 
     <?php if (!empty($args['error_message'])): ?>
         <p><strong><?php echo esc_html($args['error_message']); ?></strong></p>
@@ -25,10 +25,16 @@ defined('ABSPATH') || exit;
 
     <?php if (!empty($args['max_size']) && !empty($args['pp_extensions'])): ?>
         <div class="upload-requirements">
-            <h4><?php esc_html_e('Upload Requirements:', 'wicket-acc'); ?></h4>
+            <h4><?php echo esc_html_x('Upload Requirements:', 'label', 'wicket-acc'); ?></h4>
             <ul>
-                <li><?php printf(esc_html__('Maximum file size: %dMB', 'wicket-acc'), $args['max_size']); ?></li>
-                <li><?php printf(esc_html__('Allowed formats: %s', 'wicket-acc'), implode(', ', array_map('strtoupper', $args['pp_extensions']))); ?></li>
+                <li><?php
+                    /* translators: %d: maximum file size in megabytes. */
+                    printf(esc_html__('Maximum file size: %dMB', 'wicket-acc'), $args['max_size']);
+                ?></li>
+                <li><?php
+                    /* translators: %s: comma-separated list of allowed file extensions. */
+                    printf(esc_html_x('Allowed formats: %s', 'help text', 'wicket-acc'), implode(', ', array_map('strtoupper', $args['pp_extensions'])));
+                ?></li>
                 <li><?php esc_html_e('File must be a valid image', 'wicket-acc'); ?></li>
             </ul>
         </div>

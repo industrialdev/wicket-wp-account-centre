@@ -37,28 +37,28 @@ $grade_percentage = $tp['attributes']['data']['final_grade']['percentageformatte
             <p><?php echo esc_html($course_name); ?></p>
             
             <p class="event-date <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm leading-relaxed' ?>">
-                <strong><?php _e('Course ID:', 'wicket-acc'); ?></strong> <?php echo esc_html($course_id); ?>
+                <strong><?php _ex('Course ID:', 'label', 'wicket-acc'); ?></strong> <?php echo esc_html($course_id); ?>
             </p>
             
             <p class="event-date <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm leading-relaxed' ?>">
-                <strong><?php _e('Start Date:', 'wicket-acc'); ?></strong> <?php echo esc_html($course_start_date); ?>
+                <strong><?php _ex('Start Date:', 'label', 'wicket-acc'); ?></strong> <?php echo esc_html($course_start_date); ?>
             </p>
             
             <?php if ($course_end_date): ?>
             <p class="event-date <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm leading-relaxed' ?>">
-                <strong><?php _e('End Date:', 'wicket-acc'); ?></strong> <?php echo esc_html($course_end_date); ?>
+                <strong><?php _ex('End Date:', 'label', 'wicket-acc'); ?></strong> <?php echo esc_html($course_end_date); ?>
             </p>
             <?php endif; ?>
             
             <?php if ($grade_achieved): ?>
             <p class="event-date <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm leading-relaxed' ?>">
-                <strong><?php _e('Grade Achieved:', 'wicket-acc'); ?></strong> <?php echo esc_html($grade_achieved); ?>
+                <strong><?php _ex('Grade Achieved:', 'label', 'wicket-acc'); ?></strong> <?php echo esc_html($grade_achieved); ?>
             </p>
             <?php endif; ?>
             
             <?php if ($grade_percentage): ?>
             <p class="event-date <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm leading-relaxed' ?>">
-                <strong><?php _e('Grade Percentage:', 'wicket-acc'); ?></strong> <?php echo esc_html($grade_percentage); ?>
+                <strong><?php _ex('Grade Percentage:', 'label', 'wicket-acc'); ?></strong> <?php echo esc_html($grade_percentage); ?>
             </p>
             <?php endif; ?>
         </div>
@@ -69,16 +69,16 @@ $grade_percentage = $tp['attributes']['data']['final_grade']['percentageformatte
             <p><?php echo esc_html($course_name); ?></p>
             
             <p class="event-date <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm leading-relaxed' ?>">
-                <strong><?php _e('Course ID:', 'wicket-acc'); ?></strong> <?php echo esc_html($course_id); ?>
+                <strong><?php _ex('Course ID:', 'label', 'wicket-acc'); ?></strong> <?php echo esc_html($course_id); ?>
             </p>
             
             <p class="event-date <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm leading-relaxed' ?>">
-                <strong><?php _e('Start Date:', 'wicket-acc'); ?></strong> <?php echo esc_html($enrolled_start_date); ?>
+                <strong><?php _ex('Start Date:', 'label', 'wicket-acc'); ?></strong> <?php echo esc_html($enrolled_start_date); ?>
             </p>
             
             <?php if ($enrolled_end_date): ?>
             <p class="event-date <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-sm leading-relaxed' ?>">
-                <strong><?php _e('End Date:', 'wicket-acc'); ?></strong> <?php echo esc_html($enrolled_end_date); ?>
+                <strong><?php _ex('End Date:', 'label', 'wicket-acc'); ?></strong> <?php echo esc_html($enrolled_end_date); ?>
             </p>
             <?php endif; ?>
         </div>

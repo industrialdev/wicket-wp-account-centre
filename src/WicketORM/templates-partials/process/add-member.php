@@ -51,7 +51,7 @@ if ('POST' === strtoupper($request_method)) {
     if (empty($org_uuid)) {
         status_header(200);
         WicketORM\Helpers\DatastarSSE::renderError(
-            __('Organization identifier missing.', 'wicket-acc'),
+            _x('Organization identifier missing.', 'message', 'wicket-acc'),
             '#add-member-messages-' . $org_dom_suffix,
             $error_signals
         );
@@ -95,7 +95,7 @@ if ('POST' === strtoupper($request_method)) {
         if (wicket_person_in_membership($membership_uuid, $member_data['email'])) {
             status_header(200);
             WicketORM\Helpers\DatastarSSE::renderError(
-                sprintf(__('A member with the email %s already exists in this membership.', 'wicket-acc'), '<strong>' . esc_html($member_data['email']) . '</strong>'),
+                sprintf(/* translators: %s: member email address. */ __('A member with the email %s already exists in this membership.', 'wicket-acc'), '<strong>' . esc_html($member_data['email']) . '</strong>'),
                 '#add-member-messages-' . $org_dom_suffix,
                 $error_signals
             );
@@ -205,12 +205,18 @@ if ('POST' === strtoupper($request_method)) {
 
         // Success message
         $full_name = trim(($member_data['first_name'] ?? '') . ' ' . ($member_data['last_name'] ?? ''));
-        $success_message = wp_sprintf(
-            /* translators: 1: member full name, 2: member email address */
-            __('Successfully added %1$s with email %2$s.', 'wicket-acc'),
-            $full_name !== '' ? $full_name : __('the member', 'wicket-acc'),
-            (string) ($member_data['email'] ?? '')
-        );
+        $success_message = $full_name !== ''
+            ? wp_sprintf(
+                /* translators: 1: member full name, 2: member email address */
+                __('Successfully added %1$s with email %2$s.', 'wicket-acc'),
+                $full_name,
+                (string) ($member_data['email'] ?? '')
+            )
+            : wp_sprintf(
+                /* translators: %s: member email address. */
+                __('Successfully added the member with email %s.', 'wicket-acc'),
+                (string) ($member_data['email'] ?? '')
+            );
 
         $element_patches = WicketORM\Helpers\MemberListRefresh::buildOrgMembersListPatches(
             $org_uuid,

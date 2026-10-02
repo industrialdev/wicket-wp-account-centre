@@ -57,11 +57,12 @@
         "cs:fix": "php-cs-fixer fix",
         "cs:format": "php-cs-fixer fix",
         "cs:lint": "php-cs-fixer fix --dry-run --diff",
+        "i18n:acf": "@php ./.ci/acf-i18n-strings.php",
         "post-autoload-dump": [
             "@build-pico-css"
         ],
         "production": "composer install --no-scripts && composer cs:fix && composer install --no-dev --optimize-autoloader",
-        "setup-hooks": "mkdir -p .git/hooks && cp .ci/pre-push .git/hooks/pre-push && chmod +x .git/hooks/pre-push && echo 'Git hooks installed to .git/hooks/pre-push'",
+        "setup-hooks": "mkdir -p .git/hooks && cp .ci/pre-push .git/hooks/pre-push && ln -sf ../../.ci/hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-push .ci/hooks/pre-commit && echo 'Git hooks installed to .git/hooks'",
         "version-bump": "@php ./.ci/version-bump.php"
     }
 }

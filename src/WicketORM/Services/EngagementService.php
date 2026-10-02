@@ -318,7 +318,8 @@ class EngagementService
     private function formatValue(mixed $value, string $format): string
     {
         if ($value === null || $value === '') {
-            return __('N/A', 'wicket-acc');
+            /* translators: Not available: shown when a value is missing. */
+            return _x('N/A', 'value placeholder', 'wicket-acc');
         }
 
         switch ($format) {
@@ -330,7 +331,8 @@ class EngagementService
             case 'date':
                 $timestamp = is_numeric($value) ? (int) $value : strtotime((string) $value);
                 if (!$timestamp) {
-                    return __('N/A', 'wicket-acc');
+                    /* translators: Not available: shown when a value is missing. */
+                    return _x('N/A', 'value placeholder', 'wicket-acc');
                 }
 
                 return date_i18n(get_option('date_format', 'Y-m-d'), $timestamp);
@@ -339,8 +341,10 @@ class EngagementService
                 $normalized = strtolower(trim((string) $value));
 
                 return in_array($normalized, ['yes', '1', 'true'], true)
-                    ? __('Yes', 'wicket-acc')
-                    : __('No', 'wicket-acc');
+                    /* translators: Yes/No field value. */
+                    ? _x('Yes', 'label', 'wicket-acc')
+                    /* translators: Yes/No field value. */
+                    : _x('No', 'label', 'wicket-acc');
 
             default:
                 return sanitize_text_field((string) $value);

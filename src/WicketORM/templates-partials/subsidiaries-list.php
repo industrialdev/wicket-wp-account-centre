@@ -52,8 +52,11 @@ if (!defined('ABSPATH')) {
 							<?php wp_nonce_field('org_management_subsidiary_remove_' . $org_id, '_wpnonce'); ?>
 							<button type="submit"
 									class="button button--secondary component-button"
-									data-on:click="confirm('<?php echo esc_js(sprintf(__('Are you sure you want to remove %s as a subsidiary?', 'wicket-acc'), $subsidiary['name'])); ?>')">
-								<?php esc_html_e('Remove', 'wicket-acc'); ?>
+									data-on:click="confirm('<?php
+										/* translators: %s: subsidiary organization name. */
+										echo esc_js(sprintf(__('Are you sure you want to remove %s as a subsidiary?', 'wicket-acc'), $subsidiary['name']));
+									?>')">
+								<?php echo esc_html_x('Remove', 'button label', 'wicket-acc'); ?>
 							</button>
 						</form>
 					</div>
@@ -68,7 +71,7 @@ if (!defined('ABSPATH')) {
 
 	<!-- Add Subsidiary Section -->
 	<div class="add-subsidiary-section wt_mt-6">
-		<h3><?php esc_html_e('Add Subsidiary', 'wicket-acc'); ?></h3>
+		<h3><?php echo esc_html_x('Add Subsidiary', 'label', 'wicket-acc'); ?></h3>
 
 		<!-- Search for Organization -->
 		<div class="subsidiary-search">
@@ -80,7 +83,7 @@ if (!defined('ABSPATH')) {
 					   id="subsidiary-search"
 					   name="subsidiary_search"
 					   class="form-control"
-					   placeholder="<?php esc_attr_e('Type organization name...', 'wicket-acc'); ?>"
+					   placeholder="<?php echo esc_attr_x('Type organization name...', 'field placeholder', 'wicket-acc'); ?>"
 					   data-on:input="input->debounce(500ms)->get('<?php echo \WicketORM\Helpers\template_url(); ?>subsidiaries-search&org_id=<?php echo esc_attr($org_id); ?>&search=event.target.value')"
 					   data-init="@get('<?php echo \WicketORM\Helpers\template_url(); ?>subsidiaries-search&org_id=<?php echo esc_attr($org_id); ?>&search=event.target.value')">
 				<div id="subsidiary-search-results" class="search-results-dropdown"></div>
@@ -89,7 +92,7 @@ if (!defined('ABSPATH')) {
 
 		<!-- Bulk Upload Section -->
 		<div class="bulk-upload-section wt_mt-6">
-			<h4><?php esc_html_e('Bulk Upload Subsidiaries', 'wicket-acc'); ?></h4>
+			<h4><?php echo esc_html_x('Bulk Upload Subsidiaries', 'label', 'wicket-acc'); ?></h4>
 			<p class="description"><?php esc_html_e('Upload an Excel spreadsheet to add multiple subsidiaries at once.', 'wicket-acc'); ?></p>
 
 			<form method="POST"
@@ -112,7 +115,7 @@ if (!defined('ABSPATH')) {
 						   required>
 				</div>
 
-				<button type="submit" class="button button--primary wt_mt-3 component-button"><?php esc_html_e('Upload and Process', 'wicket-acc'); ?></button>
+				<button type="submit" class="button button--primary wt_mt-3 component-button"><?php echo esc_html_x('Upload and Process', 'button label', 'wicket-acc'); ?></button>
 			</form>
 		</div>
 	</div>
@@ -137,14 +140,14 @@ document.addEventListener('DOMContentLoaded', function() {
 							<span class="candidate-type">${candidate.type}</span>
 						</div>
 						<button class="button button--small button--primary component-button"
-								onclick="addSubsidiary('${candidate.id}', '${candidate.name.replace(/'/g, "\\'")}')"><?php esc_html_e('Add', 'wicket-acc'); ?></button>
+								onclick="addSubsidiary('${candidate.id}', '${candidate.name.replace(/'/g, "\\'")}')"><?php echo esc_js(/* translators: Button: add the organization as a subsidiary. */ esc_html_x('Add', 'button label', 'wicket-acc')); ?></button>
 					</div>
 				`;
 			});
 			html += '</div>';
 			resultsContainer.innerHTML = html;
 		} else {
-			resultsContainer.innerHTML = '<div class="no-results"><?php esc_html_e('No organizations found.', 'wicket-acc'); ?></div>';
+			resultsContainer.innerHTML = '<div class="no-results"><?php echo esc_js(esc_html_x('No organizations found.', 'message', 'wicket-acc')); ?></div>';
 		}
 	});
 });

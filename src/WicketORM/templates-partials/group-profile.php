@@ -10,7 +10,7 @@ $group_uuid = isset($_GET['group_uuid']) ? sanitize_text_field((string) $_GET['g
 $org_uuid = isset($_GET['org_uuid']) ? sanitize_text_field((string) $_GET['org_uuid']) : '';
 
 if (empty($group_uuid)) {
-    echo '<p class="wt_text-gray-500">' . esc_html__('No group selected.', 'wicket-acc') . '</p>';
+    echo '<p class="wt_text-gray-500">' . esc_html_x('No group selected.', 'message', 'wicket-acc') . '</p>';
 
     return;
 }
@@ -35,11 +35,11 @@ $group_description = $group_attrs[$desc_key] ?? $group_attrs['description'] ?? '
 $update_endpoint = WicketORM\Helpers\TemplateHelper::template_url() . 'process/update-group';
 ?>
 <div class="wt_rounded-card wt_bg-light-neutral wt_p-6">
-    <h3 class="wt_text-lg wt_font-semibold wt_mb-4"><?php esc_html_e('Group Information', 'wicket-acc'); ?></h3>
+    <h3 class="wt_text-lg wt_font-semibold wt_mb-4"><?php echo esc_html_x('Group Information', 'label', 'wicket-acc'); ?></h3>
 
     <?php if (!$enable_edit) : ?>
         <p class="wt_text-sm wt_text-content">
-            <?php echo esc_html($group_description ?: __('No description available.', 'wicket-acc')); ?>
+            <?php echo esc_html($group_description ?: _x('No description available.', 'value placeholder', 'wicket-acc')); ?>
         </p>
     <?php else : ?>
         <div id="group-update-messages" class="wt_mb-3"></div>
@@ -54,20 +54,20 @@ $update_endpoint = WicketORM\Helpers\TemplateHelper::template_url() . 'process/u
 
             <?php if (in_array('name', $editable_fields, true)) : ?>
                 <div>
-                    <label class="wt_block wt_text-sm wt_font-medium wt_mb-2" for="group-name"><?php esc_html_e('Group Name', 'wicket-acc'); ?></label>
+                    <label class="wt_block wt_text-sm wt_font-medium wt_mb-2" for="group-name"><?php echo esc_html_x('Group Name', 'label', 'wicket-acc'); ?></label>
                     <input id="group-name" name="group_name" type="text" class="wt_w-full wt_rounded-md wt_border wt_border-color wt_bg-white wt_p-2" value="<?php echo esc_attr($group_name); ?>" required>
                 </div>
             <?php endif; ?>
 
             <?php if (in_array('description', $editable_fields, true)) : ?>
                 <div>
-                    <label class="wt_block wt_text-sm wt_font-medium wt_mb-2" for="group-description"><?php esc_html_e('Description', 'wicket-acc'); ?></label>
+                    <label class="wt_block wt_text-sm wt_font-medium wt_mb-2" for="group-description"><?php echo esc_html_x('Description', 'label', 'wicket-acc'); ?></label>
                     <textarea id="group-description" name="group_description" rows="4" class="wt_w-full wt_rounded-md wt_border wt_border-color wt_bg-white wt_p-2"><?php echo esc_textarea($group_description); ?></textarea>
                 </div>
             <?php endif; ?>
 
             <div class="wt_flex wt_justify-end">
-                <button type="submit" class="button button--primary component-button"><?php esc_html_e('Save Group', 'wicket-acc'); ?></button>
+                <button type="submit" class="button button--primary component-button"><?php echo esc_html_x('Save Group', 'button label', 'wicket-acc'); ?></button>
             </div>
         </form>
     <?php endif; ?>

@@ -21,6 +21,18 @@ class Blocks extends WicketAcc
     private $current_group_being_saved;
 
     /**
+     * Field settings that hold translatable text.
+     */
+    private const ACF_TEXT_SETTINGS = ['label' => 'label', 'instructions' => 'help text', 'placeholder' => 'field placeholder', 'prepend' => 'field affix', 'append' => 'field affix', 'message' => 'help text', 'button_label' => 'button label', 'ui_on_text' => 'label', 'ui_off_text' => 'label'];
+
+    /**
+     * Keys of the ACF fields shipped in includes/acf-json, loaded on first use.
+     *
+     * @var array<string, true>|null
+     */
+    private ?array $acc_acf_field_keys = null;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -30,9 +42,88 @@ class Blocks extends WicketAcc
         add_action('init', [$this, 'load_wicket_blocks'], 5); // We need to use WP's init here https://www.advancedcustomfields.com/resources/create-your-first-acf-block/
 
         add_filter('acf/settings/load_json', [$this, 'load_acf_field_group']);
+        add_filter('acf/prepare_field', [$this, 'translate_acf_field']);
 
         add_action('acf/update_field_group', [$this, 'update_field_group'], 1, 1);
         add_action('acf/settings/save_json', [$this, 'save_json_folder'], 100);
+    }
+
+    /**
+     * Translate ACC's own ACF fields only; ACF's l10n_textdomain setting is site-wide.
+     * The .pot picks these strings up from languages/acf-strings.php.
+     *
+     * @param array|false $field
+     *
+     * @return array|false
+     */
+    public function translate_acf_field($field)
+    {
+        if (!is_array($field) || empty($field['key']) || !isset($this->get_acc_acf_field_keys()[$field['key']])) {
+            return $field;
+        }
+
+        foreach (self::ACF_TEXT_SETTINGS as $setting => $context) {
+            if (!empty($field[$setting]) && is_string($field[$setting])) {
+                $field[$setting] = $this->translate_acf_text($field[$setting], $context);
+            }
+        }
+
+        if (!empty($field['choices']) && is_array($field['choices'])) {
+            foreach ($field['choices'] as $value => $label) {
+                if (is_string($label) && $label !== '') {
+                    $field['choices'][$value] = $this->translate_acf_text($label, 'label');
+                }
+            }
+        }
+
+        return $field;
+    }
+
+    /**
+     * Short strings (1 to 3 words) get a context; full sentences do not.
+     * Keep in sync with .ci/acf-i18n-strings.php.
+     */
+    private function translate_acf_text(string $text, string $context): string
+    {
+        $plain = preg_replace(['#<[^>]+>#', '#%(\d+\$)?[sdfu]#', '#&[a-z]+;#'], ' ', $text);
+
+        return preg_match_all("/[\p{L}\p{N}][\p{L}\p{N}'’.-]*/u", $plain) <= 3
+            ? _x($text, $context, 'wicket-acc')
+            : __($text, 'wicket-acc');
+    }
+
+    /**
+     * Collect the field keys defined in includes/acf-json.
+     *
+     * @return array<string, true>
+     */
+    private function get_acc_acf_field_keys(): array
+    {
+        if ($this->acc_acf_field_keys !== null) {
+            return $this->acc_acf_field_keys;
+        }
+
+        $keys = [];
+        $collect = function (array $fields) use (&$collect, &$keys): void {
+            foreach ($fields as $field) {
+                if (!empty($field['key'])) {
+                    $keys[$field['key']] = true;
+                }
+                $collect($field['sub_fields'] ?? []);
+                foreach ($field['layouts'] ?? [] as $layout) {
+                    $collect($layout['sub_fields'] ?? []);
+                }
+            }
+        };
+
+        foreach (glob(WICKET_ACC_PATH . 'includes/acf-json/*.json') ?: [] as $file) {
+            $group = json_decode((string) file_get_contents($file), true);
+            if (is_array($group)) {
+                $collect($group['fields'] ?? []);
+            }
+        }
+
+        return $this->acc_acf_field_keys = $keys;
     }
 
     /**
@@ -42,7 +133,7 @@ class Blocks extends WicketAcc
     {
         $categories[] = [
             'slug'  => 'wicket-account-center',
-            'title' => 'Wicket_AC',
+            'title' => _x('Wicket_AC', 'block category name', 'wicket-acc'),
         ];
 
         return $categories;
@@ -211,7 +302,8 @@ class Blocks extends WicketAcc
 
         // Avoid false include
         if ($this->get_block_template_path($template_name) === false) {
-            echo '<p>Template ' . $template_name . ' not found</p>';
+            /* translators: %s: template name. */
+            echo '<p>' . esc_html(sprintf(_x('Template %s not found', 'message', 'wicket-acc'), $template_name)) . '</p>';
 
             return;
         }

@@ -77,17 +77,17 @@ foreach ($organizations as $org) {
     data-msg-no-zero="<?php echo esc_attr(__('You cannot purchase zero seats. Please enter a number greater than 0 to proceed with your purchase.', 'wicket-acc')); ?>"
     data-msg-whole-number="<?php echo esc_attr(__('Please enter a whole number for additional seats.', 'wicket-acc')); ?>">
     <div class="entry-content">
-        <h1><?php esc_html_e('Purchase Additional Seats', 'wicket-acc'); ?>
+        <h1><?php echo esc_html_x('Purchase Additional Seats', 'label', 'wicket-acc'); ?>
         </h1>
 
         <?php if ($current_organization): ?>
         <div class="orgman-org-info">
-            <h3><?php esc_html_e('Organization Details', 'wicket-acc'); ?>
+            <h3><?php echo esc_html_x('Organization Details', 'label', 'wicket-acc'); ?>
             </h3>
-            <p><strong><?php esc_html_e('Organization:', 'wicket-acc'); ?></strong>
+            <p><strong><?php echo esc_html_x('Organization:', 'label', 'wicket-acc'); ?></strong>
                 <?php echo esc_html($current_organization['name'] ?? ''); ?>
             </p>
-            <p><strong><?php esc_html_e('Membership ID:', 'wicket-acc'); ?></strong>
+            <p><strong><?php echo esc_html_x('Membership ID:', 'label', 'wicket-acc'); ?></strong>
                 <?php echo esc_html($membership_id); ?>
             </p>
         </div>

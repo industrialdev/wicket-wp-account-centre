@@ -542,10 +542,10 @@ class WooCommerce extends WicketAcc
             $nonce_ok = isset($_REQUEST['_wpnonce']) && wp_verify_nonce(wp_unslash($_REQUEST['_wpnonce']), 'delete-payment-method-' . $delete_token_id);
 
             if (is_null($token) || get_current_user_id() !== $token->get_user_id() || !$nonce_ok) {
-                wc_add_notice(__('Invalid payment method.', 'woocommerce'), 'error');
+                wc_add_notice(_x('Invalid payment method.', 'message', 'wicket-acc'), 'error');
             } else {
                 \WC_Payment_Tokens::delete($delete_token_id);
-                wc_add_notice(__('Payment method deleted.', 'woocommerce'));
+                wc_add_notice(_x('Payment method deleted.', 'message', 'wicket-acc'));
             }
 
             $this->safe_redirect_to_payment_methods();
@@ -557,10 +557,10 @@ class WooCommerce extends WicketAcc
             $nonce_ok = isset($_REQUEST['_wpnonce']) && wp_verify_nonce(wp_unslash($_REQUEST['_wpnonce']), 'set-default-payment-method-' . $set_default_id);
 
             if (is_null($token) || get_current_user_id() !== $token->get_user_id() || !$nonce_ok) {
-                wc_add_notice(__('Invalid payment method.', 'woocommerce'), 'error');
+                wc_add_notice(_x('Invalid payment method.', 'message', 'wicket-acc'), 'error');
             } else {
                 \WC_Payment_Tokens::set_users_default($token->get_user_id(), intval($set_default_id));
-                wc_add_notice(__('This payment method was successfully set as your default.', 'woocommerce'));
+                wc_add_notice(__('This payment method was successfully set as your default.', 'wicket-acc'));
             }
 
             $this->safe_redirect_to_payment_methods();
@@ -1202,15 +1202,17 @@ class WooCommerce extends WicketAcc
         // Add WooCommerce menu items
         $wc_items = [
             'orders' => [
-                'title' => __('Orders', 'wicket-acc'),
+                /* translators: My Account menu item: the user's WooCommerce orders. */
+                'title' => _x('Orders', 'label', 'wicket-acc'),
                 'url' => wc_get_account_endpoint_url('orders'),
             ],
             'downloads' => [
-                'title' => __('Downloads', 'wicket-acc'),
+                /* translators: My Account menu item: the user's downloadable purchases. */
+                'title' => _x('Downloads', 'label', 'wicket-acc'),
                 'url' => wc_get_account_endpoint_url('downloads'),
             ],
             'payment-methods' => [
-                'title' => __('Payment Methods', 'wicket-acc'),
+                'title' => _x('Payment Methods', 'label', 'wicket-acc'),
                 'url' => wc_get_account_endpoint_url('payment-methods'),
             ],
         ];
@@ -1218,7 +1220,7 @@ class WooCommerce extends WicketAcc
         // Add subscriptions if WooCommerce Subscriptions is active
         if (class_exists('WC_Subscriptions')) {
             $wc_items['subscriptions'] = [
-                'title' => __('Subscriptions', 'wicket-acc'),
+                'title' => _x('Subscriptions', 'label', 'wicket-acc'),
                 'url' => wc_get_account_endpoint_url('subscriptions'),
             ];
         }

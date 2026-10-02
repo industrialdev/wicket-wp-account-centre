@@ -1,5 +1,6 @@
 {
 	"name": "wicket-ac/ac-profile-picture",
+	"textdomain": "wicket-acc",
 	"title": "ACC Change Profile Picture",
 	"description": "Wicket block for Change Profile Picture",
 	"style": "file:./block-styles.css",
@@ -7,6 +8,7 @@
 	"icon": "",
 	"apiVersion": 2,
 	"keywords": [
+		"account-centre",
 		"account-center",
 		"profile",
 		"picture",
