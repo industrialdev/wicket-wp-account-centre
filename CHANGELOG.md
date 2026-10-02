@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.11.12] - 2026-10-02
+
+### Fixed
+- **shortcodes:** guard REQUEST_URI reads and org-selector role gating (WWID-2665) (#56)
+
+
 ## [1.11.11] - 2026-10-02
 
 ### Maintenance
