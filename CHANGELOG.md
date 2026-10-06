@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.11.13] - 2026-10-06
+
+### Fixed
+- **mdp:** restore primary entry when entries page truncates (WWID-2709) (#59)
+
+
 ## [1.11.12] - 2026-10-02
 
 ### Fixed
