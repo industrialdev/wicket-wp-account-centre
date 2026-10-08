@@ -30,6 +30,8 @@ The `ac-org-search-select` block allows users to search for existing organizatio
 | `grant_roster_management_on_next_purchase` | `boolean` | Grants roster management capabilities. |
 | `grant_org_editor_role_on_selection` | `boolean` | Grants organization editor role to the user. |
 | `name_singular` / `name_plural` | `text` | Custom labels for "Organization(s)". |
+| `hide_membership_status` | `boolean` | Hides the Active/Inactive Membership badge on org cards. |
+| `hide_org_type` | `boolean` | Hides the org type label on org cards. Search results keep `display_org_type`. |
 
 ## Technical Implementation
 - **Initialization**: Managed by `WicketAcc\Blocks\OrgSearchSelect\init`.
