@@ -246,6 +246,16 @@ class MemberService
         return $result;
     }
 
+    /**
+     * Fetch a single member's full data by person UUID (lazy-details endpoint).
+     *
+     * @param string $personUuid     Person UUID to look up.
+     * @param string $membershipUuid Organization membership UUID.
+     * @param string $orgUuid        Organization UUID.
+     * @return array|null Normalized member array, or null if not found.
+     * @throws \WicketORM\Exceptions\MemberLookupFailedException On API or enrichment failure.
+     *                                                            Callers must not treat this as not-found.
+     */
     public function getMemberByPersonUuid(string $personUuid, string $membershipUuid, string $orgUuid): ?array
     {
         return $this->reader->getMemberByPersonUuid($personUuid, $membershipUuid, $orgUuid);

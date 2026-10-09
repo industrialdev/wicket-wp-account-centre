@@ -285,8 +285,9 @@ $no_members_message = __('No members found.', 'wicket-acc');
                 // Create person UUID without dashes for unique IDs
                 $person_uuid_no_dashes = $member_uuid ? str_replace('-', '', $member_uuid) : uniqid('member', true);
             ?>
+            <?php // id must match members-list-unified.php: member-details.php removals target #member-<uuid> (WWID-2707).?>
             <div class="member-card wt_bg-light-neutral wt_rounded-card wt_p-6 wt_transition-opacity wt_duration-300"
-                id="member-card-<?php echo esc_attr($person_uuid_no_dashes); ?>">
+                id="member-<?php echo esc_attr($person_uuid_no_dashes); ?>">
                 <div class="wt_flex wt_w-full md_wt_flex-row wt_items-start wt_justify-between wt_gap-4">
                     <div class="wt_flex wt_flex-col wt_gap-2 wt_w-full md_wt_w-4-5">
                         <div class="wt_flex wt_flex-col sm_wt_flex-row wt_items-start sm_wt_items-center wt_gap-2">

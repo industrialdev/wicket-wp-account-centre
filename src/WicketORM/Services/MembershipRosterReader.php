@@ -820,11 +820,13 @@ class MembershipRosterReader
      * @param string $membershipUuid Organization membership UUID.
      * @param string $orgUuid        Organization UUID.
      * @return array|null Normalized member array, or null if not found.
+     * @throws \WicketORM\Exceptions\MemberLookupFailedException On API or enrichment failure.
+     *                                                 Callers must not treat this as not-found.
      */
     public function getMemberByPersonUuid(string $personUuid, string $membershipUuid, string $orgUuid): ?array
     {
         if (!function_exists('wicket_api_client')) {
-            return null;
+            throw new \WicketORM\Exceptions\MemberLookupFailedException('wicket_api_client() is unavailable');
         }
 
         try {
@@ -839,6 +841,10 @@ class MembershipRosterReader
                 'page[number]' => 1,
                 'page[size]'   => 100,
                 'filter[active_at]' => $activeAt,
+                // Filter server-side: without it, members beyond roster position 100
+                // can never match (WWID-2707). Same predicate as
+                // MdpClient::hasActivePersonMembershipAssignment().
+                'filter[person_uuid_eq]' => $personUuid,
                 'include'      => 'person,membership',
             ];
 
@@ -855,16 +861,35 @@ class MembershipRosterReader
                 ]
             );
 
-            return null;
+            // Transport error is not evidence of absence: distinguish it from
+            // not-found so callers never remove a valid member's card.
+            throw new \WicketORM\Exceptions\MemberLookupFailedException(
+                'Member lookup API call failed: ' . $e->getMessage(),
+                0,
+                $e
+            );
         }
 
-        if (!is_array($response) || empty($response['data'])) {
-            \Wicket()->log()->info('getMemberByPersonUuid: No data returned from API', [
+        if (!is_array($response) || !array_key_exists('data', $response)) {
+            \Wicket()->log()->error('getMemberByPersonUuid: malformed API response', [
                 'source'          => 'wicket-orgman',
                 'person_uuid'     => $personUuid,
                 'membership_uuid' => $membershipUuid,
                 'org_uuid'        => $orgUuid,
                 'response_keys'   => is_array($response) ? array_keys($response) : 'not_array',
+            ]);
+
+            // A 200 without a JSON:API payload (CDN/WAF page, truncated body) is a
+            // transport failure, not evidence the person is absent.
+            throw new \WicketORM\Exceptions\MemberLookupFailedException('Member lookup returned a malformed response');
+        }
+
+        if (empty($response['data'])) {
+            \Wicket()->log()->info('getMemberByPersonUuid: No data returned from API', [
+                'source'          => 'wicket-orgman',
+                'person_uuid'     => $personUuid,
+                'membership_uuid' => $membershipUuid,
+                'org_uuid'        => $orgUuid,
             ]);
 
             return null;
@@ -906,17 +931,33 @@ class MembershipRosterReader
             'included_types' => isset($response['included']) ? array_map(fn ($item) => $item['type'] ?? 'unknown', $response['included']) : [],
         ]);
 
-        $result = $this->prepareMembersResult(
-            $filtered_response,
-            [
-                'org_uuid'        => $orgUuid,
+        try {
+            $result = $this->prepareMembersResult(
+                $filtered_response,
+                [
+                    'org_uuid'        => $orgUuid,
+                    'membership_uuid' => $membershipUuid,
+                    'page'            => 1,
+                    'size'            => 1,
+                    'query'           => '',
+                    'lazy'            => false,
+                ]
+            );
+        } catch (\Throwable $e) {
+            \Wicket()->log()->error('getMemberByPersonUuid: detail enrichment failed', [
+                'source'          => 'wicket-orgman',
+                'person_uuid'     => $personUuid,
                 'membership_uuid' => $membershipUuid,
-                'page'            => 1,
-                'size'            => 1,
-                'query'           => '',
-                'lazy'            => false,
-            ]
-        );
+                'org_uuid'        => $orgUuid,
+                'error'           => $e->getMessage(),
+            ]);
+
+            throw new \WicketORM\Exceptions\MemberLookupFailedException(
+                'Member detail enrichment failed: ' . $e->getMessage(),
+                0,
+                $e
+            );
+        }
 
         return $result['members'][0] ?? null;
     }
