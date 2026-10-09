@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WicketORM\Templates;
 
 use starfederation\datastar\ServerSentEventGenerator;
+use WicketORM\Exceptions\MemberLookupFailedException;
 use WicketORM\Services\CacheService;
 use WicketORM\Services\ConfigService;
 use WicketORM\Services\MemberService;
@@ -24,7 +25,15 @@ $membership_uuid = isset($_REQUEST['membership_uuid']) ? sanitize_text_field($_R
 $mode = isset($_REQUEST['mode']) ? sanitize_text_field($_REQUEST['mode']) : '';
 $group_uuid = isset($_REQUEST['group_uuid']) ? sanitize_text_field($_REQUEST['group_uuid']) : '';
 
-if (empty($person_uuid) || empty($org_uuid)) {
+if (empty($person_uuid) || empty($org_uuid)
+    || !wp_is_uuid($person_uuid) || !wp_is_uuid($org_uuid)
+    || ($membership_uuid !== '' && !wp_is_uuid($membership_uuid))) {
+    exit;
+}
+
+// Direct mode needs a membership scope; groups mode may omit it and falls
+// back to /group_members data below.
+if ($mode !== 'groups' && $membership_uuid === '') {
     exit;
 }
 
@@ -38,8 +47,25 @@ $gen = $cache_service->getMembershipGeneration($membership_uuid);
 $cache_key = 'orgman_lazy_details_' . md5($person_uuid . $org_uuid . $membership_uuid . $mode . $group_uuid . $gen);
 $member = $cache_service->get($cache_key);
 
-if (false === $member) {
-    $member = $member_service->getMemberByPersonUuid($person_uuid, $membership_uuid, $org_uuid);
+if (false === $member && $membership_uuid !== '') {
+    try {
+        $member = $member_service->getMemberByPersonUuid($person_uuid, $membership_uuid, $org_uuid);
+    } catch (MemberLookupFailedException $e) {
+        \Wicket()->log()->error('member-details: lookup failed, keeping card skeleton', [
+            'source'          => 'wicket-orgman',
+            'person_uuid'     => $person_uuid,
+            'org_uuid'        => $org_uuid,
+            'membership_uuid' => $membership_uuid,
+            'error'           => $e->getMessage(),
+        ]);
+
+        if ($mode !== 'groups') {
+            // Transport error is not evidence of absence. Removing the card here
+            // would delete a valid member from the visible roster (WWID-2707).
+            exit;
+        }
+        $member = false; // Groups mode falls through to the best-effort group render below.
+    }
 
     if ($member) {
         $cache_service->set($cache_key, $member);
