@@ -115,6 +115,13 @@ Use [SETUP.md](SETUP.md) for the child-theme override pattern.
 - `membership.resolution.prefer_current_cycle`
   - Default: `false`
   - Current path lives under `feature_flags`, but conceptually belongs here.
+- `membership.resolution.roster_categories`
+  - Default: `[]`
+  - Roster management binds only to organization membership entries whose `membership_category` matches one of these values. Comparison is case-insensitive and trimmed. Entries without a `membership_category` are excluded when the list is set (fail closed).
+  - Empty = feature off: every category is roster-eligible and resolution keeps its legacy behavior.
+  - Set but unusable (non-array value, or no usable strings after normalization) denies all categories and logs a warning, so a config typo fails closed instead of silently re-enabling legacy resolution.
+  - Cache note: resolved memberships are cached per person and org. After changing this key on a site with cache enabled, bump `platform.cache.cache_salt` so stale resolutions do not outlive the TTL.
+  - Use when a tenant runs seatless program tiers alongside a seat-bearing tier (e.g. CCHL: corporate category only). A seatless active entry sorts ahead of the seat-bearing entry in `sort=-ends_at` payloads because Postgres orders `NULL` values first in `DESC` sorts, so an unfiltered resolver hands the roster an entry with no seats (WWID-2742).
 
 #### `membership.cycle`
 
@@ -684,7 +691,7 @@ Available formats for field values:
   - Default: `3600` (1 hour)
   - TTL for the search-clear cache that backs incremental list refresh after a search filter is cleared.
 - `platform.cache.cache_salt`
-  - Default: `202604243100`
+  - Default: `202610131800`
   - Static cache-bust key. Bump whenever a config tree change would otherwise let stale values survive the standard `duration` window.
 
 ## Migration Map

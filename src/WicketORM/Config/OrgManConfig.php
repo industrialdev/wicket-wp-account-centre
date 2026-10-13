@@ -96,6 +96,11 @@ final class OrgManConfig
                 'strategy' => 'direct',
                 'resolution' => [
                     'prefer_current_cycle' => false,
+                    // Roster management binds only to entries whose membership_category
+                    // matches one of these values (case-insensitive). Empty = feature off:
+                    // every category is roster-eligible. Set but unusable (non-array or no
+                    // usable strings) denies all, so a config typo fails closed. WWID-2742.
+                    'roster_categories' => [],
                 ],
                 'cycle' => [
                     'key' => 'membership_cycle',
@@ -459,7 +464,7 @@ final class OrgManConfig
                     'enabled' => true,
                     'duration' => 5 * 60,
                     'search_clear_cache_duration' => 1 * 60 * 60,
-                    'cache_salt' => '202604243100',
+                    'cache_salt' => '202610131800',
                 ],
             ],
             'removal' => [
