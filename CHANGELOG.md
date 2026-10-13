@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.11.14] - 2026-10-13
+
+### Added
+- **orgss:** pass hide_org_type and document card toggles (WWID-2710) (#60)
+
+
 ## [1.11.13] - 2026-10-06
 
 ### Fixed
