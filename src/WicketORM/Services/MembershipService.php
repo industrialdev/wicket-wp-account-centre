@@ -72,6 +72,25 @@ class MembershipService
     }
 
     /**
+     * Parent organization membership end date for a person membership row.
+     *
+     * @param array $person_membership_data
+     * @return string|null
+     */
+    private function resolveParentMembershipEndsAt(array $person_membership_data): ?string
+    {
+        $parent_id = $person_membership_data['relationships']['organization_membership']['data']['id'] ?? '';
+        if (!is_string($parent_id) || '' === $parent_id) {
+            return null;
+        }
+
+        $parent = $this->getOrgMembershipData($parent_id);
+        $ends_at = is_array($parent) ? (string) ($parent['data']['attributes']['ends_at'] ?? '') : '';
+
+        return '' !== $ends_at ? $ends_at : null;
+    }
+
+    /**
      * Retrieve all organization memberships for an organization.
      *
      * @param string $organizationUuid Organization identifier.
@@ -738,10 +757,11 @@ class MembershipService
     /**
      * End a person membership with today's date.
      *
-     * @param string $person_membership_id The ID of the person membership to end-date.
+     * @param string      $person_membership_id The ID of the person membership to end-date.
+     * @param string|null $parent_ends_at       Parent organization membership ends_at; resolved from the row when null.
      * @return array|WP_Error The updated person membership data or WP_Error on failure.
      */
-    public function endPersonMembershipToday($person_membership_id)
+    public function endPersonMembershipToday($person_membership_id, ?string $parent_ends_at = null)
     {
         if (empty($person_membership_id)) {
             return new \WP_Error('invalid_params', 'Person membership ID is required.');
@@ -768,6 +788,15 @@ class MembershipService
                 ? $this->currentDayStartTimestamp()
                 : $this->currentTimestamp();
 
+            // The MDP rejects a person ends_at after the parent organization membership's
+            // ends_at (equality passes). Grace keeps the parent end date in the past while
+            // status stays Active, so a now-based end date 422s exactly then: clamp to it.
+            $parent_ends_at = $parent_ends_at ?? $this->resolveParentMembershipEndsAt($person_membership_data);
+            $parent_ts = is_string($parent_ends_at) && '' !== trim($parent_ends_at) ? strtotime($parent_ends_at) : false;
+            if (false !== $parent_ts && strtotime($ends_at) > $parent_ts) {
+                $ends_at = gmdate('Y-m-d\TH:i:s\Z', $parent_ts);
+            }
+
             // The MDP API requires ends_at to be strictly after starts_at. A same-day
             // add+remove, a same-second timestamp, or a future-dated starts_at can make the
             // computed ends_at fall at or before starts_at, which the API rejects with a 422.
@@ -779,6 +808,18 @@ class MembershipService
                 if ($starts_ts !== false && strtotime($ends_at) <= $starts_ts) {
                     $ends_at = gmdate('Y-m-d\TH:i:s\Z', $starts_ts + 1);
                 }
+            }
+
+            // The starts_at clamp above can push ends_at back past the parent when the
+            // row starts after the parent ends; that row cannot be end-dated at all.
+            if (false !== $parent_ts && strtotime($ends_at) > $parent_ts) {
+                \Wicket()->log()->error('MembershipService::endPersonMembershipToday() - membership window extends past the parent end date', [
+                    'source' => 'wicket-orgman',
+                    'person_membership_id' => $person_membership_id,
+                    'parent_ends_at' => $parent_ends_at,
+                ]);
+
+                return new \WP_Error('membership_end_conflict', 'This membership starts after its organization membership ends, so it cannot be end-dated. Please contact support to correct the membership data.');
             }
 
             $update_payload = [
@@ -910,6 +951,16 @@ class MembershipService
                 return ['ended' => $ended, 'errors' => $errors];
             }
 
+            // Every row shares this org membership, so resolve its end date once
+            // and let the grace clamp inside endPersonMembershipToday skip the
+            // per-row parent lookup.
+            $parent_ends_at = null;
+            $parent = $this->getOrgMembershipData((string) $org_membership_uuid);
+            if (is_array($parent)) {
+                $candidate = (string) ($parent['data']['attributes']['ends_at'] ?? '');
+                $parent_ends_at = '' !== $candidate ? $candidate : null;
+            }
+
             foreach ($response['data'] as $p_membership) {
                 $p_membership_id = $p_membership['id'] ?? null;
                 $p_membership_active = $p_membership['attributes']['active'] ?? false;
@@ -918,7 +969,7 @@ class MembershipService
                     continue;
                 }
 
-                $result = $this->endPersonMembershipToday($p_membership_id);
+                $result = $this->endPersonMembershipToday($p_membership_id, $parent_ends_at);
                 if (is_wp_error($result)) {
                     $errors[(string) $p_membership_id] = $result->get_error_message();
                     \Wicket()->log()->error('MembershipService::endAllActivePersonMembershipsForOrg() - failed to end membership', [
