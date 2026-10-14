@@ -100,12 +100,21 @@ class MembershipService
     /**
      * Resolve the active (or fallback) organization membership UUID for an organization.
      *
+     * Entries outside the configured roster categories (membership.resolution.roster_categories)
+     * are excluded first, so seatless program tiers can never win resolution even when they
+     * sort first in the API payload (WWID-2742).
+     *
      * @param string $organizationUuid Organization identifier.
      * @return string|null
      */
     public function getOrganizationMembershipUuid(string $organizationUuid): ?string
     {
         $memberships = $this->getOrganizationMemberships($organizationUuid);
+        if (empty($memberships)) {
+            return null;
+        }
+
+        $memberships = $this->filterRosterEligibleMemberships($memberships);
         if (empty($memberships)) {
             return null;
         }
@@ -141,6 +150,119 @@ class MembershipService
         }
 
         return $fallback;
+    }
+
+    /**
+     * Roster category allowlist from config, normalized for case-insensitive comparison.
+     *
+     * Three states:
+     *   null  = feature off (key unset or empty): every category is roster-eligible.
+     *   []    = deny-all (key set but yields no usable values).
+     *   list  = only these categories (lowercased, trimmed, deduped) are eligible.
+     *
+     * A set-but-unusable value (non-array, or nothing usable after normalization)
+     * denies all instead of silently re-enabling legacy resolution: a config typo
+     * must fail closed and visibly, not reintroduce the seatless-tier bug the
+     * allowlist exists to prevent (WWID-2742).
+     *
+     * @return array<int,string>|null
+     */
+    private function rosterCategoryAllowlist(): ?array
+    {
+        $raw = $this->config['membership']['resolution']['roster_categories'] ?? [];
+
+        if ($raw === null || $raw === []) {
+            return null;
+        }
+
+        if (!is_array($raw)) {
+            \Wicket()->log()->warning(
+                'membership.resolution.roster_categories must be an array; denying all roster categories until fixed.',
+                ['source' => 'wicket-orgman']
+            );
+
+            return [];
+        }
+
+        $normalized = [];
+        foreach ($raw as $category) {
+            if (!is_string($category)) {
+                continue;
+            }
+
+            $trimmed = mb_strtolower(trim($category));
+            if ($trimmed === '') {
+                continue;
+            }
+
+            $normalized[$trimmed] = true;
+        }
+
+        if ($normalized === []) {
+            \Wicket()->log()->warning(
+                'membership.resolution.roster_categories contains no usable values; denying all roster categories until fixed.',
+                ['source' => 'wicket-orgman']
+            );
+
+            return [];
+        }
+
+        return array_keys($normalized);
+    }
+
+    /**
+     * Check an entry's membership_category against the roster allowlist.
+     *
+     * Entries without a usable category fail closed when the allowlist is set: an
+     * unknown tier must not silently become roster-eligible. The category attribute
+     * is documented on every organization_memberships resource (MDP API), including
+     * entries reached through person-membership includes; a missing value there is
+     * treated the same as an unknown one.
+     *
+     * @param array|null $attributes Organization membership entry attributes.
+     * @param array<int,string>|null $allowlist Pre-normalized allowlist; resolved lazily when null.
+     * @return bool
+     */
+    private function isRosterEligibleCategory(?array $attributes, ?array $allowlist = null): bool
+    {
+        $allowlist ??= $this->rosterCategoryAllowlist();
+
+        if ($allowlist === null) {
+            return true;
+        }
+
+        if ($allowlist === []) {
+            return false;
+        }
+
+        $category = $attributes['membership_category'] ?? null;
+        if (!is_string($category) || trim($category) === '') {
+            return false;
+        }
+
+        return in_array(mb_strtolower(trim($category)), $allowlist, true);
+    }
+
+    /**
+     * Drop organization membership entries whose category is not roster-eligible.
+     *
+     * @param array<int,array> $memberships wicket_get_org_memberships-shaped rows.
+     * @return array<int,array>
+     */
+    private function filterRosterEligibleMemberships(array $memberships): array
+    {
+        $allowlist = $this->rosterCategoryAllowlist();
+        if ($allowlist === null) {
+            return $memberships;
+        }
+
+        return array_values(array_filter(
+            $memberships,
+            fn (array $membership): bool => $this->isRosterEligibleCategory(
+                is_array($membership['membership']['attributes'] ?? null) ? $membership['membership']['attributes'] : null,
+                $allowlist
+            )
+        ));
     }
 
     /**
@@ -297,6 +419,8 @@ class MembershipService
             return null;
         }
 
+        $roster_allowlist = $this->rosterCategoryAllowlist();
+
         $fallback = null;
         foreach ($memberships['included'] as $included) {
             if (
@@ -304,6 +428,10 @@ class MembershipService
                 && isset($included['relationships']['organization']['data']['id'])
                 && $included['relationships']['organization']['data']['id'] === $organizationUuid
             ) {
+                if (!$this->isRosterEligibleCategory(is_array($included['attributes'] ?? null) ? $included['attributes'] : null, $roster_allowlist)) {
+                    continue;
+                }
+
                 $isActive = $included['attributes']['active'] ?? null;
                 if ($isActive) {
                     $cache->set($cache_key, $included['id']);
