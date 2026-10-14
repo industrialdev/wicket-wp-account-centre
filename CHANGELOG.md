@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.11.16] - 2026-10-14
+
+### Fixed
+- **orgman:** category allowlist for roster resolution (WWID-2742) (#62)
+
+
 ## [1.11.15] - 2026-10-14
 
 ### Fixed
