@@ -25,9 +25,9 @@ $hasErrors = !empty($formErrors);
 // handles the case where an editor explicitly cleared a field and saved —
 // we coerce it back to the default. Change this if blank titles should be
 // respected.
-$formTitle = $form_title ?? __('Change Password', 'wicket-acc');
+$formTitle = $form_title ?? _x('Change Password', 'label', 'wicket-acc');
 if ($formTitle === '') {
-    $formTitle = __('Change Password', 'wicket-acc');
+    $formTitle = _x('Change Password', 'label', 'wicket-acc');
 }
 $formInstructions = $form_instructions ?? __('Enter your current password and choose a new one.', 'wicket-acc');
 if ($formInstructions === '') {
@@ -71,8 +71,9 @@ $passwordConfirmError = $hasFieldError('user.password_confirmation');
         <div class='alert alert-danger' role="alert">
             <strong>
                 <?= sprintf(
+                    /* translators: %s: number of form errors. */
                     _n(
-                        'The form could not be submitted because 1 error was found',
+                        'The form could not be submitted because %s error was found',
                         'The form could not be submitted because %s errors were found',
                         count($formErrors),
                         'wicket-acc'
@@ -83,9 +84,9 @@ $passwordConfirmError = $hasFieldError('user.password_confirmation');
             <ul>
                 <?php foreach ($formErrors as $index => $error):
                     $errorMap = [
-                        'user.current_password' => [__('Current Password', 'wicket-acc'), '#current_password'],
-                        'user.password' => [__('New Password', 'wicket-acc'), '#password'],
-                        'user.password_confirmation' => [__('Confirm Password', 'wicket-acc'), '#password_confirmation'],
+                        'user.current_password' => [_x('Current Password', 'label', 'wicket-acc'), '#current_password'],
+                        'user.password' => [_x('New Password', 'label', 'wicket-acc'), '#password'],
+                        'user.password_confirmation' => [_x('Confirm Password', 'label', 'wicket-acc'), '#password_confirmation'],
                     ];
                     $field = $error->meta->field ?? '';
                     if (!isset($errorMap[$field])) {
@@ -95,8 +96,17 @@ $passwordConfirmError = $hasFieldError('user.password_confirmation');
                     ?>
                     <li>
                         <a href="<?= esc_attr($anchor) ?>">
-                            <strong><?= sprintf(__('Error: %d', 'wicket-acc'), $index + 1) ?></strong>
-                            <?= esc_html($prefix . ' ' . ($error->title ?? '')) ?>
+                            <strong><?= sprintf(
+                                /* translators: %d: error number in the list. */
+                                _x('Error: %d', 'error list item', 'wicket-acc'),
+                                $index + 1
+                            ) ?></strong>
+                            <?= esc_html(sprintf(
+                                /* translators: 1: field label, 2: error message. */
+                                _x('%1$s %2$s', 'error list item', 'wicket-acc'),
+                                $prefix,
+                                $error->title ?? ''
+                            )) ?>
                         </a>
                     </li>
                 <?php endforeach; ?>
@@ -113,18 +123,18 @@ $passwordConfirmError = $hasFieldError('user.password_confirmation');
         $fields = [
             [
                 'id' => 'current_password',
-                'label' => __('Current password', 'wicket-acc'),
+                'label' => _x('Current password', 'label', 'wicket-acc'),
                 'hasError' => $currentPasswordError,
             ],
             [
                 'id' => 'password',
-                'label' => __('New password', 'wicket-acc'),
+                'label' => _x('New password', 'label', 'wicket-acc'),
                 'hasError' => $passwordError,
                 'helpText' => __('Minimum of 8 characters', 'wicket-acc'),
             ],
             [
                 'id' => 'password_confirmation',
-                'label' => __('Confirm new password', 'wicket-acc'),
+                'label' => _x('Confirm new password', 'label', 'wicket-acc'),
                 'hasError' => $passwordConfirmError,
             ],
         ];
@@ -160,7 +170,7 @@ foreach ($fields as $field):
             'variant' => 'primary',
             'type'    => 'submit',
             'classes' => ['wicket_update_password--1'],
-            'label'   => __('Change password', 'wicket-acc'),
+            'label'   => _x('Change password', 'button label', 'wicket-acc'),
         ]);
 ?>
     </form>

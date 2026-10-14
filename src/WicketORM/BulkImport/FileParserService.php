@@ -138,20 +138,20 @@ class FileParserService
         $resolved = realpath($filePath);
 
         if ($resolved === false || !is_file($resolved)) {
-            return new ParseResult(error: 'The uploaded file could not be found.');
+            return new ParseResult(error: __('The uploaded file could not be found.', 'wicket-acc'));
         }
 
         $handle = fopen($resolved, 'r');
 
         if ($handle === false) {
-            return new ParseResult(error: 'Unable to open the uploaded file.');
+            return new ParseResult(error: __('Unable to open the uploaded file.', 'wicket-acc'));
         }
 
         try {
             $rawHeaders = fgetcsv($handle, 0, ',', '"', '\\');
 
             if ($rawHeaders === false) {
-                return new ParseResult(error: 'The CSV file is empty or could not be read.');
+                return new ParseResult(error: __('The CSV file is empty or could not be read.', 'wicket-acc'));
             }
 
             $headerMap = [];
@@ -171,7 +171,11 @@ class FileParserService
 
             if ($missing !== []) {
                 return new ParseResult(
-                    error: sprintf('Missing required column(s): %s.', implode(', ', $missing)),
+                    error: sprintf(
+                        /* translators: %s: comma-separated list of missing CSV column headers. */
+                        _nx('Missing required column: %s.', 'Missing required columns: %s.', count($missing), 'message', 'wicket-acc'),
+                        implode(', ', $missing)
+                    ),
                     missingHeaders: $missing,
                 );
             }

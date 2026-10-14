@@ -72,8 +72,8 @@ class init extends Blocks
 
         if ($this->is_preview) {
             $args = [
-                'block_name'        => 'Touchpoint Maple',
-                'block_description' => 'This block displays registered data for Maple on the front-end.',
+                'block_name'        => _x('Touchpoint Maple', 'block title', 'wicket-acc'),
+                'block_description' => __('This block displays registered data for Maple on the front-end.', 'wicket-acc'),
                 'block_slug'        => 'wicket-ac-touchpoint-maple',
             ];
 
@@ -105,8 +105,8 @@ class init extends Blocks
         $switch_link = esc_url($switch_link);
 
         $args = [
-            'block_name'          => 'Touchpoint Maple',
-            'block_description'   => 'This block displays registered data for Maple on the front-end.',
+            'block_name'          => _x('Touchpoint Maple', 'block title', 'wicket-acc'),
+            'block_description'   => __('This block displays registered data for Maple on the front-end.', 'wicket-acc'),
             'block_slug'          => 'wicket-ac-touchpoint-maple',
             'block_id'            => $this->get_block_id(),
             'attrs'               => $attrs,
@@ -254,7 +254,7 @@ class init extends Blocks
 					<button type="submit"
 						class="button button--secondary show-more flex items-center font-bold text-color-dark-100 my-4"
 						x-show="!loading">
-						<span class="text"><?php esc_html_e('Show More', 'wicket-acc'); ?></span>
+						<span class="text"><?php echo esc_html_x('Show More', 'button label', 'wicket-acc'); ?></span>
 					</button>
 				</form>
 			</div>

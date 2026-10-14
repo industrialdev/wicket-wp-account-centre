@@ -20,6 +20,6 @@ defined('ABSPATH') || exit;
     }
 </style>
 <div class="wicket-ac-touchpoints__preview wicket-ac-block-preview <?php echo $args['block_slug']; ?>">
-    <div class="wicket-ac-touchpoints__preview__title"><?php esc_html_e($args['block_name'], 'wicket-acc'); ?></div>
-    <div class="wicket-ac-touchpoints__preview__content"><?php esc_html_e($args['block_description'], 'wicket-acc'); ?></div>
+    <div class="wicket-ac-touchpoints__preview__title"><?php echo esc_html($args['block_name']); ?></div>
+    <div class="wicket-ac-touchpoints__preview__content"><?php echo esc_html($args['block_description']); ?></div>
 </div>

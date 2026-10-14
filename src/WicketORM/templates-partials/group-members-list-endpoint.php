@@ -16,7 +16,7 @@ $page = max(1, (int) ($_GET['page'] ?? 1));
 $query = isset($_GET['query']) ? sanitize_text_field((string) $_GET['query']) : '';
 
 if (empty($group_uuid)) {
-    echo '<p class="wt_text-gray-500">' . esc_html__('No group selected.', 'wicket-acc') . '</p>';
+    echo '<p class="wt_text-gray-500">' . esc_html_x('No group selected.', 'message', 'wicket-acc') . '</p>';
 
     return;
 }

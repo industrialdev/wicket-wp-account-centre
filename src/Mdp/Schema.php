@@ -127,7 +127,7 @@ class Schema extends Init
 
         // --- Extract Labels ---
         // The logic is structured to find the first available label list.
-        if (isset($uiSchema[$field]['ui:i1e8n']['enumNames'][$language])) {
+        if (isset($uiSchema[$field]['ui:i18n']['enumNames'][$language])) {
             $enumLabels = $uiSchema[$field]['ui:i18n']['enumNames'][$language];
         } elseif (!empty($subField) && isset($uiSchema[$field]['items'][$subField]['ui:i18n']['enumNames'][$language])) {
             $enumLabels = $uiSchema[$field]['items'][$subField]['ui:i18n']['enumNames'][$language];

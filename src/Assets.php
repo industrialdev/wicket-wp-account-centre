@@ -103,6 +103,10 @@ class Assets extends WicketAcc
                 file_exists($acf_deprecation_js_path) ? filemtime($acf_deprecation_js_path) : WICKET_ACC_VERSION,
                 true
             );
+            wp_localize_script('wicket-acc-acf-field-deprecation', 'wicketAccAcfDeprecationI18n', [
+                /* translators: %s: config key being migrated ("fields" or "sections"). */
+                'migrateLinkText' => __('Replace "%s" in MDP Widget Config', 'wicket-acc'),
+            ]);
 
             $acf_json_editor_js_path = WICKET_ACC_PATH . 'assets/js/wicket-acc-acf-json-editor.js';
             wp_enqueue_script(

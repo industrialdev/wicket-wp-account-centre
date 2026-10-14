@@ -34,11 +34,11 @@ $bulk_columns_config = is_array($bulk_upload_config['columns'] ?? null)
     ? $bulk_upload_config['columns']
     : [];
 $default_bulk_columns = [
-    'first_name' => ['enabled' => true, 'header' => __('First Name', 'wicket-acc')],
-    'last_name' => ['enabled' => true, 'header' => __('Last Name', 'wicket-acc')],
-    'email' => ['enabled' => true, 'header' => __('Email Address', 'wicket-acc')],
-    'relationship_type' => ['enabled' => true, 'header' => __('Relationship Type', 'wicket-acc')],
-    'roles' => ['enabled' => true, 'header' => __('Roles', 'wicket-acc')],
+    'first_name' => ['enabled' => true, 'header' => _x('First Name', 'label', 'wicket-acc')],
+    'last_name' => ['enabled' => true, 'header' => _x('Last Name', 'label', 'wicket-acc')],
+    'email' => ['enabled' => true, 'header' => _x('Email Address', 'label', 'wicket-acc')],
+    'relationship_type' => ['enabled' => true, 'header' => _x('Relationship Type', 'label', 'wicket-acc')],
+    'roles' => ['enabled' => true, 'header' => _x('Roles', 'label', 'wicket-acc')],
 ];
 $expected_columns = [];
 foreach ($default_bulk_columns as $column_key => $defaults) {
@@ -77,7 +77,7 @@ $bulk_upload_poll = "if (!\${$bulk_upload_finished_signal} && \${$bulk_upload_jo
 ?>
 
 <div class="orgman-bulk-upload <?php echo esc_attr($bulk_upload_wrapper_class); ?>">
-    <h3 class="wt_text-base wt_font-semibold wt_mb-2"><?php esc_html_e('Bulk Upload Members', 'wicket-acc'); ?></h3>
+    <h3 class="wt_text-base wt_font-semibold wt_mb-2"><?php echo esc_html_x('Bulk Upload Members', 'label', 'wicket-acc'); ?></h3>
     <p class="wt_text-sm wt_text-content wt_mb-3">
         <?php esc_html_e('Upload a CSV file to add multiple members at once. Existing active members are skipped automatically.', 'wicket-acc'); ?>
     </p>
@@ -90,7 +90,7 @@ $bulk_upload_poll = "if (!\${$bulk_upload_finished_signal} && \${$bulk_upload_jo
         <a class="orgman-bulk-upload__template-link wt_text-sm"
             href="<?php echo esc_url($csv_template_url); ?>"
             download="roster_template.csv">
-            <?php esc_html_e('Download CSV Template', 'wicket-acc'); ?>
+            <?php echo esc_html_x('Download CSV Template', 'button label', 'wicket-acc'); ?>
         </a>
     </div>
 
@@ -106,7 +106,7 @@ $bulk_upload_poll = "if (!\${$bulk_upload_finished_signal} && \${$bulk_upload_jo
         <input type="hidden" name="nonce" value="<?php echo esc_attr(wp_create_nonce('wicket-orgman-bulk-upload-members')); ?>">
 
         <label class="wt_block wt_text-sm wt_font-medium wt_mb-2" for="bulk-upload-file-<?php echo esc_attr($bulk_upload_dom_suffix); ?>">
-            <?php esc_html_e('CSV File', 'wicket-acc'); ?>
+            <?php echo esc_html_x('CSV File', 'label', 'wicket-acc'); ?>
         </label>
         <input
             id="bulk-upload-file-<?php echo esc_attr($bulk_upload_dom_suffix); ?>"
@@ -121,7 +121,7 @@ $bulk_upload_poll = "if (!\${$bulk_upload_finished_signal} && \${$bulk_upload_jo
             echo esc_html(
                 sprintf(
                     /* translators: %s list of configured CSV columns */
-                    __('Expected columns: %s', 'wicket-acc'),
+                    _x('Expected columns: %s', 'help text', 'wicket-acc'),
                     $expected_columns_text
                 )
             );

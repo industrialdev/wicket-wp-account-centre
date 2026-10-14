@@ -78,7 +78,7 @@ if ($roster_mode === 'groups') {
     if ($group_uuid === '') {
         status_header(200);
         WicketORM\Helpers\DatastarSSE::renderError(
-            __('Group identifier missing.', 'wicket-acc'),
+            _x('Group identifier missing.', 'message', 'wicket-acc'),
             $message_target,
             ['membersLoading' => false, 'bulkUploadSubmitting' => false]
         );
@@ -110,7 +110,7 @@ if ($roster_mode === 'groups') {
     if (empty($org_uuid)) {
         status_header(200);
         WicketORM\Helpers\DatastarSSE::renderError(
-            __('Organization identifier missing.', 'wicket-acc'),
+            _x('Organization identifier missing.', 'message', 'wicket-acc'),
             $message_target,
             ['membersLoading' => false, 'bulkUploadSubmitting' => false]
         );
@@ -170,7 +170,13 @@ $job_id = (string) ($result['job_id'] ?? '');
 $total_records = (int) ($result['total_records'] ?? 0);
 $batch_size = (int) ($result['batch_size'] ?? 0);
 $summary = sprintf(
-    __('Bulk upload queued. Job %1$s will process %2$d row(s) in batches of %3$d.', 'wicket-acc'),
+    /* translators: 1: bulk upload job ID, 2: number of rows to process, 3: batch size. */
+    _n(
+        'Bulk upload queued. Job %1$s will process %2$d row in batches of %3$d.',
+        'Bulk upload queued. Job %1$s will process %2$d rows in batches of %3$d.',
+        $total_records,
+        'wicket-acc'
+    ),
     esc_html($job_id),
     $total_records,
     $batch_size

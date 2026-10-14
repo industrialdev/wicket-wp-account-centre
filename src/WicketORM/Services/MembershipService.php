@@ -622,14 +622,14 @@ class MembershipService
     public function getCurrentPersonMembershipsByOrganization($organization_uuid)
     {
         if (empty($organization_uuid)) {
-            return new \WP_Error('invalid_params', 'Organization UUID is required.');
+            return new \WP_Error('invalid_params', __('Organization UUID is required.', 'wicket-acc'));
         }
 
         try {
             $membership_uuid = $this->getMembershipForOrganization($organization_uuid);
 
             if (!$membership_uuid) {
-                return new \WP_Error('no_membership', 'No membership found for this organization.');
+                return new \WP_Error('no_membership', __('No membership found for this organization.', 'wicket-acc'));
             }
 
             return $membership_uuid;
@@ -654,11 +654,11 @@ class MembershipService
     public function membershipSearchMembers($membership_uuid = '', $args = [])
     {
         if (empty($membership_uuid) || empty($args)) {
-            return new \WP_Error('invalid_params', 'Membership UUID and arguments are required.');
+            return new \WP_Error('invalid_params', __('Membership UUID and arguments are required.', 'wicket-acc'));
         }
 
         if (!function_exists('wicket_api_client')) {
-            return new \WP_Error('missing_dependency', 'Wicket API client is unavailable.');
+            return new \WP_Error('missing_dependency', __('Wicket API client is unavailable.', 'wicket-acc'));
         }
 
         try {
@@ -668,7 +668,7 @@ class MembershipService
             $query = isset($args['query']) ? sanitize_text_field($args['query']) : '';
 
             if (empty($query)) {
-                return new \WP_Error('invalid_query', 'Search query is required.');
+                return new \WP_Error('invalid_query', __('Search query is required.', 'wicket-acc'));
             }
 
             $client = wicket_api_client();
@@ -689,7 +689,7 @@ class MembershipService
                 'include'      => 'emails,phones,addresses',
             ]), ['json' => $filter_data]);
 
-            return isset($response['data']) ? $response : new \WP_Error('no_results', 'No search results found.');
+            return isset($response['data']) ? $response : new \WP_Error('no_results', __('No search results found.', 'wicket-acc'));
 
         } catch (\Exception $e) {
             \Wicket()->log()->error('MembershipService::membership_search_members() - Exception: ' . $e->getMessage(), ['source' => 'wicket-orgman']);
@@ -711,11 +711,11 @@ class MembershipService
     public function getOrgMembershipMembers($membership_uuid = '', $args = [])
     {
         if (empty($membership_uuid)) {
-            return new \WP_Error('invalid_params', 'Membership UUID is required.');
+            return new \WP_Error('invalid_params', __('Membership UUID is required.', 'wicket-acc'));
         }
 
         if (!function_exists('wicket_api_client')) {
-            return new \WP_Error('missing_dependency', 'Wicket API client is unavailable.');
+            return new \WP_Error('missing_dependency', __('Wicket API client is unavailable.', 'wicket-acc'));
         }
 
         try {
@@ -726,7 +726,7 @@ class MembershipService
             $client = wicket_api_client();
             $response = $client->get('/organization_memberships/' . rawurlencode($membership_uuid) . '/person_memberships?page[number]=' . $page . '&page[size]=' . $size . '&filter[active_at]=' . rawurlencode($this->resolveActiveAt($membership_uuid)));
 
-            return isset($response['data']) ? $response : new \WP_Error('no_results', 'No membership members found.');
+            return isset($response['data']) ? $response : new \WP_Error('no_results', __('No membership members found.', 'wicket-acc'));
 
         } catch (\Exception $e) {
             \Wicket()->log()->error('MembershipService::get_org_membership_members() - Exception: ' . $e->getMessage(), ['source' => 'wicket-orgman']);
@@ -744,11 +744,11 @@ class MembershipService
     public function endPersonMembershipToday($person_membership_id)
     {
         if (empty($person_membership_id)) {
-            return new \WP_Error('invalid_params', 'Person membership ID is required.');
+            return new \WP_Error('invalid_params', __('Person membership ID is required.', 'wicket-acc'));
         }
 
         if (!function_exists('wicket_api_client')) {
-            return new \WP_Error('missing_dependency', 'Wicket API client is unavailable.');
+            return new \WP_Error('missing_dependency', __('Wicket API client is unavailable.', 'wicket-acc'));
         }
 
         try {
@@ -757,7 +757,7 @@ class MembershipService
             // Get the current person membership
             $person_membership = $client->get('person_memberships/' . rawurlencode($person_membership_id));
             if (!$person_membership || empty($person_membership['data'])) {
-                return new \WP_Error('person_membership_not_found', 'Person membership not found.');
+                return new \WP_Error('person_membership_not_found', __('Person membership not found.', 'wicket-acc'));
             }
 
             // Prepare the update payload with end date set to today
@@ -797,7 +797,11 @@ class MembershipService
             if (!empty($response['errors'])) {
                 \Wicket()->log()->error('MembershipService::endPersonMembershipToday() - API error: ' . json_encode($response['errors']), ['source' => 'wicket-orgman']);
 
-                return new \WP_Error('api_error', 'Failed to end-date person membership: ' . ($response['errors'][0]['detail'] ?? 'Unknown error'));
+                return new \WP_Error('api_error', sprintf(
+                    /* translators: %s: error detail returned by the API. */
+                    __('Failed to end-date person membership: %s', 'wicket-acc'),
+                    $response['errors'][0]['detail'] ?? _x('Unknown error', 'value placeholder', 'wicket-acc')
+                ));
             }
 
             \Wicket()->log()->info('[OrgMan] endPersonMembershipToday success', [
@@ -877,7 +881,7 @@ class MembershipService
 
             return new \WP_Error(
                 'membership_query_failed',
-                'The membership API client is unavailable. The removal state is unknown; retry when the API is reachable.'
+                __('The membership API client is unavailable. The removal state is unknown; retry when the API is reachable.', 'wicket-acc')
             );
         }
 
@@ -902,7 +906,11 @@ class MembershipService
 
                 return new \WP_Error(
                     'membership_query_failed',
-                    'Failed looking up the person memberships: ' . $response->get_error_message()
+                    sprintf(
+                        /* translators: %s: error detail. */
+                        __('Failed looking up the person memberships: %s', 'wicket-acc'),
+                        $response->get_error_message()
+                    )
                 );
             }
 
@@ -941,7 +949,11 @@ class MembershipService
 
             return new \WP_Error(
                 'membership_query_failed',
-                'Failed looking up the person memberships: ' . $e->getMessage()
+                sprintf(
+                    /* translators: %s: error detail. */
+                    __('Failed looking up the person memberships: %s', 'wicket-acc'),
+                    $e->getMessage()
+                )
             );
         }
 

@@ -84,7 +84,7 @@ if (!empty($override_past_events_link)) {
                         $switch_link_past = add_query_arg([$show_param => 'past', $num_param => $num_results], get_permalink());
 					    ?>
 						<a href="<?php echo esc_url($switch_link_past); ?>"
-							class="past-link text-center md:text-right font-bold <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-base mb-4 font-bold w-full md:w-auto' ?>"><?php esc_html_e($past_events_link_text, 'wicket-acc'); ?></a>
+							class="past-link text-center md:text-right font-bold <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'text-base mb-4 font-bold w-full md:w-auto' ?>"><?php echo esc_html($past_events_link_text); ?></a>
 					<?php endif; ?>
 				<?php elseif ($display == 'past' && !$single_webinar) : ?>
 					<?php if (!empty($past_events_title) || !empty($title)) : ?>
@@ -104,11 +104,11 @@ if (!empty($override_past_events_link)) {
 					<?php if (!empty($title)) : ?>
 						<h3
 							class="text-2xl font-bold mb-4 md:mb-0 md:text-left text-center text-base <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'w-full md:w-auto' ?>">
-							<?php esc_html_e('Webinar Details', 'wicket-acc'); ?>
+							<?php echo esc_html_x('Webinar Details', 'label', 'wicket-acc'); ?>
 						</h3>
 					<?php endif; ?>
 					<a href="javascript:history.back()"
-						class="back-link font-bold text-center md:text-right <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'w-full md:w-auto' ?>"><?php esc_html_e('Go Back ←', 'wicket-acc'); ?></a>
+						class="back-link font-bold text-center md:text-right <?php echo defined('WICKET_WP_THEME_V2') ? '' : 'w-full md:w-auto' ?>"><?php echo esc_html_x('Go Back ←', 'button label', 'wicket-acc'); ?></a>
 				<?php endif; ?>
 			</div>
 		</div>
@@ -116,7 +116,7 @@ if (!empty($override_past_events_link)) {
 		<?php if (defined('WICKET_WP_THEME_V2')) : ?>
 		<?php else : ?>
 			<div class="data-quantity text-left mb-3 text-lg">
-				<?php esc_html_e('Results:', 'wicket-acc'); ?>
+				<?php echo esc_html_x('Results:', 'count label', 'wicket-acc'); ?>
 				<span id="total_results-<?php echo $block_id; ?>"><?php echo $total_results; ?></span>
 			</div>
 		<?php endif; ?>

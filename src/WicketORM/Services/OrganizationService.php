@@ -71,7 +71,39 @@ class OrganizationService
             }
         }
 
-        return 'Unknown Organization';
+        return $this->unknownOrganizationLabel();
+    }
+
+    /**
+     * Translated fallback label used when an organization name cannot be resolved.
+     *
+     * Also used as the sentinel when checking whether a name still needs resolving,
+     * so comparisons must always go through this method.
+     *
+     * @return string
+     */
+    private function unknownOrganizationLabel(): string
+    {
+        return _x('Unknown Organization', 'value placeholder', 'wicket-acc');
+    }
+
+    /**
+     * Human-readable label for a role slug.
+     *
+     * Uses the translated role labels from config when available, falling back
+     * to a title-cased version of the slug.
+     *
+     * @param string $role Role slug.
+     * @return string
+     */
+    private function formatRoleLabel(string $role): string
+    {
+        $labels = $this->config['access']['roles']['labels'] ?? [];
+        if (is_array($labels) && isset($labels[$role]) && is_string($labels[$role]) && $labels[$role] !== '') {
+            return $labels[$role];
+        }
+
+        return ucwords(str_replace('_', ' ', $role));
     }
 
     /**
@@ -209,7 +241,7 @@ class OrganizationService
                     if (!isset($organizations[$org_id])) {
                         $organizations[$org_id] = [
                             'id' => $org_id,
-                            'org_name' => $org_name_by_id[$org_id] ?? 'Unknown Organization',
+                            'org_name' => $org_name_by_id[$org_id] ?? $this->unknownOrganizationLabel(),
                             'user_role' => '',
                             'roles' => [],
                         ];
@@ -237,8 +269,8 @@ class OrganizationService
 
         foreach ($organizations as $org_id => $org_data) {
             $role_slugs = array_keys((array) ($org_data['roles'] ?? []));
-            $role_labels = array_map(static function (string $role): string {
-                return ucwords(str_replace('_', ' ', $role));
+            $role_labels = array_map(function (string $role): string {
+                return $this->formatRoleLabel($role);
             }, $role_slugs);
             $organizations[$org_id]['roles'] = $role_slugs;
             $organizations[$org_id]['user_role'] = implode(', ', $role_labels);
@@ -325,8 +357,8 @@ class OrganizationService
                     if (!isset($organizations[$org_id])) {
                         $organizations[$org_id] = [
                             'id' => $org_id,
-                            'org_name' => $org_name_by_id[$org_id] ?? 'Unknown Organization',
-                            'user_role' => 'Membership Owner',
+                            'org_name' => $org_name_by_id[$org_id] ?? $this->unknownOrganizationLabel(),
+                            'user_role' => _x('Membership Owner', 'role name', 'wicket-acc'),
                             'roles' => [],
                         ];
                     }
@@ -422,7 +454,8 @@ class OrganizationService
                                     $organizations[] = [
                                         'id' => $org_id,
                                         'org_name' => $org_name,
-                                        'user_role' => 'Member',
+                                        /* translators: The user's role in the organization. */
+                                        'user_role' => _x('Member', 'role name', 'wicket-acc'),
                                     ];
 
                                     break;
@@ -434,7 +467,7 @@ class OrganizationService
             }
         } catch (\Throwable $e) {
             $logger->error('Error fetching membership entries: ' . $e->getMessage(), ['source' => 'wicket-orgman']);
-            $membership_error = ['error' => 'api_error', 'message' => 'Unable to fetch memberships. Please try again later.'];
+            $membership_error = ['error' => 'api_error', 'message' => __('Unable to fetch memberships. Please try again later.', 'wicket-acc')];
         }
 
         // Get organizations where the user is the owner of the organization membership
@@ -458,13 +491,13 @@ class OrganizationService
             if (!isset($organizations_by_id[$org_id])) {
                 $organizations_by_id[$org_id] = [
                     'id' => $org_id,
-                    'org_name' => (string) ($organization['org_name'] ?? 'Unknown Organization'),
+                    'org_name' => (string) ($organization['org_name'] ?? $this->unknownOrganizationLabel()),
                     'user_role' => (string) ($organization['user_role'] ?? ''),
                     'roles' => [],
                 ];
             }
 
-            if ($organizations_by_id[$org_id]['org_name'] === 'Unknown Organization' && !empty($organization['org_name'])) {
+            if ($organizations_by_id[$org_id]['org_name'] === $this->unknownOrganizationLabel() && !empty($organization['org_name'])) {
                 $organizations_by_id[$org_id]['org_name'] = (string) $organization['org_name'];
             }
             if ($organizations_by_id[$org_id]['user_role'] === '' && !empty($organization['user_role'])) {
@@ -483,11 +516,11 @@ class OrganizationService
             $roles = array_keys((array) ($organization['roles'] ?? []));
             $organizations_by_id[$org_id]['roles'] = $roles;
             if ($organizations_by_id[$org_id]['user_role'] === '' && !empty($roles)) {
-                $organizations_by_id[$org_id]['user_role'] = implode(', ', array_map(static function (string $role): string {
-                    return ucwords(str_replace('_', ' ', $role));
+                $organizations_by_id[$org_id]['user_role'] = implode(', ', array_map(function (string $role): string {
+                    return $this->formatRoleLabel($role);
                 }, $roles));
             }
-            if ($organizations_by_id[$org_id]['org_name'] === 'Unknown Organization' && function_exists('wicket_get_organization')) {
+            if ($organizations_by_id[$org_id]['org_name'] === $this->unknownOrganizationLabel() && function_exists('wicket_get_organization')) {
                 $org_detail = wicket_get_organization($org_id);
                 $org_attrs = is_array($org_detail['attributes'] ?? null)
                     ? $org_detail['attributes']
@@ -560,11 +593,11 @@ class OrganizationService
     public function getOrganizationOwner($org_id)
     {
         if (empty($org_id)) {
-            return new \WP_Error('invalid_params', 'Organization ID is required.');
+            return new \WP_Error('invalid_params', __('Organization ID is required.', 'wicket-acc'));
         }
 
         if (!function_exists('wicket_api_client') || !function_exists('wicket_get_person_by_id')) {
-            return new \WP_Error('missing_dependency', 'Required Wicket functions are not available.');
+            return new \WP_Error('missing_dependency', __('Required Wicket functions are not available.', 'wicket-acc'));
         }
 
         try {
@@ -575,7 +608,7 @@ class OrganizationService
             $response = $client->get("/organizations/{$org_id}/membership_entries?sort=-ends_at&include=membership%2Cfusebill_subscription%2Cowner");
 
             if (!isset($response['data']) || empty($response['data'])) {
-                return new \WP_Error('no_memberships', 'No memberships found for this organization.');
+                return new \WP_Error('no_memberships', __('No memberships found for this organization.', 'wicket-acc'));
             }
 
             // Find the active membership owner
@@ -596,13 +629,13 @@ class OrganizationService
             }
 
             if (!$org_owner_id) {
-                return new \WP_Error('no_owner', 'No owner found for this organization.');
+                return new \WP_Error('no_owner', __('No owner found for this organization.', 'wicket-acc'));
             }
 
             // Get the person object
             $person = wicket_get_person_by_id($org_owner_id);
             if (!$person) {
-                return new \WP_Error('person_not_found', 'Owner person not found.');
+                return new \WP_Error('person_not_found', __('Owner person not found.', 'wicket-acc'));
             }
 
             return $person;

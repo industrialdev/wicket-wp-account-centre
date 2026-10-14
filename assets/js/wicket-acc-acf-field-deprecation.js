@@ -74,7 +74,12 @@
     // DOM ACF replaced) would otherwise pass an existence check while having
     // no working click handler on the currently-visible element.
     $input.find('.wicket-acc-mdp-migrate-link').remove();
-    var $link = jQuery('<p style="margin-top: 4px;"><a href="#" class="wicket-acc-mdp-migrate-link">Replace "' + wrapKey + '" in MDP Widget Config &rarr;</a></p>');
+    var i18n = window.wicketAccAcfDeprecationI18n || {};
+    var linkTemplate = typeof i18n.migrateLinkText === 'string' && i18n.migrateLinkText.indexOf('%s') !== -1
+      ? i18n.migrateLinkText
+      : 'Replace "%s" in MDP Widget Config';
+    var $link = jQuery('<p style="margin-top: 4px;"><a href="#" class="wicket-acc-mdp-migrate-link"></a></p>');
+    $link.find('a').text(linkTemplate.replace('%s', wrapKey) + ' \u2192');
     $input.append($link);
 
     $link.find('a').on('click', function(e) {

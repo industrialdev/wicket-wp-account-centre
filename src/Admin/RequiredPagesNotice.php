@@ -22,20 +22,25 @@ defined('ABSPATH') || exit;
 class RequiredPagesNotice extends \WicketAcc\WicketAcc
 {
     /**
-     * Slug => default page title. Mirrors docs/ORM/product/SETUP.md
+     * Slug => default (translated) page title. Mirrors docs/ORM/product/SETUP.md
      * "Required WordPress Pages". Conditional slugs are removed per config in
      * requiredPages().
      *
-     * @var array<string, string>
+     * Built at runtime so translations are loaded before __() runs.
+     *
+     * @return array<string, string>
      */
-    private const PAGE_TITLES = [
-        'organization-management' => 'Organization Management',
-        'organization-profile' => 'Organization Profile',
-        'organization-members' => 'Organization Members',
-        'organization-members-bulk' => 'Organization Members Bulk Upload',
-        'supplemental-members' => 'Purchase Additional Seats',
-        'organization-contacts' => 'Organization Contacts',
-    ];
+    private function pageTitles(): array
+    {
+        return [
+            'organization-management' => _x('Organization Management', 'label', 'wicket-acc'),
+            'organization-profile' => _x('Organization Profile', 'label', 'wicket-acc'),
+            'organization-members' => _x('Organization Members', 'label', 'wicket-acc'),
+            'organization-members-bulk' => __('Organization Members Bulk Upload', 'wicket-acc'),
+            'supplemental-members' => _x('Purchase Additional Seats', 'label', 'wicket-acc'),
+            'organization-contacts' => _x('Organization Contacts', 'label', 'wicket-acc'),
+        ];
+    }
 
     /**
      * Guards createMissingPages() against concurrent runs (double-click,
@@ -66,7 +71,7 @@ class RequiredPagesNotice extends \WicketAcc\WicketAcc
     {
         $config = \WicketORM\Services\ConfigService::getConfig();
 
-        $required = self::PAGE_TITLES;
+        $required = $this->pageTitles();
 
         if (empty($config['presentation']['member_list']['show_bulk_upload'])) {
             unset($required['organization-members-bulk']);
@@ -174,8 +179,13 @@ class RequiredPagesNotice extends \WicketAcc\WicketAcc
                 printf(
                     '<div class="notice notice-warning is-dismissible"><p>%s</p></div>',
                     esc_html(sprintf(
-                        /* translators: 1: number created, 2: number failed. */
-                        __('Account Centre: created %1$d page(s), %2$d could not be created. Check the Account Centre page list for details.', 'wicket-acc'),
+                        /* translators: 1: number of pages created, 2: number of pages that failed. */
+                        _n(
+                            'Account Centre: created %1$d page, %2$d could not be created. Check the Account Centre page list for details.',
+                            'Account Centre: created %1$d pages, %2$d could not be created. Check the Account Centre page list for details.',
+                            $created,
+                            'wicket-acc'
+                        ),
                         $created,
                         $failed
                     ))
@@ -185,7 +195,12 @@ class RequiredPagesNotice extends \WicketAcc\WicketAcc
                     '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
                     esc_html(sprintf(
                         /* translators: %d: number of pages created. */
-                        __('Account Centre: created %d missing page(s).', 'wicket-acc'),
+                        _n(
+                            'Account Centre: created %d missing page.',
+                            'Account Centre: created %d missing pages.',
+                            $created,
+                            'wicket-acc'
+                        ),
                         $created
                     ))
                 );
@@ -218,7 +233,7 @@ class RequiredPagesNotice extends \WicketAcc\WicketAcc
                 <?php wp_nonce_field('wicket_acc_create_required_pages'); ?>
                 <input type="hidden" name="_wp_http_referer" value="<?php echo esc_url($_SERVER['REQUEST_URI'] ?? ''); ?>">
                 <button type="submit" class="button button-primary">
-                    <?php esc_html_e('Create missing pages', 'wicket-acc'); ?>
+                    <?php echo esc_html_x('Create missing pages', 'button label', 'wicket-acc'); ?>
                 </button>
             </form>
         </div>

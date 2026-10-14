@@ -34,7 +34,7 @@ class ajax extends init
 
         if (!$nonce_validation) {
             echo '<p class="error no-data">';
-            _e('Security validation failed.', 'wicket-acc');
+            _ex('Security validation failed.', 'message', 'wicket-acc');
             echo '</p>';
             die();
         }
@@ -69,7 +69,7 @@ class ajax extends init
         // If empty, results json error
         if (empty($results)) {
             echo '<p class="error no-data">';
-            _e('No data found.', 'wicket-acc');
+            _ex('No data found.', 'message', 'wicket-acc');
             echo '</p>';
             die();
         }

@@ -1,0 +1,4219 @@
+# Canadian French (fr_CA) translation of Wicket Account Centre.
+# Copyright (C) 2026 Wicket Inc.
+# This file is distributed under the same license as the Wicket Account Centre package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Wicket Account Centre 1.11.8\n"
+"Report-Msgid-Bugs-To: https://wicket.io\n"
+"POT-Creation-Date: 2026-09-29T20:11:47+00:00\n"
+"PO-Revision-Date: 2026-09-29 20:12+0000\n"
+"Last-Translator: Wicket Inc.\n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Domain: wicket-acc\n"
+
+#. Plugin Name of the plugin
+msgid "Wicket Account Centre"
+msgstr "Centre de compte Wicket"
+
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+msgid "https://wicket.io"
+msgstr "https://wicket.io"
+
+#. Description of the plugin
+msgid "Custom account management system for Wicket. Provides user account features, organization management, and additional blocks and pages. Integrates with WooCommerce when available."
+msgstr "Système de gestion de compte personnalisé pour Wicket. Offre des fonctionnalités de compte utilisateur, la gestion des organisations ainsi que des blocs et des pages supplémentaires. S'intègre à WooCommerce lorsque disponible."
+
+#. Author of the plugin
+msgid "Wicket Inc."
+msgstr "Wicket Inc."
+
+msgctxt "label"
+msgid "Edit Profile"
+msgstr "Modifier le profil"
+
+msgctxt "label"
+msgid "My Events"
+msgstr "Mes événements"
+
+msgctxt "label"
+msgid "My Jobs"
+msgstr "Mes offres d'emploi"
+
+msgctxt "label"
+msgid "Post a Job"
+msgstr "Publier une offre d'emploi"
+
+msgctxt "label"
+msgid "Change Password"
+msgstr "Changer le mot de passe"
+
+msgctxt "label"
+msgid "Organization Management"
+msgstr "Gestion de l'organisation"
+
+msgctxt "label"
+msgid "Organization Profile"
+msgstr "Profil de l'organisation"
+
+msgctxt "label"
+msgid "Organization Members"
+msgstr "Membres de l'organisation"
+
+msgctxt "label"
+msgid "Bulk Upload Members"
+msgstr "Téléverser des membres en lot"
+
+msgctxt "label"
+msgid "Global Header-Banner"
+msgstr "Bandeau d'en-tête global"
+
+msgctxt "label"
+msgid "Add Payment Method"
+msgstr "Ajouter un mode de paiement"
+
+msgid "Set Default Payment Method"
+msgstr "Définir le mode de paiement par défaut"
+
+#. translators: My Account menu item: the user's WooCommerce orders.
+msgctxt "label"
+msgid "Orders"
+msgstr "Commandes"
+
+msgctxt "label"
+msgid "View Order"
+msgstr "Voir la commande"
+
+#. translators: My Account menu item: the user's downloadable purchases.
+msgctxt "label"
+msgid "Downloads"
+msgstr "Téléchargements"
+
+msgctxt "label"
+msgid "Edit Account"
+msgstr "Modifier le compte"
+
+msgctxt "label"
+msgid "Edit Address"
+msgstr "Modifier l'adresse"
+
+msgctxt "label"
+msgid "Payment Methods"
+msgstr "Modes de paiement"
+
+msgctxt "label"
+msgid "Subscriptions"
+msgstr "Abonnements"
+
+msgctxt "label"
+msgid "View Subscription"
+msgstr "Voir l'abonnement"
+
+msgctxt "label"
+msgid "Subscription Payment Method"
+msgstr "Mode de paiement de l'abonnement"
+
+msgctxt "block title"
+msgid "Membership Block"
+msgstr "Bloc Adhésion"
+
+#. translators: %s: callout block logic type.
+#, php-format
+msgid "This block displays Membership Callouts [ %s ]"
+msgstr "Ce bloc affiche les messages d'adhésion [ %s ]"
+
+msgid "Re: Pending Membership Request"
+msgstr "Re : Demande d'adhésion en attente"
+
+msgid "Security verification failed. Please try again."
+msgstr "La vérification de sécurité a échoué. Veuillez réessayer."
+
+msgid "No file was selected for upload."
+msgstr "Aucun fichier n'a été sélectionné pour le téléversement."
+
+msgid "The uploaded file exceeds the server's maximum file size limit."
+msgstr "Le fichier téléversé dépasse la taille maximale permise par le serveur."
+
+msgid "The uploaded file exceeds the form's maximum file size limit."
+msgstr "Le fichier téléversé dépasse la taille maximale permise par le formulaire."
+
+msgid "The file was only partially uploaded. Please try again."
+msgstr "Le fichier n'a été que partiellement téléversé. Veuillez réessayer."
+
+msgid "No file was uploaded."
+msgstr "Aucun fichier n'a été téléversé."
+
+msgid "Missing temporary folder on server."
+msgstr "Le dossier temporaire est introuvable sur le serveur."
+
+msgid "Failed to write file to disk."
+msgstr "Impossible d'écrire le fichier sur le disque."
+
+msgid "File upload stopped by extension."
+msgstr "Le téléversement du fichier a été arrêté par une extension."
+
+msgid "Unknown upload error occurred."
+msgstr "Une erreur inconnue s'est produite lors du téléversement."
+
+msgid "The uploaded file appears to be empty. Please select a valid image file."
+msgstr "Le fichier téléversé semble vide. Veuillez sélectionner un fichier image valide."
+
+#. translators: %s: comma-separated list of allowed file extensions.
+#, php-format
+msgid "Invalid file format. Please upload a file with one of these extensions: %s"
+msgstr "Format de fichier non valide. Veuillez téléverser un fichier ayant l'une des extensions suivantes : %s"
+
+msgid "The uploaded file is not a valid image. Please upload a valid image file."
+msgstr "Le fichier téléversé n'est pas une image valide. Veuillez téléverser un fichier image valide."
+
+#. translators: %d: maximum file size in megabytes.
+#, php-format
+msgid "The uploaded file is too large. Maximum file size allowed is %dMB."
+msgstr "Le fichier téléversé est trop volumineux. La taille maximale permise est de %d Mo."
+
+msgctxt "message"
+msgid "Invalid organization ID."
+msgstr "ID d'organisation non valide."
+
+msgid "Failed to save the uploaded file. Please try again."
+msgstr "Impossible d'enregistrer le fichier téléversé. Veuillez réessayer."
+
+msgid "Widget-profile-org component is missing. Please update the Wicket Base Plugin."
+msgstr "Le composant widget-profile-org est manquant. Veuillez mettre à jour l'extension Wicket Base Plugin."
+
+msgctxt "label"
+msgid "Additional Info"
+msgstr "Renseignements supplémentaires"
+
+msgid "You currently have no organizations to manage information for."
+msgstr "Vous n'avez actuellement aucune organisation dont vous pouvez gérer les renseignements."
+
+msgid "Could not determine the current user for this upload."
+msgstr "Impossible de déterminer l'utilisateur actuel pour ce téléversement."
+
+msgid "Could not determine a valid profile picture filename."
+msgstr "Impossible de déterminer un nom de fichier valide pour la photo de profil."
+
+msgid "Failed to process the image. Please try uploading a different image."
+msgstr "Impossible de traiter l'image. Veuillez essayer de téléverser une autre image."
+
+msgid "Failed to finalize the image processing. Please try again."
+msgstr "Impossible de finaliser le traitement de l'image. Veuillez réessayer."
+
+msgid "Invalid profile image operation."
+msgstr "Opération non valide sur l'image de profil."
+
+msgid "Could not determine the current user for this request."
+msgstr "Impossible de déterminer l'utilisateur actuel pour cette demande."
+
+msgid "Profile image was removed locally, but clearing the MDP URL failed. Please try again."
+msgstr "L'image de profil a été supprimée localement, mais l'effacement de l'URL dans le MDP a échoué. Veuillez réessayer."
+
+msgctxt "message"
+msgid "Security validation failed."
+msgstr "La validation de sécurité a échoué."
+
+msgctxt "message"
+msgid "No data found."
+msgstr "Aucune donnée trouvée."
+
+msgctxt "block title"
+msgid "Touchpoint Cvent"
+msgstr "Point de contact Cvent"
+
+msgid "This block displays registered data for Cvent on the front-end."
+msgstr "Ce bloc affiche les données d'inscription Cvent sur le site public."
+
+msgid "You do not have any past events at this time."
+msgstr "Vous n'avez aucun événement passé pour le moment."
+
+msgid "You do not have any events at this time."
+msgstr "Vous n'avez aucun événement pour le moment."
+
+msgid "You do not have any upcoming events at this time."
+msgstr "Vous n'avez aucun événement à venir pour le moment."
+
+msgctxt "button label"
+msgid "Show More"
+msgstr "Afficher plus"
+
+msgctxt "block title"
+msgid "Touchpoints TEC"
+msgstr "Points de contact TEC"
+
+msgid "This block displays registered data for The Events Calendar on the front-end."
+msgstr "Ce bloc affiche les données d'inscription The Events Calendar sur le site public."
+
+msgctxt "block title"
+msgid "Touchpoint TEC"
+msgstr "Point de contact TEC"
+
+msgid "This block displays registered data for TEC (The Events Calendar) on the front-end."
+msgstr "Ce bloc affiche les données d'inscription TEC (The Events Calendar) sur le site public."
+
+msgid "You do not have any past data at this time."
+msgstr "Vous n'avez aucune donnée passée pour le moment."
+
+msgid "You do not have any data at this time."
+msgstr "Vous n'avez aucune donnée pour le moment."
+
+msgid "You do not have any upcoming data at this time."
+msgstr "Vous n'avez aucune donnée à venir pour le moment."
+
+msgid "You have no upcoming events"
+msgstr "Vous n'avez aucun événement à venir"
+
+msgid "An error occurred. No data."
+msgstr "Une erreur s'est produite. Aucune donnée."
+
+msgid "An error occurred. Failed."
+msgstr "Une erreur s'est produite. Échec."
+
+msgctxt "block title"
+msgid "Touchpoint Maple"
+msgstr "Point de contact Maple"
+
+msgid "This block displays registered data for Maple on the front-end."
+msgstr "Ce bloc affiche les données d'inscription Maple sur le site public."
+
+msgid "You do not have any courses."
+msgstr "Vous n'avez aucun cours."
+
+msgctxt "block title"
+msgid "Touchpoint MicroSpec"
+msgstr "Point de contact MicroSpec"
+
+msgid "This block displays registered data for MicroSpec on the front-end."
+msgstr "Ce bloc affiche les données d'inscription MicroSpec sur le site public."
+
+msgctxt "block title"
+msgid "Touchpoints Moodle"
+msgstr "Points de contact Moodle"
+
+msgid "This block displays registered data from Moodle on the front-end."
+msgstr "Ce bloc affiche les données d'inscription provenant de Moodle sur le site public."
+
+msgctxt "block title"
+msgid "Touchpoint Moodle"
+msgstr "Point de contact Moodle"
+
+msgctxt "block title"
+msgid "Touchpoint Pheedloop"
+msgstr "Point de contact Pheedloop"
+
+msgid "This block displays registered data for Pheedloop on the front-end."
+msgstr "Ce bloc affiche les données d'inscription Pheedloop sur le site public."
+
+msgctxt "block title"
+msgid "Touchpoint VitalSource"
+msgstr "Point de contact VitalSource"
+
+msgid "This block displays registered data for VitalSource on the front-end."
+msgstr "Ce bloc affiche les données d'inscription VitalSource sur le site public."
+
+msgid "You do not have any ebooks."
+msgstr "Vous n'avez aucun livre numérique."
+
+msgctxt "block title"
+msgid "Touchpoints Zoom"
+msgstr "Points de contact Zoom"
+
+msgid "This block displays registered data for Zoom Webinars on the front-end."
+msgstr "Ce bloc affiche les données d'inscription aux webinaires Zoom sur le site public."
+
+msgctxt "block title"
+msgid "Touchpoint Zoom"
+msgstr "Point de contact Zoom"
+
+msgid "You have no upcoming webinars"
+msgstr "Vous n'avez aucun webinaire à venir"
+
+#. translators: %d: number of remaining results.
+#, php-format
+msgctxt "button label"
+msgid "Load More (%d remaining)"
+msgstr "Charger plus (%d restant(s))"
+
+msgctxt "message"
+msgid "Loading..."
+msgstr "Chargement…"
+
+msgctxt "button label"
+msgid "Load More"
+msgstr "Charger plus"
+
+msgctxt "relationship type"
+msgid "Primary Contact"
+msgstr "Personne-ressource principale"
+
+msgctxt "relationship type"
+msgid "Voting Contact"
+msgstr "Représentant votant"
+
+msgctxt "relationship type"
+msgid "Primary Tradeshow Contact"
+msgstr "Personne-ressource principale pour les salons professionnels"
+
+msgctxt "relationship type"
+msgid "Secondary Tradeshow Contact"
+msgstr "Personne-ressource secondaire pour les salons professionnels"
+
+msgctxt "relationship type"
+msgid "Accounting Contact"
+msgstr "Personne-ressource à la comptabilité"
+
+#. translators: Organization relationship type: regulatory contact.
+msgctxt "relationship type"
+msgid "Regulatory"
+msgstr "Affaires réglementaires"
+
+#. translators: Organization relationship type: the person is a member of the organization.
+msgctxt "relationship type"
+msgid "Member"
+msgstr "Membre"
+
+#. translators: Organization relationship type: the person works for the organization.
+#. translators: Relationship type: the person works for the organization.
+msgctxt "relationship type"
+msgid "Employee"
+msgstr "Employé"
+
+msgctxt "button label"
+msgid "Edit Profile"
+msgstr "Modifier le profil"
+
+#. translators: %s: person's full name.
+#, php-format
+msgctxt "accessibility label"
+msgid "%s Profile Image"
+msgstr "Image de profil de %s"
+
+#. translators: Greeting shown above the user's name.
+msgctxt "label"
+msgid "Welcome"
+msgstr "Bienvenue"
+
+msgctxt "label"
+msgid "ID:"
+msgstr "ID :"
+
+msgctxt "label"
+msgid "Membership Type:"
+msgstr "Type d'adhésion :"
+
+msgctxt "status"
+msgid "Active Member"
+msgstr "Membre actif"
+
+msgctxt "label"
+msgid "Member Since:"
+msgstr "Membre depuis :"
+
+msgctxt "label"
+msgid "Renewal Date:"
+msgstr "Date de renouvellement :"
+
+#. translators: Membership status: the user has no active membership.
+msgctxt "status"
+msgid "Non-Member"
+msgstr "Non-membre"
+
+msgctxt "block title"
+msgid "ACC Base Block"
+msgstr "Bloc de base ACC"
+
+msgid "There was an error processing the form."
+msgstr "Une erreur s'est produite lors du traitement du formulaire."
+
+msgid "Opens in a new window"
+msgstr "S'ouvre dans une nouvelle fenêtre"
+
+#. translators: ACF field group: ACC Callouts, ACC Additional Info.
+msgctxt "button label"
+msgid "Add Row"
+msgstr "Ajouter une ligne"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "E.g. choice_5_12_1"
+msgstr "Par exemple : choice_5_12_1"
+
+#. translators: ACF field group: ACC Organization Profile.
+msgctxt "field placeholder"
+msgid ""
+"{\n"
+"  \"fields\": {...}\n"
+"}"
+msgstr ""
+"{\n"
+"  \"fields\": {...}\n"
+"}"
+
+#. translators: ACF field group: ACC Individual Profile.
+msgctxt "field placeholder"
+msgid ""
+"{\n"
+"  \"fields\": {...},\n"
+"  \"sections\": {...}\n"
+"}"
+msgstr ""
+"{\n"
+"  \"fields\": {...},\n"
+"  \"sections\": {...}\n"
+"}"
+
+#. translators: ACF field group: ACC Individual Profile.
+msgid "{\"addresses\": { \"fields\": { \"companyName\": { \"readOnly\": true } } }}"
+msgstr "{\"addresses\": { \"fields\": { \"companyName\": { \"readOnly\": true } } }}"
+
+#. translators: ACF field group: ACC Organization Profile.
+msgctxt "field placeholder"
+msgid "{\"legalName\": { \"hidden\": true }}"
+msgstr "{\"legalName\": { \"hidden\": true }}"
+
+#. translators: ACF field group: ACC Individual Profile.
+msgctxt "field placeholder"
+msgid "{\"personType\": { \"hidden\": false }}"
+msgstr "{\"personType\": { \"hidden\": false }}"
+
+#. translators: ACF field group: ACC Organization Profile.
+msgid "<p>This expects JSON data for configuring the widget, supporting all options documented for the MDP JS Widget (<code>fields</code>, <code>resourceLimits</code>, <code>resourcePermissions</code>, and more). Please do not modify unless you know what you are doing.</p><p>Note: <code>rootEl</code>, <code>apiRoot</code>, <code>accessToken</code>, and <code>orgId</code> are always set automatically and any value provided for them here is ignored.</p><p>See <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#editorganizationprofile\" target=\"_blank\">full documentation for MDP JS Widgets</a>.</p>"
+msgstr "<p>Ce champ attend des données JSON pour configurer le widget. Il prend en charge toutes les options documentées pour le widget JS du MDP (<code>fields</code>, <code>resourceLimits</code>, <code>resourcePermissions</code>, etc.). Veuillez ne pas le modifier à moins de savoir exactement ce que vous faites.</p><p>Remarque : <code>rootEl</code>, <code>apiRoot</code>, <code>accessToken</code> et <code>orgId</code> sont toujours définis automatiquement ; toute valeur fournie ici pour ces options est ignorée.</p><p>Consultez la <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#editorganizationprofile\" target=\"_blank\">documentation complète des widgets JS du MDP</a>.</p>"
+
+#. translators: ACF field group: ACC Individual Profile.
+msgid "<p>This expects JSON data for configuring the widget, supporting all options documented for the MDP JS Widget (<code>fields</code>, <code>sections</code>, <code>resourceLimits</code>, <code>resourcePermissions</code>, and more). Please do not modify unless you know what you are doing.</p><p>Note: <code>rootEl</code>, <code>apiRoot</code>, <code>accessToken</code>, and <code>personId</code>/<code>orgId</code> are always set automatically and any value provided for them here is ignored.</p><p>See <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#createpersonprofile\" target=\"_blank\">full documentation for MDP JS Widgets</a>.</p>"
+msgstr "<p>Ce champ attend des données JSON pour configurer le widget. Il prend en charge toutes les options documentées pour le widget JS du MDP (<code>fields</code>, <code>sections</code>, <code>resourceLimits</code>, <code>resourcePermissions</code>, etc.). Veuillez ne pas le modifier à moins de savoir exactement ce que vous faites.</p><p>Remarque : <code>rootEl</code>, <code>apiRoot</code>, <code>accessToken</code> et <code>personId</code>/<code>orgId</code> sont toujours définis automatiquement ; toute valeur fournie ici pour ces options est ignorée.</p><p>Consultez la <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#createpersonprofile\" target=\"_blank\">documentation complète des widgets JS du MDP</a>.</p>"
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgid "Configure events touchpoints display."
+msgstr "Configurer l'affichage des points de contact liés aux événements."
+
+#. translators: ACF field group: ACC Welcome.
+msgid "Control the visiblity of the profile picture in the Welcome block."
+msgstr "Contrôle la visibilité de la photo de profil dans le bloc Bienvenue."
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Enable filtering of relationships by the selected relationship type. When enabled, only relationships of the type specified in 'Relationship Type Upon Org Creation' will be displayed."
+msgstr "Active le filtrage des relations selon le type de relation sélectionné. Lorsque cette option est activée, seules les relations du type indiqué dans « Type de relation à la création de l'organisation » sont affichées."
+
+#. translators: ACF field group: ACC Main Options.
+msgid "For EN only. Which word to use on the spelling of Centre/Center."
+msgstr "Pour l'anglais seulement. Orthographe à utiliser pour « Centre/Center »."
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
+msgid "How many columns do you want to use for touchpoints results. 1 will yield a list view."
+msgstr "Nombre de colonnes à utiliser pour les résultats des points de contact. La valeur 1 affiche une liste."
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "How the org will be shown on the frontend, e.g. \"Organization\" or \"Chapter\". Can be left blank to use default."
+msgstr "Façon dont l'organisation est désignée sur le site public, par exemple « Organisation » ou « Section ». Laisser vide pour utiliser la valeur par défaut."
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "How the org will be shown on the frontend, e.g. \"Organizations\" or \"Chapters\". Can be left blank to use default."
+msgstr "Façon dont les organisations sont désignées sur le site public, par exemple « Organisations » ou « Sections ». Laisser vide pour utiliser la valeur par défaut."
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "ID of a checkbox to be checked if a new org gets created. Usually this will be a hidden checkbox used for later conditional logic."
+msgstr "ID d'une case à cocher à cocher lorsqu'une nouvelle organisation est créée. Il s'agit habituellement d'une case masquée utilisée plus tard dans une logique conditionnelle."
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgid "If an override URL is set, you must specify a title for that link."
+msgstr "Si une URL de remplacement est définie, vous devez indiquer un titre pour ce lien."
+
+#. translators: ACF field group: ACC Main Options.
+msgid "If enabled, a new item will be shown on ACC admin menu. Page content from that item, will be used as a global \"sub-header\" on all ACC pages on the front."
+msgstr "Si cette option est activée, un nouvel élément s'affiche dans le menu d'administration ACC. Le contenu de cette page sera utilisé comme « sous-en-tête » global sur toutes les pages ACC du site public."
+
+#. translators: ACF field group: ACC Callouts.
+msgid "If enabled, the current URL's query string will be captured and appended to the links in this callout."
+msgstr "Si cette option est activée, la chaîne de requête de l'URL actuelle est récupérée et ajoutée aux liens de ce message."
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "If left blank, all organization types will be searchable. If you wish to filter, you'll need to provide the \"slug\" of the organization type, e.g., \"it_company\". It's also possible to provide multiple slugs, separated by commas, e.g., \"it_company,non_profit\"."
+msgstr "Si ce champ est laissé vide, tous les types d'organisations peuvent être recherchés. Pour filtrer, indiquez le « slug » du type d'organisation, par exemple « it_company ». Vous pouvez aussi indiquer plusieurs slugs séparés par des virgules, par exemple « it_company,non_profit »."
+
+#. translators: ACF field group: ACC Additional Info.
+msgid "If left blank, the Org UUID will be set by the URL parameter \"org_id\""
+msgstr "Si ce champ est laissé vide, l'UUID de l'organisation sera défini par le paramètre d'URL « org_id »"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "If left blank, the user will be allowed to select the organization type themselves from the frontend."
+msgstr "Si ce champ est laissé vide, l'utilisateur pourra choisir lui-même le type d'organisation sur le site public."
+
+#. translators: ACF field group: ACC Main Options.
+msgid "If not set, a default \"person\" image will be used as default profile picture."
+msgstr "Si aucune image n'est définie, une image « personne » par défaut sera utilisée comme photo de profil."
+
+#. translators: ACF field group: ACC Welcome.
+msgid "Leave empty to use ACC page mapping (in ACC Options). URL to which the button will point."
+msgstr "Laisser vide pour utiliser la correspondance des pages ACC (dans les options ACC). URL vers laquelle pointe le bouton."
+
+#. translators: ACF field group: ACC Main Options.
+msgid "Location of the sidebar navigation menu inside ACC pages."
+msgstr "Emplacement du menu de navigation latéral dans les pages ACC."
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Message that will display if nothing is found by their search. Can be left blank to use default."
+msgstr "Message affiché lorsque la recherche ne donne aucun résultat. Laisser vide pour utiliser la valeur par défaut."
+
+#. translators: ACF field group: ACC Additional Info.
+msgid "Note that the year in the date picker will not apply, as these date ranges will recur annually."
+msgstr "L'année choisie dans le sélecteur de date n'est pas prise en compte, car ces plages de dates reviennent chaque année."
+
+#. translators: ACF field group: ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgctxt "help text"
+msgid "Optional."
+msgstr "Facultatif."
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar.
+msgid "Optional. Full URL where the user will be redirected when clicking on the \"see past events\" link."
+msgstr "Facultatif. URL complète vers laquelle l'utilisateur est redirigé lorsqu'il clique sur le lien « voir les événements passés »."
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint VitalSource, ACC Touchpoint Cvent, ACC Touchpoint Maple, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
+msgid "Optional. Leave it empty so as not to be shown to the user."
+msgstr "Facultatif. Laisser vide pour ne pas l'afficher à l'utilisateur."
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar.
+msgid "Optional. Title to display when viewing past events. If empty, the regular title will be used."
+msgstr "Facultatif. Titre affiché pour les événements passés. S'il est vide, le titre habituel est utilisé."
+
+#. translators: ACF field group: ACC Additional Info.
+msgid "Same for both stage and prod"
+msgstr "Identique en préproduction et en production"
+
+#. translators: ACF field group: ACC Welcome.
+msgid "Show or hide the member status line (\"Active Member\" / \"Non-Member\") in the Welcome block."
+msgstr "Afficher ou masquer la ligne de statut du membre (« Membre actif » / « Non-membre ») dans le bloc Bienvenue."
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar.
+msgid "Show the link that switches between past and upcoming events views."
+msgstr "Afficher le lien permettant de basculer entre les événements passés et à venir."
+
+#. translators: ACF field group: ACC Individual Profile.
+msgid "This expects JSON data for the fields property as defined here: <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#createpersonprofile\" target=\"_blank\">https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#createpersonprofile</a>. Please do not modify unless you know what you are doing. This must be valid JSON, otherwise this field is ignored. Superseded by the MDP Widget Config setting above — if that is set, this value is ignored entirely. A \"Copy this value into MDP Widget Config\" link appears below this field in the editor to copy it over pre-formatted."
+msgstr "Ce champ attend des données JSON pour la propriété fields, telle que définie ici : <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#createpersonprofile\" target=\"_blank\">https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#createpersonprofile</a>. Veuillez ne pas le modifier à moins de savoir exactement ce que vous faites. Le JSON doit être valide, sinon ce champ est ignoré. Remplacé par le paramètre Configuration du widget MDP ci-dessus : si celui-ci est défini, cette valeur est entièrement ignorée. Un lien « Copier cette valeur dans Configuration du widget MDP » s'affiche sous ce champ dans l'éditeur pour la copier déjà mise en forme."
+
+#. translators: ACF field group: ACC Organization Profile.
+msgid "This expects JSON data for the fields property as defined here: <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#editorganizationprofile\" target=\"_blank\">https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html</a>. Please do not modify unless you know what you are doing. This must be valid JSON, otherwise this field is ignored. Superseded by the MDP Widget Config setting above — if that is set, this value is ignored entirely. A \"Copy this value into MDP Widget Config\" link appears below this field in the editor to copy it over pre-formatted."
+msgstr "Ce champ attend des données JSON pour la propriété fields, telle que définie ici : <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#editorganizationprofile\" target=\"_blank\">https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html</a>. Veuillez ne pas le modifier à moins de savoir exactement ce que vous faites. Le JSON doit être valide, sinon ce champ est ignoré. Remplacé par le paramètre Configuration du widget MDP ci-dessus : si celui-ci est défini, cette valeur est entièrement ignorée. Un lien « Copier cette valeur dans Configuration du widget MDP » s'affiche sous ce champ dans l'éditeur pour la copier déjà mise en forme."
+
+#. translators: ACF field group: ACC Individual Profile.
+msgid "This expects JSON data for the sections property (address / email / phone / web field config) as defined here: <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#addresssectionconfig\" target=\"_blank\">https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#addresssectionconfig</a>. Please do not modify unless you know what you are doing. This must be valid JSON, otherwise this field is ignored. Superseded by the MDP Widget Config setting above — if that is set, this value is ignored entirely."
+msgstr "Ce champ attend des données JSON pour la propriété sections (configuration des champs adresse, courriel, téléphone et Web), telle que définie ici : <a href=\"https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#addresssectionconfig\" target=\"_blank\">https://wicket-core.s3.ca-central-1.amazonaws.com/wicket-widgets-readme-staging.html#addresssectionconfig</a>. Veuillez ne pas le modifier à moins de savoir exactement ce que vous faites. Le JSON doit être valide, sinon ce champ est ignoré. Remplacé par le paramètre Configuration du widget MDP ci-dessus : si celui-ci est défini, cette valeur est entièrement ignorée."
+
+#. translators: ACF field group: ACC Organization Profile.
+msgid "This field has no effect on this block — the organization profile widget component does not support a sections option, unlike the individual profile widget. Superseded by the MDP Widget Config setting above. A \"Copy this value into MDP Widget Config\" link appears below this field in the editor to copy it over pre-formatted, in case the widget gains section support later."
+msgstr "Ce champ n'a aucun effet sur ce bloc : le composant du widget de profil d'organisation ne prend pas en charge l'option sections, contrairement au widget de profil individuel. Remplacé par le paramètre Configuration du widget MDP ci-dessus. Un lien « Copier cette valeur dans Configuration du widget MDP » s'affiche sous ce champ dans l'éditeur pour la copier déjà mise en forme, au cas où le widget prendrait en charge les sections plus tard."
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Will grey out the select button for an org that the user already has an active membership with."
+msgstr "Grise le bouton de sélection d'une organisation avec laquelle l'utilisateur a déjà une adhésion active."
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Will prompt the user with a popup to confirm if they really want to remove their relationship with an org."
+msgstr "Demande à l'utilisateur, dans une fenêtre contextuelle, de confirmer qu'il veut vraiment retirer sa relation avec une organisation."
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "'New Org Created' checkbox ID"
+msgstr "ID de la case « Nouvelle organisation créée »"
+
+#. translators: ACF field group: ACC Touchpoint MicroSpec.
+msgctxt "label"
+msgid "10"
+msgstr "10"
+
+#. translators: ACF field group: ACC Touchpoint MicroSpec.
+msgctxt "label"
+msgid "5"
+msgstr "5"
+
+#. translators: ACF field group: ACC Organization Profile.
+msgid "ACC Organization Profile options"
+msgstr "Options du profil d'organisation ACC"
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "label"
+msgid "Account Center"
+msgstr "Account Center"
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "label"
+msgid "Account Centre"
+msgstr "Account Centre"
+
+#. translators: ACF field group: ACC Touchpoint VitalSource.
+msgctxt "label"
+msgid "Action"
+msgstr "Action"
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "label"
+msgid "Additional Info Schema"
+msgstr "Schéma des renseignements supplémentaires"
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Addresses"
+msgstr "Adresses"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Advanced"
+msgstr "Avancé"
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgctxt "label"
+msgid "All Events"
+msgstr "Tous les événements"
+
+#. translators: ACF field group: ACC Touchpoint Maple.
+msgctxt "label"
+msgid "Aptify Conversion"
+msgstr "Conversion Aptify"
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Zoom.
+msgctxt "label"
+msgid "Attended an Event"
+msgstr "A participé à un événement"
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Become a member"
+msgstr "Devenir membre"
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Birth Date"
+msgstr "Date de naissance"
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Block Logic"
+msgstr "Logique du bloc"
+
+#. translators: ACF field group: ACC Callouts.
+msgid "Capture and use current URL query string"
+msgstr "Récupérer et utiliser la chaîne de requête de l'URL actuelle"
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "label"
+msgid "Centre/Center localization"
+msgstr "Orthographe de Centre/Center"
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
+msgctxt "label"
+msgid "Columns"
+msgstr "Colonnes"
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Complete your profile"
+msgstr "Remplir votre profil"
+
+#. translators: ACF field group: ACC Touchpoint Maple.
+msgctxt "label"
+msgid "Completed"
+msgstr "Terminé"
+
+#. translators: ACF field group: ACC Touchpoint Moodle.
+msgctxt "label"
+msgid "Completed a course"
+msgstr "A terminé un cours"
+
+#. translators: ACF field group: ACC Touchpoint Moodle.
+msgctxt "label"
+msgid "Created Account"
+msgstr "A créé un compte"
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgctxt "label"
+msgid "Default Display"
+msgstr "Affichage par défaut"
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "label"
+msgid "Default profile picture"
+msgstr "Photo de profil par défaut"
+
+#. translators: ACF field group: ACC Callouts, ACC Touchpoint VitalSource.
+msgctxt "label"
+msgid "Description"
+msgstr "Description"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Disable ability to create new org/entity? (Hide create org UI)"
+msgstr "Désactiver la création d'une nouvelle organisation ou entité ? (Masquer l'interface de création)"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Disable ability to select orgs with active membership?"
+msgstr "Empêcher la sélection d'organisations avec une adhésion active ?"
+
+#. translators: ACF field group: ACC Welcome.
+msgctxt "label"
+msgid "Display MDP ID"
+msgstr "Afficher l'ID MDP"
+
+#. translators: ACF field group: ACC Welcome.
+msgctxt "label"
+msgid "Display Member Status"
+msgstr "Afficher le statut de membre"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Display Org Fields"
+msgstr "Afficher les champs de l'organisation"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Display Org Type"
+msgstr "Afficher le type d'organisation"
+
+#. translators: ACF field group: ACC Welcome.
+msgctxt "label"
+msgid "Display Profile Picture"
+msgstr "Afficher la photo de profil"
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
+msgctxt "label"
+msgid "Display Registered Actions"
+msgstr "Afficher les actions enregistrées"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Display Removal Alert Message"
+msgstr "Afficher le message d'avertissement de retrait"
+
+#. translators: ACF field group: ACC Welcome.
+msgctxt "label"
+msgid "Edit Profile Button"
+msgstr "Bouton Modifier le profil"
+
+#. translators: ACF field group: ACC Welcome.
+msgid "Edit Profile Button (Show/Hide)"
+msgstr "Bouton Modifier le profil (afficher/masquer)"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Enable Relationship Filtering"
+msgstr "Activer le filtrage des relations"
+
+#. translators: ACF field group: ACC Touchpoint Maple.
+msgctxt "label"
+msgid "Enrolled"
+msgstr "Inscrit"
+
+#. translators: ACF field group: ACC Touchpoint Moodle.
+msgid "Enrolled in a course"
+msgstr "S'est inscrit à un cours"
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "First Name"
+msgstr "Prénom"
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "label"
+msgid "From"
+msgstr "De"
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Gender"
+msgstr "Genre"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "General"
+msgstr "Général"
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Ghost"
+msgstr "Fantôme"
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "label"
+msgid "Global sub-header"
+msgstr "Sous-en-tête global"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Grant org_editor role on selection?"
+msgstr "Attribuer le rôle org_editor lors de la sélection ?"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Grant roster management on next purchase?"
+msgstr "Accorder la gestion de la liste des membres au prochain achat ?"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Groups (Soon)"
+msgstr "Groupes (bientôt)"
+
+#. translators: ACF field group: ACC Touchpoint VitalSource.
+msgctxt "label"
+msgid "Helper Text"
+msgstr "Texte d'aide"
+
+#. translators: ACF field group: ACC Organization Profile.
+msgctxt "label"
+msgid "Hide Additional Info"
+msgstr "Masquer les renseignements supplémentaires"
+
+#. translators: ACF field group: ACC Organization Profile.
+msgid "Hide Alternate Name Field"
+msgstr "Masquer le champ Autre nom"
+
+#. translators: ACF field group: ACC Manage Preferences.
+msgctxt "label"
+msgid "Hide Language Preference"
+msgstr "Masquer la préférence linguistique"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Hide membership status?"
+msgstr "Masquer le statut d'adhésion ?"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Hide remove buttons?"
+msgstr "Masquer les boutons de retrait ?"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Hide select buttons?"
+msgstr "Masquer les boutons de sélection ?"
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Last Name"
+msgstr "Nom de famille"
+
+#. translators: ACF field group: ACC Main Options.
+#. translators: Sidebar position option (left side of the page).
+msgctxt "label"
+msgid "Left"
+msgstr "Gauche"
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Link"
+msgstr "Lien"
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Link Style"
+msgstr "Style du lien"
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Links"
+msgstr "Liens"
+
+#. translators: ACF field group: ACC Organization Profile, ACC Individual Profile.
+msgid "MDP JSON Fields (Deprecated)"
+msgstr "Champs JSON du MDP (obsolète)"
+
+#. translators: ACF field group: ACC Organization Profile, ACC Individual Profile.
+msgid "MDP JSON Sections (Deprecated)"
+msgstr "Sections JSON du MDP (obsolète)"
+
+#. translators: ACF field group: ACC Organization Profile, ACC Individual Profile.
+msgid "MDP Widget Config (JSON)"
+msgstr "Configuration du widget MDP (JSON)"
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "label"
+msgid "Main Options"
+msgstr "Options principales"
+
+#. translators: ACF field group: ACC Touchpoint Maple.
+msgctxt "label"
+msgid "Maple LMS"
+msgstr "Maple LMS"
+
+#. translators: ACF field group: ACC Welcome.
+msgid "Member since (Show/Hide)"
+msgstr "Membre depuis (afficher/masquer)"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "No results found message"
+msgstr "Message lorsqu'aucun résultat n'est trouvé"
+
+#. translators: ACF field group: ACC Additional Info.
+msgid "Only Activate Resource Override Within This Month/Day Range (Optional)"
+msgstr "Activer le remplacement de ressource seulement pendant cette période (mois/jour) (facultatif)"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Org Name"
+msgstr "Nom de l'organisation"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Org Name and Address"
+msgstr "Nom et adresse de l'organisation"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Org Name and Location"
+msgstr "Nom et emplacement de l'organisation"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Org Type When User Creates New Org"
+msgstr "Type d'organisation lorsque l'utilisateur crée une organisation"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Org name plural"
+msgstr "Nom de l'organisation au pluriel"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Org name singular"
+msgstr "Nom de l'organisation au singulier"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Organization Type"
+msgstr "Type d'organisation"
+
+#. translators: ACF field group: ACC Additional Info.
+msgid "Organization UUID Override (Optional)"
+msgstr "Remplacement de l'UUID de l'organisation (facultatif)"
+
+#. translators: ACF field group: ACC Additional Info, ACC Org. Search & Select.
+msgctxt "label"
+msgid "Organizations"
+msgstr "Organisations"
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgid "Override \"see past events\" link"
+msgstr "Remplacer le lien « voir les événements passés »"
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgid "Override past events link text"
+msgstr "Remplacer le texte du lien vers les événements passés"
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgctxt "label"
+msgid "Past Events"
+msgstr "Événements passés"
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar.
+msgctxt "label"
+msgid "Past Events Title"
+msgstr "Titre des événements passés"
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "label"
+msgid "People"
+msgstr "Personnes"
+
+#. translators: ACF field group: ACC Profile Picture Change.
+msgid "Picture max size (in MB)"
+msgstr "Taille maximale de l'image (en Mo)"
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Primary"
+msgstr "Principal"
+
+#. translators: ACF field group: ACC Main Options.
+msgid "Profile Picture Size (in MB)"
+msgstr "Taille de la photo de profil (en Mo)"
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Zoom.
+msgctxt "label"
+msgid "RSVP to Event"
+msgstr "A confirmé sa présence à un événement"
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Zoom.
+msgid "Registered for an Event"
+msgstr "S'est inscrit à un événement"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Relationship Mode"
+msgstr "Mode de relation"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Relationship Type Upon Org Creation/Selection"
+msgstr "Type de relation à la création ou à la sélection de l'organisation"
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Renewal"
+msgstr "Renouvellement"
+
+#. translators: ACF field group: ACC Welcome.
+msgid "Renewal date (Show/Hide)"
+msgstr "Date de renouvellement (afficher/masquer)"
+
+#. translators: ACF field group: ACC Callouts.
+msgctxt "label"
+msgid "Renewal period"
+msgstr "Période de renouvellement"
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "label"
+msgid "Resource Type"
+msgstr "Type de ressource"
+
+#. translators: ACF field group: ACC Main Options.
+#. translators: Sidebar position option (right side of the page).
+msgctxt "label"
+msgid "Right"
+msgstr "Droite"
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "label"
+msgid "Schema Slug"
+msgstr "Slug du schéma"
+
+#. translators: ACF field group: ACC Additional Info.
+msgid "Schema UUID ($id) - Prod"
+msgstr "UUID du schéma ($id) - Production"
+
+#. translators: ACF field group: ACC Additional Info.
+msgid "Schema UUID ($id) - Stage"
+msgstr "UUID du schéma ($id) - Préproduction"
+
+#. translators: ACF field group: ACC Additional Info.
+msgid "Schema override resource Slug"
+msgstr "Slug de la ressource de remplacement du schéma"
+
+#. translators: ACF field group: ACC Additional Info.
+msgid "Schema override resource UUID - Prod"
+msgstr "UUID de la ressource de remplacement du schéma - Production"
+
+#. translators: ACF field group: ACC Additional Info.
+msgid "Schema override resource UUID - Stage"
+msgstr "UUID de la ressource de remplacement du schéma - Préproduction"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgctxt "label"
+msgid "Search Mode"
+msgstr "Mode de recherche"
+
+#. translators: ACF field group: ACC Callouts.
+msgid "Select Profile Mandatory Fields"
+msgstr "Sélectionner les champs obligatoires du profil"
+
+#. translators: ACF field group: ACC Touchpoint Maple.
+msgctxt "label"
+msgid "Service"
+msgstr "Service"
+
+#. translators: ACF field group: ACC Touchpoint Pheedloop.
+msgctxt "label"
+msgid "Service ID"
+msgstr "ID du service"
+
+#. translators: ACF field group: ACC Touchpoint VitalSource, ACC Touchpoint Maple.
+msgctxt "label"
+msgid "Show \"View More\""
+msgstr "Afficher « Voir plus »"
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
+msgid "Show \"View More\" events"
+msgstr "Afficher plus d'événements (« Voir plus »)"
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "label"
+msgid "Show as required"
+msgstr "Afficher comme obligatoire"
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar.
+msgid "Show switch view link"
+msgstr "Afficher le lien pour changer de vue"
+
+#. translators: ACF field group: ACC Main Options.
+msgctxt "label"
+msgid "Sidebar location"
+msgstr "Emplacement de la barre latérale"
+
+#. translators: ACF field group: ACC Callouts, ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint VitalSource, ACC Touchpoint Cvent, ACC Touchpoint Maple, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
+#. translators: Placeholder block heading.
+msgctxt "label"
+msgid "Title"
+msgstr "Titre"
+
+#. translators: ACF field group: ACC Additional Info.
+msgctxt "label"
+msgid "To"
+msgstr "À"
+
+#. translators: ACF field group: ACC Touchpoint Maple.
+msgctxt "label"
+msgid "Touchpoint Action"
+msgstr "Action du point de contact"
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint VitalSource, ACC Touchpoint Cvent, ACC Touchpoint Maple, ACC Touchpoint Moodle, ACC Touchpoint Zoom.
+msgctxt "label"
+msgid "Touchpoints per page"
+msgstr "Points de contact par page"
+
+#. translators: ACF field group: ACC Touchpoint Events Calendar, ACC Touchpoint MicroSpec, ACC Touchpoint Pheedloop, ACC Touchpoint Cvent, ACC Touchpoint Zoom.
+msgctxt "label"
+msgid "Upcoming Events"
+msgstr "Événements à venir"
+
+#. translators: ACF field group: ACC Additional Info.
+msgid "Use UI schema override resource UUID or Slug"
+msgstr "Utiliser l'UUID ou le slug de la ressource de remplacement du schéma d'interface"
+
+#. translators: ACF field group: ACC Additional Info.
+msgid "Use slugs instead of schema IDs"
+msgstr "Utiliser des slugs au lieu des ID de schéma"
+
+#. translators: ACF field group: ACC Org. Search & Select.
+msgid "Visual: Text, Messages, and Elements"
+msgstr "Visuel : textes, messages et éléments"
+
+#. translators: ACF field group: ACC Touchpoint VitalSource.
+msgid "eBook Codes for others"
+msgstr "Codes de livres numériques pour d'autres personnes"
+
+#. translators: ACF field group: ACC Touchpoint VitalSource.
+msgctxt "label"
+msgid "eBook Fulfilment"
+msgstr "Distribution de livres numériques"
+
+msgctxt "label"
+msgid "Global Header"
+msgstr "En-tête global"
+
+msgctxt "label"
+msgid "Menu Editor"
+msgstr "Éditeur de menu"
+
+msgid "ACF JSON folder not writable"
+msgstr "Dossier ACF JSON non accessible en écriture"
+
+#. translators: %s: filesystem path of the ACF JSON folder.
+#, php-format
+msgid "The %s folder is not writable. Please make sure the folder is writable by the server."
+msgstr "Le dossier %s n'est pas accessible en écriture. Veuillez vous assurer que le serveur peut écrire dans ce dossier."
+
+msgid "Not solving this issue, will result in ACF fields not being saved at plugin level and will not be visible on other sites backend."
+msgstr "Si ce problème n'est pas corrigé, les champs ACF ne seront pas enregistrés au niveau de l'extension et ne seront pas visibles dans l'administration des autres sites."
+
+msgid "Organization Members Bulk Upload"
+msgstr "Téléversement en lot des membres de l'organisation"
+
+msgctxt "label"
+msgid "Purchase Additional Seats"
+msgstr "Acheter des places supplémentaires"
+
+msgctxt "label"
+msgid "Organization Contacts"
+msgstr "Personnes-ressources de l'organisation"
+
+msgid "Account Centre page creation is already in progress."
+msgstr "La création des pages du Centre de compte est déjà en cours."
+
+msgid "Account Centre: page creation is already in progress. Please wait a few seconds and reload."
+msgstr "Centre de compte : la création des pages est déjà en cours. Veuillez patienter quelques secondes, puis recharger la page."
+
+#. translators: 1: number of pages created, 2: number of pages that failed.
+#, php-format
+msgid "Account Centre: created %1$d page, %2$d could not be created. Check the Account Centre page list for details."
+msgid_plural "Account Centre: created %1$d pages, %2$d could not be created. Check the Account Centre page list for details."
+msgstr[0] "Centre de compte : %1$d page créée, %2$d n'a pas pu être créée. Consultez la liste des pages du Centre de compte pour plus de détails."
+msgstr[1] "Centre de compte : %1$d pages créées, %2$d n'ont pas pu être créées. Consultez la liste des pages du Centre de compte pour plus de détails."
+
+#. translators: %d: number of pages created.
+#, php-format
+msgid "Account Centre: created %d missing page."
+msgid_plural "Account Centre: created %d missing pages."
+msgstr[0] "Centre de compte : %d page manquante créée."
+msgstr[1] "Centre de compte : %d pages manquantes créées."
+
+msgid "Account Centre: missing account pages."
+msgstr "Centre de compte : pages de compte manquantes."
+
+#. translators: %s: comma-separated list of page slugs.
+#, php-format
+msgid "The Account Centre links to account pages that do not exist on this site, so those links lead to a 404. Missing: %s"
+msgstr "Le Centre de compte contient des liens vers des pages de compte qui n'existent pas sur ce site ; ces liens mènent donc à une erreur 404. Pages manquantes : %s"
+
+msgctxt "button label"
+msgid "Create missing pages"
+msgstr "Créer les pages manquantes"
+
+msgid "You are not allowed to create Account Centre pages."
+msgstr "Vous n'êtes pas autorisé à créer des pages du Centre de compte."
+
+msgctxt "label"
+msgid "My Account Woo"
+msgstr "Mon compte Woo"
+
+msgid "This page is critical for Wicket's Account Centre and cannot be moved to trash."
+msgstr "Cette page est essentielle au Centre de compte de Wicket et ne peut pas être mise à la corbeille."
+
+msgid "This page is critical for Wicket's Account Centre and cannot be deleted."
+msgstr "Cette page est essentielle au Centre de compte de Wicket et ne peut pas être supprimée."
+
+msgctxt "label"
+msgid "My Account (CPT)"
+msgstr "Mon compte (CPT)"
+
+#. translators: %s: config key being migrated ("fields" or "sections").
+#, php-format
+msgid "Replace \"%s\" in MDP Widget Config"
+msgstr "Remplacer « %s » dans Configuration du widget MDP"
+
+msgctxt "block category name"
+msgid "Wicket_AC"
+msgstr "Wicket_AC"
+
+#. translators: %s: template name.
+#, php-format
+msgctxt "message"
+msgid "Template %s not found"
+msgstr "Gabarit %s introuvable"
+
+msgctxt "block title"
+msgid "ACC Change Password"
+msgstr "ACC Changer le mot de passe"
+
+msgctxt "label"
+msgid "Form Title"
+msgstr "Titre du formulaire"
+
+msgctxt "label"
+msgid "Form Instructions"
+msgstr "Instructions du formulaire"
+
+msgid "Enter your current password and choose a new one."
+msgstr "Entrez votre mot de passe actuel et choisissez-en un nouveau."
+
+msgid "A Wicket block for changing the user password."
+msgstr "Un bloc Wicket pour changer le mot de passe de l'utilisateur."
+
+msgctxt "block keyword"
+msgid "account-centre"
+msgstr "centre-de-compte"
+
+msgctxt "block keyword"
+msgid "account-center"
+msgstr "centre-de-compte"
+
+msgctxt "block keyword"
+msgid "password"
+msgstr "mot de passe"
+
+msgctxt "block keyword"
+msgid "wicket"
+msgstr "wicket"
+
+msgctxt "message"
+msgid "can't be blank"
+msgstr "ne peut pas être vide"
+
+msgid "- Passwords do not match"
+msgstr "- Les mots de passe ne correspondent pas"
+
+msgctxt "product name"
+msgid "Account Centre"
+msgstr "Centre de compte"
+
+msgctxt "product name"
+msgid "Account Center"
+msgstr "Centre de compte"
+
+msgctxt "label"
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#. translators: ACC is short for Account Centre.
+msgctxt "label"
+msgid "ACC Options"
+msgstr "Options ACC"
+
+msgid "Allowed range: 1 to 7 MB."
+msgstr "Plage permise : de 1 à 7 Mo."
+
+msgid "Profile image MDP field"
+msgstr "Champ MDP de l'image de profil"
+
+msgctxt "label"
+msgid "ACC Environment"
+msgstr "Environnement ACC"
+
+#. translators: Admin menu title for the Wicket server environment (staging or production) settings.
+msgctxt "label"
+msgid "Environment"
+msgstr "Environnement"
+
+msgctxt "label"
+msgid "Connection Status"
+msgstr "État de la connexion"
+
+#. translators: Label for the MDP connection status.
+msgctxt "label"
+msgid "Status"
+msgstr "État"
+
+msgctxt "label"
+msgid "Wicket Environment"
+msgstr "Environnement Wicket"
+
+#. translators: Wicket server environment option: the test (staging) environment.
+msgctxt "label"
+msgid "Staging"
+msgstr "Préproduction"
+
+#. translators: Wicket server environment option: the live (production) environment.
+msgctxt "label"
+msgid "Production"
+msgstr "Production"
+
+msgctxt "label"
+msgid "Production Settings"
+msgstr "Paramètres de production"
+
+msgctxt "label"
+msgid "Staging Settings"
+msgstr "Paramètres de préproduction"
+
+msgctxt "label"
+msgid "API Endpoint"
+msgstr "Point de terminaison de l'API"
+
+msgctxt "label"
+msgid "JWT Secret Key"
+msgstr "Clé secrète JWT"
+
+msgctxt "label"
+msgid "Person ID"
+msgstr "ID de la personne"
+
+msgctxt "label"
+msgid "Parent Org"
+msgstr "Organisation mère"
+
+msgctxt "label"
+msgid "Wicket Admin"
+msgstr "Administration Wicket"
+
+msgctxt "status"
+msgid "CONNECTED"
+msgstr "CONNECTÉ"
+
+msgctxt "status"
+msgid "NOT CONNECTED"
+msgstr "NON CONNECTÉ"
+
+#. translators: Not available: shown when the membership tier name is missing.
+#. translators: Not available: shown when the organization name is missing.
+#. translators: Not available: shown when a value is missing.
+msgctxt "value placeholder"
+msgid "N/A"
+msgstr "S. O."
+
+#. translators: %s: person UUID.
+#, php-format
+msgid "Wicket person with UUID %s not found."
+msgstr "Personne Wicket avec l'UUID %s introuvable."
+
+msgctxt "message"
+msgid "No arguments provided"
+msgstr "Aucun argument fourni"
+
+msgctxt "message"
+msgid "Role updated successfully"
+msgstr "Rôle mis à jour"
+
+msgid "No syncing (keep image local)"
+msgstr "Aucune synchronisation (conserver l'image localement)"
+
+msgctxt "button label"
+msgid "Refresh fields"
+msgstr "Actualiser les champs"
+
+msgctxt "message"
+msgid "Refreshing..."
+msgstr "Actualisation…"
+
+msgctxt "message"
+msgid "Field list refreshed."
+msgstr "Liste des champs actualisée."
+
+msgid "Could not refresh the field list. Check the MDP connection and try again."
+msgstr "Impossible d'actualiser la liste des champs. Vérifiez la connexion au MDP et réessayez."
+
+msgid "No MDP fields are available for this tenant."
+msgstr "Aucun champ MDP n'est disponible pour ce locataire."
+
+msgid "Choose which MDP additional-info field stores the uploaded profile image URL. \"No syncing\" keeps the image in WordPress only."
+msgstr "Choisissez le champ de renseignements supplémentaires du MDP qui enregistre l'URL de l'image de profil téléversée. « Aucune synchronisation » conserve l'image dans WordPress seulement."
+
+msgid "The selected field no longer exists in the MDP schema. Pick a valid field, or set \"No syncing\". Until then, uploads stay local and are not sent to the MDP."
+msgstr "Le champ sélectionné n'existe plus dans le schéma du MDP. Choisissez un champ valide ou sélectionnez « Aucune synchronisation ». D'ici là, les images téléversées restent locales et ne sont pas envoyées au MDP."
+
+msgctxt "post type label"
+msgid "Account Centre"
+msgstr "Centre de compte"
+
+#. translators: Singular name of an Account Centre page (post type).
+msgctxt "post type label"
+msgid "Page"
+msgstr "Page"
+
+msgctxt "post type label"
+msgid "Add New Page"
+msgstr "Ajouter une page"
+
+msgctxt "post type label"
+msgid "Edit Page"
+msgstr "Modifier la page"
+
+msgctxt "post type label"
+msgid "View Page"
+msgstr "Voir la page"
+
+msgctxt "post type label"
+msgid "Update Page"
+msgstr "Mettre à jour la page"
+
+msgctxt "post type label"
+msgid "Search Page"
+msgstr "Rechercher une page"
+
+msgctxt "post type label"
+msgid "Not Found"
+msgstr "Introuvable"
+
+msgid "Not found in Trash"
+msgstr "Introuvable dans la corbeille"
+
+msgctxt "post type label"
+msgid "All Pages"
+msgstr "Toutes les pages"
+
+msgctxt "post type label"
+msgid "Pages Sorting Order"
+msgstr "Ordre de tri des pages"
+
+msgctxt "menu location"
+msgid "Account Centre Menu"
+msgstr "Menu du Centre de compte"
+
+msgid "Account Centre Secondary Menu"
+msgstr "Menu secondaire du Centre de compte"
+
+#. translators: Page template name. ACC is short for Account Centre.
+msgctxt "template name"
+msgid "ACC Page"
+msgstr "Page ACC"
+
+msgid "ACC Page with Org Selector"
+msgstr "Page ACC avec sélecteur d'organisation"
+
+msgid "ACC Page (No Sidebar)"
+msgstr "Page ACC (sans barre latérale)"
+
+#. translators: Fallback organization name when the org has none; used in the welcome email subject, body, sign-off and sender name.
+msgctxt "value placeholder"
+msgid "your organization"
+msgstr "votre organisation"
+
+#. translators: %s: organization name.
+#, php-format
+msgctxt "email subject"
+msgid "Welcome to %s!"
+msgstr "Bienvenue chez %s !"
+
+#. translators: 1: recipient first name, 2: organization name.
+#, php-format
+msgid "Hi %1$s, <br><br>You have been assigned a membership as part of %2$s.<br><br>Visit our website and login to complete your profile and explore your member benefits.<br><br>Thank you,<br><br>%2$s"
+msgstr "Bonjour %1$s,<br><br>Une adhésion vous a été attribuée dans le cadre de %2$s.<br><br>Visitez notre site Web et ouvrez une session pour remplir votre profil et découvrir vos avantages de membre.<br><br>Merci,<br><br>%2$s"
+
+#. translators: 1: recipient first name, 2: organization name, 3: website domain (e.g. example.org).
+#, php-format
+msgid "Hi %1$s, <br><br>You have been assigned a membership as part of %2$s.<br><br>You will soon receive an Account Confirmation email with instructions on how to finalize your login account.<br>Once you have confirmed your account, visit %3$s and login to complete your profile and explore your member benefits.<br><br>Thank you,<br><br>%2$s"
+msgstr "Bonjour %1$s,<br><br>Une adhésion vous a été attribuée dans le cadre de %2$s.<br><br>Vous recevrez bientôt un courriel de confirmation de compte contenant les instructions pour finaliser votre compte d'utilisateur.<br>Une fois votre compte confirmé, visitez %3$s et ouvrez une session pour remplir votre profil et découvrir vos avantages de membre.<br><br>Merci,<br><br>%2$s"
+
+msgctxt "email subject"
+msgid "Membership Pending Approval"
+msgstr "Adhésion en attente d'approbation"
+
+#. translators: %1$s: membership approval URL.
+#, php-format
+msgid "You have a membership pending approval.<br>Please use the following link to process the membership request.<br><a href=\"%1$s\">%1$s</a>"
+msgstr "Vous avez une adhésion en attente d'approbation.<br>Veuillez utiliser le lien suivant pour traiter la demande d'adhésion.<br><a href=\"%1$s\">%1$s</a>"
+
+#. translators: %s: organization name.
+#, php-format
+msgctxt "email subject"
+msgid "Welcome to %s"
+msgstr "Bienvenue chez %s"
+
+#. translators: 1: recipient first name, 2: organization name, 3: website URL, 4: website name.
+#, php-format
+msgid ""
+"Hi %1$s, <br>\n"
+"<p>You have been assigned a membership as part of %2$s.</p>\n"
+"<p>You will receive an account confirmation email from *@wicketcloud.com, this will allow you to set your password and login for the first time.</p>\n"
+"<p>Going forward you can visit <a href='%3$s'>%4$s</a> and login to complete your profile and access your resources.</p>\n"
+"<br>\n"
+"Thank you,\n"
+"<br>\n"
+"%2$s"
+msgstr ""
+"Bonjour %1$s,<br>\n"
+"<p>Une adhésion vous a été attribuée dans le cadre de %2$s.</p>\n"
+"<p>Vous recevrez un courriel de confirmation de compte provenant de *@wicketcloud.com, qui vous permettra de définir votre mot de passe et d'ouvrir une session pour la première fois.</p>\n"
+"<p>Par la suite, vous pourrez visiter <a href='%3$s'>%4$s</a> et ouvrir une session pour remplir votre profil et accéder à vos ressources.</p>\n"
+"<br>\n"
+"Merci,\n"
+"<br>\n"
+"%2$s"
+
+msgctxt "value placeholder"
+msgid "[Organization Selector]"
+msgstr "[Sélecteur d'organisation]"
+
+msgid "No organizations found for your account."
+msgstr "Aucune organisation n'a été trouvée pour votre compte."
+
+msgctxt "label"
+msgid "Choose an Organization:"
+msgstr "Choisissez une organisation :"
+
+msgid "The uploaded file could not be found."
+msgstr "Le fichier téléversé est introuvable."
+
+msgid "Unable to open the uploaded file."
+msgstr "Impossible d'ouvrir le fichier téléversé."
+
+msgid "The CSV file is empty or could not be read."
+msgstr "Le fichier CSV est vide ou illisible."
+
+#. translators: %s: comma-separated list of missing CSV column headers.
+#, php-format
+msgctxt "message"
+msgid "Missing required column: %s."
+msgid_plural "Missing required columns: %s."
+msgstr[0] "Colonne obligatoire manquante : %s."
+msgstr[1] "Colonnes obligatoires manquantes : %s."
+
+msgctxt "role name"
+msgid "Membership Manager"
+msgstr "Gestionnaire de l'adhésion"
+
+#. translators: Role name; Org. is short for Organization.
+msgctxt "role name"
+msgid "Org. Editor"
+msgstr "Éditeur d'org."
+
+msgctxt "role name"
+msgid "Membership Owner"
+msgstr "Titulaire de l'adhésion"
+
+msgid "Primary owner role for this organization membership"
+msgstr "Rôle de titulaire principal de l'adhésion de cette organisation"
+
+msgid "Can add, remove, and edit users in the roster"
+msgstr "Peut ajouter, retirer et modifier les utilisateurs de la liste des membres"
+
+msgid "Ability to edit Organization's profile"
+msgstr "Permet de modifier le profil de l'organisation"
+
+#. translators: Relationship type: Chief Executive Officer.
+msgctxt "relationship type"
+msgid "CEO"
+msgstr "PDG"
+
+msgctxt "relationship type"
+msgid "Primary HR Contact"
+msgstr "Personne-ressource principale en RH"
+
+msgctxt "relationship type"
+msgid "Member Contact"
+msgstr "Personne-ressource des membres"
+
+msgctxt "relationship type"
+msgid "Advertising/Sponsor Contact"
+msgstr "Personne-ressource publicité/commandites"
+
+msgid "Advertising/Sponsor Billing Contact"
+msgstr "Personne-ressource facturation publicité/commandites"
+
+msgctxt "label"
+msgid "Email Address"
+msgstr "Adresse courriel"
+
+msgctxt "label"
+msgid "Relationship Type"
+msgstr "Type de relation"
+
+msgctxt "label"
+msgid "Permissions"
+msgstr "Autorisations"
+
+msgctxt "label"
+msgid "Roles"
+msgstr "Rôles"
+
+#. translators: Org. is short for Organization.
+msgctxt "button label"
+msgid "Org. Profile"
+msgstr "Profil d'org."
+
+msgctxt "button label"
+msgid "Manage Members"
+msgstr "Gérer les membres"
+
+msgctxt "button label"
+msgid "Manage Contact List"
+msgstr "Gérer la liste des personnes-ressources"
+
+msgctxt "tooltip"
+msgid "Account confirmed"
+msgstr "Compte confirmé"
+
+msgctxt "tooltip"
+msgid "Account not confirmed"
+msgstr "Compte non confirmé"
+
+msgctxt "status"
+msgid "Account not confirmed"
+msgstr "Compte non confirmé"
+
+msgid "All seats have been assigned. Please purchase additional seats to add more members."
+msgstr "Toutes les places ont été attribuées. Veuillez acheter des places supplémentaires pour ajouter d'autres membres."
+
+msgctxt "label"
+msgid "Remove Members"
+msgstr "Retirer des membres"
+
+msgid "To remove a member from your organization, please contact your association directly."
+msgstr "Pour retirer un membre de votre organisation, veuillez communiquer directement avec votre association."
+
+msgctxt "label"
+msgid "Name"
+msgstr "Nom"
+
+msgctxt "label"
+msgid "Job Title"
+msgstr "Titre du poste"
+
+msgctxt "label"
+msgid "Email"
+msgstr "Courriel"
+
+msgctxt "label"
+msgid "Relationship"
+msgstr "Relation"
+
+msgctxt "relationship type"
+msgid "President"
+msgstr "Président"
+
+msgctxt "relationship type"
+msgid "President Elect"
+msgstr "Président désigné"
+
+msgctxt "relationship type"
+msgid "Secretary"
+msgstr "Secrétaire"
+
+msgctxt "relationship type"
+msgid "Treasurer"
+msgstr "Trésorier"
+
+msgctxt "relationship type"
+msgid "Main Contact"
+msgstr "Personne-ressource principale"
+
+msgctxt "role name"
+msgid "Organization Editor"
+msgstr "Éditeur de l'organisation"
+
+#. translators: Section title for charitable foundation donations.
+msgctxt "label"
+msgid "Foundation"
+msgstr "Fondation"
+
+#. translators: FY is short for fiscal year. Donation total for the current fiscal year.
+msgctxt "label"
+msgid "Current FY"
+msgstr "Exercice en cours"
+
+#. translators: FY is short for fiscal year. Donation total for the previous fiscal year.
+msgctxt "label"
+msgid "Last FY"
+msgstr "Exercice précédent"
+
+#. translators: Date of the most recent donation.
+msgctxt "label"
+msgid "Last Gift"
+msgstr "Dernier don"
+
+#. translators: Donor recognition level based on all-time giving.
+msgctxt "label"
+msgid "Lifetime Level"
+msgstr "Niveau cumulatif"
+
+#. translators: Donor recognition level for the previous fiscal year (FY).
+msgctxt "label"
+msgid "Last FY Level"
+msgstr "Niveau de l'exercice précédent"
+
+#. translators: Soc. is short for Society: membership in the Leadership Society donor group.
+msgctxt "label"
+msgid "Leadership Soc."
+msgstr "Cercle des leaders"
+
+#. translators: Soc. is short for Society: membership in the Legacy Society donor group (planned giving).
+msgctxt "label"
+msgid "Legacy Soc."
+msgstr "Cercle des legs"
+
+#. translators: Keep the {year} token; it is replaced with the two-digit fiscal year.
+msgctxt "status"
+msgid "Foundation Donor FY{year}"
+msgstr "Donateur de la fondation EF{year}"
+
+#. translators: PAC is short for Political Action Committee.
+msgctxt "label"
+msgid "PAC"
+msgstr "CAP"
+
+#. translators: Keep the {year} token; it is replaced with the two-digit fiscal year.
+msgctxt "status"
+msgid "PAC Donor FY{year}"
+msgstr "Donateur du CAP EF{year}"
+
+msgid "You do not have permission to access this endpoint."
+msgstr "Vous n'avez pas l'autorisation d'accéder à ce point de terminaison."
+
+msgid "Organization ID is required."
+msgstr "L'ID de l'organisation est obligatoire."
+
+msgid "Business information updated successfully."
+msgstr "Les renseignements sur l'entreprise ont été mis à jour."
+
+msgctxt "label"
+msgid "Need more seats?"
+msgstr "Besoin de plus de places ?"
+
+msgid "As the membership owner, you can purchase additional seats for your organization membership. Click the \"Purchase Additional Seats\" button below to get started."
+msgstr "En tant que titulaire de l'adhésion, vous pouvez acheter des places supplémentaires pour l'adhésion de votre organisation. Cliquez sur le bouton « Acheter des places supplémentaires » ci-dessous pour commencer."
+
+msgctxt "message"
+msgid "File upload failed."
+msgstr "Le téléversement du fichier a échoué."
+
+msgid "File size exceeds the maximum allowed size."
+msgstr "La taille du fichier dépasse la taille maximale permise."
+
+msgid "File was only partially uploaded."
+msgstr "Le fichier n'a été que partiellement téléversé."
+
+msgctxt "message"
+msgid "Missing temporary folder."
+msgstr "Dossier temporaire manquant."
+
+#. translators: %s: document name.
+#, php-format
+msgctxt "message"
+msgid "Document \"%s\" uploaded successfully."
+msgstr "Le document « %s » a été téléversé."
+
+msgid "Organization ID and Document ID are required."
+msgstr "L'ID de l'organisation et l'ID du document sont obligatoires."
+
+msgctxt "message"
+msgid "Document deleted successfully."
+msgstr "Le document a été supprimé."
+
+msgid "Unable to determine the current person."
+msgstr "Impossible de déterminer la personne actuelle."
+
+msgid "Organization identifier is missing."
+msgstr "L'identifiant de l'organisation est manquant."
+
+msgid "Security verification failed. Please refresh and try again."
+msgstr "La vérification de sécurité a échoué. Veuillez actualiser la page et réessayer."
+
+msgid "You do not have permission to export members for this organization."
+msgstr "Vous n'avez pas l'autorisation d'exporter les membres de cette organisation."
+
+msgid "Your roster is ready and downloading now."
+msgstr "Votre liste des membres est prête et son téléchargement commence."
+
+#. translators: %s: email address
+#, php-format
+msgid "Your export has been queued. You will receive an email at %s when it is ready to download."
+msgstr "Votre exportation a été mise en file d'attente. Vous recevrez un courriel à %s lorsqu'elle sera prête à être téléchargée."
+
+msgid "Organization ID and Subsidiary Organization ID are required."
+msgstr "L'ID de l'organisation et l'ID de l'organisation filiale sont obligatoires."
+
+msgctxt "message"
+msgid "Subsidiary added successfully."
+msgstr "La filiale a été ajoutée."
+
+msgctxt "message"
+msgid "Subsidiary removed successfully."
+msgstr "La filiale a été retirée."
+
+msgid "Bulk upload processed successfully."
+msgstr "Le téléversement en lot a été traité."
+
+msgctxt "label"
+msgid "Success!"
+msgstr "Succès !"
+
+#. translators: %s: number of seconds until the page reloads (wrapped in a countdown element).
+#, php-format
+msgid "This page will reload in %s second..."
+msgid_plural "This page will reload in %s seconds..."
+msgstr[0] "Cette page se rechargera dans %s seconde…"
+msgstr[1] "Cette page se rechargera dans %s secondes…"
+
+msgid "Additional seats product not found. Please contact support."
+msgstr "Produit de places supplémentaires introuvable. Veuillez communiquer avec le soutien technique."
+
+msgid "Unable to add additional seats to cart. Please try again."
+msgstr "Impossible d'ajouter les places supplémentaires au panier. Veuillez réessayer."
+
+#. translators: %d: minimum seats per order
+#, php-format
+msgid "Please enter at least %d seat."
+msgid_plural "Please enter at least %d seats."
+msgstr[0] "Veuillez entrer au moins %d place."
+msgstr[1] "Veuillez entrer au moins %d places."
+
+#. translators: %d: maximum seats per order
+#, php-format
+msgid "Maximum %d seat can be purchased at once. Please contact support for larger orders."
+msgid_plural "Maximum %d seats can be purchased at once. Please contact support for larger orders."
+msgstr[0] "Vous pouvez acheter au maximum %d place à la fois. Veuillez communiquer avec le soutien technique pour les commandes plus importantes."
+msgstr[1] "Vous pouvez acheter au maximum %d places à la fois. Veuillez communiquer avec le soutien technique pour les commandes plus importantes."
+
+msgid "The organization owner (Primary Member) cannot be removed."
+msgstr "Le titulaire de l'organisation (membre principal) ne peut pas être retiré."
+
+#. translators: %s: number of seconds remaining before the dialog closes.
+#, php-format
+msgid "This dialog will close automatically in %s second."
+msgid_plural "This dialog will close automatically in %s seconds."
+msgstr[0] "Cette fenêtre se fermera automatiquement dans %s seconde."
+msgstr[1] "Cette fenêtre se fermera automatiquement dans %s secondes."
+
+msgctxt "message"
+msgid "Template not found."
+msgstr "Gabarit introuvable."
+
+msgctxt "button label"
+msgid "Close"
+msgstr "Fermer"
+
+#. translators: Notification type label.
+msgctxt "notification type"
+msgid "Success"
+msgstr "Succès"
+
+#. translators: Notification type label.
+msgctxt "notification type"
+msgid "Error"
+msgstr "Erreur"
+
+#. translators: Notification type label.
+msgctxt "notification type"
+msgid "Warning"
+msgstr "Avertissement"
+
+#. translators: Notification type label (information).
+msgctxt "notification type"
+msgid "Info"
+msgstr "Information"
+
+msgid "WooCommerce is not active. The additional seats feature requires WooCommerce."
+msgstr "WooCommerce n'est pas activé. La fonction de places supplémentaires nécessite WooCommerce."
+
+#. translators: 1: previously listed SKU(s), 2: alternative SKU.
+#, php-format
+msgctxt "list separator"
+msgid "%1$s or %2$s"
+msgstr "%1$s ou %2$s"
+
+#. translators: %s: product SKU(s).
+#, php-format
+msgid "No purchasable WooCommerce product found. Create a Simple product with SKU %s and set it to Published/Purchasable."
+msgstr "Aucun produit WooCommerce pouvant être acheté n'a été trouvé. Créez un produit simple avec l'UGS %s, puis rendez-le publié et achetable."
+
+msgid "Multi-tier additional seats: tier_mode is enabled but no tier_skus map is configured. Add a tier slug to SKU map (or rely on derived SKUs and ensure matching products exist) in the site org-roster config."
+msgstr "Places supplémentaires à plusieurs niveaux : tier_mode est activé, mais aucune correspondance tier_skus n'est configurée. Ajoutez une correspondance entre le slug du niveau et l'UGS (ou utilisez les UGS dérivées et assurez-vous que les produits correspondants existent) dans la configuration org-roster du site."
+
+#. translators: 1: tier slug, 2: expected product SKU.
+#, php-format
+msgid "Multi-tier additional seats: no purchasable product found for tier %1$s (expected SKU %2$s)."
+msgstr "Places supplémentaires à plusieurs niveaux : aucun produit pouvant être acheté n'a été trouvé pour le niveau %1$s (UGS attendue : %2$s)."
+
+#. translators: %s: Gravity Form slug.
+#, php-format
+msgid "No Gravity Form configured for additional seats. Create a Gravity Form and map its slug %s via Gravity Forms > Wicket Settings > Form Slug ID Mapping."
+msgstr "Aucun formulaire Gravity Forms n'est configuré pour les places supplémentaires. Créez un formulaire Gravity Forms et associez son slug %s dans Gravity Forms > Wicket Settings > Form Slug ID Mapping."
+
+#. translators: 1: page slug, 2: page slug.
+#, php-format
+msgid "The %1$s my-account page is missing. Create a \"my-account\" CPT entry with slug %2$s and embed the additional seats Gravity Form on it."
+msgstr "La page my-account %1$s est manquante. Créez une entrée CPT « my-account » avec le slug %2$s et intégrez-y le formulaire Gravity Forms des places supplémentaires."
+
+msgid "Unable to determine the uploading user."
+msgstr "Impossible de déterminer l'utilisateur qui effectue le téléversement."
+
+msgid "Unable to read the uploaded CSV file."
+msgstr "Impossible de lire le fichier CSV téléversé."
+
+msgid "CSV header row is missing or invalid."
+msgstr "La ligne d'en-tête du fichier CSV est manquante ou non valide."
+
+#. translators: %s: CSV column header name.
+#, php-format
+msgid "CSV is missing required column: %s."
+msgstr "Colonne obligatoire manquante dans le fichier CSV : %s."
+
+msgid "CSV has no member rows to process."
+msgstr "Le fichier CSV ne contient aucune ligne de membre à traiter."
+
+#. translators: 1: existing job ID, 2: existing job status.
+#, php-format
+msgid "This exact same CSV is already in progress (matching file hash). Existing job: %1$s (status: %2$s)."
+msgstr "Ce même fichier CSV est déjà en cours de traitement (empreinte de fichier identique). Tâche existante : %1$s (état : %2$s)."
+
+#. translators: 1: existing job ID, 2: existing job status.
+#, php-format
+msgid "This exact same CSV was already processed before (matching file hash). Existing job: %1$s (status: %2$s). Please upload a different CSV with different users."
+msgstr "Ce même fichier CSV a déjà été traité (empreinte de fichier identique). Tâche existante : %1$s (état : %2$s). Veuillez téléverser un autre fichier CSV contenant d'autres utilisateurs."
+
+msgid "Unable to schedule background processing."
+msgstr "Impossible de planifier le traitement en arrière-plan."
+
+#. translators: %d: CSV row number.
+#, php-format
+msgid "Row %d skipped: missing required name/email fields."
+msgstr "Ligne %d ignorée : les champs obligatoires nom/courriel sont manquants."
+
+#. translators: %d: CSV row number.
+#, php-format
+msgid "Row %d skipped: relationship type is required for bulk upload."
+msgstr "Ligne %d ignorée : le type de relation est obligatoire pour le téléversement en lot."
+
+#. translators: %d: CSV row number.
+#, php-format
+msgid "Row %d failed: relationship type is not allowed."
+msgstr "Échec de la ligne %d : le type de relation n'est pas permis."
+
+#. translators: 1: CSV row number, 2: member email address, 3: error message.
+#, php-format
+msgctxt "message"
+msgid "Row %1$d failed (%2$s): %3$s"
+msgstr "Échec de la ligne %1$d (%2$s) : %3$s"
+
+msgid "Unable to schedule next background batch."
+msgstr "Impossible de planifier le prochain lot en arrière-plan."
+
+msgctxt "label"
+msgid "Company Attributes"
+msgstr "Caractéristiques de l'entreprise"
+
+msgctxt "label"
+msgid "2SLGBTQIA+ Owned"
+msgstr "Appartenant à des personnes 2ELGBTQIA+"
+
+msgid "Black, Indigenous, Person of Colour Owned"
+msgstr "Appartenant à des personnes noires, autochtones ou de couleur"
+
+msgctxt "label"
+msgid "Quebec Based Business"
+msgstr "Entreprise québécoise"
+
+msgctxt "label"
+msgid "Family Owned"
+msgstr "Entreprise familiale"
+
+msgctxt "label"
+msgid "Made in Canada"
+msgstr "Fabriqué au Canada"
+
+msgctxt "label"
+msgid "Women Owned"
+msgstr "Appartenant à des femmes"
+
+#. translators: Business ownership option.
+#. translators: Certification option.
+#. translators: Business services option.
+#. translators: Business option.
+msgctxt "label"
+msgid "Other"
+msgstr "Autre"
+
+msgctxt "label"
+msgid "Certifications"
+msgstr "Certifications"
+
+msgctxt "label"
+msgid "Carbon Neutral"
+msgstr "Carboneutre"
+
+msgctxt "label"
+msgid "Certified B Corp"
+msgstr "Certifiée B Corp"
+
+msgctxt "label"
+msgid "Cruelty Free"
+msgstr "Sans cruauté"
+
+#. translators: Certification brand name; usually left untranslated.
+msgctxt "label"
+msgid "ECOCERT"
+msgstr "ECOCERT"
+
+msgctxt "label"
+msgid "Fair Trade Certified"
+msgstr "Certifié équitable"
+
+#. translators: GMO is short for genetically modified organism.
+msgctxt "label"
+msgid "Non-GMO Certified"
+msgstr "Certifié sans OGM"
+
+#. translators: NSF is a certification body (NSF International); keep the name.
+msgctxt "label"
+msgid "NSF Certified"
+msgstr "Certifié NSF"
+
+msgctxt "label"
+msgid "Organic Certified"
+msgstr "Certifié biologique"
+
+msgctxt "label"
+msgid "Regenerative Organic Certified"
+msgstr "Certifié biologique régénératif"
+
+msgctxt "label"
+msgid "Sustainably Sourced"
+msgstr "Approvisionnement durable"
+
+msgctxt "label"
+msgid "Business Services"
+msgstr "Services aux entreprises"
+
+msgctxt "label"
+msgid "Certification Services"
+msgstr "Services de certification"
+
+msgctxt "label"
+msgid "Consulting Services"
+msgstr "Services-conseils"
+
+msgctxt "label"
+msgid "Contract Manufacturing"
+msgstr "Fabrication à forfait"
+
+msgctxt "label"
+msgid "Display Fixtures"
+msgstr "Présentoirs"
+
+msgid "Financial Services / Investment Firm"
+msgstr "Services financiers / société d'investissement"
+
+msgid "Ingredients & Raw Materials Supplier"
+msgstr "Fournisseur d'ingrédients et de matières premières"
+
+msgctxt "label"
+msgid "Legal & Regulatory Services"
+msgstr "Services juridiques et réglementaires"
+
+msgctxt "label"
+msgid "Marketing & Advertising"
+msgstr "Marketing et publicité"
+
+msgctxt "label"
+msgid "Packaging & Labelling"
+msgstr "Emballage et étiquetage"
+
+msgid "Quality Assurance & Laboratory Testing"
+msgstr "Assurance qualité et essais en laboratoire"
+
+msgid "R&D, Formulation & Flavouring"
+msgstr "R et D, formulation et aromatisation"
+
+msgctxt "label"
+msgid "Research & Data Services"
+msgstr "Services de recherche et de données"
+
+msgctxt "label"
+msgid "Retail Services"
+msgstr "Services de vente au détail"
+
+msgctxt "label"
+msgid "Shipping & Logistics"
+msgstr "Expédition et logistique"
+
+msgctxt "label"
+msgid "Technology Solutions"
+msgstr "Solutions technologiques"
+
+msgctxt "label"
+msgid "Product Segments"
+msgstr "Segments de produits"
+
+msgctxt "label"
+msgid "Food & Beverage"
+msgstr "Aliments et boissons"
+
+msgctxt "label"
+msgid "Personal Care & Beauty"
+msgstr "Soins personnels et beauté"
+
+msgctxt "label"
+msgid "Healthy Home & Lifestyle"
+msgstr "Maison et mode de vie sains"
+
+msgid "Natural Health Products, Vitamins & Herbal Supplements"
+msgstr "Produits de santé naturels, vitamines et suppléments à base de plantes"
+
+msgid "Pet Food & Wellness Supplies"
+msgstr "Aliments et produits de bien-être pour animaux"
+
+msgid "MDP client is not available."
+msgstr "Le client MDP n'est pas disponible."
+
+msgid "Unexpected response from the MDP API."
+msgstr "Réponse inattendue de l'API du MDP."
+
+msgid "Person UUID, relationship ID, and organization ID are required."
+msgstr "L'UUID de la personne, l'ID de la relation et l'ID de l'organisation sont obligatoires."
+
+msgctxt "message"
+msgid "Connection not found."
+msgstr "Lien introuvable."
+
+msgid "Person ID, organization ID, and connection type are required."
+msgstr "L'ID de la personne, l'ID de l'organisation et le type de lien sont obligatoires."
+
+msgid "Person UUID and organization ID are required."
+msgstr "L'UUID de la personne et l'ID de l'organisation sont obligatoires."
+
+msgid "Wicket API client is unavailable."
+msgstr "Le client de l'API Wicket n'est pas disponible."
+
+msgid "No connection found for this person and organization."
+msgstr "Aucun lien trouvé entre cette personne et cette organisation."
+
+msgid "No active person-to-organization connection found."
+msgstr "Aucun lien actif entre la personne et l'organisation n'a été trouvé."
+
+#. translators: %s: error detail returned by the API.
+#, php-format
+msgid "Failed to update connection description: %s"
+msgstr "Impossible de mettre à jour la description du lien : %s"
+
+msgctxt "value placeholder"
+msgid "Unknown error"
+msgstr "Erreur inconnue"
+
+msgid "Valid payload array is required."
+msgstr "Un tableau de données valide est requis."
+
+#. translators: %s: error detail.
+#, php-format
+msgid "Could not list the active connections to end: %s"
+msgstr "Impossible d'obtenir la liste des liens actifs à terminer : %s"
+
+msgid "Person UUID, organization ID, and new type are required."
+msgstr "L'UUID de la personne, l'ID de l'organisation et le nouveau type sont obligatoires."
+
+#. translators: %s: error detail returned by the API.
+#, php-format
+msgid "Failed to update connection type: %s"
+msgstr "Impossible de mettre à jour le type de lien : %s"
+
+msgid "Organization UUID and Wicket API client are required."
+msgstr "L'UUID de l'organisation et le client de l'API Wicket sont obligatoires."
+
+msgid "Failed to fetch organization connections."
+msgstr "Impossible de récupérer les liens de l'organisation."
+
+msgid "Relationship type is required."
+msgstr "Le type de relation est obligatoire."
+
+msgid "First name, last name, and email are required."
+msgstr "Le prénom, le nom de famille et l'adresse courriel sont obligatoires."
+
+msgid "Person creation helper not available."
+msgstr "L'outil de création de personne n'est pas disponible."
+
+msgid "This person already has this relationship type."
+msgstr "Cette personne a déjà ce type de relation."
+
+msgid "Contact added but role assignment failed. Please set roles manually."
+msgstr "La personne-ressource a été ajoutée, mais l'attribution des rôles a échoué. Veuillez définir les rôles manuellement."
+
+msgid "Failed to end contact relationships."
+msgstr "Impossible de mettre fin aux relations de la personne-ressource."
+
+msgid "File data is required."
+msgstr "Les données du fichier sont obligatoires."
+
+#. translators: %s: uploaded file extension.
+#, php-format
+msgid "File type %s is not allowed."
+msgstr "Le type de fichier %s n'est pas permis."
+
+#. translators: %s: maximum allowed file size (e.g. 10 MB).
+#, php-format
+msgid "File size exceeds the maximum allowed size of %s."
+msgstr "La taille du fichier dépasse la taille maximale permise de %s."
+
+msgid "Document ID is required."
+msgstr "L'ID du document est obligatoire."
+
+msgctxt "message"
+msgid "Document not found."
+msgstr "Document introuvable."
+
+msgctxt "message"
+msgid "Invalid document."
+msgstr "Document non valide."
+
+msgid "Failed to delete document."
+msgstr "Impossible de supprimer le document."
+
+msgid "Person UUID is required."
+msgstr "L'UUID de la personne est obligatoire."
+
+#. translators: Yes/No field value.
+msgctxt "label"
+msgid "Yes"
+msgstr "Oui"
+
+#. translators: Yes/No field value.
+msgctxt "label"
+msgid "No"
+msgstr "Non"
+
+msgid "MDP API client unavailable."
+msgstr "Le client de l'API du MDP n'est pas disponible."
+
+msgid "Group member id is required."
+msgstr "L'ID du membre du groupe est obligatoire."
+
+msgid "Unable to delete group member."
+msgstr "Impossible de supprimer le membre du groupe."
+
+msgid "Membership UUID is required."
+msgstr "L'UUID de l'adhésion est obligatoire."
+
+msgid "A valid recipient email is required."
+msgstr "Une adresse courriel de destinataire valide est requise."
+
+#. translators: 1: existing export job ID, 2: existing export job status.
+#, php-format
+msgid "An export for this organization is already in progress (job: %1$s, status: %2$s)."
+msgstr "Une exportation est déjà en cours pour cette organisation (tâche : %1$s, état : %2$s)."
+
+msgid "Unable to schedule background export."
+msgstr "Impossible de planifier l'exportation en arrière-plan."
+
+msgid "Unable to write to export file."
+msgstr "Impossible d'écrire dans le fichier d'exportation."
+
+msgid "Export file is missing or inaccessible."
+msgstr "Le fichier d'exportation est manquant ou inaccessible."
+
+msgid "Unable to schedule next export batch."
+msgstr "Impossible de planifier le prochain lot d'exportation."
+
+msgid "Download link not found."
+msgstr "Lien de téléchargement introuvable."
+
+msgid "This download link has expired."
+msgstr "Ce lien de téléchargement a expiré."
+
+msgid "This download link has reached its maximum usage limit."
+msgstr "Ce lien de téléchargement a atteint son nombre maximal d'utilisations."
+
+msgid "Export file not found."
+msgstr "Fichier d'exportation introuvable."
+
+msgid "Unable to create export directory."
+msgstr "Impossible de créer le dossier d'exportation."
+
+msgid "Unable to create export file."
+msgstr "Impossible de créer le fichier d'exportation."
+
+msgid "Your member export is ready"
+msgstr "Votre exportation des membres est prête"
+
+msgid "Your member export is ready."
+msgstr "Votre exportation des membres est prête."
+
+#. translators: %d: number of days the download link stays valid.
+#, php-format
+msgid "The download link is valid for %d day."
+msgid_plural "The download link is valid for %d days."
+msgstr[0] "Le lien de téléchargement est valide pendant %d jour."
+msgstr[1] "Le lien de téléchargement est valide pendant %d jours."
+
+#. translators: %d: maximum number of times the download link can be used.
+#, php-format
+msgid "It can be used up to %d time."
+msgid_plural "It can be used up to %d times."
+msgstr[0] "Il peut être utilisé jusqu'à %d fois."
+msgstr[1] "Il peut être utilisé jusqu'à %d fois."
+
+msgctxt "button label"
+msgid "Download Export"
+msgstr "Télécharger l'exportation"
+
+msgid "If the button above does not work, copy and paste this URL into your browser:"
+msgstr "Si le bouton ci-dessus ne fonctionne pas, copiez cette URL et collez-la dans votre navigateur :"
+
+msgid "Your member export could not be completed"
+msgstr "Votre exportation des membres n'a pas pu être effectuée"
+
+msgid "Your member export could not be completed. Please try again or contact support."
+msgstr "Votre exportation des membres n'a pas pu être effectuée. Veuillez réessayer ou communiquer avec le soutien technique."
+
+msgid "Wicket API client is not available."
+msgstr "Le client de l'API Wicket n'est pas disponible."
+
+msgid "Person UUID, organization UUID, and membership UUID are required."
+msgstr "L'UUID de la personne, l'UUID de l'organisation et l'UUID de l'adhésion sont obligatoires."
+
+msgid "Person membership not found in this organization."
+msgstr "Adhésion de la personne introuvable dans cette organisation."
+
+msgid "Cannot update roles for an inactive member."
+msgstr "Impossible de mettre à jour les rôles d'un membre inactif."
+
+#. translators: %s: role name.
+#, php-format
+msgid "Failed to remove role '%s'."
+msgstr "Impossible de retirer le rôle « %s »."
+
+#. translators: %s: role name.
+#, php-format
+msgid "Failed to verify removal of role '%s'."
+msgstr "Impossible de vérifier le retrait du rôle « %s »."
+
+#. translators: %s: role name.
+#, php-format
+msgid "Failed to add role '%s'."
+msgstr "Impossible d'ajouter le rôle « %s »."
+
+#. translators: %s: error detail.
+#, php-format
+msgid "Failed to update member roles: %s"
+msgstr "Impossible de mettre à jour les rôles du membre : %s"
+
+msgid "Person UUID, organization UUID, and relationship type are required."
+msgstr "L'UUID de la personne, l'UUID de l'organisation et le type de relation sont obligatoires."
+
+#. translators: %s: error detail.
+#, php-format
+msgid "Failed to update member relationship: %s"
+msgstr "Impossible de mettre à jour la relation du membre : %s"
+
+msgid "Person UUID and organization UUID are required."
+msgstr "L'UUID de la personne et l'UUID de l'organisation sont obligatoires."
+
+#. translators: %s: error detail.
+#, php-format
+msgid "Failed to update member description: %s"
+msgstr "Impossible de mettre à jour la description du membre : %s"
+
+msgid "Organization UUID is required."
+msgstr "L'UUID de l'organisation est obligatoire."
+
+msgid "No membership found for this organization."
+msgstr "Aucune adhésion trouvée pour cette organisation."
+
+msgid "Membership UUID and arguments are required."
+msgstr "L'UUID de l'adhésion et les arguments sont obligatoires."
+
+msgid "Search query is required."
+msgstr "Une requête de recherche est obligatoire."
+
+msgid "No search results found."
+msgstr "Aucun résultat trouvé."
+
+msgid "No membership members found."
+msgstr "Aucun membre trouvé pour cette adhésion."
+
+msgid "Person membership ID is required."
+msgstr "L'ID de l'adhésion de la personne est obligatoire."
+
+msgid "Person membership not found."
+msgstr "Adhésion de la personne introuvable."
+
+#. translators: %s: error detail returned by the API.
+#, php-format
+msgid "Failed to end-date person membership: %s"
+msgstr "Impossible d'attribuer une date de fin à l'adhésion de la personne : %s"
+
+msgid "The membership API client is unavailable. The removal state is unknown; retry when the API is reachable."
+msgstr "Le client de l'API des adhésions n'est pas disponible. L'état du retrait est inconnu ; réessayez lorsque l'API sera accessible."
+
+#. translators: %s: error detail.
+#, php-format
+msgid "Failed looking up the person memberships: %s"
+msgstr "Impossible de récupérer les adhésions de la personne : %s"
+
+msgid "Wicket API functions are unavailable."
+msgstr "Les fonctions de l'API Wicket ne sont pas disponibles."
+
+msgctxt "message"
+msgid "Person not found."
+msgstr "Personne introuvable."
+
+msgid "Person does not have a primary email address."
+msgstr "La personne n'a pas d'adresse courriel principale."
+
+#. translators: %s: recipient first name.
+#, php-format
+msgctxt "email text"
+msgid "Hi %s,"
+msgstr "Bonjour %s,"
+
+#. translators: %s: organization name.
+#, php-format
+msgid "You have been assigned a membership as part of %s."
+msgstr "Une adhésion vous a été attribuée dans le cadre de %s."
+
+#. translators: %s: sender email address for the account confirmation email.
+#, php-format
+msgid "You will receive an account confirmation email from %s, this will allow you to set your password and login for the first time."
+msgstr "Vous recevrez un courriel de confirmation de compte provenant de %s, qui vous permettra de définir votre mot de passe et d'ouvrir une session pour la première fois."
+
+#. translators: %s: link to the site (site name).
+#, php-format
+msgid "Going forward you can visit %s and login to complete your profile and access your resources."
+msgstr "Par la suite, vous pourrez visiter %s et ouvrir une session pour remplir votre profil et accéder à vos ressources."
+
+msgctxt "email text"
+msgid "Thank you,"
+msgstr "Merci,"
+
+msgid "Failed to send assignment email."
+msgstr "Impossible d'envoyer le courriel d'attribution."
+
+msgid "Person input is required."
+msgstr "Les données de la personne sont obligatoires."
+
+msgid "Data array is required."
+msgstr "Un tableau de données est obligatoire."
+
+msgid "Notification type is required."
+msgstr "Le type de notification est obligatoire."
+
+msgid "Invalid person input type."
+msgstr "Type de données de personne non valide."
+
+msgctxt "message"
+msgid "Organization not found."
+msgstr "Organisation introuvable."
+
+msgid "Person email address is required."
+msgstr "L'adresse courriel de la personne est obligatoire."
+
+msgctxt "message"
+msgid "Invalid email address."
+msgstr "Adresse courriel non valide."
+
+msgid "Your Representative Information Has Been Updated"
+msgstr "Vos renseignements de représentant ont été mis à jour"
+
+#. translators: %s: organization name.
+#, php-format
+msgid "Your representative information has been updated in the %s organization."
+msgstr "Vos renseignements de représentant ont été mis à jour dans l'organisation %s."
+
+msgid "Please log in to your account to review the changes."
+msgstr "Veuillez ouvrir une session dans votre compte pour consulter les modifications."
+
+#. translators: %s: link to the site (site name).
+#, php-format
+msgid "Visit %s to access your account."
+msgstr "Visitez %s pour accéder à votre compte."
+
+#. translators: %s: organization name.
+#, php-format
+msgctxt "email subject"
+msgid "Update from %s"
+msgstr "Mise à jour de %s"
+
+#. translators: %s: organization name.
+#, php-format
+msgid "You have received an update from %s."
+msgstr "Vous avez reçu une mise à jour de %s."
+
+msgid "Please log in to your account for more details."
+msgstr "Veuillez ouvrir une session dans votre compte pour obtenir plus de détails."
+
+msgid "Failed to send group assignment email."
+msgstr "Impossible d'envoyer le courriel d'attribution au groupe."
+
+msgctxt "value placeholder"
+msgid "Unknown Organization"
+msgstr "Organisation inconnue"
+
+#. translators: The user's role in the organization.
+msgctxt "role name"
+msgid "Member"
+msgstr "Membre"
+
+msgid "Unable to fetch memberships. Please try again later."
+msgstr "Impossible de récupérer les adhésions. Veuillez réessayer plus tard."
+
+msgid "Required Wicket functions are not available."
+msgstr "Les fonctions Wicket requises ne sont pas disponibles."
+
+msgid "No memberships found for this organization."
+msgstr "Aucune adhésion trouvée pour cette organisation."
+
+msgid "No owner found for this organization."
+msgstr "Aucun titulaire trouvé pour cette organisation."
+
+msgid "Owner person not found."
+msgstr "Personne titulaire introuvable."
+
+msgid "Person UUID, roles, and organization ID are required."
+msgstr "L'UUID de la personne, les rôles et l'ID de l'organisation sont obligatoires."
+
+msgid "No valid roles provided."
+msgstr "Aucun rôle valide fourni."
+
+#. translators: %s: comma-separated list of role slugs.
+#, php-format
+msgctxt "message"
+msgid "Failed removing role: %s."
+msgid_plural "Failed removing roles: %s."
+msgstr[0] "Impossible de retirer le rôle : %s."
+msgstr[1] "Impossible de retirer les rôles : %s."
+
+msgid "Role assignment helper is unavailable."
+msgstr "L'outil d'attribution des rôles n'est pas disponible."
+
+#. translators: %s: role slug.
+#, php-format
+msgctxt "message"
+msgid "Failed assigning role %s."
+msgstr "Impossible d'attribuer le rôle %s."
+
+msgctxt "message"
+msgid "Permissions updated successfully."
+msgstr "Les autorisations ont été mises à jour."
+
+msgctxt "message"
+msgid "Role is required."
+msgstr "Le rôle est obligatoire."
+
+msgid "Could not find a valid corporate membership for this organization."
+msgstr "Impossible de trouver une adhésion d'entreprise valide pour cette organisation."
+
+msgid "Failed to create organization connection."
+msgstr "Impossible de créer le lien avec l'organisation."
+
+#. translators: %s: member email address.
+#, php-format
+msgid "A member with email %s already exists in this organization."
+msgstr "Un membre ayant l'adresse courriel %s existe déjà dans cette organisation."
+
+msgid "This person is already a member of this organization."
+msgstr "Cette personne est déjà membre de cette organisation."
+
+msgctxt "message"
+msgid "Member added successfully."
+msgstr "Le membre a été ajouté."
+
+msgid "Organization membership UUID is required to remove a member."
+msgstr "L'UUID de l'adhésion de l'organisation est obligatoire pour retirer un membre."
+
+msgid "Organization membership is invalid or unavailable."
+msgstr "L'adhésion de l'organisation n'est pas valide ou n'est pas disponible."
+
+msgid "Membership does not belong to this organization."
+msgstr "L'adhésion n'appartient pas à cette organisation."
+
+msgctxt "message"
+msgid "Member removed successfully."
+msgstr "Le membre a été retiré."
+
+msgctxt "message"
+msgid "Membership details unavailable."
+msgstr "Les détails de l'adhésion ne sont pas disponibles."
+
+msgid "No seats available for this organization."
+msgstr "Aucune place n'est disponible pour cette organisation."
+
+msgid "Failed to add employee connection"
+msgstr "Impossible d'ajouter le lien d'employé"
+
+msgid "Organization identifier is required."
+msgstr "L'identifiant de l'organisation est obligatoire."
+
+msgid "Membership UUID is invalid or unavailable."
+msgstr "L'UUID de l'adhésion n'est pas valide ou n'est pas disponible."
+
+msgid "Membership does not belong to the selected organization."
+msgstr "L'adhésion n'appartient pas à l'organisation sélectionnée."
+
+msgid "Membership assignment helper is unavailable."
+msgstr "L'outil d'attribution des adhésions n'est pas disponible."
+
+msgid "Could not find membership type ID."
+msgstr "Impossible de trouver l'ID du type d'adhésion."
+
+msgid "Failed to assign person to membership seat."
+msgstr "Impossible d'attribuer une place d'adhésion à la personne."
+
+msgid "Email notification dependencies are unavailable."
+msgstr "Les dépendances des notifications par courriel ne sont pas disponibles."
+
+msgid "Unable to determine person email address."
+msgstr "Impossible de déterminer l'adresse courriel de la personne."
+
+msgid "The organization membership record could not be verified, so the removal was cancelled before anything changed. Please try again in a moment. If this keeps happening, please contact support."
+msgstr "Le dossier d'adhésion de l'organisation n'a pas pu être vérifié ; le retrait a donc été annulé avant toute modification. Veuillez réessayer dans un moment. Si le problème persiste, veuillez communiquer avec le soutien technique."
+
+msgid "The selected membership belongs to a different organization membership."
+msgstr "L'adhésion sélectionnée appartient à une autre adhésion d'organisation."
+
+#. translators: %s: error detail.
+#, php-format
+msgid "Failed ending the person membership: %s"
+msgstr "Impossible de mettre fin à l'adhésion de la personne : %s"
+
+msgid "Group UUID is required for this operation."
+msgstr "L'UUID du groupe est obligatoire pour cette opération."
+
+msgid "Invalid roster role for group membership."
+msgstr "Rôle de liste des membres non valide pour une adhésion de groupe."
+
+msgid "You do not have permission to manage this group."
+msgstr "Vous n'avez pas l'autorisation de gérer ce groupe."
+
+msgid "This member already has this role in the group."
+msgstr "Ce membre a déjà ce rôle dans le groupe."
+
+#. translators: %s: group role slug.
+#, php-format
+msgid "This group already has a person '%s' for your organization."
+msgstr "Ce groupe a déjà une personne « %s » pour votre organisation."
+
+msgctxt "value placeholder"
+msgid "Unknown Group"
+msgstr "Groupe inconnu"
+
+msgid "Member added to group successfully."
+msgstr "Le membre a été ajouté au groupe."
+
+msgid "Could not find the person in the specified group."
+msgstr "Impossible de trouver la personne dans le groupe indiqué."
+
+msgid "Managing roles cannot be removed."
+msgstr "Les rôles de gestion ne peuvent pas être retirés."
+
+msgid "Could not verify member role before removal."
+msgstr "Impossible de vérifier le rôle du membre avant le retrait."
+
+msgid "Group member removed successfully."
+msgstr "Le membre du groupe a été retiré."
+
+msgid "Membership UUID is required for membership_cycle strategy."
+msgstr "L'UUID de l'adhésion est obligatoire pour la stratégie membership_cycle."
+
+msgid "You do not have permission to add members to this organization."
+msgstr "Vous n'avez pas l'autorisation d'ajouter des membres à cette organisation."
+
+msgid "You do not have permission to remove members from this organization."
+msgstr "Vous n'avez pas l'autorisation de retirer des membres de cette organisation."
+
+msgid "Parent organization ID is required."
+msgstr "L'ID de l'organisation mère est obligatoire."
+
+msgid "Subsidiary organization ID is required."
+msgstr "L'ID de l'organisation filiale est obligatoire."
+
+msgid "Parent organization not found."
+msgstr "Organisation mère introuvable."
+
+msgid "Subsidiary organization not found."
+msgstr "Organisation filiale introuvable."
+
+msgid "This subsidiary relationship already exists."
+msgstr "Cette relation de filiale existe déjà."
+
+msgid "Subsidiary relationship not found."
+msgstr "Relation de filiale introuvable."
+
+#. translators: %s: uploaded file extension.
+#, php-format
+msgid "File type %s is not allowed. Please upload an Excel file."
+msgstr "Le type de fichier %s n'est pas permis. Veuillez téléverser un fichier Excel."
+
+msgid "Bulk subsidiary upload feature is not yet implemented."
+msgstr "Le téléversement en lot des filiales n'est pas encore offert."
+
+msgid "This upload job is no longer available. If the roster did not update, please upload the CSV again."
+msgstr "Cette tâche de téléversement n'est plus disponible. Si la liste des membres n'a pas été mise à jour, veuillez téléverser de nouveau le fichier CSV."
+
+#. translators: 1: number added, 2: number skipped, 3: number failed
+#, php-format
+msgid "Bulk upload complete — %1$d added, %2$d skipped, %3$d failed."
+msgstr "Téléversement en lot terminé : %1$d ajouté(s), %2$d ignoré(s), %3$d en échec."
+
+msgid "Bulk upload failed. Please upload the CSV again or contact support."
+msgstr "Le téléversement en lot a échoué. Veuillez téléverser de nouveau le fichier CSV ou communiquer avec le soutien technique."
+
+#. translators: 1: rows processed, 2: total rows
+#, php-format
+msgid "Still working — %1$d of %2$d row processed. This is taking longer than expected; you can leave this page and check the roster later."
+msgid_plural "Still working — %1$d of %2$d rows processed. This is taking longer than expected; you can leave this page and check the roster later."
+msgstr[0] "Traitement en cours : %1$d ligne sur %2$d traitée. Le traitement prend plus de temps que prévu ; vous pouvez quitter cette page et consulter la liste des membres plus tard."
+msgstr[1] "Traitement en cours : %1$d lignes sur %2$d traitées. Le traitement prend plus de temps que prévu ; vous pouvez quitter cette page et consulter la liste des membres plus tard."
+
+#. translators: 1: rows processed, 2: total rows
+#, php-format
+msgid "Bulk upload in progress — %1$d of %2$d row processed…"
+msgid_plural "Bulk upload in progress — %1$d of %2$d rows processed…"
+msgstr[0] "Téléversement en lot en cours : %1$d ligne sur %2$d traitée…"
+msgstr[1] "Téléversement en lot en cours : %1$d lignes sur %2$d traitées…"
+
+msgid "This upload job is in an unknown state. If the roster did not update, please upload the CSV again."
+msgstr "L'état de cette tâche de téléversement est inconnu. Si la liste des membres n'a pas été mise à jour, veuillez téléverser de nouveau le fichier CSV."
+
+msgid "Business information is not available for this organization."
+msgstr "Les renseignements sur l'entreprise ne sont pas disponibles pour cette organisation."
+
+msgctxt "label"
+msgid "Please specify"
+msgstr "Veuillez préciser"
+
+msgctxt "button label"
+msgid "Save Changes"
+msgstr "Enregistrer les modifications"
+
+#. translators: %d: number of years.
+#, php-format
+msgctxt "duration"
+msgid "%d Year"
+msgid_plural "%d Years"
+msgstr[0] "%d an"
+msgstr[1] "%d ans"
+
+#. translators: %d: number of months.
+#, php-format
+msgctxt "duration"
+msgid "%d Month"
+msgid_plural "%d Months"
+msgstr[0] "%d mois"
+msgstr[1] "%d mois"
+
+#. translators: 1: membership duration (e.g. "2 Years"), 2: start year.
+#, php-format
+msgctxt "label"
+msgid "%1$s (Start %2$s)"
+msgstr "%1$s (début : %2$s)"
+
+#. translators: %s: start year.
+#, php-format
+msgctxt "label"
+msgid "(Start %s)"
+msgstr "(début : %s)"
+
+#. translators: %s: Membership tier name.
+#, php-format
+msgctxt "label"
+msgid "Membership Tier: %s"
+msgstr "Niveau d'adhésion : %s"
+
+msgctxt "status"
+msgid "Active Membership"
+msgstr "Adhésion active"
+
+msgctxt "status"
+msgid "No membership found"
+msgstr "Aucune adhésion trouvée"
+
+msgctxt "status"
+msgid "Inactive Membership"
+msgstr "Adhésion inactive"
+
+msgctxt "label"
+msgid "My Role(s):"
+msgstr "Mes rôles :"
+
+msgctxt "value placeholder"
+msgid "No roles assigned"
+msgstr "Aucun rôle attribué"
+
+msgctxt "label"
+msgid "Group(s):"
+msgstr "Groupes :"
+
+msgctxt "label"
+msgid "Type:"
+msgstr "Type :"
+
+msgctxt "label"
+msgid "Tag(s):"
+msgstr "Étiquettes :"
+
+msgctxt "message"
+msgid "Processing. Please wait..."
+msgstr "Traitement en cours. Veuillez patienter…"
+
+#. translators: %d: number of assigned people.
+#, php-format
+msgid "Number of assigned people: %d"
+msgstr "Nombre de personnes attribuées : %d"
+
+msgid "Search by name or email..."
+msgstr "Rechercher par nom ou par courriel…"
+
+#. translators: Button: run the search.
+msgctxt "button label"
+msgid "Search"
+msgstr "Rechercher"
+
+#. translators: Button: clear the search.
+msgctxt "button label"
+msgid "Clear"
+msgstr "Effacer"
+
+msgctxt "message"
+msgid "No contacts found."
+msgstr "Aucune personne-ressource trouvée."
+
+msgctxt "label"
+msgid "Relationship:"
+msgstr "Relation :"
+
+msgctxt "button label"
+msgid "Remove"
+msgstr "Retirer"
+
+msgctxt "accessibility label"
+msgid "Contacts pagination"
+msgstr "Pagination des personnes-ressources"
+
+#. translators: 1: first item number on the page, 2: last item number on the page, 3: total number of items.
+#, php-format
+msgctxt "count label"
+msgid "Showing %1$d-%2$d of %3$d"
+msgstr "Affichage de %1$d à %2$d sur %3$d"
+
+msgctxt "button label"
+msgid "Previous"
+msgstr "Précédent"
+
+msgctxt "button label"
+msgid "Next"
+msgstr "Suivant"
+
+msgctxt "button label"
+msgid "Add Individual Contact"
+msgstr "Ajouter une personne-ressource individuelle"
+
+msgctxt "accessibility label"
+msgid "Close"
+msgstr "Fermer"
+
+msgctxt "label"
+msgid "Add Contact"
+msgstr "Ajouter une personne-ressource"
+
+msgid "Select a relationship type"
+msgstr "Sélectionnez un type de relation"
+
+msgctxt "button label"
+msgid "Cancel"
+msgstr "Annuler"
+
+msgctxt "button label"
+msgid "Add Contact"
+msgstr "Ajouter une personne-ressource"
+
+msgctxt "label"
+msgid "Remove Contact"
+msgstr "Retirer la personne-ressource"
+
+#. translators: %s: name of the contact being removed.
+#, php-format
+msgid "Are you sure you want to remove %s from the contact list?"
+msgstr "Voulez-vous vraiment retirer %s de la liste des personnes-ressources ?"
+
+msgid "This will end their relationship with the organization. This action cannot be undone."
+msgstr "Sa relation avec l'organisation prendra fin. Cette action est irréversible."
+
+msgctxt "button label"
+msgid "Remove Contact"
+msgstr "Retirer la personne-ressource"
+
+msgctxt "label"
+msgid "Select Document"
+msgstr "Sélectionner un document"
+
+msgctxt "label"
+msgid "Document Title"
+msgstr "Titre du document"
+
+msgctxt "field placeholder"
+msgid "Enter document title"
+msgstr "Entrez le titre du document"
+
+msgctxt "button label"
+msgid "Upload Document"
+msgstr "Téléverser le document"
+
+msgctxt "label"
+msgid "Description (Optional)"
+msgstr "Description (facultatif)"
+
+msgctxt "field placeholder"
+msgid "Enter document description"
+msgstr "Entrez la description du document"
+
+#. translators: Button: download the document.
+#. translators: Button: download the member export file.
+msgctxt "button label"
+msgid "Download"
+msgstr "Télécharger"
+
+msgid "Are you sure you want to delete this document?"
+msgstr "Voulez-vous vraiment supprimer ce document ?"
+
+#. translators: Button: delete the document.
+msgctxt "button label"
+msgid "Delete"
+msgstr "Supprimer"
+
+msgctxt "message"
+msgid "No documents found"
+msgstr "Aucun document trouvé"
+
+msgid "Upload your first document using the form above."
+msgstr "Téléversez votre premier document à l'aide du formulaire ci-dessus."
+
+msgid "No engagement data available."
+msgstr "Aucune donnée de participation disponible."
+
+msgid "No engagement data available for this period."
+msgstr "Aucune donnée de participation disponible pour cette période."
+
+msgctxt "button label"
+msgid "Download Roster"
+msgstr "Télécharger la liste des membres"
+
+#. translators: %1$d: number of members in the roster.
+#, php-format
+msgid "This roster is large (%1$d member) and will be prepared in the background. After clicking, a download link will be emailed to you."
+msgid_plural "This roster is large (%1$d members) and will be prepared in the background. After clicking, a download link will be emailed to you."
+msgstr[0] "Cette liste est volumineuse (%1$d membre) et sera préparée en arrière-plan. Après avoir cliqué, vous recevrez un lien de téléchargement par courriel."
+msgstr[1] "Cette liste est volumineuse (%1$d membres) et sera préparée en arrière-plan. Après avoir cliqué, vous recevrez un lien de téléchargement par courriel."
+
+msgctxt "label"
+msgid "Download Roster"
+msgstr "Télécharger la liste des membres"
+
+msgid "Download the current roster as a CSV file. Small rosters download immediately; large rosters are prepared in the background and a download link is emailed to you."
+msgstr "Téléchargez la liste des membres actuelle en format CSV. Les petites listes sont téléchargées immédiatement ; les listes volumineuses sont préparées en arrière-plan et un lien de téléchargement vous est envoyé par courriel."
+
+msgid "Your roster is large and is being prepared in the background. A download link will be emailed to you shortly."
+msgstr "Votre liste des membres est volumineuse et est en cours de préparation en arrière-plan. Vous recevrez sous peu un lien de téléchargement par courriel."
+
+msgid "Your roster is ready and downloading now. If the download did not start automatically, check your browser's download settings."
+msgstr "Votre liste des membres est prête et son téléchargement commence. Si le téléchargement ne démarre pas automatiquement, vérifiez les paramètres de téléchargement de votre navigateur."
+
+#. translators: %d: number of members exported
+#, php-format
+msgid "Export complete — %d member exported."
+msgid_plural "Export complete — %d members exported."
+msgstr[0] "Exportation terminée : %d membre exporté."
+msgstr[1] "Exportation terminée : %d membres exportés."
+
+msgid "Export failed. Please try again or contact support."
+msgstr "L'exportation a échoué. Veuillez réessayer ou communiquer avec le soutien technique."
+
+#. translators: 1: current page, 2: total pages
+#, php-format
+msgid "Export in progress — page %1$d of %2$d…"
+msgstr "Exportation en cours : page %1$d sur %2$d…"
+
+msgid "Export queued — processing will begin shortly…"
+msgstr "Exportation en file d'attente : le traitement commencera sous peu…"
+
+msgctxt "message"
+msgid "No group selected."
+msgstr "Aucun groupe sélectionné."
+
+msgid "Start typing to search for members..."
+msgstr "Commencez à taper pour rechercher des membres…"
+
+msgctxt "label"
+msgid "Need More Seats?"
+msgstr "Besoin de plus de places ?"
+
+msgid "Purchase additional seats for your organization membership to accommodate more team members."
+msgstr "Achetez des places supplémentaires pour l'adhésion de votre organisation afin d'accueillir plus de membres de votre équipe."
+
+msgctxt "button label"
+msgid "Purchase Additional Seats"
+msgstr "Acheter des places supplémentaires"
+
+msgctxt "button label"
+msgid "Add Member"
+msgstr "Ajouter un membre"
+
+msgctxt "field placeholder"
+msgid "user@mail.com"
+msgstr "nom@exemple.com"
+
+msgctxt "label"
+msgid "Role"
+msgstr "Rôle"
+
+#. translators: Group role options (Member, Observer).
+msgctxt "group role"
+msgid "Member"
+msgstr "Membre"
+
+#. translators: Group role options (Member, Observer).
+msgctxt "group role"
+msgid "Observer"
+msgstr "Observateur"
+
+msgctxt "label"
+msgid "Remove Member"
+msgstr "Retirer le membre"
+
+msgid "Are you sure you want to remove this member from the group?"
+msgstr "Voulez-vous vraiment retirer ce membre du groupe ?"
+
+#. translators: %s: name of the member being removed.
+#, php-format
+msgid "Are you sure you want to remove %s from this group?"
+msgstr "Voulez-vous vraiment retirer %s de ce groupe ?"
+
+msgid "This action cannot be undone."
+msgstr "Cette action est irréversible."
+
+msgctxt "button label"
+msgid "Remove Member"
+msgstr "Retirer le membre"
+
+msgctxt "label"
+msgid "Group Information"
+msgstr "Renseignements sur le groupe"
+
+msgctxt "value placeholder"
+msgid "No description available."
+msgstr "Aucune description disponible."
+
+msgctxt "label"
+msgid "Group Name"
+msgstr "Nom du groupe"
+
+msgctxt "button label"
+msgid "Save Group"
+msgstr "Enregistrer le groupe"
+
+msgctxt "label"
+msgid "Role(s):"
+msgstr "Rôles :"
+
+msgid "No additional details available"
+msgstr "Aucun détail supplémentaire disponible"
+
+msgid "Upload a CSV file to add multiple members at once. Existing active members are skipped automatically."
+msgstr "Téléversez un fichier CSV pour ajouter plusieurs membres à la fois. Les membres actifs existants sont ignorés automatiquement."
+
+msgctxt "button label"
+msgid "Download CSV Template"
+msgstr "Télécharger le modèle CSV"
+
+msgctxt "label"
+msgid "CSV File"
+msgstr "Fichier CSV"
+
+#. translators: %s list of configured CSV columns
+#, php-format
+msgctxt "help text"
+msgid "Expected columns: %s"
+msgstr "Colonnes attendues : %s"
+
+msgid "For multiple roles, separate values with \"|\" only."
+msgstr "Pour plusieurs rôles, séparez les valeurs uniquement par « | »."
+
+msgid "Upload and Add Members"
+msgstr "Téléverser et ajouter les membres"
+
+#. translators: 1: number of assigned seats, 2: maximum number of seats.
+#, php-format
+msgctxt "count label"
+msgid "Seats assigned: %1$d / %2$d"
+msgstr "Places attribuées : %1$d / %2$d"
+
+msgid "No seats available. Please purchase additional seats to add more members."
+msgstr "Aucune place disponible. Veuillez acheter des places supplémentaires pour ajouter d'autres membres."
+
+msgctxt "message"
+msgid "No members found."
+msgstr "Aucun membre trouvé."
+
+msgctxt "label"
+msgid "Role:"
+msgstr "Rôle :"
+
+msgctxt "accessibility label"
+msgid "Group members pagination"
+msgstr "Pagination des membres du groupe"
+
+#. translators: 1: first item number on the page, 2: last item number on the page, 3: total number of items.
+#, php-format
+msgctxt "count label"
+msgid "Showing %1$d–%2$d of %3$d"
+msgstr "Affichage de %1$d à %2$d sur %3$d"
+
+msgid "All seats have been assigned. You can still add Observers, but purchase additional seats to add more Members."
+msgstr "Toutes les places ont été attribuées. Vous pouvez encore ajouter des observateurs, mais vous devez acheter des places supplémentaires pour ajouter d'autres membres."
+
+#. translators: 1: number of assigned seats, 2: maximum number of seats.
+#, php-format
+msgctxt "count label"
+msgid "Seats assigned: %1$s / %2$s"
+msgstr "Places attribuées : %1$s / %2$s"
+
+#. translators: %s: number of assigned people.
+#, php-format
+msgid "Number of assigned people: %s"
+msgstr "Nombre de personnes attribuées : %s"
+
+msgctxt "status"
+msgid "Organization Owner"
+msgstr "Titulaire de l'organisation"
+
+msgctxt "button label"
+msgid "Edit Permissions"
+msgstr "Modifier les autorisations"
+
+msgctxt "accessibility label"
+msgid "Members pagination"
+msgstr "Pagination des membres"
+
+msgctxt "button label"
+msgid "Bulk Upload Members"
+msgstr "Téléverser des membres en lot"
+
+msgctxt "label"
+msgid "Roles:"
+msgstr "Rôles :"
+
+#. translators: %s: member name.
+#, php-format
+msgctxt "label"
+msgid "Edit Permissions for %s"
+msgstr "Modifier les autorisations de %s"
+
+msgctxt "label"
+msgid "Edit Permissions"
+msgstr "Modifier les autorisations"
+
+msgctxt "message"
+msgid "No roles available."
+msgstr "Aucun rôle disponible."
+
+msgctxt "button label"
+msgid "Save Permissions"
+msgstr "Enregistrer les autorisations"
+
+msgid "Are you sure you want to remove this member from the organization?"
+msgstr "Voulez-vous vraiment retirer ce membre de l'organisation ?"
+
+#. translators: %s: name of the member being removed.
+#, php-format
+msgid "Are you sure you want to remove %s from this organization?"
+msgstr "Voulez-vous vraiment retirer %s de cette organisation ?"
+
+msgid "Visible to administrators only"
+msgstr "Visible par les administrateurs seulement"
+
+msgid "Additional Seats: Setup Incomplete."
+msgstr "Places supplémentaires : configuration incomplète."
+
+msgid "The \"Purchase Additional Seats\" button is hidden because the following items are not yet configured:"
+msgstr "Le bouton « Acheter des places supplémentaires » est masqué, car les éléments suivants ne sont pas encore configurés :"
+
+msgctxt "tooltip"
+msgid "Click to copy"
+msgstr "Cliquer pour copier"
+
+msgid "Expected Gravity Form slug:"
+msgstr "Slug de formulaire Gravity Forms attendu :"
+
+msgid "Map this slug to the additional-seats Gravity Form under Gravity Forms > Wicket Settings > Form Slug ID Mapping."
+msgstr "Associez ce slug au formulaire Gravity Forms des places supplémentaires dans Gravity Forms > Wicket Settings > Form Slug ID Mapping."
+
+msgid "Tier slug hidden-field parameter:"
+msgstr "Paramètre du champ masqué pour le slug du niveau :"
+
+msgid "Name of the hidden field (Parameter Name) on the form that receives the membership tier slug from the URL. GF conditional logic reads it to show only that tier’s quantity input, and the submission handler reads it to pick the right tier-specific product."
+msgstr "Nom du champ masqué (Parameter Name) du formulaire qui reçoit le slug du niveau d'adhésion depuis l'URL. La logique conditionnelle de Gravity Forms le lit pour afficher uniquement le champ de quantité de ce niveau, et le gestionnaire de soumission le lit pour choisir le produit propre à ce niveau."
+
+msgctxt "message"
+msgid "✓ Copied!"
+msgstr "✓ Copié !"
+
+msgctxt "label"
+msgid "Security Roles"
+msgstr "Rôles de sécurité"
+
+msgid "Are you sure you want to remove this member?"
+msgstr "Voulez-vous vraiment retirer ce membre ?"
+
+msgid "You must be logged in to access this content."
+msgstr "Vous devez ouvrir une session pour accéder à ce contenu."
+
+msgctxt "message"
+msgid "Organization not specified."
+msgstr "Organisation non précisée."
+
+msgctxt "value placeholder"
+msgid "Organization"
+msgstr "Organisation"
+
+#. translators: Seat limit: no maximum number of seats.
+msgctxt "value placeholder"
+msgid "Unlimited"
+msgstr "Illimité"
+
+#. translators: 1: number of active seat assignments, 2: maximum number of seats (or "Unlimited").
+#, php-format
+msgctxt "count label"
+msgid "Seats: %1$s / %2$s"
+msgstr "Places : %1$s / %2$s"
+
+#. translators: %s: organization name.
+#, php-format
+msgctxt "label"
+msgid "Organization: %s"
+msgstr "Organisation : %s"
+
+#. translators: %s: group type.
+#, php-format
+msgctxt "label"
+msgid "Type: %s"
+msgstr "Type : %s"
+
+#. translators: Heading for the membership summary.
+msgctxt "label"
+msgid "Summary"
+msgstr "Résumé"
+
+msgctxt "label"
+msgid "Membership Owner:"
+msgstr "Titulaire de l'adhésion :"
+
+msgctxt "value placeholder"
+msgid "Not set."
+msgstr "Non défini."
+
+msgctxt "accessibility label"
+msgid "Organization actions"
+msgstr "Actions de l'organisation"
+
+msgctxt "button label"
+msgid "Bulk Upload"
+msgstr "Téléversement en lot"
+
+msgid "Unable to connect to the organization service. Please try again later."
+msgstr "Impossible de se connecter au service des organisations. Veuillez réessayer plus tard."
+
+msgctxt "label"
+msgid "Connection Error"
+msgstr "Erreur de connexion"
+
+msgctxt "button label"
+msgid "Try Again"
+msgstr "Réessayer"
+
+msgid "You currently have no organizations to manage members for."
+msgstr "Vous n'avez actuellement aucune organisation dont vous pouvez gérer les membres."
+
+msgid "You currently have no groups to manage members for."
+msgstr "Vous n'avez actuellement aucun groupe dont vous pouvez gérer les membres."
+
+msgctxt "label"
+msgid "Your Associations"
+msgstr "Vos associations"
+
+#. translators: %d: number of groups found.
+#, php-format
+msgctxt "count label"
+msgid "Groups Found: %d"
+msgstr "Groupes trouvés : %d"
+
+#. translators: %s: role label.
+#, php-format
+msgctxt "label"
+msgid "My Role: %s"
+msgstr "Mon rôle : %s"
+
+msgctxt "button label"
+msgid "Group Profile"
+msgstr "Profil du groupe"
+
+msgctxt "accessibility label"
+msgid "Groups pagination"
+msgstr "Pagination des groupes"
+
+#. translators: 1: first item number, 2: last item number, 3: total items.
+#, php-format
+msgctxt "count label"
+msgid "Showing %1$d-%2$d of %3$d groups"
+msgstr "Affichage des groupes %1$d à %2$d sur %3$d"
+
+#. translators: Fallback organization or group name.
+msgctxt "value placeholder"
+msgid "Unknown"
+msgstr "Inconnu"
+
+msgctxt "value placeholder"
+msgid "Active Membership"
+msgstr "Adhésion active"
+
+msgid "You currently have no active organization memberships."
+msgstr "Vous n'avez actuellement aucune adhésion d'organisation active."
+
+#. translators: %d: number of organizations found.
+#, php-format
+msgctxt "count label"
+msgid "Organizations Found: %d"
+msgstr "Organisations trouvées : %d"
+
+msgctxt "accessibility label"
+msgid "Organizations pagination"
+msgstr "Pagination des organisations"
+
+#. translators: 1: first item number, 2: last item number, 3: total items.
+#, php-format
+msgctxt "count label"
+msgid "Showing %1$d-%2$d of %3$d organizations"
+msgstr "Affichage des organisations %1$d à %2$d sur %3$d"
+
+msgid "Invalid or missing security token. Please refresh and try again."
+msgstr "Jeton de sécurité manquant ou non valide. Veuillez actualiser la page et réessayer."
+
+msgctxt "message"
+msgid "Organization identifier missing."
+msgstr "Identifiant de l'organisation manquant."
+
+msgid "You do not have permission to add contacts to this organization."
+msgstr "Vous n'avez pas l'autorisation d'ajouter des personnes-ressources à cette organisation."
+
+#. translators: 1: member full name, 2: member email address
+#, php-format
+msgid "Successfully added %1$s with email %2$s."
+msgstr "%1$s (adresse courriel %2$s) a été ajouté."
+
+#. translators: %s: contact email address.
+#, php-format
+msgid "Successfully added the contact with email %s."
+msgstr "La personne-ressource ayant l'adresse courriel %s a été ajoutée."
+
+msgid "An unexpected error occurred. Please try again."
+msgstr "Une erreur inattendue s'est produite. Veuillez réessayer."
+
+msgctxt "message"
+msgid "Group identifier missing."
+msgstr "Identifiant du groupe manquant."
+
+#. translators: %s: member email address.
+#, php-format
+msgid "Successfully added the member with email %s."
+msgstr "Le membre ayant l'adresse courriel %s a été ajouté."
+
+msgid "Membership UUID is required for membership cycle additions."
+msgstr "L'UUID de l'adhésion est obligatoire pour les ajouts selon le cycle d'adhésion."
+
+#. translators: %s: member email address.
+#, php-format
+msgid "A member with the email %s already exists in this membership."
+msgstr "Un membre ayant l'adresse courriel %s existe déjà dans cette adhésion."
+
+msgid "Bulk upload is disabled."
+msgstr "Le téléversement en lot est désactivé."
+
+msgid "Please select a valid CSV file."
+msgstr "Veuillez sélectionner un fichier CSV valide."
+
+msgid "You do not have permission to bulk add members to this group."
+msgstr "Vous n'avez pas l'autorisation d'ajouter des membres en lot à ce groupe."
+
+msgid "You do not have permission to bulk add members to this organization."
+msgstr "Vous n'avez pas l'autorisation d'ajouter des membres en lot à cette organisation."
+
+msgid "No active organization membership was found for this organization."
+msgstr "Aucune adhésion d'organisation active n'a été trouvée pour cette organisation."
+
+#. translators: 1: bulk upload job ID, 2: number of rows to process, 3: batch size.
+#, php-format
+msgid "Bulk upload queued. Job %1$s will process %2$d row in batches of %3$d."
+msgid_plural "Bulk upload queued. Job %1$s will process %2$d rows in batches of %3$d."
+msgstr[0] "Téléversement en lot mis en file d'attente. La tâche %1$s traitera %2$d ligne par lots de %3$d."
+msgstr[1] "Téléversement en lot mis en file d'attente. La tâche %1$s traitera %2$d lignes par lots de %3$d."
+
+msgid "Processing runs in the background with WordPress Cron."
+msgstr "Le traitement s'effectue en arrière-plan à l'aide de WordPress Cron."
+
+msgid "Your session has expired. Please refresh the page."
+msgstr "Votre session a expiré. Veuillez actualiser la page."
+
+msgid "You do not have permission to view this upload."
+msgstr "Vous n'avez pas l'autorisation de voir ce téléversement."
+
+#. translators: %s: email address
+#, php-format
+msgid "Your export has been queued. You will receive an email at %s when the download link is ready."
+msgstr "Votre exportation a été mise en file d'attente. Vous recevrez un courriel à %s lorsque le lien de téléchargement sera prêt."
+
+msgid "Organization and person identifiers are required."
+msgstr "Les identifiants de l'organisation et de la personne sont obligatoires."
+
+msgid "You do not have permission to remove contacts from this organization."
+msgstr "Vous n'avez pas l'autorisation de retirer des personnes-ressources de cette organisation."
+
+msgid "The organization owner cannot be removed."
+msgstr "Le titulaire de l'organisation ne peut pas être retiré."
+
+#. translators: %1$s: contact name.
+#, php-format
+msgid "Successfully removed %1$s from the contact list."
+msgstr "%1$s a été retiré de la liste des personnes-ressources."
+
+msgid "Successfully removed the contact from the contact list."
+msgstr "La personne-ressource a été retirée de la liste des personnes-ressources."
+
+msgid "Roles preserved due to active membership."
+msgstr "Rôles conservés en raison d'une adhésion active."
+
+msgid "Missing group or member identifiers."
+msgstr "Identifiants du groupe ou du membre manquants."
+
+msgid "Organization UUID, person UUID, and connection IDs are required."
+msgstr "L'UUID de l'organisation, l'UUID de la personne et les ID des liens sont obligatoires."
+
+msgid "Membership UUID is required for membership cycle removals."
+msgstr "L'UUID de l'adhésion est obligatoire pour les retraits selon le cycle d'adhésion."
+
+msgctxt "value placeholder"
+msgid "Member"
+msgstr "Membre"
+
+#. translators: %1$s: member name.
+#, php-format
+msgid "Successfully removed %1$s from the organization."
+msgstr "%1$s a été retiré de l'organisation."
+
+msgid "No editable fields provided."
+msgstr "Aucun champ modifiable fourni."
+
+msgctxt "message"
+msgid "API client unavailable."
+msgstr "Client de l'API non disponible."
+
+msgctxt "message"
+msgid "Group updated successfully."
+msgstr "Le groupe a été mis à jour."
+
+msgid "Failed to update group."
+msgstr "Impossible de mettre à jour le groupe."
+
+msgid "Organization UUID, membership UUID, and person UUID are required."
+msgstr "L'UUID de l'organisation, l'UUID de l'adhésion et l'UUID de la personne sont obligatoires."
+
+#. translators: %1$s: member name.
+#, php-format
+msgid "Successfully updated permissions for %1$s."
+msgstr "Les autorisations de %1$s ont été mises à jour."
+
+msgid "Successfully updated permissions for this member."
+msgstr "Les autorisations de ce membre ont été mises à jour."
+
+#. translators: %s: subsidiary organization name.
+#, php-format
+msgid "Are you sure you want to remove %s as a subsidiary?"
+msgstr "Voulez-vous vraiment retirer %s de vos filiales ?"
+
+msgid "No subsidiaries found for this organization."
+msgstr "Aucune filiale trouvée pour cette organisation."
+
+msgctxt "label"
+msgid "Add Subsidiary"
+msgstr "Ajouter une filiale"
+
+msgid "Search for an organization to add as a subsidiary:"
+msgstr "Recherchez une organisation à ajouter comme filiale :"
+
+msgctxt "field placeholder"
+msgid "Type organization name..."
+msgstr "Tapez le nom de l'organisation…"
+
+msgctxt "label"
+msgid "Bulk Upload Subsidiaries"
+msgstr "Téléverser des filiales en lot"
+
+msgid "Upload an Excel spreadsheet to add multiple subsidiaries at once."
+msgstr "Téléversez une feuille de calcul Excel pour ajouter plusieurs filiales à la fois."
+
+msgid "Select Excel File (.xlsx, .xls):"
+msgstr "Sélectionnez un fichier Excel (.xlsx, .xls) :"
+
+msgctxt "button label"
+msgid "Upload and Process"
+msgstr "Téléverser et traiter"
+
+#. translators: Button: add the organization as a subsidiary.
+msgctxt "button label"
+msgid "Add"
+msgstr "Ajouter"
+
+msgctxt "message"
+msgid "No organizations found."
+msgstr "Aucune organisation trouvée."
+
+msgid "Are you sure you want to add this subsidiary?"
+msgstr "Voulez-vous vraiment ajouter cette filiale ?"
+
+msgid "Please complete the form below to purchase additional seats for your organization membership."
+msgstr "Veuillez remplir le formulaire ci-dessous pour acheter des places supplémentaires pour l'adhésion de votre organisation."
+
+msgid "After purchase, the additional seats will be automatically added to your subscription."
+msgstr "Après l'achat, les places supplémentaires seront ajoutées automatiquement à votre abonnement."
+
+msgid "Gravity Forms is not available. Please contact support."
+msgstr "Gravity Forms n'est pas disponible. Veuillez communiquer avec le soutien technique."
+
+msgid "Back to Organization Members"
+msgstr "Retour aux membres de l'organisation"
+
+msgid "You do not have permission to view contacts for this organization."
+msgstr "Vous n'avez pas l'autorisation de voir les personnes-ressources de cette organisation."
+
+msgctxt "label"
+msgid "Manage my Organizations"
+msgstr "Gérer mes organisations"
+
+msgid "Back to My Organization"
+msgstr "Retour à mon organisation"
+
+msgctxt "label"
+msgid "Manage Organizations"
+msgstr "Gérer les organisations"
+
+msgctxt "label"
+msgid "Manage Groups"
+msgstr "Gérer les groupes"
+
+msgid "Bulk upload is currently disabled by configuration."
+msgstr "Le téléversement en lot est actuellement désactivé dans la configuration."
+
+msgid "Select a group to continue with bulk member upload."
+msgstr "Sélectionnez un groupe pour poursuivre le téléversement en lot des membres."
+
+msgid "You do not have access to bulk upload members for any groups."
+msgstr "Vous n'avez accès au téléversement en lot des membres pour aucun groupe."
+
+msgid "You do not have permission to bulk add members for this group."
+msgstr "Vous n'avez pas l'autorisation d'ajouter des membres en lot à ce groupe."
+
+msgid "Select an organization to continue with bulk member upload."
+msgstr "Sélectionnez une organisation pour poursuivre le téléversement en lot des membres."
+
+msgid "You do not have access to bulk upload members for any organizations."
+msgstr "Vous n'avez accès au téléversement en lot des membres pour aucune organisation."
+
+msgid "You do not have permission to bulk add members for this organization."
+msgstr "Vous n'avez pas l'autorisation d'ajouter des membres en lot à cette organisation."
+
+msgid "Back to Manage Groups"
+msgstr "Retour à Gérer les groupes"
+
+msgid "Back to Manage Organizations"
+msgstr "Retour à Gérer les organisations"
+
+msgctxt "message"
+msgid "Organization updated successfully!"
+msgstr "L'organisation a été mise à jour !"
+
+msgid "You are not authorized to purchase additional seats for this organization."
+msgstr "Vous n'êtes pas autorisé à acheter des places supplémentaires pour cette organisation."
+
+msgid "Please enter a valid number for additional seats."
+msgstr "Veuillez entrer un nombre valide de places supplémentaires."
+
+msgid "Number of additional seats cannot be negative."
+msgstr "Le nombre de places supplémentaires ne peut pas être négatif."
+
+msgid "You cannot purchase zero seats. Please enter a number greater than 0 to proceed with your purchase."
+msgstr "Vous ne pouvez pas acheter zéro place. Veuillez entrer un nombre supérieur à 0 pour poursuivre votre achat."
+
+msgid "Please enter a whole number for additional seats."
+msgstr "Veuillez entrer un nombre entier de places supplémentaires."
+
+msgctxt "label"
+msgid "Organization Details"
+msgstr "Détails de l'organisation"
+
+msgctxt "label"
+msgid "Organization:"
+msgstr "Organisation :"
+
+msgctxt "label"
+msgid "Membership ID:"
+msgstr "ID de l'adhésion :"
+
+msgctxt "message"
+msgid "Invalid payment method."
+msgstr "Mode de paiement non valide."
+
+msgctxt "message"
+msgid "Payment method deleted."
+msgstr "Le mode de paiement a été supprimé."
+
+msgid "This payment method was successfully set as your default."
+msgstr "Ce mode de paiement a été défini comme mode par défaut."
+
+#. translators: %s: post publish date.
+#, php-format
+msgctxt "label"
+msgid "Published: %s"
+msgstr "Publié le : %s"
+
+msgctxt "message"
+msgid "No content found."
+msgstr "Aucun contenu trouvé."
+
+msgid "This are the available variables:"
+msgstr "Voici les variables disponibles :"
+
+msgctxt "value placeholder"
+msgid "No name"
+msgstr "Sans nom"
+
+msgctxt "message"
+msgid "Forgot something?:"
+msgstr "Vous avez oublié quelque chose ?"
+
+msgctxt "label"
+msgid "Error"
+msgstr "Erreur"
+
+#. translators: %s: block name.
+#, php-format
+msgid "There was an error on block: %s"
+msgstr "Une erreur s'est produite dans le bloc : %s"
+
+msgctxt "value placeholder"
+msgid "Modal title"
+msgstr "Titre de la fenêtre"
+
+#. translators: Button: confirm deactivation.
+msgctxt "button label"
+msgid "Deactivate"
+msgstr "Désactiver"
+
+msgctxt "label"
+msgid "Organization Logo"
+msgstr "Logo de l'organisation"
+
+msgctxt "accessibility label"
+msgid "Organization Logo"
+msgstr "Logo de l'organisation"
+
+msgctxt "tooltip"
+msgid "Remove Image"
+msgstr "Supprimer l'image"
+
+msgctxt "button label"
+msgid "Choose File"
+msgstr "Choisir un fichier"
+
+msgid "Upload an organization logo to represent your organization."
+msgstr "Téléversez un logo pour représenter votre organisation."
+
+#. translators: %d: max upload size in megabytes.
+#, php-format
+msgid "Max upload size: %d MB"
+msgstr "Taille maximale de téléversement : %d Mo"
+
+msgctxt "button label"
+msgid "Update Image"
+msgstr "Mettre à jour l'image"
+
+msgid "File selected. Ready to upload!"
+msgstr "Fichier sélectionné. Prêt à téléverser !"
+
+msgid "There was an error while trying to upload the organization logo. Please try again."
+msgstr "Une erreur s'est produite lors du téléversement du logo de l'organisation. Veuillez réessayer."
+
+msgctxt "label"
+msgid "Upload Requirements:"
+msgstr "Exigences de téléversement :"
+
+#. translators: %d: maximum file size in megabytes.
+#, php-format
+msgid "Maximum file size: %dMB"
+msgstr "Taille maximale du fichier : %d Mo"
+
+#. translators: %s: comma-separated list of allowed file extensions.
+#, php-format
+msgctxt "help text"
+msgid "Allowed formats: %s"
+msgstr "Formats permis : %s"
+
+msgid "File must be a valid image"
+msgstr "Le fichier doit être une image valide"
+
+msgctxt "label"
+msgid "Success"
+msgstr "Succès"
+
+msgid "Your organization logo has been updated successfully."
+msgstr "Le logo de votre organisation a été mis à jour."
+
+msgctxt "label"
+msgid "Phone Number"
+msgstr "Numéro de téléphone"
+
+msgctxt "message"
+msgid "No memberships found"
+msgstr "Aucune adhésion trouvée"
+
+msgctxt "label"
+msgid "Profile Image"
+msgstr "Image de profil"
+
+msgctxt "accessibility label"
+msgid "Profile Image"
+msgstr "Image de profil"
+
+msgid "Upload a profile picture to personalize your profile."
+msgstr "Téléversez une photo de profil pour personnaliser votre profil."
+
+msgid "There was an error while trying to upload the profile picture. Please try again."
+msgstr "Une erreur s'est produite lors du téléversement de la photo de profil. Veuillez réessayer."
+
+msgid "Your profile picture has been updated successfully."
+msgstr "Votre photo de profil a été mise à jour."
+
+msgid "(opens in a new window)"
+msgstr "(s'ouvre dans une nouvelle fenêtre)"
+
+msgctxt "label"
+msgid "Date:"
+msgstr "Date :"
+
+msgid "See Past Registered Events"
+msgstr "Voir les événements passés auxquels vous étiez inscrit"
+
+msgctxt "label"
+msgid "Upcoming Registered Events"
+msgstr "Événements à venir auxquels vous êtes inscrit"
+
+msgctxt "label"
+msgid "Past Registered Events"
+msgstr "Événements passés auxquels vous étiez inscrit"
+
+msgid "See Upcoming Registered Events"
+msgstr "Voir les événements à venir auxquels vous êtes inscrit"
+
+msgctxt "button label"
+msgid "Go Back ←"
+msgstr "Retour ←"
+
+msgctxt "count label"
+msgid "Results:"
+msgstr "Résultats :"
+
+msgctxt "label"
+msgid "Location:"
+msgstr "Lieu :"
+
+msgctxt "label"
+msgid "Event Details"
+msgstr "Détails de l'événement"
+
+msgctxt "label"
+msgid "Course ID:"
+msgstr "ID du cours :"
+
+msgctxt "label"
+msgid "Start Date:"
+msgstr "Date de début :"
+
+msgctxt "label"
+msgid "End Date:"
+msgstr "Date de fin :"
+
+msgctxt "label"
+msgid "Grade Achieved:"
+msgstr "Note obtenue :"
+
+msgctxt "label"
+msgid "Grade Percentage:"
+msgstr "Note en pourcentage :"
+
+msgctxt "label"
+msgid "Time:"
+msgstr "Heure :"
+
+msgctxt "label"
+msgid "Redemption Codes:"
+msgstr "Codes d'échange :"
+
+msgctxt "label"
+msgid "Purchase Date:"
+msgstr "Date d'achat :"
+
+msgctxt "label"
+msgid "Duration:"
+msgstr "Durée :"
+
+#. translators: %s: event duration in minutes.
+#, php-format
+msgctxt "duration"
+msgid "%s minute"
+msgid_plural "%s minutes"
+msgstr[0] "%s minute"
+msgstr[1] "%s minutes"
+
+msgid "See Past Registered Webinars"
+msgstr "Voir les webinaires passés auxquels vous étiez inscrit"
+
+msgid "See Upcoming Registered Webinars"
+msgstr "Voir les webinaires à venir auxquels vous êtes inscrit"
+
+msgctxt "label"
+msgid "Webinar Details"
+msgstr "Détails du webinaire"
+
+#. translators: %s: number of form errors.
+#, php-format
+msgid "The form could not be submitted because %s error was found"
+msgid_plural "The form could not be submitted because %s errors were found"
+msgstr[0] "Le formulaire n'a pas pu être soumis, car %s erreur a été trouvée"
+msgstr[1] "Le formulaire n'a pas pu être soumis, car %s erreurs ont été trouvées"
+
+msgctxt "label"
+msgid "Current Password"
+msgstr "Mot de passe actuel"
+
+msgctxt "label"
+msgid "New Password"
+msgstr "Nouveau mot de passe"
+
+msgctxt "label"
+msgid "Confirm Password"
+msgstr "Confirmer le mot de passe"
+
+#. translators: %d: error number in the list.
+#, php-format
+msgctxt "error list item"
+msgid "Error: %d"
+msgstr "Erreur : %d"
+
+#. translators: 1: field label, 2: error message.
+#, php-format
+msgctxt "error list item"
+msgid "%1$s %2$s"
+msgstr "%1$s %2$s"
+
+msgid "Your password has been updated."
+msgstr "Votre mot de passe a été mis à jour."
+
+msgctxt "label"
+msgid "Current password"
+msgstr "Mot de passe actuel"
+
+msgctxt "label"
+msgid "New password"
+msgstr "Nouveau mot de passe"
+
+msgid "Minimum of 8 characters"
+msgstr "Au moins 8 caractères"
+
+msgctxt "label"
+msgid "Confirm new password"
+msgstr "Confirmer le nouveau mot de passe"
+
+msgctxt "button label"
+msgid "Change password"
+msgstr "Changer le mot de passe"
+
+msgctxt "block title"
+msgid "ACC Additional Info Block"
+msgstr "Bloc ACC Renseignements supplémentaires"
+
+msgctxt "block description"
+msgid "A Wicket block for Additional Info"
+msgstr "Un bloc Wicket pour les renseignements supplémentaires"
+
+msgctxt "block keyword"
+msgid "additional"
+msgstr "supplémentaire"
+
+msgctxt "block keyword"
+msgid "info"
+msgstr "renseignements"
+
+msgctxt "block title"
+msgid "ACC Callout Block"
+msgstr "Bloc ACC Message"
+
+msgctxt "block description"
+msgid "A Wicket block for Callout Block"
+msgstr "Un bloc Wicket pour afficher un message"
+
+msgctxt "block keyword"
+msgid "callout"
+msgstr "message"
+
+msgctxt "block title"
+msgid "ACC Individual Profile Block"
+msgstr "Bloc ACC Profil individuel"
+
+msgctxt "block description"
+msgid "A Wicket block for Individual Profile"
+msgstr "Un bloc Wicket pour le profil individuel"
+
+msgctxt "block keyword"
+msgid "profile"
+msgstr "profil"
+
+msgctxt "block title"
+msgid "ACC Manage Preferences Block"
+msgstr "Bloc ACC Gérer les préférences"
+
+msgctxt "block description"
+msgid "A Wicket block for Manage Preferences"
+msgstr "Un bloc Wicket pour gérer les préférences"
+
+msgctxt "block keyword"
+msgid "preferences"
+msgstr "préférences"
+
+msgctxt "block title"
+msgid "ACC Change Profile Picture - Org"
+msgstr "ACC Changer la photo de profil - Org."
+
+msgctxt "block description"
+msgid "Wicket block for changing the organization logo"
+msgstr "Bloc Wicket pour changer le logo de l'organisation"
+
+msgctxt "block keyword"
+msgid "organization"
+msgstr "organisation"
+
+msgctxt "block keyword"
+msgid "picture"
+msgstr "photo"
+
+msgctxt "block title"
+msgid "ACC Org Profile"
+msgstr "ACC Profil de l'organisation"
+
+msgctxt "block description"
+msgid "A Wicket block for Org Profile"
+msgstr "Un bloc Wicket pour le profil de l'organisation"
+
+msgctxt "block title"
+msgid "ACC Org. Search & Select"
+msgstr "ACC Recherche et sélection d'org."
+
+msgctxt "block description"
+msgid "A Wicket block for searching and selecting an organization"
+msgstr "Un bloc Wicket pour rechercher et sélectionner une organisation"
+
+msgctxt "block keyword"
+msgid "search"
+msgstr "recherche"
+
+msgctxt "block keyword"
+msgid "select"
+msgstr "sélection"
+
+msgctxt "block title"
+msgid "[Deprecated] ACC Password Block"
+msgstr "[Obsolète] Bloc ACC Mot de passe"
+
+msgctxt "block description"
+msgid "[Deprecated] A Wicket block for Password"
+msgstr "[Obsolète] Un bloc Wicket pour le mot de passe"
+
+msgctxt "block title"
+msgid "ACC Change Profile Picture"
+msgstr "ACC Changer la photo de profil"
+
+msgctxt "block description"
+msgid "Wicket block for Change Profile Picture"
+msgstr "Bloc Wicket pour changer la photo de profil"
+
+msgctxt "block keyword"
+msgid "profile-picture"
+msgstr "photo-de-profil"
+
+msgctxt "block keyword"
+msgid "avatar"
+msgstr "avatar"
+
+msgctxt "block title"
+msgid "ACC Touchpoint Cvent"
+msgstr "ACC Point de contact Cvent"
+
+msgctxt "block description"
+msgid "Wicket block for AC Touchpoint Cvent"
+msgstr "Bloc Wicket pour le point de contact Cvent"
+
+msgctxt "block keyword"
+msgid "touchpoints"
+msgstr "points de contact"
+
+msgctxt "block keyword"
+msgid "service"
+msgstr "service"
+
+msgctxt "block keyword"
+msgid "cvent"
+msgstr "cvent"
+
+msgctxt "block title"
+msgid "ACC Touchpoint TEC"
+msgstr "ACC Point de contact TEC"
+
+msgctxt "block description"
+msgid "Wicket block for The Events Calendar Touchpoints"
+msgstr "Bloc Wicket pour les points de contact The Events Calendar"
+
+msgctxt "block keyword"
+msgid "event calendar"
+msgstr "calendrier des événements"
+
+msgctxt "block keyword"
+msgid "events"
+msgstr "événements"
+
+msgctxt "block keyword"
+msgid "calendar"
+msgstr "calendrier"
+
+msgctxt "block title"
+msgid "ACC Touchpoint Maple"
+msgstr "ACC Point de contact Maple"
+
+msgctxt "block description"
+msgid "Wicket block for AC Touchpoint Maple"
+msgstr "Bloc Wicket pour le point de contact Maple"
+
+msgctxt "block keyword"
+msgid "maple"
+msgstr "maple"
+
+msgctxt "block title"
+msgid "ACC Touchpoint MicroSpec"
+msgstr "ACC Point de contact MicroSpec"
+
+msgctxt "block description"
+msgid "Wicket block for AC Touchpoint MicroSpec"
+msgstr "Bloc Wicket pour le point de contact MicroSpec"
+
+msgctxt "block keyword"
+msgid "micropoint"
+msgstr "micropoint"
+
+msgctxt "block title"
+msgid "ACC Touchpoint Moodle"
+msgstr "ACC Point de contact Moodle"
+
+msgctxt "block description"
+msgid "Wicket block for Moodle Touchpoints"
+msgstr "Bloc Wicket pour les points de contact Moodle"
+
+msgctxt "block keyword"
+msgid "moodle"
+msgstr "moodle"
+
+msgctxt "block title"
+msgid "ACC Touchpoint Pheedloop"
+msgstr "ACC Point de contact Pheedloop"
+
+msgctxt "block description"
+msgid "Wicket block for AC Touchpoint Pheedloop"
+msgstr "Bloc Wicket pour le point de contact Pheedloop"
+
+msgctxt "block keyword"
+msgid "pheedloop"
+msgstr "pheedloop"
+
+msgctxt "block title"
+msgid "ACC Touchpoint VitalSource"
+msgstr "ACC Point de contact VitalSource"
+
+msgctxt "block description"
+msgid "Wicket block for AC Touchpoint VitalSource"
+msgstr "Bloc Wicket pour le point de contact VitalSource"
+
+msgctxt "block keyword"
+msgid "vitalsource"
+msgstr "vitalsource"
+
+msgctxt "block title"
+msgid "ACC Touchpoint Zoom"
+msgstr "ACC Point de contact Zoom"
+
+msgctxt "block description"
+msgid "Wicket block for Zoom Webinars Touchpoints"
+msgstr "Bloc Wicket pour les points de contact des webinaires Zoom"
+
+msgctxt "block keyword"
+msgid "zoom"
+msgstr "zoom"
+
+msgctxt "block keyword"
+msgid "webinars"
+msgstr "webinaires"
+
+msgctxt "block keyword"
+msgid "meetings"
+msgstr "réunions"
+
+msgctxt "block title"
+msgid "ACC Welcome Block"
+msgstr "Bloc ACC Bienvenue"
+
+msgctxt "block description"
+msgid "A Wicket block for Welcome Block"
+msgstr "Un bloc Wicket pour le message de bienvenue"
+
+msgctxt "block keyword"
+msgid "welcome"
+msgstr "bienvenue"
+
+msgctxt "block description"
+msgid "Wicket Base block. Copy this block to create a new one."
+msgstr "Bloc de base Wicket. Copiez ce bloc pour en créer un nouveau."
+
+msgctxt "block keyword"
+msgid "base-block"
+msgstr "bloc-de-base"

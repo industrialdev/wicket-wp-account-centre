@@ -179,7 +179,7 @@ class SubsidiaryController extends ApiController
             'subsidiaries' => is_wp_error($subsidiaries) ? [] : $subsidiaries,
             'notice' => [
                 'type'    => 'success',
-                'message' => __('Subsidiary added successfully.', 'wicket-acc'),
+                'message' => _x('Subsidiary added successfully.', 'message', 'wicket-acc'),
             ],
         ];
 
@@ -236,7 +236,7 @@ class SubsidiaryController extends ApiController
             'subsidiaries' => is_wp_error($subsidiaries) ? [] : $subsidiaries,
             'notice' => [
                 'type'    => 'success',
-                'message' => __('Subsidiary removed successfully.', 'wicket-acc'),
+                'message' => _x('Subsidiary removed successfully.', 'message', 'wicket-acc'),
             ],
         ];
 
@@ -303,7 +303,7 @@ class SubsidiaryController extends ApiController
         $uploaded_file = $_FILES['bulk_file'] ?? null;
 
         if (!$uploaded_file || $uploaded_file['error'] !== UPLOAD_ERR_OK) {
-            $error_message = __('File upload failed.', 'wicket-acc');
+            $error_message = _x('File upload failed.', 'message', 'wicket-acc');
 
             if ($uploaded_file && isset($uploaded_file['error'])) {
                 switch ($uploaded_file['error']) {
@@ -318,7 +318,7 @@ class SubsidiaryController extends ApiController
                         $error_message = __('No file was uploaded.', 'wicket-acc');
                         break;
                     case UPLOAD_ERR_NO_TMP_DIR:
-                        $error_message = __('Missing temporary folder.', 'wicket-acc');
+                        $error_message = _x('Missing temporary folder.', 'message', 'wicket-acc');
                         break;
                     case UPLOAD_ERR_CANT_WRITE:
                         $error_message = __('Failed to write file to disk.', 'wicket-acc');

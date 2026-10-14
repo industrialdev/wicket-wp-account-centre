@@ -9,7 +9,7 @@
    * @param {string}  keepValue  Previously selected composite ref to preserve.
    */
   function rebuildSelect(select, groups, keepValue) {
-    var noSyncingLabel = select.getAttribute('data-wicket-no-syncing-label') || 'No syncing';
+    var noSyncingLabel = select.getAttribute('data-wicket-no-syncing-label') || 'No syncing (keep image local)';
     keepValue = keepValue || '';
 
     select.innerHTML = '';
@@ -102,8 +102,8 @@
         var nonce = button.getAttribute('data-nonce');
         var originalText = button.textContent;
         var successLabel = button.getAttribute('data-success-label') || 'Field list refreshed.';
-        var errorLabel = button.getAttribute('data-error-label') || 'Refresh failed.';
-        var emptyLabel = button.getAttribute('data-empty-label') || 'No MDP fields available.';
+        var errorLabel = button.getAttribute('data-error-label') || 'Could not refresh the field list. Check the MDP connection and try again.';
+        var emptyLabel = button.getAttribute('data-empty-label') || 'No MDP fields are available for this tenant.';
 
         button.disabled = true;
         button.textContent = button.getAttribute('data-refreshing-label') || 'Refreshing...';

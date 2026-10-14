@@ -166,7 +166,7 @@ $clear_action = '(' . '$listLoading' . ' = true, ' . '$searchQuery' . " = '', " 
                 data-on:error="$listLoading = false"
                 data-show="!$searchSubmitted"
                 data-indicator:members-loading>
-                <?php esc_html_e('Search', 'wicket-acc'); ?>
+                <?php /* translators: Button: run the search. */ echo esc_html_x('Search', 'button label', 'wicket-acc'); ?>
             </button>
             <button type="button" class="members-search__clear button button--secondary wt_whitespace-nowrap component-button"
                 data-on:click="<?php echo esc_attr($clear_action); ?>"
@@ -174,7 +174,7 @@ $clear_action = '(' . '$listLoading' . ' = true, ' . '$searchQuery' . " = '', " 
                 data-on:error="$listLoading = false"
                 data-show="$searchSubmitted && $searchQuery && $searchQuery.trim() !== ''"
                 data-indicator:members-loading>
-                <?php esc_html_e('Clear', 'wicket-acc'); ?>
+                <?php /* translators: Button: clear the search. */ echo esc_html_x('Clear', 'button label', 'wicket-acc'); ?>
             </button>
         </div>
     </div>
@@ -210,7 +210,7 @@ include __DIR__ . '/members-list-unified.php';
             <li><?php
                 foreach ($issue['parts'] as $part) {
                     if ($part['type'] === 'token') {
-                        echo '<code class="orgman-copy-token" data-copy-value="' . esc_attr($part['value']) . '" title="' . esc_attr__('Click to copy', 'wicket-acc') . '" style="cursor:pointer;background:#fff3cd;border:1px solid #f9a825;border-radius:3px;padding:1px 5px;font-family:monospace;font-size:0.9em;">' . esc_html($part['value']) . '</code>';
+                        echo '<code class="orgman-copy-token" data-copy-value="' . esc_attr($part['value']) . '" title="' . esc_attr_x('Click to copy', 'tooltip', 'wicket-acc') . '" style="cursor:pointer;background:#fff3cd;border:1px solid #f9a825;border-radius:3px;padding:1px 5px;font-family:monospace;font-size:0.9em;">' . esc_html($part['value']) . '</code>';
                     } else {
                         echo esc_html($part['value']);
                     }
@@ -223,7 +223,7 @@ include __DIR__ . '/members-list-unified.php';
 $orgman_form_slug = $orgman_cfg['integrations']['additional_seats']['form_slug'] ?? 'additional-seats';
 $orgman_form_slug = is_string($orgman_form_slug) ? trim($orgman_form_slug) : 'additional-seats';
 $orgman_tier_field = $configService->getAdditionalSeatsTierSlugField();
-$orgman_token_attrs = 'title="' . esc_attr__('Click to copy', 'wicket-acc') . '" style="cursor:pointer;background:#fff3cd;border:1px solid #f9a825;border-radius:3px;padding:1px 5px;font-family:monospace;font-size:0.9em;"';
+$orgman_token_attrs = 'title="' . esc_attr_x('Click to copy', 'tooltip', 'wicket-acc') . '" style="cursor:pointer;background:#fff3cd;border:1px solid #f9a825;border-radius:3px;padding:1px 5px;font-family:monospace;font-size:0.9em;"';
 ?>
         <ul class="orgman-setup-warning__config" style="list-style:none;padding-left:0;margin:0.5rem 0 0;border-top:1px solid #f9a825;padding-top:0.5rem;opacity:0.85;">
             <li style="margin-bottom:0.5rem;">
@@ -254,7 +254,7 @@ $orgman_token_attrs = 'title="' . esc_attr__('Click to copy', 'wicket-acc') . '"
                 if (existing) existing.remove();
                 var tip = document.createElement('span');
                 tip.className = 'orgman-copy-feedback';
-                tip.textContent = '✓ Copied!';
+                tip.textContent = <?php echo wp_json_encode(_x('✓ Copied!', 'message', 'wicket-acc')); ?>;
                 tip.style.cssText = 'margin-left:6px;font-size:0.8em;color:#155724;font-family:sans-serif;font-weight:600;';
                 token.appendChild(tip);
                 token.style.background = '#d4edda';
@@ -271,13 +271,13 @@ $orgman_token_attrs = 'title="' . esc_attr__('Click to copy', 'wicket-acc') . '"
     <?php if ($can_purchase_seats && !empty($purchase_url)) : ?>
         <?php
     get_component('card-call-out', [
-        'title' => __('Need More Seats?', 'wicket-acc'),
+        'title' => _x('Need More Seats?', 'label', 'wicket-acc'),
         'description' => __('Purchase additional seats for your organization membership to accommodate more team members.', 'wicket-acc'),
         'style' => 'secondary',
         'links' => [
             [
                 'link' => [
-                    'title' => __('Purchase Additional Seats', 'wicket-acc'),
+                    'title' => _x('Purchase Additional Seats', 'button label', 'wicket-acc'),
                     'url' => $purchase_url,
                     'target' => '_self',
                 ],
@@ -376,7 +376,7 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
                     <?php echo esc_attr($edit_permissions_reset_actions); ?>
                 ">
                 <div class="wt_bg-white wt_p-6 wt_relative">
-                    <button type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
+                    <button aria-label="<?php echo esc_attr_x('Close', 'accessibility label', 'wicket-acc'); ?>" type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
                         data-on:click="
                             $editPermissionsModalOpen = false;
                             <?php echo esc_attr($edit_permissions_reset_actions); ?>
@@ -386,10 +386,14 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
                         ×
                     </button>
 
+                    <?php
+                    /* translators: %s: member name. */
+                    $edit_permissions_for_label = _x('Edit Permissions for %s', 'label', 'wicket-acc');
+                    ?>
                     <h2 class="wp-block-heading has-heading-sm-font-size wt_text-2xl wt_font-semibold wt_mb-4">
                         <span
-                            data-text="$currentMemberName ? '<?php echo esc_js(__('Edit Permissions for', 'wicket-acc')); ?> ' + $currentMemberName : '<?php echo esc_js(__('Edit Permissions', 'wicket-acc')); ?>'">
-                            <?php echo esc_html__('Edit Permissions', 'wicket-acc'); ?>
+                            data-text="$currentMemberName ? '<?php echo esc_js($edit_permissions_for_label); ?>'.split('%s').join($currentMemberName) : '<?php echo esc_js(_x('Edit Permissions', 'label', 'wicket-acc')); ?>'">
+                            <?php echo esc_html_x('Edit Permissions', 'label', 'wicket-acc'); ?>
                         </span>
                     </h2>
 
@@ -413,7 +417,7 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
                         <?php if ($allow_relationship_editing && !empty($relationship_types)) : ?>
                             <div class="wt_mb-6">
                                 <label class="wt_block wt_text-sm wt_font-medium wt_mb-2" for="edit-member-relationship-type">
-                                    <?php esc_html_e('Relationship Type', 'wicket-acc'); ?>
+                                    <?php echo esc_html_x('Relationship Type', 'label', 'wicket-acc'); ?>
                                 </label>
                                 <select id="edit-member-relationship-type" name="relationship_type"
                                     data-bind="currentMemberRelationshipType"
@@ -431,7 +435,7 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
                         <?php if ($form_config['description']['enabled'] ?? false): ?>
                             <div class="wt_mb-6">
                                 <label class="wt_block wt_text-sm wt_font-medium wt_mb-2" for="edit-member-description">
-                                    <?php echo esc_html($form_config['description']['label'] ?? __('Description', 'wicket-acc')); ?>
+                                    <?php echo esc_html($form_config['description']['label'] ?? _x('Description', 'label', 'wicket-acc')); ?>
                                 </label>
                                 <?php if (($form_config['description']['input_type'] ?? 'textarea') === 'text'): ?>
                                     <input type="text" id="edit-member-description" name="description"
@@ -447,7 +451,7 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
                         <?php endif; ?>
 
                         <div class="wt_mb-6">
-                            <p class="wt_font-bold wt_mb-3"><?php esc_html_e('Roles', 'wicket-acc'); ?></p>
+                            <p class="wt_font-bold wt_mb-3"><?php echo esc_html_x('Roles', 'label', 'wicket-acc'); ?></p>
                             <?php if (!empty($available_roles)) : ?>
                                 <div class="wt_space-y-2">
                                     <?php foreach ($available_roles as $slug => $role) : ?>
@@ -468,7 +472,7 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
                                     <?php endforeach; ?>
                                 </div>
                             <?php else : ?>
-                                <p class="wt_text-sm wt_text-content"><?php esc_html_e('No roles available.', 'wicket-acc'); ?></p>
+                                <p class="wt_text-sm wt_text-content"><?php echo esc_html_x('No roles available.', 'message', 'wicket-acc'); ?></p>
                             <?php endif; ?>
                         </div>
 
@@ -481,14 +485,14 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
                                 "
                                 class="button button--secondary wt_px-4 wt_py-2 wt_text-sm component-button"
                                 data-class="{ 'wt_pointer-events-none': $editPermissionsSubmitting, 'wt_opacity-50': $editPermissionsSubmitting }"
-                                data-attr:aria-disabled="$editPermissionsSubmitting ? 'true' : 'false'"><?php esc_html_e('Cancel', 'wicket-acc'); ?></button>
+                                data-attr:aria-disabled="$editPermissionsSubmitting ? 'true' : 'false'"><?php echo esc_html_x('Cancel', 'button label', 'wicket-acc'); ?></button>
                             <button
                                 type="submit"
                                 class="button button--primary wt_button_submit_async wt_inline-flex wt_items-center wt_gap-2 wt_px-4 wt_py-2 wt_text-sm component-button"
                                 data-class="{ 'wt_pointer-events-none': $editPermissionsSubmitting, 'wt_opacity-50': $editPermissionsSubmitting, 'wt_is-loading': $editPermissionsSubmitting }"
                                 data-attr:aria-disabled="$editPermissionsSubmitting ? 'true' : 'false'">
                                 <span class="wt_submit_label">
-                                    <?php esc_html_e('Save Permissions', 'wicket-acc'); ?>
+                                    <?php echo esc_html_x('Save Permissions', 'button label', 'wicket-acc'); ?>
                                 </span>
                                 <span
                                     class="wt_loader wt_loader_button wt_submit_loader"
@@ -504,7 +508,7 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
                                 $editPermissionsModalOpen = false;
                                 <?php echo esc_attr($edit_permissions_reset_actions); ?>
                             "
-                        ><?php esc_html_e('Close', 'wicket-acc'); ?></button>
+                        ><?php echo esc_html_x('Close', 'button label', 'wicket-acc'); ?></button>
                     </div>
                 </div>
             </dialog>
@@ -522,7 +526,7 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
         data-effect="if ($addMemberModalOpen) el.showModal(); else el.close();"
         data-on:close="<?php echo esc_attr($add_member_modal_reset_actions); ?>">
         <div class="wt_bg-white wt_p-6 wt_relative">
-            <button type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
+            <button aria-label="<?php echo esc_attr_x('Close', 'accessibility label', 'wicket-acc'); ?>" type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
                 data-on:click="<?php echo esc_attr($add_member_request_close_actions); ?>" data-show="!$addMemberSuccess"
                 data-class="{ 'wt_pointer-events-none': $addMemberSubmitting, 'wt_opacity-50': $addMemberSubmitting }"
                 data-attr:aria-disabled="$addMemberSubmitting ? 'true' : 'false'">
@@ -530,7 +534,7 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
             </button>
 
             <h2 class="wp-block-heading has-heading-sm-font-size wt_text-2xl wt_font-semibold wt_mb-4">
-                <?php esc_html_e('Add Member', 'wicket-acc'); ?>
+                <?php echo esc_html_x('Add Member', 'button label', 'wicket-acc'); ?>
             </h2>
 
             <?php if ($mode === 'groups') : ?>
@@ -551,29 +555,29 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
 
                     <div>
                         <label class="wt_block wt_text-sm wt_font-medium wt_mb-1" for="group-member-first-name">
-                            <?php esc_html_e('First Name', 'wicket-acc'); ?>
+                            <?php echo esc_html_x('First Name', 'label', 'wicket-acc'); ?>
                         </label>
                         <input id="group-member-first-name" name="first_name" type="text"
                             class="wt_w-full wt_border wt_border-color wt_rounded-md wt_p-2" required>
                     </div>
                     <div>
                         <label class="wt_block wt_text-sm wt_font-medium wt_mb-1" for="group-member-last-name">
-                            <?php esc_html_e('Last Name', 'wicket-acc'); ?>
+                            <?php echo esc_html_x('Last Name', 'label', 'wicket-acc'); ?>
                         </label>
                         <input id="group-member-last-name" name="last_name" type="text"
                             class="wt_w-full wt_border wt_border-color wt_rounded-md wt_p-2" required>
                     </div>
                     <div>
                         <label class="wt_block wt_text-sm wt_font-medium wt_mb-1" for="group-member-email">
-                            <?php esc_html_e('Email Address', 'wicket-acc'); ?>
+                            <?php echo esc_html_x('Email Address', 'label', 'wicket-acc'); ?>
                         </label>
                         <input id="group-member-email" name="email" type="email"
                             class="wt_w-full wt_border wt_border-color wt_rounded-md wt_p-2"
-                            placeholder="<?php echo esc_attr(__('user@mail.com', 'wicket-acc')); ?>" required>
+                            placeholder="<?php echo esc_attr(_x('user@mail.com', 'field placeholder', 'wicket-acc')); ?>" required>
                     </div>
                     <div>
                         <label class="wt_block wt_text-sm wt_font-medium wt_mb-1" for="group-member-role">
-                            <?php esc_html_e('Role', 'wicket-acc'); ?>
+                            <?php echo esc_html_x('Role', 'label', 'wicket-acc'); ?>
                         </label>
                         <select id="group-member-role" name="role"
                             class="wt_w-full wt_border wt_border-color wt_rounded-md wt_p-2">
@@ -584,8 +588,8 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
                 $observer_role = $group_roles['observer'] ?? ($groups_config['observer_role'] ?? 'observer');
                 $default_member_role = $groups_config['presentation']['add_member_default_role'] ?? ($groups_config['ui']['add_member_default_role'] ?? 'member');
                 ?>
-                            <option value="<?php echo esc_attr($member_role); ?>"<?php echo $default_member_role !== 'observer' ? ' selected' : ''; ?>><?php esc_html_e('Member', 'wicket-acc'); ?></option>
-                            <option value="<?php echo esc_attr($observer_role); ?>"<?php echo $default_member_role === 'observer' ? ' selected' : ''; ?>><?php esc_html_e('Observer', 'wicket-acc'); ?></option>
+                            <option value="<?php echo esc_attr($member_role); ?>"<?php echo $default_member_role !== 'observer' ? ' selected' : ''; ?>><?php /* translators: Group role options (Member, Observer). */ echo esc_html_x('Member', 'group role', 'wicket-acc'); ?></option>
+                            <option value="<?php echo esc_attr($observer_role); ?>"<?php echo $default_member_role === 'observer' ? ' selected' : ''; ?>><?php echo esc_html_x('Observer', 'group role', 'wicket-acc'); ?></option>
                         </select>
                     </div>
 
@@ -593,12 +597,12 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
                         <button type="button" class="button button--secondary component-button"
                             data-on:click="<?php echo esc_attr($add_member_request_close_actions); ?>"
                             data-class="{ 'wt_pointer-events-none': $addMemberSubmitting, 'wt_opacity-50': $addMemberSubmitting }"
-                            data-attr:aria-disabled="$addMemberSubmitting ? 'true' : 'false'"><?php esc_html_e('Cancel', 'wicket-acc'); ?></button>
+                            data-attr:aria-disabled="$addMemberSubmitting ? 'true' : 'false'"><?php echo esc_html_x('Cancel', 'button label', 'wicket-acc'); ?></button>
                         <button type="submit" class="button button--primary wt_button_submit_async wt_inline-flex wt_items-center wt_gap-2 component-button"
                             data-class="{ 'wt_pointer-events-none': $addMemberSubmitting, 'wt_opacity-50': $addMemberSubmitting, 'wt_is-loading': $addMemberSubmitting }"
                             data-attr:aria-disabled="$addMemberSubmitting ? 'true' : 'false'">
                             <span class="wt_submit_label">
-                                <?php esc_html_e('Add Member', 'wicket-acc'); ?>
+                                <?php echo esc_html_x('Add Member', 'button label', 'wicket-acc'); ?>
                             </span>
                             <span class="wt_loader wt_loader_button wt_submit_loader"
                                 aria-hidden="true"></span>
@@ -609,19 +613,17 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
                     <?php if ($add_member_auto_close_enabled) : ?>
                         <p class="wt_text-sm wt_text-content wt_mb-3" data-show="$autoCloseCountdown > 0"
                             data-on-interval__duration.1000="if ($autoCloseCountdown > 1) { $autoCloseCountdown-- } else if ($autoCloseCountdown === 1) { <?php echo esc_attr($add_member_request_close_actions); ?> }">
-                            <?php esc_html_e('This dialog will close automatically in', 'wicket-acc'); ?>
-                            <span class="wt_font-semibold" data-text="$autoCloseCountdown"></span>
-                            <?php esc_html_e('seconds.', 'wicket-acc'); ?>
+                            <?php echo \WicketORM\Helpers\TemplateHelper::auto_close_countdown_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in helper. ?>
                         </p>
                     <?php endif; ?>
                     <div class="wt_mb-4 wt_bg-green-100 wt_border wt_border-green-400 wt_text-green-700 wt_px-4 wt_py-3 wt_rounded-sm" data-show="$addMemberSuccessMessage !== ''">
-                        <p><strong><?php esc_html_e('Success!', 'wicket-acc'); ?></strong></p>
+                        <p><strong><?php echo esc_html_x('Success!', 'label', 'wicket-acc'); ?></strong></p>
                         <p data-text="$addMemberSuccessMessage"></p>
                     </div>
                     <div class="wt_flex wt_justify-end">
                         <button type="button" class="button button--primary component-button"
                             data-on:click="<?php echo esc_attr($add_member_request_close_actions); ?>">
-                            <?php esc_html_e('Close', 'wicket-acc'); ?>
+                            <?php echo esc_html_x('Close', 'button label', 'wicket-acc'); ?>
                         </button>
                     </div>
                 </div>
@@ -650,7 +652,7 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
                     <?php if ($form_config['first_name']['enabled'] ?? false) : ?>
                         <div>
                             <label class="wt_block wt_text-sm wt_font-medium wt_mb-1" for="new-member-first-name">
-                                <?php echo esc_html($form_config['first_name']['label'] ?? __('First Name', 'wicket-acc')); ?>
+                                <?php echo esc_html($form_config['first_name']['label'] ?? _x('First Name', 'label', 'wicket-acc')); ?>
                                 <?php echo ($form_config['first_name']['required'] ?? false) ? '*' : ''; ?>
                             </label>
                             <input type="text" id="new-member-first-name" name="first_name"
@@ -662,7 +664,7 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
                     <?php if ($form_config['last_name']['enabled'] ?? false) : ?>
                         <div>
                             <label class="wt_block wt_text-sm wt_font-medium wt_mb-1" for="new-member-last-name">
-                                <?php echo esc_html($form_config['last_name']['label'] ?? __('Last Name', 'wicket-acc')); ?>
+                                <?php echo esc_html($form_config['last_name']['label'] ?? _x('Last Name', 'label', 'wicket-acc')); ?>
                                 <?php echo ($form_config['last_name']['required'] ?? false) ? '*' : ''; ?>
                             </label>
                             <input type="text" id="new-member-last-name" name="last_name"
@@ -674,20 +676,20 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
                     <?php if ($form_config['email']['enabled'] ?? false) : ?>
                         <div>
                             <label class="wt_block wt_text-sm wt_font-medium wt_mb-1" for="new-member-email">
-                                <?php echo esc_html($form_config['email']['label'] ?? __('Email Address', 'wicket-acc')); ?>
+                                <?php echo esc_html($form_config['email']['label'] ?? _x('Email Address', 'label', 'wicket-acc')); ?>
                                 <?php echo ($form_config['email']['required'] ?? false) ? '*' : ''; ?>
                             </label>
                             <input type="email" id="new-member-email" name="email"
                                 <?php echo ($form_config['email']['required'] ?? false) ? 'required' : ''; ?>
                                 class="wt_w-full wt_border wt_border-color wt_rounded-md wt_p-2"
-                                placeholder="<?php echo esc_attr(__('user@mail.com', 'wicket-acc')); ?>">
+                                placeholder="<?php echo esc_attr(_x('user@mail.com', 'field placeholder', 'wicket-acc')); ?>">
                         </div>
                     <?php endif; ?>
 
                     <?php if (($form_config['relationship_type']['enabled'] ?? false) && !empty($relationship_types)) : ?>
                         <div>
                             <label class="wt_block wt_text-sm wt_font-medium wt_mb-1" for="new-member-relationship-type">
-                                <?php echo esc_html($form_config['relationship_type']['label'] ?? __('Relationship Type', 'wicket-acc')); ?>
+                                <?php echo esc_html($form_config['relationship_type']['label'] ?? _x('Relationship Type', 'label', 'wicket-acc')); ?>
                                 <?php echo ($form_config['relationship_type']['required'] ?? false) ? '*' : ''; ?>
                             </label>
                             <select id="new-member-relationship-type" name="relationship_type"
@@ -706,7 +708,7 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
                     <?php if ($form_config['description']['enabled'] ?? false): ?>
                         <div>
                             <label class="wt_block wt_text-sm wt_font-medium wt_mb-1" for="new-member-description">
-                                <?php echo esc_html($form_config['description']['label'] ?? __('Description', 'wicket-acc')); ?>
+                                <?php echo esc_html($form_config['description']['label'] ?? _x('Description', 'label', 'wicket-acc')); ?>
                                 <?php echo ($form_config['description']['required'] ?? false) ? '*' : ''; ?>
                             </label>
                             <?php if (($form_config['description']['input_type'] ?? 'textarea') === 'text'): ?>
@@ -741,7 +743,7 @@ $available_roles = OrgHelpers\PermissionHelper::filter_role_choices(
 
                     <?php if (!empty($available_roles)) : ?>
                         <fieldset class="wt_flex wt_flex-col wt_gap-2">
-                            <legend class="wt_text-sm wt_font-medium"><?php esc_html_e('Security Roles', 'wicket-acc'); ?></legend>
+                            <legend class="wt_text-sm wt_font-medium"><?php echo esc_html_x('Security Roles', 'label', 'wicket-acc'); ?></legend>
                             <?php foreach ($available_roles as $role_slug => $role_name) : ?>
                                 <label class="wt_flex wt_items-center wt_gap-2">
                                     <input type="checkbox" name="roles[]" value="<?php echo esc_attr($role_slug); ?>" class="form-checkbox">
@@ -758,11 +760,11 @@ $available_roles = OrgHelpers\PermissionHelper::filter_role_choices(
                         <button type="button" class="button button--secondary component-button"
                             data-on:click="<?php echo esc_attr($add_member_request_close_actions); ?>"
                             data-class="{ 'wt_pointer-events-none': $addMemberSubmitting, 'wt_opacity-50': $addMemberSubmitting }"
-                            data-attr:aria-disabled="$addMemberSubmitting ? 'true' : 'false'"><?php esc_html_e('Cancel', 'wicket-acc'); ?></button>
+                            data-attr:aria-disabled="$addMemberSubmitting ? 'true' : 'false'"><?php echo esc_html_x('Cancel', 'button label', 'wicket-acc'); ?></button>
                         <button type="submit" class="button button--primary wt_button_submit_async wt_inline-flex wt_items-center wt_gap-2 component-button"
                             data-class="{ 'wt_pointer-events-none': $addMemberSubmitting, 'wt_opacity-50': $addMemberSubmitting, 'wt_is-loading': $addMemberSubmitting }"
                             data-attr:aria-disabled="$addMemberSubmitting ? 'true' : 'false'">
-                            <span class="wt_submit_label"><?php esc_html_e('Add Member', 'wicket-acc'); ?></span>
+                            <span class="wt_submit_label"><?php echo esc_html_x('Add Member', 'button label', 'wicket-acc'); ?></span>
                             <span class="wt_loader wt_loader_button wt_submit_loader"
                                 aria-hidden="true"></span>
                         </button>
@@ -772,19 +774,17 @@ $available_roles = OrgHelpers\PermissionHelper::filter_role_choices(
                     <?php if ($add_member_auto_close_enabled) : ?>
                         <p class="wt_text-sm wt_text-content wt_mb-3" data-show="$autoCloseCountdown > 0"
                             data-on-interval__duration.1000="if ($autoCloseCountdown > 1) { $autoCloseCountdown-- } else if ($autoCloseCountdown === 1) { <?php echo esc_attr($add_member_request_close_actions); ?> }">
-                            <?php esc_html_e('This dialog will close automatically in', 'wicket-acc'); ?>
-                            <span class="wt_font-semibold" data-text="$autoCloseCountdown"></span>
-                            <?php esc_html_e('seconds.', 'wicket-acc'); ?>
+                            <?php echo \WicketORM\Helpers\TemplateHelper::auto_close_countdown_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in helper. ?>
                         </p>
                     <?php endif; ?>
                     <div class="wt_mb-4 wt_bg-green-100 wt_border wt_border-green-400 wt_text-green-700 wt_px-4 wt_py-3 wt_rounded-sm" data-show="$addMemberSuccessMessage !== ''">
-                        <p><strong><?php esc_html_e('Success!', 'wicket-acc'); ?></strong></p>
+                        <p><strong><?php echo esc_html_x('Success!', 'label', 'wicket-acc'); ?></strong></p>
                         <p data-text="$addMemberSuccessMessage"></p>
                     </div>
                     <div class="wt_flex wt_justify-end">
                         <button type="button" class="button button--primary component-button"
                             data-on:click="<?php echo esc_attr($add_member_request_close_actions); ?>">
-                            <?php esc_html_e('Close', 'wicket-acc'); ?>
+                            <?php echo esc_html_x('Close', 'button label', 'wicket-acc'); ?>
                         </button>
                     </div>
                 </div>
@@ -803,7 +803,7 @@ $available_roles = OrgHelpers\PermissionHelper::filter_role_choices(
             data-effect="if ($bulkUploadModalOpen) el.showModal(); else el.close();"
             data-on:close="($membersLoading = false); $bulkUploadModalOpen = false">
             <div class="wt_bg-white wt_p-6 wt_relative">
-                <button type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
+                <button aria-label="<?php echo esc_attr_x('Close', 'accessibility label', 'wicket-acc'); ?>" type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
                     data-on:click="$bulkUploadModalOpen = false"
                     data-class="{ 'wt_pointer-events-none': $bulkUploadSubmitting, 'wt_opacity-50': $bulkUploadSubmitting }"
                     data-attr:aria-disabled="$bulkUploadSubmitting ? 'true' : 'false'">
@@ -820,11 +820,11 @@ $available_roles = OrgHelpers\PermissionHelper::filter_role_choices(
         data-effect="if ($removeMemberModalOpen) el.showModal(); else el.close();"
         data-on:close="<?php echo esc_attr($remove_member_reset_actions); ?>">
         <div class="wt_bg-white wt_p-6 wt_relative">
-            <button type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
+            <button aria-label="<?php echo esc_attr_x('Close', 'accessibility label', 'wicket-acc'); ?>" type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
                 data-on:click="<?php echo esc_attr($remove_member_request_close_actions); ?>" data-show="!$removeMemberSuccess"
                 data-class="{ 'wt_pointer-events-none': $removeMemberSubmitting, 'wt_opacity-50': $removeMemberSubmitting }"
                 data-attr:aria-disabled="$removeMemberSubmitting ? 'true' : 'false'">×</button>
-            <h2 class="wp-block-heading has-heading-sm-font-size wt_text-2xl wt_font-semibold wt_mb-4"><?php esc_html_e('Remove Member', 'wicket-acc'); ?></h2>
+            <h2 class="wp-block-heading has-heading-sm-font-size wt_text-2xl wt_font-semibold wt_mb-4"><?php echo esc_html_x('Remove Member', 'label', 'wicket-acc'); ?></h2>
             <div id="remove-member-messages"></div>
 
             <div data-show="!$removeMemberSuccess">
@@ -833,8 +833,11 @@ $available_roles = OrgHelpers\PermissionHelper::filter_role_choices(
                         <?php echo esc_html__('Are you sure you want to remove this member?', 'wicket-acc'); ?>
                     </span>
                     <span data-class_wt_hidden="$currentRemoveMemberName !== ''">
-                        <?php echo esc_html__('Are you sure you want to remove', 'wicket-acc'); ?>
-                        <span data-text="$currentRemoveMemberName"></span>&nbsp;<?php echo esc_html__('from this organization?', 'wicket-acc'); ?>
+                        <?php
+                        /* translators: %s: name of the member being removed. */
+                        $remove_member_confirm_text = esc_html__('Are you sure you want to remove %s from this organization?', 'wicket-acc');
+                        echo sprintf($remove_member_confirm_text, '<span data-text="$currentRemoveMemberName"></span>'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                        ?>
                     </span>
                     <br>
                     <?php esc_html_e('This action cannot be undone.', 'wicket-acc'); ?>
@@ -877,11 +880,11 @@ $available_roles = OrgHelpers\PermissionHelper::filter_role_choices(
                             data-on:click="<?php echo esc_attr($remove_member_request_close_actions); ?>"
                             class="button button--secondary wt_px-4 wt_py-2 wt_text-sm component-button"
                             data-class="{ 'wt_pointer-events-none': $removeMemberSubmitting, 'wt_opacity-50': $removeMemberSubmitting }"
-                            data-attr:aria-disabled="$removeMemberSubmitting ? 'true' : 'false'"><?php esc_html_e('Cancel', 'wicket-acc'); ?></button>
+                            data-attr:aria-disabled="$removeMemberSubmitting ? 'true' : 'false'"><?php echo esc_html_x('Cancel', 'button label', 'wicket-acc'); ?></button>
                         <button type="submit" class="button button--danger wt_button_submit_async wt_inline-flex wt_items-center wt_gap-2 wt_px-4 wt_py-2 wt_text-sm component-button"
                             data-class="{ 'wt_pointer-events-none': $removeMemberSubmitting, 'wt_opacity-50': $removeMemberSubmitting, 'wt_is-loading': $removeMemberSubmitting }"
                             data-attr:aria-disabled="$removeMemberSubmitting ? 'true' : 'false'">
-                            <span class="wt_submit_label" data-show="!$removeMemberSubmitting"><?php esc_html_e('Remove Member', 'wicket-acc'); ?></span>
+                            <span class="wt_submit_label" data-show="!$removeMemberSubmitting"><?php echo esc_html_x('Remove Member', 'button label', 'wicket-acc'); ?></span>
                             <span class="wt_loader wt_loader_button wt_submit_loader"
                                 data-show="$removeMemberSubmitting"
                                 aria-hidden="true"></span>
@@ -893,15 +896,13 @@ $available_roles = OrgHelpers\PermissionHelper::filter_role_choices(
                 <?php if ($remove_member_auto_close_enabled) : ?>
                     <p class="wt_text-sm wt_text-content wt_mb-3" data-show="$autoCloseCountdown > 0"
                         data-on-interval__duration.1000="if ($autoCloseCountdown > 1) { $autoCloseCountdown-- } else if ($autoCloseCountdown === 1) { <?php echo esc_attr($remove_member_request_close_actions); ?> }">
-                        <?php esc_html_e('This dialog will close automatically in', 'wicket-acc'); ?>
-                        <span class="wt_font-semibold" data-text="$autoCloseCountdown"></span>
-                        <?php esc_html_e('seconds.', 'wicket-acc'); ?>
+                        <?php echo \WicketORM\Helpers\TemplateHelper::auto_close_countdown_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in helper. ?>
                     </p>
                 <?php endif; ?>
                 <div class="wt_flex wt_justify-end">
                     <button type="button" class="button button--primary wt_px-4 wt_py-2 wt_text-sm component-button"
                         data-on:click="<?php echo esc_attr($remove_member_request_close_actions); ?>">
-                        <?php esc_html_e('Close', 'wicket-acc'); ?>
+                        <?php echo esc_html_x('Close', 'button label', 'wicket-acc'); ?>
                     </button>
                 </div>
             </div>

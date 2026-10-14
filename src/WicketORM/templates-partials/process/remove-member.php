@@ -80,7 +80,7 @@ if ('POST' === strtoupper($request_method)) {
         }
 
         // Resolve a friendly name for the success message.
-        $member_name = 'Member';
+        $member_name = _x('Member', 'value placeholder', 'wicket-acc');
         if (!empty($person_name)) {
             $member_name = $person_name;
         } elseif (function_exists('wicket_get_person_by_id')) {
@@ -98,7 +98,7 @@ if ('POST' === strtoupper($request_method)) {
                     $last_name = $attributes['last_name'] ?? '';
                     $member_name = trim($first_name . ' ' . $last_name);
                     if (empty($member_name)) {
-                        $member_name = 'Member';
+                        $member_name = _x('Member', 'value placeholder', 'wicket-acc');
                     }
                 }
             }
@@ -128,7 +128,7 @@ if ('POST' === strtoupper($request_method)) {
         }
 
         $success_message = sprintf(
-            esc_html__('Successfully removed %1$s from the organization.', 'wicket-acc'),
+            /* translators: %1$s: member name. */ esc_html__('Successfully removed %1$s from the organization.', 'wicket-acc'),
             '<strong>' . esc_html($member_name) . '</strong>'
         );
 

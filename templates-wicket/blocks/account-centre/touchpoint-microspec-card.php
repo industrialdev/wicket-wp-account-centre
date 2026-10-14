@@ -41,11 +41,11 @@ if (isset($tp['attributes']['data']['location']) && $tp['attributes']['data']['l
             </a>
         <?php endif; ?>
         <p class="text-sm mb-2 event-date">
-            <?php echo date('M', strtotime($tp['attributes']['data']['StartDate'])) . '-' . date('j', strtotime($tp['attributes']['data']['StartDate'])) . '-' . date('Y', strtotime($tp['attributes']['data']['StartDate'])) . ' | ' . date('g:i a', strtotime($tp['attributes']['data']['StartDate'])) . ' - ' . date('g:i a', strtotime($tp['attributes']['data']['EndDate'])); ?>
+            <?php echo date_i18n(get_option('date_format'), strtotime($tp['attributes']['data']['StartDate'])) . ' | ' . date_i18n(get_option('time_format'), strtotime($tp['attributes']['data']['StartDate'])) . ' - ' . date_i18n(get_option('time_format'), strtotime($tp['attributes']['data']['EndDate'])); ?>
         </p>
         <?php if ($location) : ?>
             <p class="text-sm event-location">
-                <strong><?php _e('Location:', 'wicket-acc'); ?></strong> <?php echo $tp['attributes']['data']['location']; ?>
+                <strong><?php _ex('Location:', 'label', 'wicket-acc'); ?></strong> <?php echo $tp['attributes']['data']['location']; ?>
             </p>
         <?php endif; ?>
     </a>

@@ -537,11 +537,11 @@ class GravityFormsHelper extends Helper
         if ($quantity < $min) {
             $result['is_valid'] = false;
             /* translators: %d: minimum seats per order */
-            $result['message'] = sprintf(__('Please enter at least %d seat(s).', 'wicket-acc'), $min);
+            $result['message'] = sprintf(_n('Please enter at least %d seat.', 'Please enter at least %d seats.', $min, 'wicket-acc'), $min);
         } elseif ($max > 0 && $quantity > $max) {
             $result['is_valid'] = false;
             /* translators: %d: maximum seats per order */
-            $result['message'] = sprintf(__('Maximum %d seats can be purchased at once. Please contact support for larger orders.', 'wicket-acc'), $max);
+            $result['message'] = sprintf(_n('Maximum %d seat can be purchased at once. Please contact support for larger orders.', 'Maximum %d seats can be purchased at once. Please contact support for larger orders.', $max, 'wicket-acc'), $max);
         }
 
         return $result;

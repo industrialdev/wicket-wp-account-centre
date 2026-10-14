@@ -32,38 +32,40 @@ $max_upload_size = $args['max_upload_size'] ?? '';
 ?>
 <section class="container wicket-acc-org-logo-change">
     <h2>
-        <?php esc_html_e('Organization Logo', 'wicket-acc'); ?>
+        <?php echo esc_html_x('Organization Logo', 'label', 'wicket-acc'); ?>
     </h2>
     <div class="org-logo">
         <?php if ($organization_logo_url) : ?>
             <img src="<?php echo $organization_logo_url; ?>?<?php echo time(); ?>"
-                alt="<?php esc_html_e('Profile Image', 'wicket-acc'); ?>" class="org-logo-img">
+                alt="<?php echo esc_attr_x('Organization Logo', 'accessibility label', 'wicket-acc'); ?>" class="org-logo-img">
 
             <form name="wicket-acc-org-profile-picture-remove-form" method="post">
                 <input type="hidden" name="org_id" value="<?php echo $org_id; ?>">
                 <input type="hidden" name="action" value="wicket-acc-org-profile-picture-remove-form">
                 <?php wp_nonce_field('wicket-acc-org-profile-picture-remove-form', 'nonce'); ?>
                 <button type="submit" class="remove-image circle-x"
-                    title="<?php esc_html_e('Remove Image', 'wicket-acc'); ?>">x</button>
+                    title="<?php echo esc_attr_x('Remove Image', 'tooltip', 'wicket-acc'); ?>" aria-label="<?php echo esc_attr_x('Close', 'accessibility label', 'wicket-acc'); ?>">&times;</button>
             </form>
         <?php endif; ?>
     </div>
     <form name="wicket-acc-org-logo-form" method="post" enctype="multipart/form-data">
         <label for="org-logo" class="sr-only">
-            <?php esc_html_e('Choose File', 'wicket-acc'); ?>
+            <?php echo esc_html_x('Choose File', 'button label', 'wicket-acc'); ?>
         </label>
         <input type="file" id="org-logo" name="org-logo" class="sr-only" accept="image/png, image/gif, image/jpeg">
         <div class="guidance text-sm">
             <?php esc_html_e('Upload an organization logo to represent your organization.', 'wicket-acc'); ?>
-            <?php esc_html_e('Max upload size:', 'wicket-acc'); ?> <?php echo $max_upload_size; ?>
-            <?php esc_html_e('MB', 'wicket-acc'); ?>
+            <?php
+            /* translators: %d: max upload size in megabytes. */
+            printf(esc_html__('Max upload size: %d MB', 'wicket-acc'), (int) $max_upload_size);
+            ?>
         </div>
         <div class="buttons">
             <label for="org-logo" class="btn choose-file">
-                <?php esc_html_e('Choose File', 'wicket-acc'); ?>
+                <?php echo esc_html_x('Choose File', 'button label', 'wicket-acc'); ?>
             </label>
             <button type="submit" class="btn update-image" id="update-image" disabled="disabled">
-                <?php esc_html_e('Update Image', 'wicket-acc'); ?>
+                <?php echo esc_html_x('Update Image', 'button label', 'wicket-acc'); ?>
             </button>
         </div>
         <div id="file-alert" class="file-alert" style="display: none;">
