@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.11.15] - 2026-10-14
+
+### Fixed
+- **orgman:** resolve roster tail members and false removals (WWID-2707) (#61)
+
+
 ## [1.11.14] - 2026-10-13
 
 ### Added
