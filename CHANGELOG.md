@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.11.17] - 2026-10-15
+
+### Fixed
+- **orgman:** clamp remove end date to org membership end (WWID-2774) (#63)
+
+
 ## [1.11.16] - 2026-10-14
 
 ### Fixed
