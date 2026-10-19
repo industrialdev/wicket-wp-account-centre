@@ -154,7 +154,7 @@ class init extends Blocks
 
                                 <div class="my-0 wicket-welcome-memberships">
                                     <p class="mb-0 wicket-welcome-member-type">
-                                        <strong><?php echo apply_filters('wicket/acc/block/membership_type_text', __('Membership Type', 'wicket-acc')); ?></strong>
+                                        <strong><?php echo apply_filters('wicket/acc/block/membership_type_text', __('Membership Type:', 'wicket-acc')); ?></strong>
                                         <?php
                                         $membership_name = $membership['name_' . $current_lang] ?? $membership['name'] ?? ''; // Added fallback and ensure we have a value
 
@@ -238,7 +238,7 @@ class init extends Blocks
                                         $shown_member_since = true;
                                         ?>
                                         <p class="wicket-welcome-member-since mb-0">
-                                            <?php echo apply_filters('wicket/acc/block/member_since_text', __('Member Since', 'wicket-acc')); ?>
+                                            <?php echo apply_filters('wicket/acc/block/member_since_text', __('Member Since:', 'wicket-acc')); ?>
                                             <?php if (isset($membership_began_on) && !empty($membership_began_on)) {
                                                 echo wp_date('F j, Y', strtotime($membership_began_on));
                                             } else {
