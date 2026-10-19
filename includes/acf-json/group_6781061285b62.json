@@ -61,7 +61,7 @@
             },
             "wpml_cf_preferences": 0,
             "choices": {
-                "eBook Fulfillment": "eBook Fulfillment",
+                "eBook Fulfillment": "eBook Fulfilment",
                 "eBook Codes for others": "eBook Codes for others"
             },
             "default_value": false,

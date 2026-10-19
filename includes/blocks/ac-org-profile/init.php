@@ -160,7 +160,7 @@ class init extends Blocks
 
             <?php if ($this->hide_additional_info == 0) : ?>
                 <div class="wicket-section" role="complementary">
-                    <h2><?php _e('Additional Info', 'wicket-acc'); ?>
+                    <h2><?php _ex('Additional Info', 'label', 'wicket-acc'); ?>
                     </h2>
                     <div id="additional_info"></div>
                 </div>

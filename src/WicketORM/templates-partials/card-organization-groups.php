@@ -40,25 +40,25 @@
                             <?php
                             printf(
                                 /* translators: %s: Membership tier name. */
-                                esc_html__('Membership Tier: %s', 'wicket-acc'),
+                                esc_html_x('Membership Tier: %s', 'label', 'wicket-acc'),
                                 esc_html($entry_membership_name)
                             );
                         ?>
                         </span>
                     <?php elseif ($entry_membership_uuid !== ''): ?>
-                        <span class="wt_text-base"><?php esc_html_e('Active Membership', 'wicket-acc'); ?></span>
+                        <span class="wt_text-base"><?php echo esc_html_x('Active Membership', 'status', 'wicket-acc'); ?></span>
                     <?php else: ?>
-                        <span class="wt_text-base"><?php esc_html_e('No membership found', 'wicket-acc'); ?></span>
+                        <span class="wt_text-base"><?php echo esc_html_x('No membership found', 'status', 'wicket-acc'); ?></span>
                     <?php endif; ?>
                 </div>
 
                 <?php if ($entry_is_active): ?>
                     <div class="wt_flex wt_items-center wt_gap-2">
-                        <span class="wt_inline-block wt_w-2 wt_h-2 wt_rounded-full wt_bg-green-500" aria-hidden="true"></span><span class="wt_text-base wt_leading-none wt_text-content"><?php esc_html_e('Active Member', 'wicket-acc'); ?></span>
+                        <span class="wt_inline-block wt_w-2 wt_h-2 wt_rounded-full wt_bg-green-500" aria-hidden="true"></span><span class="wt_text-base wt_leading-none wt_text-content"><?php echo esc_html_x('Active Member', 'status', 'wicket-acc'); ?></span>
                     </div>
                 <?php elseif ($entry_membership_uuid !== ''): ?>
                     <div class="wt_flex wt_items-center wt_gap-2">
-                        <span class="wt_inline-block wt_w-2 wt_h-2 wt_rounded-full wt_bg-gray-400" aria-hidden="true"></span><span class="wt_text-base wt_leading-none wt_text-content"><?php esc_html_e('Inactive Membership', 'wicket-acc'); ?></span>
+                        <span class="wt_inline-block wt_w-2 wt_h-2 wt_rounded-full wt_bg-gray-400" aria-hidden="true"></span><span class="wt_text-base wt_leading-none wt_text-content"><?php echo esc_html_x('Inactive Membership', 'status', 'wicket-acc'); ?></span>
                     </div>
                 <?php endif; ?>
 
@@ -68,11 +68,11 @@
             ?>
                 <?php if ($card_show_my_role) : ?>
                 <div class="wt_text-base wt_font-bold wt_text-content">
-                    <span><?php esc_html_e('My Role(s):', 'wicket-acc'); ?></span>
+                    <span><?php echo esc_html_x('My Role(s):', 'label', 'wicket-acc'); ?></span>
                     <?php if (!empty($formatted_roles)): ?>
                         <?php echo esc_html(implode(', ', $formatted_roles)); ?>
                     <?php else: ?>
-                        <?php esc_html_e('No roles assigned', 'wicket-acc'); ?>
+                        <?php echo esc_html_x('No roles assigned', 'value placeholder', 'wicket-acc'); ?>
                     <?php endif; ?>
                 </div>
                 <?php endif; ?>
@@ -102,13 +102,13 @@
                     ?>
                     <?php if (!empty($group_types)): ?>
                         <div class="wt_text-base wt_text-content">
-                            <span class="wt_font-semibold"><?php esc_html_e('Type:', 'wicket-acc'); ?></span>
+                            <span class="wt_font-semibold"><?php echo esc_html_x('Type:', 'label', 'wicket-acc'); ?></span>
                             <?php echo esc_html(implode(', ', $group_types)); ?>
                         </div>
                     <?php endif; ?>
                     <?php if (!empty($group_tags)): ?>
                         <div class="wt_text-base wt_text-content">
-                            <span class="wt_font-semibold"><?php esc_html_e('Tag(s):', 'wicket-acc'); ?></span>
+                            <span class="wt_font-semibold"><?php echo esc_html_x('Tag(s):', 'label', 'wicket-acc'); ?></span>
                             <?php echo esc_html(implode(', ', $group_tags)); ?>
                         </div>
                     <?php endif; ?>

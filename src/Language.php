@@ -17,7 +17,7 @@ class Language extends WicketAcc
      */
     public function __construct()
     {
-        add_action('init', [$this, 'load_textdomain']);
+        add_action('init', [$this, 'load_textdomain'], 1);
     }
 
     /**
@@ -25,10 +25,7 @@ class Language extends WicketAcc
      */
     public function load_textdomain()
     {
-        if (!is_admin() && function_exists('load_plugin_textdomain')) {
-            $plugin_rel_path = dirname(plugin_basename(__FILE__)) . '/languages/';
-            load_plugin_textdomain('wicket-acc', false, $plugin_rel_path);
-        }
+        load_plugin_textdomain('wicket-acc', false, dirname(WICKET_ACC_BASENAME) . '/languages');
     }
 
     /**

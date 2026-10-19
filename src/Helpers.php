@@ -62,20 +62,20 @@ class Helpers extends WicketAcc
         $locale = $this->getOption('ac_localization', '');
 
         if (empty($locale)) {
-            return __('Account Centre', 'wicket-acc');
+            return _x('Account Centre', 'product name', 'wicket-acc');
         }
 
         // Check if returned value is a valid and allowed slug
         if (!in_array($locale, ['account-centre', 'account-center'])) {
-            return __('Account Centre', 'wicket-acc');
+            return _x('Account Centre', 'product name', 'wicket-acc');
         }
 
         // Check if we have center in the slug
         if (str_contains($locale, 'center')) {
-            return __('Account Center', 'wicket-acc');
+            return _x('Account Center', 'product name', 'wicket-acc');
         }
 
-        return __('Account Centre', 'wicket-acc');
+        return _x('Account Centre', 'product name', 'wicket-acc');
     }
 
     /**
@@ -323,19 +323,19 @@ class Helpers extends WicketAcc
     {
         $items = [
             'dashboard' => [
-                'title' => __('Dashboard', 'wicket-acc'),
+                'title' => _x('Dashboard', 'label', 'wicket-acc'),
                 'url' => $this->get_account_page_url('dashboard'),
             ],
             'edit-profile' => [
-                'title' => __('Edit Profile', 'wicket-acc'),
+                'title' => _x('Edit Profile', 'label', 'wicket-acc'),
                 'url' => $this->get_account_page_url('edit-profile'),
             ],
             'change-password' => [
-                'title' => __('Change Password', 'wicket-acc'),
+                'title' => _x('Change Password', 'label', 'wicket-acc'),
                 'url' => $this->get_account_page_url('change-password'),
             ],
             'organization-management' => [
-                'title' => __('Organization Management', 'wicket-acc'),
+                'title' => _x('Organization Management', 'label', 'wicket-acc'),
                 'url' => $this->get_account_page_url('org-management'),
             ],
         ];

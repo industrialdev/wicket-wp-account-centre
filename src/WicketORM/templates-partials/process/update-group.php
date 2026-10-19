@@ -41,7 +41,7 @@ $logger->info('Update group request received', $log_context);
 if (empty($group_uuid)) {
     $logger->error('Update group missing group_uuid', $log_context);
     status_header(200);
-    WicketORM\Helpers\DatastarSSE::renderError(__('Group identifier missing.', 'wicket-acc'), '#group-update-messages', []);
+    WicketORM\Helpers\DatastarSSE::renderError(_x('Group identifier missing.', 'message', 'wicket-acc'), '#group-update-messages', []);
 
     return;
 }
@@ -90,7 +90,7 @@ if (empty($payload)) {
 if (!function_exists('wicket_api_client')) {
     $logger->error('Update group API client unavailable', $log_context);
     status_header(200);
-    WicketORM\Helpers\DatastarSSE::renderError(__('API client unavailable.', 'wicket-acc'), '#group-update-messages', []);
+    WicketORM\Helpers\DatastarSSE::renderError(_x('API client unavailable.', 'message', 'wicket-acc'), '#group-update-messages', []);
 
     return;
 }
@@ -108,7 +108,7 @@ try {
     $client->patch('groups/' . rawurlencode($group_uuid), ['json' => $request_payload]);
     $logger->info('Update group succeeded', $log_context);
     status_header(200);
-    WicketORM\Helpers\DatastarSSE::renderSuccess(__('Group updated successfully.', 'wicket-acc'), '#group-update-messages', []);
+    WicketORM\Helpers\DatastarSSE::renderSuccess(_x('Group updated successfully.', 'message', 'wicket-acc'), '#group-update-messages', []);
 
     return;
 } catch (Throwable $e) {

@@ -715,15 +715,29 @@ class PermissionHelper extends Helper
     }
 
     /**
-     * Format roles for display (Title Case, underscores to spaces).
+     * Format roles for display.
+     *
+     * Uses the translated role labels from the OrgMan config when available,
+     * falling back to Title Case with underscores converted to spaces.
      *
      * @param array $roles Array of role slugs
      * @return array Formatted role names
      */
     public static function format_roles_for_display(array $roles): array
     {
-        return array_filter(array_map(function ($role) {
-            return ucwords(str_replace('_', ' ', (string) $role));
+        $config = \WicketORM\Services\ConfigService::getConfig();
+        $labels = $config['access']['roles']['labels'] ?? [];
+        if (!is_array($labels)) {
+            $labels = [];
+        }
+
+        return array_filter(array_map(function ($role) use ($labels) {
+            $role = (string) $role;
+            if (isset($labels[$role]) && is_string($labels[$role]) && $labels[$role] !== '') {
+                return $labels[$role];
+            }
+
+            return ucwords(str_replace('_', ' ', $role));
         }, $roles));
     }
 

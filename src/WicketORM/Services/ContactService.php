@@ -198,7 +198,7 @@ class ContactService
 
         $relationship_type = sanitize_key((string) ($contact_data['relationship_type'] ?? ''));
         if ($relationship_type === '') {
-            return new WP_Error('missing_type', 'Relationship type is required.');
+            return new WP_Error('missing_type', __('Relationship type is required.', 'wicket-acc'));
         }
 
         // Create or find person
@@ -207,11 +207,11 @@ class ContactService
         $email = sanitize_email((string) ($contact_data['email'] ?? ''));
 
         if ($first_name === '' || $last_name === '' || $email === '') {
-            return new WP_Error('missing_data', 'First name, last name, and email are required.');
+            return new WP_Error('missing_data', __('First name, last name, and email are required.', 'wicket-acc'));
         }
 
         if (!function_exists('wicket_create_or_get_person')) {
-            return new WP_Error('missing_dependency', 'Person creation helper not available.');
+            return new WP_Error('missing_dependency', __('Person creation helper not available.', 'wicket-acc'));
         }
 
         $person_uuid = wicket_create_or_get_person($first_name, $last_name, $email);
@@ -311,7 +311,7 @@ class ContactService
         }
 
         if (!$ended_any) {
-            return new WP_Error('removal_failed', 'Failed to end contact relationships.');
+            return new WP_Error('removal_failed', __('Failed to end contact relationships.', 'wicket-acc'));
         }
 
         // Dual-roster guard: check if the person being removed has active membership

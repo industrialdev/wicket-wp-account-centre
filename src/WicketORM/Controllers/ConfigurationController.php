@@ -129,7 +129,7 @@ class ConfigurationController
         if ($additional_seats_service->canPurchaseAdditionalSeats($org_uuid)) {
             ?>
             <div class="orgman-notice orgman-additional-seats-notice" style="background: #e7f3ff; border: 1px solid #b3d9ff; padding: 15px; margin: 20px 0; border-radius: 4px;">
-                <p><strong><?php esc_html_e('Need more seats?', 'wicket-acc'); ?></strong></p>
+                <p><strong><?php echo esc_html_x('Need more seats?', 'label', 'wicket-acc'); ?></strong></p>
                 <p><?php esc_html_e('As the membership owner, you can purchase additional seats for your organization membership. Click the "Purchase Additional Seats" button below to get started.', 'wicket-acc'); ?></p>
             </div>
             <?php

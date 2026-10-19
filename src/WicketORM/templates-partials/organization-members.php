@@ -190,14 +190,14 @@ if (!empty($searchAction)) {
 				data-show="!$searchSubmitted"
 				data-indicator:members-loading
 				class="members-search__submit button button--primary wt_whitespace-nowrap component-button"
-				<?php disabled(empty($membershipUuid)); ?>><?php esc_html_e('Search', 'wicket-acc'); ?></button>
+				<?php disabled(empty($membershipUuid)); ?>><?php /* translators: Button: run the search. */ echo esc_html_x('Search', 'button label', 'wicket-acc'); ?></button>
 			<button
 				<?php if (!empty($clearButtonAction)) : ?>data-on:click="<?php echo esc_attr($clearButtonAction); ?>"<?php endif; ?>
 				<?php if (!empty($searchSuccess)) : ?>data-on:success="<?php echo esc_attr($searchSuccess); ?>"<?php endif; ?>
 				data-show="$searchSubmitted && $searchQuery && $searchQuery.trim() !== ''"
 				data-indicator:members-loading
 				class="members-search__clear button button--secondary wt_whitespace-nowrap component-button"
-				<?php disabled(empty($membershipUuid)); ?>><?php esc_html_e('Clear', 'wicket-acc'); ?></button>
+				<?php disabled(empty($membershipUuid)); ?>><?php /* translators: Button: clear the search. */ echo esc_html_x('Clear', 'button label', 'wicket-acc'); ?></button>
 		</div>
 	</div>
     </div>
@@ -269,7 +269,7 @@ $members_list_endpoint = $membersListEndpoint;
 				<li><?php
 	                    foreach ($issue['parts'] as $part) {
 	                        if ($part['type'] === 'token') {
-	                            echo '<code class="orgman-copy-token" data-copy-value="' . esc_attr($part['value']) . '" title="' . esc_attr__('Click to copy', 'wicket-acc') . '" style="cursor:pointer;background:#fff3cd;border:1px solid #f9a825;border-radius:3px;padding:1px 5px;font-family:monospace;font-size:0.9em;">' . esc_html($part['value']) . '</code>';
+	                            echo '<code class="orgman-copy-token" data-copy-value="' . esc_attr($part['value']) . '" title="' . esc_attr_x('Click to copy', 'tooltip', 'wicket-acc') . '" style="cursor:pointer;background:#fff3cd;border:1px solid #f9a825;border-radius:3px;padding:1px 5px;font-family:monospace;font-size:0.9em;">' . esc_html($part['value']) . '</code>';
 	                        } else {
 	                            echo esc_html($part['value']);
 	                        }
@@ -282,7 +282,7 @@ $members_list_endpoint = $membersListEndpoint;
 	    $orgman_form_slug = $orgman_cfg['integrations']['additional_seats']['form_slug'] ?? 'additional-seats';
 	    $orgman_form_slug = is_string($orgman_form_slug) ? trim($orgman_form_slug) : 'additional-seats';
 	    $orgman_tier_field = $configService->getAdditionalSeatsTierSlugField();
-	    $orgman_token_attrs = 'title="' . esc_attr__('Click to copy', 'wicket-acc') . '" style="cursor:pointer;background:#fff3cd;border:1px solid #f9a825;border-radius:3px;padding:1px 5px;font-family:monospace;font-size:0.9em;"';
+	    $orgman_token_attrs = 'title="' . esc_attr_x('Click to copy', 'tooltip', 'wicket-acc') . '" style="cursor:pointer;background:#fff3cd;border:1px solid #f9a825;border-radius:3px;padding:1px 5px;font-family:monospace;font-size:0.9em;"';
 	    ?>
 		<ul class="orgman-setup-warning__config" style="list-style:none;padding-left:0;margin:0.5rem 0 0;border-top:1px solid #f9a825;padding-top:0.5rem;opacity:0.85;">
 			<li style="margin-bottom:0.5rem;">
@@ -313,7 +313,7 @@ $members_list_endpoint = $membersListEndpoint;
 		            if (existing) existing.remove();
 		            var tip = document.createElement('span');
 		            tip.className = 'orgman-copy-feedback';
-		            tip.textContent = '✓ Copied!';
+		            tip.textContent = <?php echo wp_json_encode(_x('✓ Copied!', 'message', 'wicket-acc')); ?>;
 		            tip.style.cssText = 'margin-left:6px;font-size:0.8em;color:#155724;font-family:sans-serif;font-weight:600;';
 		            token.appendChild(tip);
 		            token.style.background = '#d4edda';
@@ -336,13 +336,13 @@ if ($can_purchase_seats && !empty($purchase_url)):
     ?>
 		<?php
         get_component('card-call-out', [
-            'title' => __('Need More Seats?', 'wicket-acc'),
+            'title' => _x('Need More Seats?', 'label', 'wicket-acc'),
             'description' => __('Purchase additional seats for your organization membership to accommodate more team members.', 'wicket-acc'),
             'style' => 'secondary',
             'links' => [
                 [
                     'link' => [
-                        'title' => __('Purchase Additional Seats', 'wicket-acc'),
+                        'title' => _x('Purchase Additional Seats', 'button label', 'wicket-acc'),
                         'url' => $purchase_url,
                         'target' => '_self',
                     ],
@@ -360,7 +360,7 @@ if ($can_purchase_seats && !empty($purchase_url)):
 			data-show="$addMemberModalOpen" data-effect="if ($addMemberModalOpen) el.showModal(); else el.close();"
 			data-on:close="<?php echo esc_attr($add_member_modal_reset_actions); ?>">
 			<div class="wt_bg-white wt_p-6 wt_relative">
-				<button type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
+				<button aria-label="<?php echo esc_attr_x('Close', 'accessibility label', 'wicket-acc'); ?>" type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
 					data-on:click="<?php echo esc_attr($add_member_request_close_actions); ?>" data-show="!$addMemberSuccess"
 					data-class="{ 'wt_pointer-events-none': $addMemberSubmitting, 'wt_opacity-50': $addMemberSubmitting }"
 					data-attr:aria-disabled="$addMemberSubmitting ? 'true' : 'false'">
@@ -368,7 +368,7 @@ if ($can_purchase_seats && !empty($purchase_url)):
 				</button>
 
 				<h2 class="wp-block-heading has-heading-sm-font-size wt_text-2xl wt_font-semibold wt_mb-4">
-					<?php esc_html_e('Add Member', 'wicket-acc'); ?>
+					<?php echo esc_html_x('Add Member', 'button label', 'wicket-acc'); ?>
 				</h2>
 
 				<div
@@ -405,7 +405,7 @@ if ($can_purchase_seats && !empty($purchase_url)):
 					<?php if ($form_config['first_name']['enabled'] ?? false): ?>
 					<div>
 						<label class="wt_block wt_text-sm wt_font-medium wt_mb-1" for="new-member-first-name">
-							<?php echo esc_html($form_config['first_name']['label'] ?? __('First Name', 'wicket-acc')); ?>
+							<?php echo esc_html($form_config['first_name']['label'] ?? _x('First Name', 'label', 'wicket-acc')); ?>
 							<?php echo ($form_config['first_name']['required'] ?? false) ? '*' : ''; ?>
 						</label>
 						<input type="text" id="new-member-first-name" name="first_name"
@@ -417,7 +417,7 @@ if ($can_purchase_seats && !empty($purchase_url)):
 					<?php if ($form_config['last_name']['enabled'] ?? false): ?>
 					<div>
 						<label class="wt_block wt_text-sm wt_font-medium wt_mb-1" for="new-member-last-name">
-							<?php echo esc_html($form_config['last_name']['label'] ?? __('Last Name', 'wicket-acc')); ?>
+							<?php echo esc_html($form_config['last_name']['label'] ?? _x('Last Name', 'label', 'wicket-acc')); ?>
 							<?php echo ($form_config['last_name']['required'] ?? false) ? '*' : ''; ?>
 						</label>
 						<input type="text" id="new-member-last-name" name="last_name"
@@ -429,20 +429,20 @@ if ($can_purchase_seats && !empty($purchase_url)):
 					<?php if ($form_config['email']['enabled'] ?? false): ?>
 					<div>
 						<label class="wt_block wt_text-sm wt_font-medium wt_mb-1" for="new-member-email">
-							<?php echo esc_html($form_config['email']['label'] ?? __('Email Address', 'wicket-acc')); ?>
+							<?php echo esc_html($form_config['email']['label'] ?? _x('Email Address', 'label', 'wicket-acc')); ?>
 							<?php echo ($form_config['email']['required'] ?? false) ? '*' : ''; ?>
 						</label>
 						<input type="email" id="new-member-email" name="email"
 							<?php echo ($form_config['email']['required'] ?? false) ? 'required' : ''; ?>
 						class="wt_w-full wt_border wt_border-color wt_rounded-md wt_p-2"
-						placeholder="<?php echo esc_attr(__('user@mail.com', 'wicket-acc')); ?>">
+						placeholder="<?php echo esc_attr(_x('user@mail.com', 'field placeholder', 'wicket-acc')); ?>">
 					</div>
 					<?php endif; ?>
 
 					<?php if ($form_config['relationship_type']['enabled'] ?? false && !empty($relationship_types)): ?>
 					<div>
 						<label class="wt_block wt_text-sm wt_font-medium wt_mb-1" for="new-member-relationship-type">
-							<?php echo esc_html($form_config['relationship_type']['label'] ?? __('Relationship Type', 'wicket-acc')); ?>
+							<?php echo esc_html($form_config['relationship_type']['label'] ?? _x('Relationship Type', 'label', 'wicket-acc')); ?>
 							<?php echo ($form_config['relationship_type']['required'] ?? false) ? '*' : ''; ?>
 						</label>
 						<select id="new-member-relationship-type" name="relationship_type"
@@ -479,7 +479,7 @@ if ($can_purchase_seats && !empty($purchase_url)):
 					<?php if (!empty($available_roles)) : ?>
 					<fieldset class="wt_flex wt_flex-col wt_gap-2">
 						<legend class="wt_text-sm wt_font-medium">
-							<?php esc_html_e('Security Roles', 'wicket-acc'); ?>
+							<?php echo esc_html_x('Security Roles', 'label', 'wicket-acc'); ?>
 						</legend>
 						<?php foreach ($available_roles as $role_slug => $role_name) : ?>
 						<label class="wt_flex wt_items-center wt_gap-2">
@@ -499,12 +499,12 @@ if ($can_purchase_seats && !empty($purchase_url)):
 						<button type="button" class="button button--secondary component-button"
 							data-on:click="<?php echo esc_attr($add_member_request_close_actions); ?>"
 							data-class="{ 'wt_pointer-events-none': $addMemberSubmitting, 'wt_opacity-50': $addMemberSubmitting }"
-							data-attr:aria-disabled="$addMemberSubmitting ? 'true' : 'false'"><?php esc_html_e('Cancel', 'wicket-acc'); ?></button>
+							data-attr:aria-disabled="$addMemberSubmitting ? 'true' : 'false'"><?php echo esc_html_x('Cancel', 'button label', 'wicket-acc'); ?></button>
 						<button type="submit" class="button button--primary wt_button_submit_async wt_inline-flex wt_items-center wt_gap-2 component-button"
 							data-class="{ 'wt_pointer-events-none': $addMemberSubmitting, 'wt_opacity-50': $addMemberSubmitting, 'wt_is-loading': $addMemberSubmitting }"
 							data-attr:aria-disabled="$addMemberSubmitting ? 'true' : 'false'">
 							<span class="wt_submit_label" data-show="!$addMemberSubmitting">
-								<?php esc_html_e('Add Member', 'wicket-acc'); ?>
+								<?php echo esc_html_x('Add Member', 'button label', 'wicket-acc'); ?>
 							</span>
 							<span class="wt_loader wt_loader_button wt_submit_loader"
 								data-show="$addMemberSubmitting"
@@ -516,19 +516,17 @@ if ($can_purchase_seats && !empty($purchase_url)):
 					<?php if ($org_add_member_auto_close_on_success) : ?>
 						<p class="wt_text-sm wt_text-content wt_mb-3" data-show="$autoCloseCountdown > 0"
 							data-on-interval__duration.1000="if ($autoCloseCountdown > 1) { $autoCloseCountdown-- } else if ($autoCloseCountdown === 1) { <?php echo esc_attr($add_member_request_close_actions); ?> }">
-							<?php esc_html_e('This dialog will close automatically in', 'wicket-acc'); ?>
-							<span class="wt_font-semibold" data-text="$autoCloseCountdown"></span>
-							<?php esc_html_e('seconds.', 'wicket-acc'); ?>
+							<?php echo \WicketORM\Helpers\TemplateHelper::auto_close_countdown_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in helper. ?>
 						</p>
 					<?php endif; ?>
 					<div class="wt_mb-4 wt_bg-green-100 wt_border wt_border-green-400 wt_text-green-700 wt_px-4 wt_py-3 wt_rounded-sm" data-show="$addMemberSuccessMessage !== ''">
-						<p><strong><?php esc_html_e('Success!', 'wicket-acc'); ?></strong></p>
+						<p><strong><?php echo esc_html_x('Success!', 'label', 'wicket-acc'); ?></strong></p>
 						<p data-text="$addMemberSuccessMessage"></p>
 					</div>
 					<div class="wt_flex wt_justify-end">
 						<button type="button" class="button button--primary component-button"
 							data-on:click="<?php echo esc_attr($add_member_request_close_actions); ?>">
-							<?php esc_html_e('Close', 'wicket-acc'); ?>
+							<?php echo esc_html_x('Close', 'button label', 'wicket-acc'); ?>
 						</button>
 					</div>
 				</div>
@@ -548,7 +546,7 @@ if ($can_purchase_seats && !empty($purchase_url)):
 			data-effect="if ($bulkUploadModalOpen) el.showModal(); else el.close();"
 			data-on:close="($membersLoading = false); $bulkUploadModalOpen = false">
 			<div class="wt_bg-white wt_p-6 wt_relative">
-				<button type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
+				<button aria-label="<?php echo esc_attr_x('Close', 'accessibility label', 'wicket-acc'); ?>" type="button" class="orgman-modal__close wt_absolute wt_right-4 wt_top-4 wt_text-lg wt_font-semibold"
 					data-on:click="$bulkUploadModalOpen = false"
 					data-class="{ 'wt_pointer-events-none': $bulkUploadSubmitting, 'wt_opacity-50': $bulkUploadSubmitting }"
 					data-attr:aria-disabled="$bulkUploadSubmitting ? 'true' : 'false'">

@@ -43,13 +43,13 @@ ob_start();
                     </div>
                     <button class="button button--small button--primary component-button"
                             onclick="addSubsidiary('<?php echo esc_js($candidate['id']); ?>', '<?php echo esc_js($candidate['name']); ?>')">
-                        <?php esc_html_e('Add', 'wicket-acc'); ?>
+                        <?php /* translators: Button: add the organization as a subsidiary. */ echo esc_html_x('Add', 'button label', 'wicket-acc'); ?>
                     </button>
                 </div>
             <?php endforeach; ?>
         </div>
     <?php elseif (!empty($search_term)) : ?>
-        <div class="no-results"><?php esc_html_e('No organizations found.', 'wicket-acc'); ?></div>
+        <div class="no-results"><?php echo esc_html_x('No organizations found.', 'message', 'wicket-acc'); ?></div>
     <?php endif; ?>
 </div>
 <?php

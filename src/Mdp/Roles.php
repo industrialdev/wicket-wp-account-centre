@@ -232,7 +232,7 @@ class Roles extends Init
             return [
                 'success' => false,
                 'error'   => true,
-                'message' => __('No arguments provided', 'wicket-acc'),
+                'message' => _x('No arguments provided', 'message', 'wicket-acc'),
             ];
         }
 
@@ -309,7 +309,7 @@ class Roles extends Init
         $response = [
             'success' => true,
             'error'   => false,
-            'message' => __('Role updated successfully', 'wicket-acc'),
+            'message' => _x('Role updated successfully', 'message', 'wicket-acc'),
         ];
 
         if ($response['error'] === false && !$preventRedirect) {

@@ -201,7 +201,7 @@ class init extends Blocks
         // Check if the file extension is allowed
         if (!in_array(strtolower($file_extension), array_map('strtolower', $this->pp_extensions))) {
             $this->setError('invalid_extension', sprintf(
-                __('Invalid file format. Please upload a file with one of these extensions: %s', 'wicket-acc'),
+                /* translators: %s: comma-separated list of allowed file extensions. */ __('Invalid file format. Please upload a file with one of these extensions: %s', 'wicket-acc'),
                 implode(', ', array_map('strtoupper', $this->pp_extensions))
             ));
 
@@ -218,7 +218,7 @@ class init extends Blocks
         // Check if the file size is too big. max_size is in MB
         if ($_FILES['org-logo']['size'] > $this->max_size * 1024 * 1024) { // Convert MB to bytes
             $this->setError('file_too_large', sprintf(
-                __('The uploaded file is too large. Maximum file size allowed is %dMB.', 'wicket-acc'),
+                /* translators: %d: maximum file size in megabytes. */ __('The uploaded file is too large. Maximum file size allowed is %dMB.', 'wicket-acc'),
                 $this->max_size
             ));
 
@@ -229,7 +229,7 @@ class init extends Blocks
         $org_id = WACC()->sanitizeUuid($form['org_id'] ?? '');
 
         if (empty($org_id)) {
-            $this->setError('invalid_org', __('Invalid organization ID.', 'wicket-acc'));
+            $this->setError('invalid_org', _x('Invalid organization ID.', 'message', 'wicket-acc'));
 
             return false;
         }
@@ -298,7 +298,7 @@ class init extends Blocks
         $org_id = WACC()->sanitizeUuid($form['org_id'] ?? '');
 
         if (empty($org_id)) {
-            $this->setError('invalid_org', __('Invalid organization ID.', 'wicket-acc'));
+            $this->setError('invalid_org', _x('Invalid organization ID.', 'message', 'wicket-acc'));
 
             return false;
         }

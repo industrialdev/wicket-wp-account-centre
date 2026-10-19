@@ -16,7 +16,7 @@ if (!is_user_logged_in()) {
 $configService = new \WicketORM\Services\ConfigService();
 $orgman_config = \WicketORM\Services\ConfigService::getConfig();
 $roster_mode = $configService->getRosterMode();
-$default_organization_title = __('Manage Organizations', 'wicket-acc');
+$default_organization_title = _x('Manage Organizations', 'label', 'wicket-acc');
 // Sites configure titles under presentation.organization_list (OrgManConfig default shape).
 // ui.organization_list is kept as an optional override, mirroring members-list-unified.php.
 $organization_list_config = is_array($orgman_config['ui']['organization_list'] ?? null)
@@ -29,7 +29,7 @@ $custom_organization_title = isset($organization_list_config['custom_title'])
 $organization_title = ($use_custom_organization_title && $custom_organization_title !== '')
     ? $custom_organization_title
     : $default_organization_title;
-$management_title = $roster_mode === 'groups' ? __('Manage Groups', 'wicket-acc') : $organization_title;
+$management_title = $roster_mode === 'groups' ? _x('Manage Groups', 'label', 'wicket-acc') : $organization_title;
 
 // Normalize query param: prefer org_uuid; redirect from org_id => org_uuid
 $org_uuid = isset($_GET['org_uuid']) ? sanitize_text_field($_GET['org_uuid']) : '';
@@ -82,7 +82,7 @@ if ($back_to_landing_show) :
 
     <?php if ($status === 'success') : ?>
         <div class="alert alert-success wt_my-3 wt_p-3" role="alert">
-            <?php esc_html_e('Organization updated successfully!', 'wicket-acc'); ?>
+            <?php echo esc_html_x('Organization updated successfully!', 'message', 'wicket-acc'); ?>
         </div>
     <?php endif; ?>
 

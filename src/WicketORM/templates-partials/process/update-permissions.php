@@ -169,13 +169,12 @@ if ('POST' === strtoupper($request_method)) {
         if ($full_name === '') {
             $full_name = trim($person_name);
         }
-        if ($full_name === '') {
-            $full_name = (string) __('this member', 'wicket-acc');
-        }
-        $success_message = sprintf(
-            esc_html__('Successfully updated permissions for %1$s.', 'wicket-acc'),
-            '<strong>' . esc_html($full_name) . '</strong>'
-        );
+        $success_message = $full_name !== ''
+            ? sprintf(
+                /* translators: %1$s: member name. */ esc_html__('Successfully updated permissions for %1$s.', 'wicket-acc'),
+                '<strong>' . esc_html($full_name) . '</strong>'
+            )
+            : esc_html__('Successfully updated permissions for this member.', 'wicket-acc');
         if ($logger) {
             $logger->info('[OrgMan] update-permissions completed successfully', $log_context + [
                 'org_uuid' => $org_uuid,

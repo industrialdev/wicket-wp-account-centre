@@ -95,7 +95,7 @@ if ($seat_limit_info) : ?>
 						<?php if ($option['is_other']) : ?>
 							<div class="wt_ml-6">
 								<label class="wt_block wt_text-sm wt_text-gray-600" for="<?php echo esc_attr($input_id . '_other'); ?>">
-									<?php esc_html_e('Please specify', 'wicket-acc'); ?>
+									<?php echo esc_html_x('Please specify', 'label', 'wicket-acc'); ?>
 								</label>
 								<input
 									id="<?php echo esc_attr($input_id . '_other'); ?>"
@@ -112,7 +112,7 @@ if ($seat_limit_info) : ?>
 		<?php endforeach; ?>
 
 		<div class="wt_flex wt_justify-end">
-			<button type="submit" class="button button--primary component-button"><?php esc_html_e('Save Changes', 'wicket-acc'); ?></button>
+			<button type="submit" class="button button--primary component-button"><?php echo esc_html_x('Save Changes', 'button label', 'wicket-acc'); ?></button>
 		</div>
 	</form>
 	<?php endif; ?>

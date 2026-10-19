@@ -221,9 +221,9 @@ class ProfileImageMdpFieldSettings extends WicketAcc
         $nonce = wp_create_nonce('wp_rest');
 
         $no_syncing_label = __('No syncing (keep image local)', 'wicket-acc');
-        $refresh_label = __('Refresh fields', 'wicket-acc');
-        $refreshing_label = __('Refreshing...', 'wicket-acc');
-        $success_label = __('Field list refreshed.', 'wicket-acc');
+        $refresh_label = _x('Refresh fields', 'button label', 'wicket-acc');
+        $refreshing_label = _x('Refreshing...', 'message', 'wicket-acc');
+        $success_label = _x('Field list refreshed.', 'message', 'wicket-acc');
         $error_label = __('Could not refresh the field list. Check the MDP connection and try again.', 'wicket-acc');
         $empty_label = __('No MDP fields are available for this tenant.', 'wicket-acc');
         $help = __('Choose which MDP additional-info field stores the uploaded profile image URL. "No syncing" keeps the image in WordPress only.', 'wicket-acc');

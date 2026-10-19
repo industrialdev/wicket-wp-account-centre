@@ -34,20 +34,21 @@ class Registers extends WicketAcc
     {
         // Set UI labels for custom post type
         $labels = [
-            'name'               => esc_html__('Account Centre', 'wicket-acc'),
-            'singular_name'      => esc_html__('Page', 'wicket-acc'),
-            'add_new_item'       => esc_html__('Add New Page', 'wicket-acc'),
-            'add_new'            => esc_html__('Add New Page', 'wicket-acc'),
-            'edit_item'          => esc_html__('Edit Page', 'wicket-acc'),
-            'view_item'          => esc_html__('View Page', 'wicket-acc'),
-            'update_item'        => esc_html__('Update Page', 'wicket-acc'),
-            'search_items'       => esc_html__('Search Page', 'wicket-acc'),
-            'not_found'          => esc_html__('Not Found', 'wicket-acc'),
+            'name'               => esc_html_x('Account Centre', 'post type label', 'wicket-acc'),
+            /* translators: Singular name of an Account Centre page (post type). */
+            'singular_name'      => esc_html_x('Page', 'post type label', 'wicket-acc'),
+            'add_new_item'       => esc_html_x('Add New Page', 'post type label', 'wicket-acc'),
+            'add_new'            => esc_html_x('Add New Page', 'post type label', 'wicket-acc'),
+            'edit_item'          => esc_html_x('Edit Page', 'post type label', 'wicket-acc'),
+            'view_item'          => esc_html_x('View Page', 'post type label', 'wicket-acc'),
+            'update_item'        => esc_html_x('Update Page', 'post type label', 'wicket-acc'),
+            'search_items'       => esc_html_x('Search Page', 'post type label', 'wicket-acc'),
+            'not_found'          => esc_html_x('Not Found', 'post type label', 'wicket-acc'),
             'not_found_in_trash' => esc_html__('Not found in Trash', 'wicket-acc'),
-            'menu_name'          => esc_html__('Account Centre', 'wicket-acc'),
+            'menu_name'          => esc_html_x('Account Centre', 'post type label', 'wicket-acc'),
             'parent_item_colon'  => '',
-            'all_items'          => esc_html__('All Pages', 'wicket-acc'),
-            'attributes'         => __('Pages Sorting Order'),
+            'all_items'          => esc_html_x('All Pages', 'post type label', 'wicket-acc'),
+            'attributes'         => esc_html_x('Pages Sorting Order', 'post type label', 'wicket-acc'),
         ];
 
         // Set other options for custom post type
@@ -90,7 +91,7 @@ class Registers extends WicketAcc
     {
         // This theme uses wp_nav_menu() in one location.
         register_nav_menus([
-            'wicket-acc-nav' => esc_html__('Account Centre Menu', 'wicket-acc'),
+            'wicket-acc-nav' => esc_html_x('Account Centre Menu', 'menu location', 'wicket-acc'),
         ]);
 
         // This theme offers a secondary wp_nav_menu()
@@ -115,7 +116,8 @@ class Registers extends WicketAcc
         // Ensure we only add these templates for the 'my-account' post type
         if ($post && $post->post_type === 'my-account') {
             $templates = [
-                'account-centre/page-acc.php'            => __('ACC Page', 'wicket-acc'),
+                /* translators: Page template name. ACC is short for Account Centre. */
+                'account-centre/page-acc.php'            => _x('ACC Page', 'template name', 'wicket-acc'),
                 'account-centre/page-acc-org_id.php'     => __('ACC Page with Org Selector', 'wicket-acc'),
                 'account-centre/page-acc-no-sidebar.php' => __('ACC Page (No Sidebar)', 'wicket-acc'),
             ];

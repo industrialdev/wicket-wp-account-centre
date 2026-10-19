@@ -14,6 +14,7 @@ This is a WordPress plugin rooted at `wicket.php`.
 - `npx gulp build`: compile/minify plugin CSS/JS assets.
 - `composer lint`: style check (`php-cs-fixer --dry-run --diff`).
 - `composer format` or `composer cs:fix`: apply formatting.
+- `composer i18n:acf`: after changing `includes/acf-json`, regenerate `languages/acf-strings.php` so ACF field strings reach the `.pot`. Commit both.
 - `composer test`: run full Pest suite.
 - `composer test:unit`: run unit tests only.
 - `composer test:coverage`: generate HTML coverage in `coverage/`.

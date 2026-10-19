@@ -86,7 +86,7 @@ if ($roster_mode === 'groups') {
             $group_attrs = is_array($group['attributes'] ?? null) ? $group['attributes'] : [];
             $group_name = (string) ($group_attrs['name'] ?? $group_attrs['name_en'] ?? $group_attrs['name_fr'] ?? '');
             if ($group_name === '') {
-                $group_name = __('Unknown Group', 'wicket-acc');
+                $group_name = _x('Unknown Group', 'value placeholder', 'wicket-acc');
             }
 
             $manageable_groups[] = [
@@ -137,7 +137,7 @@ if ($roster_mode === 'groups') {
     <div id="org-management-members-bulk-app"
         class="org-management-app wicket-orgman wt_w-full wt_mt-6 wt_mb-6"
         data-signals='{"membersLoading": false, "bulkUploadSubmitting": false}'>
-        <h1 class="wt_text-2xl wt_font-bold wt_mb-4"><?php esc_html_e('Bulk Upload Members', 'wicket-acc'); ?></h1>
+        <h1 class="wt_text-2xl wt_font-bold wt_mb-4"><?php echo esc_html_x('Bulk Upload Members', 'label', 'wicket-acc'); ?></h1>
 
         <?php if (!$show_bulk_upload) : ?>
             <div class="wt_bg-yellow-100 wt_border wt_border-yellow-400 wt_text-yellow-800 wt_px-4 wt_py-3 wt_rounded-sm wt_mb-4">
@@ -209,7 +209,7 @@ foreach ($organizations as $organization) {
 
     $org_name = (string) ($organization['org_name'] ?? $organization['name'] ?? '');
     if ($org_name === '') {
-        $org_name = __('Unknown Organization', 'wicket-acc');
+        $org_name = _x('Unknown Organization', 'value placeholder', 'wicket-acc');
     }
 
     $manageable_organizations[] = [
@@ -236,7 +236,7 @@ if ($org_uuid !== '') {
 <div id="org-management-members-bulk-app"
     class="org-management-app wicket-orgman wt_w-full wt_mt-6 wt_mb-6"
     data-signals='{"membersLoading": false, "bulkUploadSubmitting": false}'>
-    <h1 class="wt_text-2xl wt_font-bold wt_mb-4"><?php esc_html_e('Bulk Upload Members', 'wicket-acc'); ?></h1>
+    <h1 class="wt_text-2xl wt_font-bold wt_mb-4"><?php echo esc_html_x('Bulk Upload Members', 'label', 'wicket-acc'); ?></h1>
 
     <?php if (!$show_bulk_upload) : ?>
         <div class="wt_bg-yellow-100 wt_border wt_border-yellow-400 wt_text-yellow-800 wt_px-4 wt_py-3 wt_rounded-sm wt_mb-4">

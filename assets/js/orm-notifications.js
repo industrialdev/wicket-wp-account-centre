@@ -5,6 +5,16 @@
     return;
   }
 
+  const l10n = window.wicketOrmNotificationsL10n || {};
+  const l10nTitles = l10n.titles || {};
+  const defaultTitles = {
+    success: 'Success',
+    error: 'Error',
+    warning: 'Warning',
+    info: 'Info'
+  };
+  const closeLabel = l10n.close || 'Close';
+
   class NotificationSystem {
     constructor() {
       this.container = document.getElementById('notification-container');
@@ -52,7 +62,7 @@
           (title ? '<div class="notification-title">' + this.escapeHtml(title) + '</div>' : '') +
           '<div class="notification-message">' + this.escapeHtml(message) + '</div>' +
         '</div>' +
-        '<button class="notification-close" aria-label="Close" type="button">&times;</button>';
+        '<button class="notification-close" aria-label="' + this.escapeAttr(closeLabel) + '" type="button">&times;</button>';
 
       const closeButton = notification.querySelector('.notification-close');
       if (closeButton) {
@@ -167,6 +177,15 @@
       div.textContent = text;
       return div.innerHTML;
     }
+
+    escapeAttr(text) {
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
   }
 
   window.NotificationSystem = NotificationSystem;
@@ -196,7 +215,7 @@
           'info';
 
         const message = notice.textContent.trim();
-        const title = type.charAt(0).toUpperCase() + type.slice(1);
+        const title = l10nTitles[type] || defaultTitles[type] || (type.charAt(0).toUpperCase() + type.slice(1));
 
         notificationSystem.show({ type, title, message, inline: true });
 

@@ -769,6 +769,7 @@ class Person extends Init
         // Fetch current person data. getPersonByUuid returns an array or false.
         $currentPersonData = $this->getPersonByUuid($personUuid);
         if (!$currentPersonData) {
+            /* translators: %s: person UUID. */
             return ['success' => false, 'error' => sprintf(__('Wicket person with UUID %s not found.', 'wicket-acc'), $personUuid)];
         }
 

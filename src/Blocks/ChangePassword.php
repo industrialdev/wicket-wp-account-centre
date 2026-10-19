@@ -80,18 +80,18 @@ class ChangePassword
      */
     public function registerBlock(): void
     {
-        $block = Block::make(__('ACC Change Password', 'wicket-acc'))
+        $block = Block::make(_x('ACC Change Password', 'block title', 'wicket-acc'))
             ->setName('wicket-acc/change-password')
             ->setIcon('lock')
             ->addFields([
-                Field::make('text', 'form_title', __('Form Title', 'wicket-acc'))
-                    ->setDefault(__('Change Password', 'wicket-acc')),
-                Field::make('textarea', 'form_instructions', __('Form Instructions', 'wicket-acc'))
+                Field::make('text', 'form_title', _x('Form Title', 'label', 'wicket-acc'))
+                    ->setDefault(_x('Change Password', 'label', 'wicket-acc')),
+                Field::make('textarea', 'form_instructions', _x('Form Instructions', 'label', 'wicket-acc'))
                     ->setDefault(__('Enter your current password and choose a new one.', 'wicket-acc')),
             ])
             ->setDescription(__('A Wicket block for changing the user password.', 'wicket-acc'))
             ->setCategory('wicket-account-center')
-            ->setKeywords([__('account-centre', 'wicket-acc'), __('password', 'wicket-acc'), __('wicket', 'wicket-acc')])
+            ->setKeywords([_x('account-centre', 'block keyword', 'wicket-acc'), _x('account-center', 'block keyword', 'wicket-acc'), _x('password', 'block keyword', 'wicket-acc'), _x('wicket', 'block keyword', 'wicket-acc')])
             ->setStyle('wicket-acc-password-block')
             ->setRenderTemplateFile('change-password.hb.php');
 
@@ -125,7 +125,7 @@ class ChangePassword
         if ($current_password == '') {
             $current_pass_blank = [];
             $current_pass_blank['meta'] = (object) ['field' => 'user.current_password'];
-            $current_pass_blank['title'] = __("can't be blank");
+            $current_pass_blank['title'] = _x("can't be blank", 'message', 'wicket-acc');
             $errors[] = (object) $current_pass_blank;
         }
 
@@ -133,7 +133,7 @@ class ChangePassword
         if ($password == '') {
             $pass_blank = [];
             $pass_blank['meta'] = (object) ['field' => 'user.password'];
-            $pass_blank['title'] = __("can't be blank");
+            $pass_blank['title'] = _x("can't be blank", 'message', 'wicket-acc');
             $errors[] = (object) $pass_blank;
         }
 
@@ -141,7 +141,7 @@ class ChangePassword
         if ($password_confirmation == '') {
             $confirm_pass_blank = [];
             $confirm_pass_blank['meta'] = (object) ['field' => 'user.password_confirmation'];
-            $confirm_pass_blank['title'] = __("can't be blank");
+            $confirm_pass_blank['title'] = _x("can't be blank", 'message', 'wicket-acc');
             $errors[] = (object) $confirm_pass_blank;
         }
 
@@ -149,7 +149,7 @@ class ChangePassword
         if ($password_confirmation != $password) {
             $pass_blank = [];
             $pass_blank['meta'] = (object) ['field' => 'user.password'];
-            $pass_blank['title'] = __(' - Passwords do not match');
+            $pass_blank['title'] = __('- Passwords do not match', 'wicket-acc');
             $errors[] = (object) $pass_blank;
         }
 

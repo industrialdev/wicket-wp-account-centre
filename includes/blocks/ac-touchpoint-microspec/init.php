@@ -44,8 +44,8 @@ class init extends Blocks
 
         if ($this->is_preview) {
             $args = [
-                'block_name'        => 'Touchpoint MicroSpec',
-                'block_description' => 'This block displays registered data for MicroSpec on the front-end.',
+                'block_name'        => _x('Touchpoint MicroSpec', 'block title', 'wicket-acc'),
+                'block_description' => __('This block displays registered data for MicroSpec on the front-end.', 'wicket-acc'),
                 'block_slug'        => 'wicket-ac-touchpoint-microspec',
             ];
 
@@ -110,8 +110,8 @@ class init extends Blocks
         $switch_link = esc_url($switch_link);
 
         $args = [
-            'block_name'                     => 'Touchpoint MicroSpec',
-            'block_description'              => 'This block displays registered data for MicroSpec on the front-end.',
+            'block_name'                     => _x('Touchpoint MicroSpec', 'block title', 'wicket-acc'),
+            'block_description'              => __('This block displays registered data for MicroSpec on the front-end.', 'wicket-acc'),
             'block_slug'                     => 'wicket-ac-touchpoint-microspec',
             'attrs'                          => $attrs,
             'title'                          => $title,
@@ -174,7 +174,13 @@ class init extends Blocks
         // No data
         if (empty($touchpoint_data)) {
             echo '<p class="no-data">';
-            _e('You do not have any ' . $display_type . ' data at this time.', 'wicket-acc');
+            if ($display_type === 'past') {
+                _e('You do not have any past data at this time.', 'wicket-acc');
+            } elseif ($display_type === 'all') {
+                _e('You do not have any data at this time.', 'wicket-acc');
+            } else {
+                _e('You do not have any upcoming data at this time.', 'wicket-acc');
+            }
             echo '</p>';
 
             return;
@@ -306,7 +312,7 @@ class init extends Blocks
 
                     <button type="submit" class="button button-primary show-more flex items-center font-bold text-color-dark-100 my-4" x-show="!loading">
                         <span class="arrow mr-2">&#9660;</span>
-                        <span class="text"><?php esc_html_e('Show More', 'wicket-acc'); ?></span>
+                        <span class="text"><?php echo esc_html_x('Show More', 'button label', 'wicket-acc'); ?></span>
                     </button>
                 </form>
             </div>
@@ -333,12 +339,12 @@ class init extends Blocks
                                     if (data) {
                                         this.responseMessage = data;
                                     } else {
-                                        this.responseMessage = '<?php esc_html_e('An error occurred. No data.', 'wicket-acc'); ?>';
+                                        this.responseMessage = '<?php echo esc_js(__('An error occurred. No data.', 'wicket-acc')); ?>';
                                     }
                                 })
                                 .catch(error => {
                                     this.loading = false;
-                                    this.responseMessage = '<?php esc_html_e('An error occurred. Failed.', 'wicket-acc'); ?>';
+                                    this.responseMessage = '<?php echo esc_js(__('An error occurred. Failed.', 'wicket-acc')); ?>';
                                 });
                         }
                     };
