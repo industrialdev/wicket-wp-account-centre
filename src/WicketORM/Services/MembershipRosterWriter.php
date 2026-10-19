@@ -617,6 +617,15 @@ class MembershipRosterWriter
                 'error_code' => $result->get_error_code(),
                 'error_message' => $result->get_error_message(),
             ]));
+
+            // A membership end failure can leave some rows already ended; the
+            // cached roster must not keep serving them (WWID-2816).
+            if ($result->get_error_code() === 'membership_end_failed') {
+                $membership_uuid = (string) ($context['membership_uuid'] ?? '');
+                if ($membership_uuid !== '') {
+                    $this->reader->clearMembersCache($membership_uuid);
+                }
+            }
         } elseif (is_array($result)) {
             // Prefer the strategy-resolved membership UUID: the strategy may resolve
             // one even when the caller sent none, and the cache must key off the
