@@ -962,6 +962,17 @@ class MembershipService
                 ],
             ];
 
+            // Rails ignores direct expires_at writes (unpermitted update param) and re-derives
+            // expires_at from ends_at + grace_period_days, so an end-dated grace row would keep
+            // its computed status Active forever; zeroing the grace collapses expires_at onto
+            // ends_at and drops the member from the roster.
+            $expires_at = (string) ($attributes['expires_at'] ?? '');
+            $expires_ts = '' !== trim($expires_at) ? strtotime($expires_at) : false;
+            $grace_days = (int) ($attributes['grace_period_days'] ?? 0);
+            if ((false !== $expires_ts && $expires_ts > strtotime($ends_at)) || $grace_days > 0) {
+                $update_payload['data']['attributes']['grace_period_days'] = 0;
+            }
+
             // Update the person membership
             $response = $client->patch("person_memberships/{$person_membership_id}", ['json' => $update_payload]);
 
