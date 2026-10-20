@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.11.19] - 2026-10-20
+
+### Fixed
+- **orgman:** make cascade removal actually end memberships (WWID-2816) (#65)
+
+
 ## [1.11.18] - 2026-10-20
 
 ### Fixed
