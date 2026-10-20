@@ -2,6 +2,16 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.11.18] - 2026-10-20
+
+### Fixed
+- **welcome-block:** add filters for welcome block membership labels (WWID-2793)
+
+### Other
+- rename the filters
+- restore colons
+
+
 ## [1.11.17] - 2026-10-15
 
 ### Fixed
