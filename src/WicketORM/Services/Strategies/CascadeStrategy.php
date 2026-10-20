@@ -544,16 +544,23 @@ class CascadeStrategy implements RosterManagementStrategy
                 return new \WP_Error('membership_end_failed', $membership_result->get_error_message());
             }
             if (!empty($membership_result['errors'])) {
-                $logger->warning('[OrgMan] Cascade strategy ended memberships with per-record errors', array_merge($log_context, [
+                $logger->error('[OrgMan] Cascade strategy ended memberships with per-record errors', array_merge($log_context, [
                     'ended_count' => count($membership_result['ended']),
                     'error_count' => count($membership_result['errors']),
                     'errors' => $membership_result['errors'],
                 ]));
-            } else {
-                $logger->debug('[OrgMan] Cascade strategy ended person memberships', array_merge($log_context, [
-                    'ended_count' => count($membership_result['ended']),
-                ]));
+
+                // The surviving memberships keep the member active in MDP; success
+                // here would hide a failed removal from the manager (WWID-2816).
+                return new \WP_Error(
+                    'membership_end_failed',
+                    'Failed ending the person membership: ' . reset($membership_result['errors'])
+                );
             }
+
+            $logger->debug('[OrgMan] Cascade strategy ended person memberships', array_merge($log_context, [
+                'ended_count' => count($membership_result['ended']),
+            ]));
 
             // End every active person-to-organization connection. Continue-on-error sibling;
             // no removal-side skip-types config exists today, so pass an empty allowlist

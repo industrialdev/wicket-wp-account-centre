@@ -1055,7 +1055,10 @@ class MembershipService
             $filter_data = [
                 'filter' => [
                     'organization_membership_uuid_in' => [$org_membership_uuid],
-                    'person_id_eq' => $person_uuid,
+                    // person_id_eq targets an integer column in MDP; a UUID there
+                    // casts away and matches nothing (WWID-2816).
+                    'person_uuid_in' => [$person_uuid],
+                    'active_at' => wicket_time_get_current_iso8601_utc(),
                 ],
             ];
 
@@ -1091,9 +1094,8 @@ class MembershipService
 
             foreach ($response['data'] as $p_membership) {
                 $p_membership_id = $p_membership['id'] ?? null;
-                $p_membership_active = $p_membership['attributes']['active'] ?? false;
 
-                if (!$p_membership_id || !$p_membership_active) {
+                if (!$p_membership_id) {
                     continue;
                 }
 
