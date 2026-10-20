@@ -154,7 +154,7 @@ class init extends Blocks
 
                                 <div class="my-0 wicket-welcome-memberships">
                                     <p class="mb-0 wicket-welcome-member-type">
-                                        <strong><?php echo __('Membership Type:', 'wicket-acc'); ?></strong>
+                                        <strong><?php echo apply_filters('wicket/acc/block/welcome_membership_type_text', __('Membership Type:', 'wicket-acc')); ?></strong>
                                         <?php
                                         $membership_name = $membership['name_' . $current_lang] ?? $membership['name'] ?? ''; // Added fallback and ensure we have a value
 
@@ -221,7 +221,7 @@ class init extends Blocks
                                     <?php if ($display_member_status): ?>
                                     <p class="mt-0 mb-2 wicket-welcome-member-active flex items-center space-x-2">
                                         <span
-                                            class="text-gray-700"><?php echo __('Active Member', 'wicket-acc'); ?></span>
+                                            class="text-gray-700"><?php echo apply_filters('wicket/acc/block/welcome_active_member_text', __('Active Member', 'wicket-acc')); ?></span>
                                     </p>
                                     <?php endif; ?>
 
@@ -238,7 +238,7 @@ class init extends Blocks
                                         $shown_member_since = true;
                                         ?>
                                         <p class="wicket-welcome-member-since mb-0">
-                                            <?php esc_html_e(__('Member Since:', 'wicket-acc')); ?>
+                                            <?php echo apply_filters('wicket/acc/block/welcome_member_since_text', __('Member Since:', 'wicket-acc')); ?>
                                             <?php if (isset($membership_began_on) && !empty($membership_began_on)) {
                                                 echo wp_date('F j, Y', strtotime($membership_began_on));
                                             } else {
