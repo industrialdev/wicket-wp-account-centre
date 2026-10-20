@@ -72,25 +72,6 @@ class MembershipService
     }
 
     /**
-     * Parent organization membership end date for a person membership row.
-     *
-     * @param array $person_membership_data
-     * @return string|null
-     */
-    private function resolveParentMembershipEndsAt(array $person_membership_data): ?string
-    {
-        $parent_id = $person_membership_data['relationships']['organization_membership']['data']['id'] ?? '';
-        if (!is_string($parent_id) || '' === $parent_id) {
-            return null;
-        }
-
-        $parent = $this->getOrgMembershipData($parent_id);
-        $ends_at = is_array($parent) ? (string) ($parent['data']['attributes']['ends_at'] ?? '') : '';
-
-        return '' !== $ends_at ? $ends_at : null;
-    }
-
-    /**
      * Retrieve all organization memberships for an organization.
      *
      * @param string $organizationUuid Organization identifier.
@@ -484,13 +465,12 @@ class MembershipService
         $cache_key = 'orgman_membership_data_' . md5($membershipUuid);
         $cached_data = $cache->get($cache_key);
 
-        if (false !== $cached_data) {
+        // A non-array hit is stale poison (a failure cached by older code); treat it as a miss so the entry self-heals.
+        if (is_array($cached_data)) {
             return $cached_data;
         }
 
         if (!function_exists('wicket_api_client')) {
-            $cache->set($cache_key, null);
-
             return null;
         }
 
@@ -500,12 +480,13 @@ class MembershipService
             $response = $client->get($endpoint);
             $data = isset($response['data']) ? $response : null;
 
-            $cache->set($cache_key, $data);
+            // Never cache a failed lookup: a stored null reads back as a hit and silently disables the grace clamp (WWID-2774).
+            if (null !== $data) {
+                $cache->set($cache_key, $data);
+            }
 
             return $data;
         } catch (\Throwable $e) {
-            $cache->set($cache_key, null);
-
             return null;
         }
     }
@@ -919,7 +900,28 @@ class MembershipService
             // The MDP rejects a person ends_at after the parent organization membership's
             // ends_at (equality passes). Grace keeps the parent end date in the past while
             // status stays Active, so a now-based end date 422s exactly then: clamp to it.
-            $parent_ends_at = $parent_ends_at ?? $this->resolveParentMembershipEndsAt($person_membership_data);
+            if (null === $parent_ends_at) {
+                $parent_id = $person_membership_data['relationships']['organization_membership']['data']['id'] ?? '';
+
+                if (is_string($parent_id) && '' !== $parent_id) {
+                    $parent = $this->getOrgMembershipData($parent_id);
+
+                    if (!is_array($parent)) {
+                        // Fail closed rather than send an unclamped ends_at the MDP will 422.
+                        \Wicket()->log()->error('MembershipService::endPersonMembershipToday() - parent end date unresolvable', [
+                            'source' => 'wicket-orgman',
+                            'person_membership_id' => $person_membership_id,
+                            'parent_id' => $parent_id,
+                        ]);
+
+                        return new \WP_Error('membership_parent_unresolved', 'This member could not be removed right now because the organization membership could not be verified. Please try again in a few minutes.');
+                    }
+
+                    // An open-ended org membership (empty ends_at) carries no MDP constraint to clamp to.
+                    $parent_ends_at = (string) ($parent['data']['attributes']['ends_at'] ?? '');
+                    $parent_ends_at = '' !== trim($parent_ends_at) ? $parent_ends_at : null;
+                }
+            }
             $parent_ts = is_string($parent_ends_at) && '' !== trim($parent_ends_at) ? strtotime($parent_ends_at) : false;
             if (false !== $parent_ts && strtotime($ends_at) > $parent_ts) {
                 $ends_at = gmdate('Y-m-d\TH:i:s\Z', $parent_ts);
