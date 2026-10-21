@@ -72,12 +72,16 @@ class MembershipService
     }
 
     /**
-     * Parent organization membership end date for a person membership row.
+     * Parent organization membership ends_at for a person membership row.
      *
      * @param array $person_membership_data
-     * @return string|null
+     * @param mixed $person_membership_id Log context only.
+     * @return string|null|\WP_Error String: clamp target. Null: no parent link, or an
+     *                               open-ended parent carrying no MDP constraint.
+     *                               WP_Error: parent exists but could not be resolved;
+     *                               callers must fail closed.
      */
-    private function resolveParentMembershipEndsAt(array $person_membership_data): ?string
+    private function resolveParentMembershipEndsAt(array $person_membership_data, $person_membership_id = null): string|\WP_Error|null
     {
         $parent_id = $person_membership_data['relationships']['organization_membership']['data']['id'] ?? '';
         if (!is_string($parent_id) || '' === $parent_id) {
@@ -85,9 +89,19 @@ class MembershipService
         }
 
         $parent = $this->getOrgMembershipData($parent_id);
-        $ends_at = is_array($parent) ? (string) ($parent['data']['attributes']['ends_at'] ?? '') : '';
+        if (!is_array($parent)) {
+            \Wicket()->log()->error('MembershipService::resolveParentMembershipEndsAt() - parent end date unresolvable', [
+                'source' => 'wicket-orgman',
+                'person_membership_id' => $person_membership_id,
+                'parent_id' => $parent_id,
+            ]);
 
-        return '' !== $ends_at ? $ends_at : null;
+            return new \WP_Error('membership_parent_unresolved', 'This member could not be removed right now because the organization membership could not be verified. Please try again in a few minutes.');
+        }
+
+        $ends_at = (string) ($parent['data']['attributes']['ends_at'] ?? '');
+
+        return '' !== trim($ends_at) ? $ends_at : null;
     }
 
     /**
@@ -484,13 +498,12 @@ class MembershipService
         $cache_key = 'orgman_membership_data_' . md5($membershipUuid);
         $cached_data = $cache->get($cache_key);
 
-        if (false !== $cached_data) {
+        // A non-array hit is stale poison (a failure cached by older code); treat it as a miss so the entry self-heals.
+        if (is_array($cached_data)) {
             return $cached_data;
         }
 
         if (!function_exists('wicket_api_client')) {
-            $cache->set($cache_key, null);
-
             return null;
         }
 
@@ -500,12 +513,13 @@ class MembershipService
             $response = $client->get($endpoint);
             $data = isset($response['data']) ? $response : null;
 
-            $cache->set($cache_key, $data);
+            // Never cache a failed lookup: a stored null reads back as a hit and silently disables the grace clamp (WWID-2774).
+            if (null !== $data) {
+                $cache->set($cache_key, $data);
+            }
 
             return $data;
         } catch (\Throwable $e) {
-            $cache->set($cache_key, null);
-
             return null;
         }
     }
@@ -919,7 +933,15 @@ class MembershipService
             // The MDP rejects a person ends_at after the parent organization membership's
             // ends_at (equality passes). Grace keeps the parent end date in the past while
             // status stays Active, so a now-based end date 422s exactly then: clamp to it.
-            $parent_ends_at = $parent_ends_at ?? $this->resolveParentMembershipEndsAt($person_membership_data);
+            if (null === $parent_ends_at) {
+                $resolved = $this->resolveParentMembershipEndsAt($person_membership_data, $person_membership_id);
+                if (is_wp_error($resolved)) {
+                    // Fail closed rather than send an unclamped ends_at the MDP will 422.
+                    return $resolved;
+                }
+
+                $parent_ends_at = $resolved;
+            }
             $parent_ts = is_string($parent_ends_at) && '' !== trim($parent_ends_at) ? strtotime($parent_ends_at) : false;
             if (false !== $parent_ts && strtotime($ends_at) > $parent_ts) {
                 $ends_at = gmdate('Y-m-d\TH:i:s\Z', $parent_ts);
@@ -959,6 +981,17 @@ class MembershipService
                     ],
                 ],
             ];
+
+            // Rails ignores direct expires_at writes (unpermitted update param) and re-derives
+            // expires_at from ends_at + grace_period_days, so an end-dated grace row would keep
+            // its computed status Active forever; zeroing the grace collapses expires_at onto
+            // ends_at and drops the member from the roster.
+            $expires_at = (string) ($attributes['expires_at'] ?? '');
+            $expires_ts = '' !== trim($expires_at) ? strtotime($expires_at) : false;
+            $grace_days = (int) ($attributes['grace_period_days'] ?? 0);
+            if ((false !== $expires_ts && $expires_ts > strtotime($ends_at)) || $grace_days > 0) {
+                $update_payload['data']['attributes']['grace_period_days'] = 0;
+            }
 
             // Update the person membership
             $response = $client->patch("person_memberships/{$person_membership_id}", ['json' => $update_payload]);
