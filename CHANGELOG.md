@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.11.20] - 2026-10-21
+
+### Fixed
+- **orgman:** harden roster removal against cached MDP failures and grace staleness (WWID-2774) (#66)
+
+
 ## [1.11.19] - 2026-10-20
 
 ### Fixed
