@@ -72,6 +72,39 @@ class MembershipService
     }
 
     /**
+     * Parent organization membership ends_at for a person membership row.
+     *
+     * @param array $person_membership_data
+     * @param mixed $person_membership_id Log context only.
+     * @return string|null|\WP_Error String: clamp target. Null: no parent link, or an
+     *                               open-ended parent carrying no MDP constraint.
+     *                               WP_Error: parent exists but could not be resolved;
+     *                               callers must fail closed.
+     */
+    private function resolveParentMembershipEndsAt(array $person_membership_data, $person_membership_id = null): string|\WP_Error|null
+    {
+        $parent_id = $person_membership_data['relationships']['organization_membership']['data']['id'] ?? '';
+        if (!is_string($parent_id) || '' === $parent_id) {
+            return null;
+        }
+
+        $parent = $this->getOrgMembershipData($parent_id);
+        if (!is_array($parent)) {
+            \Wicket()->log()->error('MembershipService::resolveParentMembershipEndsAt() - parent end date unresolvable', [
+                'source' => 'wicket-orgman',
+                'person_membership_id' => $person_membership_id,
+                'parent_id' => $parent_id,
+            ]);
+
+            return new \WP_Error('membership_parent_unresolved', 'This member could not be removed right now because the organization membership could not be verified. Please try again in a few minutes.');
+        }
+
+        $ends_at = (string) ($parent['data']['attributes']['ends_at'] ?? '');
+
+        return '' !== trim($ends_at) ? $ends_at : null;
+    }
+
+    /**
      * Retrieve all organization memberships for an organization.
      *
      * @param string $organizationUuid Organization identifier.
@@ -901,26 +934,13 @@ class MembershipService
             // ends_at (equality passes). Grace keeps the parent end date in the past while
             // status stays Active, so a now-based end date 422s exactly then: clamp to it.
             if (null === $parent_ends_at) {
-                $parent_id = $person_membership_data['relationships']['organization_membership']['data']['id'] ?? '';
-
-                if (is_string($parent_id) && '' !== $parent_id) {
-                    $parent = $this->getOrgMembershipData($parent_id);
-
-                    if (!is_array($parent)) {
-                        // Fail closed rather than send an unclamped ends_at the MDP will 422.
-                        \Wicket()->log()->error('MembershipService::endPersonMembershipToday() - parent end date unresolvable', [
-                            'source' => 'wicket-orgman',
-                            'person_membership_id' => $person_membership_id,
-                            'parent_id' => $parent_id,
-                        ]);
-
-                        return new \WP_Error('membership_parent_unresolved', 'This member could not be removed right now because the organization membership could not be verified. Please try again in a few minutes.');
-                    }
-
-                    // An open-ended org membership (empty ends_at) carries no MDP constraint to clamp to.
-                    $parent_ends_at = (string) ($parent['data']['attributes']['ends_at'] ?? '');
-                    $parent_ends_at = '' !== trim($parent_ends_at) ? $parent_ends_at : null;
+                $resolved = $this->resolveParentMembershipEndsAt($person_membership_data, $person_membership_id);
+                if (is_wp_error($resolved)) {
+                    // Fail closed rather than send an unclamped ends_at the MDP will 422.
+                    return $resolved;
                 }
+
+                $parent_ends_at = $resolved;
             }
             $parent_ts = is_string($parent_ends_at) && '' !== trim($parent_ends_at) ? strtotime($parent_ends_at) : false;
             if (false !== $parent_ts && strtotime($ends_at) > $parent_ts) {
