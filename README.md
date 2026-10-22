@@ -205,4 +205,4 @@ Blocks in this plugin assume Wicket theme styles. When the plugin runs inside a 
 
 ## Documentation
 
-For complete documentation, see **[docs/index.md](docs/index.md)**.
+End-user guides live in the [docs](docs/) folder. Start with [How to Change Your Profile Picture](docs/change-profile-picture.md).
