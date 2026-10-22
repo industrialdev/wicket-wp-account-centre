@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.11.21] - 2026-10-22
+
+### Fixed
+- **welcome:** bail when no MDP person exists (#67)
+
+
 ## [1.11.20] - 2026-10-21
 
 ### Fixed
