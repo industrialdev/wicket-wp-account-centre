@@ -32,8 +32,8 @@
 
                 $duration_str = '';
                 if ($entry_starts_at !== '' && $entry_ends_at !== '') {
-                    $start_dt = date_create($entry_starts_at);
-                    $end_dt = date_create($entry_ends_at);
+                    $start_dt = WicketORM\Helpers\TemplateHelper::mdp_datetime($entry_starts_at);
+                    $end_dt = WicketORM\Helpers\TemplateHelper::mdp_datetime($entry_ends_at);
                     if ($start_dt && $end_dt) {
                         $diff = date_diff($start_dt, $end_dt);
                         $years = $diff->y;
@@ -54,7 +54,7 @@
                         if ($years > 0) {
                             $duration_str = sprintf(_n('%d Year', '%d Year', $years, 'wicket-acc'), $years);
                         } else {
-                            $months = $diff->m;
+                            $months = $diff->m + ($diff->d > 0 ? 1 : 0);
                             if ($months > 0) {
                                 $duration_str = sprintf(_n('%d Month', '%d Month', $months, 'wicket-acc'), $months);
                             }
@@ -62,13 +62,7 @@
                     }
                 }
 
-                $start_year_str = '';
-                if ($entry_starts_at !== '') {
-                    $start_dt = date_create($entry_starts_at);
-                    if ($start_dt) {
-                        $start_year_str = $start_dt->format('Y');
-                    }
-                }
+                $start_year_str = WicketORM\Helpers\TemplateHelper::format_mdp_date($entry_starts_at, 'Y');
 
                 $extra_details = '';
                 if ($duration_str !== '' && $start_year_str !== '') {

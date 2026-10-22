@@ -32,8 +32,8 @@
 
                 $duration_str = '';
                 if ($entry_starts_at !== '' && $entry_ends_at !== '') {
-                    $start_dt = date_create($entry_starts_at);
-                    $end_dt = date_create($entry_ends_at);
+                    $start_dt = WicketORM\Helpers\TemplateHelper::mdp_datetime($entry_starts_at);
+                    $end_dt = WicketORM\Helpers\TemplateHelper::mdp_datetime($entry_ends_at);
                     if ($start_dt && $end_dt) {
                         $diff = date_diff($start_dt, $end_dt);
                         $total_months = ($diff->y * 12) + $diff->m + ($diff->d > 0 ? 1 : 0);
@@ -45,13 +45,7 @@
                     }
                 }
 
-                $start_year_str = '';
-                if ($entry_starts_at !== '') {
-                    $start_dt = date_create($entry_starts_at);
-                    if ($start_dt) {
-                        $start_year_str = $start_dt->format('Y');
-                    }
-                }
+                $start_year_str = WicketORM\Helpers\TemplateHelper::format_mdp_date($entry_starts_at, 'Y');
 
                 $extra_details = '';
                 if ($duration_str !== '' && $start_year_str !== '') {
