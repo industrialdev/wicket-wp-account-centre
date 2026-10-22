@@ -2,6 +2,13 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.11.22] - 2026-10-22
+
+### Fixed
+- **orgman:** treat term ends as exclusive in the direct/cascade duration
+- **orgman:** show membership dates in the MDP timezone
+
+
 ## [1.11.21] - 2026-10-22
 
 ### Fixed
