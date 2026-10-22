@@ -35,7 +35,8 @@
                     $start_dt = WicketORM\Helpers\TemplateHelper::mdp_datetime($entry_starts_at);
                     $end_dt = WicketORM\Helpers\TemplateHelper::mdp_datetime($entry_ends_at);
                     if ($start_dt && $end_dt) {
-                        $diff = date_diff($start_dt, $end_dt);
+                        // Ends are stored as 23:59:59 local; treat them as exclusive so whole months count fully.
+                        $diff = date_diff($start_dt, $end_dt->modify('+1 second'));
                         $years = $diff->y;
                         $total_days = $diff->days;
                         if ($total_days !== false) {
@@ -54,7 +55,7 @@
                         if ($years > 0) {
                             $duration_str = sprintf(_n('%d Year', '%d Year', $years, 'wicket-acc'), $years);
                         } else {
-                            $months = $diff->m + ($diff->d > 0 ? 1 : 0);
+                            $months = $diff->m;
                             if ($months > 0) {
                                 $duration_str = sprintf(_n('%d Month', '%d Month', $months, 'wicket-acc'), $months);
                             }
