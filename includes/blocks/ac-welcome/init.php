@@ -36,6 +36,12 @@ class init extends Blocks
         $current_lang = wicket_get_current_language();
         $current_user = wp_get_current_user();
         $person = wicket_current_person();
+
+        // No MDP person (admin login, deleted person): render nothing instead of fataling.
+        if (!$person) {
+            return;
+        }
+
         $identifying_number = $person->identifying_number;
         $membership_began_on = $person->membership_began_on;
         $edit_profile = get_field('edit_profile_button');
