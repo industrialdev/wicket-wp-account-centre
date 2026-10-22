@@ -245,11 +245,9 @@ class init extends Blocks
                                         ?>
                                         <p class="wicket-welcome-member-since mb-0">
                                             <?php echo apply_filters('wicket/acc/block/welcome_member_since_text', __('Member Since:', 'wicket-acc')); ?>
-                                            <?php if (isset($membership_began_on) && !empty($membership_began_on)) {
-                                                echo wp_date('F j, Y', strtotime($membership_began_on));
-                                            } else {
-                                                echo wp_date('F j, Y', strtotime($membership['starts_at']));
-                                            } ?>
+                                            <?php echo esc_html(\WicketORM\Helpers\TemplateHelper::format_mdp_date(
+                                                (string) (!empty($membership_began_on) ? $membership_began_on : $membership['starts_at'])
+                                            )); ?>
                                         </p>
                                     <?php endif; ?>
 
@@ -287,7 +285,7 @@ class init extends Blocks
                                         if ($renewal_date_timestamp > 0): ?>
                                             <p class="wicket-welcome-renewal mb-0">
                                                 <?php echo esc_html($renewal_date_label); ?>
-                                                <?php echo wp_date('F j, Y', $renewal_date_timestamp); ?>
+                                                <?php echo esc_html(\WicketORM\Helpers\TemplateHelper::format_mdp_date($renewal_date_timestamp)); ?>
                                             </p>
                                     <?php
                                         endif;

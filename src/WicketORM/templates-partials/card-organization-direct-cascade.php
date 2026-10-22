@@ -32,10 +32,11 @@
 
                 $duration_str = '';
                 if ($entry_starts_at !== '' && $entry_ends_at !== '') {
-                    $start_dt = date_create($entry_starts_at);
-                    $end_dt = date_create($entry_ends_at);
+                    $start_dt = WicketORM\Helpers\TemplateHelper::mdp_datetime($entry_starts_at);
+                    $end_dt = WicketORM\Helpers\TemplateHelper::mdp_datetime($entry_ends_at);
                     if ($start_dt && $end_dt) {
-                        $diff = date_diff($start_dt, $end_dt);
+                        // Ends are stored as 23:59:59 local; treat them as exclusive so whole months count fully.
+                        $diff = date_diff($start_dt, $end_dt->modify('+1 second'));
                         $years = $diff->y;
                         $total_days = $diff->days;
                         if ($total_days !== false) {
@@ -62,13 +63,7 @@
                     }
                 }
 
-                $start_year_str = '';
-                if ($entry_starts_at !== '') {
-                    $start_dt = date_create($entry_starts_at);
-                    if ($start_dt) {
-                        $start_year_str = $start_dt->format('Y');
-                    }
-                }
+                $start_year_str = WicketORM\Helpers\TemplateHelper::format_mdp_date($entry_starts_at, 'Y');
 
                 $extra_details = '';
                 if ($duration_str !== '' && $start_year_str !== '') {

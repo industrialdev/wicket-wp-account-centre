@@ -175,12 +175,7 @@ if ($roster_mode !== 'groups') {
         }
 
         if ($ends_at) {
-            try {
-                $dt = new \DateTime($ends_at);
-                $renewal_date = $dt->format('F j, Y');
-            } catch (\Throwable $e) {
-                $renewal_date = '';
-            }
+            $renewal_date = \WicketORM\Helpers\TemplateHelper::format_mdp_date($ends_at);
         }
         // Seats (if available)
         $active = $membership_data['data']['attributes']['active_assignments_count'] ?? null;
