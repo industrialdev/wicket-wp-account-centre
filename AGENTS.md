@@ -9,7 +9,7 @@ This is a WordPress plugin rooted at `wicket.php` providing account management, 
 - `tests/`: Pest/PHPUnit test bootstrap and unit tests (`tests/unit/**/*Test.php`).
 - `docs/`: public end-user guides only.
 
-For the package map (block engineering docs, hooks, access control, product manual, WicketORM architecture and strategies, config filters): `@see atlas://packages/wicket-wp-account-centre.md`. Follow PHP doc conventions per `@see atlas://conventions/php-doc-comment-style.md`; code doc links (`@see atlas://...`) in source point at the governing Atlas docs.
+For the package map (block engineering docs, hooks, access control, product manual, WicketORM architecture and strategies, config filters): `@see atlas://packages/wicket-wp-account-centre.md`. Follow PHP doc conventions per `@see atlas://conventions/php-doc-comment-style.md`; code doc links (`@see atlas://...`) in source point at the governing Atlas docs. Atlas is the single knowledge base for all Wicket documentation; the repo docs/ folder carries only public end-consumer guides.
 
 ## Build, Test, and Development Commands
 
