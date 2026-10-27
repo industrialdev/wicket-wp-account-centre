@@ -57,9 +57,6 @@
         "cs:fix": "php-cs-fixer fix",
         "cs:format": "php-cs-fixer fix",
         "cs:lint": "php-cs-fixer fix --dry-run --diff",
-        "post-autoload-dump": [
-            "@build-pico-css"
-        ],
         "production": "composer install --no-scripts && composer cs:fix && composer install --no-dev --optimize-autoloader",
         "setup-hooks": "mkdir -p .git/hooks && cp .ci/pre-push .git/hooks/pre-push && chmod +x .git/hooks/pre-push && echo 'Git hooks installed to .git/hooks/pre-push'",
         "version-bump": "@php ./.ci/version-bump.php"
