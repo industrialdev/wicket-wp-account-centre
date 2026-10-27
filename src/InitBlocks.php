@@ -3,6 +3,7 @@
 namespace WicketAcc;
 
 use WicketAcc\Blocks\ChangePassword;
+use WicketAcc\Blocks\ManageEmployer;
 
 // No direct access
 defined('ABSPATH') || exit;
@@ -19,5 +20,6 @@ class InitBlocks extends WicketAcc
     {
         // Initialize blocks
         new ChangePassword();
+        new ManageEmployer();
     }
 }
