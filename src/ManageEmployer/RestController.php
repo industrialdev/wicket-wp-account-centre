@@ -7,6 +7,8 @@ namespace WicketAcc\ManageEmployer;
 // No direct access
 defined('ABSPATH') || exit;
 
+use WP_Error;
+
 /**
  * REST routes for the manage-employer block.
  *
@@ -103,6 +105,7 @@ final class RestController
             'callback' => [$this, 'handleCreateOrganization'],
             'args' => [
                 'name' => ['type' => 'string', 'required' => true],
+                'org_type' => ['type' => 'string'],
                 'settings' => ['type' => 'string', 'required' => true],
                 'settings_token' => ['type' => 'string', 'required' => true],
             ],
@@ -178,7 +181,13 @@ final class RestController
             ? array_filter(array_map('sanitize_key', explode(',', $typeParam)))
             : array_filter(array_map('sanitize_key', (array) $typeParam));
 
-        $results = $this->service()->searchOrganizations($term, $page, $guard['org_types'], $clientTypes);
+        $connected = $this->service()->activeEmployerOrgUuids($this->personUuid());
+
+        if (is_wp_error($connected)) {
+            return $this->error($connected);
+        }
+
+        $results = $this->service()->searchOrganizations($term, $page, $guard['org_types'], $clientTypes, $connected);
 
         if (is_wp_error($results)) {
             return $this->error($results);
@@ -198,6 +207,10 @@ final class RestController
             return $this->error($guard);
         }
 
+        if ($guard['display_membership_status_filter'] === Settings::MODE_INACTIVE) {
+            return $this->error(new WP_Error('me_read_only', 'This block is in read-only mode.', ['status' => 403]));
+        }
+
         $limited = $this->rateLimit('mutate', self::RATE_MUTATE);
 
         if (is_wp_error($limited)) {
@@ -206,6 +219,16 @@ final class RestController
 
         $personUuid = $this->personUuid();
         $orgUuid = sanitize_text_field((string) $request->get_param('org_uuid'));
+
+        if (! wp_is_uuid($orgUuid)) {
+            return $this->error(new WP_Error('me_org_invalid', 'That organization id is malformed.', ['status' => 400]));
+        }
+
+        $capError = $this->connectionCapError($personUuid);
+
+        if (is_wp_error($capError)) {
+            return $this->error($capError);
+        }
 
         $allowed = $this->verifyOrgAllowed($orgUuid, $guard);
 
@@ -252,6 +275,10 @@ final class RestController
         $orgUuid = sanitize_text_field((string) $request->get_param('org_uuid'));
         $connectionUuid = sanitize_text_field((string) $request->get_param('uuid'));
 
+        if (! wp_is_uuid($connectionUuid) || ! wp_is_uuid($orgUuid)) {
+            return $this->error(new WP_Error('me_connection_invalid', 'That connection id is malformed.', ['status' => 400]));
+        }
+
         $state = $this->service()->getState($personUuid, 1, $this->stateScope($guard));
 
         if (is_wp_error($state)) {
@@ -272,6 +299,12 @@ final class RestController
             return $this->error($result);
         }
 
+        if ($result['ended'] === [] && $result['errors'] === []) {
+            // Ownership precheck saw an active card, so an empty end is a
+            // lost race (another tab ended it first).
+            return $this->error(new WP_Error('me_connection_not_active', 'That employer is no longer active.', ['status' => 409]));
+        }
+
         return $this->response($result, $result['errors'] === [] ? 200 : 207);
     }
 
@@ -290,6 +323,10 @@ final class RestController
             return $this->error(new WP_Error('me_create_disabled', 'Creating organizations is disabled.', ['status' => 403]));
         }
 
+        if ($guard['display_membership_status_filter'] === Settings::MODE_INACTIVE) {
+            return $this->error(new WP_Error('me_read_only', 'This block is in read-only mode.', ['status' => 403]));
+        }
+
         $limited = $this->rateLimit('create_org', self::RATE_CREATE_ORG);
 
         if (is_wp_error($limited)) {
@@ -303,7 +340,13 @@ final class RestController
             $name = mb_substr($name, 0, 200);
         }
 
-        $created = $this->service()->createOrganization($name, (string) $request->get_param('org_type'), $guard['create_org_types'] ?: $guard['org_types']);
+        $capError = $this->connectionCapError($personUuid);
+
+        if (is_wp_error($capError)) {
+            return $this->error($capError);
+        }
+
+        $created = $this->service()->createOrganization($name, sanitize_key((string) $request->get_param('org_type')), $guard['create_org_types'] ?: $guard['org_types']);
 
         if (is_wp_error($created)) {
             return $this->error($created);
@@ -349,6 +392,10 @@ final class RestController
 
         $personUuid = $this->personUuid();
         $orgUuid = sanitize_text_field((string) $request->get_param('org_uuid'));
+
+        if (! wp_is_uuid($orgUuid)) {
+            return $this->error(new WP_Error('me_org_invalid', 'That organization id is malformed.', ['status' => 400]));
+        }
 
         $state = $this->service()->getState($personUuid, 1, $this->stateScope($guard));
 
@@ -412,9 +459,11 @@ final class RestController
             return false;
         }
 
-        if (class_exists(\WicketGuestPaymentCore::class)
-            && method_exists(\WicketGuestPaymentCore::class, 'is_guest_payment_session')) {
-            if (\WicketGuestPaymentCore::is_guest_payment_session()) {
+        // A guest-payment session is logged in as the payer's target member,
+        // so it must never pass for the member. The core class supports
+        // argless instantiation precisely for checks like this one.
+        if (class_exists(\Wicket\GuestPayment\WicketGuestPaymentCore::class)) {
+            if ((new \Wicket\GuestPayment\WicketGuestPaymentCore())->is_guest_payment_session()) {
                 return false;
             }
         }
@@ -461,10 +510,6 @@ final class RestController
             return new WP_Error('me_org_required', 'An organization uuid is required.', ['status' => 400]);
         }
 
-        if (empty($settings['org_types'])) {
-            return true;
-        }
-
         $type = $this->service()->fetchOrgType($orgUuid);
 
         if (is_wp_error($type)) {
@@ -475,8 +520,31 @@ final class RestController
             return new WP_Error('me_org_not_found', 'That organization does not exist.', ['status' => 404]);
         }
 
-        if (! in_array($type, array_map('strval', $settings['org_types']), true)) {
+        $allowed = array_values(array_filter(array_map('strval', (array) $settings['org_types'])));
+
+        if ($allowed !== [] && ! in_array($type, $allowed, true)) {
             return new WP_Error('me_org_not_allowed', 'That organization is not on the allowed list.', ['status' => 403]);
+        }
+
+        return true;
+    }
+
+    /**
+     * The plan caps how many employer cards one member may hold. Checked
+     * before add and create; the create path also connects the creator.
+     *
+     * @return true|WP_Error
+     */
+    private function connectionCapError(string $personUuid): bool|WP_Error
+    {
+        $activeUuids = $this->service()->activeEmployerOrgUuids($personUuid);
+
+        if (is_wp_error($activeUuids)) {
+            return $activeUuids;
+        }
+
+        if (count($activeUuids) >= self::MAX_ACTIVE_CONNECTIONS) {
+            return new WP_Error('me_connection_cap', 'The maximum number of employers is already reached.', ['status' => 403]);
         }
 
         return true;
@@ -501,8 +569,8 @@ final class RestController
     }
 
     /**
-     * Fixed-window per-user counter. Silent windows keep search snappy while
-     * capping abuse; mutation windows stay small and sharp.
+     * Fixed-window per-user counter. The window end is stored inside the
+     * value so a failed check can never extend its own window.
      *
      * @param array<int, int> $policy count => window seconds
      * @return true|WP_Error
@@ -513,7 +581,15 @@ final class RestController
 
         foreach ($policy as $max => $window) {
             $key = sprintf('wicket_acc_me_rl_%s_%d_%d', $action, $userId, $window);
-            $count = (int) get_transient($key);
+            $stored = get_transient($key);
+            $now = time();
+
+            if (is_array($stored) && ($stored['window_end'] ?? 0) > $now) {
+                $count = (int) ($stored['count'] ?? 0);
+            } else {
+                $count = 0;
+                set_transient($key, ['count' => 0, 'window_end' => $now + $window], $window);
+            }
 
             if ($count >= $max) {
                 return new WP_Error(
@@ -523,7 +599,7 @@ final class RestController
                 );
             }
 
-            set_transient($key, $count + 1, $window);
+            set_transient($key, ['count' => $count + 1, 'window_end' => $now + $window], $window);
         }
 
         return true;

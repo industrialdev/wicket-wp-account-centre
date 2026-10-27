@@ -57,12 +57,18 @@ class ManageEmployer
         foreach (Settings::schema() as $name => $meta) {
             $field = \HyperBlocks\Block\Field::make($meta['type'], $name, $meta['label'])
                 ->setTab($meta['tab'])
-                ->setSection($meta['section']);
+                ->setSection($meta['section'])
+                ->setDefault($meta['default']);
 
             if (! empty($meta['dynamic_options'])) {
-                $field->setOptions($name === 'org_types' || $name === 'create_org_types'
-                    ? $this->orgTypeOptions()
-                    : $this->relationshipTypeOptions());
+                // Options only matter in the editor sidebar. Fetching them on
+                // every front-end init would put an MDP call on the hot path
+                // whenever the cache is cold.
+                $field->setOptions(is_admin()
+                    ? ($name === 'org_types' || $name === 'create_org_types'
+                        ? $this->orgTypeOptions()
+                        : $this->relationshipTypeOptions())
+                    : []);
             } elseif (! empty($meta['options'])) {
                 $field->setOptions($meta['options']);
             }
@@ -153,7 +159,9 @@ class ManageEmployer
     }
 
     /**
-     * Transient wrapper shared by both providers.
+     * Transient wrapper shared by both providers. Empty results earn a short
+     * negative cache so an MDP outage cannot turn every admin request into a
+     * fresh blocking fetch attempt.
      *
      * @param callable():array<string,string> $fetch
      * @return array<string, string>
@@ -167,7 +175,7 @@ class ManageEmployer
             return $cached;
         }
 
-        if (get_transient($transient . '_lock')) {
+        if (get_transient($transient . '_miss') || get_transient($transient . '_lock')) {
             return [];
         }
 
@@ -175,11 +183,13 @@ class ManageEmployer
 
         $options = $fetch();
 
-        delete_transient($transient . '_lock');
-
         if ($options !== []) {
             set_transient($transient, $options, self::OPTIONS_TTL);
+        } else {
+            set_transient($transient . '_miss', 1, 5 * MINUTE_IN_SECONDS);
         }
+
+        delete_transient($transient . '_lock');
 
         return $options;
     }
@@ -200,9 +210,16 @@ class ManageEmployer
         $options = [];
 
         foreach ($rows as $row) {
-            $attributes = is_array($row) ? ($row['attributes'] ?? []) : (object) [];
-            $slug = is_array($row) ? (string) ($row['id'] ?? ($attributes['slug'] ?? '')) : '';
-            $label = is_array($attributes) ? (string) ($attributes['name'] ?? '') : '';
+            if (! is_array($row)) {
+                continue;
+            }
+
+            $attributes = is_array($row['attributes'] ?? null) ? $row['attributes'] : [];
+
+            // The id can be a uuid on some tenants; the slug attribute is the
+            // stable key the type filters match on.
+            $slug = (string) ($attributes['slug'] ?? $row['id'] ?? '');
+            $label = (string) ($attributes['name'] ?? $attributes['title'] ?? '');
 
             if ($slug !== '') {
                 $options[$slug] = $label !== '' ? $label : $slug;
@@ -220,11 +237,11 @@ class ManageEmployer
         if (is_object($type)) {
             $attributes = $type->attributes ?? null;
 
-            return (string) ($type->id ?? ($attributes->slug ?? ''));
+            return (string) ($attributes->slug ?? $type->id ?? '');
         }
 
         if (is_array($type)) {
-            return (string) ($type['id'] ?? ($type['attributes']['slug'] ?? ''));
+            return (string) ($type['attributes']['slug'] ?? $type['id'] ?? '');
         }
 
         return '';
