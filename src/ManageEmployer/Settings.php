@@ -28,6 +28,8 @@ final class Settings
 
     private const HMAC_CONTEXT = 'wicket-acc/manage-employer/settings';
 
+    private const TOKEN_VERSION = 'me1';
+
     /**
      * Authoritative settings inventory.
      *
@@ -42,7 +44,9 @@ final class Settings
      */
     public static function schema(): array
     {
-        $inactive_mode_rule = self::condition('display_membership_status_filter', self::MODE_INACTIVE);
+        // Story 1.3: inactive (read-only) mode hides the end action, the
+        // removal alert, and the primary controls.
+        $active_mode_rule = self::condition('display_membership_status_filter', '!=', self::MODE_INACTIVE);
 
         return [
             'org_types' => [
@@ -90,14 +94,17 @@ final class Settings
                 'type' => 'text',
                 'tab' => self::TAB_GENERAL,
                 'section' => 'labeling',
-                'default' => __('Employer', 'wicket-acc'),
+                // Text defaults stay literal English: they ride inside the
+                // signed token, so a locale switch between render and REST
+                // must not change verification.
+                'default' => 'Employer',
             ],
             'org_name_plural' => [
                 'label' => __('Organization Name (Plural)', 'wicket-acc'),
                 'type' => 'text',
                 'tab' => self::TAB_GENERAL,
                 'section' => 'labeling',
-                'default' => __('Employers', 'wicket-acc'),
+                'default' => 'Employers',
             ],
             'disable_create' => [
                 'label' => __('Disable Creating New Organizations', 'wicket-acc'),
@@ -113,7 +120,7 @@ final class Settings
                 'section' => 'creation',
                 'default' => [],
                 'dynamic_options' => true,
-                'conditional_logic' => self::condition('disable_create', true),
+                'conditional_logic' => self::condition('disable_create', '!=', true),
             ],
             'display_org_type' => [
                 'label' => __('Display Organization Type', 'wicket-acc'),
@@ -140,7 +147,7 @@ final class Settings
                     'city_province_country' => __('City, Province, Country', 'wicket-acc'),
                     'city_province' => __('City, Province', 'wicket-acc'),
                 ],
-                'conditional_logic' => self::condition('display_org_address', true),
+                'conditional_logic' => self::condition('display_org_address', '=', true),
             ],
             'display_membership_status' => [
                 'label' => __('Display Membership Status', 'wicket-acc'),
@@ -169,7 +176,7 @@ final class Settings
                 'tab' => self::TAB_FRONT_END,
                 'section' => 'actions',
                 'default' => false,
-                'conditional_logic' => $inactive_mode_rule,
+                'conditional_logic' => $active_mode_rule,
             ],
             'removal_alert_enabled' => [
                 'label' => __('Display Removal Alert Message', 'wicket-acc'),
@@ -177,23 +184,23 @@ final class Settings
                 'tab' => self::TAB_FRONT_END,
                 'section' => 'actions',
                 'default' => true,
-                'conditional_logic' => $inactive_mode_rule,
+                'conditional_logic' => $active_mode_rule,
             ],
             'removal_alert_title' => [
                 'label' => __('Removal Alert Title', 'wicket-acc'),
                 'type' => 'text',
                 'tab' => self::TAB_FRONT_END,
                 'section' => 'actions',
-                'default' => __('Remove this employer?', 'wicket-acc'),
-                'conditional_logic' => self::condition('removal_alert_enabled', true),
+                'default' => 'Remove this employer?',
+                'conditional_logic' => self::condition('removal_alert_enabled', '=', true),
             ],
             'removal_alert_description' => [
                 'label' => __('Removal Alert Description', 'wicket-acc'),
                 'type' => 'textarea',
                 'tab' => self::TAB_FRONT_END,
                 'section' => 'actions',
-                'default' => __('This will end your relationship with this organization.', 'wicket-acc'),
-                'conditional_logic' => self::condition('removal_alert_enabled', true),
+                'default' => 'This will end your relationship with this organization.',
+                'conditional_logic' => self::condition('removal_alert_enabled', '=', true),
             ],
             'enable_primary' => [
                 'label' => __('Enable Primary Organization', 'wicket-acc'),
@@ -201,7 +208,7 @@ final class Settings
                 'tab' => self::TAB_FRONT_END,
                 'section' => 'primary_organization',
                 'default' => true,
-                'conditional_logic' => $inactive_mode_rule,
+                'conditional_logic' => $active_mode_rule,
             ],
             'hide_primary_tag' => [
                 'label' => __('Hide Primary Organization Tag', 'wicket-acc'),
@@ -209,7 +216,7 @@ final class Settings
                 'tab' => self::TAB_FRONT_END,
                 'section' => 'primary_organization',
                 'default' => false,
-                'conditional_logic' => self::condition('enable_primary', true),
+                'conditional_logic' => self::condition('enable_primary', '=', true),
             ],
             'hide_set_primary_button' => [
                 'label' => __('Hide "Set as Primary" Button', 'wicket-acc'),
@@ -217,14 +224,14 @@ final class Settings
                 'tab' => self::TAB_FRONT_END,
                 'section' => 'primary_organization',
                 'default' => false,
-                'conditional_logic' => self::condition('enable_primary', true),
+                'conditional_logic' => self::condition('enable_primary', '=', true),
             ],
             'no_results_message' => [
                 'label' => __('No Results Found Message', 'wicket-acc'),
                 'type' => 'text',
                 'tab' => self::TAB_FRONT_END,
                 'section' => 'empty_state',
-                'default' => __('No employers found.', 'wicket-acc'),
+                'default' => 'No employers found.',
             ],
         ];
     }
@@ -237,6 +244,19 @@ final class Settings
     public static function defaults(): array
     {
         return array_map(static fn (array $meta): mixed => $meta['default'], self::schema());
+    }
+
+    /**
+     * Project template scope onto the settings keys. The hyperblocks renderer
+     * extracts each attribute as its own variable, so the template hands
+     * get_defined_vars() here instead of maintaining a second field list.
+     *
+     * @param array<string, mixed> $vars
+     * @return array<string, mixed>
+     */
+    public static function pick(array $vars): array
+    {
+        return array_intersect_key($vars, self::schema());
     }
 
     /**
@@ -271,13 +291,15 @@ final class Settings
     }
 
     /**
-     * HMAC-sign the resolved settings for embedding in block markup.
+     * HMAC-sign the resolved settings for embedding in block markup. The
+     * context and version prefix domain-separate the wp_salt key so tokens
+     * from other surfaces never verify here.
      *
      * @param array<string, mixed> $resolved
      */
     public static function sign(array $resolved): string
     {
-        return hash_hmac('sha256', self::canonicalPayload($resolved), wp_salt('auth'));
+        return self::TOKEN_VERSION . '.' . hash_hmac('sha256', self::HMAC_CONTEXT . "\0" . self::canonicalPayload($resolved), wp_salt('auth'));
     }
 
     /**
@@ -317,6 +339,13 @@ final class Settings
             if (is_array($value)) {
                 self::sortRecursive($value);
             }
+        }
+        unset($value);
+
+        // Scalar lists sort too: the token must not depend on the order the
+        // caller happened to build the array in.
+        if (array_is_list($array) && ! in_array(false, array_map('is_scalar', $array), true)) {
+            sort($array);
         }
     }
 
@@ -374,15 +403,19 @@ final class Settings
 
     /**
      * One-condition visibility rule in the HyperFields canonical shape.
+     *
+     * HyperFields logic is show-when: a field with rules is visible only while
+     * a group matches, so "hidden in mode X" must be written as "shown when
+     * field != X".
      */
-    private static function condition(string $field, bool|string $value): array
+    private static function condition(string $field, string $operator, bool|string $value): array
     {
         return [
             'relation' => 'AND',
             'conditions' => [
                 [
                     'field' => $field,
-                    'operator' => '=',
+                    'operator' => $operator,
                     'value' => $value,
                 ],
             ],

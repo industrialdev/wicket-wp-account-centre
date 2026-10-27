@@ -6,6 +6,7 @@ namespace WicketAcc\ManageEmployer;
 
 use Wicket\Client;
 use WicketORM\Services\ConnectionService;
+use WP_Error;
 
 // No direct access
 defined('ABSPATH') || exit;
@@ -89,7 +90,10 @@ final class Service
             'connections' => $rows,
             'orgs' => $orgs,
             'primary_uuid' => $primary,
-            'meta' => $connections['meta'] ?? [],
+            'meta' => array_intersect_key(
+                is_array($connections['meta'] ?? null) ? $connections['meta'] : [],
+                array_flip(['total', 'total_pages', 'per_page', 'current_page'])
+            ),
         ];
     }
 
@@ -99,9 +103,10 @@ final class Service
      *
      * @param array<int, string> $allowedTypes Settings org types; blank list means all.
      * @param array<int, string> $clientTypes  Client filter, intersected with the allowed list.
+     * @param array<int, string> $connectedUuids Org uuids the person already connects to, flagged in results.
      * @return array{results: array, meta: array}|WP_Error
      */
-    public function searchOrganizations(string $term, int $page, array $allowedTypes, array $clientTypes = []): array|WP_Error
+    public function searchOrganizations(string $term, int $page, array $allowedTypes, array $clientTypes = [], array $connectedUuids = []): array|WP_Error
     {
         $client = $this->client();
 
@@ -110,6 +115,12 @@ final class Service
         }
 
         $types = $this->intersectTypes($allowedTypes, $clientTypes);
+
+        // A client filter disjoint from the allowed list matches nothing; it
+        // must never widen the query back to all types.
+        if ($allowedTypes !== [] && $types === []) {
+            return ['results' => [], 'meta' => []];
+        }
 
         $query = [
             'filter' => ['legal_name_en_cont' => $term],
@@ -124,23 +135,55 @@ final class Service
         try {
             $response = $client->get('organizations', ['query' => $query]);
         } catch (\Throwable $e) {
-            return new WP_Error('me_search_failed', $e->getMessage());
+            error_log('[wicket-acc manage-employer] search failed: ' . $e->getMessage());
+
+            return new WP_Error('me_search_failed', 'The organization search is temporarily unavailable.', ['status' => 502]);
         }
 
         $results = [];
 
         foreach (($response['data'] ?? []) as $row) {
+            $uuid = (string) ($row['id'] ?? '');
+
             $results[] = [
-                'uuid' => (string) ($row['id'] ?? ''),
+                'uuid' => $uuid,
                 'legal_name' => (string) ($row['attributes']['legal_name_en'] ?? ''),
                 'type' => (string) ($row['attributes']['type'] ?? ''),
+                'connected' => in_array($uuid, $connectedUuids, true),
             ];
         }
 
         return [
             'results' => $results,
-            'meta' => $response['meta'] ?? [],
+            'meta' => is_array($response['meta'] ?? null) ? $response['meta'] : [],
         ];
+    }
+
+    /**
+     * Org uuids behind the person's active employer connections, page 1.
+     * Drives the connection cap and the already-connected search flag.
+     *
+     * @return array<int, string>|WP_Error
+     */
+    public function activeEmployerOrgUuids(string $personUuid): array|WP_Error
+    {
+        $connections = $this->fetchConnections($personUuid, 1, 100);
+
+        if (is_wp_error($connections)) {
+            return $connections;
+        }
+
+        $uuids = [];
+
+        foreach ($this->filterByRelationshipStatus($connections['data'], Settings::MODE_ACTIVE) as $row) {
+            $uuid = $this->connectionOrgUuid($row);
+
+            if ($uuid !== '') {
+                $uuids[$uuid] = true;
+            }
+        }
+
+        return array_keys($uuids);
     }
 
     /**
@@ -168,44 +211,54 @@ final class Service
             return new WP_Error('me_no_relationship_types', 'No creatable relationship types are configured for this block.');
         }
 
-        $active = $connectionService->getActivePersonOrganizationConnections($personUuid, $orgUuid);
+        $lockKey = md5($personUuid . '|' . $orgUuid);
 
-        if (is_wp_error($active)) {
-            return $active;
+        if (! $this->acquireMutationLock($lockKey)) {
+            return new WP_Error('me_busy', 'An update to this employer is already in progress. Try again in a moment.', ['status' => 429]);
         }
 
-        if ($active !== []) {
-            return ['created' => [], 'skipped_existing' => true, 'errors' => []];
-        }
+        try {
+            $active = $connectionService->getActivePersonOrganizationConnections($personUuid, $orgUuid);
 
-        $created = [];
-        $errors = [];
-
-        foreach ($relationshipTypes as $type) {
-            $payload = $connectionService->buildConnectionPayload($personUuid, $orgUuid, 'person_to_organization', $type);
-
-            if (is_wp_error($payload)) {
-                $errors[] = $payload->get_error_message();
-
-                continue;
+            if (is_wp_error($active)) {
+                return $active;
             }
 
-            $result = $connectionService->createConnection($payload);
-
-            if (is_wp_error($result)) {
-                $errors[] = $result->get_error_message();
-
-                continue;
+            if ($active !== []) {
+                return ['created' => [], 'skipped_existing' => true, 'errors' => []];
             }
 
-            $created[] = $type;
-        }
+            $created = [];
+            $errors = [];
 
-        return [
-            'created' => $created,
-            'skipped_existing' => false,
-            'errors' => $errors,
-        ];
+            foreach ($relationshipTypes as $type) {
+                $payload = $connectionService->buildConnectionPayload($personUuid, $orgUuid, 'person_to_organization', $type);
+
+                if (is_wp_error($payload)) {
+                    $errors[] = $payload->get_error_message();
+
+                    continue;
+                }
+
+                $result = $connectionService->createConnection($payload);
+
+                if (is_wp_error($result)) {
+                    $errors[] = $result->get_error_message();
+
+                    continue;
+                }
+
+                $created[] = $type;
+            }
+
+            return [
+                'created' => $created,
+                'skipped_existing' => false,
+                'errors' => $errors,
+            ];
+        } finally {
+            $this->releaseMutationLock($lockKey);
+        }
     }
 
     /**
@@ -231,9 +284,14 @@ final class Service
      * Create an organization after a server-side duplicate check, then the
      * caller connects the person with the settings relationship types.
      *
+     * The type never comes from the client alone: a single configured type is
+     * applied server-side, and with several the client value must sit inside
+     * the configured list.
+     *
+     * @param array<int, string> $allowedTypes Settings org types (create_org_types falling back to org_types).
      * @return array{uuid: string, duplicate: bool}|WP_Error
      */
-    public function createOrganization(string $name, string $type, array $allowedTypes): array|WP_Error
+    public function createOrganization(string $name, string $clientType, array $allowedTypes): array|WP_Error
     {
         $client = $this->client();
 
@@ -242,50 +300,75 @@ final class Service
         }
 
         $name = trim($name);
-        $type = $this->coerceType($type, $allowedTypes);
 
         if ($name === '') {
             return new WP_Error('me_org_name_required', 'An organization name is required.');
         }
 
-        if ($type === '') {
-            return new WP_Error('me_org_type_required', 'An organization type is required.');
+        $allowed = $this->typeList($allowedTypes);
+
+        if ($allowed === []) {
+            return new WP_Error('me_org_type_unavailable', 'No organization types are configured for this block.', ['status' => 400]);
         }
 
-        $duplicate = $this->findDuplicateOrganization($name, $type);
+        if (count($allowed) === 1) {
+            $type = $allowed[0];
+        } else {
+            $candidate = sanitize_key($clientType);
 
-        if (is_wp_error($duplicate)) {
-            return $duplicate;
+            if ($candidate === '' || ! in_array($candidate, array_map('strtolower', $allowed), true)) {
+                return new WP_Error('me_org_type_invalid', 'Pick one of the configured organization types.', ['status' => 400]);
+            }
+
+            $type = $candidate;
         }
 
-        if ($duplicate !== '') {
-            return ['uuid' => $duplicate, 'duplicate' => true];
+        $lockKey = 'org-' . md5(strtolower($name) . '|' . $type);
+
+        if (! $this->acquireMutationLock($lockKey)) {
+            return new WP_Error('me_busy', 'An organization with this name is already being created.', ['status' => 429]);
         }
 
         try {
-            $response = $client->post('organizations', [
-                'json' => [
-                    'data' => [
-                        'type' => 'organizations',
-                        'attributes' => [
-                            'legal_name' => $name,
-                            'legal_name_en' => $name,
-                            'type' => $type,
+            $duplicate = $this->findDuplicateOrganization($name, $type);
+
+            if (is_wp_error($duplicate)) {
+                return $duplicate;
+            }
+
+            if ($duplicate !== '') {
+                return ['uuid' => $duplicate, 'duplicate' => true];
+            }
+
+            try {
+                $response = $client->post('organizations', [
+                    'json' => [
+                        'data' => [
+                            'type' => 'organizations',
+                            'attributes' => [
+                                'legal_name' => $name,
+                                'legal_name_en' => $name,
+                                'type' => $type,
+                            ],
                         ],
                     ],
-                ],
-            ]);
-        } catch (\Throwable $e) {
-            return new WP_Error('me_org_create_failed', $e->getMessage());
+                ]);
+            } catch (\Throwable $e) {
+                error_log('[wicket-acc manage-employer] org create failed: ' . $e->getMessage());
+
+                return new WP_Error('me_org_create_failed', 'The organization could not be created.', ['status' => 502]);
+            }
+
+            $uuid = (string) ($response['data']['id'] ?? '');
+
+            if ($uuid === '') {
+                return new WP_Error('me_org_create_failed', 'The MDP response carried no organization uuid.', ['status' => 502]);
+            }
+
+            return ['uuid' => $uuid, 'duplicate' => false];
+        } finally {
+            $this->releaseMutationLock($lockKey);
         }
-
-        $uuid = (string) ($response['data']['id'] ?? '');
-
-        if ($uuid === '') {
-            return new WP_Error('me_org_create_failed', 'The MDP response carried no organization uuid.');
-        }
-
-        return ['uuid' => $uuid, 'duplicate' => false];
     }
 
     /**
@@ -314,7 +397,9 @@ final class Service
                 ],
             ]);
         } catch (\Throwable $e) {
-            return new WP_Error('me_primary_write_failed', $e->getMessage());
+            error_log('[wicket-acc manage-employer] primary write failed: ' . $e->getMessage());
+
+            return new WP_Error('me_primary_write_failed', 'The primary organization could not be saved.', ['status' => 502]);
         }
 
         // Bounded re-read: the fallback worker runs async, but the PATCH echoes
@@ -343,7 +428,7 @@ final class Service
 
     /**
      * True when the uuid appears in the person's own connection list as the
-     * org side of an active person_to_organization connection.
+     * org side of an ACTIVE person_to_organization connection.
      *
      * @param array<int, array> $connections
      */
@@ -354,7 +439,11 @@ final class Service
                 continue;
             }
 
-            if (($row['attributes']['connection_type'] ?? '') !== 'person_to_organization') {
+            // Absent attribute is fine: the index query already filtered by
+            // connection type. Present-but-different means a foreign row.
+            $connectionType = (string) ($row['attributes']['connection_type'] ?? '');
+
+            if ($connectionType !== '' && $connectionType !== 'person_to_organization') {
                 continue;
             }
 
@@ -362,26 +451,33 @@ final class Service
                 continue;
             }
 
-            return $this->connectionIsPersonSide($row, $personUuid);
+            return $this->connectionIsActive($row) && $this->connectionIsPersonSide($row, $personUuid);
         }
 
         return false;
     }
 
     /**
-     * True when any connection row in the list points at the org.
+     * True when an ACTIVE connection row in the list points at the org.
      *
      * @param array<int, array> $connections
      */
     public function listHasOrg(array $connections, string $orgUuid): bool
     {
         foreach ($connections as $row) {
-            if ($this->connectionOrgUuid($row) === $orgUuid) {
+            if ($this->connectionOrgUuid($row) === $orgUuid && $this->connectionIsActive($row)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    private function connectionIsActive(array $row): bool
+    {
+        $endsAt = (string) ($row['attributes']['ends_at'] ?? '');
+
+        return $endsAt === '' || strtotime($endsAt) > time();
     }
 
     /**
@@ -400,7 +496,9 @@ final class Service
                 'query' => ['fields' => ['organizations' => 'type']],
             ]);
         } catch (\Throwable $e) {
-            return new WP_Error('me_org_lookup_failed', $e->getMessage());
+            error_log('[wicket-acc manage-employer] org lookup failed: ' . $e->getMessage());
+
+            return new WP_Error('me_org_lookup_failed', 'That organization could not be verified.', ['status' => 502]);
         }
 
         return (string) ($response['data']['attributes']['type'] ?? '');
@@ -408,20 +506,30 @@ final class Service
 
     /**
      * Relationship types the block may create: the settings selection minus
-     * protected types.
+     * protected types, compared with hyphen and underscore treated as one so
+     * a hyphenated tenant slug cannot slip past the company_admin guard.
      *
      * @param array<int, string> $types
      * @return array<int, string>
      */
     public function creatableTypes(array $types): array
     {
-        return array_values(array_diff($this->slugList($types), self::PROTECTED_TYPES));
+        $protected = array_map(
+            static fn (string $type): string => str_replace(['-', ' '], '_', strtolower($type)),
+            self::PROTECTED_TYPES
+        );
+
+        return array_values(array_filter(
+            $this->slugList($types),
+            static fn (string $type): bool => ! in_array(str_replace('-', '_', $type), $protected, true)
+        ));
     }
 
     /**
      * Client type filter intersected with the allowed list. An empty allowed
      * list means all types; an empty client filter means the whole allowed
-     * list — never everything.
+     * list — never everything. A disjoint intersection returns empty and the
+     * search route answers no results.
      *
      * @param array<int, string> $allowedTypes
      * @param array<int, string> $clientTypes
@@ -429,7 +537,7 @@ final class Service
      */
     public function intersectTypes(array $allowedTypes, array $clientTypes): array
     {
-        $allowed = $this->slugList($allowedTypes);
+        $allowed = $this->typeList($allowedTypes);
 
         if ($allowed === []) {
             return $this->slugList($clientTypes);
@@ -439,7 +547,7 @@ final class Service
             return $allowed;
         }
 
-        return array_values(array_intersect($allowed, $this->slugList($clientTypes)));
+        return array_values(array_intersect($allowed, $this->typeList($clientTypes)));
     }
 
     /**
@@ -464,7 +572,9 @@ final class Service
                 ],
             ]);
         } catch (\Throwable $e) {
-            return new WP_Error('me_connections_failed', $e->getMessage());
+            error_log('[wicket-acc manage-employer] connections fetch failed: ' . $e->getMessage());
+
+            return new WP_Error('me_connections_failed', 'Your connections could not be loaded.', ['status' => 502]);
         }
 
         if (! isset($response['data']) || ! is_array($response['data'])) {
@@ -479,7 +589,8 @@ final class Service
 
     /**
      * Organization details for the state payload, scoped to what the block
-     * settings display.
+     * settings display. One fetch per uuid: `filter[id_in]` is not an M0-verified
+     * index filter, and unknown filters silently return zero rows there.
      *
      * @param array<int, string> $uuids
      * @param array{display_org_type: bool, display_org_address: bool} $settings
@@ -487,10 +598,28 @@ final class Service
      */
     private function fetchOrgs(array $uuids, array $settings): array|WP_Error
     {
-        if ($uuids === []) {
-            return [];
+        $orgs = [];
+
+        foreach ($uuids as $uuid) {
+            $org = $this->fetchOrg($uuid, $settings);
+
+            if (is_wp_error($org)) {
+                return $org;
+            }
+
+            if ($org !== null) {
+                $orgs[$uuid] = $org;
+            }
         }
 
+        return $orgs;
+    }
+
+    /**
+     * @return array{uuid: string, legal_name: string, type?: string, addresses?: array}|null|WP_Error null when the org no longer exists.
+     */
+    private function fetchOrg(string $uuid, array $settings): array|null|WP_Error
+    {
         $client = $this->client();
 
         if (! $client) {
@@ -503,48 +632,40 @@ final class Service
             $fields[] = 'type';
         }
 
-        $query = [
-            'filter' => ['id_in' => $uuids],
-            'fields' => ['organizations' => implode(',', $fields)],
-            'per_page' => count($uuids),
-        ];
+        $query = ['fields' => ['organizations' => implode(',', $fields)]];
 
         if (! empty($settings['display_org_address'])) {
             $query['include'] = 'addresses';
         }
 
         try {
-            $response = $client->get('organizations', ['query' => $query]);
+            $response = $client->get('organizations/' . rawurlencode($uuid), ['query' => $query]);
         } catch (\Throwable $e) {
-            return new WP_Error('me_orgs_failed', $e->getMessage());
+            error_log('[wicket-acc manage-employer] org fetch failed: ' . $e->getMessage());
+
+            return new WP_Error('me_orgs_failed', 'Organization details could not be loaded.', ['status' => 502]);
         }
 
-        $orgs = [];
+        $attributes = $response['data']['attributes'] ?? null;
 
-        foreach (($response['data'] ?? []) as $row) {
-            $uuid = (string) ($row['id'] ?? '');
-
-            if ($uuid === '') {
-                continue;
-            }
-
-            $org = [
-                'uuid' => $uuid,
-                'legal_name' => (string) ($row['attributes']['legal_name_en'] ?? ''),
-            ];
-
-            if (! empty($settings['display_org_type'])) {
-                $org['type'] = (string) ($row['attributes']['type'] ?? '');
-            }
-
-            if (! empty($settings['display_org_address'])) {
-                $org['addresses'] = $this->includedAddressesFor($response, $uuid);
-            }
-
-            $orgs[$uuid] = $org;
+        if (! is_array($attributes)) {
+            return null;
         }
 
-        return $orgs;
+        $org = [
+            'uuid' => (string) ($response['data']['id'] ?? $uuid),
+            'legal_name' => (string) ($attributes['legal_name_en'] ?? ''),
+        ];
+
+        if (! empty($settings['display_org_type'])) {
+            $org['type'] = (string) ($attributes['type'] ?? '');
+        }
+
+        if (! empty($settings['display_org_address'])) {
+            $org['addresses'] = $this->includedAddressesFor(is_array($response) ? $response : [], $uuid);
+        }
+
+        return $org;
     }
 
     /**
@@ -589,7 +710,9 @@ final class Service
                 'query' => ['include' => 'primary_organization'],
             ]);
         } catch (\Throwable $e) {
-            return new WP_Error('me_primary_read_failed', $e->getMessage());
+            error_log('[wicket-acc manage-employer] primary read failed: ' . $e->getMessage());
+
+            return new WP_Error('me_primary_read_failed', 'The primary organization could not be read.', ['status' => 502]);
         }
 
         return (string) ($response['data']['relationships']['primary_organization']['data']['id'] ?? '');
@@ -616,19 +739,21 @@ final class Service
                         'type_eq' => $type,
                     ],
                     'fields' => ['organizations' => 'legal_name_en,type'],
-                    'per_page' => 25,
+                    'page' => ['number' => 1, 'size' => 25],
                 ],
             ]);
         } catch (\Throwable $e) {
-            return new WP_Error('me_org_duplicate_check_failed', $e->getMessage());
+            error_log('[wicket-acc manage-employer] duplicate check failed: ' . $e->getMessage());
+
+            return new WP_Error('me_org_duplicate_check_failed', 'The duplicate check could not run.', ['status' => 502]);
         }
 
-        $needle = mb_strtolower(trim($name));
+        $needle = $this->lowerLabel(trim($name));
 
         foreach (($response['data'] ?? []) as $row) {
-            $existing = mb_strtolower(trim((string) ($row['attributes']['legal_name_en'] ?? '')));
+            $existing = $this->lowerLabel(trim((string) ($row['attributes']['legal_name_en'] ?? '')));
 
-            if ($existing === $needle) {
+            if ($existing !== '' && $existing === $needle) {
                 return (string) ($row['id'] ?? '');
             }
         }
@@ -696,23 +821,54 @@ final class Service
     }
 
     /**
-     * @param array<int, string> $allowedTypes
+     * Settings-supplied type values, case-preserving: MDP type filters must
+     * match the stored values exactly, and slugList's lowercase would silently
+     * empty the result for mixed-case slugs.
+     *
+     * @param array<int, string> $types
+     * @return array<int, string>
      */
-    private function coerceType(string $type, array $allowedTypes): string
+    private function typeList(array $types): array
     {
-        $candidate = sanitize_key($type);
+        return array_values(array_unique(array_filter(array_map(
+            static fn ($type): string => trim((string) $type),
+            $types
+        ))));
+    }
 
-        if ($candidate === '') {
-            return '';
+    private function lowerLabel(string $value): string
+    {
+        return function_exists('mb_strtolower') ? mb_strtolower($value, 'UTF-8') : strtolower($value);
+    }
+
+    /**
+     * Atomic per-person/org (or per-name) mutation lock. add_option fails when
+     * the row exists, which no transient or cache primitive guarantees across
+     * the object-cache configurations this stack runs.
+     */
+    private function acquireMutationLock(string $key): bool
+    {
+        $option = 'wicket_acc_me_lock_' . $key;
+        $now = time();
+        $existing = get_option($option);
+
+        if ($existing === false) {
+            return add_option($option, $now, '', false);
         }
 
-        $allowed = $this->slugList($allowedTypes);
-
-        if ($allowed === []) {
-            return $candidate;
+        if (is_int($existing) && ($now - $existing) < 30) {
+            return false;
         }
 
-        return in_array($candidate, $allowed, true) ? $candidate : '';
+        // Stale lock from a crashed request: take over.
+        update_option($option, $now);
+
+        return true;
+    }
+
+    private function releaseMutationLock(string $key): void
+    {
+        delete_option('wicket_acc_me_lock_' . $key);
     }
 
     private function client(): ?Client

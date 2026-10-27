@@ -21,9 +21,27 @@
 
 $singular = $org_name_singular ?? 'Employer';
 $plural = $org_name_plural ?? 'Employers';
+
+// The REST routes refuse payloads without a verified token, so this embed is
+// what makes the block runtime usable at all. resolve() applies defaults for
+// attribute keys Gutenberg never serialized. Sample previews get neither the
+// settings nor a token: they never talk to the API.
+$me_settings = empty($hb_sample)
+    ? \WicketAcc\ManageEmployer\Settings::resolve(
+        \WicketAcc\ManageEmployer\Settings::pick(get_defined_vars())
+    )
+    : [];
+$me_token = empty($hb_sample) ? \WicketAcc\ManageEmployer\Settings::sign($me_settings) : '';
 ?>
 
-<div class="wicket-acc-manage-employer" data-wicket-acc-manage-employer>
+<div
+	class="wicket-acc-manage-employer"
+	data-wicket-acc-manage-employer
+	<?php if (empty($hb_sample)) : ?>
+		data-wicket-me-settings="<?php echo esc_attr((string) wp_json_encode($me_settings)); ?>"
+		data-wicket-me-token="<?php echo esc_attr($me_token); ?>"
+	<?php endif; ?>
+>
 	<?php if (! empty($hb_sample)) : ?>
 		<div class="wicket-acc-manage-employer__sample-note">
 			<?php
