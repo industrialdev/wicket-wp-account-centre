@@ -52,15 +52,15 @@ class init extends Blocks
      */
     protected function init_block(): void
     {
+        if (!self::base_supports_config()) {
+            $this->render_legacy_widget(self::legacy_hide_language_preference());
+
+            return;
+        }
+
         $widget_config = self::decode_config(get_field('mdp_json_config'));
         if ($widget_config === []) {
             $widget_config = self::legacy_to_config(get_field('hide_language_preference'));
-        }
-
-        if (!self::base_supports_config()) {
-            $this->render_legacy_widget(!empty($widget_config['hideLanguagePreferences']));
-
-            return;
         }
 
         get_component('widget-prefs-person', [
@@ -83,12 +83,23 @@ class init extends Blocks
      */
     public static function register_hooks(): void
     {
+        add_filter('acf/prepare_field/key=' . self::CONFIG_FIELD_KEY, [self::class, 'prepare_config_field']);
         add_filter('acf/validate_value/key=' . self::CONFIG_FIELD_KEY, [self::class, 'validate_config'], 10, 2);
-        add_filter('acf/prepare_field/key=' . self::CONFIG_FIELD_KEY, [self::class, 'add_base_plugin_notice']);
 
         // Legacy support, see below.
+        add_filter('acf/prepare_field/name=hide_language_preference', [self::class, 'prepare_legacy_field']);
         add_filter('acf/load_value/key=' . self::CONFIG_FIELD_KEY, [self::class, 'prefill_config'], 10, 3);
-        add_filter('acf/prepare_field/name=hide_language_preference', '__return_false');
+    }
+
+    /**
+     * Show the JSON config only when the base plugin can apply it.
+     *
+     * @param array|false $field ACF field array.
+     * @return array|false
+     */
+    public static function prepare_config_field(array|false $field): array|false
+    {
+        return self::base_supports_config() ? $field : false;
     }
 
     /**
@@ -114,25 +125,6 @@ class init extends Blocks
         }
 
         return $valid;
-    }
-
-    /**
-     * Tell the editor when the base plugin cannot apply the JSON config yet.
-     *
-     * @param array|false $field ACF field array.
-     * @return array|false
-     */
-    public static function add_base_plugin_notice(array|false $field): array|false
-    {
-        if ($field === false || self::base_supports_config()) {
-            return $field;
-        }
-
-        $field['instructions'] = ($field['instructions'] ?? '') . '<p><strong>'
-            . esc_html__('Update the Wicket Base Plugin to use this setting. Until then, only "hideLanguagePreferences" applies.', 'wicket-acc')
-            . '</strong></p>';
-
-        return $field;
     }
 
     // -------------------------------------------------------------------------
@@ -170,11 +162,41 @@ class init extends Blocks
     // Legacy support
     //
     // Blocks saved before mdp_json_config have a hide_language_preference
-    // toggle. The toggle is hidden in the editor; its value still renders and
-    // pre-fills the JSON until the block is next edited, which drops it.
-    // render_legacy_widget() serves sites whose base plugin predates
-    // widget_config; remove it once every site runs that base release.
+    // toggle. With a base plugin that supports widget_config, the toggle is
+    // hidden and pre-fills the JSON until the block is next edited, which
+    // drops it. With an older base plugin, the toggle stays the editor UI and
+    // render_legacy_widget() renders it, as before. Remove this section once
+    // every site runs a base release with widget_config.
     // -------------------------------------------------------------------------
+
+    /**
+     * Show the legacy toggle only while the base plugin cannot apply the JSON.
+     *
+     * @param array|false $field ACF field array.
+     * @return array|false
+     */
+    public static function prepare_legacy_field(array|false $field): array|false
+    {
+        return self::base_supports_config() ? false : $field;
+    }
+
+    /**
+     * Toggle value for the old-base render. A block that never saved the
+     * toggle (for example, edited while the base plugin was newer) uses the
+     * JSON's hideLanguagePreferences instead.
+     *
+     * @return bool
+     */
+    private static function legacy_hide_language_preference(): bool
+    {
+        // Unformatted, so a never-saved toggle reads as null, not false.
+        $toggle = get_field('hide_language_preference', false, false);
+        if ($toggle !== null && $toggle !== '') {
+            return (bool) $toggle;
+        }
+
+        return !empty(self::decode_config(get_field('mdp_json_config'))['hideLanguagePreferences']);
+    }
 
     /**
      * Map the legacy hide_language_preference value to widget options.
@@ -188,7 +210,8 @@ class init extends Blocks
     }
 
     /**
-     * Pre-fill an empty JSON config from the legacy toggle.
+     * Pre-fill an empty JSON config from the legacy toggle, when the base
+     * plugin can apply the JSON.
      *
      * Runs for the editor form and for front-end get_field() calls, so an
      * unedited block renders the same options it did before.
@@ -200,7 +223,7 @@ class init extends Blocks
      */
     public static function prefill_config(mixed $value, int|string $post_id, array $field): mixed
     {
-        if (is_string($value) && trim($value) !== '') {
+        if ((is_string($value) && trim($value) !== '') || !self::base_supports_config()) {
             return $value;
         }
 
