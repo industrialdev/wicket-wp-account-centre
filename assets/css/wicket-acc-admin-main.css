@@ -1,3 +1,8 @@
 .wicket-acc-admin {
   display: flex;
 }
+
+/* WP ships no style for CodeMirror placeholders; fade it so it never reads as content. */
+.acf-field .CodeMirror pre.CodeMirror-placeholder {
+  color: #a7aaad;
+}
