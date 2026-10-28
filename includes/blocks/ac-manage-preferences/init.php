@@ -88,6 +88,7 @@ class init extends Blocks
 
         // Legacy support, see below.
         add_filter('acf/prepare_field/name=hide_language_preference', [self::class, 'prepare_legacy_field']);
+        add_filter('acf/load_value/name=hide_language_preference', [self::class, 'seed_legacy_toggle'], 10, 3);
         add_filter('acf/load_value/key=' . self::CONFIG_FIELD_KEY, [self::class, 'prefill_config'], 10, 3);
     }
 
@@ -178,6 +179,24 @@ class init extends Blocks
     public static function prepare_legacy_field(array|false $field): array|false
     {
         return self::base_supports_config() ? false : $field;
+    }
+
+    /**
+     * On an older base plugin, show a never-saved toggle as on when the JSON
+     * hides language preferences, so the editor matches the render.
+     *
+     * @param mixed      $value   Loaded toggle value; the default when never saved.
+     * @param int|string $post_id ACF post id; the block id inside a block.
+     * @param array      $field   ACF field array.
+     * @return mixed
+     */
+    public static function seed_legacy_toggle(mixed $value, int|string $post_id, array $field): mixed
+    {
+        if (!empty($value) || self::base_supports_config() || acf_get_metadata($post_id, $field['name']) !== null) {
+            return $value;
+        }
+
+        return empty(self::decode_config(get_field('mdp_json_config', $post_id))['hideLanguagePreferences']) ? $value : 1;
     }
 
     /**
