@@ -160,14 +160,51 @@ final class Service
     }
 
     /**
-     * Org uuids behind the person's active employer connections, page 1.
+     * Every active person-side employer connection across all MDP pages.
+     *
+     * @return array<int, array>|WP_Error
+     */
+    public function activeEmployerConnections(string $personUuid): array|WP_Error
+    {
+        $connections = [];
+        $page = 1;
+
+        do {
+            $result = $this->fetchConnections($personUuid, $page, 100);
+
+            if (is_wp_error($result)) {
+                return $result;
+            }
+
+            $rows = $result['data'];
+
+            foreach ($this->filterByRelationshipStatus($rows, Settings::MODE_ACTIVE) as $row) {
+                if ($this->connectionIsPersonSide($row, $personUuid)) {
+                    $connections[] = $row;
+                }
+            }
+
+            $totalPages = (int) ($result['meta']['total_pages'] ?? 0);
+            $hasMore = $rows !== [] && ($totalPages > 0 ? $page < $totalPages : count($rows) === 100);
+            $page++;
+
+            if ($hasMore && $page > 100) {
+                return new WP_Error('me_connections_failed', 'Your connections exceed the supported loading limit.', ['status' => 502]);
+            }
+        } while ($hasMore);
+
+        return $connections;
+    }
+
+    /**
+     * Org uuids behind every active employer connection.
      * Drives the connection cap and the already-connected search flag.
      *
      * @return array<int, string>|WP_Error
      */
     public function activeEmployerOrgUuids(string $personUuid): array|WP_Error
     {
-        $connections = $this->fetchConnections($personUuid, 1, 100);
+        $connections = $this->activeEmployerConnections($personUuid);
 
         if (is_wp_error($connections)) {
             return $connections;
@@ -175,7 +212,7 @@ final class Service
 
         $uuids = [];
 
-        foreach ($this->filterByRelationshipStatus($connections['data'], Settings::MODE_ACTIVE) as $row) {
+        foreach ($connections as $row) {
             $uuid = $this->connectionOrgUuid($row);
 
             if ($uuid !== '') {
@@ -302,7 +339,7 @@ final class Service
         $name = trim($name);
 
         if ($name === '') {
-            return new WP_Error('me_org_name_required', 'An organization name is required.');
+            return new WP_Error('me_org_name_required', 'An organization name is required.', ['status' => 400]);
         }
 
         $allowed = $this->typeList($allowedTypes);

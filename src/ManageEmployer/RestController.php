@@ -279,13 +279,13 @@ final class RestController
             return $this->error(new WP_Error('me_connection_invalid', 'That connection id is malformed.', ['status' => 400]));
         }
 
-        $state = $this->service()->getState($personUuid, 1, $this->stateScope($guard));
+        $connections = $this->service()->activeEmployerConnections($personUuid);
 
-        if (is_wp_error($state)) {
-            return $this->error($state);
+        if (is_wp_error($connections)) {
+            return $this->error($connections);
         }
 
-        if (! $this->service()->ownsActiveConnection($state['connections'], $personUuid, $connectionUuid, $orgUuid)) {
+        if (! $this->service()->ownsActiveConnection($connections, $personUuid, $connectionUuid, $orgUuid)) {
             return $this->error(new WP_Error(
                 'me_connection_not_owned',
                 'That connection does not belong to your account.',
@@ -397,13 +397,13 @@ final class RestController
             return $this->error(new WP_Error('me_org_invalid', 'That organization id is malformed.', ['status' => 400]));
         }
 
-        $state = $this->service()->getState($personUuid, 1, $this->stateScope($guard));
+        $connections = $this->service()->activeEmployerConnections($personUuid);
 
-        if (is_wp_error($state)) {
-            return $this->error($state);
+        if (is_wp_error($connections)) {
+            return $this->error($connections);
         }
 
-        if (! $this->service()->listHasOrg($state['connections'], $orgUuid)) {
+        if (! $this->service()->listHasOrg($connections, $orgUuid)) {
             return $this->error(new WP_Error(
                 'me_org_not_connected',
                 'The primary organization must be one of your own employers.',
@@ -551,24 +551,6 @@ final class RestController
     }
 
     /**
-     * Minimal display scope for ownership re-checks: names only, no extras.
-     *
-     * @param array<string, mixed> $settings
-     * @return array<string, mixed>
-     */
-    private function stateScope(array $settings): array
-    {
-        return [
-            'org_types' => $settings['org_types'],
-            'display_org_type' => false,
-            'display_org_address' => false,
-            'display_membership_status' => false,
-            'relationship_status_filter' => Settings::MODE_ALL,
-            'orgs_per_page' => 100,
-        ];
-    }
-
-    /**
      * Fixed-window per-user counter. The window end is stored inside the
      * value so a failed check can never extend its own window.
      *
@@ -631,7 +613,8 @@ final class RestController
 
     private function error(WP_Error $error): \WP_REST_Response
     {
-        $status = $error->get_error_data('status');
+        $data = $error->get_error_data();
+        $status = is_array($data) ? ($data['status'] ?? null) : null;
 
         $response = new \WP_REST_Response([
             'code' => $error->get_error_code(),
