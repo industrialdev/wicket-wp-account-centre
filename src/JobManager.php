@@ -16,8 +16,8 @@ defined('ABSPATH') || exit;
  * dashboard" notice. The gate accepts the configured dashboard page, or any
  * my-account post whose content carries [job_dashboard] (upstream's own
  * fallback; translated dashboards are distinct posts). Dashboards composed
- * from patterns/blocks without the literal shortcode still decline, as they
- * do upstream.
+ * from patterns/blocks without the literal shortcode still decline, unless
+ * they sit on the configured Job Dashboard page.
  *
  * Not covered: WP_Job_Manager_Shortcodes::handle_redirects() has the same
  * is_page() assumption, so the submission-limit redirect never runs on the
