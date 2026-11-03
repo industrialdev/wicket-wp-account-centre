@@ -2,6 +2,16 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.12.0] - 2026-11-03
+
+### Added
+- **blocks:** keep the legacy toggle on an older base plugin
+- **blocks:** JSON widget config for the Manage Preferences block
+
+### Fixed
+- **blocks:** show the JSON hide on a never-saved legacy toggle
+
+
 ## [1.11.23] - 2026-11-03
 
 ### Fixed
