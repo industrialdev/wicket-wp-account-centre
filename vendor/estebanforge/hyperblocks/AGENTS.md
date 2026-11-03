@@ -48,8 +48,20 @@ composer run test:unit       # Unit tests only
 composer run test:coverage   # HTML coverage report
 composer run cs:fix          # Auto-fix code style (php-cs-fixer)
 composer run cs:check        # Dry-run style check
-composer run version-bump    # Bump version in composer.json + bootstrap
+composer run version-bump    # Bump version in composer.json + Config::VERSION
 ```
+
+### Release Protocol
+1. Verify `composer.json` internal requirement: `"estebanforge/hyperfields": "*"`.
+2. Run tests: `composer run test`.
+3. Bump version: `bash scripts/version-bump.sh --patch` (or `--minor`/`--major`). Synchronizes `composer.json` and `src/Config.php`.
+4. Update `CHANGELOG.md` with `## [X.Y.Z] - YYYY-MM-DD`.
+5. Stage and commit:
+   `git add CHANGELOG.md composer.json src/Config.php`
+   `git commit -m "chore(release): bump version to X.Y.Z"`
+6. Push and tag:
+   `git push origin main && git tag -a X.Y.Z -m "Release X.Y.Z" && git push origin X.Y.Z`
+7. Verify on Packagist: `curl -s "https://repo.packagist.org/p2/estebanforge/hyperblocks.json" | grep -o '"version":"[^"]*"' | head -n 5`
 
 ---
 

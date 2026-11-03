@@ -172,20 +172,20 @@
         },
         {
             "name": "estebanforge/hyperblocks",
-            "version": "1.8.0",
+            "version": "1.8.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/EstebanForge/HyperBlocks.git",
-                "reference": "de8a9d4ce4f7266fbacaef8a441908645b350553"
+                "reference": "9047af0fb6fdda35c219903b2b7a5d1d5cfc3df5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EstebanForge/HyperBlocks/zipball/de8a9d4ce4f7266fbacaef8a441908645b350553",
-                "reference": "de8a9d4ce4f7266fbacaef8a441908645b350553",
+                "url": "https://api.github.com/repos/EstebanForge/HyperBlocks/zipball/9047af0fb6fdda35c219903b2b7a5d1d5cfc3df5",
+                "reference": "9047af0fb6fdda35c219903b2b7a5d1d5cfc3df5",
                 "shasum": ""
             },
             "require": {
-                "estebanforge/hyperfields": "^1.7",
+                "estebanforge/hyperfields": "*",
                 "php": ">=8.2"
             },
             "require-dev": {
@@ -234,20 +234,21 @@
                 "issues": "https://github.com/EstebanForge/HyperBlocks/issues",
                 "source": "https://github.com/EstebanForge/HyperBlocks"
             },
-            "time": "2026-10-26T20:16:48+00:00"
+            "time": "2026-11-03T14:01:27+00:00",
+            "published-time": "2026-11-03T14:01:49+00:00"
         },
         {
             "name": "estebanforge/hyperfields",
-            "version": "1.7.0",
+            "version": "1.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/EstebanForge/HyperFields.git",
-                "reference": "56f64c962eb8da7dea870c806bd9d1136a18b06f"
+                "reference": "1029aa9d46f9281a3769eeb52a243f46b2fd36a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EstebanForge/HyperFields/zipball/56f64c962eb8da7dea870c806bd9d1136a18b06f",
-                "reference": "56f64c962eb8da7dea870c806bd9d1136a18b06f",
+                "url": "https://api.github.com/repos/EstebanForge/HyperFields/zipball/1029aa9d46f9281a3769eeb52a243f46b2fd36a2",
+                "reference": "1029aa9d46f9281a3769eeb52a243f46b2fd36a2",
                 "shasum": ""
             },
             "require": {
@@ -282,9 +283,10 @@
             "description": "HyperFields: A powerful custom field system for WordPress, providing metaboxes, options pages, and conditional logic.",
             "support": {
                 "issues": "https://github.com/EstebanForge/HyperFields/issues",
-                "source": "https://github.com/EstebanForge/HyperFields/tree/1.7.0"
+                "source": "https://github.com/EstebanForge/HyperFields/tree/1.7.3"
             },
-            "time": "2026-10-26T20:17:00+00:00"
+            "time": "2026-10-29T11:22:47+00:00",
+            "published-time": "2026-10-29T11:23:11+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -4526,5 +4528,5 @@
         "php": ">=8.2.0"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.11.0"
 }

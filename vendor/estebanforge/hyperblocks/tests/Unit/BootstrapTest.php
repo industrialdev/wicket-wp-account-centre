@@ -138,4 +138,24 @@ class BootstrapTest extends TestCase
         [, $args] = HyperBlocks_Testing_Registry::getLastBlockRegistration();
         $this->assertSame(2, $args['api_version']);
     }
+
+    /**
+     * REST routes must register in the SAME call that rest_api_init invokes.
+     * WP_Hook::apply_filters() iterates each priority's callbacks over a
+     * snapshot, so a callback added to the currently running rest_api_init
+     * priority never executes in that pass: deferring registration through
+     * RestApi::init() (which itself calls add_action('rest_api_init', ...))
+     * leaves /hyperblocks/v1 permanently unregistered.
+     */
+    public function testRegisterRestApiRegistersRoutesSynchronously(): void
+    {
+        Bootstrap::registerRestApi();
+
+        $routes = HyperBlocks_Testing_Registry::getRestRoutes();
+        $this->assertNotEmpty($routes, 'No REST routes registered: registerRestApi() deferred registration through add_action().');
+        $this->assertTrue(
+            (bool) array_filter($routes, static fn (array $r): bool => str_starts_with($r['namespace'], 'hyperblocks/')),
+            'hyperblocks REST namespace missing after registerRestApi().'
+        );
+    }
 }
