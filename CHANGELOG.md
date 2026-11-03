@@ -2,6 +2,16 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.11.23] - 2026-11-03
+
+### Fixed
+- **job-manager:** run dashboard action handler on ACC pages (#72)
+
+### Documentation
+- adopt the stack PR template format #norelease
+- move engineering docs to atlas, flatten guides, streamline AGENTS.md #norelease (#69)
+
+
 ## [1.11.22] - 2026-10-22
 
 ### Fixed
