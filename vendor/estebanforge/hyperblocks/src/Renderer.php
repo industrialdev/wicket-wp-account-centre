@@ -50,10 +50,10 @@ class Renderer
         } catch (\Throwable $e) {
             // Return error HTML for debugging
             if (defined('WP_DEBUG') && WP_DEBUG) {
-                return '<div class="hyperblocks-error">Rendering Error: ' . esc_html($e->getMessage()) . '</div>';
+                return '<div class="hb-error hyperblocks-error">Rendering Error: ' . esc_html($e->getMessage()) . '</div>';
             }
 
-            return '<div class="hyperblocks-error">Block rendering failed</div>';
+            return '<div class="hb-error hyperblocks-error">Block rendering failed</div>';
         }
     }
 

@@ -111,7 +111,7 @@
             }, [attributesKey]);
 
             var innerBlocksProps = blockEditor.useInnerBlocksProps(
-                { className: 'hyperblocks-innerblocks' },
+                { className: 'hb-innerblocks hyperblocks-innerblocks' },
                 {
                     allowedBlocks: entry.innerBlocks.allowedBlocks,
                     template: entry.innerBlocks.template,
@@ -129,6 +129,7 @@
 
                 if (!slotRef.current) {
                     slotRef.current = doc.createElement('div');
+                    slotRef.current.setAttribute('data-hb-slot', '');
                     slotRef.current.setAttribute('data-hyperblocks-slot', '');
                     // display:contents keeps the wrapper out of the layout so
                     // flex/grid children of the template flow unchanged.
@@ -469,7 +470,7 @@
                     onChange: onChange
                 });
             case 'color':
-                return el('div', { className: 'hyperblocks-color-control' },
+                return el('div', { className: 'hb-color-control hyperblocks-color-control' },
                     el(components.BaseControl, {
                         label: makeLabel(el, field),
                         help: field.help || undefined
@@ -483,7 +484,7 @@
                 );
             case 'date':
             case 'datetime':
-                return el('div', { className: 'hyperblocks-datetime-control' },
+                return el('div', { className: 'hb-datetime-control hyperblocks-datetime-control' },
                     el(components.DateTimePicker, {
                         currentDate: typeof current === 'string' && current ? current : undefined,
                         onChange: function (next) {
@@ -491,7 +492,7 @@
                             onChange(field.type === 'date' ? nextValue.slice(0, 10) : nextValue);
                         }
                     }),
-                    el('span', { className: 'hyperblocks-field-label' }, makeLabel(el, field))
+                    el('span', { className: 'hb-field-label hyperblocks-field-label' }, makeLabel(el, field))
                 );
             case 'image':
             case 'file':
@@ -510,8 +511,8 @@
                     value: field.type === 'image' ? (typeof current === 'number' ? current : 0) : undefined,
                     render: function (open) {
                         var hasValue = field.type === 'image' ? !!current : !!current;
-                        return el('div', { className: 'hyperblocks-media-control' },
-                            el('span', { className: 'hyperblocks-field-label' }, makeLabel(el, field)),
+                        return el('div', { className: 'hb-media-control hyperblocks-media-control' },
+                            el('span', { className: 'hb-field-label hyperblocks-field-label' }, makeLabel(el, field)),
                             el(window.wp.components.Button, {
                                 variant: 'secondary',
                                 onClick: open.open
@@ -527,9 +528,9 @@
                     }
                 });
             case 'separator':
-                return el('hr', { className: 'hyperblocks-sidebar-separator' });
+                return el('hr', { className: 'hb-sidebar-separator hyperblocks-sidebar-separator' });
             case 'heading':
-                return el('div', { className: 'hyperblocks-sidebar-heading' }, field.label || '');
+                return el('div', { className: 'hb-sidebar-heading hyperblocks-sidebar-heading' }, field.label || '');
             default:
                 warnUnsupportedType(field.type);
                 return null;
@@ -541,10 +542,10 @@
         if (!field.live) {
             return label;
         }
-        return el('span', { className: 'hyperblocks-field-label' },
+        return el('span', { className: 'hb-field-label hyperblocks-field-label' },
             label,
             el('span', {
-                className: 'hyperblocks-live-badge',
+                className: 'hb-live-badge hyperblocks-live-badge',
                 title: 'Changes re-render the block preview.'
             }, 'live')
         );
@@ -604,7 +605,7 @@
         if (grouped.useTabs && grouped.tabs.length) {
             var tabDefs = buildTabDefs(grouped.tabs);
             children.push(el(components.TabPanel, {
-                className: 'hyperblocks-sidebar-tabs',
+                className: 'hb-sidebar-tabs hyperblocks-sidebar-tabs',
                 tabs: tabDefs.map(function (tabDef) {
                     return { name: tabDef.name, title: tabDef.group.label };
                 }),
@@ -613,7 +614,7 @@
                         return candidate.name === tab.name;
                     });
                     var group = tabDef ? tabDef.group : { label: '', sections: [] };
-                    return el('div', { className: 'hyperblocks-tab-panel' }, renderSections(group, props));
+                    return el('div', { className: 'hb-tab-panel hyperblocks-tab-panel' }, renderSections(group, props));
                 }
             }));
         } else {
@@ -691,7 +692,7 @@
                 // Inline styles: under apiVersion 3 the canvas is iframed and
                 // editor.css never reaches it.
                 el('div', {
-                    className: 'hyperblocks-sample-preview',
+                    className: 'hb-sample-preview hyperblocks-sample-preview',
                     style: {
                         outline: '2px dashed #9ca3af',
                         outlineOffset: '-2px',
