@@ -87,7 +87,8 @@ class ManageEmployer
             ->setDescription(__('Lets members view, add, and end their employer relationships.', 'wicket-acc'))
             ->setCategory('wicket-account-center')
             ->setKeywords([__('account-centre', 'wicket-acc'), __('employer', 'wicket-acc'), __('organization', 'wicket-acc')])
-            ->setRenderTemplateFile('manage-employer.hb.php');
+            ->setRenderTemplateFile('manage-employer.hb.php')
+            ->setEditorSidebar();
 
         HyperBlocksRegistry::getInstance()->registerFluentBlock($block);
     }
