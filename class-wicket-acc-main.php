@@ -127,6 +127,7 @@ if (function_exists('register_activation_hook')) {
  * @method Notification Notification() Get notification service
  * @method Settings Settings() Get plugin settings service
  * @method WooCommerce WooCommerce() Get WooCommerce integration service
+ * @method JobManager JobManager() Get WP Job Manager integration service (if active)
  * @method Helpers Helpers() Get helpers service
  */
 class WicketAcc
@@ -446,6 +447,11 @@ class WicketAcc
         // Load WooCommerce integration if active
         if ($this->isWooCommerceActive()) {
             $this->instances['WooCommerce'] = new WooCommerce();
+        }
+
+        // Load Job Manager integration if active
+        if (class_exists('WP_Job_Manager')) {
+            $this->instances['JobManager'] = new JobManager();
         }
 
         // Boot the WicketORM\OrgMan orchestrator (org-roster code, integrated at
