@@ -235,4 +235,39 @@
 			opacity: 0.5;
 		}
 	}
+
+	.wicket-acc-me__sk {
+		padding: 14px;
+		border: 1px solid var(--wacc-me-border);
+		border-radius: var(--wacc-me-radius);
+	}
+
+	.wicket-acc-me__sk-line {
+		display: block;
+		height: 12px;
+		width: 55%;
+		border-radius: 4px;
+		background: linear-gradient(90deg, var(--wacc-me-border) 25%, color-mix(in srgb, var(--wacc-me-border) 35%, #fff) 50%, var(--wacc-me-border) 75%);
+		background-size: 200% 100%;
+		animation: wicket-acc-me-shimmer 1.2s linear infinite;
+
+		&.wicket-acc-me__sk-line--short {
+			margin-top: 10px;
+			width: 35%;
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			animation: none;
+		}
+	}
+}
+
+@keyframes wicket-acc-me-shimmer {
+	from {
+		background-position: 200% 0;
+	}
+
+	to {
+		background-position: -200% 0;
+	}
 }
