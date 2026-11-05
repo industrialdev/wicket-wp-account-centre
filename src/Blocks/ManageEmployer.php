@@ -7,6 +7,7 @@ namespace WicketAcc\Blocks;
 use HyperBlocks\Block\Block;
 use HyperBlocks\Config as HyperBlocksConfig;
 use HyperBlocks\Registry as HyperBlocksRegistry;
+use WicketAcc\ManageEmployer\Frontend;
 use WicketAcc\ManageEmployer\RestController;
 use WicketAcc\ManageEmployer\Settings;
 
@@ -38,6 +39,7 @@ class ManageEmployer
     {
         add_action('init', [$this, 'registerBlock'], 9);
         add_action('rest_api_init', [new RestController(), 'registerRoutes']);
+        new Frontend();
     }
 
     /**
@@ -60,7 +62,7 @@ class ManageEmployer
                 ->setSection($meta['section'])
                 ->setDefault($meta['default']);
 
-            if (! empty($meta['dynamic_options'])) {
+            if (!empty($meta['dynamic_options'])) {
                 // Options only matter in the editor sidebar. Fetching them on
                 // every front-end init would put an MDP call on the hot path
                 // whenever the cache is cold.
@@ -69,7 +71,7 @@ class ManageEmployer
                         ? $this->orgTypeOptions()
                         : $this->relationshipTypeOptions())
                     : []);
-            } elseif (! empty($meta['options'])) {
+            } elseif (!empty($meta['options'])) {
                 $field->setOptions($meta['options']);
             }
 
@@ -106,13 +108,13 @@ class ManageEmployer
     public function orgTypeOptions(): array
     {
         return $this->cachedOptions('org_types', function (): array {
-            if (! function_exists('WACC')) {
+            if (!function_exists('WACC')) {
                 return [];
             }
 
             $client = \WACC()->Mdp()->initClient();
 
-            if (! $client) {
+            if (!$client) {
                 return [];
             }
 
@@ -134,13 +136,13 @@ class ManageEmployer
     public function relationshipTypeOptions(): array
     {
         return $this->cachedOptions('relationship_types', function (): array {
-            if (! function_exists('get_person_to_organizations_connection_types_list')) {
+            if (!function_exists('get_person_to_organizations_connection_types_list')) {
                 return [];
             }
 
             $types = get_person_to_organizations_connection_types_list();
 
-            if (! is_iterable($types)) {
+            if (!is_iterable($types)) {
                 return [];
             }
 
@@ -204,14 +206,14 @@ class ManageEmployer
     {
         $rows = $response['data'] ?? $response;
 
-        if (! is_array($rows)) {
+        if (!is_array($rows)) {
             return [];
         }
 
         $options = [];
 
         foreach ($rows as $row) {
-            if (! is_array($row)) {
+            if (!is_array($row)) {
                 continue;
             }
 

@@ -1,0 +1,128 @@
+/**
+ * M3 spike styles for the ACC Manage Employer add-flow prototype.
+ *
+ * Throwaway (M3 decision gate). Spike-scoped `me-spike__*` classes so nothing
+ * collides with the M4 list UI BEM namespace.
+ */
+
+.wicket-acc-manage-employer .me-spike__feedback {
+	margin: 0 0 12px;
+	padding: 8px 12px;
+	border: 1px solid currentColor;
+	border-radius: 4px;
+	font-size: 0.9em;
+}
+
+.wicket-acc-manage-employer .me-spike__feedback[hidden] {
+	display: none;
+}
+
+.wicket-acc-manage-employer .me-spike__feedback--success {
+	color: #116329;
+	border-color: #116329;
+}
+
+.wicket-acc-manage-employer .me-spike__feedback--error {
+	color: #b42318;
+	border-color: #b42318;
+}
+
+.wicket-acc-manage-employer .me-spike__feedback--info {
+	color: inherit;
+}
+
+.wicket-acc-manage-employer .me-spike__cards {
+	list-style: none;
+	margin: 0 0 16px;
+	padding: 0;
+	display: grid;
+	gap: 8px;
+}
+
+.wicket-acc-manage-employer .me-spike__card {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 12px;
+	border: 1px solid rgba(125, 125, 125, 0.35);
+	border-radius: 6px;
+	background: rgba(125, 125, 125, 0.06);
+}
+
+.wicket-acc-manage-employer .me-spike__empty {
+	padding: 10px 12px;
+	color: rgba(125, 125, 125, 1);
+	font-style: italic;
+}
+
+.wicket-acc-manage-employer .me-spike__empty--error,
+.wicket-acc-manage-employer .me-spike__option--error {
+	color: #b42318;
+	font-style: normal;
+}
+
+.wicket-acc-manage-employer .me-spike__badge {
+	margin-left: auto;
+	padding: 2px 8px;
+	border-radius: 999px;
+	background: rgba(17, 99, 41, 0.12);
+	color: #116329;
+	font-size: 0.78em;
+	text-transform: uppercase;
+	letter-spacing: 0.02em;
+}
+
+.wicket-acc-manage-employer .me-spike__combobox {
+	display: grid;
+	gap: 10px;
+}
+
+.wicket-acc-manage-employer .me-spike__search {
+	width: 100%;
+	padding: 8px 10px;
+	border: 1px solid rgba(125, 125, 125, 0.5);
+	border-radius: 4px;
+	font-size: 1em;
+}
+
+.wicket-acc-manage-employer .me-spike__options {
+	list-style: none;
+	margin: -4px 0 0;
+	padding: 0;
+	max-height: 260px;
+	overflow-y: auto;
+	border: 1px solid rgba(125, 125, 125, 0.4);
+	border-radius: 4px;
+}
+
+.wicket-acc-manage-employer .me-spike__options:empty {
+	display: none;
+}
+
+.wicket-acc-manage-employer .me-spike__option {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 10px;
+	cursor: pointer;
+	border-bottom: 1px solid rgba(125, 125, 125, 0.2);
+}
+
+.wicket-acc-manage-employer .me-spike__option:last-child {
+	border-bottom: 0;
+}
+
+.wicket-acc-manage-employer .me-spike__option.is-active,
+.wicket-acc-manage-employer .me-spike__option:hover {
+	background: rgba(125, 125, 125, 0.14);
+}
+
+.wicket-acc-manage-employer .me-spike__option--empty,
+.wicket-acc-manage-employer .me-spike__option--connected {
+	cursor: default;
+}
+
+.wicket-acc-manage-employer .me-spike__add:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}

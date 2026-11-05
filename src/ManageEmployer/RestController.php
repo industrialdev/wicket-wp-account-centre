@@ -43,9 +43,7 @@ final class RestController
      */
     private const MAX_ACTIVE_CONNECTIONS = 100;
 
-    public function __construct(private readonly ?Service $service = null)
-    {
-    }
+    public function __construct(private readonly ?Service $service = null) {}
 
     /**
      * Register all routes. Hooked on rest_api_init.
@@ -220,7 +218,7 @@ final class RestController
         $personUuid = $this->personUuid();
         $orgUuid = sanitize_text_field((string) $request->get_param('org_uuid'));
 
-        if (! wp_is_uuid($orgUuid)) {
+        if (!wp_is_uuid($orgUuid)) {
             return $this->error(new WP_Error('me_org_invalid', 'That organization id is malformed.', ['status' => 400]));
         }
 
@@ -257,7 +255,7 @@ final class RestController
             return $this->error($guard);
         }
 
-        if (! empty($guard['hide_end_button'])) {
+        if (!empty($guard['hide_end_button'])) {
             return $this->error(new WP_Error('me_end_disabled', 'Ending is disabled for this block.', ['status' => 403]));
         }
 
@@ -275,7 +273,7 @@ final class RestController
         $orgUuid = sanitize_text_field((string) $request->get_param('org_uuid'));
         $connectionUuid = sanitize_text_field((string) $request->get_param('uuid'));
 
-        if (! wp_is_uuid($connectionUuid) || ! wp_is_uuid($orgUuid)) {
+        if (!wp_is_uuid($connectionUuid) || !wp_is_uuid($orgUuid)) {
             return $this->error(new WP_Error('me_connection_invalid', 'That connection id is malformed.', ['status' => 400]));
         }
 
@@ -285,7 +283,7 @@ final class RestController
             return $this->error($connections);
         }
 
-        if (! $this->service()->ownsActiveConnection($connections, $personUuid, $connectionUuid, $orgUuid)) {
+        if (!$this->service()->ownsActiveConnection($connections, $personUuid, $connectionUuid, $orgUuid)) {
             return $this->error(new WP_Error(
                 'me_connection_not_owned',
                 'That connection does not belong to your account.',
@@ -319,7 +317,7 @@ final class RestController
             return $this->error($guard);
         }
 
-        if (! empty($guard['disable_create'])) {
+        if (!empty($guard['disable_create'])) {
             return $this->error(new WP_Error('me_create_disabled', 'Creating organizations is disabled.', ['status' => 403]));
         }
 
@@ -393,7 +391,7 @@ final class RestController
         $personUuid = $this->personUuid();
         $orgUuid = sanitize_text_field((string) $request->get_param('org_uuid'));
 
-        if (! wp_is_uuid($orgUuid)) {
+        if (!wp_is_uuid($orgUuid)) {
             return $this->error(new WP_Error('me_org_invalid', 'That organization id is malformed.', ['status' => 400]));
         }
 
@@ -403,7 +401,7 @@ final class RestController
             return $this->error($connections);
         }
 
-        if (! $this->service()->listHasOrg($connections, $orgUuid)) {
+        if (!$this->service()->listHasOrg($connections, $orgUuid)) {
             return $this->error(new WP_Error(
                 'me_org_not_connected',
                 'The primary organization must be one of your own employers.',
@@ -436,7 +434,7 @@ final class RestController
      */
     private function canMutate(): bool
     {
-        if (! $this->isAuthenticatedMember()) {
+        if (!$this->isAuthenticatedMember()) {
             return false;
         }
 
@@ -451,7 +449,7 @@ final class RestController
 
     private function isAuthenticatedMember(): bool
     {
-        if (! is_user_logged_in()) {
+        if (!is_user_logged_in()) {
             return false;
         }
 
@@ -483,13 +481,13 @@ final class RestController
 
         $decoded = json_decode($raw, true);
 
-        if (! is_array($decoded)) {
+        if (!is_array($decoded)) {
             return new WP_Error('me_settings_invalid', 'The settings payload is malformed.', ['status' => 400]);
         }
 
         $resolved = Settings::resolve($decoded);
 
-        if (! Settings::verify($token, $resolved)) {
+        if (!Settings::verify($token, $resolved)) {
             return new WP_Error('me_settings_unsigned', 'The settings token failed verification.', ['status' => 400]);
         }
 
@@ -516,13 +514,12 @@ final class RestController
             return $type;
         }
 
-        if ($type === '') {
-            return new WP_Error('me_org_not_found', 'That organization does not exist.', ['status' => 404]);
-        }
-
+        // Fail closed: a typeless org cannot prove it belongs to a configured
+        // allow-list, so it only passes when no list narrows the block. A
+        // missing org 404s in the client and surfaces as a lookup error above.
         $allowed = array_values(array_filter(array_map('strval', (array) $settings['org_types'])));
 
-        if ($allowed !== [] && ! in_array($type, $allowed, true)) {
+        if ($allowed !== [] && !in_array($type, $allowed, true)) {
             return new WP_Error('me_org_not_allowed', 'That organization is not on the allowed list.', ['status' => 403]);
         }
 
