@@ -45,6 +45,12 @@ final class Frontend
 
         $jsPath = WICKET_ACC_PATH . 'assets/js/wicket-acc-manage-employer.js';
 
+        // The editor canvas renders the sample preview over REST: it needs the
+        // stylesheet for fidelity, but never the runtime or a nonce.
+        if (defined('REST_REQUEST') && REST_REQUEST) {
+            return;
+        }
+
         if (file_exists($jsPath)) {
             wp_enqueue_script(
                 'wicket-acc-manage-employer',

@@ -45,6 +45,7 @@
 			orgs: {},
 			primary: '',
 			loaded: false,
+			requestSeq: 0,
 			feedbackTimer: 0,
 			searchTimer: 0,
 			options: [],
@@ -107,18 +108,22 @@
 				return;
 			}
 
+			var prev = { tab: state.tab, page: state.page, btn: state.tabsEl.querySelector('[data-me-tab][aria-pressed="true"]') };
 			state.tab = btn.getAttribute('data-me-tab');
 			state.page = 1;
-
-			state.tabsEl.querySelectorAll('[data-me-tab]').forEach(function (b) {
-				var active = b === btn;
-
-				b.classList.toggle('is-active', active);
-				b.setAttribute('aria-pressed', active ? 'true' : 'false');
-			});
+			setTabActive(state, btn);
 
 			setLoading(state);
-			loadTab(state);
+			loadTab(state, prev);
+		});
+	}
+
+	function setTabActive(state, activeBtn) {
+		state.tabsEl.querySelectorAll('[data-me-tab]').forEach(function (b) {
+			var active = b === activeBtn;
+
+			b.classList.toggle('is-active', active);
+			b.setAttribute('aria-pressed', active ? 'true' : 'false');
 		});
 	}
 
@@ -132,9 +137,10 @@
 				return;
 			}
 
+			var prevPage = state.page;
 			state.page -= 1;
 			setLoading(state);
-			loadTab(state);
+			loadTab(state, { page: prevPage });
 		});
 
 		state.nextBtn.addEventListener('click', function () {
@@ -142,14 +148,20 @@
 				return;
 			}
 
+			var prevPage = state.page;
 			state.page += 1;
 			setLoading(state);
-			loadTab(state);
+			loadTab(state, { page: prevPage });
 		});
 	}
 
 	function setLoading(state) {
 		state.listEl.setAttribute('aria-busy', 'true');
+
+		if (state.loaded) {
+			return;
+		}
+
 		state.listEl.textContent = '';
 
 		var li = document.createElement('li');
@@ -158,26 +170,50 @@
 		state.listEl.appendChild(li);
 	}
 
-	function loadTab(state) {
+	function loadTab(state, prev) {
+		var seq = ++state.requestSeq;
+
 		callRest(state, '/state', {
 			settings: state.settings,
 			settings_token: state.token,
 			tab: state.tab,
 			page: state.page
 		}).then(function (payload) {
+			if (seq !== state.requestSeq) {
+				return;
+			}
+
 			state.loaded = true;
 			renderState(state, payload || {});
 		}).catch(function (err) {
-			// Errors keep the current cards: a 429 or a failed refresh must
-			// never wipe the member's list.
+			if (seq !== state.requestSeq) {
+				return;
+			}
+
+			state.listEl.removeAttribute('aria-busy');
+
 			if (!state.loaded) {
-				state.listEl.removeAttribute('aria-busy');
 				state.listEl.textContent = '';
 				state.listEl.appendChild(emptyLi(state, err.message));
 				return;
 			}
 
-			state.listEl.removeAttribute('aria-busy');
+			// A failed refresh keeps the painted cards and rewinds the tab or
+			// page the click already moved, so the chrome stays truthful.
+			if (prev) {
+				if (typeof prev.tab === 'string') {
+					state.tab = prev.tab;
+				}
+
+				if (typeof prev.page === 'number') {
+					state.page = prev.page;
+				}
+
+				if (prev.btn) {
+					setTabActive(state, prev.btn);
+				}
+			}
+
 			setFeedback(state, err.message, 'error');
 		});
 	}
@@ -228,7 +264,7 @@
 
 		var name = document.createElement('span');
 		name.className = 'wicket-acc-me__card-name';
-		name.textContent = org.legal_name || orgUuid || label(state, 'unknown_employer');
+		name.textContent = org.legal_name || label(state, 'unknown_employer');
 		head.appendChild(name);
 
 		if (state.tab === 'current' && orgUuid && orgUuid === state.primary) {
@@ -390,6 +426,9 @@
 
 	function wireCombobox(state) {
 		state.searchInput.addEventListener('input', function () {
+			// Any edit voids the previous selection; Add must not submit a stale org.
+			state.selectedInput.value = '';
+			state.addBtn.disabled = true;
 			window.clearTimeout(state.searchTimer);
 			state.searchTimer = window.setTimeout(function () {
 				var term = state.searchInput.value.trim();
@@ -421,6 +460,7 @@
 			if (evt.key === 'Escape' && state.resultsEl.childElementCount > 0) {
 				// Two-stage escape: first Esc closes the listbox, the second
 				// falls through to the native dialog Esc.
+				evt.preventDefault();
 				evt.stopPropagation();
 				clearResults(state);
 			}
@@ -428,6 +468,8 @@
 	}
 
 	function search(state, term) {
+		var seq = ++state.requestSeq;
+
 		state.searchInput.setAttribute('aria-expanded', 'true');
 
 		callRest(state, '/search', {
@@ -436,8 +478,16 @@
 			q: term,
 			page: 1
 		}).then(function (payload) {
+			if (seq !== state.requestSeq) {
+				return;
+			}
+
 			renderResults(state, payload && Array.isArray(payload.results) ? payload.results : []);
 		}).catch(function (err) {
+			if (seq !== state.requestSeq) {
+				return;
+			}
+
 			renderResultsError(state, err.message);
 		});
 	}
@@ -599,12 +649,12 @@
 				}
 
 				closeDialog(state);
-				state.tab = state.tab === 'past' ? 'past' : 'current';
+				var prevPage = state.page;
 				state.page = 1;
 				setLoading(state);
 				// MDP read-your-writes can lag behind the mutation; the
 				// bounded retry lands with the M5 mutation work.
-				loadTab(state);
+				loadTab(state, { page: prevPage });
 			}).catch(function (err) {
 				setFeedback(state, err.message, 'error');
 			}).finally(function () {

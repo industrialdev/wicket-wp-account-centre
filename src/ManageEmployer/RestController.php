@@ -187,7 +187,7 @@ final class RestController
             return $this->error($connected);
         }
 
-        $results = $this->service()->searchOrganizations($term, $page, $guard['org_types'], $clientTypes, $connected);
+        $results = $this->service()->searchOrganizations($term, $page, $guard['org_types'], $clientTypes, $connected, $guard['display_membership_status_filter']);
 
         if (is_wp_error($results)) {
             return $this->error($results);
@@ -207,7 +207,9 @@ final class RestController
             return $this->error($guard);
         }
 
-        if ($guard['display_membership_status_filter'] === Settings::MODE_INACTIVE) {
+        // Story 3.5 keys read-only on the relationship filter; the membership filter
+        // only narrows rows and never locks the block.
+        if ($guard['relationship_status_filter'] === Settings::MODE_INACTIVE) {
             return $this->error(new WP_Error('me_read_only', 'This block is in read-only mode.', ['status' => 403]));
         }
 
@@ -261,7 +263,7 @@ final class RestController
             return $this->error(new WP_Error('me_end_disabled', 'Ending is disabled for this block.', ['status' => 403]));
         }
 
-        if ($guard['display_membership_status_filter'] === Settings::MODE_INACTIVE) {
+        if ($guard['relationship_status_filter'] === Settings::MODE_INACTIVE) {
             return $this->error(new WP_Error('me_read_only', 'This block is in read-only mode.', ['status' => 403]));
         }
 
@@ -323,7 +325,7 @@ final class RestController
             return $this->error(new WP_Error('me_create_disabled', 'Creating organizations is disabled.', ['status' => 403]));
         }
 
-        if ($guard['display_membership_status_filter'] === Settings::MODE_INACTIVE) {
+        if ($guard['relationship_status_filter'] === Settings::MODE_INACTIVE) {
             return $this->error(new WP_Error('me_read_only', 'This block is in read-only mode.', ['status' => 403]));
         }
 
@@ -380,7 +382,7 @@ final class RestController
             return $this->error(new WP_Error('me_primary_disabled', 'Primary organization is disabled for this block.', ['status' => 403]));
         }
 
-        if ($guard['display_membership_status_filter'] === Settings::MODE_INACTIVE) {
+        if ($guard['relationship_status_filter'] === Settings::MODE_INACTIVE) {
             return $this->error(new WP_Error('me_read_only', 'This block is in read-only mode.', ['status' => 403]));
         }
 
