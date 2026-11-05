@@ -34,7 +34,7 @@ $me_token = empty($hb_sample) ? WicketAcc\ManageEmployer\Settings::sign($me_sett
 // runtime; settings and token ride every REST call as signed query params.
 $me_sfx = (string) wp_unique_id();
 $me_id = 'me-' . $me_sfx;
-$me_nonce = (string) wp_create_nonce('wp_rest');
+$me_nonce = empty($hb_sample) ? (string) wp_create_nonce('wp_rest') : '';
 $me_mode = (string) ($me_settings['relationship_status_filter'] ?? 'all');
 WicketAcc\ManageEmployer\Frontend::boot();
 

@@ -84,10 +84,6 @@ final class Service
 
             $membershipOrgs = $this->fetchOrgs(array_keys($candidateUuids), $settings);
 
-            if (is_wp_error($membershipOrgs)) {
-                return $membershipOrgs;
-            }
-
             $wantActive = $membershipFilter === Settings::MODE_ACTIVE;
             $kept = [];
 
@@ -155,10 +151,6 @@ final class Service
             ? array_intersect_key($membershipOrgs, $visibleUuids)
             : $this->fetchOrgs(array_keys($visibleUuids), $settings);
 
-        if (is_wp_error($orgs)) {
-            return $orgs;
-        }
-
         return [
             'connections' => $visible,
             'orgs' => $orgs,
@@ -214,7 +206,7 @@ final class Service
                 $all[] = $row;
             }
 
-            $totalPages = (int) ($result['meta']['total_pages'] ?? 0);
+            $totalPages = $this->pageMeta(is_array($result['meta'] ?? null) ? $result['meta'] : [])['total_pages'];
             $hasMore = $result['data'] !== [] && ($totalPages > 0 ? $page < $totalPages : count($result['data']) === 100);
             $page++;
 
@@ -227,6 +219,24 @@ final class Service
     }
 
     /**
+     * Flat pagination meta from an MDP response. MDP nests page details under
+     * meta.page; the flat keys predate that shape and stay as a fallback.
+     *
+     * @return array{total: int, total_pages: int, per_page: int, current_page: int}
+     */
+    private function pageMeta(array $rawMeta): array
+    {
+        $page = is_array($rawMeta['page'] ?? null) ? $rawMeta['page'] : [];
+
+        return [
+            'total' => (int) ($page['total_items'] ?? $rawMeta['total'] ?? 0),
+            'total_pages' => (int) ($page['total_pages'] ?? $rawMeta['total_pages'] ?? 0),
+            'per_page' => (int) ($page['size'] ?? $rawMeta['per_page'] ?? 0),
+            'current_page' => (int) ($page['number'] ?? $rawMeta['current_page'] ?? 0),
+        ];
+    }
+
+    /**
      * Ransack org-index search. Type filters go to the org index only — the
      * Searchkick search endpoint silently returns zero rows for them (M0).
      *
@@ -235,7 +245,7 @@ final class Service
      * @param array<int, string> $connectedUuids Org uuids the person already connects to, flagged in results.
      * @return array{results: array, meta: array}|WP_Error
      */
-    public function searchOrganizations(string $term, int $page, array $allowedTypes, array $clientTypes = [], array $connectedUuids = []): array|WP_Error
+    public function searchOrganizations(string $term, int $page, array $allowedTypes, array $clientTypes = [], array $connectedUuids = [], string $membershipFilter = Settings::MODE_ALL): array|WP_Error
     {
         $client = $this->client();
 
@@ -285,9 +295,24 @@ final class Service
             ];
         }
 
+        // Same 'Active' exact compare as the list post-filter; empty or unknown
+        // counts as not active.
+        if ($membershipFilter !== Settings::MODE_ALL) {
+            $wantActive = $membershipFilter === Settings::MODE_ACTIVE;
+            $kept = [];
+
+            foreach ($results as $row) {
+                if ((($row['membership_status'] ?? '') === 'Active') === $wantActive) {
+                    $kept[] = $row;
+                }
+            }
+
+            $results = $kept;
+        }
+
         return [
             'results' => $results,
-            'meta' => is_array($response['meta'] ?? null) ? $response['meta'] : [],
+            'meta' => $this->pageMeta(is_array($response['meta'] ?? null) ? $response['meta'] : []),
         ];
     }
 
@@ -757,25 +782,25 @@ final class Service
      * Organization details for the state payload, scoped to what the block
      * settings display. One fetch per uuid: `filter[id_in]` is not an M0-verified
      * index filter, and unknown filters silently return zero rows there.
+     * A failed org fetch degrades that row to "Unknown employer" instead of
+     * failing the whole state read; fetchOrg logs the failure.
      *
      * @param array<int, string> $uuids
      * @param array{display_org_type: bool, display_org_address: bool} $settings
-     * @return array<string, array>|WP_Error
+     * @return array<string, array>
      */
-    private function fetchOrgs(array $uuids, array $settings): array|WP_Error
+    private function fetchOrgs(array $uuids, array $settings): array
     {
         $orgs = [];
 
         foreach ($uuids as $uuid) {
             $org = $this->fetchOrg($uuid, $settings);
 
-            if (is_wp_error($org)) {
-                return $org;
+            if (is_wp_error($org) || $org === null) {
+                continue;
             }
 
-            if ($org !== null) {
-                $orgs[$uuid] = $org;
-            }
+            $orgs[$uuid] = $org;
         }
 
         return $orgs;
