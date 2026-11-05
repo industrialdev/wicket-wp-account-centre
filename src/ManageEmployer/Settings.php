@@ -45,8 +45,9 @@ final class Settings
     public static function schema(): array
     {
         // Story 1.3: inactive (read-only) mode hides the end action, the
-        // removal alert, and the primary controls.
-        $active_mode_rule = self::condition('display_membership_status_filter', '!=', self::MODE_INACTIVE);
+        // removal alert, and the primary controls. The rule keys on the
+        // relationship status filter, not the org membership filter.
+        $active_mode_rule = self::condition('relationship_status_filter', '!=', self::MODE_INACTIVE);
 
         return [
             'org_types' => [
@@ -74,7 +75,7 @@ final class Settings
                 'options' => [
                     self::MODE_ALL => __('All', 'wicket-acc'),
                     self::MODE_ACTIVE => __('Active only', 'wicket-acc'),
-                    self::MODE_INACTIVE => __('Inactive (read-only)', 'wicket-acc'),
+                    self::MODE_INACTIVE => __('Inactive', 'wicket-acc'),
                 ],
             ],
             'relationship_status_filter' => [

@@ -7,7 +7,6 @@ namespace WicketAcc\Blocks;
 use HyperBlocks\Block\Block;
 use HyperBlocks\Config as HyperBlocksConfig;
 use HyperBlocks\Registry as HyperBlocksRegistry;
-use WicketAcc\ManageEmployer\Frontend;
 use WicketAcc\ManageEmployer\RestController;
 use WicketAcc\ManageEmployer\Settings;
 
@@ -39,7 +38,6 @@ class ManageEmployer
     {
         add_action('init', [$this, 'registerBlock'], 9);
         add_action('rest_api_init', [new RestController(), 'registerRoutes']);
-        new Frontend();
     }
 
     /**

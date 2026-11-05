@@ -56,6 +56,7 @@ final class RestController
             'callback' => [$this, 'handleState'],
             'args' => [
                 'page' => ['type' => 'integer', 'default' => 1, 'sanitize_callback' => 'absint'],
+                'tab' => ['type' => 'string', 'default' => 'current', 'enum' => ['current', 'past']],
                 'settings' => ['type' => 'string', 'required' => true],
                 'settings_token' => ['type' => 'string', 'required' => true],
             ],
@@ -134,6 +135,7 @@ final class RestController
 
         $state = $this->service()->getState(
             $this->personUuid(),
+            (string) $request->get_param('tab'),
             max(1, absint($request->get_param('page'))),
             $guard
         );
