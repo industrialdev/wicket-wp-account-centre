@@ -143,7 +143,9 @@ $me_config = [
 		<?php endif; ?>
 
 		<ul id="<?php echo esc_attr($me_id); ?>-list" class="wicket-acc-me__cards" aria-busy="true">
-			<li class="wicket-acc-me__empty"><?php esc_html_e('Loading…', 'wicket-acc'); ?></li>
+			<?php for ($me_sk = 0; $me_sk < 3; $me_sk++) : ?>
+			<li class="wicket-acc-me__sk" aria-hidden="true"><span class="wicket-acc-me__sk-line"></span><span class="wicket-acc-me__sk-line wicket-acc-me__sk-line--short"></span></li>
+			<?php endfor; ?>
 		</ul>
 
 		<nav class="wicket-acc-me__pagination" data-me-pagination hidden>
