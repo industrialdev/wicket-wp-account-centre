@@ -529,6 +529,7 @@ class Bootstrap
             if (Config::isDebug()) {
                 error_log('HyperBlocks: hyperBlocksConfig JSON encoding failed');
             }
+
             return;
         }
 

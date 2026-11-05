@@ -40,8 +40,7 @@ final class Service
     public function __construct(
         private readonly ?Client $client = null,
         private readonly ?ConnectionService $connections = null
-    ) {
-    }
+    ) {}
 
     /**
      * Current and past person-to-organization connections, the primary uuid,
@@ -54,7 +53,7 @@ final class Service
     {
         $client = $this->client();
 
-        if (! $client) {
+        if (!$client) {
             return new WP_Error('me_client_unavailable', 'The MDP client is unavailable.');
         }
 
@@ -110,7 +109,7 @@ final class Service
     {
         $client = $this->client();
 
-        if (! $client) {
+        if (!$client) {
             return new WP_Error('me_client_unavailable', 'The MDP client is unavailable.');
         }
 
@@ -238,7 +237,7 @@ final class Service
     {
         $connectionService = $this->connectionService();
 
-        if (! $connectionService) {
+        if (!$connectionService) {
             return new WP_Error('me_client_unavailable', 'The MDP client is unavailable.');
         }
 
@@ -250,7 +249,7 @@ final class Service
 
         $lockKey = md5($personUuid . '|' . $orgUuid);
 
-        if (! $this->acquireMutationLock($lockKey)) {
+        if (!$this->acquireMutationLock($lockKey)) {
             return new WP_Error('me_busy', 'An update to this employer is already in progress. Try again in a moment.', ['status' => 429]);
         }
 
@@ -310,7 +309,7 @@ final class Service
     {
         $connectionService = $this->connectionService();
 
-        if (! $connectionService) {
+        if (!$connectionService) {
             return new WP_Error('me_client_unavailable', 'The MDP client is unavailable.');
         }
 
@@ -332,7 +331,7 @@ final class Service
     {
         $client = $this->client();
 
-        if (! $client) {
+        if (!$client) {
             return new WP_Error('me_client_unavailable', 'The MDP client is unavailable.');
         }
 
@@ -353,7 +352,7 @@ final class Service
         } else {
             $candidate = sanitize_key($clientType);
 
-            if ($candidate === '' || ! in_array($candidate, array_map('strtolower', $allowed), true)) {
+            if ($candidate === '' || !in_array($candidate, array_map('strtolower', $allowed), true)) {
                 return new WP_Error('me_org_type_invalid', 'Pick one of the configured organization types.', ['status' => 400]);
             }
 
@@ -362,7 +361,7 @@ final class Service
 
         $lockKey = 'org-' . md5(strtolower($name) . '|' . $type);
 
-        if (! $this->acquireMutationLock($lockKey)) {
+        if (!$this->acquireMutationLock($lockKey)) {
             return new WP_Error('me_busy', 'An organization with this name is already being created.', ['status' => 429]);
         }
 
@@ -419,7 +418,7 @@ final class Service
     {
         $client = $this->client();
 
-        if (! $client) {
+        if (!$client) {
             return new WP_Error('me_client_unavailable', 'The MDP client is unavailable.');
         }
 
@@ -524,7 +523,7 @@ final class Service
     {
         $client = $this->client();
 
-        if (! $client) {
+        if (!$client) {
             return new WP_Error('me_client_unavailable', 'The MDP client is unavailable.');
         }
 
@@ -538,7 +537,15 @@ final class Service
             return new WP_Error('me_org_lookup_failed', 'That organization could not be verified.', ['status' => 502]);
         }
 
-        return (string) ($response['data']['attributes']['type'] ?? '');
+        $data = $response['data'] ?? null;
+
+        if (!is_array($data) || ($data['id'] ?? '') === '') {
+            // A lookup without an id is a missing org, not a typeless one;
+            // returning '' here would read as "exists, typeless".
+            return new WP_Error('me_org_not_found', 'That organization does not exist.', ['status' => 404]);
+        }
+
+        return (string) ($data['attributes']['type'] ?? '');
     }
 
     /**
@@ -558,7 +565,7 @@ final class Service
 
         return array_values(array_filter(
             $this->slugList($types),
-            static fn (string $type): bool => ! in_array(str_replace('-', '_', $type), $protected, true)
+            static fn (string $type): bool => !in_array(str_replace('-', '_', $type), $protected, true)
         ));
     }
 
@@ -596,7 +603,7 @@ final class Service
     {
         $client = $this->client();
 
-        if (! $client) {
+        if (!$client) {
             return new WP_Error('me_client_unavailable', 'The MDP client is unavailable.');
         }
 
@@ -614,7 +621,7 @@ final class Service
             return new WP_Error('me_connections_failed', 'Your connections could not be loaded.', ['status' => 502]);
         }
 
-        if (! isset($response['data']) || ! is_array($response['data'])) {
+        if (!isset($response['data']) || !is_array($response['data'])) {
             return new WP_Error('me_connections_failed', 'The MDP response carried no connection list.');
         }
 
@@ -655,23 +662,23 @@ final class Service
     /**
      * @return array{uuid: string, legal_name: string, type?: string, addresses?: array}|null|WP_Error null when the org no longer exists.
      */
-    private function fetchOrg(string $uuid, array $settings): array|null|WP_Error
+    private function fetchOrg(string $uuid, array $settings): array|WP_Error|null
     {
         $client = $this->client();
 
-        if (! $client) {
+        if (!$client) {
             return new WP_Error('me_client_unavailable', 'The MDP client is unavailable.');
         }
 
         $fields = ['legal_name_en'];
 
-        if (! empty($settings['display_org_type'])) {
+        if (!empty($settings['display_org_type'])) {
             $fields[] = 'type';
         }
 
         $query = ['fields' => ['organizations' => implode(',', $fields)]];
 
-        if (! empty($settings['display_org_address'])) {
+        if (!empty($settings['display_org_address'])) {
             $query['include'] = 'addresses';
         }
 
@@ -685,7 +692,7 @@ final class Service
 
         $attributes = $response['data']['attributes'] ?? null;
 
-        if (! is_array($attributes)) {
+        if (!is_array($attributes)) {
             return null;
         }
 
@@ -694,11 +701,11 @@ final class Service
             'legal_name' => (string) ($attributes['legal_name_en'] ?? ''),
         ];
 
-        if (! empty($settings['display_org_type'])) {
+        if (!empty($settings['display_org_type'])) {
             $org['type'] = (string) ($attributes['type'] ?? '');
         }
 
-        if (! empty($settings['display_org_address'])) {
+        if (!empty($settings['display_org_address'])) {
             $org['addresses'] = $this->includedAddressesFor(is_array($response) ? $response : [], $uuid);
         }
 
@@ -738,7 +745,7 @@ final class Service
     {
         $client = $this->client();
 
-        if (! $client) {
+        if (!$client) {
             return new WP_Error('me_client_unavailable', 'The MDP client is unavailable.');
         }
 
@@ -764,7 +771,7 @@ final class Service
     {
         $client = $this->client();
 
-        if (! $client) {
+        if (!$client) {
             return new WP_Error('me_client_unavailable', 'The MDP client is unavailable.');
         }
 
@@ -925,7 +932,7 @@ final class Service
             return $this->connections;
         }
 
-        if (! class_exists(ConnectionService::class)) {
+        if (!class_exists(ConnectionService::class)) {
             return null;
         }
 

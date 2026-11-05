@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.8.4] - 2026-11-04
+
+### Changed
+- **HyperFields 1.7.4.** Lockstep release for normalized option-list rendering across select, multiselect, radio, radio image, and set fields. HyperBlocks retains the `estebanforge/hyperfields` `*` constraint and has no block API changes.
+
 ## [1.8.3] - 2026-11-03
 
 ### Fixed

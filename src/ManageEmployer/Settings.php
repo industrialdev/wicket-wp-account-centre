@@ -344,7 +344,7 @@ final class Settings
 
         // Scalar lists sort too: the token must not depend on the order the
         // caller happened to build the array in.
-        if (array_is_list($array) && ! in_array(false, array_map('is_scalar', $array), true)) {
+        if (array_is_list($array) && !in_array(false, array_map('is_scalar', $array), true)) {
             sort($array);
         }
     }
@@ -367,7 +367,7 @@ final class Settings
 
     private static function resolveMultiselect(mixed $value): array
     {
-        if (! is_array($value)) {
+        if (!is_array($value)) {
             return [];
         }
 
@@ -394,7 +394,7 @@ final class Settings
 
     private static function resolveText(mixed $value, string $default): string
     {
-        if (! is_string($value) || trim($value) === '') {
+        if (!is_string($value) || trim($value) === '') {
             return $default;
         }
 
