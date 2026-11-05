@@ -1,0 +1,238 @@
+/**
+ * ACC Manage Employer block: cards, tabs, pagination, feedback, combobox.
+ * Token-driven where the theme provides tokens; fallbacks keep it usable on
+ * plain WordPress themes. M6 owns the accessibility and responsiveness pass.
+ */
+
+.wicket-acc-manage-employer {
+	--wacc-me-border: var(--wicket-acc-border-color-light, #e2e5e9);
+	--wacc-me-muted: var(--wicket-acc-color-muted, #5f6b76);
+	--wacc-me-accent: var(--wicket-acc-color-primary, #1d5bbf);
+	--wacc-me-error: var(--wicket-acc-alert-error, #a94442);
+	--wacc-me-success: var(--wicket-acc-alert-success, #2e7d32);
+	--wacc-me-radius: var(--wicket-acc-border-radius-8, 8px);
+
+	.wicket-acc-me__title {
+		margin: 0 0 12px;
+	}
+
+	.wicket-acc-me__feedback {
+		display: flex;
+		align-items: baseline;
+		gap: 8px;
+		padding: 10px 12px;
+		margin: 0 0 14px;
+		border: 1px solid var(--wacc-me-border);
+		border-left-width: 4px;
+		border-radius: var(--wacc-me-radius);
+
+		&[hidden] {
+			display: none;
+		}
+
+		.wicket-acc-me__feedback-text {
+			flex: 1;
+		}
+
+		.wicket-acc-me__feedback-dismiss {
+			border: 0;
+			background: none;
+			font-size: 16px;
+			line-height: 1;
+			cursor: pointer;
+			color: inherit;
+			padding: 0 2px;
+		}
+	}
+
+	.wicket-acc-me__feedback--error {
+		border-left-color: var(--wacc-me-error);
+		color: var(--wacc-me-error);
+	}
+
+	.wicket-acc-me__feedback--success {
+		border-left-color: var(--wacc-me-success);
+		color: var(--wacc-me-success);
+	}
+
+	.wicket-acc-me__feedback--info {
+		border-left-color: var(--wacc-me-accent);
+	}
+
+	.wicket-acc-me__tabs {
+		display: flex;
+		gap: 6px;
+		margin: 0 0 14px;
+	}
+
+	.wicket-acc-me__tab {
+		border: 1px solid var(--wacc-me-border);
+		border-radius: var(--wacc-me-radius);
+		background: none;
+		padding: 6px 12px;
+		cursor: pointer;
+		color: var(--wacc-me-muted);
+
+		&.is-active {
+			border-color: var(--wacc-me-accent);
+			color: var(--wacc-me-accent);
+			font-weight: 600;
+		}
+	}
+
+	.wicket-acc-me__cards {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 10px;
+	}
+
+	.wicket-acc-me__card {
+		border: 1px solid var(--wacc-me-border);
+		border-radius: var(--wacc-me-radius);
+		padding: 12px 14px;
+	}
+
+	.wicket-acc-me__card--past {
+		background: color-mix(in srgb, var(--wacc-me-muted) 6%, transparent);
+
+		.wicket-acc-me__card-name {
+			color: var(--wacc-me-muted);
+		}
+	}
+
+	.wicket-acc-me__card-head {
+		display: flex;
+		align-items: baseline;
+		gap: 8px;
+		flex-wrap: wrap;
+	}
+
+	.wicket-acc-me__card-name {
+		font-weight: 600;
+	}
+
+	.wicket-acc-me__card-meta,
+	.wicket-acc-me__card-dates {
+		margin: 4px 0 0;
+		font-size: 0.875rem;
+		color: var(--wacc-me-muted);
+	}
+
+	.wicket-acc-me__badge {
+		display: inline-block;
+		font-size: 0.75rem;
+		font-weight: 600;
+		line-height: 1;
+		padding: 3px 8px;
+		border-radius: 999px;
+		border: 1px solid var(--wacc-me-border);
+		color: var(--wacc-me-muted);
+	}
+
+	.wicket-acc-me__badge--primary {
+		border-color: var(--wacc-me-accent);
+		color: var(--wacc-me-accent);
+	}
+
+	.wicket-acc-me__badge--connected {
+		border-color: var(--wacc-me-success);
+		color: var(--wacc-me-success);
+	}
+
+	.wicket-acc-me__empty {
+		padding: 18px 4px;
+		color: var(--wacc-me-muted);
+	}
+
+	.wicket-acc-me__pagination {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		margin: 14px 0 0;
+
+		&[hidden] {
+			display: none;
+		}
+
+		.wicket-acc-me__page-status {
+			margin: 0;
+			color: var(--wacc-me-muted);
+		}
+
+		.wicket-acc-me__page-btn {
+			cursor: pointer;
+
+			&:disabled {
+				cursor: default;
+				opacity: 0.5;
+			}
+		}
+	}
+
+	.wicket-acc-me__combobox {
+		margin: 0 0 14px;
+
+		label {
+			display: block;
+			margin: 0 0 4px;
+			font-weight: 600;
+		}
+	}
+
+	.wicket-acc-me__search {
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.wicket-acc-me__options {
+		list-style: none;
+		margin: 4px 0 0;
+		padding: 0;
+		border: 1px solid var(--wacc-me-border);
+		border-radius: var(--wacc-me-radius);
+		max-height: 260px;
+		overflow-y: auto;
+
+		&:empty {
+			display: none;
+		}
+	}
+
+	.wicket-acc-me__option {
+		display: flex;
+		align-items: baseline;
+		gap: 8px;
+		padding: 8px 10px;
+		cursor: pointer;
+
+		&.is-active,
+		&:hover {
+			background: color-mix(in srgb, var(--wacc-me-accent) 8%, transparent);
+		}
+
+		.wicket-acc-me__option-name {
+			flex: 1;
+		}
+
+		.wicket-acc-me__option-type {
+			font-size: 0.8125rem;
+			color: var(--wacc-me-muted);
+		}
+
+		&.wicket-acc-me__option--empty,
+		&.wicket-acc-me__option--error {
+			cursor: default;
+			color: var(--wacc-me-muted);
+		}
+	}
+
+	.wicket-acc-me__add {
+		margin: 10px 0 0;
+
+		&:disabled {
+			opacity: 0.5;
+		}
+	}
+}

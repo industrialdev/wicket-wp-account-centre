@@ -49,7 +49,7 @@ final class Service
      * @param array{org_types: array, display_org_type: bool, display_org_address: bool, display_membership_status: bool, relationship_status_filter: string, orgs_per_page: int} $settings
      * @return array{connections: array, orgs: array<string, array>, primary_uuid: ?string, meta: array}|WP_Error
      */
-    public function getState(string $personUuid, int $page, array $settings): array|WP_Error
+    public function getState(string $personUuid, string $tab, int $page, array $settings): array|WP_Error
     {
         $client = $this->client();
 
@@ -57,43 +57,173 @@ final class Service
             return new WP_Error('me_client_unavailable', 'The MDP client is unavailable.');
         }
 
-        $connections = $this->fetchConnections($personUuid, $page, $settings['orgs_per_page']);
+        // Tab counts, membership post-filtering, and honest page math all need
+        // the full row set, and per-person connection counts stay small, so the
+        // read pulls every MDP page once instead of trusting MDP-side meta.
+        $all = $this->allConnections($personUuid);
 
-        if (is_wp_error($connections)) {
-            return $connections;
+        if (is_wp_error($all)) {
+            return $all;
         }
 
-        $rows = $this->filterByRelationshipStatus($connections['data'] ?? [], $settings['relationship_status_filter']);
+        $rows = $this->filterByRelationshipStatus($all, $settings['relationship_status_filter']);
 
-        $orgUuids = [];
+        $membershipFilter = (string) ($settings['display_membership_status_filter'] ?? Settings::MODE_ALL);
+        $membershipOrgs = [];
+
+        if ($membershipFilter !== Settings::MODE_ALL) {
+            $candidateUuids = [];
+
+            foreach ($rows as $row) {
+                $uuid = $this->connectionOrgUuid($row);
+
+                if ($uuid !== '') {
+                    $candidateUuids[$uuid] = true;
+                }
+            }
+
+            $membershipOrgs = $this->fetchOrgs(array_keys($candidateUuids), $settings);
+
+            if (is_wp_error($membershipOrgs)) {
+                return $membershipOrgs;
+            }
+
+            $wantActive = $membershipFilter === Settings::MODE_ACTIVE;
+            $kept = [];
+
+            foreach ($rows as $row) {
+                $status = (string) ($membershipOrgs[$this->connectionOrgUuid($row)]['membership_status'] ?? '');
+
+                if (($status === 'Active') === $wantActive) {
+                    $kept[] = $row;
+                }
+            }
+
+            $rows = $kept;
+        }
+
+        $current = [];
+        $past = [];
+
         foreach ($rows as $row) {
-            $orgUuid = $this->connectionOrgUuid($row);
-            if ($orgUuid !== '') {
-                $orgUuids[$orgUuid] = true;
+            if ($this->connectionIsActive($row)) {
+                $current[] = $row;
+            } else {
+                $past[] = $row;
             }
         }
 
-        $orgs = $this->fetchOrgs(array_keys($orgUuids), $settings);
+        $candidate = $tab === 'past' ? $past : $current;
+
+        if ($tab !== 'past') {
+            $primary = $this->fetchPrimaryUuid($personUuid);
+
+            if (is_wp_error($primary)) {
+                return $primary;
+            }
+
+            usort($candidate, function (array $a, array $b) use ($primary): int {
+                $aPrimary = $this->connectionOrgUuid($a) === $primary;
+                $bPrimary = $this->connectionOrgUuid($b) === $primary;
+
+                return (int) $bPrimary <=> (int) $aPrimary;
+            });
+        } else {
+            $primary = '';
+
+            usort($candidate, static function (array $a, array $b): int {
+                return strtotime((string) ($b['attributes']['ends_at'] ?? '')) <=> strtotime((string) ($a['attributes']['ends_at'] ?? ''));
+            });
+        }
+
+        $perPage = max(1, (int) $settings['orgs_per_page']);
+        $total = count($candidate);
+        $totalPages = max(1, (int) ceil($total / $perPage));
+        $page = min($totalPages, max(1, $page));
+        $visible = array_slice($candidate, ($page - 1) * $perPage, $perPage);
+
+        $visibleUuids = [];
+        foreach ($visible as $row) {
+            $uuid = $this->connectionOrgUuid($row);
+
+            if ($uuid !== '') {
+                $visibleUuids[$uuid] = true;
+            }
+        }
+
+        $orgs = $membershipFilter !== Settings::MODE_ALL
+            ? array_intersect_key($membershipOrgs, $visibleUuids)
+            : $this->fetchOrgs(array_keys($visibleUuids), $settings);
 
         if (is_wp_error($orgs)) {
             return $orgs;
         }
 
-        $primary = $this->fetchPrimaryUuid($personUuid);
-
-        if (is_wp_error($primary)) {
-            return $primary;
-        }
-
         return [
-            'connections' => $rows,
+            'connections' => $visible,
             'orgs' => $orgs,
             'primary_uuid' => $primary,
-            'meta' => array_intersect_key(
-                is_array($connections['meta'] ?? null) ? $connections['meta'] : [],
-                array_flip(['total', 'total_pages', 'per_page', 'current_page'])
-            ),
+            'tabs' => ['current' => count($current), 'past' => count($past)],
+            'meta' => [
+                'total' => $total,
+                'total_pages' => $totalPages,
+                'per_page' => $perPage,
+                'current_page' => $page,
+            ],
         ];
+    }
+
+    public function activeEmployerConnections(string $personUuid): array|WP_Error
+    {
+        $all = $this->allConnections($personUuid);
+
+        if (is_wp_error($all)) {
+            return $all;
+        }
+
+        $connections = [];
+
+        foreach ($this->filterByRelationshipStatus($all, Settings::MODE_ACTIVE) as $row) {
+            if ($this->connectionIsPersonSide($row, $personUuid)) {
+                $connections[] = $row;
+            }
+        }
+
+        return $connections;
+    }
+
+    /**
+     * Every employer connection across all MDP pages (page size 100, hard
+     * 100-page cap). Per-person connection counts stay small; callers filter.
+     *
+     * @return array<int, array>|WP_Error
+     */
+    private function allConnections(string $personUuid): array|WP_Error
+    {
+        $all = [];
+        $page = 1;
+
+        do {
+            $result = $this->fetchConnections($personUuid, $page, 100);
+
+            if (is_wp_error($result)) {
+                return $result;
+            }
+
+            foreach ($result['data'] as $row) {
+                $all[] = $row;
+            }
+
+            $totalPages = (int) ($result['meta']['total_pages'] ?? 0);
+            $hasMore = $result['data'] !== [] && ($totalPages > 0 ? $page < $totalPages : count($result['data']) === 100);
+            $page++;
+
+            if ($hasMore && $page > 100) {
+                return new WP_Error('me_connections_failed', 'Your connections exceed the supported loading limit.', ['status' => 502]);
+            }
+        } while ($hasMore);
+
+        return $all;
     }
 
     /**
@@ -123,7 +253,8 @@ final class Service
 
         $query = [
             'filter' => ['legal_name_en_cont' => $term],
-            'fields' => ['organizations' => 'legal_name_en,type'],
+            'fields' => ['organizations' => 'legal_name_en,type,membership_status'],
+            'include' => 'addresses',
             'page' => ['number' => $page, 'size' => 10],
         ];
 
@@ -148,6 +279,8 @@ final class Service
                 'uuid' => $uuid,
                 'legal_name' => (string) ($row['attributes']['legal_name_en'] ?? ''),
                 'type' => (string) ($row['attributes']['type'] ?? ''),
+                'membership_status' => (string) ($row['attributes']['membership_status'] ?? ''),
+                'addresses' => $this->addressesForUuid(is_array($response) ? $response : [], $uuid),
                 'connected' => in_array($uuid, $connectedUuids, true),
             ];
         }
@@ -159,40 +292,29 @@ final class Service
     }
 
     /**
-     * Every active person-side employer connection across all MDP pages.
+     * Address records from a JSONAPI `included` payload, matched to one org.
      *
-     * @return array<int, array>|WP_Error
+     * @return array<int, array>
      */
-    public function activeEmployerConnections(string $personUuid): array|WP_Error
+    private function addressesForUuid(array $response, string $orgUuid): array
     {
-        $connections = [];
-        $page = 1;
+        $addresses = [];
 
-        do {
-            $result = $this->fetchConnections($personUuid, $page, 100);
-
-            if (is_wp_error($result)) {
-                return $result;
+        foreach (($response['included'] ?? []) as $row) {
+            if (!is_array($row) || ($row['type'] ?? '') !== 'addresses') {
+                continue;
             }
 
-            $rows = $result['data'];
+            $ownerUuid = (string) ($row['relationships']['organization']['data']['id'] ?? '');
 
-            foreach ($this->filterByRelationshipStatus($rows, Settings::MODE_ACTIVE) as $row) {
-                if ($this->connectionIsPersonSide($row, $personUuid)) {
-                    $connections[] = $row;
-                }
+            if ($ownerUuid !== $orgUuid) {
+                continue;
             }
 
-            $totalPages = (int) ($result['meta']['total_pages'] ?? 0);
-            $hasMore = $rows !== [] && ($totalPages > 0 ? $page < $totalPages : count($rows) === 100);
-            $page++;
+            $addresses[] = is_array($row['attributes'] ?? null) ? $row['attributes'] : [];
+        }
 
-            if ($hasMore && $page > 100) {
-                return new WP_Error('me_connections_failed', 'Your connections exceed the supported loading limit.', ['status' => 502]);
-            }
-        } while ($hasMore);
-
-        return $connections;
+        return $addresses;
     }
 
     /**
@@ -670,7 +792,7 @@ final class Service
             return new WP_Error('me_client_unavailable', 'The MDP client is unavailable.');
         }
 
-        $fields = ['legal_name_en'];
+        $fields = ['legal_name_en', 'membership_status'];
 
         if (!empty($settings['display_org_type'])) {
             $fields[] = 'type';
@@ -699,6 +821,7 @@ final class Service
         $org = [
             'uuid' => (string) ($response['data']['id'] ?? $uuid),
             'legal_name' => (string) ($attributes['legal_name_en'] ?? ''),
+            'membership_status' => (string) ($attributes['membership_status'] ?? ''),
         ];
 
         if (!empty($settings['display_org_type'])) {

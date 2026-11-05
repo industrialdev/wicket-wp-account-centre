@@ -3,13 +3,11 @@
 /**
  * HyperBlocks template: ACC Manage Employer (wicket-acc/manage-employer).
  *
- * Server-rendered shell for the manage-employer block. The list UI, cards, and
- * modals land with M4; this skeleton exists so the block renders safely from
- * the moment it is registered.
- *
- * The hb_sample branch is the editor's sample-data preview. It MUST return
- * before any MDP access: the editor renders as the author's own person, and
- * the sample toggle exists to show fake data instead of real employers.
+ * Server-rendered chrome (title, tabs, pagination, feedback, empty states)
+ * plus the vanilla-JS runtime that fills cards over REST. The hb_sample
+ * branch is the editor's sample-data preview. It MUST return before any
+ * MDP access: the editor renders as the author's own person, and the
+ * sample toggle exists to show fake data instead of real employers.
  * Renderer context provides $hb_sample; it is never a block attribute.
  *
  * Variables extracted from block attributes (see ManageEmployer\Settings::schema()):
@@ -32,41 +30,83 @@ $me_settings = empty($hb_sample)
     : [];
 $me_token = empty($hb_sample) ? WicketAcc\ManageEmployer\Settings::sign($me_settings) : '';
 
-// M3 spike: front-end runtime comparison (vanilla vs Datastar). Instance id,
-// asset boot, and fragment URLs are computed before the markup so the root
-// carries the runtime attrs. Throwaway; the M4 list UI replaces it.
-$me_sfx = empty($hb_sample) ? (string) wp_unique_id() : '';
+// M4 list UI. The instance id and per-render REST nonce drive the vanilla JS
+// runtime; settings and token ride every REST call as signed query params.
+$me_sfx = (string) wp_unique_id();
 $me_id = 'me-' . $me_sfx;
-$me_runtime = empty($hb_sample) ? WicketAcc\ManageEmployer\Frontend::runtime() : '';
-$me_nonce = empty($hb_sample) ? (string) wp_create_nonce('wp_rest') : '';
+$me_nonce = (string) wp_create_nonce('wp_rest');
+$me_mode = (string) ($me_settings['relationship_status_filter'] ?? 'all');
+WicketAcc\ManageEmployer\Frontend::boot();
 
-if (empty($hb_sample)) {
-    (new WicketAcc\ManageEmployer\Frontend())->boot($me_id);
+// Titles per story 2.1: My {Singular}(s) / My Current {Singular}(s) /
+// My Past {Singular}(s).
+$me_title = match ($me_mode) {
+    'active' => sprintf(__('My Current %s(s)', 'wicket-acc'), $singular),
+    'inactive' => sprintf(__('My Past %s(s)', 'wicket-acc'), $singular),
+    default => sprintf(__('My %s(s)', 'wicket-acc'), $singular),
+};
 
-    $me_fragment_args = [
-        'fid' => $me_sfx,
-        'settings' => rawurlencode((string) wp_json_encode($me_settings)),
-        'settings_token' => rawurlencode($me_token),
-    ];
-    $me_state_url = add_query_arg(array_merge(['wicket_me_fragment' => 'state'], $me_fragment_args), home_url('/'));
-    $me_search_url = add_query_arg(array_merge(['wicket_me_fragment' => 'search'], $me_fragment_args), home_url('/'));
-    $me_add_url = add_query_arg(array_merge(['wicket_me_fragment' => 'add'], $me_fragment_args), home_url('/'));
-}
+$me_add_label = __('Add employer', 'wicket-acc');
 
-$me_is_datastar = $me_runtime === 'datastar';
+// Labels live in one config attribute: PHP does the translation, the script
+// only paints. The plugin has no JS translation pipeline.
+$me_config = [
+    'id' => $me_id,
+    'singular' => $singular,
+    'plural' => $plural,
+    'mode' => $me_mode,
+    'display_org_type' => !empty($me_settings['display_org_type']),
+    'display_org_address' => !empty($me_settings['display_org_address']),
+    'org_address_format' => (string) ($me_settings['org_address_format'] ?? 'full'),
+    'display_membership_status' => !empty($me_settings['display_membership_status']),
+    'display_relationship_dates' => !empty($me_settings['display_relationship_dates']),
+    'labels' => [
+        'prev' => __('Previous', 'wicket-acc'),
+        'next' => __('Next', 'wicket-acc'),
+        'page_of' => __('Page %1$s of %2$s', 'wicket-acc'),
+        'primary' => __('Primary', 'wicket-acc'),
+        'present' => __('Present', 'wicket-acc'),
+        'dismiss' => __('Dismiss', 'wicket-acc'),
+        'add' => $me_add_label,
+        'adding' => __('Adding…', 'wicket-acc'),
+        'added' => __('Employer added.', 'wicket-acc'),
+        'already' => __('Already connected.', 'wicket-acc'),
+        'added_with_errors' => __('Added with errors: %s', 'wicket-acc'),
+        'no_results' => __('No organizations found.', 'wicket-acc'),
+        'search_failed' => __('Search failed.', 'wicket-acc'),
+        'load_failed' => __('Your employers could not be loaded.', 'wicket-acc'),
+        'session_expired' => __('Session expired. Reload the page.', 'wicket-acc'),
+        'request_failed' => __('Request failed.', 'wicket-acc'),
+        'unknown_employer' => __('Unknown employer', 'wicket-acc'),
+        'empty_current' => sprintf(
+            /* translators: 1: plural organization label, 2: add button label. */
+            __('You have no current %1$s. Use the "%2$s" button above to search for your organization, or create a new record if it doesn\'t exist yet.', 'wicket-acc'),
+            $plural,
+            $me_add_label
+        ),
+        'empty_past' => sprintf(
+            /* translators: %s: plural organization label. */
+            __('You have no past %s on record.', 'wicket-acc'),
+            $plural
+        ),
+    ],
+];
+
 ?>
 
 <div
 	class="wicket-acc-manage-employer"
 	data-wicket-acc-manage-employer
 	<?php if (empty($hb_sample)) : ?>
-		data-wicket-me-settings="<?php echo esc_attr((string) wp_json_encode($me_settings)); ?>"
-		data-wicket-me-token="<?php echo esc_attr($me_token); ?>"
 		data-wicket-me-id="<?php echo esc_attr($me_id); ?>"
+		data-wicket-me-config="<?php echo esc_attr((string) wp_json_encode($me_config)); ?>"
 		data-wicket-me-rest="<?php echo esc_url_raw(rest_url('wicket-acc/v1/manage-employer')); ?>"
 		data-wicket-me-nonce="<?php echo esc_attr($me_nonce); ?>"
+		data-wicket-me-settings="<?php echo esc_attr((string) wp_json_encode($me_settings)); ?>"
+		data-wicket-me-token="<?php echo esc_attr($me_token); ?>"
 	<?php endif; ?>
 >
+
 	<?php if (!empty($hb_sample)) : ?>
 		<div class="wicket-acc-manage-employer__sample-note">
 			<?php
@@ -81,88 +121,61 @@ $me_is_datastar = $me_runtime === 'datastar';
 			<p><?php echo esc_html__('No employers found.', 'wicket-acc'); ?></p>
 		</div>
 	<?php else : ?>
-		<?php if ($me_is_datastar) : ?>
-		<?php
-	    // Datastar (observed on the vendored v1.0.1) wired data-on handlers only on elements visible at
-	    // walk time, so everything inside the closed <dialog> must stay inert.
-	    // All interactivity delegates from this visible wrapper: input events
-	    // update the query signal, clicks on option rows select, clicks on the
-	    // add button post the signals. The signal suffix keeps names per
-	    // instance (signals are page-global).
-	    $me_click_expr = sprintf(
-	        "evt.target.classList.contains('me-spike__add') && @post('%1\$s', {openWhenHidden:true, headers:{'X-WP-Nonce':\$_meNonce_%2\$s}}) || evt.target.closest('[data-uuid]') && (\$meSelected_%2\$s = evt.target.closest('[data-uuid]').dataset.uuid) && (\$meQuery_%2\$s = evt.target.closest('[data-uuid]').dataset.name)",
-	        esc_js($me_add_url),
-	        esc_html($me_sfx)
-	    );
-		    $me_input_expr = sprintf(
-		        "evt.target.hasAttribute('data-me-search') && (\$meQuery_%1\$s = evt.target.value) && @get('%2\$s')",
-		        esc_html($me_sfx),
-		        esc_js($me_search_url)
-		    );
-		    ?>
-		<div
-			data-signals="<?php echo esc_attr((string) wp_json_encode([
-			    'meQuery_' . $me_sfx => '',
-			    'meSelected_' . $me_sfx => '',
-			    'meAddOpen_' . $me_sfx => false,
-			    // Underscore prefix: private signal, never shipped to the backend.
-			    '_meNonce_' . $me_sfx => $me_nonce,
-			])); ?>"
-			data-on:input__debounce.300ms="<?php echo esc_attr($me_input_expr); ?>"
-			data-on:click="<?php echo esc_attr($me_click_expr); ?>"
-		>
+
+		<h2 class="wicket-acc-me__title"><?php echo esc_html($me_title); ?></h2>
+
+		<div class="wicket-acc-me__feedback" data-me-feedback role="status" aria-live="polite" hidden>
+			<span class="wicket-acc-me__feedback-text"></span>
+			<button type="button" class="wicket-acc-me__feedback-dismiss" aria-label="<?php esc_attr_e('Dismiss', 'wicket-acc'); ?>">&times;</button>
+		</div>
+
+		<?php if ($me_mode === 'all') : ?>
+		<div class="wicket-acc-me__tabs">
+			<button type="button" class="wicket-acc-me__tab is-active" data-me-tab="current" aria-pressed="true">
+				<?php printf(esc_html__('Current %s', 'wicket-acc'), esc_html($plural)); ?>
+				<span class="wicket-acc-me__tab-count" data-me-count="current"></span>
+			</button>
+			<button type="button" class="wicket-acc-me__tab" data-me-tab="past" aria-pressed="false">
+				<?php printf(esc_html__('Past %s', 'wicket-acc'), esc_html($plural)); ?>
+				<span class="wicket-acc-me__tab-count" data-me-count="past"></span>
+			</button>
+		</div>
 		<?php endif; ?>
 
-		<p class="me-spike__feedback" id="<?php echo esc_attr($me_id); ?>-feedback" role="status" aria-live="polite" hidden></p>
-
-		<ul
-			id="<?php echo esc_attr($me_id); ?>-list"
-			class="me-spike__cards"
-			<?php if ($me_is_datastar) : ?>
-				data-init="@get('<?php echo esc_attr($me_state_url); ?>')"
-			<?php endif; ?>
-		>
-			<li class="me-spike__empty"><?php echo esc_html__('Loading…', 'wicket-acc'); ?></li>
+		<ul id="<?php echo esc_attr($me_id); ?>-list" class="wicket-acc-me__cards" aria-busy="true">
+			<li class="wicket-acc-me__empty"><?php esc_html_e('Loading…', 'wicket-acc'); ?></li>
 		</ul>
 
-		<?php
-		    if ($me_is_datastar) {
-		        get_component('modal-trigger', [
-		            'modal_id' => $me_id . '-dialog',
-		            'mode' => 'datastar',
-		            'open_signal' => 'meAddOpen_' . $me_sfx,
-		            'label' => __('Add employer', 'wicket-acc'),
-		            'variant' => 'primary',
-		        ]);
-		    } else {
-		        get_component('modal-trigger', [
-		            'modal_id' => $me_id . '-dialog',
-		            'label' => __('Add employer', 'wicket-acc'),
-		            'variant' => 'primary',
-		        ]);
-		    }
+		<nav class="wicket-acc-me__pagination" data-me-pagination hidden>
+			<button type="button" class="wicket-acc-me__page-btn" data-me-page-prev><?php esc_html_e('Previous', 'wicket-acc'); ?></button>
+			<p class="wicket-acc-me__page-status" data-me-page-status aria-live="polite"></p>
+			<button type="button" class="wicket-acc-me__page-btn" data-me-page-next><?php esc_html_e('Next', 'wicket-acc'); ?></button>
+		</nav>
 
-ob_start();
-?>
-		<div class="me-spike__combobox">
+		<?php if ($me_mode !== 'inactive') : ?>
+		<?php get_component('modal-trigger', [
+		    'modal_id' => $me_id . '-dialog',
+		    'label' => $me_add_label,
+		    'variant' => 'primary',
+		]); ?>
+
+		<?php ob_start(); ?>
+		<div class="wicket-acc-me__combobox">
 			<label for="<?php echo esc_attr($me_id); ?>-search"><?php esc_html_e('Find an organization', 'wicket-acc'); ?></label>
 			<input
 				type="text"
 				id="<?php echo esc_attr($me_id); ?>-search"
-				class="me-spike__search"
+				class="wicket-acc-me__search"
 				role="combobox"
 				aria-expanded="false"
 				aria-controls="<?php echo esc_attr($me_id); ?>-results"
 				aria-autocomplete="list"
 				autocomplete="off"
 				placeholder="<?php esc_attr_e('Type at least 3 characters', 'wicket-acc'); ?>"
-				<?php if ($me_is_datastar) : ?>
-					data-me-search
-				<?php endif; ?>
 			>
 			<ul
 				id="<?php echo esc_attr($me_id); ?>-results"
-				class="me-spike__options"
+				class="wicket-acc-me__options"
 				role="listbox"
 				aria-label="<?php esc_attr_e('Search results', 'wicket-acc'); ?>"
 			></ul>
@@ -171,48 +184,28 @@ ob_start();
 				name="org_uuid"
 				id="<?php echo esc_attr($me_id); ?>-selected"
 				value=""
-				<?php if ($me_is_datastar) : ?>
-					hidden
-				<?php endif; ?>
 			>
 			<button
 				type="button"
-				class="button me-spike__add"
+				class="button wicket-acc-me__add"
 				id="<?php echo esc_attr($me_id); ?>-add"
-				<?php if (!$me_is_datastar) : ?>
-					disabled
-				<?php endif; ?>
+				disabled
 			>
-				<?php esc_html_e('Add employer', 'wicket-acc'); ?>
+				<?php echo esc_html($me_add_label); ?>
 			</button>
 		</div>
 		<?php
-$body = ob_get_clean();
+	    $me_modal_body = ob_get_clean();
 
-$modal_args = [
-    'id' => $me_id . '-dialog',
-    'title' => __('Add an employer', 'wicket-acc'),
-    'body' => $body,
-    'width' => 'md',
-    'close_label' => __('Close', 'wicket-acc'),
-    'classes' => ['me-spike-dialog'],
-];
-
-if ($me_is_datastar) {
-    $modal_args['mode'] = 'datastar';
-    $modal_args['open_signal'] = 'meAddOpen_' . $me_sfx;
-    $modal_args['reset_actions'] = sprintf(
-        '$%1$s = \'\'; $%2$s = \'\'',
-        'meQuery_' . $me_sfx,
-        'meSelected_' . $me_sfx
-    );
-}
-
-get_component('modal', $modal_args);
-?>
-
-		<?php if ($me_is_datastar) : ?>
-		</div>
+		    get_component('modal', [
+		        'id' => $me_id . '-dialog',
+		        'title' => __('Add an employer', 'wicket-acc'),
+		        'body' => $me_modal_body,
+		        'width' => 'md',
+		        'close_label' => __('Close', 'wicket-acc'),
+		        'classes' => ['wicket-acc-me-dialog'],
+		    ]);
+		    ?>
 		<?php endif; ?>
 	<?php endif; ?>
 </div>
