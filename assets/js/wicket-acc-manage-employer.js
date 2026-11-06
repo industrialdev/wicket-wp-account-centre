@@ -21,7 +21,13 @@
 	const MIN_CHARS = 3;
 	const CACHE_TTL_MS = 60000;
 	const CACHE_VERSION = 'v1';
+	const CACHE_PREFIX = 'wicket-acc-me:' + CACHE_VERSION;
 	const OBSERVER_ROOT_MARGIN = '200px 0px';
+
+	// Bounded re-read after mutations: MDP workers run async, so the change
+	// may not read back on the first state fetch. Paint every successful read
+	// and stop when the mutation's delta shows up.
+	const RETRY_DELAYS_MS = [750, 1500, 3000];
 
 	class WicketManageEmployer {
 		constructor(root) {
@@ -47,13 +53,18 @@
 			this.page = 1;
 			this.orgs = {};
 			this.primary = '';
+			this.tabCounts = { current: 0, past: 0 };
 			this.loaded = false;
+			this.mutating = false;
 			this.requestSeq = 0;
+			this.searchSeq = 0;
+			this.retryTimer = 0;
 			this.feedbackTimer = 0;
 			this.searchTimer = 0;
 			this.options = [];
 			this.activeIndex = -1;
 			this.observer = null;
+			this.pendingEnd = null;
 
 			this.listEl = root.querySelector('.wicket-acc-me__cards');
 			this.feedbackEl = root.querySelector('[data-me-feedback]');
@@ -67,6 +78,15 @@
 			this.selectedInput = document.getElementById(config.id + '-selected');
 			this.addBtn = document.getElementById(config.id + '-add');
 			this.dialog = document.getElementById(config.id + '-dialog');
+			this.confirmDialog = document.getElementById(config.id + '-confirm');
+			this.confirmCancelBtn = document.getElementById(config.id + '-confirm-cancel');
+			this.confirmEndBtn = document.getElementById(config.id + '-confirm-end');
+			this.endDateInput = document.getElementById(config.id + '-end-date');
+			this.createNameInput = document.getElementById(config.id + '-create-name');
+			this.createTypeSelect = document.getElementById(config.id + '-create-type');
+			this.createSubmitBtn = document.getElementById(config.id + '-create-submit');
+			this.createErrorEl = root.querySelector('[data-me-create-error]');
+			this.addErrorEl = root.querySelector('[data-me-add-error]');
 
 			if (!this.listEl) {
 				throw new Error('Manage Employer block: list element missing');
@@ -75,10 +95,19 @@
 			this.wireFeedback();
 			this.wireTabs();
 			this.wirePagination();
+			this.wireCardActions();
 
 			if (this.searchInput) {
 				this.wireCombobox();
 				this.wireAdd();
+			}
+
+			if (this.createSubmitBtn) {
+				this.wireCreateOrg();
+			}
+
+			if (this.confirmEndBtn) {
+				this.wireEndConfirm();
 			}
 
 			this.load();
@@ -117,7 +146,7 @@
 		// The settings payload identifies the block configuration, so two
 		// blocks sharing an instance id across pages never swap cache.
 		cacheKey() {
-			return 'wicket-acc-me:' + CACHE_VERSION + ':' + this.config.id + ':' +
+			return CACHE_PREFIX + ':' + this.config.id + ':' +
 				WicketManageEmployer.hashString(this.settings) + ':' + this.tab + ':' + this.page;
 		}
 
@@ -266,6 +295,9 @@
 		}
 
 		loadTab(prev) {
+			// A user action supersedes any in-flight mutation poll chain.
+			this.cancelMutationPoll();
+
 			const seq = ++this.requestSeq;
 
 			this.callRest('/state', {
@@ -323,6 +355,15 @@
 			const meta = payload.meta && typeof payload.meta === 'object' ? payload.meta : {};
 			const tabs = payload.tabs && typeof payload.tabs === 'object' ? payload.tabs : {};
 
+			// The server clamps the page (a tab may have shrunk under the poll);
+			// local arithmetic and the cache key must follow it.
+			this.page = Number(meta.current_page || 1);
+
+			this.tabCounts = {
+				current: Number(tabs.current || 0),
+				past: Number(tabs.past || 0)
+			};
+
 			this.updateCounts(tabs);
 			this.updatePagination(meta);
 
@@ -351,9 +392,16 @@
 				(rel.organization && rel.organization.data && rel.organization.data.id) || '';
 			const org = this.orgs[orgUuid] || {};
 			const attrs = (row && row.attributes) || {};
+			const isCurrent = this.tab !== 'past';
+			const isPrimary = isCurrent && this.config.enable_primary && !this.config.hide_primary_tag &&
+				orgUuid !== '' && orgUuid === this.primary;
 
 			const li = document.createElement('li');
-			li.className = 'wicket-acc-me__card' + (this.tab === 'past' ? ' wicket-acc-me__card--past' : '');
+			li.className = 'wicket-acc-me__card' + (isCurrent ? '' : ' wicket-acc-me__card--past');
+
+			if (isPrimary) {
+				li.classList.add('wicket-acc-me__card--primary');
+			}
 
 			const head = document.createElement('div');
 			head.className = 'wicket-acc-me__card-head';
@@ -363,11 +411,11 @@
 			name.textContent = org.legal_name || this.label('unknown_employer');
 			head.appendChild(name);
 
-			if (this.tab === 'current' && orgUuid && orgUuid === this.primary) {
+			if (isPrimary) {
 				head.appendChild(WicketManageEmployer.badge(this.label('primary'), 'wicket-acc-me__badge--primary'));
 			}
 
-			if (this.config.display_membership_status && org.membership_status) {
+			if (isCurrent && this.config.display_membership_status && org.membership_status) {
 				head.appendChild(WicketManageEmployer.badge(org.membership_status, ''));
 			}
 
@@ -391,6 +439,41 @@
 					datesEl.textContent = dates;
 					li.appendChild(datesEl);
 				}
+			}
+
+			const actions = [];
+
+			if (isCurrent && this.config.enable_primary && !this.config.hide_set_primary_button &&
+				orgUuid !== '' && orgUuid !== this.primary) {
+				actions.push({ action: 'primary', label: this.label('set_primary') });
+			}
+
+			if (isCurrent && !this.config.hide_end_button) {
+				actions.push({ action: 'end', label: this.label('end') });
+			}
+
+			if (!isCurrent && this.config.mode !== 'inactive') {
+				actions.push({ action: 'rejoin', label: this.label('rejoin') });
+			}
+
+			if (actions.length > 0 && row && row.id) {
+				const bar = document.createElement('div');
+				bar.className = 'wicket-acc-me__card-actions';
+
+				actions.forEach((item) => {
+					const btn = document.createElement('button');
+					btn.type = 'button';
+					btn.className = 'button wicket-acc-me__card-action wicket-acc-me__card-action--' + item.action;
+					btn.textContent = item.label;
+					btn.setAttribute('data-me-action', item.action);
+					btn.setAttribute('data-org', orgUuid);
+					btn.setAttribute('data-connection', row.id || '');
+					btn.setAttribute('data-starts', attrs.starts_at || '');
+					btn.setAttribute('data-name', org.legal_name || this.label('unknown_employer'));
+					bar.appendChild(btn);
+				});
+
+				li.appendChild(bar);
 			}
 
 			return li;
@@ -570,7 +653,11 @@
 		}
 
 		search(term) {
-			const seq = ++this.requestSeq;
+			// Search has its own sequence: a keystroke must never void an in-flight
+			// state read, and a state poll must never void pending results.
+			this.cancelMutationPoll();
+
+			const seq = ++this.searchSeq;
 
 			this.searchInput.setAttribute('aria-expanded', 'true');
 
@@ -580,13 +667,13 @@
 				q: term,
 				page: 1
 			}).then((payload) => {
-				if (seq !== this.requestSeq) {
+				if (seq !== this.searchSeq) {
 					return;
 				}
 
 				this.renderResults(payload && Array.isArray(payload.results) ? payload.results : []);
 			}).catch((err) => {
-				if (seq !== this.requestSeq) {
+				if (seq !== this.searchSeq) {
 					return;
 				}
 
@@ -728,19 +815,23 @@
 			this.addBtn.addEventListener('click', () => {
 				const orgUuid = this.selectedInput ? this.selectedInput.value : '';
 
-				if (!orgUuid || this.addBtn.disabled) {
+				if (!orgUuid || this.addBtn.disabled || this.mutating) {
 					return;
 				}
 
+				const baselineCurrent = this.tabCounts.current;
+
 				this.addBtn.disabled = true;
 				this.addBtn.textContent = this.label('adding');
+				this.mutating = true;
+				this.hideAddError();
 
 				this.callRest('/relationships', {
 					settings: this.settings,
 					settings_token: this.token,
 					org_uuid: orgUuid
 				}, 'POST').then((payload) => {
-					const errors = payload && Array.isArray(payload.errors) ? payload.errors : [];
+					const errors = WicketManageEmployer.errorList(payload && payload.errors);
 
 					if (payload && payload.skipped_existing) {
 						this.setFeedback(this.label('already'), 'info');
@@ -751,22 +842,419 @@
 					}
 
 					this.closeDialog();
-					const prevPage = this.page;
-					this.page = 1;
-					this.setLoading();
-					// MDP read-your-writes can lag behind the mutation; the
-					// bounded retry lands with the M5 mutation work.
-					this.loadTab({ page: prevPage });
+					this.resetAddForm();
+
+					if (payload && payload.skipped_existing) {
+						// Nothing was created; one honest read beats a retry chain
+						// that can only exhaust into the "still updating" note.
+						this.loadTab();
+					} else {
+						this.refreshAfterMutation({ type: 'add', orgUuid: orgUuid, baselineCurrent: baselineCurrent });
+					}
 				}).catch((err) => {
-					this.setFeedback(err.message, 'error');
+					this.mutating = false;
+					this.showAddError(err.message);
 				}).finally(() => {
 					this.addBtn.textContent = this.label('add');
-					this.selectedInput.value = '';
-					this.addBtn.disabled = true;
-					this.clearResults();
-					this.searchInput.value = '';
+					this.addBtn.disabled = this.selectedInput ? this.selectedInput.value === '' : true;
 				});
 			});
+		}
+
+		wireCardActions() {
+			this.listEl.addEventListener('click', (evt) => {
+				const btn = evt.target.closest('[data-me-action]');
+
+				if (!btn || btn.disabled || this.mutating) {
+					return;
+				}
+
+				const action = btn.getAttribute('data-me-action');
+
+				if (action === 'end') {
+					this.openEndConfirm(btn);
+				} else if (action === 'primary') {
+					this.setPrimary(btn);
+				} else if (action === 'rejoin') {
+					this.rejoin(btn);
+				}
+			});
+		}
+
+		openEndConfirm(btn) {
+			const target = {
+				orgUuid: btn.getAttribute('data-org') || '',
+				connectionUuid: btn.getAttribute('data-connection') || '',
+				name: btn.getAttribute('data-name') || '',
+				startsAt: btn.getAttribute('data-starts') || ''
+			};
+
+			if (target.orgUuid === '' || target.connectionUuid === '') {
+				return;
+			}
+
+			if (this.confirmDialog && typeof this.confirmDialog.showModal === 'function') {
+				this.pendingEnd = target;
+
+				if (this.endDateInput) {
+					const today = WicketManageEmployer.localToday();
+
+					this.endDateInput.max = today;
+
+					if (target.startsAt.length >= 10) {
+						this.endDateInput.min = target.startsAt.slice(0, 10);
+					}
+
+					// Default to today; the server computes the exact timestamp
+					// and an untouched field sends no date at all, so a browser
+					// clock that straddles MDP midnight cannot misdate the end.
+					this.endDateInput.value = today;
+				}
+
+				this.confirmDialog.showModal();
+				return;
+			}
+
+			this.endEmployer(target, '');
+		}
+
+		wireEndConfirm() {
+			this.confirmCancelBtn.addEventListener('click', () => {
+				this.closeConfirm();
+			});
+
+			this.confirmEndBtn.addEventListener('click', () => {
+				const target = this.pendingEnd;
+				const picked = this.endDateInput ? this.endDateInput.value : '';
+
+				if (!target) {
+					return;
+				}
+
+				this.closeConfirm();
+
+				const today = WicketManageEmployer.localToday();
+				this.endEmployer(target, picked && picked !== today ? picked : '');
+			});
+		}
+
+		closeConfirm() {
+			if (this.confirmDialog && typeof this.confirmDialog.close === 'function' && this.confirmDialog.open) {
+				this.confirmDialog.close();
+			}
+
+			this.pendingEnd = null;
+		}
+
+		endEmployer(target, endDate) {
+			const baselineCurrent = this.tabCounts.current;
+			const params = {
+				settings: this.settings,
+				settings_token: this.token,
+				org_uuid: target.orgUuid
+			};
+
+			if (endDate !== '') {
+				params.end_date = endDate;
+			}
+
+			this.mutating = true;
+
+			this.callRest('/relationships/' + encodeURIComponent(target.connectionUuid), params, 'PATCH').then((payload) => {
+				// A 207 means some connections of the org failed to end; that is
+				// an error to the member, not a success.
+				const errors = WicketManageEmployer.errorList(payload && payload.errors);
+
+				if (errors.length > 0) {
+					this.setFeedback(WicketManageEmployer.sprintf2(this.label('added_with_errors'), errors.join('; ')), 'error');
+				} else {
+					this.setFeedback(WicketManageEmployer.sprintf2(this.label('ended'), target.name), 'success');
+				}
+
+				if (errors.length > 0) {
+					// Partial failures leave MDP in a state the count predicate
+					// cannot settle on; one honest read beats a doomed chain.
+					this.mutating = false;
+					this.loadTab();
+				} else {
+					this.refreshAfterMutation({ type: 'end', orgUuid: target.orgUuid, baselineCurrent: baselineCurrent });
+				}
+			}).catch((err) => {
+				this.mutating = false;
+				this.setFeedback(err.message, 'error');
+			});
+		}
+
+		setPrimary(btn) {
+			const orgUuid = btn.getAttribute('data-org') || '';
+			const name = btn.getAttribute('data-name') || '';
+
+			if (orgUuid === '') {
+				return;
+			}
+
+			this.mutating = true;
+			btn.disabled = true;
+			btn.textContent = this.label('setting_primary');
+
+			this.callRest('/primary', {
+				settings: this.settings,
+				settings_token: this.token,
+				org_uuid: orgUuid
+			}, 'PATCH').then(() => {
+				this.setFeedback(
+					WicketManageEmployer.sprintf2(this.label('primary_set'), name) + ' ' + this.label('primary_set_note'),
+					'success'
+				);
+				this.refreshAfterMutation({ type: 'primary', orgUuid: orgUuid, baselineCurrent: 0 });
+			}).catch((err) => {
+				this.mutating = false;
+				this.setFeedback(err.message, 'error');
+			}).finally(() => {
+				btn.disabled = false;
+				btn.textContent = this.label('set_primary');
+			});
+		}
+
+		rejoin(btn) {
+			const orgUuid = btn.getAttribute('data-org') || '';
+			const name = btn.getAttribute('data-name') || '';
+
+			if (orgUuid === '') {
+				return;
+			}
+
+			const baselineCurrent = this.tabCounts.current;
+
+			this.mutating = true;
+			btn.disabled = true;
+			btn.textContent = this.label('rejoining');
+
+			this.callRest('/relationships', {
+				settings: this.settings,
+				settings_token: this.token,
+				org_uuid: orgUuid
+			}, 'POST').then((payload) => {
+				if (payload && payload.skipped_existing) {
+					this.setFeedback(this.label('already'), 'info');
+				} else {
+					this.setFeedback(WicketManageEmployer.sprintf2(this.label('rejoined'), name), 'success');
+				}
+
+				btn.disabled = false;
+				btn.textContent = this.label('rejoin');
+
+				if (payload && payload.skipped_existing) {
+					this.mutating = false;
+					this.loadTab();
+				} else {
+					this.refreshAfterMutation({ type: 'add', orgUuid: orgUuid, baselineCurrent: baselineCurrent });
+				}
+			}).catch((err) => {
+				this.mutating = false;
+				this.setFeedback(err.message, 'error');
+			}).finally(() => {
+				btn.disabled = false;
+				btn.textContent = this.label('rejoin');
+			});
+		}
+
+		wireCreateOrg() {
+			this.createSubmitBtn.addEventListener('click', () => {
+				if (this.mutating) {
+					return;
+				}
+
+				const name = this.createNameInput ? this.createNameInput.value.trim() : '';
+				const type = this.createTypeSelect ? this.createTypeSelect.value : '';
+
+				if (name === '' || (this.createTypeSelect !== null && type === '')) {
+					this.showCreateError(this.label('name_and_type_required'));
+					return;
+				}
+
+				this.hideCreateError();
+
+				const baselineCurrent = this.tabCounts.current;
+				const prevLabel = this.createSubmitBtn.textContent;
+
+				this.mutating = true;
+				this.createSubmitBtn.disabled = true;
+				this.createSubmitBtn.textContent = this.label('creating');
+
+				const params = { name: name };
+
+				if (type !== '') {
+					params.org_type = type;
+				}
+
+				this.callRest('/organizations', {
+					settings: this.settings,
+					settings_token: this.token,
+					...params
+				}, 'POST').then((payload) => {
+					const connection = (payload && payload.connection) || {};
+					const errors = WicketManageEmployer.errorList(connection.errors);
+
+					if (errors.length > 0) {
+						this.setFeedback(WicketManageEmployer.sprintf2(this.label('added_with_errors'), errors.join('; ')), 'error');
+					} else if (payload && payload.duplicate) {
+						this.setFeedback(WicketManageEmployer.sprintf2(this.label('duplicate_org'), name), 'info');
+					} else {
+						this.setFeedback(WicketManageEmployer.sprintf2(this.label('created'), name), 'success');
+					}
+
+					this.closeDialog();
+
+					const orgUuid = (payload && payload.org_uuid) || '';
+
+					if (errors.length > 0 && orgUuid === '') {
+						// No org and no connection came out of the request, so the
+						// list cannot have changed; skip the retry chain.
+						this.mutating = false;
+						this.loadTab();
+					} else {
+						this.refreshAfterMutation({
+							type: 'add',
+							orgUuid: orgUuid,
+							baselineCurrent: baselineCurrent
+						});
+					}
+				}).catch((err) => {
+					this.mutating = false;
+					this.showCreateError(err.message);
+				}).finally(() => {
+					this.createSubmitBtn.disabled = false;
+					this.createSubmitBtn.textContent = prevLabel;
+
+					if (this.createNameInput) {
+						this.createNameInput.value = '';
+					}
+
+					if (this.createTypeSelect) {
+						this.createTypeSelect.value = '';
+					}
+				});
+			});
+		}
+
+		showCreateError(message) {
+			if (!this.createErrorEl) {
+				this.setFeedback(message, 'error');
+				return;
+			}
+
+			this.createErrorEl.textContent = message;
+			this.createErrorEl.hidden = false;
+		}
+
+		hideCreateError() {
+			if (this.createErrorEl) {
+				this.createErrorEl.textContent = '';
+				this.createErrorEl.hidden = true;
+			}
+		}
+
+		refreshAfterMutation(expectation) {
+			// Cached pages predate the mutation; a return visit must not paint it.
+			this.clearStateCache();
+			window.clearTimeout(this.retryTimer);
+			this.mutating = true;
+			this.setLoading();
+			this.pollState(expectation, RETRY_DELAYS_MS.length + 1);
+		}
+
+		cancelMutationPoll() {
+			window.clearTimeout(this.retryTimer);
+			this.mutating = false;
+		}
+
+		pollState(expectation, attemptsLeft) {
+			if (attemptsLeft <= 0) {
+				// The change landed server-side; keep the honest picture and say so.
+				this.mutating = false;
+				this.setFeedback(this.label('stale_update'), 'info');
+				return;
+			}
+
+			const seq = ++this.requestSeq;
+			const attempt = RETRY_DELAYS_MS.length + 1 - attemptsLeft;
+
+			this.callRest('/state', {
+				settings: this.settings,
+				settings_token: this.token,
+				tab: this.tab,
+				page: this.page
+			}).then((payload) => {
+				if (seq !== this.requestSeq) {
+					return;
+				}
+
+				this.loaded = true;
+				this.renderState(payload || {});
+				this.writeCache(payload || {});
+
+				if (this.mutationSettled(payload || {}, expectation)) {
+					this.mutating = false;
+					return;
+				}
+
+				const delay = RETRY_DELAYS_MS[Math.min(attempt - 1, RETRY_DELAYS_MS.length - 1)];
+
+				this.retryTimer = window.setTimeout(() => {
+					this.pollState(expectation, attemptsLeft - 1);
+				}, delay);
+			}).catch((err) => {
+				if (seq !== this.requestSeq) {
+					return;
+				}
+
+				if (!this.loaded) {
+					this.mutating = false;
+					this.listEl.removeAttribute('aria-busy');
+					this.listEl.textContent = '';
+					this.listEl.appendChild(this.emptyLi(err.message));
+					return;
+				}
+
+				this.mutating = false;
+				this.setFeedback(err.message, 'error');
+			});
+		}
+
+		mutationSettled(payload, expectation) {
+			const tabs = (payload && payload.tabs) || {};
+			const currentCount = Number(tabs.current || 0);
+
+			if (expectation.type === 'primary') {
+				return ((payload && payload.primary_uuid) || '') === expectation.orgUuid;
+			}
+
+			if (expectation.type === 'end') {
+				return currentCount < expectation.baselineCurrent;
+			}
+
+			return currentCount > expectation.baselineCurrent;
+		}
+
+		clearStateCache() {
+			try {
+				const prefix = CACHE_PREFIX + ':' + this.config.id + ':' +
+					WicketManageEmployer.hashString(this.settings) + ':';
+				const doomed = [];
+
+				for (let i = 0; i < window.sessionStorage.length; i++) {
+					const key = window.sessionStorage.key(i);
+
+					if (key && key.indexOf(prefix) === 0) {
+						doomed.push(key);
+					}
+				}
+
+				doomed.forEach((key) => window.sessionStorage.removeItem(key));
+			} catch (e) {
+				// Private mode or quota pressure: the fresh fetch still runs.
+			}
 		}
 
 		callRest(route, params, method) {
@@ -777,7 +1265,7 @@
 				headers: { 'X-WP-Nonce': this.nonce }
 			};
 
-			if (options.method === 'POST') {
+			if (options.method === 'POST' || options.method === 'PATCH') {
 				delete params.settings;
 				delete params.settings_token;
 				options.data = params;
@@ -824,11 +1312,70 @@
 			return (this.config.labels && this.config.labels[key]) || '';
 		}
 
+		static localToday() {
+			const now = new Date();
+			const month = String(now.getMonth() + 1).padStart(2, '0');
+			const day = String(now.getDate()).padStart(2, '0');
+
+			return now.getFullYear() + '-' + month + '-' + day;
+		}
+
+		showAddError(message) {
+			if (!this.addErrorEl) {
+				this.setFeedback(message, 'error');
+				return;
+			}
+
+			this.addErrorEl.textContent = message;
+			this.addErrorEl.hidden = false;
+		}
+
+		hideAddError() {
+			if (this.addErrorEl) {
+				this.addErrorEl.textContent = '';
+				this.addErrorEl.hidden = true;
+			}
+		}
+
+		resetAddForm() {
+			this.hideAddError();
+
+			if (this.selectedInput) {
+				this.selectedInput.value = '';
+			}
+
+			if (this.addBtn) {
+				this.addBtn.disabled = true;
+			}
+
+			this.clearResults();
+
+			if (this.searchInput) {
+				this.searchInput.value = '';
+			}
+		}
+
+		static errorList(errors) {
+			// The end path returns a map of connection_id => message; the add path
+			// a list. Normalize so partial failures never read as success.
+			if (Array.isArray(errors)) {
+				return errors.filter((item) => item !== null && item !== undefined && item !== '');
+			}
+
+			if (errors && typeof errors === 'object') {
+				return Object.values(errors).filter((item) => item !== null && item !== undefined && item !== '');
+			}
+
+			return [];
+		}
+
 		static sprintf2(str, a, b) {
+			// Function replacer: an org name holding $& or %s must not act as a
+			// replacement pattern.
 			return String(str)
-				.replace('%1$s', a)
-				.replace('%2$s', b)
-				.replace('%s', a);
+				.replace('%1$s', () => a)
+				.replace('%2$s', () => b)
+				.replace('%s', () => a);
 		}
 	}
 

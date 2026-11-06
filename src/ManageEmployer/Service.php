@@ -57,6 +57,12 @@ final class Service
             return new WP_Error('me_client_unavailable', 'The MDP client is unavailable.');
         }
 
+        // The membership filter post-checks every candidate org's status, which
+        // needs the full row set; only unfiltered configs can page server-side.
+        if ((string) ($settings['display_membership_status_filter'] ?? Settings::MODE_ALL) === Settings::MODE_ALL) {
+            return $this->getStateFast($personUuid, $tab, $page, $settings);
+        }
+
         // Tab counts, membership post-filtering, and honest page math all need
         // the full row set, and per-person connection counts stay small, so the
         // read pulls every MDP page once instead of trusting MDP-side meta.
@@ -147,9 +153,9 @@ final class Service
             }
         }
 
-        $orgs = $membershipFilter !== Settings::MODE_ALL
-            ? array_intersect_key($membershipOrgs, $visibleUuids)
-            : $this->fetchOrgs(array_keys($visibleUuids), $settings);
+        // This path only runs when the membership filter narrows; its post-
+        // filter already fetched every org's status.
+        $orgs = array_intersect_key($membershipOrgs, $visibleUuids);
 
         return [
             'connections' => $visible,
@@ -163,6 +169,166 @@ final class Service
                 'current_page' => $page,
             ],
         ];
+    }
+
+    /**
+     * Server-paged state read for members with many connections: tab counts
+     * come from single-row requests and only the visible page is fetched.
+     *
+     * The server sorts -created_at (current) / -ends_at (past), so the primary
+     * card is NOT pinned to page 1 here; the Primary badge still renders
+     * wherever the card sits. The full-walk path keeps the pin.
+     *
+     * @param array{org_types: array, display_org_type: bool, display_org_address: bool, display_membership_status: bool, relationship_status_filter: string, orgs_per_page: int} $settings
+     * @return array{connections: array, orgs: array<string, array>, primary_uuid: ?string, meta: array}|WP_Error
+     */
+    private function getStateFast(string $personUuid, string $tab, int $page, array $settings): array|WP_Error
+    {
+        $client = $this->client();
+
+        if (!$client) {
+            return new WP_Error('me_client_unavailable', 'The MDP client is unavailable.');
+        }
+
+        $mode = (string) ($settings['relationship_status_filter'] ?? Settings::MODE_ALL);
+        $perPage = max(1, (int) $settings['orgs_per_page']);
+
+        // Inactive mode pins the block to the past view; the current tab cannot
+        // hold rows and must not spend any MDP call proving it. Active mode is
+        // the mirror: the past tab cannot hold rows.
+        if (($mode === Settings::MODE_INACTIVE && $tab !== 'past')
+            || ($mode === Settings::MODE_ACTIVE && $tab === 'past')) {
+            return $this->statePayload([], ['current' => 0, 'past' => 0], $perPage, 0, 1, '', []);
+        }
+
+        $now = wicket_time_get_current_iso8601_utc();
+        $filters = $this->tabFilters($mode, $tab, $now);
+
+        $countCurrent = 0;
+        $countPast = 0;
+
+        if ($mode === Settings::MODE_ALL) {
+            $countCurrent = $this->countConnections($personUuid, $this->tabFilters(Settings::MODE_ALL, 'current', $now));
+
+            if (is_wp_error($countCurrent)) {
+                return $countCurrent;
+            }
+
+            $countPast = $this->countConnections($personUuid, $this->tabFilters(Settings::MODE_ALL, 'past', $now));
+
+            if (is_wp_error($countPast)) {
+                return $countPast;
+            }
+        } else {
+            $count = $this->countConnections($personUuid, $filters);
+
+            if (is_wp_error($count)) {
+                return $count;
+            }
+
+            if ($mode === Settings::MODE_ACTIVE) {
+                $countCurrent = $count;
+            } else {
+                $countPast = $count;
+            }
+        }
+
+        $total = $tab === 'past' ? $countPast : $countCurrent;
+        $totalPages = max(1, (int) ceil($total / $perPage));
+        $page = min($totalPages, max(1, $page));
+
+        $result = $this->fetchConnectionsPage(
+            $personUuid,
+            $page,
+            $perPage,
+            $filters,
+            $tab === 'past' ? '-ends_at,-created_at,id' : '-created_at,id'
+        );
+
+        if (is_wp_error($result)) {
+            return $result;
+        }
+
+        $rows = $result['data'];
+
+        $primary = '';
+
+        if ($tab !== 'past') {
+            $primary = $this->fetchPrimaryUuid($personUuid);
+
+            if (is_wp_error($primary)) {
+                return $primary;
+            }
+        }
+
+        $uuids = [];
+
+        foreach ($rows as $row) {
+            $uuid = $this->connectionOrgUuid($row);
+
+            if ($uuid !== '') {
+                $uuids[$uuid] = true;
+            }
+        }
+
+        return $this->statePayload($rows, ['current' => $countCurrent, 'past' => $countPast], $perPage, $total, $page, $primary, $this->fetchOrgs(array_keys($uuids), $settings));
+    }
+
+    /**
+     * Uniform state payload shape shared by both fetch strategies.
+     *
+     * @param array<int, array> $rows
+     * @param array{current: int, past: int} $tabs
+     * @param array<string, array> $orgs
+     * @return array{connections: array, orgs: array<string, array>, primary_uuid: string, tabs: array, meta: array}
+     */
+    private function statePayload(array $rows, array $tabs, int $perPage, int $total, int $page, string $primary, array $orgs): array
+    {
+        return [
+            'connections' => $rows,
+            'orgs' => $orgs,
+            'primary_uuid' => $primary,
+            'tabs' => $tabs,
+            'meta' => [
+                'total' => $total,
+                'total_pages' => max(1, (int) ceil($total / $perPage)),
+                'per_page' => $perPage,
+                'current_page' => $page,
+            ],
+        ];
+    }
+
+    /**
+     * Ransack filters matching the block's own active/past split. MDP offers
+     * an active_at ransack scope (inclusive tsrange, nulls included) but no
+     * inactive scope, so ended rows need the null + lte predicates.
+     *
+     * @return array<string, mixed>
+     */
+    private function tabFilters(string $mode, string $tab, string $now): array
+    {
+        if ($mode === Settings::MODE_ACTIVE || ($mode === Settings::MODE_ALL && $tab !== 'past')) {
+            return ['active_at' => $now];
+        }
+
+        return ['ends_at_not_null' => 1, 'ends_at_lteq' => $now];
+    }
+
+    /**
+     * Tab total from a single-row request: MDP page meta carries the full count.
+     *
+     * @param array<string, mixed> $filters
+     * @return int|WP_Error
+     */
+    private function countConnections(string $personUuid, array $filters): int|WP_Error
+    {
+        $result = $this->fetchConnectionsPage($personUuid, 1, 1, $filters, '-created_at');
+
+        if (is_wp_error($result)) {
+            return $result;
+        }
+
+        return $this->pageMeta($result['meta'])['total'];
     }
 
     public function activeEmployerConnections(string $personUuid): array|WP_Error
@@ -273,7 +439,7 @@ final class Service
         }
 
         try {
-            $response = $client->get('organizations', ['query' => $query]);
+            $response = $client->get('organizations', ['query' => $this->orgSearchQueryString($query)]);
         } catch (\Throwable $e) {
             error_log('[wicket-acc manage-employer] search failed: ' . $e->getMessage());
 
@@ -314,6 +480,40 @@ final class Service
             'results' => $results,
             'meta' => $this->pageMeta(is_array($response['meta'] ?? null) ? $response['meta'] : []),
         ];
+    }
+
+    /**
+     * Org search queries go out as a pre-built string. Guzzle serializes
+     * numeric arrays as filter[type_in][0]=x, which Rack parses as a hash, so
+     * ransack's in-predicate silently matches nothing (the M0 "unknown filter
+     * returns zero rows" trap in a new shape). Rails only reads the bare []
+     * form as a list, and Guzzle cannot emit it. Brackets stay literal;
+     * values are RFC 3986 encoded.
+     *
+     * @param array<string, mixed> $query
+     */
+    private function orgSearchQueryString(array $query): string
+    {
+        $parts = [];
+
+        $flatten = static function (string $prefix, mixed $value) use (&$flatten, &$parts): void {
+            if (is_array($value)) {
+                foreach ($value as $key => $item) {
+                    $suffix = is_int($key) ? '[]' : '[' . $key . ']';
+                    $flatten($prefix . $suffix, $item);
+                }
+
+                return;
+            }
+
+            $parts[] = $prefix . '=' . rawurlencode((string) $value);
+        };
+
+        foreach ($query as $key => $value) {
+            $flatten($key, $value);
+        }
+
+        return implode('&', $parts);
     }
 
     /**
@@ -450,9 +650,9 @@ final class Service
      * Delegates to the WicketORM service so protected types survive and the
      * end dates follow the shared UTC/MDP-timezone rules.
      *
-     * @return array{ended: array<int, string>, errors: array<int, string>}|WP_Error
+     * @return array{ended: array<int, string>, errors: array<string, string>}|WP_Error
      */
-    public function endEmployer(string $personUuid, string $orgUuid): array|WP_Error
+    public function endEmployer(string $personUuid, string $orgUuid, ?string $endsAtIso = null): array|WP_Error
     {
         $connectionService = $this->connectionService();
 
@@ -460,7 +660,7 @@ final class Service
             return new WP_Error('me_client_unavailable', 'The MDP client is unavailable.');
         }
 
-        return $connectionService->endAllActivePersonOrganizationConnections($personUuid, $orgUuid, self::PROTECTED_TYPES);
+        return $connectionService->endAllActivePersonOrganizationConnections($personUuid, $orgUuid, self::PROTECTED_TYPES, $endsAtIso);
     }
 
     /**
@@ -656,6 +856,37 @@ final class Service
         return false;
     }
 
+    /**
+     * Latest starts_at among the person's active connections to one org.
+     * Ending ends every active connection of the org at once, so the end date
+     * must clear the newest start or the newest connection gets ends_at <
+     * starts_at and MDP rejects the write.
+     *
+     * @param array<int, array> $connections
+     */
+    public function latestActiveStartForOrg(array $connections, string $orgUuid): string
+    {
+        $latest = '';
+
+        foreach ($connections as $row) {
+            if ($this->connectionOrgUuid($row) !== $orgUuid || !$this->connectionIsActive($row)) {
+                continue;
+            }
+
+            $startsAt = (string) ($row['attributes']['starts_at'] ?? '');
+
+            if ($startsAt === '') {
+                continue;
+            }
+
+            if ($latest === '' || strtotime($startsAt) > strtotime($latest)) {
+                $latest = $startsAt;
+            }
+        }
+
+        return $latest;
+    }
+
     private function connectionIsActive(array $row): bool
     {
         $endsAt = (string) ($row['attributes']['ends_at'] ?? '');
@@ -742,11 +973,12 @@ final class Service
     }
 
     /**
-     * Fetch one page of the person's own connections, person-to-organization only.
+     * One page of the person's own connections, person-to-organization only.
      *
+     * @param array<string, mixed> $extraFilters Ransack filter keys merged over the connection-type filter.
      * @return array{data: array, meta: array}|WP_Error
      */
-    private function fetchConnections(string $personUuid, int $page, int $perPage): array|WP_Error
+    private function fetchConnectionsPage(string $personUuid, int $page, int $perPage, array $extraFilters = [], string $sort = '-created_at'): array|WP_Error
     {
         $client = $this->client();
 
@@ -757,8 +989,8 @@ final class Service
         try {
             $response = $client->get('people/' . rawurlencode($personUuid) . '/connections', [
                 'query' => [
-                    'filter' => ['connection_type_eq' => 'person_to_organization'],
-                    'sort' => '-created_at',
+                    'filter' => array_merge(['connection_type_eq' => 'person_to_organization'], $extraFilters),
+                    'sort' => $sort,
                     'page' => ['number' => $page, 'size' => $perPage],
                 ],
             ]);
@@ -776,6 +1008,16 @@ final class Service
             'data' => $response['data'],
             'meta' => is_array($response['meta'] ?? null) ? $response['meta'] : [],
         ];
+    }
+
+    /**
+     * One page of the person's own connections, person-to-organization only.
+     *
+     * @return array{data: array, meta: array}|WP_Error
+     */
+    private function fetchConnections(string $personUuid, int $page, int $perPage): array|WP_Error
+    {
+        return $this->fetchConnectionsPage($personUuid, $page, $perPage);
     }
 
     /**
