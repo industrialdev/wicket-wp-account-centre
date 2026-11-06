@@ -37,6 +37,7 @@ final class RestController
     private const RATE_SEARCH = [60 => 60];
     private const RATE_MUTATE = [10 => 600];
     private const RATE_CREATE_ORG = [5 => 3600];
+    private const RATE_STATE = [120 => 60];
 
     /**
      * Max active employer connections before create/add is refused.
@@ -93,6 +94,7 @@ final class RestController
             'args' => [
                 'uuid' => ['type' => 'string', 'required' => true],
                 'org_uuid' => ['type' => 'string', 'required' => true],
+                'end_date' => ['type' => 'string'],
                 'settings' => ['type' => 'string', 'required' => true],
                 'settings_token' => ['type' => 'string', 'required' => true],
             ],
@@ -131,6 +133,14 @@ final class RestController
 
         if (is_wp_error($guard)) {
             return $this->error($guard);
+        }
+
+        // One state read amplifies to several MDP calls, so it is limited too,
+        // just far above what the block's own retry backoff can spend.
+        $limited = $this->rateLimit('state', self::RATE_STATE);
+
+        if (is_wp_error($limited)) {
+            return $this->error($limited);
         }
 
         $state = $this->service()->getState(
@@ -213,17 +223,19 @@ final class RestController
             return $this->error(new WP_Error('me_read_only', 'This block is in read-only mode.', ['status' => 403]));
         }
 
-        $limited = $this->rateLimit('mutate', self::RATE_MUTATE);
-
-        if (is_wp_error($limited)) {
-            return $this->error($limited);
-        }
-
         $personUuid = $this->personUuid();
         $orgUuid = sanitize_text_field((string) $request->get_param('org_uuid'));
 
         if (!wp_is_uuid($orgUuid)) {
             return $this->error(new WP_Error('me_org_invalid', 'That organization id is malformed.', ['status' => 400]));
+        }
+
+        // The limiter burns the member's mutation budget, so it runs only after
+        // the free local checks, not before them.
+        $limited = $this->rateLimit('mutate', self::RATE_MUTATE);
+
+        if (is_wp_error($limited)) {
+            return $this->error($limited);
         }
 
         $capError = $this->connectionCapError($personUuid);
@@ -267,18 +279,43 @@ final class RestController
             return $this->error(new WP_Error('me_read_only', 'This block is in read-only mode.', ['status' => 403]));
         }
 
-        $limited = $this->rateLimit('mutate', self::RATE_MUTATE);
-
-        if (is_wp_error($limited)) {
-            return $this->error($limited);
-        }
-
         $personUuid = $this->personUuid();
         $orgUuid = sanitize_text_field((string) $request->get_param('org_uuid'));
         $connectionUuid = sanitize_text_field((string) $request->get_param('uuid'));
 
         if (!wp_is_uuid($connectionUuid) || !wp_is_uuid($orgUuid)) {
             return $this->error(new WP_Error('me_connection_invalid', 'That connection id is malformed.', ['status' => 400]));
+        }
+
+        // Story 3.3: the confirm dialog carries an end date. The value is
+        // never trusted as a timestamp; the server validates it against the
+        // MDP-timezone today and the relationship's own start, then computes
+        // the exact ends_at (now for today, end of MDP day otherwise).
+        $endDate = sanitize_text_field((string) $request->get_param('end_date'));
+        $endsAt = null;
+
+        if ($endDate !== '') {
+            $date = \DateTime::createFromFormat('Y-m-d', $endDate);
+            $dateValid = $date instanceof \DateTime && $date->format('Y-m-d') === $endDate;
+
+            if (!$dateValid) {
+                return $this->error(new WP_Error('me_end_date_invalid', 'The end date must be a valid date in YYYY-MM-DD format.', ['status' => 400]));
+            }
+
+            $todayYmd = (new \DateTime('now', wicket_time_get_mdp_timezone()))->format('Y-m-d');
+            $endDateYmd = $date->format('Y-m-d');
+
+            if ($endDateYmd > $todayYmd) {
+                return $this->error(new WP_Error('me_end_date_future', 'The end date cannot be later than today.', ['status' => 400]));
+            }
+        }
+
+        // The limiter burns the member's mutation budget, so it runs only after
+        // the free local checks, not before them.
+        $limited = $this->rateLimit('mutate', self::RATE_MUTATE);
+
+        if (is_wp_error($limited)) {
+            return $this->error($limited);
         }
 
         $connections = $this->service()->activeEmployerConnections($personUuid);
@@ -295,7 +332,26 @@ final class RestController
             ));
         }
 
-        $result = $this->service()->endEmployer($personUuid, $orgUuid);
+        if ($endDate !== '') {
+            $mdpTz = wicket_time_get_mdp_timezone();
+            $endDateYmd = $date->format('Y-m-d');
+            $startDateYmd = '';
+            $startsAt = $this->service()->latestActiveStartForOrg($connections, $orgUuid);
+
+            if ($startsAt !== '') {
+                $startDateYmd = (new \DateTime($startsAt))->setTimezone($mdpTz)->format('Y-m-d');
+            }
+
+            if ($startDateYmd !== '' && $endDateYmd < $startDateYmd) {
+                return $this->error(new WP_Error('me_end_date_before_start', 'The end date cannot be earlier than the relationship start.', ['status' => 400]));
+            }
+
+            $endsAt = $endDateYmd === $todayYmd
+                ? wicket_time_get_current_iso8601_utc()
+                : wicket_time_get_mdp_day_end_iso8601_utc($endDateYmd);
+        }
+
+        $result = $this->service()->endEmployer($personUuid, $orgUuid, $endsAt);
 
         if (is_wp_error($result)) {
             return $this->error($result);
@@ -386,17 +442,17 @@ final class RestController
             return $this->error(new WP_Error('me_read_only', 'This block is in read-only mode.', ['status' => 403]));
         }
 
-        $limited = $this->rateLimit('mutate', self::RATE_MUTATE);
-
-        if (is_wp_error($limited)) {
-            return $this->error($limited);
-        }
-
         $personUuid = $this->personUuid();
         $orgUuid = sanitize_text_field((string) $request->get_param('org_uuid'));
 
         if (!wp_is_uuid($orgUuid)) {
             return $this->error(new WP_Error('me_org_invalid', 'That organization id is malformed.', ['status' => 400]));
+        }
+
+        $limited = $this->rateLimit('mutate', self::RATE_MUTATE);
+
+        if (is_wp_error($limited)) {
+            return $this->error($limited);
         }
 
         $connections = $this->service()->activeEmployerConnections($personUuid);

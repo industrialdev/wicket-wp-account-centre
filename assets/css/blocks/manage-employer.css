@@ -236,6 +236,98 @@
 		}
 	}
 
+	.wicket-acc-me__card--primary {
+		border-color: var(--wacc-me-accent);
+		background: color-mix(in srgb, var(--wacc-me-accent) 6%, transparent);
+	}
+
+	.wicket-acc-me__card-actions {
+		display: flex;
+		gap: 8px;
+		flex-wrap: wrap;
+		margin: 10px 0 0;
+	}
+
+	.wicket-acc-me__card-action {
+		cursor: pointer;
+
+		&:disabled {
+			cursor: default;
+			opacity: 0.5;
+		}
+	}
+
+	.wicket-acc-me__card-action--end,
+	.wicket-acc-me__confirm-end {
+		border-color: var(--wacc-me-error);
+		color: var(--wacc-me-error);
+	}
+
+	.wicket-acc-me__create {
+		margin: 16px 0 0;
+		padding: 12px 14px;
+		border: 1px dashed var(--wacc-me-border);
+		border-radius: var(--wacc-me-radius);
+
+		label {
+			display: block;
+			margin: 0 0 4px;
+			font-weight: 600;
+		}
+	}
+
+	.wicket-acc-me__create-heading {
+		margin: 0 0 10px;
+		font-weight: 600;
+	}
+
+	.wicket-acc-me__create-name,
+	.wicket-acc-me__create-type {
+		width: 100%;
+		box-sizing: border-box;
+		margin: 0 0 10px;
+	}
+
+	.wicket-acc-me__create-error {
+		margin: 0 0 10px;
+		color: var(--wacc-me-error);
+
+		&[hidden] {
+			display: none;
+		}
+	}
+
+	.wicket-acc-me__create-submit {
+		cursor: pointer;
+
+		&:disabled {
+			opacity: 0.5;
+		}
+	}
+
+	.wicket-acc-me__confirm-body {
+		label {
+			display: block;
+			margin: 12px 0 4px;
+			font-weight: 600;
+		}
+
+		p:first-child {
+			margin-top: 0;
+		}
+	}
+
+	.wicket-acc-me__end-date {
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.wicket-acc-me__confirm-footer {
+		display: flex;
+		justify-content: flex-end;
+		gap: 8px;
+	}
+
 	.wicket-acc-me__sk {
 		padding: 14px;
 		border: 1px solid var(--wacc-me-border);

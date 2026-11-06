@@ -47,6 +47,20 @@ $me_title = match ($me_mode) {
 };
 
 $me_add_label = __('Add employer', 'wicket-acc');
+$me_end_label = __('End', 'wicket-acc');
+$me_create_heading = sprintf(
+    /* translators: %s: singular organization label. */
+    __("Can't find your %s?", 'wicket-acc'),
+    $singular
+);
+
+// Create-org type options: the dedicated create list wins, else the org-type
+// allow-list (same fallback the REST layer enforces). One option hides the
+// dropdown per story 2.5; zero renders an empty dropdown the required check
+// catches.
+$me_create_types = !empty($me_settings['create_org_types'])
+    ? $me_settings['create_org_types']
+    : $me_settings['org_types'];
 
 // Labels live in one config attribute: PHP does the translation, the script
 // only paints. The plugin has no JS translation pipeline.
@@ -60,6 +74,12 @@ $me_config = [
     'org_address_format' => (string) ($me_settings['org_address_format'] ?? 'full'),
     'display_membership_status' => !empty($me_settings['display_membership_status']),
     'display_relationship_dates' => !empty($me_settings['display_relationship_dates']),
+    'hide_end_button' => !empty($me_settings['hide_end_button']),
+    'enable_primary' => !empty($me_settings['enable_primary']),
+    'hide_primary_tag' => !empty($me_settings['hide_primary_tag']),
+    'hide_set_primary_button' => !empty($me_settings['hide_set_primary_button']),
+    'removal_alert_enabled' => !empty($me_settings['removal_alert_enabled']),
+    'disable_create' => !empty($me_settings['disable_create']),
     'labels' => [
         'prev' => __('Previous', 'wicket-acc'),
         'next' => __('Next', 'wicket-acc'),
@@ -72,6 +92,27 @@ $me_config = [
         'added' => __('Employer added.', 'wicket-acc'),
         'already' => __('Already connected.', 'wicket-acc'),
         'added_with_errors' => __('Added with errors: %s', 'wicket-acc'),
+        'end' => $me_end_label,
+        'ending' => __('Ending…', 'wicket-acc'),
+        'ended' => __('%1$s has been removed from your current employers.', 'wicket-acc'),
+        'confirm_cancel' => __('Cancel', 'wicket-acc'),
+        'end_date_label' => __('End date', 'wicket-acc'),
+        'set_primary' => __('Set as Primary', 'wicket-acc'),
+        'setting_primary' => __('Updating…', 'wicket-acc'),
+        'primary_set' => __('%1$s is now your primary employer.', 'wicket-acc'),
+        'primary_set_note' => __('This updates your primary organization in MDP.', 'wicket-acc'),
+        'rejoin' => __('Rejoin', 'wicket-acc'),
+        'rejoining' => __('Rejoining…', 'wicket-acc'),
+        'rejoined' => __('%1$s was added back to your current employers.', 'wicket-acc'),
+        'create_heading' => $me_create_heading,
+        'create_name_label' => __('Organization name', 'wicket-acc'),
+        'create_type_label' => __('Organization type', 'wicket-acc'),
+        'create_submit' => __('Create', 'wicket-acc'),
+        'creating' => __('Creating…', 'wicket-acc'),
+        'created' => __('%1$s has been created and added to your current employers.', 'wicket-acc'),
+        'duplicate_org' => __('An organization named %1$s already exists, so you were connected to that one.', 'wicket-acc'),
+        'name_and_type_required' => __('Please enter both an organization name and type.', 'wicket-acc'),
+        'stale_update' => __('Saved. The list below is still updating.', 'wicket-acc'),
         'no_results' => __('No organizations found.', 'wicket-acc'),
         'search_failed' => __('Search failed.', 'wicket-acc'),
         'load_failed' => __('Your employers could not be loaded.', 'wicket-acc'),
@@ -196,6 +237,33 @@ $me_config = [
 				<?php echo esc_html($me_add_label); ?>
 			</button>
 		</div>
+		<p class="wicket-acc-me__create-error" data-me-add-error hidden></p>
+		<?php if (empty($me_settings['disable_create'])) : ?>
+		<div class="wicket-acc-me__create" data-me-create>
+			<p class="wicket-acc-me__create-heading"><?php echo esc_html($me_create_heading); ?></p>
+			<label for="<?php echo esc_attr($me_id); ?>-create-name"><?php esc_html_e('Organization name', 'wicket-acc'); ?></label>
+			<input
+				type="text"
+				id="<?php echo esc_attr($me_id); ?>-create-name"
+				class="wicket-acc-me__create-name"
+				autocomplete="off"
+				maxlength="200"
+			>
+			<?php if (count($me_create_types) !== 1) : ?>
+			<label for="<?php echo esc_attr($me_id); ?>-create-type"><?php esc_html_e('Organization type', 'wicket-acc'); ?></label>
+			<select id="<?php echo esc_attr($me_id); ?>-create-type" class="wicket-acc-me__create-type">
+				<option value=""><?php esc_html_e('Select a type', 'wicket-acc'); ?></option>
+				<?php foreach ($me_create_types as $me_create_type) : ?>
+				<option value="<?php echo esc_attr((string) $me_create_type); ?>"><?php echo esc_html(ucwords(str_replace(['_', '-'], ' ', (string) $me_create_type))); ?></option>
+				<?php endforeach; ?>
+			</select>
+			<?php endif; ?>
+			<p class="wicket-acc-me__create-error" data-me-create-error hidden></p>
+			<button type="button" class="button wicket-acc-me__create-submit" id="<?php echo esc_attr($me_id); ?>-create-submit">
+				<?php esc_html_e('Create', 'wicket-acc'); ?>
+			</button>
+		</div>
+		<?php endif; ?>
 		<?php
 	    $me_modal_body = ob_get_clean();
 
@@ -207,6 +275,47 @@ $me_config = [
 		        'close_label' => __('Close', 'wicket-acc'),
 		        'classes' => ['wicket-acc-me-dialog'],
 		    ]);
+
+		    // End confirmation (story 3.3): JS names the organization at open time
+		    // and the body carries the end-date field. Rendered only when the removal
+		    // alert is on and the End button can exist; alert off means End applies
+		    // immediately.
+		    if (empty($me_settings['hide_end_button']) && !empty($me_settings['removal_alert_enabled'])) :
+		        ob_start(); ?>
+		<div class="wicket-acc-me__confirm-body">
+			<p><?php echo esc_html((string) $me_settings['removal_alert_description']); ?></p>
+			<label for="<?php echo esc_attr($me_id); ?>-end-date"><?php esc_html_e('End date', 'wicket-acc'); ?></label>
+			<input
+				type="date"
+				id="<?php echo esc_attr($me_id); ?>-end-date"
+				class="wicket-acc-me__end-date"
+			>
+		</div>
+		<?php
+		        $me_confirm_body = ob_get_clean();
+
+		        ob_start(); ?>
+		<div class="wicket-acc-me__confirm-footer">
+			<button type="button" class="button" id="<?php echo esc_attr($me_id); ?>-confirm-cancel">
+				<?php esc_html_e('Cancel', 'wicket-acc'); ?>
+			</button>
+			<button type="button" class="button wicket-acc-me__confirm-end" id="<?php echo esc_attr($me_id); ?>-confirm-end">
+				<?php echo esc_html($me_end_label); ?>
+			</button>
+		</div>
+		<?php
+		        $me_confirm_footer = ob_get_clean();
+
+		        get_component('modal', [
+		            'id' => $me_id . '-confirm',
+		            'title' => (string) $me_settings['removal_alert_title'],
+		            'body' => $me_confirm_body,
+		            'footer' => $me_confirm_footer,
+		            'width' => 'md',
+		            'close_label' => __('Close', 'wicket-acc'),
+		            'classes' => ['wicket-acc-me-dialog', 'wicket-acc-me-dialog--confirm'],
+		        ]);
+		    endif;
 		    ?>
 		<?php endif; ?>
 	<?php endif; ?>
