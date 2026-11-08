@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1b0612c4c5691aba22577eb5670bf781",
+    "content-hash": "4459016a4e42dcf0e61de142f2c285c8",
     "packages": [
         {
             "name": "carbonphp/carbon-doctrine-types",
@@ -172,20 +172,20 @@
         },
         {
             "name": "estebanforge/hyperblocks",
-            "version": "1.7.0",
+            "version": "1.8.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/EstebanForge/HyperBlocks.git",
-                "reference": "80090bf8962f4cf7643f357b23c30df6c4c4e573"
+                "reference": "bc4bffa955effc09320fc9ab8e3e2e05981ba45b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EstebanForge/HyperBlocks/zipball/80090bf8962f4cf7643f357b23c30df6c4c4e573",
-                "reference": "80090bf8962f4cf7643f357b23c30df6c4c4e573",
+                "url": "https://api.github.com/repos/EstebanForge/HyperBlocks/zipball/bc4bffa955effc09320fc9ab8e3e2e05981ba45b",
+                "reference": "bc4bffa955effc09320fc9ab8e3e2e05981ba45b",
                 "shasum": ""
             },
             "require": {
-                "estebanforge/hyperfields": "^1",
+                "estebanforge/hyperfields": "*",
                 "php": ">=8.2"
             },
             "require-dev": {
@@ -234,7 +234,8 @@
                 "issues": "https://github.com/EstebanForge/HyperBlocks/issues",
                 "source": "https://github.com/EstebanForge/HyperBlocks"
             },
-            "time": "2026-09-25T19:16:56+00:00"
+            "time": "2026-11-05T00:35:17+00:00",
+            "published-time": "2026-11-05T00:36:03+00:00"
         },
         {
             "name": "estebanforge/hyperfields",
@@ -4526,5 +4527,5 @@
         "php": ">=8.2.0"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.11.0"
 }
