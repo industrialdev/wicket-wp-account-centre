@@ -172,21 +172,21 @@
         },
         {
             "name": "estebanforge/hyperblocks",
-            "version": "1.7.0",
-            "version_normalized": "1.7.0.0",
+            "version": "1.8.4",
+            "version_normalized": "1.8.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/EstebanForge/HyperBlocks.git",
-                "reference": "80090bf8962f4cf7643f357b23c30df6c4c4e573"
+                "reference": "bc4bffa955effc09320fc9ab8e3e2e05981ba45b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EstebanForge/HyperBlocks/zipball/80090bf8962f4cf7643f357b23c30df6c4c4e573",
-                "reference": "80090bf8962f4cf7643f357b23c30df6c4c4e573",
+                "url": "https://api.github.com/repos/EstebanForge/HyperBlocks/zipball/bc4bffa955effc09320fc9ab8e3e2e05981ba45b",
+                "reference": "bc4bffa955effc09320fc9ab8e3e2e05981ba45b",
                 "shasum": ""
             },
             "require": {
-                "estebanforge/hyperfields": "^1",
+                "estebanforge/hyperfields": "*",
                 "php": ">=8.2"
             },
             "require-dev": {
@@ -197,7 +197,8 @@
                 "phpunit/phpunit": "^12",
                 "squizlabs/php_codesniffer": "^3"
             },
-            "time": "2026-09-25T19:16:56+00:00",
+            "time": "2026-11-05T00:35:17+00:00",
+            "published-time": "2026-11-05T00:36:03+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {

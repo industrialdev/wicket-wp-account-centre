@@ -1,8 +1,8 @@
 <?php return array(
     'root' => array(
         'name' => 'industrialdev/wicket-wp-account-centre',
-        'pretty_version' => '1.11.8',
-        'version' => '1.11.8.0',
+        'pretty_version' => '1.12.0',
+        'version' => '1.12.0.0',
         'reference' => null,
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
@@ -29,9 +29,9 @@
             'dev_requirement' => false,
         ),
         'estebanforge/hyperblocks' => array(
-            'pretty_version' => '1.7.0',
-            'version' => '1.7.0.0',
-            'reference' => '80090bf8962f4cf7643f357b23c30df6c4c4e573',
+            'pretty_version' => '1.8.4',
+            'version' => '1.8.4.0',
+            'reference' => 'bc4bffa955effc09320fc9ab8e3e2e05981ba45b',
             'type' => 'library',
             'install_path' => __DIR__ . '/../estebanforge/hyperblocks',
             'aliases' => array(),
@@ -139,8 +139,8 @@
             'dev_requirement' => false,
         ),
         'industrialdev/wicket-wp-account-centre' => array(
-            'pretty_version' => '1.11.8',
-            'version' => '1.11.8.0',
+            'pretty_version' => '1.12.0',
+            'version' => '1.12.0.0',
             'reference' => null,
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',

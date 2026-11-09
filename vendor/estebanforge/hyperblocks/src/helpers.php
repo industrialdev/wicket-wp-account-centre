@@ -14,8 +14,8 @@ use HyperBlocks\Block\Block;
 use HyperBlocks\Block\Field;
 use HyperBlocks\Block\FieldGroup;
 use HyperBlocks\Config;
-use HyperBlocks\Renderer;
 use HyperBlocks\Registry;
+use HyperBlocks\Renderer;
 
 // Exit if accessed directly (but allow test environment to proceed).
 if (!defined('ABSPATH') && !defined('HYPERBLOCKS_TESTING_MODE')) {
@@ -325,15 +325,6 @@ if (!function_exists('hb_path_within_base')) {
      */
     function hb_path_within_base(string $realPath, string $realBase): bool
     {
-        $normalize = static function (string $p): string {
-            $p = str_replace('\\', '/', $p);
-
-            return function_exists('wp_normalize_path') ? wp_normalize_path($p) : $p;
-        };
-
-        $normalizedPath = $normalize($realPath);
-        $normalizedBase = rtrim($normalize($realBase), '/');
-
-        return $normalizedPath === $normalizedBase || str_starts_with($normalizedPath, $normalizedBase . '/');
+        return HyperBlocks\Path::withinBase($realPath, $realBase);
     }
 }
