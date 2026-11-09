@@ -114,6 +114,7 @@ $me_config = [
         'name_and_type_required' => __('Please enter both an organization name and type.', 'wicket-acc'),
         'stale_update' => __('Saved. The list below is still updating.', 'wicket-acc'),
         'no_results' => __('No organizations found.', 'wicket-acc'),
+        'results_found' => __('%1$s results found.', 'wicket-acc'),
         'search_failed' => __('Search failed.', 'wicket-acc'),
         'load_failed' => __('Your employers could not be loaded.', 'wicket-acc'),
         'session_expired' => __('Session expired. Reload the page.', 'wicket-acc'),
@@ -211,7 +212,9 @@ $me_config = [
 				class="wicket-acc-me__search"
 				role="combobox"
 				aria-expanded="false"
+				aria-haspopup="listbox"
 				aria-controls="<?php echo esc_attr($me_id); ?>-results"
+				aria-describedby="<?php echo esc_attr($me_id); ?>-add-error"
 				aria-autocomplete="list"
 				autocomplete="off"
 				placeholder="<?php esc_attr_e('Type at least 3 characters', 'wicket-acc'); ?>"
@@ -222,6 +225,7 @@ $me_config = [
 				role="listbox"
 				aria-label="<?php esc_attr_e('Search results', 'wicket-acc'); ?>"
 			></ul>
+			<p class="wicket-acc-me__results-status" data-me-results-status role="status" aria-live="polite"></p>
 			<input
 				type="hidden"
 				name="org_uuid"
@@ -237,7 +241,7 @@ $me_config = [
 				<?php echo esc_html($me_add_label); ?>
 			</button>
 		</div>
-		<p class="wicket-acc-me__create-error" data-me-add-error hidden></p>
+		<p class="wicket-acc-me__create-error" data-me-add-error id="<?php echo esc_attr($me_id); ?>-add-error" hidden></p>
 		<?php if (empty($me_settings['disable_create'])) : ?>
 		<div class="wicket-acc-me__create" data-me-create>
 			<p class="wicket-acc-me__create-heading"><?php echo esc_html($me_create_heading); ?></p>
@@ -246,19 +250,20 @@ $me_config = [
 				type="text"
 				id="<?php echo esc_attr($me_id); ?>-create-name"
 				class="wicket-acc-me__create-name"
+				aria-describedby="<?php echo esc_attr($me_id); ?>-create-error"
 				autocomplete="off"
 				maxlength="200"
 			>
 			<?php if (count($me_create_types) !== 1) : ?>
 			<label for="<?php echo esc_attr($me_id); ?>-create-type"><?php esc_html_e('Organization type', 'wicket-acc'); ?></label>
-			<select id="<?php echo esc_attr($me_id); ?>-create-type" class="wicket-acc-me__create-type">
+			<select id="<?php echo esc_attr($me_id); ?>-create-type" class="wicket-acc-me__create-type" aria-describedby="<?php echo esc_attr($me_id); ?>-create-error">
 				<option value=""><?php esc_html_e('Select a type', 'wicket-acc'); ?></option>
 				<?php foreach ($me_create_types as $me_create_type) : ?>
 				<option value="<?php echo esc_attr((string) $me_create_type); ?>"><?php echo esc_html(ucwords(str_replace(['_', '-'], ' ', (string) $me_create_type))); ?></option>
 				<?php endforeach; ?>
 			</select>
 			<?php endif; ?>
-			<p class="wicket-acc-me__create-error" data-me-create-error hidden></p>
+			<p class="wicket-acc-me__create-error" data-me-create-error id="<?php echo esc_attr($me_id); ?>-create-error" hidden></p>
 			<button type="button" class="button wicket-acc-me__create-submit" id="<?php echo esc_attr($me_id); ?>-create-submit">
 				<?php esc_html_e('Create', 'wicket-acc'); ?>
 			</button>
@@ -274,6 +279,7 @@ $me_config = [
 		        'width' => 'md',
 		        'close_label' => __('Close', 'wicket-acc'),
 		        'classes' => ['wicket-acc-me-dialog'],
+		        'atts' => ['aria-modal' => 'true'],
 		    ]);
 
 		    // End confirmation (story 3.3): JS names the organization at open time
@@ -314,6 +320,7 @@ $me_config = [
 		            'width' => 'md',
 		            'close_label' => __('Close', 'wicket-acc'),
 		            'classes' => ['wicket-acc-me-dialog', 'wicket-acc-me-dialog--confirm'],
+		            'atts' => ['aria-modal' => 'true'],
 		        ]);
 		    endif;
 		    ?>

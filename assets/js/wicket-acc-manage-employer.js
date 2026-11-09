@@ -87,6 +87,7 @@
 			this.createSubmitBtn = document.getElementById(config.id + '-create-submit');
 			this.createErrorEl = root.querySelector('[data-me-create-error]');
 			this.addErrorEl = root.querySelector('[data-me-add-error]');
+			this.resultsStatusEl = root.querySelector('[data-me-results-status]');
 
 			if (!this.listEl) {
 				throw new Error('Manage Employer block: list element missing');
@@ -685,6 +686,7 @@
 			this.clearResults();
 			this.activeIndex = -1;
 			this.options = [];
+			this.announceResults(WicketManageEmployer.sprintf2(this.label('results_found'), String(results.length)));
 
 			if (results.length === 0) {
 				const empty = document.createElement('li');
@@ -746,10 +748,15 @@
 				this.resultsEl.appendChild(li);
 				this.options.push(li);
 			});
+
+			// clearResults() reset this at paint time; the listbox is open again
+			// the moment its options exist, empty or not.
+			this.searchInput.setAttribute('aria-expanded', 'true');
 		}
 
 		renderResultsError(message) {
 			this.clearResults();
+			this.announceResults(message);
 
 			const li = document.createElement('li');
 			li.className = 'wicket-acc-me__option wicket-acc-me__option--error';
@@ -811,6 +818,15 @@
 			this.searchInput.setAttribute('aria-expanded', 'false');
 		}
 
+		// Result counts (and search failures) announce through the static
+		// status region; the results list repaints per keystroke, so a live
+		// region inside it would never fire.
+		announceResults(text) {
+			if (this.resultsStatusEl) {
+				this.resultsStatusEl.textContent = text;
+			}
+		}
+
 		wireAdd() {
 			this.addBtn.addEventListener('click', () => {
 				const orgUuid = this.selectedInput ? this.selectedInput.value : '';
@@ -836,7 +852,7 @@
 					if (payload && payload.skipped_existing) {
 						this.setFeedback(this.label('already'), 'info');
 					} else if (errors.length > 0) {
-						this.setFeedback(WicketManageEmployer.sprintf2(this.label('added_with_errors'), errors.join('; ')), 'error');
+						this.setFeedback(WicketManageEmployer.sprintf2(this.label('added_with_errors'), errors.join('; ')), 'warning');
 					} else {
 						this.setFeedback(this.label('added'), 'success');
 					}
@@ -1068,8 +1084,13 @@
 				const name = this.createNameInput ? this.createNameInput.value.trim() : '';
 				const type = this.createTypeSelect ? this.createTypeSelect.value : '';
 
-				if (name === '' || (this.createTypeSelect !== null && type === '')) {
-					this.showCreateError(this.label('name_and_type_required'));
+				if (name === '') {
+					this.showCreateError(this.label('name_and_type_required'), this.createNameInput);
+					return;
+				}
+
+				if (this.createTypeSelect !== null && type === '') {
+					this.showCreateError(this.label('name_and_type_required'), this.createTypeSelect);
 					return;
 				}
 
@@ -1097,7 +1118,7 @@
 					const errors = WicketManageEmployer.errorList(connection.errors);
 
 					if (errors.length > 0) {
-						this.setFeedback(WicketManageEmployer.sprintf2(this.label('added_with_errors'), errors.join('; ')), 'error');
+						this.setFeedback(WicketManageEmployer.sprintf2(this.label('added_with_errors'), errors.join('; ')), 'warning');
 					} else if (payload && payload.duplicate) {
 						this.setFeedback(WicketManageEmployer.sprintf2(this.label('duplicate_org'), name), 'info');
 					} else {
@@ -1122,7 +1143,7 @@
 					}
 				}).catch((err) => {
 					this.mutating = false;
-					this.showCreateError(err.message);
+					this.showCreateError(err.message, this.createNameInput);
 				}).finally(() => {
 					this.createSubmitBtn.disabled = false;
 					this.createSubmitBtn.textContent = prevLabel;
@@ -1138,7 +1159,7 @@
 			});
 		}
 
-		showCreateError(message) {
+		showCreateError(message, field) {
 			if (!this.createErrorEl) {
 				this.setFeedback(message, 'error');
 				return;
@@ -1146,12 +1167,25 @@
 
 			this.createErrorEl.textContent = message;
 			this.createErrorEl.hidden = false;
+
+			if (field) {
+				field.setAttribute('aria-invalid', 'true');
+				field.focus();
+			}
 		}
 
 		hideCreateError() {
 			if (this.createErrorEl) {
 				this.createErrorEl.textContent = '';
 				this.createErrorEl.hidden = true;
+			}
+
+			if (this.createNameInput) {
+				this.createNameInput.removeAttribute('aria-invalid');
+			}
+
+			if (this.createTypeSelect) {
+				this.createTypeSelect.removeAttribute('aria-invalid');
 			}
 		}
 
@@ -1328,12 +1362,21 @@
 
 			this.addErrorEl.textContent = message;
 			this.addErrorEl.hidden = false;
+
+			if (this.searchInput) {
+				this.searchInput.setAttribute('aria-invalid', 'true');
+				this.searchInput.focus();
+			}
 		}
 
 		hideAddError() {
 			if (this.addErrorEl) {
 				this.addErrorEl.textContent = '';
 				this.addErrorEl.hidden = true;
+			}
+
+			if (this.searchInput) {
+				this.searchInput.removeAttribute('aria-invalid');
 			}
 		}
 
