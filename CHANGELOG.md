@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.12.1] - 2026-11-09
+
+### Fixed
+- **deps:** update vendor dependencies (#73)
+
+
 ## [1.12.0] - 2026-11-03
 
 ### Added
