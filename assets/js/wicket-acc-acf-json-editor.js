@@ -27,11 +27,19 @@
   var JSON_FIELD_NAMES = ['mdp_json_config'];
 
   function attachEditor(field) {
-    if (!field || !field.$el || field.$el.data('wicketAccCmAttached')) {
+    if (!field || !field.$el) {
       return;
     }
+
+    var existing = field.$el.data('wicketAccCmInstance');
+    if (existing && existing.codemirror && document.body.contains(existing.codemirror.getWrapperElement())) {
+      // Still on the page (e.g. a remount of the same form): just redraw.
+      existing.codemirror.refresh();
+      return;
+    }
+
     var $textarea = field.$el.find('textarea').first();
-    if (!$textarea.length) {
+    if (!$textarea.length || $textarea.next('.CodeMirror').length) {
       return;
     }
 
@@ -42,6 +50,15 @@
       foldGutter: true,
       gutters: (WicketAccJsonEditorSettings.codemirror.gutters || []).concat(['CodeMirror-foldgutter']),
     });
+
+    // An empty field is valid (no config); jsonlint alone flags it as "got 'EOF'".
+    if (editorSettings.codemirror.lint && wp.CodeMirror && wp.CodeMirror.lint && wp.CodeMirror.lint.json) {
+      editorSettings.codemirror.lint = {
+        getAnnotations: function(text, options, cm) {
+          return text.trim() === '' ? [] : wp.CodeMirror.lint.json(text, options, cm);
+        },
+      };
+    }
 
     var instance = wp.codeEditor.initialize($textarea, editorSettings);
     field.$el.data('wicketAccCmAttached', true);
@@ -68,6 +85,8 @@
   JSON_FIELD_NAMES.forEach(function(name) {
     acf.addAction('ready_field/name=' + name, attachEditor);
     acf.addAction('append_field/name=' + name, attachEditor);
+    // ACF block v3 forms re-render with remount, not append.
+    acf.addAction('remount_field/name=' + name, attachEditor);
     acf.addAction('remove_field/name=' + name, detachEditor);
   });
 })(jQuery);

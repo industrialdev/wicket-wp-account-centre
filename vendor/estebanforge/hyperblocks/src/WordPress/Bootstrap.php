@@ -46,8 +46,6 @@ class Bootstrap
             return;
         }
 
-        define(__NAMESPACE__ . '\\LOADED', __DIR__);
-
         if (Config::isInitialized()) {
             return;
         }
@@ -60,7 +58,11 @@ class Bootstrap
         $plugin_file = $base_dir . 'bootstrap.php';
         $plugin_url = self::resolvePluginUrl($base_dir);
 
+        // G1: markInitialized runs before define(LOADED) (load-bearing invariant;
+        // see HyperFields\LibraryBootstrap::init). Moved so a mid-init abort
+        // cannot claim LOADED while Config stays uninitialized.
         Config::markInitialized();
+        define(__NAMESPACE__ . '\\LOADED', __DIR__);
         Config::$abspath = $base_dir;
         Config::$pluginFile = $plugin_file;
         Config::$pluginUrl = $plugin_url;
@@ -74,8 +76,17 @@ class Bootstrap
             require_once $helpers;
         }
 
-        // Initialize configuration
-        add_action('plugins_loaded', [self::class, 'initializeConfig'], 5);
+        // Initialize configuration. Rule A (Layer 3): if plugins_loaded already
+        // fired (init() was scheduled at after_setup_theme, which runs AFTER
+        // plugins_loaded), run initializeConfig now instead of scheduling onto
+        // a dead hook. This was the live defect: initializeConfig never ran, so
+        // Config::getBlockPaths() stayed empty and the bundled blocks/ dir was
+        // never registered.
+        if (did_action('plugins_loaded') > 0) {
+            self::initializeConfig();
+        } else {
+            add_action('plugins_loaded', [self::class, 'initializeConfig'], 5);
+        }
 
         // Register blocks
         add_action('init', [self::class, 'registerBlocks'], 10);
@@ -88,6 +99,49 @@ class Bootstrap
 
         // Register default block paths
         add_action('init', [self::class, 'registerDefaultPaths'], 5);
+
+        // Abilities registration (core 6.9+). Runs on every request: the
+        // /wp-abilities/v1 controller serves abilities during REST requests,
+        // so registration must not be skipped in any context.
+        if (class_exists(\HyperBlocks\Abilities\AbilityRegistrar::class)) {
+            \HyperBlocks\Abilities\AbilityRegistrar::init();
+        } elseif (defined('WP_DEBUG') && WP_DEBUG) {
+            // The class ships in this same library, so a miss here means a
+            // stale vendored copy. Never silent.
+            error_log('HyperBlocks: Abilities\\AbilityRegistrar not found; refresh the vendored copy with `composer reinstall estebanforge/hyperblocks`.');
+        }
+    }
+
+    /**
+     * Late-use safety net: bring HyperBlocks up if a consumer touched
+     * Registry::getInstance() before after_setup_theme fired. Mirrors
+     * HyperFields\LibraryBootstrap::ensureInitialized. Emits _doing_it_wrong()
+     * when the init hook already fired, because block registration that late
+     * will be incomplete.
+     *
+     * @return void
+     */
+    public static function ensureInitialized(): void
+    {
+        if (Config::isInitialized()) {
+            return;
+        }
+
+        if (function_exists('did_action') && did_action('init') > 0) {
+            if (function_exists('_doing_it_wrong')) {
+                _doing_it_wrong(
+                    'HyperBlocks\\WordPress\\Bootstrap::ensureInitialized',
+                    'HyperBlocks initialized after the "init" hook already fired. '
+                    . 'Block registration will be incomplete. '
+                    . 'Ensure the library boots at after_setup_theme, not on first Registry use.',
+                    Config::VERSION
+                );
+            } else {
+                error_log('HyperBlocks: late initialization after init; block registration may be incomplete.');
+            }
+        }
+
+        self::init();
     }
 
     /**
@@ -257,6 +311,11 @@ class Bootstrap
         if ($block->style !== null) {
             $args['style'] = $block->style;
         }
+        if ($block->inner_blocks !== null && isset($block->inner_blocks['allowedBlocks']) && is_array($block->inner_blocks['allowedBlocks'])) {
+            // Native client bridge: WP core's block-editor server settings map
+            // allowed_blocks to the client-side allowedBlocks definition.
+            $args['allowed_blocks'] = array_values(array_map('strval', $block->inner_blocks['allowedBlocks']));
+        }
 
         register_block_type($block->name, $args);
     }
@@ -265,7 +324,7 @@ class Bootstrap
      * Render callback for blocks.
      *
      * @param array      $attributes The block attributes.
-     * @param string     $content    The block content.
+     * @param string     $content    The block content (inner-blocks markup).
      * @param \WP_Block  $block      The block instance.
      * @return string The rendered HTML.
      */
@@ -289,10 +348,11 @@ class Bootstrap
         // Sanitize and validate attributes
         $attributes = self::sanitizeAttributes($blockDef, $attributes);
 
-        // Render
+        // Render; $content carries the inner-blocks markup WordPress parsed
+        // from post_content and is injected at <InnerBlocks /> markers.
         $renderer = new \HyperBlocks\Renderer();
 
-        return $renderer->render($blockDef->render_template, $attributes);
+        return $renderer->render($blockDef->render_template, $attributes, $content);
     }
 
     /**
@@ -307,6 +367,10 @@ class Bootstrap
         try {
             $registry = Registry::getInstance();
             $mergedFields = $registry->getMergedFields($blockDef);
+
+            // Undeclared keys never reach the template: extract() would hand
+            // them to the render scope unvalidated.
+            $attributes = array_intersect_key($attributes, $mergedFields);
 
             foreach ($mergedFields as $name => $field) {
                 $adapter = $field->getAdapter();
@@ -342,7 +406,10 @@ class Bootstrap
     public static function registerRestApi(): void
     {
         $restApi = new RestApi();
-        $restApi->init();
+        // Synchronous, not via RestApi::init(): WP_Hook snapshots each
+        // priority's callbacks, so an add_action() issued while rest_api_init
+        // is running never fires in that pass.
+        $restApi->registerRoutes();
     }
 
     /**
@@ -403,7 +470,7 @@ class Bootstrap
         wp_register_script(
             $scriptHandle,
             $scriptUrl,
-            ['wp-blocks', 'wp-element', 'wp-components', 'wp-dom-ready', 'wp-block-editor', 'wp-server-side-render'],
+            ['wp-blocks', 'wp-element', 'wp-components', 'wp-dom-ready', 'wp-block-editor', 'wp-server-side-render', 'wp-api-fetch', 'wp-hooks'],
             (string) filemtime($scriptPath),
             true
         );
@@ -422,19 +489,81 @@ class Bootstrap
 
         $blockConfigs = [];
         foreach ($blocks as $block) {
-            $blockConfigs[] = [
+            $config = [
                 'name'       => $block->name,
                 'title'      => $block->title,
                 'icon'       => $block->icon,
                 'apiVersion' => $apiVersion,
             ];
+            if ($block->inner_blocks !== null) {
+                // Editor-only settings with no native registration argument:
+                // the InnerBlocks template and templateLock. allowedBlocks is
+                // bridged natively via allowed_blocks but is duplicated here
+                // so the client can pass it as the InnerBlocks prop directly.
+                // Non-array allowedBlocks/template are dropped (never forwarded
+                // raw to the client) so malformed config cannot throw in the
+                // editor.
+                $config['innerBlocks'] = array_filter([
+                    'allowedBlocks' => is_array($block->inner_blocks['allowedBlocks'] ?? null) ? $block->inner_blocks['allowedBlocks'] : null,
+                    'template'      => is_array($block->inner_blocks['template'] ?? null) ? $block->inner_blocks['template'] : null,
+                    'templateLock'  => $block->inner_blocks['templateLock'] ?? null,
+                ], static fn ($v) => $v !== null);
+            }
+            if ($block->editor_sidebar === true) {
+                // Field schema rides the same inline channel so the sidebar
+                // renders without a per-block REST fetch. Only keys the
+                // sidebar reads are shipped; internal metadata stays server-side.
+                $config['editorSidebar'] = true;
+                $config['fields'] = array_map(
+                    static fn ($field) => self::sidebarFieldSchema($field),
+                    array_values($registry->getMergedFields($block))
+                );
+            }
+            $blockConfigs[] = $config;
+        }
+
+        $encoded = wp_json_encode($blockConfigs, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
+        if ($encoded === false) {
+            // Without a valid config object no block can register; an empty
+            // assignment would throw in the editor.
+            if (Config::isDebug()) {
+                error_log('HyperBlocks: hyperBlocksConfig JSON encoding failed');
+            }
+
+            return;
         }
 
         wp_add_inline_script(
             $scriptHandle,
-            'window.hyperBlocksConfig = ' . wp_json_encode($blockConfigs) . ';',
+            'window.hyperBlocksConfig = ' . $encoded . ';',
             'before'
         );
+    }
+
+    /**
+     * Schema projection the editor sidebar needs: identity, control hints,
+     * UI grouping, and conditional logic. Everything else stays server-side.
+     *
+     * @return array
+     */
+    private static function sidebarFieldSchema($field): array
+    {
+        $schema = $field->toArray();
+
+        return array_intersect_key($schema, array_fill_keys([
+            'name',
+            'type',
+            'label',
+            'help',
+            'default',
+            'placeholder',
+            'options',
+            'required',
+            'live',
+            'tab',
+            'section',
+            'conditional_logic',
+        ], true));
     }
 
     /**

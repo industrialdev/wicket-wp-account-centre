@@ -92,6 +92,21 @@ class Block
     public ?string $style = null;
 
     /**
+     * Inner-blocks configuration. Null = the block has no inner-blocks area.
+     *
+     * @var array{allowedBlocks?: string[], template?: array<mixed>, templateLock?: string|false}|null
+     */
+    public ?array $inner_blocks = null;
+
+    /**
+     * Editor sidebar opt-in. Null/false = the block keeps the plain
+     * ServerSideRender editor; true = fields render as inspector controls.
+     *
+     * @var bool|null
+     */
+    public ?bool $editor_sidebar = null;
+
+    /**
      * Constructor.
      *
      * @param string $title The block title.
@@ -263,8 +278,13 @@ class Block
             // Without it, str_starts_with('/var/www/blocks-evil/x',
             // '/var/www/blocks') would treat an unregistered sibling directory
             // whose name shares a prefix as "inside" the allowed base.
-            $baseWithSep = rtrim($realBase, '/') . '/';
-            if ($real === $realBase || str_starts_with($real, $baseWithSep)) {
+            // Path::withinBase() normalizes both sides first: realpath()
+            // returns backslash separators on Windows, where a raw '/'-suffixed
+            // base never prefix-matched and rejected every file: template.
+            // Called on the class (not the hb_path_within_base() helper) so
+            // the check can never hit an undefined-function fatal when a
+            // divergent vendor copy's procedural helpers did not load.
+            if (\HyperBlocks\Path::withinBase($real, $realBase)) {
                 $valid = true;
                 break;
             }
@@ -349,6 +369,43 @@ class Block
     }
 
     /**
+     * Enable the inner-blocks area for this block.
+     *
+     * Marks the block as accepting nested blocks: <InnerBlocks /> markers in
+     * the render template resolve to the block's saved inner markup, the
+     * editor renders a live inner-blocks area inside the server preview, and
+     * save() serializes inner content between the block delimiters.
+     *
+     * @param array{allowedBlocks?: string[], template?: array<mixed>, templateLock?: string|false}|null $config
+     *        allowedBlocks: block names insertable as children; also bridged to
+     *        the client through the native allowed_blocks registration argument.
+     *        template: Gutenberg block-template array prefilled on insert.
+     *        templateLock: 'all' | 'insert' | false.
+     *        Null config = defaults: all blocks allowed, empty template, no lock.
+     * @return self
+     */
+    public function innerBlocks(?array $config = null): self
+    {
+        $this->inner_blocks = $config ?? [];
+
+        return $this;
+    }
+
+    /**
+     * Opt the block into the fields sidebar: field definitions are delivered
+     * to the editor as inspector controls (tabs/sections from field schema).
+     *
+     * @param bool $enabled Whether the sidebar is enabled.
+     * @return self
+     */
+    public function setEditorSidebar(bool $enabled = true): self
+    {
+        $this->editor_sidebar = $enabled;
+
+        return $this;
+    }
+
+    /**
      * Get the underlying HyperFields adapter for the block's fields.
      *
      * @return array Array of BlockFieldAdapter instances
@@ -381,6 +438,8 @@ class Block
             'description' => $this->description,
             'keywords' => $this->keywords,
             'style' => $this->style,
+            'inner_blocks' => $this->inner_blocks,
+            'editor_sidebar' => $this->editor_sidebar,
         ];
     }
 }

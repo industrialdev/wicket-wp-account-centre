@@ -3,6 +3,27 @@
     "title": "ACC Manage Preferences",
     "fields": [
         {
+            "key": "field_6ae203d487fd5",
+            "label": "MDP Widget Config (JSON)",
+            "name": "mdp_json_config",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "<p>This expects JSON data for configuring the widget, supporting all options documented for the MDP JS Widget (<code>hidePrimaryLanguage<\/code>, <code>hideLanguageSpoken<\/code>, <code>primaryLanguageLabel<\/code>, and more). Please do not modify unless you know what you are doing.<\/p><p>Note: <code>rootEl<\/code>, <code>apiRoot<\/code>, <code>accessToken<\/code>, <code>personId<\/code>, and <code>lang<\/code> are always set automatically and any value provided for them here is ignored.<\/p><p>See <a href=\"https:\/\/wicket-core.s3.ca-central-1.amazonaws.com\/wicket-widgets-readme-staging.html#editpersonpreferences\" target=\"_blank\">full documentation for MDP JS Widgets<\/a>.<\/p>",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "rows": "",
+            "placeholder": "{\n  \"hidePrimaryLanguage\": true\n}",
+            "new_lines": ""
+        },
+        {
             "key": "field_67ff887591efc",
             "label": "Hide Language Preference",
             "name": "hide_language_preference",
@@ -44,5 +65,5 @@
     "description": "",
     "show_in_rest": 0,
     "acfml_field_group_mode": "localization",
-    "modified": 1744799936
+    "modified": 1793197024
 }

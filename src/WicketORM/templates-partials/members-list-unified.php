@@ -438,7 +438,7 @@ $show_remove_policy_callout = (
                     'classes' => ['members-pagination__btn', 'members-pagination__btn--prev', 'wt_px-3', 'wt_py-2', 'wt_text-sm'],
                     'atts' => [
                         'data-on:click' => $build_action($page - 1),
-                        'data-on:success' => '$listLoading = false; ' . wp_sprintf("select('#%s') | set(html)", $members_list_target),
+                        'data-on:success' => '$listLoading = false;',
                         'data-indicator:members-loading' => true,
                     ],
                 ]);
@@ -448,7 +448,7 @@ $show_remove_policy_callout = (
                     <?php for ($i = 1; $i <= $total_pages; $i++) :
                         $is_current = ($i === $page);
                         $page_button_atts = [
-                            'data-on:success' => '$listLoading = false; ' . wp_sprintf("select('#%s') | set(html)", $members_list_target),
+                            'data-on:success' => '$listLoading = false;',
                             'data-indicator:members-loading' => true,
                         ];
 
@@ -477,7 +477,7 @@ $show_remove_policy_callout = (
                             'classes' => ['members-pagination__btn', 'members-pagination__btn--next', 'wt_px-3', 'wt_py_2', 'wt_text-sm'],
                             'atts' => [
                                 'data-on:click' => $build_action($page + 1),
-                                'data-on:success' => '$listLoading = false; ' . wp_sprintf("select('#%s') | set(html)", $members_list_target),
+                                'data-on:success' => '$listLoading = false;',
                                 'data-indicator:members-loading' => true,
                             ],
                         ]);

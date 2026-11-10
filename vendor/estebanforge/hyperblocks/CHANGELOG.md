@@ -1,5 +1,105 @@
 # Changelog
 
+## [1.8.4] - 2026-11-04
+
+### Changed
+- **HyperFields 1.7.4.** Lockstep release for normalized option-list rendering across select, multiselect, radio, radio image, and set fields. HyperBlocks retains the `estebanforge/hyperfields` `*` constraint and has no block API changes.
+
+## [1.8.3] - 2026-11-03
+
+### Fixed
+- **REST routes now actually register.** `WordPress\Bootstrap::registerRestApi()` deferred registration through `RestApi::init()`, which called `add_action('rest_api_init', …)` at the priority already executing; `WP_Hook` iterates each priority over a callback snapshot, so the deferred callback never ran in that pass and the `hyperblocks/v1` namespace (`block-fields`, `render-preview`) was missing from every web request since 1.7.0. Routes now register synchronously inside the same call. The schema-driven sidebar is unaffected (it ships inline via `window.hyperBlocksConfig`); the sample-data preview canvas regains its data.
+- Regression test: `BootstrapTest::testRegisterRestApiRegistersRoutesSynchronously` pins that `registerRestApi()` produces registered routes in the same call.
+
+## [1.8.2] - 2026-10-28
+
+### Changed
+- **HyperFields 1.7.2.** Lockstep release pinning the `estebanforge/hyperfields` `*` constraint at 1.7.2: page-level fields on section-less options pages now render via an implicit default section, and mixed page-level fields plus explicit sections trigger `_doing_it_wrong()` instead of silently dropping. No HyperBlocks code changes.
+
+## [1.8.1] - 2026-10-28
+
+### Added
+- **Shorthand `.hb-*` CSS classes and component aliases.** Aliased `.hb-*` selectors alongside `.hyperblocks-*` in editor CSS (`editor.css`), UI components (`Sidebar.js`, `InnerBlocksPlaceholder.js`, `PreviewDataPanel.js`), and PHP error templates while retaining full backward compatibility.
+
+### Changed
+- **HyperFields constraint.** Required `estebanforge/hyperfields` with `*` constraint.
+
+## [1.8.0] - 2026-10-26
+
+### Added
+- **Schema-driven editor sidebar for fluent blocks (opt-in).** `Block::setEditorSidebar()` delivers the block's field definitions to the editor through the existing `window.hyperBlocksConfig` inline channel (no per-block REST fetch), and the editor script renders them as inspector controls: **tabs and sections** come from the HyperFields `tab`/`section` schema (fields without tabs keep a flat section layout), **controls** map per field type (text/email/url/time, textarea, number, select, multiselect, checkbox as toggle, radio, color palette, date/datetime picker, image/file media frames, separator/heading statics), and **conditional logic** mirrors `HyperFields\ConditionalLogic::evaluate()` (groups OR, conditions AND, unknown operators fail closed). Unsupported types are skipped with a one-time console notice; `window.wp.hooks.applyFilters('hyperblocks.sidebarControl', …)` is the extension point for custom controls. Fields marked `live` carry a badge. Blocks without the opt-in keep their 1.7.0 edit path; the only shared-surface change is the inline payload encoding below.
+- **Sample-data preview.** Sidebar blocks gain a "Preview data" panel whose toggle re-renders the canvas through the `/render-preview` route with a fetch-time `sample` flag: `BlockOperations::preview()` accepts it, `Renderer::render()` delivers it to templates as `$hb_sample` (set after attribute extraction, so an attribute can never spoof it), and because the flag is never an attribute nothing sample-derived persists in post content. The REST argument and the ability surface stay `edit_posts`-gated as before.
+
+### Changed
+- The inline block-config payload now encodes with `JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP`, hardening the inline `<script>` context now that field labels, help text, and options flow through it.
+- Sidebar blocks ship only the schema keys the sidebar reads (`name`, `type`, `label`, `help`, `default`, `placeholder`, `options`, `required`, `live`, `tab`, `section`, `conditional_logic`); internal field metadata stays server-side.
+- Attribute keys with no matching field declaration are dropped before rendering, so undeclared data never reaches the template scope through `extract()`.
+
+### Fixed
+- **`file:` block templates could fatal with an undefined function when a stale copy of the library booted alongside a newer one.** When a consumer ships the library both at the site-root vendor and inside a plugin's own vendor, Composer's files-autoload dedup can run the older copy's `bootstrap.php` (same identifier hash in both `autoload_files.php` files) while the newer copy's classes win the SPL election (Composer registers with `register(true)`, so the later-registered plugin autoloader is prepended). With `hb_path_within_base()` defined only inside `Bootstrap::init()` after its guard clauses, a stale root bootstrap predating the pre-`ABSPATH` scheduler left nothing scheduled at `after_setup_theme`, the procedural helper never loaded, and the first `file:` template validation on `init` threw `Call to undefined function hb_path_within_base()` on every request. The containment check now lives on the new `Path` class (`Path::withinBase()`); `Block` and `Renderer` call the class method directly, so whatever copy wins the class election is self-consistent and class autoloading makes scheduling and guard order irrelevant. `hb_path_within_base()` remains as a thin back-compat wrapper delegating to the class.
+- **Composer now requires HyperFields `^1.7`.** The sidebar schema methods (`setTab`, `setSection`, `setLive`) and the multiselect array typing exist only in HyperFields 1.7.0; the previous `^1` constraint allowed a pairing that would fatal on first sidebar use.
+
+## [1.7.0] - 2026-09-25
+
+### Added
+- **Native InnerBlocks support for fluent blocks (opt-in).** `Block::innerBlocks(?array $config)` accepts `allowedBlocks` (string list), `template` (Gutenberg template array) and `templateLock` (`'all'|'insert'|false`); without the call, behavior is byte-identical to 1.6.1. Three coordinated pieces:
+  - **Server:** `Bootstrap::renderBlock()` forwards the render callback's `$content` into `Renderer::render()`, and `<InnerBlocks />` markers in templates — self-closing, paired, attributed, and bare open forms, case-insensitive, quoted `>` inside attribute values tolerated — resolve to the real inner markup through `preg_replace_callback` (never `preg_replace`, whose `$1`/`\\` replacement semantics would corrupt markup containing those sequences). With no inner markup available the renderer emits the inert `<!--hyperblocks:innerblocks-->` sentinel. `allowedBlocks` bridges natively through the `allowed_blocks` registration argument (WP core distributes it to the editor's block definition); `template` and `templateLock` have no native argument and ride `window.hyperBlocksConfig`.
+  - **Editor:** slotted blocks fetch the server shell from core `/wp/v2/block-renderer` (350 ms debounce on attribute churn, like core ServerSideRender) and swap the sentinel comment node in place for a persistent slot element hosting the live `useInnerBlocksProps()` area, so nested blocks sit exactly where the template placed the marker. The imperative mount (`createContextualFragment` + `TreeWalker`) keeps the slot's React state across preview rebuilds, and fetch failures keep the last good shell.
+  - **Serialization:** slotted blocks `save()` return `InnerBlocks.Content`; empty inner blocks still serialize as the self-closing block comment, so opting in never changes stored markup for childless instances. Plain blocks keep `ServerSideRender` + `save(){return null}` exactly.
+  - **Both preview surfaces:** `/wp-json/hyperblocks/v1/render-preview` and the `hyperblocks/render-preview` ability accept an optional `content` string, sanitized through `wp_kses_post()` inside `BlockOperations::preview()` — the single implementation behind both surfaces — so neither surface can return markup the other would have filtered (the REST route additionally sanitizes at the argument layer). `hb_render()` gains the same third `$content` parameter; as the trusted PHP-author path it does not sanitize.
+- **Editor guard for markerless slotted templates.** A block that opts in via `innerBlocks()` but whose template lacks the `<InnerBlocks />` marker mounts a live nested-blocks area in the editor while the front end silently drops every saved child. The editor console now warns once per block when the rendered shell contains no marker, while the author can still act on it.
+
+### Changed
+- **Templates containing `<InnerBlocks />` now resolve it.** 1.6.1 replaced the tag with the literal `wp:innerblocks` comment, which no WordPress core version defines — it rendered nothing. Marker resolution is the only behavior change for existing templates carrying the tag; templates without it are untouched.
+- **JSON-path blocks are unaffected** (own `editorScript`/`render` handle InnerBlocks natively), and the `/render-preview` JSON branch forwards preview `content` to the block's `render.php` the same way the fluent branch does.
+- **Editor script dependencies** gained `wp-api-fetch` for slotted previews.
+- **Marker replacement degrades safely.** When PCRE fails (e.g. the backtrack limit on a pathological template) both replacement passes keep the original HTML instead of letting `null` collapse the block output.
+- **Caveats worth knowing before adopting:** `templateLock` and `allowedBlocks` are editor-side constraints — WP core enforces neither during server-side persistence or rendering; use exactly one marker per template (the editor mounts its slot at the first marker, the front end injects the same content at every marker); removing `innerBlocks()` from a block that already has stored inner blocks, or switching plain↔slotted, is a content migration (existing children trip editor block-validation). Documentation in README, `docs/hyperblocks.md`, `docs/hyperblocks-examples.md` and AGENTS.md covers the feature with examples and corrects the old "WordPress inner-blocks placeholder" wording.
+
+## [1.6.1] - 2026-09-10
+
+### Added
+- **Abilities API module (WordPress 6.9+).** Mirrors the tested `hyperblocks/v1` REST surface as abilities: `hyperblocks/list-blocks` (fluent + owned JSON inventory with title, source and render-template flag), `hyperblocks/get-block-fields`, and `hyperblocks/render-preview` (annotated `readonly: false, destructive: false, idempotent: true` since it renders HTML but persists nothing). All three are `edit_posts`-gated, exactly like the REST routes. Field lookup, preview rendering, and the inventory live in the new `BlockOperations` service; REST callbacks and ability callbacks both delegate to it, so the two surfaces cannot drift. REST response shapes and status codes are unchanged.
+- **`Registry::getJsonBlocks()`.** Enumerates every owned JSON block (name => directory) across the same sources as `findJsonBlockPath()`, and primes the lookup cache.
+
+### Changed
+- **JSON block lookup and inventory share one candidate-dirs source.** `findJsonBlockPath()` and `getJsonBlocks()` both resolve through `jsonBlockCandidateDirs()`, which honors `hyperblocks/blocks/register_json_paths` AND `hyperblocks/blocks/register_json_blocks` (the latter was previously ignored by lookup, so blocks registered through it 404'd on the REST endpoints), and skips underscore-prefixed directories, matching discovery's `_disabled/` convention. Lookup previously resolved `_disabled` blocks; that path is now closed.
+
+### Fixed
+- **`file:` block templates 500'd every page load on Windows.** `realpath()` returns backslash separators there, while both containment checks (block registration validation and Renderer template validation) appended a forward slash to the realpath'd base, so `str_starts_with` never matched and every `file:` template failed validation — at registration, on `init`, as an `InvalidArgumentException` on every HTTP request and wp-cli run. The comparison now lives in one shared helper, `hb_path_within_base()`, which normalizes both sides through `wp_normalize_path()` while keeping the trailing-separator anchor, so the sibling-prefix escape (`blocks` vs `blocks-evil`) stays rejected on every platform. macOS and Linux behavior is unchanged.
+- **Disabled JSON blocks could auto-load on Windows.** `glob()` mirrors the pattern's separators, so a Windows-registered base (backslashes from `plugin_dir_path()`) made discovery results come back with backslashes and the fluent-block guard `str_contains($file, '/_')` never matched `\_disabled/` directories. Every scan path is now normalized through `wp_normalize_path()` before `glob()` and every returned entry before the string checks; the JSON discovery and its cache variant shared the fix. POSIX behavior is unchanged.
+
+## [1.6.0] - 2026-08-29
+
+### Fixed
+- **Zero-config subsystem initialization in early-load environments (Bedrock, WP-CLI).** Same hardening as HyperFields 1.5.4 and HyperPress-Core 1.5.4. `bootstrap.php`'s scheduling of `Bootstrap::init()` at `after_setup_theme` silently no-op'd when the file ran before `add_action()` existed, leaving Config and every subsystem uninitialized while classes autoloaded. Two windows: HTTP (`wp-config` requires `vendor/autoload` before `application.php` defines `ABSPATH`, so the guard returned before the callback was defined) and WP-CLI (`ABSPATH` pre-defined, but `add_action` absent so the scheduling line was skipped). Fix: the scheduler runs above the `ABSPATH` guard; without `add_action` it writes the registration into `$GLOBALS['wp_filter']` in the preinitialized-hooks format that `WP_Hook::build_preinitialized_hooks` converts on load (WP 4.7+). Confirmed live on a Bedrock staging server.
+- **`initializeConfig()` registered onto an already-fired hook.** It was hung on `plugins_loaded` (priority 5) from inside `init()`, which is scheduled at `after_setup_theme` — always after `plugins_loaded` fired — so `Config::getBlockPaths()` stayed empty and the library's own bundled blocks directory was never discovered. Now register-or-run: if `plugins_loaded` already fired, `initializeConfig()` runs synchronously.
+- **Election-guard ordering.** `define(LOADED)` moves to after `Config::markInitialized()`, so a mid-init abort can no longer leave LOADED claimed with Config uninitialized (making every later guard a silent no-op). `Bootstrap::ensureInitialized()` now also brings the library up if a consumer touches `Registry::getInstance()` before `after_setup_theme`, with a `_doing_it_wrong` alarm.
+
+### Changed
+- Dependencies updated; bootstrap docs reframed around the zero-config contract with accurate Bedrock guidance.
+
+## [1.5.5] - 2026-08-17
+
+## [1.5.4] - 2026-08-11
+
+### Fixed
+- **Bundled blocks were never registered on a normal boot (`initializeConfig` was dead code).** `WordPress\Bootstrap::init()` registered `initializeConfig()` onto `plugins_loaded` (priority 5), but `init()` itself is scheduled at `after_setup_theme`, which fires AFTER `plugins_loaded`. So the registration always landed on a hook that had already fired: `initializeConfig()` never ran, `Config::getBlockPaths()` stayed empty, and the library's own bundled `blocks/` directory was never discovered. Now register-or-run: if `plugins_loaded` already fired, `initializeConfig()` runs synchronously; otherwise it is scheduled as before.
+- **Zero-config subsystem initialization in early-load environments (Bedrock, WP-CLI).** Same hardening as HyperFields 1.5.4. `bootstrap.php`'s scheduling of `init()` at `after_setup_theme` silently no-op'd when the file ran before `add_action()` existed, leaving Config and every subsystem uninitialized while classes autoloaded. Two windows: HTTP (`wp-config` requires `vendor/autoload` before `application.php` defines `ABSPATH`, so the guard returned before the callback was defined) and WP-CLI (`ABSPATH` pre-defined, but `add_action` absent so the scheduling line was skipped). Fix: the scheduler runs above the `ABSPATH` guard. With `add_action` it uses the normal path (`has_action(...) === false`, not `!has_action` which is always-true for a priority-0 callback). Without `add_action` it writes the registration into `$GLOBALS['wp_filter']` in the preinitialized-hooks format that `WP_Hook::build_preinitialized_hooks` converts on load (WP 4.7+). The `admin_notices` closure is `function_exists`-guarded.
+- **`!has_action` priority-0 double-registration bug** (now `=== false`).
+
+### Added
+- **`WordPress\Bootstrap::ensureInitialized()` safety net (Layer 2).** Brings HyperBlocks up if a consumer touched `Registry::getInstance()` before `after_setup_theme` fired, with a `_doing_it_wrong()` alarm when `init` already fired. Recursion-safe via the G1 invariant below. Mirrors `HyperFields\LibraryBootstrap::ensureInitialized()`.
+
+### Changed
+- **G1: election-guard ordering.** `define(__NAMESPACE__ . '\\LOADED')` now runs AFTER `Config::markInitialized()` inside `init()`. A mid-init abort can no longer leave LOADED claimed with Config uninitialized (which would make every later `ensureInitialized()` a silent no-op). The ordering is load-bearing: `markInitialized()` must precede any internal `Registry::getInstance()` call so the `ensureInitialized()` guard on `getInstance()` cannot recurse.
+- **Contract freeze (documented).** The bootstrap callback name (`hyperblocks_bootstrap_init`) and the `init()` target (`\HyperBlocks\WordPress\Bootstrap::init`) are a cross-version contract: a stale copy winning Composer's `autoload.files` race calls into whatever class wins the SPL election, so renaming the method in a future major fatals every request.
+- README and `docs/library-bootstrap.md` document that auto-bootstrap is best-effort and that an explicit `Bootstrap::init()` call is the supported deterministic contract for the subsystems that do not self-heal.
+
+### Internal
+- `ensureInitialized` alarm guards `did_action` with `function_exists` for consistency with the `_doing_it_wrong` guard.
+- The unreachable `is_array()` false branch in the `wp_filter` preinit write now `error_log`s, so a future regression of that shape cannot fail silent.
+
 ## [1.5.3] - 2026-08-09
 
 ### Security

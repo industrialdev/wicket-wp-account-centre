@@ -329,6 +329,17 @@ class CascadeStrategy implements RosterManagementStrategy
                         $relationship_type,
                         $relationship_description
                     );
+
+                    // Surface a payload-build failure directly instead of letting
+                    // createConnection() mask it as "Valid payload array is required."
+                    if (is_wp_error($connection_payload)) {
+                        $logger->error('[OrgMan] Cascade strategy failed to build connection payload', array_merge($log_context, [
+                            'error' => $connection_payload->get_error_message(),
+                        ]));
+
+                        return $connection_payload;
+                    }
+
                     $connection_response = $this->connectionService()->createConnection($connection_payload);
 
                     if (is_wp_error($connection_response)) {
@@ -503,25 +514,62 @@ class CascadeStrategy implements RosterManagementStrategy
                 return new \WP_Error('missing_membership_uuid', 'Organization membership UUID is required to remove a member.');
             }
 
+            // The context UUID is user-supplied. Without the org-match check a
+            // manager of one organization could end memberships that belong to
+            // another organization by posting a foreign membership UUID.
+            $membership_data = $this->membershipService()->getOrgMembershipData($membership_uuid);
+            if (empty($membership_data) || !is_array($membership_data)) {
+                return new \WP_Error('invalid_membership_uuid', 'Organization membership is invalid or unavailable.');
+            }
+
+            $membership_org_id = (string) ($membership_data['data']['relationships']['organization']['data']['id'] ?? '');
+            if ('' !== $membership_org_id && $membership_org_id !== (string) $org_id) {
+                $logger->error('[OrgMan] Cascade strategy refused cross-org membership removal', array_merge($log_context, [
+                    'membership_uuid' => $membership_uuid,
+                    'membership_org_id' => $membership_org_id,
+                ]));
+
+                return new \WP_Error('membership_org_mismatch', 'Membership does not belong to this organization.');
+            }
+
             // End every active person_membership this person holds under this org membership.
-            // Continue-on-error: a single record failure does not abort the rest.
+            // Fail closed on lookup failure: the removal state is unknown.
             $membership_result = $this->membershipService()->endAllActivePersonMembershipsForOrg($person_uuid, $membership_uuid);
+            if (is_wp_error($membership_result)) {
+                $logger->error('[OrgMan] Cascade strategy membership lookup failed', array_merge($log_context, [
+                    'error_code' => $membership_result->get_error_code(),
+                    'error_message' => $membership_result->get_error_message(),
+                ]));
+
+                return new \WP_Error('membership_end_failed', $membership_result->get_error_message());
+            }
             if (!empty($membership_result['errors'])) {
-                $logger->warning('[OrgMan] Cascade strategy ended memberships with per-record errors', array_merge($log_context, [
+                $logger->error('[OrgMan] Cascade strategy ended memberships with per-record errors', array_merge($log_context, [
                     'ended_count' => count($membership_result['ended']),
                     'error_count' => count($membership_result['errors']),
                     'errors' => $membership_result['errors'],
                 ]));
-            } else {
-                $logger->debug('[OrgMan] Cascade strategy ended person memberships', array_merge($log_context, [
-                    'ended_count' => count($membership_result['ended']),
-                ]));
+
+                // The surviving memberships keep the member active in MDP; success
+                // here would hide a failed removal from the manager (WWID-2816).
+                return new \WP_Error(
+                    'membership_end_failed',
+                    'Failed ending the person membership: ' . reset($membership_result['errors'])
+                );
             }
+
+            $logger->debug('[OrgMan] Cascade strategy ended person memberships', array_merge($log_context, [
+                'ended_count' => count($membership_result['ended']),
+            ]));
 
             // End every active person-to-organization connection. Continue-on-error sibling;
             // no removal-side skip-types config exists today, so pass an empty allowlist
-            // for exact parity with the current modal behavior.
+            // for exact parity with the current modal behavior. A lookup failure fails
+            // closed; per-record errors continue and are logged below.
             $connection_result = $this->connectionService()->endAllActivePersonOrganizationConnections($person_uuid, $org_id, []);
+            if (is_wp_error($connection_result)) {
+                return new \WP_Error('connection_end_failed', $connection_result->get_error_message());
+            }
             if (!empty($connection_result['errors'])) {
                 $logger->warning('[OrgMan] Cascade strategy ended connections with per-record errors', array_merge($log_context, [
                     'ended_count' => count($connection_result['ended']),

@@ -3,6 +3,10 @@
     <?php
     $can_open_org = $can_edit_org || $is_membership_manager;
     $title_url = WicketORM\Helpers\Helper::getMyAccountPageUrl('organization-management', '/my-account/organization-management/') . '?org_uuid=' . urlencode($org_id);
+    // Shared action labels so card links match the details action nav (WWID-2259).
+    $org_profile_label = WicketORM\Helpers\TemplateHelper::organization_action_label('org_profile');
+    $manage_members_label = WicketORM\Helpers\TemplateHelper::organization_action_label('manage_members');
+    $contact_list_label = WicketORM\Helpers\TemplateHelper::organization_action_label('contact_list');
     ?>
     <h2 class="wp-block-heading has-heading-sm-font-size wt_text-2xl wt_mb-3">
         <?php if ($can_open_org): ?>
@@ -28,8 +32,8 @@
 
                 $duration_str = '';
                 if ($entry_starts_at !== '' && $entry_ends_at !== '') {
-                    $start_dt = date_create($entry_starts_at);
-                    $end_dt = date_create($entry_ends_at);
+                    $start_dt = WicketORM\Helpers\TemplateHelper::mdp_datetime($entry_starts_at);
+                    $end_dt = WicketORM\Helpers\TemplateHelper::mdp_datetime($entry_ends_at);
                     if ($start_dt && $end_dt) {
                         $diff = date_diff($start_dt, $end_dt);
                         $total_months = ($diff->y * 12) + $diff->m + ($diff->d > 0 ? 1 : 0);
@@ -41,13 +45,7 @@
                     }
                 }
 
-                $start_year_str = '';
-                if ($entry_starts_at !== '') {
-                    $start_dt = date_create($entry_starts_at);
-                    if ($start_dt) {
-                        $start_year_str = $start_dt->format('Y');
-                    }
-                }
+                $start_year_str = WicketORM\Helpers\TemplateHelper::format_mdp_date($entry_starts_at, 'Y');
 
                 $extra_details = '';
                 if ($duration_str !== '' && $start_year_str !== '') {
@@ -143,7 +141,7 @@
                         ?>
                         <a href="<?php echo esc_url(add_query_arg($profile_params, $profile_url_base)); ?>"
                             class="wt_inline-flex wt_items-center wt_text-primary-600 wt_hover_text-primary-700 underline underline-offset-4">
-                            <?php esc_html_e('Edit Organization', 'wicket-acc'); ?>
+                            <?php echo esc_html($org_profile_label); ?>
                         </a>
                     <?php endif; ?>
 
@@ -164,27 +162,27 @@
                         ?>
                         <a href="<?php echo esc_url(add_query_arg($members_params, $members_url_base)); ?>"
                             class="wt_inline-flex wt_items-center wt_text-primary-600 wt_hover_text-primary-700 underline underline-offset-4">
-                            <?php esc_html_e('Manage Members', 'wicket-acc'); ?>
-                        </a>
-                    <?php endif; ?>
-
-                    <?php
-                    // Contacts roster link
-                    $contacts_config = WicketORM\Services\ConfigService::getConfig()['contacts'] ?? [];
-            if (!empty($contacts_config['enabled']) && WicketORM\Helpers\PermissionHelper::can_manage_contacts($org_id)):
-                $contacts_url_base = WicketORM\Helpers\Helper::getMyAccountPageUrl('organization-contacts', '/my-account/organization-contacts/');
-                $contacts_url = add_query_arg('org_uuid', $org_id, $contacts_url_base);
-                ?>
-                    <?php if ($has_any_roles || $is_membership_manager): ?>
-                        <span class="wt_px-2 wt_h-4 wt_bg-border-white" aria-hidden="true"></span>
-                    <?php endif; ?>
-                        <a href="<?php echo esc_url($contacts_url); ?>"
-                            class="wt_inline-flex wt_items-center wt_text-primary-600 wt_hover_text-primary-700 underline underline-offset-4">
-                            <?php esc_html_e('Manage Contact List', 'wicket-acc'); ?>
+                            <?php echo esc_html($manage_members_label); ?>
                         </a>
                     <?php endif; ?>
                 </div>
             </div>
         <?php endforeach; ?>
+
+        <?php
+        // Contacts roster is org-scoped: render it once per card at the
+        // organization level, never inside the per-membership loop (WWID-2385).
+        $contacts_config = WicketORM\Services\ConfigService::getConfig()['contacts'] ?? [];
+    if (!empty($contacts_config['enabled']) && WicketORM\Helpers\PermissionHelper::can_manage_contacts($org_id)):
+        $contacts_url_base = WicketORM\Helpers\Helper::getMyAccountPageUrl('organization-contacts', '/my-account/organization-contacts/');
+        $contacts_url = add_query_arg('org_uuid', $org_id, $contacts_url_base);
+        ?>
+        <div class="wt_flex wt_items-center wt_gap-2 wt_pt-4 wt_mt-1 wt_border-t wt_border-color">
+            <a href="<?php echo esc_url($contacts_url); ?>"
+                class="wt_inline-flex wt_items-center wt_text-primary-600 wt_hover_text-primary-700 underline underline-offset-4">
+                <?php echo esc_html($contact_list_label); ?>
+            </a>
+        </div>
+        <?php endif; ?>
     </div>
 </div>

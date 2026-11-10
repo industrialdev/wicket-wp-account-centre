@@ -40,6 +40,9 @@ class Shortcodes extends WicketAcc
             return '';
         }
 
+        // Legacy URLs may still carry org_id; TemplateHelper::normalize_org_uuid_param()
+        // (template_redirect, priority 0) redirects them to org_uuid before this runs.
+        // Kept as a fallback guard in case that hook does not fire.
         $org_uuid = isset($_GET['org_uuid']) ? sanitize_text_field($_GET['org_uuid']) : '';
         if (empty($org_uuid) && isset($_GET['org_id'])) {
             $org_uuid = sanitize_text_field($_GET['org_id']);
@@ -63,8 +66,8 @@ class Shortcodes extends WicketAcc
 
         // If user only has one organization, redirect to that organization with url parameters
         if (!empty($org_uuids_list) && count($org_uuids_list) === 1 && empty($org_uuid)) {
-            $url = strtok($_SERVER['REQUEST_URI'], '?');
-            $redirect_url = add_query_arg('org_id', $org_uuids_list[0], $url);
+            $url = strtok((string) ($_SERVER['REQUEST_URI'] ?? ''), '?');
+            $redirect_url = add_query_arg('org_uuid', $org_uuids_list[0], $url);
 
             // Use wp_safe_redirect if possible (check headers_sent)
             if (!headers_sent()) {
@@ -119,7 +122,7 @@ class Shortcodes extends WicketAcc
                             <?php if ($linked) { ?>
                                 <i class="fa-solid fa-building w-[20px] h-[20px] text-[var(--color-primary)] shrink-0"></i><a
                                     class='primary_link_color'
-                                    href='<?php echo esc_url(add_query_arg('org_id', $i_org_id, home_url(add_query_arg([], $wp->request)))); ?>'>
+                                    href='<?php echo esc_url(add_query_arg('org_uuid', $i_org_id, home_url(add_query_arg([], $wp->request)))); ?>'>
                                 <?php } else { ?>
                                     <i class="fa-solid fa-ban w-[20px] h-[20px] text-[var(--color-primary)] shrink-0"></i>
                                 <?php } ?>
@@ -154,6 +157,14 @@ class Shortcodes extends WicketAcc
 
         // Figure out orgs I should see. This association to the org is set on each role. The actual role types we look at might change depending on the project
         foreach ($person->included() as $person_included) {
+            // Only role entries qualify. The previous inline condition bound the
+            // type check to the first comparison only, so any included entity
+            // whose name happened to contain 'member' et al. leaked into the
+            // selector as a phantom org (WWID-2665).
+            if (($person_included['type'] ?? '') !== 'roles') {
+                continue;
+            }
+
             // Warning fix
             if (!isset($person_included['attributes']['name'])) {
                 $person_included['attributes']['name'] = '';
@@ -162,14 +173,14 @@ class Shortcodes extends WicketAcc
             // Assigned roles
             $roles = $person_included['attributes']['assignable_role_names'] ?? [];
 
+            $name = $person_included['attributes']['name'];
+
             if (
-                $person_included['type'] == 'roles' && stristr($person_included['attributes']['name'], 'owner')
-                || stristr($person_included['attributes']['name'], 'member')
-                || stristr($person_included['attributes']['name'], 'org_editor')
-                || stristr($person_included['attributes']['name'], 'membership_manager')
-                || isset(
-                    $person_included['attributes']['assignable_role_names']
-                ) && (
+                stristr($name, 'owner')
+                || stristr($name, 'member')
+                || stristr($name, 'org_editor')
+                || stristr($name, 'membership_manager')
+                || (
                     in_array('member', $roles)
                     || in_array('org_editor', $roles)
                     || in_array('membership_manager', $roles)

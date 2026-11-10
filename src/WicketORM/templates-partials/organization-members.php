@@ -109,7 +109,7 @@ $searchSuccess = '';
 if (!empty($membershipUuid)) {
     $membership_query_fragment = '&membership_uuid=' . rawurlencode((string) $membershipUuid);
     $searchAction = "@get('{$membersListEndpoint}{$membersListSeparator}org_uuid={$encodedOrgUuid}{$membership_query_fragment}&page=1&query=' + encodeURIComponent(\$searchQuery))";
-    $searchSuccess = '$listLoading = false; ' . wp_sprintf("select('#%s') | set(html)", $containerId);
+    $searchSuccess = '$listLoading = false;';
 }
 
 $signals = [

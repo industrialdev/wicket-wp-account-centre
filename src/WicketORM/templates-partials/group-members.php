@@ -68,7 +68,7 @@ $encoded_org_uuid = rawurlencode($org_uuid);
 
 $members_list_separator = str_contains($members_list_endpoint, '?') ? '&' : '?';
 $search_action = "@get('{$members_list_endpoint}{$members_list_separator}group_uuid={$encoded_group_uuid}&org_uuid={$encoded_org_uuid}&page=1&query=' + encodeURIComponent(" . '$searchQuery' . '))';
-$search_success = '$listLoading = false; ' . wp_sprintf("select('#%s') | set(html)", $members_list_target);
+$search_success = '$listLoading = false;';
 $signals = [
     'searchQuery' => $query,
     'searchSubmitted' => false,

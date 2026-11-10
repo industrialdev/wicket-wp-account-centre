@@ -4,6 +4,7 @@ namespace WicketAcc;
 
 use WicketAcc\Admin\AdminSettings;
 use WicketAcc\Admin\HFMigration;
+use WicketAcc\Admin\RequiredPagesNotice;
 use WicketAcc\Admin\Safeguards;
 use WicketAcc\Admin\Tweaks;
 use WicketAcc\Mdp\Init as Mdp;
@@ -17,7 +18,7 @@ use WicketORM\OrgMan;
  * Plugin Name:       Wicket Account Centre
  * Plugin URI:        https://wicket.io
  * Description:       Custom account management system for Wicket. Provides user account features, organization management, and additional blocks and pages. Integrates with WooCommerce when available.
- * Version:           1.8.2
+ * Version:           1.12.1
  * Author:            Wicket Inc.
  * Developed By:      Wicket Inc.
  * Author URI:        https://wicket.io
@@ -126,6 +127,7 @@ if (function_exists('register_activation_hook')) {
  * @method Notification Notification() Get notification service
  * @method Settings Settings() Get plugin settings service
  * @method WooCommerce WooCommerce() Get WooCommerce integration service
+ * @method JobManager JobManager() Get WP Job Manager integration service (if active)
  * @method Helpers Helpers() Get helpers service
  */
 class WicketAcc
@@ -439,6 +441,7 @@ class WicketAcc
             new AdminSettings();
             new Tweaks();
             new Safeguards(); // Initialize the safeguard class for admin tasks and CLI
+            new RequiredPagesNotice(); // Warn when org-roster account pages are missing (WWID-1919)
         }
 
         // Load WooCommerce integration if active
@@ -446,13 +449,27 @@ class WicketAcc
             $this->instances['WooCommerce'] = new WooCommerce();
         }
 
+        // Load Job Manager integration if active
+        if (class_exists('WP_Job_Manager')) {
+            $this->instances['JobManager'] = new JobManager();
+        }
+
         // Boot the WicketORM\OrgMan orchestrator (org-roster code, integrated at
         // src/WicketORM/). OrgMan reads the `wicket/org-roster/config` filter in
         // its constructor, so it must boot AFTER theme config filters are registered
         // (after_setup_theme priority 20).
+        //
+        // Kill switch: themes can return false on the `wicket/org-roster/enabled`
+        // filter to stop the orchestrator from booting at all (no hooks, no
+        // template redirects). Use this when a client fully replaces the roster
+        // surface. WicketORM classes stay autoloadable, so plugins that call
+        // WicketORM\Services\* directly keep working. Default: true.
         add_action(
             'after_setup_theme',
             static function (): void {
+                if (!apply_filters('wicket/org-roster/enabled', true)) {
+                    return;
+                }
                 if (class_exists(OrgMan::class)) {
                     OrgMan::getInstance();
                 }

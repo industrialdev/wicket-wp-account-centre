@@ -72,6 +72,39 @@ class MembershipService
     }
 
     /**
+     * Parent organization membership ends_at for a person membership row.
+     *
+     * @param array $person_membership_data
+     * @param mixed $person_membership_id Log context only.
+     * @return string|null|\WP_Error String: clamp target. Null: no parent link, or an
+     *                               open-ended parent carrying no MDP constraint.
+     *                               WP_Error: parent exists but could not be resolved;
+     *                               callers must fail closed.
+     */
+    private function resolveParentMembershipEndsAt(array $person_membership_data, $person_membership_id = null): string|\WP_Error|null
+    {
+        $parent_id = $person_membership_data['relationships']['organization_membership']['data']['id'] ?? '';
+        if (!is_string($parent_id) || '' === $parent_id) {
+            return null;
+        }
+
+        $parent = $this->getOrgMembershipData($parent_id);
+        if (!is_array($parent)) {
+            \Wicket()->log()->error('MembershipService::resolveParentMembershipEndsAt() - parent end date unresolvable', [
+                'source' => 'wicket-orgman',
+                'person_membership_id' => $person_membership_id,
+                'parent_id' => $parent_id,
+            ]);
+
+            return new \WP_Error('membership_parent_unresolved', 'This member could not be removed right now because the organization membership could not be verified. Please try again in a few minutes.');
+        }
+
+        $ends_at = (string) ($parent['data']['attributes']['ends_at'] ?? '');
+
+        return '' !== trim($ends_at) ? $ends_at : null;
+    }
+
+    /**
      * Retrieve all organization memberships for an organization.
      *
      * @param string $organizationUuid Organization identifier.
@@ -100,12 +133,21 @@ class MembershipService
     /**
      * Resolve the active (or fallback) organization membership UUID for an organization.
      *
+     * Entries outside the configured roster categories (membership.resolution.roster_categories)
+     * are excluded first, so seatless program tiers can never win resolution even when they
+     * sort first in the API payload (WWID-2742).
+     *
      * @param string $organizationUuid Organization identifier.
      * @return string|null
      */
     public function getOrganizationMembershipUuid(string $organizationUuid): ?string
     {
         $memberships = $this->getOrganizationMemberships($organizationUuid);
+        if (empty($memberships)) {
+            return null;
+        }
+
+        $memberships = $this->filterRosterEligibleMemberships($memberships);
         if (empty($memberships)) {
             return null;
         }
@@ -141,6 +183,119 @@ class MembershipService
         }
 
         return $fallback;
+    }
+
+    /**
+     * Roster category allowlist from config, normalized for case-insensitive comparison.
+     *
+     * Three states:
+     *   null  = feature off (key unset or empty): every category is roster-eligible.
+     *   []    = deny-all (key set but yields no usable values).
+     *   list  = only these categories (lowercased, trimmed, deduped) are eligible.
+     *
+     * A set-but-unusable value (non-array, or nothing usable after normalization)
+     * denies all instead of silently re-enabling legacy resolution: a config typo
+     * must fail closed and visibly, not reintroduce the seatless-tier bug the
+     * allowlist exists to prevent (WWID-2742).
+     *
+     * @return array<int,string>|null
+     */
+    private function rosterCategoryAllowlist(): ?array
+    {
+        $raw = $this->config['membership']['resolution']['roster_categories'] ?? [];
+
+        if ($raw === null || $raw === []) {
+            return null;
+        }
+
+        if (!is_array($raw)) {
+            \Wicket()->log()->warning(
+                'membership.resolution.roster_categories must be an array; denying all roster categories until fixed.',
+                ['source' => 'wicket-orgman']
+            );
+
+            return [];
+        }
+
+        $normalized = [];
+        foreach ($raw as $category) {
+            if (!is_string($category)) {
+                continue;
+            }
+
+            $trimmed = mb_strtolower(trim($category));
+            if ($trimmed === '') {
+                continue;
+            }
+
+            $normalized[$trimmed] = true;
+        }
+
+        if ($normalized === []) {
+            \Wicket()->log()->warning(
+                'membership.resolution.roster_categories contains no usable values; denying all roster categories until fixed.',
+                ['source' => 'wicket-orgman']
+            );
+
+            return [];
+        }
+
+        return array_keys($normalized);
+    }
+
+    /**
+     * Check an entry's membership_category against the roster allowlist.
+     *
+     * Entries without a usable category fail closed when the allowlist is set: an
+     * unknown tier must not silently become roster-eligible. The category attribute
+     * is documented on every organization_memberships resource (MDP API), including
+     * entries reached through person-membership includes; a missing value there is
+     * treated the same as an unknown one.
+     *
+     * @param array|null $attributes Organization membership entry attributes.
+     * @param array<int,string>|null $allowlist Pre-normalized allowlist; resolved lazily when null.
+     * @return bool
+     */
+    private function isRosterEligibleCategory(?array $attributes, ?array $allowlist = null): bool
+    {
+        $allowlist ??= $this->rosterCategoryAllowlist();
+
+        if ($allowlist === null) {
+            return true;
+        }
+
+        if ($allowlist === []) {
+            return false;
+        }
+
+        $category = $attributes['membership_category'] ?? null;
+        if (!is_string($category) || trim($category) === '') {
+            return false;
+        }
+
+        return in_array(mb_strtolower(trim($category)), $allowlist, true);
+    }
+
+    /**
+     * Drop organization membership entries whose category is not roster-eligible.
+     *
+     * @param array<int,array> $memberships wicket_get_org_memberships-shaped rows.
+     * @return array<int,array>
+     */
+    private function filterRosterEligibleMemberships(array $memberships): array
+    {
+        $allowlist = $this->rosterCategoryAllowlist();
+        if ($allowlist === null) {
+            return $memberships;
+        }
+
+        return array_values(array_filter(
+            $memberships,
+            fn (array $membership): bool => $this->isRosterEligibleCategory(
+                is_array($membership['membership']['attributes'] ?? null) ? $membership['membership']['attributes'] : null,
+                $allowlist
+            )
+        ));
     }
 
     /**
@@ -297,6 +452,8 @@ class MembershipService
             return null;
         }
 
+        $roster_allowlist = $this->rosterCategoryAllowlist();
+
         $fallback = null;
         foreach ($memberships['included'] as $included) {
             if (
@@ -304,6 +461,10 @@ class MembershipService
                 && isset($included['relationships']['organization']['data']['id'])
                 && $included['relationships']['organization']['data']['id'] === $organizationUuid
             ) {
+                if (!$this->isRosterEligibleCategory(is_array($included['attributes'] ?? null) ? $included['attributes'] : null, $roster_allowlist)) {
+                    continue;
+                }
+
                 $isActive = $included['attributes']['active'] ?? null;
                 if ($isActive) {
                     $cache->set($cache_key, $included['id']);
@@ -337,13 +498,12 @@ class MembershipService
         $cache_key = 'orgman_membership_data_' . md5($membershipUuid);
         $cached_data = $cache->get($cache_key);
 
-        if (false !== $cached_data) {
+        // A non-array hit is stale poison (a failure cached by older code); treat it as a miss so the entry self-heals.
+        if (is_array($cached_data)) {
             return $cached_data;
         }
 
         if (!function_exists('wicket_api_client')) {
-            $cache->set($cache_key, null);
-
             return null;
         }
 
@@ -353,12 +513,13 @@ class MembershipService
             $response = $client->get($endpoint);
             $data = isset($response['data']) ? $response : null;
 
-            $cache->set($cache_key, $data);
+            // Never cache a failed lookup: a stored null reads back as a hit and silently disables the grace clamp (WWID-2774).
+            if (null !== $data) {
+                $cache->set($cache_key, $data);
+            }
 
             return $data;
         } catch (\Throwable $e) {
-            $cache->set($cache_key, null);
-
             return null;
         }
     }
@@ -738,10 +899,11 @@ class MembershipService
     /**
      * End a person membership with today's date.
      *
-     * @param string $person_membership_id The ID of the person membership to end-date.
+     * @param string      $person_membership_id The ID of the person membership to end-date.
+     * @param string|null $parent_ends_at       Parent organization membership ends_at; resolved from the row when null.
      * @return array|WP_Error The updated person membership data or WP_Error on failure.
      */
-    public function endPersonMembershipToday($person_membership_id)
+    public function endPersonMembershipToday($person_membership_id, ?string $parent_ends_at = null)
     {
         if (empty($person_membership_id)) {
             return new \WP_Error('invalid_params', 'Person membership ID is required.');
@@ -768,6 +930,23 @@ class MembershipService
                 ? $this->currentDayStartTimestamp()
                 : $this->currentTimestamp();
 
+            // The MDP rejects a person ends_at after the parent organization membership's
+            // ends_at (equality passes). Grace keeps the parent end date in the past while
+            // status stays Active, so a now-based end date 422s exactly then: clamp to it.
+            if (null === $parent_ends_at) {
+                $resolved = $this->resolveParentMembershipEndsAt($person_membership_data, $person_membership_id);
+                if (is_wp_error($resolved)) {
+                    // Fail closed rather than send an unclamped ends_at the MDP will 422.
+                    return $resolved;
+                }
+
+                $parent_ends_at = $resolved;
+            }
+            $parent_ts = is_string($parent_ends_at) && '' !== trim($parent_ends_at) ? strtotime($parent_ends_at) : false;
+            if (false !== $parent_ts && strtotime($ends_at) > $parent_ts) {
+                $ends_at = gmdate('Y-m-d\TH:i:s\Z', $parent_ts);
+            }
+
             // The MDP API requires ends_at to be strictly after starts_at. A same-day
             // add+remove, a same-second timestamp, or a future-dated starts_at can make the
             // computed ends_at fall at or before starts_at, which the API rejects with a 422.
@@ -781,6 +960,18 @@ class MembershipService
                 }
             }
 
+            // The starts_at clamp above can push ends_at back past the parent when the
+            // row starts after the parent ends; that row cannot be end-dated at all.
+            if (false !== $parent_ts && strtotime($ends_at) > $parent_ts) {
+                \Wicket()->log()->error('MembershipService::endPersonMembershipToday() - membership window extends past the parent end date', [
+                    'source' => 'wicket-orgman',
+                    'person_membership_id' => $person_membership_id,
+                    'parent_ends_at' => $parent_ends_at,
+                ]);
+
+                return new \WP_Error('membership_end_conflict', 'This membership starts after its organization membership ends, so it cannot be end-dated. Please contact support to correct the membership data.');
+            }
+
             $update_payload = [
                 'data' => [
                     'type'       => $person_membership_data['type'],
@@ -790,6 +981,17 @@ class MembershipService
                     ],
                 ],
             ];
+
+            // Rails ignores direct expires_at writes (unpermitted update param) and re-derives
+            // expires_at from ends_at + grace_period_days, so an end-dated grace row would keep
+            // its computed status Active forever; zeroing the grace collapses expires_at onto
+            // ends_at and drops the member from the roster.
+            $expires_at = (string) ($attributes['expires_at'] ?? '');
+            $expires_ts = '' !== trim($expires_at) ? strtotime($expires_at) : false;
+            $grace_days = (int) ($attributes['grace_period_days'] ?? 0);
+            if ((false !== $expires_ts && $expires_ts > strtotime($ends_at)) || $grace_days > 0) {
+                $update_payload['data']['attributes']['grace_period_days'] = 0;
+            }
 
             // Update the person membership
             $response = $client->patch("person_memberships/{$person_membership_id}", ['json' => $update_payload]);
@@ -831,6 +1033,38 @@ class MembershipService
      *   ended:  person_membership IDs that were successfully end-dated
      *   errors: map of person_membership_id => error message (non-fatal)
      */
+    /**
+     * Retrieve a single person membership record.
+     *
+     * Thin read wrapper used to validate that a person membership belongs to the
+     * organization membership being managed before ending it.
+     *
+     * @param string $person_membership_id
+     * @return array|null API payload, or null when the record is unavailable.
+     */
+    public function getPersonMembership(string $person_membership_id): ?array
+    {
+        if ('' === $person_membership_id || !function_exists('wicket_api_client')) {
+            return null;
+        }
+
+        try {
+            $response = wicket_api_client()->get('person_memberships/' . rawurlencode($person_membership_id));
+            if (empty($response) || !is_array($response) || empty($response['data'])) {
+                return null;
+            }
+
+            return $response;
+        } catch (\Throwable $e) {
+            \Wicket()->log()->error('MembershipService::getPersonMembership() - Exception: ' . $e->getMessage(), [
+                'source' => 'wicket-orgman',
+                'person_membership_id' => $person_membership_id,
+            ]);
+
+            return null;
+        }
+    }
+
     public function endAllActivePersonMembershipsForOrg($person_uuid, $org_membership_uuid)
     {
         $ended = [];
@@ -843,7 +1077,10 @@ class MembershipService
         if (!function_exists('wicket_api_client')) {
             \Wicket()->log()->error('MembershipService::endAllActivePersonMembershipsForOrg() - API client unavailable', ['source' => 'wicket-orgman']);
 
-            return ['ended' => $ended, 'errors' => $errors];
+            return new \WP_Error(
+                'membership_query_failed',
+                'The membership API client is unavailable. The removal state is unknown; retry when the API is reachable.'
+            );
         }
 
         try {
@@ -851,7 +1088,10 @@ class MembershipService
             $filter_data = [
                 'filter' => [
                     'organization_membership_uuid_in' => [$org_membership_uuid],
-                    'person_id_eq' => $person_uuid,
+                    // person_id_eq targets an integer column in MDP; a UUID there
+                    // casts away and matches nothing (WWID-2816).
+                    'person_uuid_in' => [$person_uuid],
+                    'active_at' => wicket_time_get_current_iso8601_utc(),
                 ],
             ];
 
@@ -865,22 +1105,34 @@ class MembershipService
                     'error' => $response->get_error_message(),
                 ]);
 
-                return ['ended' => $ended, 'errors' => $errors];
+                return new \WP_Error(
+                    'membership_query_failed',
+                    'Failed looking up the person memberships: ' . $response->get_error_message()
+                );
             }
 
             if (empty($response['data']) || !is_array($response['data'])) {
                 return ['ended' => $ended, 'errors' => $errors];
             }
 
+            // Every row shares this org membership, so resolve its end date once
+            // and let the grace clamp inside endPersonMembershipToday skip the
+            // per-row parent lookup.
+            $parent_ends_at = null;
+            $parent = $this->getOrgMembershipData((string) $org_membership_uuid);
+            if (is_array($parent)) {
+                $candidate = (string) ($parent['data']['attributes']['ends_at'] ?? '');
+                $parent_ends_at = '' !== $candidate ? $candidate : null;
+            }
+
             foreach ($response['data'] as $p_membership) {
                 $p_membership_id = $p_membership['id'] ?? null;
-                $p_membership_active = $p_membership['attributes']['active'] ?? false;
 
-                if (!$p_membership_id || !$p_membership_active) {
+                if (!$p_membership_id) {
                     continue;
                 }
 
-                $result = $this->endPersonMembershipToday($p_membership_id);
+                $result = $this->endPersonMembershipToday($p_membership_id, $parent_ends_at);
                 if (is_wp_error($result)) {
                     $errors[(string) $p_membership_id] = $result->get_error_message();
                     \Wicket()->log()->error('MembershipService::endAllActivePersonMembershipsForOrg() - failed to end membership', [
@@ -900,6 +1152,11 @@ class MembershipService
                 'person_uuid' => $person_uuid,
                 'org_membership_uuid' => $org_membership_uuid,
             ]);
+
+            return new \WP_Error(
+                'membership_query_failed',
+                'Failed looking up the person memberships: ' . $e->getMessage()
+            );
         }
 
         \Wicket()->log()->info('[OrgMan] endAllActivePersonMembershipsForOrg result', [

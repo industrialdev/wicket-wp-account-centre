@@ -28,7 +28,12 @@ if (empty($org_uuid) && !empty($org_id_fallback)) {
     exit;
 }
 
-$member_list_config = \WicketORM\Services\ConfigService::getConfig()['ui']['member_list'] ?? [];
+// Sites configure the flag under presentation.member_list (OrgManConfig default shape).
+// ui.member_list is kept as an optional override, mirroring members-list-unified.php.
+$config = \WicketORM\Services\ConfigService::getConfig();
+$member_list_config = is_array($config['ui']['member_list'] ?? null)
+    ? $config['ui']['member_list']
+    : (is_array($config['presentation']['member_list'] ?? null) ? $config['presentation']['member_list'] : []);
 $show_bulk_upload = (bool) ($member_list_config['show_bulk_upload'] ?? false);
 
 $membershipService = new \WicketORM\Services\MembershipService();

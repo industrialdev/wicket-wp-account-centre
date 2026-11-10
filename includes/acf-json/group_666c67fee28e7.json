@@ -349,8 +349,29 @@
         },
         {
             "key": "field_681e1f55d25ff",
-            "label": "Hide membership status?",
+            "label": "Hide membership status on org cards?",
             "name": "orgss_hide_membership_status",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 0,
+            "allow_in_bindings": 0,
+            "ui_on_text": "",
+            "ui_off_text": "",
+            "ui": 1
+        },
+        {
+            "key": "field_6f7b29d0a5324",
+            "label": "Hide org type on org cards?",
+            "name": "orgss_hide_org_type",
             "aria-label": "",
             "type": "true_false",
             "instructions": "",
@@ -548,5 +569,5 @@
     "description": "",
     "show_in_rest": 0,
     "acfml_field_group_mode": "advanced",
-    "modified": 1765801737
+    "modified": 1791468996
 }

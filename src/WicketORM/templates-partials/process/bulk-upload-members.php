@@ -177,10 +177,16 @@ $summary = sprintf(
 );
 $summary .= '<br>' . esc_html__('Processing runs in the background with WordPress Cron.', 'wicket-acc');
 
+// Hand the job to the modal's poller: same suffixed signals the modal
+// declared (mirrors the export flow's suffix transform).
+$safe_suffix = str_replace('-', '_', sanitize_key($org_dom_suffix));
+
 status_header(200);
 WicketORM\Helpers\DatastarSSE::renderSuccess($summary, $message_target, [
     'membersLoading' => false,
     'bulkUploadSubmitting' => false,
+    'bulkUploadJobId' . $safe_suffix => $job_id,
+    'bulkUploadFinished' . $safe_suffix => false,
 ], 0, 'bulk-upload-countdown');
 
 return;

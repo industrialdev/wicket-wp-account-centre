@@ -175,12 +175,7 @@ if ($roster_mode !== 'groups') {
         }
 
         if ($ends_at) {
-            try {
-                $dt = new \DateTime($ends_at);
-                $renewal_date = $dt->format('F j, Y');
-            } catch (\Throwable $e) {
-                $renewal_date = '';
-            }
+            $renewal_date = \WicketORM\Helpers\TemplateHelper::format_mdp_date($ends_at);
         }
         // Seats (if available)
         $active = $membership_data['data']['attributes']['active_assignments_count'] ?? null;
@@ -229,10 +224,26 @@ if ($roster_mode !== 'groups') {
     <?php
     $details_config = \WicketORM\Services\ConfigService::getConfig()['presentation']['organization_details'] ?? [];
 $show_actions = (bool) ($details_config['show_actions'] ?? true);
+
+// Shared action labels (see TemplateHelper::organization_action_label and
+// OrgManConfig presentation.organization_details.labels). Sites can rename
+// "Manage Members" (e.g. "Manage Staff") while the action nav and the
+// organization list cards stay in sync (WWID-2259).
+$org_profile_label = \WicketORM\Helpers\TemplateHelper::organization_action_label('org_profile');
+$manage_members_label = \WicketORM\Helpers\TemplateHelper::organization_action_label('manage_members');
+
+// Mark the action matching the current page as active so the trio behaves as
+// navigation instead of repeated buttons (WWID-2259).
+$current_orgman_path = rtrim((string) parse_url((string) ($_SERVER['REQUEST_URI'] ?? ''), PHP_URL_PATH), '/');
+$is_active_action = static function (string $url) use ($current_orgman_path): bool {
+    $link_path = rtrim((string) parse_url($url, PHP_URL_PATH), '/');
+
+    return $current_orgman_path !== '' && $link_path !== '' && $link_path === $current_orgman_path;
+};
 ?>
 
     <?php if ($show_actions) : ?>
-    <div class="org-details__actions wt_w-full wt_flex wt_items-stretch wt_gap-4 wt_mt-2">
+    <nav class="org-details__actions wt_w-full wt_flex wt_items-stretch wt_gap-4 wt_mt-2" aria-label="<?php esc_attr_e('Organization actions', 'wicket-acc'); ?>">
         <?php
     // Check user permissions for this organization
     if ($roster_mode === 'groups' && $group_uuid !== '') {
@@ -264,23 +275,44 @@ if ($roster_mode === 'groups' && $group_uuid !== '') {
 ?>
 
         <?php if ($can_edit_org): ?>
-            <a href="<?php echo esc_url(add_query_arg($profile_params, $profile_url)); ?>"
-                class="button button--secondary component-button wt_flex-equal wt_inline-flex wt_items-center wt_justify-center wt_text-center"><?php esc_html_e('Org. Profile', 'wicket-acc'); ?></a>
+            <?php $profile_link = add_query_arg($profile_params, $profile_url); ?>
+            <a href="<?php echo esc_url($profile_link); ?>"
+                <?php if ($is_active_action($profile_link)) : ?>aria-current="page"<?php endif; ?>
+                class="button component-button wt_flex-equal wt_inline-flex wt_items-center wt_justify-center wt_text-center <?php echo $is_active_action($profile_link) ? 'button--primary' : 'button--secondary'; ?>"><?php echo esc_html($org_profile_label); ?></a>
         <?php endif; ?>
 
+        <?php $members_link = add_query_arg($members_params, $members_url); ?>
         <?php if ($is_membership_manager): ?>
-            <a href="<?php echo esc_url(add_query_arg($members_params, $members_url)); ?>"
-                class="button button--secondary component-button wt_flex-equal wt_inline-flex wt_items-center wt_justify-center wt_text-center"><?php esc_html_e('Manage Members', 'wicket-acc'); ?></a>
+            <a href="<?php echo esc_url($members_link); ?>"
+                <?php if ($is_active_action($members_link)) : ?>aria-current="page"<?php endif; ?>
+                class="button component-button wt_flex-equal wt_inline-flex wt_items-center wt_justify-center wt_text-center <?php echo $is_active_action($members_link) ? 'button--primary' : 'button--secondary'; ?>"><?php echo esc_html($manage_members_label); ?></a>
+        <?php endif; ?>
+
+        <?php
+        // Contact List is an organization-level action: the contacts roster page is
+        // org-scoped, so the nav exposes it next to the other org actions (WWID-2385).
+        // Empty org_uuid (groups landing without an org) skips the button: role_check
+        // would fall back to WP core roles and the page redirects without an org anyway.
+        if ($org_uuid !== '' && \WicketORM\Helpers\PermissionHelper::can_view_contacts($org_uuid)) :
+            $contacts_url = add_query_arg('org_uuid', $org_uuid, \WicketORM\Helpers\Helper::getMyAccountPageUrl('organization-contacts', '/my-account/organization-contacts/'));
+            ?>
+            <a href="<?php echo esc_url($contacts_url); ?>"
+                <?php if ($is_active_action($contacts_url)) : ?>aria-current="page"<?php endif; ?>
+                class="button component-button wt_flex-equal wt_inline-flex wt_items-center wt_justify-center wt_text-center <?php echo $is_active_action($contacts_url) ? 'button--primary' : 'button--secondary'; ?>"><?php echo esc_html(\WicketORM\Helpers\TemplateHelper::organization_action_label('contact_list')); ?></a>
         <?php endif; ?>
 
         <?php
         $member_list_config = \WicketORM\Services\ConfigService::getConfig()['presentation']['member_list'] ?? [];
 $show_bulk_upload = (bool) ($member_list_config['show_bulk_upload'] ?? false);
-if ($show_bulk_upload && $can_bulk_upload):
+// Bulk upload is a member-management action: only render it on the members page,
+// never on the org profile page (WWID-2259).
+if ($show_bulk_upload && $can_bulk_upload && $is_active_action($members_link)):
     ?>
-            <a href="<?php echo esc_url(add_query_arg($members_params, $members_bulk_url)); ?>"
-                class="button button--secondary component-button wt_flex-equal wt_inline-flex wt_items-center wt_justify-center wt_text-center"><?php esc_html_e('Bulk Upload', 'wicket-acc'); ?></a>
+            <?php $bulk_link = add_query_arg($members_params, $members_bulk_url); ?>
+            <a href="<?php echo esc_url($bulk_link); ?>"
+                <?php if ($is_active_action($bulk_link)) : ?>aria-current="page"<?php endif; ?>
+                class="button component-button wt_flex-equal wt_inline-flex wt_items-center wt_justify-center wt_text-center <?php echo $is_active_action($bulk_link) ? 'button--primary' : 'button--secondary'; ?>"><?php esc_html_e('Bulk Upload', 'wicket-acc'); ?></a>
         <?php endif; ?>
-    </div>
+    </nav>
     <?php endif; ?>
 </div>

@@ -13,7 +13,7 @@ It provides:
 
 - PHP 8.2+
 - WordPress latest
-- `estebanforge/hyperfields` ^1.0 (installed automatically)
+- `estebanforge/hyperfields` ^1.7 (installed automatically; 1.7.0+ supplies the editor-sidebar field schema)
 
 ## Installation
 
@@ -21,13 +21,32 @@ It provides:
 composer require estebanforge/hyperblocks
 ```
 
-Load your project Composer autoloader:
+Load your project Composer autoloader, then call the library bootstrap:
 
 ```php
 require_once __DIR__ . '/vendor/autoload.php';
+
+if (class_exists('\HyperBlocks\WordPress\Bootstrap')) {
+    \HyperBlocks\WordPress\Bootstrap::init();
+}
 ```
 
-HyperBlocks bootstrap is registered via Composer `autoload.files`. HyperFields is bootstrapped automatically, no extra configuration needed.
+HyperBlocks self-initializes (zero-config). Its `bootstrap.php` is a Composer
+`autoload.files` entry that schedules `WordPress\Bootstrap::init()` at
+`after_setup_theme` (priority 0), and chains into the bundled HyperFields
+bootstrap so both libraries come up together. This works across every WordPress
+load order, including the Bedrock and WP-CLI early-load windows where
+`add_action()` is not yet available: there the bootstrap writes the registration
+straight into `$GLOBALS['wp_filter']` in WordPress' preinitialized-hooks format,
+which core converts into a real hook when `plugin.php` loads
+(`WP_Hook::build_preinitialized_hooks`, since WP 4.7). You do not need to call
+`init()` yourself.
+
+Calling `WordPress\Bootstrap::init()` explicitly is still supported as an
+optional deterministic override. It is idempotent and safe under the cross-copy
+election guard. See [`docs/library-bootstrap.md`](docs/library-bootstrap.md)
+for the full guide, the Bedrock dual-copy note, and the explicit-override
+contract.
 
 ## Quick start
 
@@ -61,6 +80,24 @@ hb_register_block(
         ->setRenderTemplateFile('blocks/hero-banner.hb.php')
 );
 ```
+
+Call `->setEditorSidebar()` on a block to render its fields as proper inspector controls — grouped into tabs and sections from the HyperFields schema, with conditional visibility, live badges, and an editor-only sample-data preview:
+
+```php
+$block = Block::make('Hero Banner')
+    ->setName('my-theme/hero-banner')
+    ->setEditorSidebar()
+    ->addFields([
+        Field::make('text', 'heading', 'Heading')->setTab('Content')->setLive(),
+        Field::make('select', 'layout', 'Layout')
+            ->setTab('Content')
+            ->setOptions(['boxed' => 'Boxed', 'full' => 'Full width']),
+        Field::make('checkbox', 'show_border', 'Show border')->setTab('Style'),
+    ])
+    ->setRenderTemplateFile('blocks/hero-banner.hb.php');
+```
+
+Without the opt-in, blocks keep their pre-1.8 editor behavior. See the [editor sidebar](docs/hyperblocks.md#editor-sidebar) for the full feature.
 
 ## Field types
 
@@ -113,9 +150,49 @@ Two pseudo-components are available inside templates:
 <RichText attribute="heading" tag="h1" placeholder="Enter heading" />
 <RichText attribute="body" tag="p" style="color: #333;" />
 
-<!-- InnerBlocks: replaced with a WordPress inner-block placeholder -->
+<!-- InnerBlocks: resolves to the block's nested editor content;
+     requires the ->innerBlocks() opt-in shown below -->
 <InnerBlocks />
 ```
+
+### Nested blocks (InnerBlocks)
+
+Fluent blocks support nested Gutenberg blocks. Opt in with the `innerBlocks()` fluent method; the `<InnerBlocks />` marker in the template then resolves to the markup editors nested inside the block:
+
+```php
+Registry::getInstance()->registerFluentBlock(
+    Block::make('Pricing Card')
+        ->setName('my-theme/pricing-card')
+        ->addFields([
+            Field::make('text', 'plan_name', 'Plan'),
+            Field::make('text', 'price', 'Price'),
+        ])
+        ->innerBlocks([
+            // Which blocks editors may nest (omit the key for all blocks)
+            'allowedBlocks' => ['core/paragraph', 'core/list', 'core/button'],
+            // Pre-filled nested blocks in Gutenberg template syntax (omit for none)
+            'template' => [['core/paragraph', ['placeholder' => 'Describe the plan']]],
+            // 'all' | 'insert' | false (omit to leave unlocked)
+            'templateLock' => false,
+        ])
+        ->setRenderTemplateFile('blocks/pricing-card.hb.php')
+);
+```
+
+Template (`blocks/pricing-card.hb.php`):
+
+```php
+<section class="hb-pricing">
+    <h2><?php echo esc_html($plan_name); ?></h2>
+    <p class="hb-pricing__price"><?php echo esc_html($price); ?></p>
+    <div class="hb-pricing__features">
+        <?php /* Editors' nested blocks render exactly here */ ?>
+        <InnerBlocks />
+    </div>
+</section>
+```
+
+In the editor the block renders its server template with the nested-block area live inside it; the nested content is stored with the block and injected at the marker on the front end. The template must contain the `<InnerBlocks />` marker: a slotted block whose template lacks it drops nested content on the front end (the editor console warns once). Preview `content` is sanitized through `wp_kses_post`. `allowedBlocks` and `templateLock` are editor-side constraints only. Full semantics and caveats: [AGENTS.md](AGENTS.md).
 
 ## Reusable field groups
 
@@ -185,12 +262,12 @@ Config::registerTemplatePath(plugin_dir_path(__FILE__) . 'templates');
 
 | Endpoint | Method | Auth | Description |
 |---|---|---|---|
-| `/wp-json/hyperblocks/v1/block-fields?name=ns/slug` | GET | public | Returns field definitions for a block. |
+| `/wp-json/hyperblocks/v1/block-fields?name=ns/slug` | GET | `edit_posts` | Returns field definitions for a block. |
 | `/wp-json/hyperblocks/v1/render-preview` | POST | `edit_posts` | Server-side renders a block with supplied attributes. |
 
-Preview request body:
+Preview request body (the optional `content` string is inner-blocks markup injected at the block's `<InnerBlocks />` marker, sanitized through `wp_kses_post`):
 ```json
-{ "blockName": "my-theme/hero-banner", "attributes": { "heading": "Hello" } }
+{ "blockName": "my-theme/pricing-card", "attributes": { "plan_name": "Pro" }, "content": "<p>Nested copy</p>" }
 ```
 
 ## Testing

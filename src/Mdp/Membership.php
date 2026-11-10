@@ -256,6 +256,8 @@ class Membership extends Init
         $wicket_memberships = $this->getCurrentPersonMemberships();
 
         if ($wicket_memberships) {
+            $wicket_memberships = $this->topUpTruncatedPrimary($wicket_memberships);
+
             $helper = new \Wicket\ResponseHelper($wicket_memberships);
 
             foreach ($helper->data as $entry) {
@@ -283,6 +285,76 @@ class Membership extends Init
         }
 
         return $membership_summary;
+    }
+
+    /**
+     * The entries endpoint returns 25 records per page unless told otherwise.
+     * A member with more active entries than that can have the primary entry
+     * land on a later page, which silently dropped the membership row from
+     * the account centre blocks (WWID-2709). Detect the truncated page and
+     * top the set up with one primary-only fetch instead of raising the page
+     * size for every request: ~3 KB, and only for members who need it.
+     */
+    private function topUpTruncatedPrimary(array $memberships): array
+    {
+        $total = $memberships['meta']['page']['total_items'] ?? null;
+        $fetched = count($memberships['data'] ?? []);
+
+        if (!is_numeric($total) || $total <= $fetched) {
+            return $memberships;
+        }
+
+        $ids = [];
+        $has_primary = false;
+        foreach ($memberships['data'] as $entry) {
+            $ids[$entry['id'] ?? ''] = true;
+            if (($entry['attributes']['membership_category'] ?? null) === 'primary'
+                && ($entry['attributes']['status'] ?? null) === 'Active') {
+                $has_primary = true;
+            }
+        }
+
+        if ($has_primary) {
+            return $memberships;
+        }
+
+        $primary = $this->getCurrentPersonMemberships([
+            'filter' => [
+                'active_at' => 'now',
+                'membership_category_eq' => 'primary',
+            ],
+            'page' => [
+                'number' => 1,
+                'size' => 5,
+            ],
+        ]);
+
+        if (empty($primary['data']) || !is_array($primary['data'])) {
+            return $memberships;
+        }
+
+        foreach ($primary['data'] as $entry) {
+            if (!isset($ids[$entry['id'] ?? ''])) {
+                $memberships['data'][] = $entry;
+                $ids[$entry['id'] ?? ''] = true;
+            }
+        }
+
+        // The primary entry's membership tier lives in its own 'included' set;
+        // merge it in so ResponseHelper can resolve the relationship.
+        $included_keys = [];
+        foreach ($memberships['included'] ?? [] as $included) {
+            $included_keys[($included['type'] ?? '') . '/' . ($included['id'] ?? '')] = true;
+        }
+        foreach ($primary['included'] ?? [] as $included) {
+            $key = ($included['type'] ?? '') . '/' . ($included['id'] ?? '');
+            if (!isset($included_keys[$key])) {
+                $memberships['included'][] = $included;
+                $included_keys[$key] = true;
+            }
+        }
+
+        return $memberships;
     }
 
     /**

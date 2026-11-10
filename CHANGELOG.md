@@ -2,6 +2,247 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.12.1] - 2026-11-09
+
+### Fixed
+- **deps:** update vendor dependencies (#73)
+
+
+## [1.12.0] - 2026-11-03
+
+### Added
+- **blocks:** keep the legacy toggle on an older base plugin
+- **blocks:** JSON widget config for the Manage Preferences block
+
+### Fixed
+- **blocks:** show the JSON hide on a never-saved legacy toggle
+
+
+## [1.11.23] - 2026-11-03
+
+### Fixed
+- **job-manager:** run dashboard action handler on ACC pages (#72)
+
+### Documentation
+- adopt the stack PR template format #norelease
+- move engineering docs to atlas, flatten guides, streamline AGENTS.md #norelease (#69)
+
+
+## [1.11.22] - 2026-10-22
+
+### Fixed
+- **orgman:** treat term ends as exclusive in the direct/cascade duration
+- **orgman:** show membership dates in the MDP timezone
+
+
+## [1.11.21] - 2026-10-22
+
+### Fixed
+- **welcome:** bail when no MDP person exists (#67)
+
+
+## [1.11.20] - 2026-10-21
+
+### Fixed
+- **orgman:** harden roster removal against cached MDP failures and grace staleness (WWID-2774) (#66)
+
+
+## [1.11.19] - 2026-10-20
+
+### Fixed
+- **orgman:** make cascade removal actually end memberships (WWID-2816) (#65)
+
+
+## [1.11.18] - 2026-10-20
+
+### Fixed
+- **welcome-block:** add filters for welcome block membership labels (WWID-2793)
+
+### Other
+- rename the filters
+- restore colons
+
+
+## [1.11.17] - 2026-10-15
+
+### Fixed
+- **orgman:** clamp remove end date to org membership end (WWID-2774) (#63)
+
+
+## [1.11.16] - 2026-10-14
+
+### Fixed
+- **orgman:** category allowlist for roster resolution (WWID-2742) (#62)
+
+
+## [1.11.15] - 2026-10-14
+
+### Fixed
+- **orgman:** resolve roster tail members and false removals (WWID-2707) (#61)
+
+
+## [1.11.14] - 2026-10-13
+
+### Added
+- **orgss:** pass hide_org_type and document card toggles (WWID-2710) (#60)
+
+
+## [1.11.13] - 2026-10-06
+
+### Fixed
+- **mdp:** restore primary entry when entries page truncates (WWID-2709) (#59)
+
+
+## [1.11.12] - 2026-10-02
+
+### Fixed
+- **shortcodes:** guard REQUEST_URI reads and org-selector role gating (WWID-2665) (#56)
+
+
+## [1.11.11] - 2026-10-02
+
+### Maintenance
+- **ci:** fail closed when main moves before release push (#57)
+
+
+## [1.11.10] - 2026-09-30
+
+### Fixed
+- break restricted-access redirect loop with one-shot bounce marker (#55)
+
+
+## [1.11.9] - 2026-09-30
+
+### Maintenance
+- **deps:** refresh vendor after composer update (WWID-2650) (#53)
+
+
+## [1.11.8] - 2026-09-25
+
+### Fixed
+- **orgman:** read orgman config from presentation shape (WWID-1919) (#52)
+
+
+## [1.11.7] - 2026-09-22
+
+### Fixed
+- **orgman:** keep manager fallback org identifier a UUID (WWID-2381) (#51)
+
+### Other
+- remove confirmation_renewal confirm modal and status polling
+
+
+## [1.11.6] - 2026-09-21
+
+### Fixed
+- **orgman:** stream bulk upload status via SSE with valid signal refs (#48)
+
+
+## [1.11.5] - 2026-09-16
+
+### Added
+- **ac-callout:** confirmation_renewal confirm modal, live status polling, and docs
+
+### Fixed
+- **ac-callout:** bound renewal-order-status polling with a max attempt count
+
+### Maintenance
+- **ac-callout:** use wicket-acc theme variables in modal and spinner styles
+
+
+## [1.11.4] - 2026-09-02
+
+### Fixed
+- **orgman:** keep org UUID in group member custom data (#47)
+
+
+## [1.11.3] - 2026-09-02
+
+### Fixed
+- **orgman:** run bulk upload batches as the acting user (#43)
+
+
+## [1.11.2] - 2026-09-02
+
+### Added
+- **admin:** add required account center pages notice (#45)
+
+
+## [1.11.1] - 2026-09-01
+
+### Fixed
+- **orgman:** render contact list link once at organization level (#46)
+
+
+## [1.11.0] - 2026-08-31
+
+### Fixed
+- **orgman:** fail closed when direct removal cannot resolve membership #minor (#39)
+
+
+## [1.10.1] - 2026-08-26
+
+### Fixed
+- **acc:** drop dynamic property self-registration in Notification service (#38)
+
+
+## [1.10.0] - 2026-08-26
+
+### Fixed
+- **orgman:** direct roster removal ends membership, validate membership uuids #minor (#37)
+
+
+## [1.9.0] - 2026-08-25
+
+### Added
+- **org-roster:** shared action labels, nav-style details actions, opt-in single-org landing skip #minor (#36)
+
+
+## [1.8.9] - 2026-08-21
+
+### Fixed
+- **seats:** remove checkout return URL override, purge roster cache (#35)
+
+
+## [1.8.8] - 2026-08-21
+
+### Added
+- **org-roster:** add wicket/org-roster/enabled kill switch filter (#34)
+
+### Documentation
+- add PR description template #norelease
+
+
+## [1.8.7] - 2026-08-17
+
+### Fixed
+- **org-management:** stop org_id/org_uuid redirect loop on legacy rosters
+
+
+## [1.8.6] - 2026-08-13
+
+### Fixed
+- **roster:** stop createConnection masking payload-build errors (#30)
+
+
+## [1.8.5] - 2026-08-13
+
+### Fixed
+- **security:** close object injection and output XSS in touchpoint blocks (#31)
+
+
+## [1.8.4] - 2026-08-11
+
+### Added
+- **roster:** make bulk upload strategy-aware (#28)
+
+
+## [1.8.3] - 2026-08-11
+
+### Fixed
+- **mdp:** access WACC MDP service via method call, not property
+
+
 ## [1.8.2] - 2026-08-10
 
 ### Added

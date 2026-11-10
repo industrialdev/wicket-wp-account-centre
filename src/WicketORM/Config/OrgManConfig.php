@@ -96,6 +96,11 @@ final class OrgManConfig
                 'strategy' => 'direct',
                 'resolution' => [
                     'prefer_current_cycle' => false,
+                    // Roster management binds only to entries whose membership_category
+                    // matches one of these values (case-insensitive). Empty = feature off:
+                    // every category is roster-eligible. Set but unusable (non-array or no
+                    // usable strings) denies all, so a config typo fails closed. WWID-2742.
+                    'roster_categories' => [],
                 ],
                 'cycle' => [
                     'key' => 'membership_cycle',
@@ -168,11 +173,7 @@ final class OrgManConfig
                         ],
                     ],
                 ],
-                'removal' => [
-                    'direct' => [
-                        'preserve_relationship' => false,
-                    ],
-                ],
+                'removal' => [],
                 'forms' => [
                     'add_member' => [
                         'layout' => 'full',
@@ -251,6 +252,11 @@ final class OrgManConfig
                     ],
                     'relationship_type' => [
                         'required' => true,
+                        // Escape hatch for BulkMemberUploadService::adaptColumnsToRosterMode().
+                        // Seat-based strategies (direct, groups, membership_cycle) relax this
+                        // column by default because they do not consume a relationship. Set
+                        // true to keep the column required on those strategies.
+                        'force_required' => false,
                         'allowed_types' => [
                             'employee_staff',
                             'grade_4',
@@ -325,6 +331,15 @@ final class OrgManConfig
             'presentation' => [
                 'organization_details' => [
                     'show_actions' => true,
+                    // Shared labels for the org-profile and manage-members actions.
+                    // Used by the details action nav and the organization list cards
+                    // so both surfaces stay in sync (WWID-2259).
+                    'labels' => [
+                        'org_profile' => __('Org. Profile', 'wicket-acc'),
+                        'manage_members' => __('Manage Members', 'wicket-acc'),
+                        // Org-scoped contacts roster action (WWID-2385).
+                        'contact_list' => __('Manage Contact List', 'wicket-acc'),
+                    ],
                 ],
                 'organization_list' => [
                     'show_my_role' => true,
@@ -334,6 +349,10 @@ final class OrgManConfig
                     'show_membership_details' => false,
                     'show_organization_name' => true,
                     'show_managed_orgs_summary' => false,
+                    // When true and the user manages exactly one organization with
+                    // an actionable role, the management landing redirects straight
+                    // to that organization instead of showing the one-card list (WWID-2259).
+                    'single_org_skip' => false,
                 ],
                 'relationships' => [
                     'show_type' => false,
@@ -445,7 +464,7 @@ final class OrgManConfig
                     'enabled' => true,
                     'duration' => 5 * 60,
                     'search_clear_cache_duration' => 1 * 60 * 60,
-                    'cache_salt' => '202604243100',
+                    'cache_salt' => '202610131800',
                 ],
             ],
             'removal' => [

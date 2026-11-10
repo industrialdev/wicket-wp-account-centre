@@ -131,6 +131,32 @@ class DatastarSSE
     }
 
     /**
+     * Patch a target element with pre-rendered HTML and optionally set signals.
+     *
+     * Unlike renderSuccess()/renderError(), the caller owns the markup. Used by
+     * polling endpoints that stream a rendered status partial into the modal.
+     *
+     * @param string $html           The HTML to patch into the target.
+     * @param string $targetSelector The CSS selector for the target element.
+     * @param array  $signalsToSet   Associative array of signal names and values to set (optional).
+     * @return void
+     */
+    public static function patchHtml(string $html, string $targetSelector, array $signalsToSet = []): void
+    {
+        $generator = new ServerSentEventGenerator();
+        $generator->sendHeaders();
+
+        if (!empty($signalsToSet)) {
+            $generator->patchSignals($signalsToSet);
+        }
+
+        $generator->patchElements($html, [
+            'selector' => $targetSelector,
+            'mode' => ElementPatchMode::Inner,
+        ]);
+    }
+
+    /**
      * Set multiple Datastar signals at once.
      *
      * @param array $signals Associative array of signal names and values.

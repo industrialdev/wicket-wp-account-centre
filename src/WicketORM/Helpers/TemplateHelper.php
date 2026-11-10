@@ -39,6 +39,131 @@ class TemplateHelper extends Helper
     }
 
     /**
+     * Get a shared organization action label from orgman config.
+     *
+     * Labels for the org-profile and manage-members actions live under
+     * presentation.organization_details.labels so the details action nav and
+     * the organization list cards render identical wording (WWID-2259).
+     *
+     * Supported keys: 'org_profile', 'manage_members', 'contact_list'.
+     *
+     * @param string $key Label key.
+     * @return string Label text; stack default when unset or blank.
+     */
+    public static function organization_action_label(string $key): string
+    {
+        $defaults = [
+            'org_profile' => __('Org. Profile', 'wicket-acc'),
+            'manage_members' => __('Manage Members', 'wicket-acc'),
+            'contact_list' => __('Manage Contact List', 'wicket-acc'),
+        ];
+        $labels = \WicketORM\Services\ConfigService::getConfig()['presentation']['organization_details']['labels'] ?? [];
+        $label = is_array($labels) ? trim((string) ($labels[$key] ?? '')) : '';
+
+        return $label !== '' ? $label : (string) ($defaults[$key] ?? $key);
+    }
+
+    /**
+     * Parse an MDP date and shift it into the MDP timezone for display.
+     *
+     * MDP stores dates as UTC instants (a Europe/Paris 2026-01-01 start is
+     * 2025-12-31T23:00:00Z), so formatting the raw value shows the UTC day
+     * and year. Bare dates without an offset are read as MDP-local days.
+     *
+     * @param string $value MDP date string.
+     * @return \DateTimeImmutable|null Date in the MDP timezone, or null when empty/unparseable.
+     */
+    public static function mdp_datetime(string $value): ?\DateTimeImmutable
+    {
+        $value = trim($value);
+        if ($value === '') {
+            return null;
+        }
+
+        $timezone = self::mdp_timezone();
+
+        try {
+            return (new \DateTimeImmutable($value, $timezone))->setTimezone($timezone);
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Format an MDP date string or Unix timestamp for display in the MDP timezone.
+     *
+     * @param string|int  $value  MDP date string or Unix timestamp.
+     * @param string|null $format PHP date format; defaults to a translatable 'F j, Y'.
+     * @return string Localized date, or '' when empty/unparseable.
+     */
+    public static function format_mdp_date(string|int $value, ?string $format = null): string
+    {
+        if (is_int($value)) {
+            $value = $value > 0 ? '@' . $value : '';
+        }
+
+        $date = self::mdp_datetime($value);
+        if (!$date) {
+            return '';
+        }
+
+        /* translators: PHP date format for membership dates. */
+        $format ??= __('F j, Y', 'wicket-acc');
+
+        return (string) wp_date($format, $date->getTimestamp(), $date->getTimezone());
+    }
+
+    /**
+     * Resolve the MDP timezone once per setting value.
+     *
+     * @return \DateTimeZone
+     */
+    private static function mdp_timezone(): \DateTimeZone
+    {
+        static $resolved = [];
+
+        $env_value = (string) ($_ENV['WICKET_MSHIP_MDP_TIMEZONE'] ?? '') . '|' . (string) getenv('WICKET_MSHIP_MDP_TIMEZONE');
+        if (isset($resolved[$env_value])) {
+            return $resolved[$env_value];
+        }
+
+        if (function_exists('wicket_time_get_mdp_timezone')) {
+            return $resolved[$env_value] = wicket_time_get_mdp_timezone();
+        }
+
+        // Older base plugins lack the helper; match its env-then-UTC fallback.
+        $setting = trim((string) ($_ENV['WICKET_MSHIP_MDP_TIMEZONE'] ?? getenv('WICKET_MSHIP_MDP_TIMEZONE')));
+        try {
+            return $resolved[$env_value] = new \DateTimeZone($setting !== '' ? $setting : 'UTC');
+        } catch (\Throwable $e) {
+            return $resolved[$env_value] = new \DateTimeZone('UTC');
+        }
+    }
+
+    /**
+     * Determine whether a membership cycle entry should be included in the organization list.
+     *
+     * @param array  $om_attrs  Membership attributes array (active, in_grace, starts_at, ends_at, etc.).
+     * @param array  $om_data   Full raw API entry data array.
+     * @param string $org_uuid  UUID of the organization being rendered.
+     * @return bool True if entry should be included, false otherwise.
+     */
+    public static function should_include_membership_cycle_entry(array $om_attrs, array $om_data = [], string $org_uuid = ''): bool
+    {
+        $is_active = !empty($om_attrs['active']);
+        $in_grace = !empty($om_attrs['in_grace']);
+        $include = $is_active || $in_grace;
+
+        return (bool) apply_filters(
+            'wicket/acc/orgman/membership_cycle_include_entry',
+            $include,
+            $om_attrs,
+            $om_data,
+            $org_uuid
+        );
+    }
+
+    /**
      * Detect if it's a template request for our org management system.
      *
      * @return bool

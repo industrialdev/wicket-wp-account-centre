@@ -53,7 +53,7 @@ if ($mode === 'groups') {
 } else {
     $search_action = "@get('{$members_list_endpoint}{$members_list_separator}org_uuid={$encoded_org_uuid}&page=1&query=' + encodeURIComponent(" . '$searchQuery' . '))';
 }
-$search_success = '$listLoading = false; ' . wp_sprintf("select('#%s') | set(html)", $members_list_target);
+$search_success = '$listLoading = false;';
 
 $signals = [
     'searchQuery' => $query,
@@ -290,6 +290,7 @@ $orgman_token_attrs = 'title="' . esc_attr__('Click to copy', 'wicket-acc') . '"
     <?php endif; ?>
 
     <?php
+$clear_form_on_error = (bool) ($orgman_config['member_management']['forms']['add_member']['clear_form_on_error'] ?? false);
 $groups_config = is_array($orgman_config['groups'] ?? null) ? $orgman_config['groups'] : [];
 $groups_presentation = is_array($groups_config['presentation'] ?? null)
     ? $groups_config['presentation']
@@ -309,6 +310,7 @@ $group_add_member_success_actions = "console.log('Group member added successfull
 if ($group_add_member_auto_close_on_success && $group_add_member_auto_close_delay_seconds > 0) {
     $group_add_member_success_actions .= " \$autoCloseCountdown = {$group_add_member_auto_close_delay_seconds};";
 }
+$clear_form_on_error = (bool) ($orgman_config['member_management']['forms']['add_member']['clear_form_on_error'] ?? false);
 $add_member_error_actions = "console.error('Failed to add member'); \$addMemberSubmitting = false; \$membersLoading = false; \$addMemberSuccess = false; \$autoCloseCountdown = 0;";
 if ($clear_form_on_error) {
     $add_member_error_actions .= " el.closest('form').reset();";

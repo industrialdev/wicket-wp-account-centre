@@ -20,7 +20,7 @@ defined('ABSPATH') || exit;
 /**
  * Returns active memberships from wicket API.
  *
- * @deprecated 1.6.0 Available as method WACC()->Mdp->Membership->getCurrentPersonActiveMemberships()
+ * @deprecated 1.6.0 Available as method WACC()->Mdp()->Membership()->getCurrentPersonActiveMemberships()
  */
 function wicket_get_active_memberships($iso_code = 'en')
 {
@@ -32,7 +32,7 @@ function wicket_get_active_memberships($iso_code = 'en')
 /**
  * Returns active memberships from WooCommerce.
  *
- * @deprecated 1.6.0 Available as method WACC()->Mdp->Membership->getCurrentUserWooActiveMemberships()
+ * @deprecated 1.6.0 Available as method WACC()->Mdp()->Membership()->getCurrentUserWooActiveMemberships()
  */
 function woo_get_active_memberships()
 {
@@ -44,7 +44,7 @@ function woo_get_active_memberships()
 /**
  * Returns active memberships relationship from wicket API.
  *
- * @deprecated 1.6.0 Available as method WACC()->Mdp->Membership->getActiveMembershipRelationship()
+ * @deprecated 1.6.0 Available as method WACC()->Mdp()->Membership()->getActiveMembershipRelationship()
  */
 function wicket_get_active_memberships_relationship($org_uuid)
 {

@@ -210,25 +210,14 @@ class MemberExportController extends ApiController
     }
 
     /**
+     * Render a partial template as an HTML response.
+     *
      * @param string $template
      * @param array  $data
      * @return WP_REST_Response
      */
     private function htmlResponse(string $template, array $data): WP_REST_Response
     {
-        ob_start();
-        if (!empty($data)) {
-            extract($data);
-        }
-        $template_path = dirname(dirname(__FILE__)) . '/templates-partials/' . $template . '.php';
-        if (file_exists($template_path)) {
-            include $template_path;
-        }
-        $html = ob_get_clean();
-
-        $response = new WP_REST_Response($html);
-        $response->header('Content-Type', 'text/html');
-
-        return $response;
+        return $this->templateResponse($template, $data);
     }
 }

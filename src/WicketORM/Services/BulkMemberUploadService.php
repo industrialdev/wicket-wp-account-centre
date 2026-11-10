@@ -20,6 +20,14 @@ class BulkMemberUploadService
     public const CRON_HOOK = 'wicket_orgman_process_bulk_upload_job';
 
     /**
+     * Roster strategies that assign membership seats without creating a
+     * person-to-organization relationship. For these strategies the bulk-upload
+     * relationship_type column is never required (see adaptColumnsToRosterMode).
+     * Only cascade uses relationships, so only cascade keeps the requirement.
+     */
+    private const STRATEGIES_WITHOUT_RELATIONSHIP_TYPE = ['direct', 'groups', 'membership_cycle'];
+
+    /**
      * @var ConfigService
      */
     private $configService;
@@ -65,6 +73,22 @@ class BulkMemberUploadService
         string $roster_mode,
         string $group_uuid = ''
     ) {
+        // The batch worker impersonates this user (see processScheduledJob):
+        // cron context has no logged-in user, so the job must carry who to
+        // run as. Fail closed rather than queueing a job that can only fail
+        // per-row with "no permission".
+        $acting_user_id = get_current_user_id();
+        if ($acting_user_id <= 0) {
+            $this->logActivity('error', 'Bulk upload enqueue failed: no acting user', [
+                'file_name' => $file_name,
+                'org_uuid' => $org_uuid,
+                'membership_uuid' => $membership_uuid,
+                'roster_mode' => $roster_mode,
+            ]);
+
+            return new WP_Error('bulk_no_acting_user', __('Unable to determine the uploading user.', 'wicket-acc'));
+        }
+
         $config = $this->configService->getFullConfig();
         $bulk_upload_config = is_array($config['member_management']['bulk_upload'] ?? null)
             ? $config['member_management']['bulk_upload']
@@ -195,23 +219,46 @@ class BulkMemberUploadService
                     );
                 }
 
-                $this->logActivity('warning', 'Bulk upload enqueue blocked: duplicate file already processed', [
+                // A finished job only blocks re-upload when nothing was left
+                // undone: every row resolved without a failure (added or
+                // legitimately skipped). Jobs whose rows failed must be
+                // retryable with the same file: that is how a membership
+                // manager recovers from a bad run without editing the CSV.
+                // Rows already added are skipped as existing members.
+                $existing_added = (int) ($existing_job['added'] ?? 0);
+                $existing_total = (int) ($existing_job['total_records'] ?? 0);
+                $existing_failed = (int) ($existing_job['failed'] ?? 0);
+                $existing_processed = (int) ($existing_job['processed'] ?? 0);
+                if ($existing_failed === 0 && $existing_processed >= $existing_total) {
+                    $this->logActivity('warning', 'Bulk upload enqueue blocked: duplicate file already processed', [
+                        'existing_job_id' => $existing_job_id,
+                        'existing_status' => $existing_status,
+                        'file_name' => $file_name,
+                        'file_sha256' => $file_sha256,
+                        'org_uuid' => $org_uuid,
+                        'membership_uuid' => $membership_uuid,
+                    ]);
+
+                    return new WP_Error(
+                        'bulk_duplicate_finished_job',
+                        sprintf(
+                            __('This exact same CSV was already processed before (matching file hash). Existing job: %1$s (status: %2$s). Please upload a different CSV with different users.', 'wicket-acc'),
+                            $existing_job_id,
+                            $existing_status
+                        )
+                    );
+                }
+
+                $this->logActivity('info', 'Bulk upload enqueue allowed: retrying incomplete duplicate file', [
                     'existing_job_id' => $existing_job_id,
                     'existing_status' => $existing_status,
+                    'existing_added' => $existing_added,
+                    'existing_total' => $existing_total,
                     'file_name' => $file_name,
                     'file_sha256' => $file_sha256,
                     'org_uuid' => $org_uuid,
                     'membership_uuid' => $membership_uuid,
                 ]);
-
-                return new WP_Error(
-                    'bulk_duplicate_finished_job',
-                    sprintf(
-                        __('This exact same CSV was already processed before (matching file hash). Existing job: %1$s (status: %2$s). Please upload a different CSV with different users.', 'wicket-acc'),
-                        $existing_job_id,
-                        $existing_status
-                    )
-                );
             }
         }
 
@@ -229,6 +276,7 @@ class BulkMemberUploadService
             'membership_uuid' => $membership_uuid,
             'roster_mode' => $roster_mode,
             'group_uuid' => $group_uuid,
+            'acting_user_id' => $acting_user_id,
             'total_records' => count($rows),
             'processed' => 0,
             'added' => 0,
@@ -258,6 +306,9 @@ class BulkMemberUploadService
             $job['status'] = 'failed';
             $job['updated_at'] = $this->nowIso8601();
             $this->appendErrorSnippet($job, __('Unable to schedule background processing.', 'wicket-acc'));
+            // Do not keep the full CSV payload in options for a dead job.
+            $job['rows'] = [];
+            $job['seen_emails'] = [];
             $this->saveJob($job);
             $this->logActivity('error', 'Bulk upload job queue failed: unable to schedule first batch', [
                 'job_id' => $job_id,
@@ -292,6 +343,69 @@ class BulkMemberUploadService
         if ($status === 'completed' || $status === 'failed') {
             return;
         }
+
+        // Cron workers run with no logged-in user, and the per-strategy
+        // permission gates (PermissionHelper::role_check,
+        // GroupService::canManageGroup) resolve the acting member from the
+        // current user. Run the batch as the uploader captured at enqueue so
+        // those gates evaluate the real member. wp-cron can process several
+        // due hooks in one request: the finally guarantees a thrown error
+        // cannot leak the impersonated identity to a later hook.
+        $acting_user_id = (int) ($job['acting_user_id'] ?? 0);
+        $previous_user_id = get_current_user_id();
+        if ($acting_user_id > 0 && get_userdata($acting_user_id) !== false) {
+            wp_set_current_user($acting_user_id);
+        } else {
+            $this->logActivity('warning', 'Bulk upload batch has no resolvable acting user; permission checks will fail closed', [
+                'job_id' => $job_id,
+                'acting_user_id' => $acting_user_id,
+            ]);
+        }
+
+        // Second line of defense for the impersonation: finally{} below does
+        // not run on exit()/die() (wp_die), and wp-cron processes all due
+        // hooks in one request. Core's shutdown action still fires on those
+        // paths, so restore there too. Must be registered BEFORE the batch:
+        // a fatal mid-batch never reaches code placed after it.
+        add_action('shutdown', function () use ($job_id, $acting_user_id, $previous_user_id): void {
+            $current_user_id = get_current_user_id();
+            if ($acting_user_id > 0 && $current_user_id === $acting_user_id) {
+                wp_set_current_user($previous_user_id);
+
+                return;
+            }
+            // Restore skipped. Normal when finally{} already ran (identity is
+            // back to the cron user). A third identity means another hook
+            // swapped the current user mid-request: restoring here would
+            // clobber their switch, so leave it and log.
+            if ($acting_user_id > 0 && $current_user_id !== $previous_user_id) {
+                $this->logActivity('warning', 'Bulk upload shutdown restore skipped: current user changed mid-request', [
+                    'job_id' => $job_id,
+                    'acting_user_id' => $acting_user_id,
+                    'previous_user_id' => $previous_user_id,
+                    'current_user_id' => $current_user_id,
+                ]);
+            }
+        });
+
+        try {
+            $this->runBatch($job, $status);
+        } finally {
+            wp_set_current_user($previous_user_id);
+        }
+    }
+
+    /**
+     * Process one batch for an in-progress job. Called by processScheduledJob
+     * under the acting user's identity; all state changes persist via saveJob().
+     *
+     * @param array<string, mixed> $job
+     * @param string               $status Job status before this batch started.
+     * @return void
+     */
+    private function runBatch(array $job, string $status): void
+    {
+        $job_id = (string) ($job['id'] ?? '');
 
         $job['status'] = 'processing';
         $job['updated_at'] = $this->nowIso8601();
@@ -343,8 +457,12 @@ class BulkMemberUploadService
             : [];
 
         $relationship_column_enabled = (bool) ($bulk_column_definitions['relationship_type']['enabled'] ?? false);
+        // getBulkColumnDefinitions() already folds bulk_upload.relationship_type.required
+        // into the column definition and then applies strategy-aware adaptation
+        // (adaptColumnsToRosterMode), so the column definition is the single source
+        // of truth for whether relationship_type is required for this site's strategy.
         $relationship_required = $relationship_column_enabled
-            && (bool) ($relationship_bulk_config['required'] ?? ($bulk_column_definitions['relationship_type']['required'] ?? false));
+            && (bool) ($bulk_column_definitions['relationship_type']['required'] ?? false);
 
         $relationship_allowed_types_raw = is_array($relationship_bulk_config['allowed_types'] ?? null)
             ? $relationship_bulk_config['allowed_types']
@@ -613,6 +731,9 @@ class BulkMemberUploadService
             $job['status'] = 'failed';
             $job['updated_at'] = $this->nowIso8601();
             $this->appendErrorSnippet($job, __('Unable to schedule next background batch.', 'wicket-acc'));
+            // Do not keep the full CSV payload in options for a dead job.
+            $job['rows'] = [];
+            $job['seen_emails'] = [];
             $this->saveJob($job);
             $this->logActivity('error', 'Bulk upload job failed: unable to schedule next batch', [
                 'job_id' => (string) ($job['id'] ?? ''),
@@ -634,6 +755,9 @@ class BulkMemberUploadService
         return [
             'id' => (string) ($job['id'] ?? ''),
             'status' => (string) ($job['status'] ?? ''),
+            'org_uuid' => (string) ($job['org_uuid'] ?? ''),
+            'group_uuid' => (string) ($job['group_uuid'] ?? ''),
+            'roster_mode' => (string) ($job['roster_mode'] ?? ''),
             'file_name' => (string) ($job['file_name'] ?? ''),
             'file_sha256' => (string) ($job['file_sha256'] ?? ''),
             'created_at' => (string) ($job['created_at'] ?? ''),
@@ -909,6 +1033,51 @@ class BulkMemberUploadService
             );
         }
 
+        return $this->adaptColumnsToRosterMode($bulk_column_definitions, $bulk_upload_config);
+    }
+
+    /**
+     * Adapt bulk-upload column requirements to the site's roster strategy.
+     *
+     * The relationship_type CSV column only matters for strategies that create a
+     * person-to-organization relationship (cascade). The seat-based strategies
+     * (direct, groups, membership_cycle) assign membership seats without one, so
+     * a blank or omitted relationship_type column must not block the import on
+     * those tenants by default.
+     *
+     * Escape hatch: a tenant can set
+     * bulk_upload.relationship_type.force_required = true to keep the column
+     * required even on a seat-based strategy (for example, to collect
+     * relationship metadata the strategy does not itself consume). The default
+     * OrgManConfig ships relationship_type.required = true, so detecting a
+     * tenant override by key presence is not possible; force_required is the
+     * explicit, unambiguous opt-in.
+     *
+     * Non-breaking: cascade keeps its configured requirement; the seat-based
+     * modes relax only the default requirement; the column stays enabled, so a
+     * CSV that includes it is still parsed and forwarded to the active strategy.
+     *
+     * @param array<string, array<string, mixed>> $bulk_column_definitions
+     * @param array<string, mixed> $bulk_upload_config
+     * @return array<string, array<string, mixed>>
+     */
+    private function adaptColumnsToRosterMode(array $bulk_column_definitions, array $bulk_upload_config): array
+    {
+        if (
+            !isset($bulk_column_definitions['relationship_type'])
+            || !in_array($this->resolveRosterMode(), self::STRATEGIES_WITHOUT_RELATIONSHIP_TYPE, true)
+        ) {
+            return $bulk_column_definitions;
+        }
+
+        // Honor an explicit tenant opt-in to keep the column required.
+        $force_required = (bool) ($bulk_upload_config['relationship_type']['force_required'] ?? false);
+        if ($force_required) {
+            return $bulk_column_definitions;
+        }
+
+        $bulk_column_definitions['relationship_type']['required'] = false;
+
         return $bulk_column_definitions;
     }
 
@@ -945,6 +1114,16 @@ class BulkMemberUploadService
         }
 
         return $export_columns;
+    }
+
+    /**
+     * Resolve the active roster-management strategy for the current site.
+     *
+     * @return string
+     */
+    private function resolveRosterMode(): string
+    {
+        return (string) $this->configService->getRosterMode();
     }
 
     /**
