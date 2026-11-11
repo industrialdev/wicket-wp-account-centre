@@ -596,7 +596,9 @@ final class Service
 
         $lockKey = md5($personUuid . '|' . $orgUuid);
 
-        if (!$this->acquireMutationLock($lockKey)) {
+        $lockValue = $this->acquireMutationLock($lockKey);
+
+        if ($lockValue === null) {
             return new WP_Error('me_busy', 'An update to this employer is already in progress. Try again in a moment.', ['status' => 429]);
         }
 
@@ -640,7 +642,7 @@ final class Service
                 'errors' => $errors,
             ];
         } finally {
-            $this->releaseMutationLock($lockKey);
+            $this->releaseMutationLock($lockKey, $lockValue);
         }
     }
 
@@ -708,7 +710,9 @@ final class Service
 
         $lockKey = 'org-' . md5(strtolower($name) . '|' . $type);
 
-        if (!$this->acquireMutationLock($lockKey)) {
+        $lockValue = $this->acquireMutationLock($lockKey);
+
+        if ($lockValue === null) {
             return new WP_Error('me_busy', 'An organization with this name is already being created.', ['status' => 429]);
         }
 
@@ -750,7 +754,7 @@ final class Service
 
             return ['uuid' => $uuid, 'duplicate' => false];
         } finally {
-            $this->releaseMutationLock($lockKey);
+            $this->releaseMutationLock($lockKey, $lockValue);
         }
     }
 
@@ -1276,33 +1280,77 @@ final class Service
     }
 
     /**
-     * Atomic per-person/org (or per-name) mutation lock. add_option fails when
-     * the row exists, which no transient or cache primitive guarantees across
-     * the object-cache configurations this stack runs.
+     * Atomic per-person/org (or per-name) mutation lock. add_option fails
+     * when the row exists, which no transient or cache primitive guarantees
+     * across the object-cache configurations this stack runs. Option rows
+     * come back as strings on a cache-cold request, so freshness must be
+     * checked with numeric parsing, never is_int(). Values are
+     * "timestamp:token" pairs: the token makes the guarded takeover and the
+     * guarded release compare-and-set, so two racing requests cannot both
+     * win a stale lock or delete a successor's lock.
+     *
+     * @return string|null The stored lock value on success, null when busy.
      */
-    private function acquireMutationLock(string $key): bool
+    private function acquireMutationLock(string $key): ?string
     {
         $option = 'wicket_acc_me_lock_' . $key;
-        $now = time();
+        $token = wp_generate_password(24, false);
+        $next = time() . ':' . $token;
         $existing = get_option($option);
 
         if ($existing === false) {
-            return add_option($option, $now, '', false);
+            return add_option($option, $next, '', false) ? $next : null;
         }
 
-        if (is_int($existing) && ($now - $existing) < 30) {
+        $existingValue = is_scalar($existing) ? (string) $existing : '';
+        $lockTime = (string) (explode(':', $existingValue, 2)[0] ?? '');
+
+        if (ctype_digit($lockTime) && (time() - (int) $lockTime) < 30) {
+            return null;
+        }
+
+        return $this->compareAndSetLock($option, $existingValue, $next) ? $next : null;
+    }
+
+    private function releaseMutationLock(string $key, string $lockValue): void
+    {
+        global $wpdb;
+
+        // Deleting only our exact value cannot clobber a lock that was taken
+        // over by a newer request while this one was still running.
+        $wpdb->query($wpdb->prepare(
+            "DELETE FROM {$wpdb->options} WHERE option_name = %s AND option_value = %s",
+            'wicket_acc_me_lock_' . $key,
+            $lockValue
+        ));
+
+        wp_cache_delete('wicket_acc_me_lock_' . $key, 'options');
+        wp_cache_delete('alloptions', 'options');
+    }
+
+    /**
+     * Single-statement guarded write so only one racing request converts a
+     * stale lock into its own; a plain get-then-update lets both win.
+     */
+    private function compareAndSetLock(string $option, string $expected, string $next): bool
+    {
+        global $wpdb;
+
+        $updated = $wpdb->query($wpdb->prepare(
+            "UPDATE {$wpdb->options} SET option_value = %s WHERE option_name = %s AND option_value = %s",
+            $next,
+            $option,
+            $expected
+        ));
+
+        if (!$updated) {
             return false;
         }
 
-        // Stale lock from a crashed request: take over.
-        update_option($option, $now);
+        wp_cache_delete($option, 'options');
+        wp_cache_delete('alloptions', 'options');
 
         return true;
-    }
-
-    private function releaseMutationLock(string $key): void
-    {
-        delete_option('wicket_acc_me_lock_' . $key);
     }
 
     private function client(): ?Client

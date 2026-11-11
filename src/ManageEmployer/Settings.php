@@ -288,6 +288,16 @@ final class Settings
             };
         }
 
+        // The create allow-list is a subset of the org allow-list: a type the
+        // block cannot add must never be creatable either. An empty org list
+        // means every type is allowed, so the create list stays untouched.
+        if ($resolved['create_org_types'] !== [] && $resolved['org_types'] !== []) {
+            $resolved['create_org_types'] = array_values(array_intersect(
+                $resolved['create_org_types'],
+                $resolved['org_types']
+            ));
+        }
+
         return $resolved;
     }
 

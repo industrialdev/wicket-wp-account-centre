@@ -66,6 +66,10 @@ $me_create_types = !empty($me_settings['create_org_types'])
 // only paints. The plugin has no JS translation pipeline.
 $me_config = [
     'id' => $me_id,
+    // Cache keys ride this hash so a user switch in the same tab never
+    // paints the previous member's employers. A truncated md5 stays
+    // non-identifying while separating sessionStorage entries.
+    'user' => substr(md5((string) wicket_current_person_uuid()), 0, 8),
     'singular' => $singular,
     'plural' => $plural,
     'mode' => $me_mode,

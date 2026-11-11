@@ -56,6 +56,7 @@
 			this.tabCounts = { current: 0, past: 0 };
 			this.loaded = false;
 			this.mutating = false;
+			this.pollActive = false;
 			this.requestSeq = 0;
 			this.searchSeq = 0;
 			this.retryTimer = 0;
@@ -145,9 +146,11 @@
 		}
 
 		// The settings payload identifies the block configuration, so two
-		// blocks sharing an instance id across pages never swap cache.
+		// blocks sharing an instance id across pages never swap cache. The
+		// per-user hash keeps a user switch in the same tab from painting
+		// the previous member's cached employers.
 		cacheKey() {
-			return CACHE_PREFIX + ':' + this.config.id + ':' +
+			return CACHE_PREFIX + ':' + (this.config.user || '') + ':' + this.config.id + ':' +
 				WicketManageEmployer.hashString(this.settings) + ':' + this.tab + ':' + this.page;
 		}
 
@@ -831,7 +834,7 @@
 			this.addBtn.addEventListener('click', () => {
 				const orgUuid = this.selectedInput ? this.selectedInput.value : '';
 
-				if (!orgUuid || this.addBtn.disabled || this.mutating) {
+				if (!orgUuid || this.addBtn.disabled || this.mutating || this.pollActive) {
 					return;
 				}
 
@@ -871,6 +874,7 @@
 					this.mutating = false;
 					this.showAddError(err.message);
 				}).finally(() => {
+					this.mutating = false;
 					this.addBtn.textContent = this.label('add');
 					this.addBtn.disabled = this.selectedInput ? this.selectedInput.value === '' : true;
 				});
@@ -881,7 +885,7 @@
 			this.listEl.addEventListener('click', (evt) => {
 				const btn = evt.target.closest('[data-me-action]');
 
-				if (!btn || btn.disabled || this.mutating) {
+				if (!btn || btn.disabled || this.mutating || this.pollActive) {
 					return;
 				}
 
@@ -998,6 +1002,8 @@
 			}).catch((err) => {
 				this.mutating = false;
 				this.setFeedback(err.message, 'error');
+			}).finally(() => {
+				this.mutating = false;
 			});
 		}
 
@@ -1027,6 +1033,7 @@
 				this.mutating = false;
 				this.setFeedback(err.message, 'error');
 			}).finally(() => {
+				this.mutating = false;
 				btn.disabled = false;
 				btn.textContent = this.label('set_primary');
 			});
@@ -1070,6 +1077,7 @@
 				this.mutating = false;
 				this.setFeedback(err.message, 'error');
 			}).finally(() => {
+				this.mutating = false;
 				btn.disabled = false;
 				btn.textContent = this.label('rejoin');
 			});
@@ -1077,7 +1085,7 @@
 
 		wireCreateOrg() {
 			this.createSubmitBtn.addEventListener('click', () => {
-				if (this.mutating) {
+				if (this.mutating || this.pollActive) {
 					return;
 				}
 
@@ -1145,6 +1153,7 @@
 					this.mutating = false;
 					this.showCreateError(err.message, this.createNameInput);
 				}).finally(() => {
+					this.mutating = false;
 					this.createSubmitBtn.disabled = false;
 					this.createSubmitBtn.textContent = prevLabel;
 
@@ -1194,19 +1203,24 @@
 			this.clearStateCache();
 			window.clearTimeout(this.retryTimer);
 			this.mutating = true;
+			this.pollActive = true;
 			this.setLoading();
 			this.pollState(expectation, RETRY_DELAYS_MS.length + 1);
 		}
 
 		cancelMutationPoll() {
 			window.clearTimeout(this.retryTimer);
-			this.mutating = false;
+			// Only the poll dies here; the in-flight request still clears its
+			// own mutating flag, so tab clicks cannot reopen the submit guards
+			// mid-request.
+			this.pollActive = false;
 		}
 
 		pollState(expectation, attemptsLeft) {
 			if (attemptsLeft <= 0) {
 				// The change landed server-side; keep the honest picture and say so.
 				this.mutating = false;
+				this.pollActive = false;
 				this.setFeedback(this.label('stale_update'), 'info');
 				return;
 			}
@@ -1230,6 +1244,7 @@
 
 				if (this.mutationSettled(payload || {}, expectation)) {
 					this.mutating = false;
+					this.pollActive = false;
 					return;
 				}
 
@@ -1245,6 +1260,7 @@
 
 				if (!this.loaded) {
 					this.mutating = false;
+					this.pollActive = false;
 					this.listEl.removeAttribute('aria-busy');
 					this.listEl.textContent = '';
 					this.listEl.appendChild(this.emptyLi(err.message));
@@ -1252,6 +1268,7 @@
 				}
 
 				this.mutating = false;
+				this.pollActive = false;
 				this.setFeedback(err.message, 'error');
 			});
 		}

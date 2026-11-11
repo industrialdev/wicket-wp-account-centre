@@ -668,15 +668,29 @@ final class RestController
         return $response;
     }
 
+    /**
+     * Status codes for error codes the Service raises without an explicit
+     * status arg: unreachable MDP is a gateway problem, the rest are
+     * configuration-shaped, not server crashes.
+     */
+    private const DEFAULT_STATUS = [
+        'me_client_unavailable' => 503,
+        'me_no_relationship_types' => 422,
+        'me_primary_not_applied' => 422,
+    ];
+
     private function error(WP_Error $error): \WP_REST_Response
     {
         $data = $error->get_error_data();
         $status = is_array($data) ? ($data['status'] ?? null) : null;
+        $status = is_int($status) && $status >= 400
+            ? $status
+            : (self::DEFAULT_STATUS[$error->get_error_code()] ?? 500);
 
         $response = new \WP_REST_Response([
             'code' => $error->get_error_code(),
             'message' => $error->get_error_message(),
-        ], is_int($status) && $status >= 400 ? $status : 500);
+        ], $status);
 
         return $response;
     }
