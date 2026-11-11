@@ -491,7 +491,7 @@ class ConnectionService
             // Try to extract more detailed error information from the response
             if (method_exists($e, 'getResponse') && $e->getResponse()) {
                 try {
-                    $error_body = json_decode($e->getResponse()->getBody(), true);
+                    $error_body = json_decode((string) $e->getResponse()->getBody(), true);
                     if (isset($error_body['errors']) && !empty($error_body['errors'])) {
                         $error_message = $error_body['errors'][0]['detail'] ?? $error_message;
                     }
