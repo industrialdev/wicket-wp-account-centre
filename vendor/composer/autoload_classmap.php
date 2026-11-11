@@ -686,6 +686,7 @@ return array(
     'WicketAcc\\Helpers' => $baseDir . '/src/Helpers.php',
     'WicketAcc\\InitBlocks' => $baseDir . '/src/InitBlocks.php',
     'WicketAcc\\InitOptions' => $baseDir . '/src/InitOptions.php',
+    'WicketAcc\\JobManager' => $baseDir . '/src/JobManager.php',
     'WicketAcc\\Language' => $baseDir . '/src/Language.php',
     'WicketAcc\\Log' => $baseDir . '/src/Log.php',
     'WicketAcc\\ManageEmployer\\Frontend' => $baseDir . '/src/ManageEmployer/Frontend.php',

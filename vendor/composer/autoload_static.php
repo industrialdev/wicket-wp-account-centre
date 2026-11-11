@@ -869,6 +869,7 @@ class ComposerStaticInit8c15133367c403743912873e7d8a156f
         'WicketAcc\\Helpers' => __DIR__ . '/../..' . '/src/Helpers.php',
         'WicketAcc\\InitBlocks' => __DIR__ . '/../..' . '/src/InitBlocks.php',
         'WicketAcc\\InitOptions' => __DIR__ . '/../..' . '/src/InitOptions.php',
+        'WicketAcc\\JobManager' => __DIR__ . '/../..' . '/src/JobManager.php',
         'WicketAcc\\Language' => __DIR__ . '/../..' . '/src/Language.php',
         'WicketAcc\\Log' => __DIR__ . '/../..' . '/src/Log.php',
         'WicketAcc\\ManageEmployer\\Frontend' => __DIR__ . '/../..' . '/src/ManageEmployer/Frontend.php',
