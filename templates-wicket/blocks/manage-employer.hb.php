@@ -195,9 +195,9 @@ $me_config = [
 		</ul>
 
 		<nav class="wicket-acc-me__pagination" data-me-pagination hidden>
-			<button type="button" class="wicket-acc-me__page-btn" data-me-page-prev><?php esc_html_e('Previous', 'wicket-acc'); ?></button>
+			<?php get_component('button', ['variant' => 'secondary', 'label' => esc_html__('Previous', 'wicket-acc'), 'classes' => ['wicket-acc-me__page-btn'], 'atts' => ['data-me-page-prev' => true]]); ?>
 			<p class="wicket-acc-me__page-status" data-me-page-status aria-live="polite"></p>
-			<button type="button" class="wicket-acc-me__page-btn" data-me-page-next><?php esc_html_e('Next', 'wicket-acc'); ?></button>
+			<?php get_component('button', ['variant' => 'secondary', 'label' => esc_html__('Next', 'wicket-acc'), 'classes' => ['wicket-acc-me__page-btn'], 'atts' => ['data-me-page-next' => true]]); ?>
 		</nav>
 
 		<?php if ($me_mode !== 'inactive') : ?>
@@ -205,6 +205,7 @@ $me_config = [
 		    'modal_id' => $me_id . '-dialog',
 		    'label' => $me_add_label,
 		    'variant' => 'primary',
+		    'classes' => ['wicket-acc-me__trigger'],
 		]); ?>
 
 		<?php ob_start(); ?>
@@ -236,14 +237,15 @@ $me_config = [
 				id="<?php echo esc_attr($me_id); ?>-selected"
 				value=""
 			>
-			<button
-				type="button"
-				class="button wicket-acc-me__add"
-				id="<?php echo esc_attr($me_id); ?>-add"
-				disabled
-			>
-				<?php echo esc_html($me_add_label); ?>
-			</button>
+			<?php
+		    // atts-disabled, not the component disabled mode: its pointer-events-none
+		    // class survives the JS re-enable.
+		    get_component('button', [
+		        'variant' => 'primary',
+		        'label' => esc_html($me_add_label),
+		        'classes' => ['wicket-acc-me__add'],
+		        'atts' => ['id' => esc_attr($me_id) . '-add', 'disabled' => true],
+		    ]); ?>
 		</div>
 		<p class="wicket-acc-me__create-error" data-me-add-error id="<?php echo esc_attr($me_id); ?>-add-error" hidden></p>
 		<?php if (empty($me_settings['disable_create'])) : ?>
@@ -268,9 +270,12 @@ $me_config = [
 			</select>
 			<?php endif; ?>
 			<p class="wicket-acc-me__create-error" data-me-create-error id="<?php echo esc_attr($me_id); ?>-create-error" hidden></p>
-			<button type="button" class="button wicket-acc-me__create-submit" id="<?php echo esc_attr($me_id); ?>-create-submit">
-				<?php esc_html_e('Create', 'wicket-acc'); ?>
-			</button>
+			<?php get_component('button', [
+		        'variant' => 'primary',
+		        'label' => esc_html__('Create', 'wicket-acc'),
+		        'classes' => ['wicket-acc-me__create-submit'],
+		        'atts' => ['id' => esc_attr($me_id) . '-create-submit'],
+		    ]); ?>
 		</div>
 		<?php endif; ?>
 		<?php
@@ -306,12 +311,17 @@ $me_config = [
 
 		        ob_start(); ?>
 		<div class="wicket-acc-me__confirm-footer">
-			<button type="button" class="button" id="<?php echo esc_attr($me_id); ?>-confirm-cancel">
-				<?php esc_html_e('Cancel', 'wicket-acc'); ?>
-			</button>
-			<button type="button" class="button wicket-acc-me__confirm-end" id="<?php echo esc_attr($me_id); ?>-confirm-end">
-				<?php echo esc_html($me_end_label); ?>
-			</button>
+			<?php get_component('button', [
+		        'variant' => 'secondary',
+		        'label' => esc_html__('Cancel', 'wicket-acc'),
+		        'atts' => ['id' => esc_attr($me_id) . '-confirm-cancel'],
+		    ]); ?>
+			<?php get_component('button', [
+		        'variant' => 'secondary',
+		        'label' => esc_html($me_end_label),
+		        'classes' => ['wicket-acc-me__confirm-end'],
+		        'atts' => ['id' => esc_attr($me_id) . '-confirm-end'],
+		    ]); ?>
 		</div>
 		<?php
 		        $me_confirm_footer = ob_get_clean();

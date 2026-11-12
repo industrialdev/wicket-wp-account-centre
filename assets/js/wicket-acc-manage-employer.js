@@ -467,7 +467,7 @@
 				actions.forEach((item) => {
 					const btn = document.createElement('button');
 					btn.type = 'button';
-					btn.className = 'button wicket-acc-me__card-action wicket-acc-me__card-action--' + item.action;
+					btn.className = 'component-button button button--secondary wicket-acc-me__card-action wicket-acc-me__card-action--' + item.action;
 					btn.textContent = item.label;
 					btn.setAttribute('data-me-action', item.action);
 					btn.setAttribute('data-org', orgUuid);

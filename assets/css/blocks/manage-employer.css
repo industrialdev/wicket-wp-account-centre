@@ -353,6 +353,57 @@
 		gap: 8px;
 	}
 
+	/* The modal shell leans on theme wt_* utilities a tenant may not compile, so
+	   the block carries the subset it needs (pattern from _wicket-acc-org-management.css). */
+	.wicket-acc-me-dialog {
+		width: calc(100% - 32px);
+		max-width: 32rem;
+		border: 1px solid var(--wacc-me-border);
+		border-radius: var(--wacc-me-radius);
+		box-shadow: 0 12px 32px rgb(9 30 66 / 0.24);
+		background: #fff;
+		color: inherit;
+
+		&::backdrop {
+			background: rgb(15 23 42 / 0.45);
+		}
+
+		> div {
+			padding: 22px 24px;
+		}
+
+		.modal__close {
+			position: absolute;
+			top: 12px;
+			right: 12px;
+			display: grid;
+			place-items: center;
+			width: 2rem;
+			height: 2rem;
+			padding: 0;
+			border: 1px solid var(--wacc-me-border);
+			border-radius: 999px;
+			background: #fff;
+			color: var(--wacc-me-muted);
+			line-height: 1;
+			cursor: pointer;
+
+			&:hover,
+			&:focus {
+				background: var(--wacc-me-muted);
+				border-color: var(--wacc-me-muted);
+				color: #fff;
+			}
+		}
+
+		h2.wp-block-heading {
+			margin: 0 0 14px;
+			font-size: 1.25rem;
+			font-weight: 600;
+			padding-right: 24px;
+		}
+	}
+
 	@container wicket-acc-me (max-width: 480px) {
 		.wicket-acc-me__tab {
 			flex: 1 1 auto;
