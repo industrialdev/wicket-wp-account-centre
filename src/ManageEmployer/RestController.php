@@ -44,7 +44,7 @@ final class RestController
      */
     private const MAX_ACTIVE_CONNECTIONS = 100;
 
-    public function __construct(private readonly ?Service $service = null) {}
+    public function __construct(private ?Service $service = null) {}
 
     /**
      * Register all routes. Hooked on rest_api_init.
@@ -191,13 +191,7 @@ final class RestController
             ? array_filter(array_map('sanitize_key', explode(',', $typeParam)))
             : array_filter(array_map('sanitize_key', (array) $typeParam));
 
-        $connected = $this->service()->activeEmployerOrgUuids($this->personUuid());
-
-        if (is_wp_error($connected)) {
-            return $this->error($connected);
-        }
-
-        $results = $this->service()->searchOrganizations($term, $page, $guard['org_types'], $clientTypes, $connected, $guard['display_membership_status_filter']);
+        $results = $this->service()->searchOrganizations($term, $page, $guard['org_types'], $clientTypes, $guard['display_membership_status_filter']);
 
         if (is_wp_error($results)) {
             return $this->error($results);
@@ -651,7 +645,13 @@ final class RestController
 
     private function service(): Service
     {
-        return $this->service ?? new Service();
+        if ($this->service === null) {
+            // initClient() pays an authorize call plus a health-check GET per
+            // client; handlers on one request must share one Service instance.
+            $this->service = new Service();
+        }
+
+        return $this->service;
     }
 
     /**

@@ -66,6 +66,7 @@
 			this.activeIndex = -1;
 			this.observer = null;
 			this.pendingEnd = null;
+			this.connectedPages = new Map();
 
 			this.listEl = root.querySelector('.wicket-acc-me__cards');
 			this.feedbackEl = root.querySelector('[data-me-feedback]');
@@ -370,6 +371,22 @@
 
 			this.updateCounts(tabs);
 			this.updatePagination(meta);
+
+			// Search badges come from the current-tab state pages painted this
+			// session; the add endpoint stays idempotent server-side, so an
+			// unpainted page only loses the badge affordance.
+			const connected = new Set();
+			if (this.tab !== 'past') {
+				connections.forEach((row) => {
+					const rel = (row && row.relationships) || {};
+					const orgUuid = (rel.to && rel.to.data && rel.to.data.id) ||
+						(rel.organization && rel.organization.data && rel.organization.data.id) || '';
+					if (orgUuid !== '') {
+						connected.add(orgUuid);
+					}
+				});
+			}
+			this.connectedPages.set(this.tab + ':' + this.page, connected);
 
 			this.listEl.textContent = '';
 
@@ -737,7 +754,7 @@
 					li.appendChild(membership);
 				}
 
-				if (row && row.connected) {
+				if (row && this.isKnownConnected((row && row.uuid) || '')) {
 					const connected = document.createElement('span');
 					connected.className = 'wicket-acc-me__badge wicket-acc-me__badge--connected';
 					connected.textContent = this.label('already');
@@ -755,6 +772,20 @@
 			// clearResults() reset this at paint time; the listbox is open again
 			// the moment its options exist, empty or not.
 			this.searchInput.setAttribute('aria-expanded', 'true');
+		}
+
+		isKnownConnected(uuid) {
+			if (!uuid) {
+				return false;
+			}
+
+			for (const uuids of this.connectedPages.values()) {
+				if (uuids.has(uuid)) {
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		renderResultsError(message) {
@@ -1201,6 +1232,7 @@
 		refreshAfterMutation(expectation) {
 			// Cached pages predate the mutation; a return visit must not paint it.
 			this.clearStateCache();
+			this.connectedPages.clear();
 			window.clearTimeout(this.retryTimer);
 			this.mutating = true;
 			this.pollActive = true;
@@ -1290,7 +1322,7 @@
 
 		clearStateCache() {
 			try {
-				const prefix = CACHE_PREFIX + ':' + this.config.id + ':' +
+				const prefix = CACHE_PREFIX + ':' + (this.config.user || '') + ':' + this.config.id + ':' +
 					WicketManageEmployer.hashString(this.settings) + ':';
 				const doomed = [];
 

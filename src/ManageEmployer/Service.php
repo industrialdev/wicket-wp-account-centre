@@ -37,6 +37,20 @@ final class Service
      */
     private const PROTECTED_TYPES = ['company_admin'];
 
+    /**
+     * Duplicate-probe page walk. 500 is the verified MDP page-size cap; the
+     * cap bound stops a pathological name-match set from walking unbounded.
+     */
+    private const DUPLICATE_PAGE_SIZE = 500;
+    private const DUPLICATE_PAGE_CAP = 5;
+
+    /**
+     * initClient pays an authorize + health-check round trip per call, so the
+     * resolved client is memoized per request. Only successful inits are
+     * cached; a failed one stays un-memoized and can retry on the next call.
+     */
+    private ?Client $resolvedClient = null;
+
     public function __construct(
         private readonly ?Client $client = null,
         private readonly ?ConnectionService $connections = null
@@ -408,10 +422,9 @@ final class Service
      *
      * @param array<int, string> $allowedTypes Settings org types; blank list means all.
      * @param array<int, string> $clientTypes  Client filter, intersected with the allowed list.
-     * @param array<int, string> $connectedUuids Org uuids the person already connects to, flagged in results.
      * @return array{results: array, meta: array}|WP_Error
      */
-    public function searchOrganizations(string $term, int $page, array $allowedTypes, array $clientTypes = [], array $connectedUuids = [], string $membershipFilter = Settings::MODE_ALL): array|WP_Error
+    public function searchOrganizations(string $term, int $page, array $allowedTypes, array $clientTypes = [], string $membershipFilter = Settings::MODE_ALL): array|WP_Error
     {
         $client = $this->client();
 
@@ -457,7 +470,6 @@ final class Service
                 'type' => (string) ($row['attributes']['type'] ?? ''),
                 'membership_status' => (string) ($row['attributes']['membership_status'] ?? ''),
                 'addresses' => $this->addressesForUuid(is_array($response) ? $response : [], $uuid),
-                'connected' => in_array($uuid, $connectedUuids, true),
             ];
         }
 
@@ -544,7 +556,7 @@ final class Service
 
     /**
      * Org uuids behind every active employer connection.
-     * Drives the connection cap and the already-connected search flag.
+     * Drives the connection cap on add and create.
      *
      * @return array<int, string>|WP_Error
      */
@@ -1159,7 +1171,8 @@ final class Service
     /**
      * Duplicate probe on the org index: substring fetch, exact compare. The
      * ransack eq predicate is case-sensitive and unverified, so the honest
-     * check is contains + PHP-side exact match.
+     * check is contains + PHP-side exact match; the walk pages through every
+     * hit because an exact match may sit past the first page.
      */
     private function findDuplicateOrganization(string $name, string $type): string|WP_Error
     {
@@ -1169,32 +1182,47 @@ final class Service
             return new WP_Error('me_client_unavailable', 'The MDP client is unavailable.');
         }
 
-        try {
-            $response = $client->get('organizations', [
-                'query' => [
-                    'filter' => [
-                        'legal_name_en_cont' => $name,
-                        'type_eq' => $type,
-                    ],
-                    'fields' => ['organizations' => 'legal_name_en,type'],
-                    'page' => ['number' => 1, 'size' => 25],
-                ],
-            ]);
-        } catch (\Throwable $e) {
-            error_log('[wicket-acc manage-employer] duplicate check failed: ' . $e->getMessage());
-
-            return new WP_Error('me_org_duplicate_check_failed', 'The duplicate check could not run.', ['status' => 502]);
-        }
-
         $needle = $this->lowerLabel(trim($name));
+        $page = 1;
 
-        foreach (($response['data'] ?? []) as $row) {
-            $existing = $this->lowerLabel(trim((string) ($row['attributes']['legal_name_en'] ?? '')));
+        do {
+            try {
+                $response = $client->get('organizations', [
+                    'query' => [
+                        'filter' => [
+                            'legal_name_en_cont' => $name,
+                            'type_eq' => $type,
+                        ],
+                        'fields' => ['organizations' => 'legal_name_en,type'],
+                        'page' => ['number' => $page, 'size' => self::DUPLICATE_PAGE_SIZE],
+                    ],
+                ]);
+            } catch (\Throwable $e) {
+                error_log('[wicket-acc manage-employer] duplicate check failed: ' . $e->getMessage());
 
-            if ($existing !== '' && $existing === $needle) {
-                return (string) ($row['id'] ?? '');
+                return new WP_Error('me_org_duplicate_check_failed', 'The duplicate check could not run.', ['status' => 502]);
             }
-        }
+
+            foreach (($response['data'] ?? []) as $row) {
+                $existing = $this->lowerLabel(trim((string) ($row['attributes']['legal_name_en'] ?? '')));
+
+                if ($existing !== '' && $existing === $needle) {
+                    return (string) ($row['id'] ?? '');
+                }
+            }
+
+            $totalPages = $this->pageMeta(is_array($response['meta'] ?? null) ? $response['meta'] : [])['total_pages'];
+            $hasMore = ($response['data'] ?? []) !== [] && ($totalPages > 0 ? $page < $totalPages : count($response['data']) === self::DUPLICATE_PAGE_SIZE);
+            $page++;
+
+            // Fail closed: creating past an unfinished check could mint a
+            // duplicate org, which no retry can clean up.
+            if ($hasMore && $page > self::DUPLICATE_PAGE_CAP) {
+                error_log('[wicket-acc manage-employer] duplicate check exhausted after ' . self::DUPLICATE_PAGE_CAP . ' pages of ' . self::DUPLICATE_PAGE_SIZE);
+
+                return new WP_Error('me_org_duplicate_check_exhausted', 'The duplicate check could not finish; try a more specific name.', ['status' => 503]);
+            }
+        } while ($hasMore);
 
         return '';
     }
@@ -1359,7 +1387,15 @@ final class Service
             return $this->client;
         }
 
+        if ($this->resolvedClient instanceof Client) {
+            return $this->resolvedClient;
+        }
+
         $client = \WACC()->Mdp()->initClient();
+
+        if ($client instanceof Client) {
+            $this->resolvedClient = $client;
+        }
 
         return $client instanceof Client ? $client : null;
     }
