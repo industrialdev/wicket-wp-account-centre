@@ -245,6 +245,13 @@ $show_remove_policy_callout = (
                 array_merge($lazy_details_base_args, ['person_uuid' => (string) $member_uuid]),
                 OrgHelpers\template_url()
             );
+            $member_edit_data_url = add_query_arg(
+                array_merge($lazy_details_base_args, [
+                    'template'        => 'process/member-edit-data',
+                    'person_uuid'     => (string) $member_uuid,
+                ]),
+                OrgHelpers\template_url()
+            );
             ?>
             <div class="member-card wt_bg-light-neutral wt_rounded-card wt_p-6 wt_transition-opacity wt_duration-300"
                 id="member-<?php echo esc_attr($person_uuid_no_dashes); ?>"
@@ -378,7 +385,10 @@ $show_remove_policy_callout = (
                                     (() => { try { $currentMemberRoles = JSON.parse(evt.currentTarget.dataset.memberRoles || '[]'); } catch (e) { $currentMemberRoles = []; } })();
                                     $currentMemberRelationshipType = '<?php echo esc_js($member['relationship_type'] ?? ''); ?>';
                                     $currentMemberDescription = '<?php echo esc_js($member['relationship_description'] ?? ''); ?>';
-                                    $editPermissionsModalOpen = true
+                                    $editPermissionsLoading = true;
+                                    $editPermissionsLoadFailed = false;
+                                    $editPermissionsModalOpen = true;
+                                    @get('<?php echo esc_js($member_edit_data_url); ?>')
                                 ">
                                 <?php esc_html_e('Edit Permissions', 'wicket-acc'); ?>
                                 <svg class="wt_w-4 wt_h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">

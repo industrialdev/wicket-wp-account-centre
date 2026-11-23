@@ -42,7 +42,7 @@ $encodedOrgUuid = rawurlencode((string) $org_uuid);
 
 $update_permissions_endpoint = OrgHelpers\template_url() . 'process/update-permissions';
 $update_permissions_error_actions = "console.error('Failed to update permissions'); \$editPermissionsSubmitting = false; \$membersLoading = false;";
-$edit_permissions_reset_actions = "\$editPermissionsSuccess = false; \$editPermissionsSubmitting = false; \$currentMemberUuid = ''; \$currentMemberName = ''; \$currentMemberRoles = []; \$currentMemberRelationshipType = ''; (() => { const messages = document.getElementById('update-permissions-messages'); if (messages) messages.innerHTML = ''; })();";
+$edit_permissions_reset_actions = "\$editPermissionsSuccess = false; \$editPermissionsSubmitting = false; \$editPermissionsLoading = false; \$editPermissionsLoadFailed = false; \$currentMemberUuid = ''; \$currentMemberName = ''; \$currentMemberRoles = []; \$currentMemberRelationshipType = ''; (() => { const messages = document.getElementById('update-permissions-messages'); if (messages) messages.innerHTML = ''; })();";
 $remove_member_endpoint = OrgHelpers\template_url() . 'process/remove-member';
 $remove_member_error_actions = "console.error('Failed to remove member'); \$removeMemberSubmitting = false; \$membersLoading = false;";
 
@@ -397,7 +397,10 @@ $no_members_message = __('No members found.', 'wicket-acc');
                                 $currentMemberName = '<?php echo esc_js($member['full_name'] ?? ''); ?>';
                                 (() => { try { $currentMemberRoles = JSON.parse(evt.currentTarget.dataset.memberRoles || '[]'); } catch (e) { $currentMemberRoles = []; } })();
                                 $currentMemberRelationshipType = '<?php echo esc_js($member['relationship_type'] ?? ''); ?>';
-                                $editPermissionsModalOpen = true
+                                $editPermissionsLoading = true;
+                                $editPermissionsLoadFailed = false;
+                                $editPermissionsModalOpen = true;
+                                @get('<?php echo esc_js(add_query_arg(['template' => 'process/member-edit-data', 'person_uuid' => (string) ($member_uuid ?? ''), 'org_uuid' => (string) $org_uuid, 'membership_uuid' => (string) ($membership_uuid ?? '')], OrgHelpers\template_url())); ?>')
                             ">
                             <?php esc_html_e('Edit Permissions', 'wicket-acc'); ?>
                             <svg class="wt_w-4 wt_h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -546,7 +549,7 @@ $no_members_message = __('No members found.', 'wicket-acc');
 
 <?php if (!$is_hypermedia_request): ?>
 <!-- Edit Permissions Modal - Single modal using pure Datastar -->
-<div class="wt_mt-6" data-signals='{"editPermissionsModalOpen": false, "editPermissionsSubmitting": false, "editPermissionsSuccess": false, "currentMemberUuid": "", "currentMemberName": "", "currentMemberRoles": [], "currentMemberRelationshipType": "", "removeMemberModalOpen": false, "removeMemberSubmitting": false, "removeMemberSuccess": false, "currentRemoveMemberUuid": "", "currentRemoveMemberName": "", "currentRemoveMemberEmail": "", "currentRemoveMemberConnectionId": "", "currentRemoveMemberPersonMembershipId": ""}'>
+<div class="wt_mt-6" data-signals='{"editPermissionsModalOpen": false, "editPermissionsSubmitting": false, "editPermissionsSuccess": false, "editPermissionsLoading": false, "editPermissionsLoadFailed": false, "currentMemberUuid": "", "currentMemberName": "", "currentMemberRoles": [], "currentMemberRelationshipType": "", "removeMemberModalOpen": false, "removeMemberSubmitting": false, "removeMemberSuccess": false, "currentRemoveMemberUuid": "", "currentRemoveMemberName": "", "currentRemoveMemberEmail": "", "currentRemoveMemberConnectionId": "", "currentRemoveMemberPersonMembershipId": ""}'>
     <dialog id="editPermissionsModal" class="modal wt_m-auto max_wt_3xl wt_rounded-md wt_shadow-md backdrop_wt_bg-black-50"
         data-show="$editPermissionsModalOpen"
         data-effect="if ($editPermissionsModalOpen) el.showModal(); else el.close();"
@@ -577,10 +580,14 @@ $no_members_message = __('No members found.', 'wicket-acc');
                 <!-- Messages will be inserted here by Datastar -->
             </div>
 
+            <p class="wt_text-sm wt_text-red-600" data-show="$editPermissionsLoadFailed">
+                <?php esc_html_e('Could not load member data. Close and reopen this dialog to try again.', 'wicket-acc'); ?>
+            </p>
+
             <form
                 method="POST"
                 data-show="!$editPermissionsSuccess"
-                data-on:submit="if(!$editPermissionsSubmitting){ $editPermissionsSubmitting = true; $membersLoading = true; @post('<?php echo esc_js($update_permissions_endpoint); ?>', { contentType: 'form' }); }"
+                data-on:submit="if(!$editPermissionsSubmitting && !$editPermissionsLoading && !$editPermissionsLoadFailed){ $editPermissionsSubmitting = true; $membersLoading = true; @post('<?php echo esc_js($update_permissions_endpoint); ?>', { contentType: 'form' }); }"
                 data-on:submit__prevent-default="true"
                 data-on:success="<?php echo esc_attr($update_permissions_success_actions); ?>"
                 data-on:error="<?php echo esc_attr($update_permissions_error_actions); ?>"
@@ -600,6 +607,7 @@ $no_members_message = __('No members found.', 'wicket-acc');
                     </label>
                     <select id="edit-member-relationship-type" name="relationship_type"
                         data-bind="currentMemberRelationshipType"
+                        data-attr:disabled="$editPermissionsLoading || $editPermissionsLoadFailed"
                         class="wt_w-full wt_border wt_border-color wt_rounded-md wt_p-2">
                         <option value=""><?php esc_html_e('Select a relationship type', 'wicket-acc'); ?></option>
                         <?php foreach ($relationship_types as $type_key => $type_label): ?>
@@ -624,6 +632,7 @@ $no_members_message = __('No members found.', 'wicket-acc');
                                             value="<?php echo esc_attr($slug); ?>"
                                             class="form-checkbox wt_h-4 wt_w-4 wt_text-bg-interactive wt_rounded wt_focus_ring-bg-interactive"
                                             data-attr:checked="$currentMemberRoles.includes('<?php echo esc_js($slug); ?>')"
+                                            data-attr:disabled="$editPermissionsLoading || $editPermissionsLoadFailed"
                                         >
                                         <span class="wt_text-sm wt_text-content"><?php echo esc_html($role); ?></span>
                                         <?php if (!empty($role_descriptions[$slug])): ?>
@@ -652,8 +661,8 @@ $no_members_message = __('No members found.', 'wicket-acc');
                     <button
                         type="submit"
                         class="button button--primary wt_button_submit_async wt_inline-flex wt_items-center wt_gap-2 wt_px-4 wt_py-2 wt_text-sm component-button"
-                        data-class="{ 'wt_pointer-events-none': $editPermissionsSubmitting, 'wt_opacity-50': $editPermissionsSubmitting, 'wt_is-loading': $editPermissionsSubmitting }"
-                        data-attr:aria-disabled="$editPermissionsSubmitting ? 'true' : 'false'"
+                        data-class="{ 'wt_pointer-events-none': $editPermissionsSubmitting || $editPermissionsLoading || $editPermissionsLoadFailed, 'wt_opacity-50': $editPermissionsSubmitting || $editPermissionsLoading || $editPermissionsLoadFailed, 'wt_is-loading': $editPermissionsSubmitting }"
+                        data-attr:aria-disabled="$editPermissionsSubmitting || $editPermissionsLoading || $editPermissionsLoadFailed ? 'true' : 'false'"
                     >
                         <span class="wt_submit_label">
                             <?php esc_html_e('Save Permissions', 'wicket-acc'); ?>

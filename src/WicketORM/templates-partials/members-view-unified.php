@@ -364,9 +364,9 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
         $update_permissions_local_sync_actions = "(() => { const modal = document.getElementById('editPermissionsModal'); if (!modal) return; const selected = Array.from(modal.querySelectorAll('input[name=\"roles[]\"]:checked')).map((node) => node.value); const selectedJson = JSON.stringify(selected); document.querySelectorAll('.edit-permissions-button[data-member-uuid=\"' + \$currentMemberUuid + '\"]').forEach((btn) => { btn.dataset.memberRoles = selectedJson; }); \$currentMemberRoles = selected; })();";
         $update_permissions_success_actions = "console.log('Permissions updated successfully'); \$editPermissionsSubmitting = false; \$editPermissionsSuccess = true; \$membersLoading = false; {$update_permissions_local_sync_actions}";
         $update_permissions_error_actions = "console.error('Failed to update permissions'); \$editPermissionsSubmitting = false; \$membersLoading = false;";
-        $edit_permissions_reset_actions = "\$editPermissionsSuccess = false; \$editPermissionsSubmitting = false; \$currentMemberUuid = ''; \$currentMemberName = ''; \$currentMemberRoles = []; \$currentMemberRelationshipType = ''; \$currentMemberDescription = ''; (() => { const messages = document.getElementById('update-permissions-messages'); if (messages) messages.innerHTML = ''; })();";
+        $edit_permissions_reset_actions = "\$editPermissionsSuccess = false; \$editPermissionsSubmitting = false; \$editPermissionsLoading = false; \$editPermissionsLoadFailed = false; \$currentMemberUuid = ''; \$currentMemberName = ''; \$currentMemberRoles = []; \$currentMemberRelationshipType = ''; \$currentMemberDescription = ''; (() => { const messages = document.getElementById('update-permissions-messages'); if (messages) messages.innerHTML = ''; })();";
         ?>
-        <div class="wt_mt-6" data-signals='{"editPermissionsModalOpen": false, "editPermissionsSubmitting": false, "editPermissionsSuccess": false, "currentMemberUuid": "", "currentMemberName": "", "currentMemberRoles": [], "currentMemberRelationshipType": "", "currentMemberDescription": "", "removeMemberModalOpen": false, "removeMemberSubmitting": false, "removeMemberSuccess": false, "currentRemoveMemberUuid": "", "currentRemoveMemberName": "", "currentRemoveMemberEmail": "", "currentRemoveMemberConnectionId": "", "currentRemoveMemberPersonMembershipId": ""}'>
+        <div class="wt_mt-6" data-signals='{"editPermissionsModalOpen": false, "editPermissionsSubmitting": false, "editPermissionsSuccess": false, "editPermissionsLoading": false, "editPermissionsLoadFailed": false, "currentMemberUuid": "", "currentMemberName": "", "currentMemberRoles": [], "currentMemberRelationshipType": "", "currentMemberDescription": "", "removeMemberModalOpen": false, "removeMemberSubmitting": false, "removeMemberSuccess": false, "currentRemoveMemberUuid": "", "currentRemoveMemberName": "", "currentRemoveMemberEmail": "", "currentRemoveMemberConnectionId": "", "currentRemoveMemberPersonMembershipId": ""}'>
             <dialog id="editPermissionsModal" class="modal wt_m-auto max_wt_3xl wt_rounded-md wt_shadow-md backdrop_wt_bg-black-50"
                 data-show="$editPermissionsModalOpen"
                 data-effect="if ($editPermissionsModalOpen) el.showModal(); else el.close();"
@@ -395,10 +395,14 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
 
                     <div id="update-permissions-messages"></div>
 
+                    <p class="wt_text-sm wt_text-red-600" data-show="$editPermissionsLoadFailed">
+                        <?php esc_html_e('Could not load member data. Close and reopen this dialog to try again.', 'wicket-acc'); ?>
+                    </p>
+
                     <form
                         method="POST"
                         data-show="!$editPermissionsSuccess"
-                        data-on:submit="if(!$editPermissionsSubmitting){ $editPermissionsSubmitting = true; $membersLoading = true; @post('<?php echo esc_js($update_permissions_endpoint); ?>', { contentType: 'form' }); }"
+                        data-on:submit="if(!$editPermissionsSubmitting && !$editPermissionsLoading && !$editPermissionsLoadFailed){ $editPermissionsSubmitting = true; $membersLoading = true; @post('<?php echo esc_js($update_permissions_endpoint); ?>', { contentType: 'form' }); }"
                         data-on:submit__prevent-default="true"
                         data-on:success="<?php echo esc_attr($update_permissions_success_actions); ?>"
                         data-on:error="<?php echo esc_attr($update_permissions_error_actions); ?>"
@@ -417,6 +421,7 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
                                 </label>
                                 <select id="edit-member-relationship-type" name="relationship_type"
                                     data-bind="currentMemberRelationshipType"
+                                    data-attr:disabled="$editPermissionsLoading || $editPermissionsLoadFailed"
                                     class="wt_w-full wt_border wt_border-color wt_rounded-md wt_p-2">
                                     <option value=""><?php esc_html_e('Select a relationship type', 'wicket-acc'); ?></option>
                                     <?php foreach ($relationship_types as $type_key => $type_label) : ?>
@@ -436,10 +441,12 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
                                 <?php if (($form_config['description']['input_type'] ?? 'textarea') === 'text'): ?>
                                     <input type="text" id="edit-member-description" name="description"
                                         data-bind="currentMemberDescription"
+                                        data-attr:disabled="$editPermissionsLoading || $editPermissionsLoadFailed"
                                         class="wt_w-full wt_border wt_border-color wt_rounded-md wt_p-2">
                                 <?php else: ?>
                                     <textarea id="edit-member-description" name="description"
                                         data-bind="currentMemberDescription"
+                                        data-attr:disabled="$editPermissionsLoading || $editPermissionsLoadFailed"
                                         class="wt_w-full wt_border wt_border-color wt_rounded-md wt_p-2"
                                         rows="3"></textarea>
                                 <?php endif; ?>
@@ -458,7 +465,8 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
                                                     name="roles[]"
                                                     value="<?php echo esc_attr($slug); ?>"
                                                     class="form-checkbox wt_h-4 wt_w-4 wt_text-bg-interactive wt_rounded wt_focus_ring-bg-interactive"
-                                                    data-attr:checked="$currentMemberRoles.includes('<?php echo esc_js($slug); ?>')">
+                                                    data-attr:checked="$currentMemberRoles.includes('<?php echo esc_js($slug); ?>')"
+                                                    data-attr:disabled="$editPermissionsLoading || $editPermissionsLoadFailed">
                                                 <span class="wt_text-sm wt_text-content"><?php echo esc_html($role); ?></span>
                                                 <?php if (!empty($role_descriptions[$slug])): ?>
                                                     <span class="wt_text-sm wt_text-content-secondary wt_ml-1"><?php echo esc_html($role_descriptions[$slug]); ?></span>
@@ -485,8 +493,8 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
                             <button
                                 type="submit"
                                 class="button button--primary wt_button_submit_async wt_inline-flex wt_items-center wt_gap-2 wt_px-4 wt_py-2 wt_text-sm component-button"
-                                data-class="{ 'wt_pointer-events-none': $editPermissionsSubmitting, 'wt_opacity-50': $editPermissionsSubmitting, 'wt_is-loading': $editPermissionsSubmitting }"
-                                data-attr:aria-disabled="$editPermissionsSubmitting ? 'true' : 'false'">
+                                data-class="{ 'wt_pointer-events-none': $editPermissionsSubmitting || $editPermissionsLoading || $editPermissionsLoadFailed, 'wt_opacity-50': $editPermissionsSubmitting || $editPermissionsLoading || $editPermissionsLoadFailed, 'wt_is-loading': $editPermissionsSubmitting }"
+                                data-attr:aria-disabled="$editPermissionsSubmitting || $editPermissionsLoading || $editPermissionsLoadFailed ? 'true' : 'false'">
                                 <span class="wt_submit_label">
                                     <?php esc_html_e('Save Permissions', 'wicket-acc'); ?>
                                 </span>
