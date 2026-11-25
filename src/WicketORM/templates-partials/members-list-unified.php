@@ -380,6 +380,11 @@ $show_remove_policy_callout = (
                                     $currentMemberRoles = [];
                                     $currentMemberRelationshipType = '';
                                     $currentMemberDescription = '';
+                                    $editPermissionsLoadedUuid = '';
+                                    $editPermissionsStagedDescription = '';
+                                    $editPermissionsStagedRoles = [];
+                                    $editPermissionsStagedRelationshipType = '';
+                                    $editPermissionsStagedLoadFailed = false;
                                     $currentMemberUuid = '<?php echo esc_js($member_uuid); ?>';
                                     $currentMemberName = '<?php echo esc_js($member_name); ?>';
                                     (() => { try { $currentMemberRoles = JSON.parse(evt.currentTarget.dataset.memberRoles || '[]'); } catch (e) { $currentMemberRoles = []; } })();

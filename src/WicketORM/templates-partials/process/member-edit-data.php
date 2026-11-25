@@ -6,18 +6,22 @@
  * The member list renders with lazy loading, so at button-render time the member's
  * description, org-scoped roles, and relationship type are not yet known. The click
  * handler opens the modal with inputs disabled and fetches this endpoint, which
- * patches the modal signals over SSE. Without this fetch, a modal opened from a lazy
+ * patches staged values plus the requested person uuid over SSE; the client applies
+ * the staged values only while that uuid still matches the open member, so a stale
+ * response for a previously opened member cannot repopulate the new one. Without this
+ * fetch, a modal opened from a lazy
  * row shows an empty description, and saving that state clears the stored description.
  *
  * Returns Datastar SSE signal patches.
  */
 
+use starfederation\datastar\ServerSentEventGenerator;
+use WicketORM\Helpers\MemberEditDataSignals;
 use WicketORM\Helpers\PermissionHelper;
 use WicketORM\Services\CacheService;
 use WicketORM\Services\ConfigService;
 use WicketORM\Services\MemberService;
 use WicketORM\Services\MembershipService;
-use starfederation\datastar\ServerSentEventGenerator;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -40,10 +44,7 @@ $fail = static function (string $reason) use ($org_uuid, $person_uuid): void {
 
     $generator = new ServerSentEventGenerator();
     $generator->sendHeaders();
-    $generator->patchSignals([
-        'editPermissionsLoading' => false,
-        'editPermissionsLoadFailed' => true,
-    ]);
+    $generator->patchSignals(MemberEditDataSignals::failurePayload($person_uuid));
     exit;
 };
 
@@ -87,7 +88,7 @@ if (false === $member) {
     // load-failed state instead of erroring the stream.
     try {
         $member = $member_service->getMemberByPersonUuid($person_uuid, $membership_uuid, $org_uuid);
-    } catch (\Throwable $e) {
+    } catch (Throwable $e) {
         $fail('reader_exception: ' . $e->getMessage());
     }
 
@@ -109,10 +110,9 @@ if (!empty($member['current_roles']) && is_array($member['current_roles'])) {
 
 $generator = new ServerSentEventGenerator();
 $generator->sendHeaders();
-$generator->patchSignals([
-    'currentMemberDescription' => (string) ($member['relationship_description'] ?? ''),
-    'currentMemberRoles' => array_values(array_map('strval', $current_roles)),
-    'currentMemberRelationshipType' => (string) ($member['relationship_type'] ?? ''),
-    'editPermissionsLoading' => false,
-    'editPermissionsLoadFailed' => false,
-]);
+$generator->patchSignals(MemberEditDataSignals::successPayload(
+    $person_uuid,
+    (string) ($member['relationship_description'] ?? ''),
+    $current_roles,
+    (string) ($member['relationship_type'] ?? '')
+));

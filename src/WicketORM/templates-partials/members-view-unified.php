@@ -364,9 +364,21 @@ $remove_member_auto_close_enabled = ($mode === 'groups')
         $update_permissions_local_sync_actions = "(() => { const modal = document.getElementById('editPermissionsModal'); if (!modal) return; const selected = Array.from(modal.querySelectorAll('input[name=\"roles[]\"]:checked')).map((node) => node.value); const selectedJson = JSON.stringify(selected); document.querySelectorAll('.edit-permissions-button[data-member-uuid=\"' + \$currentMemberUuid + '\"]').forEach((btn) => { btn.dataset.memberRoles = selectedJson; }); \$currentMemberRoles = selected; })();";
         $update_permissions_success_actions = "console.log('Permissions updated successfully'); \$editPermissionsSubmitting = false; \$editPermissionsSuccess = true; \$membersLoading = false; {$update_permissions_local_sync_actions}";
         $update_permissions_error_actions = "console.error('Failed to update permissions'); \$editPermissionsSubmitting = false; \$membersLoading = false;";
-        $edit_permissions_reset_actions = "\$editPermissionsSuccess = false; \$editPermissionsSubmitting = false; \$editPermissionsLoading = false; \$editPermissionsLoadFailed = false; \$currentMemberUuid = ''; \$currentMemberName = ''; \$currentMemberRoles = []; \$currentMemberRelationshipType = ''; \$currentMemberDescription = ''; (() => { const messages = document.getElementById('update-permissions-messages'); if (messages) messages.innerHTML = ''; })();";
+        $edit_permissions_reset_actions = "\$editPermissionsSuccess = false; \$editPermissionsSubmitting = false; \$editPermissionsLoading = false; \$editPermissionsLoadFailed = false; \$currentMemberUuid = ''; \$currentMemberName = ''; \$currentMemberRoles = []; \$currentMemberRelationshipType = ''; \$currentMemberDescription = ''; \$editPermissionsLoadedUuid = ''; \$editPermissionsStagedDescription = ''; \$editPermissionsStagedRoles = []; \$editPermissionsStagedRelationshipType = ''; \$editPermissionsStagedLoadFailed = false; (() => { const messages = document.getElementById('update-permissions-messages'); if (messages) messages.innerHTML = ''; })();";
         ?>
-        <div class="wt_mt-6" data-signals='{"editPermissionsModalOpen": false, "editPermissionsSubmitting": false, "editPermissionsSuccess": false, "editPermissionsLoading": false, "editPermissionsLoadFailed": false, "currentMemberUuid": "", "currentMemberName": "", "currentMemberRoles": [], "currentMemberRelationshipType": "", "currentMemberDescription": "", "removeMemberModalOpen": false, "removeMemberSubmitting": false, "removeMemberSuccess": false, "currentRemoveMemberUuid": "", "currentRemoveMemberName": "", "currentRemoveMemberEmail": "", "currentRemoveMemberConnectionId": "", "currentRemoveMemberPersonMembershipId": ""}'>
+        <div class="wt_mt-6" data-signals='{"editPermissionsModalOpen": false, "editPermissionsSubmitting": false, "editPermissionsSuccess": false, "editPermissionsLoading": false, "editPermissionsLoadFailed": false, "currentMemberUuid": "", "currentMemberName": "", "currentMemberRoles": [], "currentMemberRelationshipType": "", "currentMemberDescription": "", "editPermissionsLoadedUuid": "", "editPermissionsStagedDescription": "", "editPermissionsStagedRoles": [], "editPermissionsStagedRelationshipType": "", "editPermissionsStagedLoadFailed": false, "removeMemberModalOpen": false, "removeMemberSubmitting": false, "removeMemberSuccess": false, "currentRemoveMemberUuid": "", "currentRemoveMemberName": "", "currentRemoveMemberEmail": "", "currentRemoveMemberConnectionId": "", "currentRemoveMemberPersonMembershipId": ""}'
+            data-effect="
+                if ($editPermissionsLoadedUuid !== '' && $editPermissionsLoadedUuid === $currentMemberUuid) {
+                    $editPermissionsLoading = false;
+                    $editPermissionsLoadFailed = $editPermissionsStagedLoadFailed;
+                    if (!$editPermissionsStagedLoadFailed) {
+                        $currentMemberDescription = $editPermissionsStagedDescription;
+                        $currentMemberRoles = $editPermissionsStagedRoles;
+                        $currentMemberRelationshipType = $editPermissionsStagedRelationshipType;
+                    }
+                    $editPermissionsLoadedUuid = '';
+                }
+            ">
             <dialog id="editPermissionsModal" class="modal wt_m-auto max_wt_3xl wt_rounded-md wt_shadow-md backdrop_wt_bg-black-50"
                 data-show="$editPermissionsModalOpen"
                 data-effect="if ($editPermissionsModalOpen) el.showModal(); else el.close();"

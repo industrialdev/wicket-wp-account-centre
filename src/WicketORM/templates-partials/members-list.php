@@ -42,7 +42,7 @@ $encodedOrgUuid = rawurlencode((string) $org_uuid);
 
 $update_permissions_endpoint = OrgHelpers\template_url() . 'process/update-permissions';
 $update_permissions_error_actions = "console.error('Failed to update permissions'); \$editPermissionsSubmitting = false; \$membersLoading = false;";
-$edit_permissions_reset_actions = "\$editPermissionsSuccess = false; \$editPermissionsSubmitting = false; \$editPermissionsLoading = false; \$editPermissionsLoadFailed = false; \$currentMemberUuid = ''; \$currentMemberName = ''; \$currentMemberRoles = []; \$currentMemberRelationshipType = ''; (() => { const messages = document.getElementById('update-permissions-messages'); if (messages) messages.innerHTML = ''; })();";
+$edit_permissions_reset_actions = "\$editPermissionsSuccess = false; \$editPermissionsSubmitting = false; \$editPermissionsLoading = false; \$editPermissionsLoadFailed = false; \$currentMemberUuid = ''; \$currentMemberName = ''; \$currentMemberRoles = []; \$currentMemberRelationshipType = ''; \$currentMemberDescription = ''; \$editPermissionsLoadedUuid = ''; \$editPermissionsStagedDescription = ''; \$editPermissionsStagedRoles = []; \$editPermissionsStagedRelationshipType = ''; \$editPermissionsStagedLoadFailed = false; (() => { const messages = document.getElementById('update-permissions-messages'); if (messages) messages.innerHTML = ''; })();";
 $remove_member_endpoint = OrgHelpers\template_url() . 'process/remove-member';
 $remove_member_error_actions = "console.error('Failed to remove member'); \$removeMemberSubmitting = false; \$membersLoading = false;";
 
@@ -393,6 +393,11 @@ $no_members_message = __('No members found.', 'wicket-acc');
                                 $editPermissionsSuccess = false;
                                 $editPermissionsSubmitting = false;
                                 (() => { const messages = document.getElementById('update-permissions-messages'); if (messages) messages.innerHTML = ''; })();
+                                $editPermissionsLoadedUuid = '';
+                                $editPermissionsStagedDescription = '';
+                                $editPermissionsStagedRoles = [];
+                                $editPermissionsStagedRelationshipType = '';
+                                $editPermissionsStagedLoadFailed = false;
                                 $currentMemberUuid = '<?php echo esc_js($member_uuid ?? ''); ?>';
                                 $currentMemberName = '<?php echo esc_js($member['full_name'] ?? ''); ?>';
                                 (() => { try { $currentMemberRoles = JSON.parse(evt.currentTarget.dataset.memberRoles || '[]'); } catch (e) { $currentMemberRoles = []; } })();
@@ -549,7 +554,19 @@ $no_members_message = __('No members found.', 'wicket-acc');
 
 <?php if (!$is_hypermedia_request): ?>
 <!-- Edit Permissions Modal - Single modal using pure Datastar -->
-<div class="wt_mt-6" data-signals='{"editPermissionsModalOpen": false, "editPermissionsSubmitting": false, "editPermissionsSuccess": false, "editPermissionsLoading": false, "editPermissionsLoadFailed": false, "currentMemberUuid": "", "currentMemberName": "", "currentMemberRoles": [], "currentMemberRelationshipType": "", "removeMemberModalOpen": false, "removeMemberSubmitting": false, "removeMemberSuccess": false, "currentRemoveMemberUuid": "", "currentRemoveMemberName": "", "currentRemoveMemberEmail": "", "currentRemoveMemberConnectionId": "", "currentRemoveMemberPersonMembershipId": ""}'>
+<div class="wt_mt-6" data-signals='{"editPermissionsModalOpen": false, "editPermissionsSubmitting": false, "editPermissionsSuccess": false, "editPermissionsLoading": false, "editPermissionsLoadFailed": false, "currentMemberUuid": "", "currentMemberName": "", "currentMemberRoles": [], "currentMemberRelationshipType": "", "currentMemberDescription": "", "editPermissionsLoadedUuid": "", "editPermissionsStagedDescription": "", "editPermissionsStagedRoles": [], "editPermissionsStagedRelationshipType": "", "editPermissionsStagedLoadFailed": false, "removeMemberModalOpen": false, "removeMemberSubmitting": false, "removeMemberSuccess": false, "currentRemoveMemberUuid": "", "currentRemoveMemberName": "", "currentRemoveMemberEmail": "", "currentRemoveMemberConnectionId": "", "currentRemoveMemberPersonMembershipId": ""}'
+    data-effect="
+        if ($editPermissionsLoadedUuid !== '' && $editPermissionsLoadedUuid === $currentMemberUuid) {
+            $editPermissionsLoading = false;
+            $editPermissionsLoadFailed = $editPermissionsStagedLoadFailed;
+            if (!$editPermissionsStagedLoadFailed) {
+                $currentMemberDescription = $editPermissionsStagedDescription;
+                $currentMemberRoles = $editPermissionsStagedRoles;
+                $currentMemberRelationshipType = $editPermissionsStagedRelationshipType;
+            }
+            $editPermissionsLoadedUuid = '';
+        }
+    ">
     <dialog id="editPermissionsModal" class="modal wt_m-auto max_wt_3xl wt_rounded-md wt_shadow-md backdrop_wt_bg-black-50"
         data-show="$editPermissionsModalOpen"
         data-effect="if ($editPermissionsModalOpen) el.showModal(); else el.close();"
