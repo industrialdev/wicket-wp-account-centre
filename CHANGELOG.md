@@ -2,6 +2,12 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.13.0] - 2026-11-25
+
+### Added
+- **acc:** add the Manage Employer member block (WWID-2860) #minor (#74)
+
+
 ## [1.12.1] - 2026-11-09
 
 ### Fixed
