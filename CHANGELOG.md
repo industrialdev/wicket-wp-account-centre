@@ -2,6 +2,15 @@
 
 <!-- new releases inserted below this line -->
 
+## [1.14.0] - 2026-11-26
+
+### Added
+- **acc:** add the self-serve membership switch callout (WWID-2067) #minor (#77)
+
+### Maintenance
+- sync PR template stub with agent-first spec (#76)
+
+
 ## [1.13.0] - 2026-11-25
 
 ### Added
