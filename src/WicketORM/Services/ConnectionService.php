@@ -130,10 +130,16 @@ class ConnectionService
      * @param string $org_id The ID of the organization.
      * @return true|WP_Error True on success, WP_Error on failure.
      */
-    public function endRelationshipToday($person_uuid, $relationship_id, $org_id)
+    public function endRelationshipToday($person_uuid, $relationship_id, $org_id, ?string $ends_at = null)
     {
         if (empty($person_uuid) || empty($relationship_id) || empty($org_id)) {
             return new WP_Error('invalid_params', 'Person UUID, relationship ID, and organization ID are required.');
+        }
+
+        // An explicit UTC timestamp (manage-employer backdated ends) wins over
+        // the removal anchor; callers compute it against MDP timezone rules.
+        if (is_string($ends_at) && $ends_at !== '') {
+            return wicket_end_person_org_connection($person_uuid, $relationship_id, $org_id, ['ends_at' => $ends_at]);
         }
 
         $ends_at = $this->getRemovalAnchor() === 'day_start_utc'
@@ -485,7 +491,7 @@ class ConnectionService
             // Try to extract more detailed error information from the response
             if (method_exists($e, 'getResponse') && $e->getResponse()) {
                 try {
-                    $error_body = json_decode($e->getResponse()->getBody(), true);
+                    $error_body = json_decode((string) $e->getResponse()->getBody(), true);
                     if (isset($error_body['errors']) && !empty($error_body['errors'])) {
                         $error_message = $error_body['errors'][0]['detail'] ?? $error_message;
                     }
@@ -584,7 +590,7 @@ class ConnectionService
      * @param string[] $skip_types  Relationship type slugs to leave untouched (e.g. ['company_admin']).
      * @return array|WP_Error
      */
-    public function endActivePersonOrganizationConnections($person_uuid, $org_id, array $skip_types = [])
+    public function endActivePersonOrganizationConnections($person_uuid, $org_id, array $skip_types = [], ?string $ends_at = null)
     {
         $logger = \Wicket()->log();
         $log_context = [
@@ -645,7 +651,7 @@ class ConnectionService
                 }
             }
 
-            $result = $this->endRelationshipToday($person_uuid, $connection_id, $org_id);
+            $result = $this->endRelationshipToday($person_uuid, $connection_id, $org_id, $ends_at);
             if (is_wp_error($result)) {
                 if ($logger) {
                     $logger->error('[OrgMan] End active connections failed while ending connection', $log_context + [
@@ -706,7 +712,7 @@ class ConnectionService
      *   ended:  connection IDs that were successfully end-dated
      *   errors: map of connection_id => error message (non-fatal)
      */
-    public function endAllActivePersonOrganizationConnections($person_uuid, $org_id, array $skip_types = [])
+    public function endAllActivePersonOrganizationConnections($person_uuid, $org_id, array $skip_types = [], ?string $ends_at = null)
     {
         $ended = [];
         $errors = [];
@@ -751,7 +757,7 @@ class ConnectionService
                 }
             }
 
-            $result = $this->endRelationshipToday($person_uuid, $connection_id, $org_id);
+            $result = $this->endRelationshipToday($person_uuid, $connection_id, $org_id, $ends_at);
             if (is_wp_error($result)) {
                 $errors[$connection_id] = $result->get_error_message();
                 \Wicket()->log()->error('[OrgMan] endAllActivePersonOrganizationConnections failed to end connection', [
